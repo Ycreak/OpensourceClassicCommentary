@@ -1,0 +1,44 @@
+<button type="button" class="btn btn-outline-success" (click)="requestCommentaar()">Query!</button>
+<button type="button" class="btn btn-outline-success" (click)="requestCommentaar(2)">ABT2!</button>
+<button type="button" class="btn btn-outline-success" (click)="requestCommentaar(3)">ABT3!</button>
+
+<br>
+
+<form #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+    <input name="first" ngModel required #first="ngModel">
+    <button>Submit</button>
+  </form>
+
+  <p>First name value: {{ first.value }}</p>
+  <p>First name valid: {{ first.valid }}</p>
+  <p>Form value: {{ f.value | json }}</p>
+  <p>Form valid: {{ f.valid }}</p>
+
+<br> <br>
+<div class="container-fluid">
+
+  <div class="row">
+    <div class="col-sm">
+      <ul>
+          <p *ngFor="let text1 of this.root">
+            {{text1}}
+          </p>
+      </ul>
+
+    </div>
+    <div class="col-sm">
+      <!-- <ul>
+        <p *ngFor="let text2 of this.root3">
+          {{text2}}
+        </p>
+      </ul> -->
+    </div>
+
+  </div>
+
+
+</div>
+
+
+
+
