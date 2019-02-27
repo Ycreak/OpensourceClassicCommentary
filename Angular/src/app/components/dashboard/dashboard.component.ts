@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms'
+import { getRandomString } from 'selenium-webdriver/safari';
 
 @Component({
   selector: 'app-interface',
@@ -21,17 +22,19 @@ export class DashboardComponent implements OnInit {
    */
   api : APIComponent;
   root : JSON;
+  commentaar : JSON;
+  temp : Array<string> = [];
   ready : boolean = false;
-  selected_features : { [id: string] : boolean; } = {};
-  all_features : Array<string> = [];
+  // selected_features : { [id: string] : boolean; } = {};
+  // all_features : Array<string> = [];
   results : string[] = [];
-  selected_customs: { [id:string] : { [id:string] : string } } = {};
+  // selected_customs: { [id:string] : { [id:string] : string } } = {};
 
   stringArray : Array<string> = [];
 
   /* @member "abt_code":  De string welke de abt_code voorstelt, te tonen in de popup modal
    */
-  abt_code : string;
+  // abt_code : string;
 
 
   constructor(  private httpClient: HttpClient) { }
@@ -51,63 +54,30 @@ export class DashboardComponent implements OnInit {
           .catch(error => console.log(error));
   }
 
-  public onSubmit(f: NgForm) {
-    console.log(f.value);  // { first: '', last: '' }
-    const temp = f.value;
-
-    // console.log('hello' + f.value[0]);  // false
-    var o = { "key1": "value1", "key2": "value2"};
-    var val = o["key2"];   // value2
-    console.log(val);
-
-    var temp1 = f.value;
-    console.log(temp1);
-    var o1 = f.value;
-    var val1 = o1["key2"];   // value2
-    console.log('hiero' + val1);
-
-    this.requestCommentaar(f.value);
-  }
-
-
-  // public requestCommentaar(){
-  //   console.log("commentaar requested!");
-  //   this.api = new APIComponent(this.httpClient);
-  //   this.api
-  //         .getCommentaar()
-  //         .then(result => {
-  //           this.root2 = result as JSON;
-  //           //this.stringArray = result as JSON;
-  //           this.getString(this.root2);
-  //           this.ready = true;
-  //         })
-  //         .catch(error => console.log(error));
-  // }
-
-  public requestCommentaar(test1: Array<string>){
+  public requestCommentaar(requestedLine: Array<string>){
     console.log("Commentaar requested!");
     // console.log(test1);
     this.api = new APIComponent(this.httpClient);
     this.api
-          .getTest(test1)
+          .getCommentaar(requestedLine)
           .then(result => {
-            this.root3 = result as JSON;
-            console.log('before: ' + this.root);
-            this.getString(this.root3);
-            console.log('after: ' + this.root3);
+            this.commentaar = result as JSON;
+            // console.log(this.commentaar[0][0]);
+            this.getString(this.commentaar);
+            // console.log(this.commentaar);
             this.ready = true;
-
-            // this.openLg(this.generated);
           })
           .catch(error => console.log(error));
-          // console.log(this.abt_code);
   }
 
-  public getString(temp1: JSON){
+  public getString(insertedJSON: JSON){
   //  console.log(temp1);
-    return JSON.stringify(temp1);
-    //const a = JSON.parse(temp1);
-    //return a;
+    return JSON.stringify(insertedJSON);
+  }
+
+  public onSubmit(f: NgForm) {
+    // console.log(f.value.input);
+    this.requestCommentaar(f.value.input);
   }
 }
 
@@ -129,9 +99,20 @@ class APIComponent {
             .catch(this.handleError);
   }
 
-  public getCommentaar() : Promise<any> {
+  /* @function:     Een get request naar de abt code
+   * @param "list": Een lijst met namen van features
+   * @return:       De promise van de get request
+   * @author:       bors
+   */
+  public getCommentaar(requestedLine : Array<string>) : Promise<any> {
+    // console.log(list);
     return this.httpClient
-            .get('http://localhost:5002/2')
+            .get('http://localhost:5002/4', {
+              params: {
+                test1: requestedLine.toString()
+              },
+              // observe: 'response' DO NOT OBSERVE THIS
+            })
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);
@@ -143,6 +124,7 @@ class APIComponent {
    * @author:       Bors
    */
   private extractData(res: Response) : {} {
+    console.log('The requested array is listed in the next line!');
     console.log(res);
     return res || {};
   }
@@ -157,25 +139,7 @@ class APIComponent {
     return Promise.reject(error.message || error);
   }
 
-  /* @function:     Een get request naar de abt code
-   * @param "list": Een lijst met namen van features
-   * @return:       De promise van de get request
-   * @author:       bors
-   */
-  // HIER VERDER, AANROEP GAAT GOED, NU NOG VERWERKEN!!!
-  public getTest(list : Array<string>) : Promise<any> {
-    console.log(list);
-    return  this.httpClient
-            .get('http://localhost:5002/4', {
-              params: {
-                test1: list.toString()
-              },
-              observe: 'response'
-            })
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
-  }
+
 
   public getCommentaarCode(list : Array<string>) : Promise<any> {
     return  this.httpClient

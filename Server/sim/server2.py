@@ -4,7 +4,8 @@ from flask_restful import Resource, Api
 from json import dumps
 from flask_jsonpify import jsonify
 from run import *
-
+# import pyodbc
+import collections
 import mysql.connector
 
 # -*- coding: utf-8 -*-
@@ -71,16 +72,13 @@ def ABT():
     for x in myresult:
       print(x)
 
-    temp = "hello there"
     return jsonify(myresult)
-    # return jsonify(statements)
 
+# Geeft geselecteerd commentaar terug.
 @app.route("/4")
-def JSON_init():
-
+def ABT3():
   opt_param = request.args.get("test1")
   print('inside this var is: ' + opt_param + ' just so you know!')
-  print('hello!')
 
   mydb = mysql.connector.connect(
     host="localhost",
@@ -90,28 +88,16 @@ def JSON_init():
   )
 
   mycursor = mydb.cursor()
-  t = (opt_param)
 
-  mycursor.execute('SELECT lineCommentaar FROM ThyestesCommentaar WHERE lineStart=(%s)'%(t))
+  t = (opt_param)
+  mycursor.execute('SELECT lineStart, lineEnd, lineWords, lineCommentaar, source FROM ThyestesCommentaar WHERE lineStart<=(%s) AND lineEnd>=(%s)'%(t,t))
   myresult2 = mycursor.fetchall()
   for x in myresult2:
     print(x)
 
-  # mycursor.execute("SELECT lineCommentaar FROM ThyestesCommentaar WHERE lineStart = 2")
-
-  # myresult = mycursor.fetchall()
-
-  # print('gebruikende opt_param')
-  # for x in myresult:
-  #   print(x)
-
   return jsonify(myresult2)
-    # return jsonify(statements)
+  # return jsonify(lineWords=myresult2.lineWords,lineCommentaar=myresult2.lineCommentaar,source=myresult2.source)
 
-
-# res = dict()
-
-  # return jsonify(opt_param)
 
 
 if __name__ == '__main__':
