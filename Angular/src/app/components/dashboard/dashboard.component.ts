@@ -4,6 +4,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms'
 import { getRandomString } from 'selenium-webdriver/safari';
+import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -37,6 +38,7 @@ export class DashboardComponent implements OnInit {
   // all_features : Array<string> = [];
   results : string[] = [];
   // selected_customs: { [id:string] : { [id:string] : string } } = {};
+  closeResult: string;
 
   stringArray : Array<string> = [];
   typesOfShoes: string[] = ['Boots', 'Clogs', 'Loafers', 'Moccasins', 'Sneakers'];
@@ -45,8 +47,7 @@ export class DashboardComponent implements OnInit {
    */
   // abt_code : string;
 
-
-  constructor(  private httpClient: HttpClient) { }
+  constructor(private modalService: NgbModal, private httpClient: HttpClient) { }
 
   /* @function:     Laadt interface in
    * @author:       bors
@@ -96,7 +97,29 @@ export class DashboardComponent implements OnInit {
   public testFunction(){
     console.log('de testfunctie is aangeroepen!')
   }
+
+  open(content) {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+  }
+
+  private getDismissReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return  `with: ${reason}`;
+    }
+  }
+
+
 }
+
+
 
   /* @class:    Deze component neemt alle requests (API) voor zijn rekening
    */

@@ -65,7 +65,7 @@ def ABT():
 
     mycursor = mydb.cursor()
 
-    mycursor.execute("SELECT lineNumber, lineContent, Spreker FROM Thyestes")
+    mycursor.execute("SELECT lineNumber, lineContent FROM Thyestes")
 
     myresult = mycursor.fetchall()
 
@@ -90,7 +90,7 @@ def ABT3():
   mycursor = mydb.cursor()
 
   t = (opt_param)
-  mycursor.execute('SELECT lineStart, lineEnd, lineWords, lineCommentaar, source FROM ThyestesCommentaar WHERE lineStart<=(%s) AND lineEnd>=(%s)'%(t,t))
+  mycursor.execute('SELECT lineStart, lineEnd, lineWords, lineCommentaar, source, pages FROM ThyestesCommentaar WHERE lineStart<=(%s) AND lineEnd>=(%s)'%(t,t))
   myresult2 = mycursor.fetchall()
   for x in myresult2:
     print(x)

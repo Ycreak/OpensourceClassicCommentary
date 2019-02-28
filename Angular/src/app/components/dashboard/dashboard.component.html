@@ -1,10 +1,97 @@
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">OpensourceClassicsCommentary</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li> <button class="btn btn-lg btn-outline-primary" (click)="open(content)">Change Text</button></li>
+          <li> <button class="btn btn-lg btn-outline-primary" (click)="open(bib)">Bibliography</button></li>
+          <li class="nav-link" [routerLinkActive]="['active']" [routerLinkActiveOptions] = "{exact:true}"><a [routerLink]="['/login']">Login</a></li>
+          <li class="nav-link" [routerLinkActive]="['active']" [routerLinkActiveOptions] = "{exact:true}"><a [routerLink]="['/register']">Register</a></li>
+          <li class="nav-link" [routerLinkActive]="['active']" [routerLinkActiveOptions] = "{exact:true}"><a [routerLink]="['/dashboard']">Dashboard</a></li>
+
+          <li class="nav-link" ><a href="#">Logout</a></li>
+          <li class="nav-item">
+         </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Select your Text</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div>
+      <select [(ngModel)]="selectedValue" (ngModelChange)="showInfo(selectedValue)">
+        <option *ngFor="let c of this.root" [ngValue]="c">{{c[1]}}</option>
+      </select>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>
+  </div>
+</ng-template>
+
+<ng-template #source let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Select your Text</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div>
+        <ul>
+            <li *ngFor="let hero of this.commentaar">
+              {{ hero[4] }}
+            </li>
+          </ul>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>
+    </div>
+  </ng-template>
+
+  <ng-template #bib let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Select your Text</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <ul>
+            <li *ngFor="let hero of this.commentaar">
+              {{ hero[4] }}
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>
+      </div>
+    </ng-template>
+
 <!-- <button type="button" class="btn btn-outline-success" (click)="requestCommentaar()">Query!</button>
 <button type="button" class="btn btn-outline-success" (click)="requestCommentaar(2)">ABT2!</button>
 <button type="button" class="btn btn-outline-success" (click)="requestCommentaar(3)">ABT3!</button> -->
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
-<!-- <link rel="stylesheet" href="../../../../node_modules/@angular/material/prebuilt-themes/purple-green.css"> -->
-<!-- <link href="node_modules/@angular/material/prebuilt-themes/indigo-pink.css" rel="stylesheet"> -->
+
+
 <br>
 
 <!-- Select your line.
@@ -17,45 +104,25 @@
 
   <div class="row">
     <div class="col-sm anyClass">
-      <!-- <ol>
-          <li *ngFor="let text1 of this.root">
-            {{text1}}
-          </li>
-      </ol> -->
-        <mat-nav-list>
+        <mat-nav-list class="my-list-2">
           <mat-list-item *ngFor="let line of this.root">
-             <a matLine (click)="requestCommentaar(line[0])"><b>{{ line[2] }}<br>{{ line[0] }}:</b> {{ line[1] }}</a>
+             <a *ngIf="line[0]===null" matLine (click)="requestCommentaar(line[0])"><h5><b>{{ line[1] }}</b></h5></a>
+             <a *ngIf="line[0]!=null" matLine (click)="requestCommentaar(line[0])"><b>{{ line[2] }}{{ line[0] }}:</b> {{ line[1] }}</a>
           </mat-list-item>
         </mat-nav-list>
-
-
     </div>
+
     <div class="col-sm anyClass">
-      <!-- <br>
-      <ul>
-        <p *ngFor="let commentaar of this.commentaar">
-          <b>{{commentaar[0]}}-{{commentaar[1]}}: <i>{{commentaar[2]}}</i></b><br>
-          {{commentaar[3]}}<br>
-          --- <i>{{commentaar[4]}}</i>
-        </p>
-      </ul>
-      <br><br> -->
       <mat-nav-list class="my-list-1">
-          <mat-list-item *ngFor="let commentaar of this.commentaar">
-             <a matLine (click)="showInfo(commentaar[4])"><b>{{commentaar[0]}}-{{commentaar[1]}}: <i>{{commentaar[2]}}</i></b> {{commentaar[3]}}<br>--- <i>{{commentaar[4]}}</i> <br><br></a>
-               <!-- <b>{{ line[2] }}<br>{{ line[0] }}:</b> {{ line[1] }} -->
-               <!-- <p><b>{{commentaar[0]}}-{{commentaar[1]}}: <i>{{commentaar[2]}}</i></b><br>
-               {{commentaar[3]}}<br>
-               --- <i>{{commentaar[4]}}</i> <br></p> -->
+        <mat-list-item *ngFor="let commentaar of this.commentaar">
+            <a *ngIf="commentaar[0]===commentaar[1]" matLine (click)="open(source)"><b>{{commentaar[1]}}: <i>{{commentaar[2]}}</i></b> <div [innerHTML]="commentaar[3]"></div>--- <i>{{commentaar[4]}}, page(s) {{commentaar[5]}}</i> <br><br></a>
+            <a *ngIf="commentaar[0]!=commentaar[1]" matLine (click)="open(source)"><b>{{commentaar[0]}}-{{commentaar[1]}}: <i>{{commentaar[2]}}</i></b> <div [innerHTML]="commentaar[3]"></div>--- <i>{{commentaar[4]}}, page(s) {{commentaar[5]}}</i> <br><br></a>
 
           </mat-list-item>
-        </mat-nav-list>
-
+      </mat-nav-list>
     </div>
 
   </div>
 
-
-</div>
 
 
