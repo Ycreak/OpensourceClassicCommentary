@@ -1,1 +1,14 @@
 body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
+
+.anyClass {
+  height:100vh;
+  overflow-y: scroll;
+}
+
+.my-list-1 .mat-list-item {
+  height: auto;
+}
+
+/* .my-list-2 .mat-list-item .mat-list-item-content {
+  height: 30px;
+} */

@@ -5,6 +5,14 @@ import { FormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms'
 import { getRandomString } from 'selenium-webdriver/safari';
 
+import { MatListModule } from '@angular/material/list';
+import { MatSidenavModule } from '@angular/material/sidenav';
+
+import 'hammerjs';
+
+// import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+// import "../node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css";
+
 @Component({
   selector: 'app-interface',
   templateUrl: './dashboard.component.html',
@@ -31,6 +39,7 @@ export class DashboardComponent implements OnInit {
   // selected_customs: { [id:string] : { [id:string] : string } } = {};
 
   stringArray : Array<string> = [];
+  typesOfShoes: string[] = ['Boots', 'Clogs', 'Loafers', 'Moccasins', 'Sneakers'];
 
   /* @member "abt_code":  De string welke de abt_code voorstelt, te tonen in de popup modal
    */
@@ -78,6 +87,14 @@ export class DashboardComponent implements OnInit {
   public onSubmit(f: NgForm) {
     // console.log(f.value.input);
     this.requestCommentaar(f.value.input);
+  }
+
+  public showInfo(temp1: Array<string>){
+    console.log(temp1);
+  }
+
+  public testFunction(){
+    console.log('de testfunctie is aangeroepen!')
   }
 }
 

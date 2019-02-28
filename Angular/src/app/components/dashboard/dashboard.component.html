@@ -3,49 +3,59 @@
 <button type="button" class="btn btn-outline-success" (click)="requestCommentaar(3)">ABT3!</button> -->
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
-
+<!-- <link rel="stylesheet" href="../../../../node_modules/@angular/material/prebuilt-themes/purple-green.css"> -->
+<!-- <link href="node_modules/@angular/material/prebuilt-themes/indigo-pink.css" rel="stylesheet"> -->
 <br>
 
-Select your line.
+<!-- Select your line.
 <form #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
     <input type="number" name="input" ngModel min="1" required #first="ngModel">
     <button>Submit</button>
-  </form>
+  </form> -->
 
-  <!-- <p>First name value: {{ first.value }}</p>
-  <p>First name valid: {{ first.valid }}</p>
-  <p>Form value: {{ f.value | json }}</p>
-  <p>Form valid: {{ f.valid }}</p> -->
-
-<br> <br>
 <div class="container-fluid">
 
   <div class="row">
-    <div class="col-sm">
-      <ol>
+    <div class="col-sm anyClass">
+      <!-- <ol>
           <li *ngFor="let text1 of this.root">
             {{text1}}
           </li>
-      </ol>
+      </ol> -->
+        <mat-nav-list>
+          <mat-list-item *ngFor="let line of this.root">
+             <a matLine (click)="requestCommentaar(line[0])"><b>{{ line[2] }}<br>{{ line[0] }}:</b> {{ line[1] }}</a>
+          </mat-list-item>
+        </mat-nav-list>
+
 
     </div>
-    <div class="col-sm">
+    <div class="col-sm anyClass">
+      <!-- <br>
       <ul>
-        <p *ngFor="let text2 of this.commentaar">
-          <b>{{text2[0]}}-{{text2[1]}}: {{text2[2]}}</b><br>
-          {{text2[3]}}<br>
-          --- <i>{{text2[4]}}</i>
-          <!-- {{text2.name}}, {{text2.age}} -->
-
+        <p *ngFor="let commentaar of this.commentaar">
+          <b>{{commentaar[0]}}-{{commentaar[1]}}: <i>{{commentaar[2]}}</i></b><br>
+          {{commentaar[3]}}<br>
+          --- <i>{{commentaar[4]}}</i>
         </p>
       </ul>
+      <br><br> -->
+      <mat-nav-list class="my-list-1">
+          <mat-list-item *ngFor="let commentaar of this.commentaar">
+             <a matLine (click)="showInfo(commentaar[4])"><b>{{commentaar[0]}}-{{commentaar[1]}}: <i>{{commentaar[2]}}</i></b> {{commentaar[3]}}<br>--- <i>{{commentaar[4]}}</i> <br><br></a>
+               <!-- <b>{{ line[2] }}<br>{{ line[0] }}:</b> {{ line[1] }} -->
+               <!-- <p><b>{{commentaar[0]}}-{{commentaar[1]}}: <i>{{commentaar[2]}}</i></b><br>
+               {{commentaar[3]}}<br>
+               --- <i>{{commentaar[4]}}</i> <br></p> -->
+
+          </mat-list-item>
+        </mat-nav-list>
+
     </div>
 
   </div>
 
 
 </div>
-
-
 
 

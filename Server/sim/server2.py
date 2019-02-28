@@ -3,7 +3,7 @@ from flask_cors import CORS, cross_origin
 from flask_restful import Resource, Api
 from json import dumps
 from flask_jsonpify import jsonify
-from run import *
+# from run import *
 # import pyodbc
 import collections
 import mysql.connector
@@ -19,7 +19,7 @@ CORS(app)
 # keymodule = KeyModule(moduleimport)
 # keymodule.beschikbare_modulegroepen.sort()
 
-configuratie = Config()
+# configuratie = Config()
 
 """ Zie hier de REST server. Deze methoden worden middels
 	get-requests binnen gehaald bij de front end.
@@ -65,7 +65,7 @@ def ABT():
 
     mycursor = mydb.cursor()
 
-    mycursor.execute("SELECT lineContent FROM Thyestes")
+    mycursor.execute("SELECT lineNumber, lineContent, Spreker FROM Thyestes")
 
     myresult = mycursor.fetchall()
 
