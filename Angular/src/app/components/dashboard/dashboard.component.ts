@@ -31,6 +31,7 @@ export class DashboardComponent implements OnInit {
    */
   api : APIComponent;
   root : JSON;
+  authors : JSON;
   commentaar : JSON;
   temp : Array<string> = [];
   ready : boolean = false;
@@ -43,6 +44,12 @@ export class DashboardComponent implements OnInit {
   stringArray : Array<string> = [];
   typesOfShoes: string[] = ['Boots', 'Clogs', 'Loafers', 'Moccasins', 'Sneakers'];
 
+  currentText : Array<string> = ['Thyestes'];
+  startupText : Array<string> = ['Thyestes'];
+  currentAuthor : Array<string> = ['Seneca'];
+  currentBook : Array<string> = ['Thyestes'];
+  givenText : Array<string> = [];
+
   /* @member "abt_code":  De string welke de abt_code voorstelt, te tonen in de popup modal
    */
   // abt_code : string;
@@ -53,12 +60,18 @@ export class DashboardComponent implements OnInit {
    * @author:       bors
    */
   ngOnInit() {
+    this.requestPrimaryText(this.startupText);
+    this.requestAuthors();
+  }
+
+  public requestPrimaryText(givenText: Array<string>){
+    this.currentText = givenText;
     this.api = new APIComponent(this.httpClient);
     this.api
-          .getPrimaryText()
+          .getPrimaryText(givenText)
           .then(result => {
             this.root = result as JSON;
-            this.getString(this.root);
+            this.getString(this.commentaar);
             this.ready = true;
           })
           .catch(error => console.log(error));
@@ -69,12 +82,25 @@ export class DashboardComponent implements OnInit {
     // console.log(test1);
     this.api = new APIComponent(this.httpClient);
     this.api
-          .getCommentaar(requestedLine)
+          .getCommentaar(requestedLine, this.currentText)
           .then(result => {
             this.commentaar = result as JSON;
             // console.log(this.commentaar[0][0]);
             this.getString(this.commentaar);
             // console.log(this.commentaar);
+
+            this.ready = true;
+          })
+          .catch(error => console.log(error));
+  }
+
+  public requestAuthors(){
+    this.api = new APIComponent(this.httpClient);
+    this.api
+          .getAuthors()
+          .then(result => {
+            this.authors = result as JSON;
+            this.getString(this.authors);
             this.ready = true;
           })
           .catch(error => console.log(error));
@@ -115,8 +141,6 @@ export class DashboardComponent implements OnInit {
       return  `with: ${reason}`;
     }
   }
-
-
 }
 
 
@@ -131,9 +155,13 @@ class APIComponent {
    * @return:       De promise van de get request.
    * @author:       Bors & Nolden.
    */
-  public getPrimaryText() : Promise<any> {
+  public getPrimaryText(currentText : Array<string>) : Promise<any> {
     return this.httpClient
-            .get('http://localhost:5002/3')
+            .get('http://localhost:5002/getPrimaryText',{
+              params: {
+                currentText: currentText.toString(),
+              }
+            })
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);
@@ -142,17 +170,25 @@ class APIComponent {
   /* @function:     Een get request naar de abt code
    * @param "list": Een lijst met namen van features
    * @return:       De promise van de get request
-   * @author:       bors
+   * @author:       Bors & Nolden.
    */
-  public getCommentaar(requestedLine : Array<string>) : Promise<any> {
+  public getCommentaar(requestedLine : Array<string>, currentText : Array<string>) : Promise<any> {
     // console.log(list);
     return this.httpClient
-            .get('http://localhost:5002/4', {
+            .get('http://localhost:5002/getCommentary', {
               params: {
-                test1: requestedLine.toString()
+                requestedLine: requestedLine.toString(),
+                currentText: currentText.toString(),
               },
-              // observe: 'response' DO NOT OBSERVE THIS
             })
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+  }
+
+  public getAuthors() : Promise<any> {
+    return this.httpClient
+            .get('http://localhost:5002/getAuthors')
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);
@@ -181,17 +217,18 @@ class APIComponent {
 
 
 
-  public getCommentaarCode(list : Array<string>) : Promise<any> {
-    return  this.httpClient
-            .get('http://localhost:5002/3', {
-              params: {
-                interface_selected_features: list.toString()
-              },
-              observe: 'response'
-            })
-            .toPromise()
-            .catch(this.handleError);
-  }
+  // public getCommentaarCode(commentaryLine : Array<string>) : Promise<any> {
+  //   return  this.httpClient
+  //           .get('http://localhost:5002/3', {
+  //             params: {
+  //               commentaryLines: commentaryLine.toString(),
+  //               commentaryLines2: commentaryLine.toString()
+  //             },
+  //             observe: 'response'
+  //           })
+  //           .toPromise()
+  //           .catch(this.handleError);
+  // }
 
 }
 

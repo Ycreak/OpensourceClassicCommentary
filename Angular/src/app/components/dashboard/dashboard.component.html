@@ -2,29 +2,30 @@
 <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 <!-- Navigation -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+  <nav class="navbar navbar-expand-lg  static-top">
     <div class="container">
-      <a class="navbar-brand" href="#">OpensourceClassicsCommentary</a>
+      <a class="navbar-brand" href="#"><h3>OpensourceClassicsCommentary</h3></a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
-          <li> <button class="btn btn-lg btn-outline-primary" (click)="open(content)">Change Text</button></li>
-          <li> <button class="btn btn-lg btn-outline-primary" (click)="open(bib)">Bibliography</button></li>
-          <li class="nav-link" [routerLinkActive]="['active']" [routerLinkActiveOptions] = "{exact:true}"><a [routerLink]="['/login']">Login</a></li>
-          <li class="nav-link" [routerLinkActive]="['active']" [routerLinkActiveOptions] = "{exact:true}"><a [routerLink]="['/register']">Register</a></li>
-          <li class="nav-link" [routerLinkActive]="['active']" [routerLinkActiveOptions] = "{exact:true}"><a [routerLink]="['/dashboard']">Dashboard</a></li>
+          <li> <button class="btn btn-lg" (click)="open(textChanger)">Change Text</button></li>
+          <li> <button class="btn btn-lg" (click)="open(bib)">Bibliography</button></li>
 
-          <li class="nav-link" ><a href="#">Logout</a></li>
-          <li class="nav-item">
-         </li>
+          <!-- <li class="nav-link" [routerLinkActive]="['active']" [routerLinkActiveOptions] = "{exact:true}"><a [routerLink]="['/login']">Login</a></li>
+          <li class="nav-link" [routerLinkActive]="['active']" [routerLinkActiveOptions] = "{exact:true}"><a [routerLink]="['/register']">Register</a></li>
+          <li class="nav-link" [routerLinkActive]="['active']" [routerLinkActiveOptions] = "{exact:true}"><a [routerLink]="['/dashboard']">Dashboard</a></li> -->
+
+          <!-- <li class="nav-link" ><a href="#">Logout</a></li> -->
+          <!-- <li class="nav-item">
+         </li> -->
         </ul>
       </div>
     </div>
   </nav>
 
-<ng-template #content let-modal>
+<ng-template #textChanger let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">Select your Text</h4>
     <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
@@ -32,11 +33,28 @@
     </button>
   </div>
   <div class="modal-body">
+
+      <button class="btn btn-lg" (click)="requestPrimaryText('Thyestes')">Thyestes</button>
+      <button class="btn btn-lg" (click)="requestPrimaryText('Phaedra')">Phaedra</button>
+      <button class="btn btn-lg" (click)="requestPrimaryText('Thyestes')">Thyestes</button>
+      <button class="btn btn-lg" (click)="requestPrimaryText('Phaedra')">Phaedra</button>
+      <button class="btn btn-lg" (click)="requestPrimaryText('Thyestes')">Thyestes</button>
+      <button class="btn btn-lg" (click)="requestPrimaryText('Phaedra')">Phaedra</button>
+      <button class="btn btn-lg" (click)="requestPrimaryText('Thyestes')">Thyestes</button>
+      <button class="btn btn-lg" (click)="requestPrimaryText('Phaedra')">Phaedra</button>
+      <button class="btn btn-lg" (click)="requestPrimaryText('Thyestes')">Thyestes</button>
+      <button class="btn btn-lg" (click)="requestPrimaryText('Phaedra')">Phaedra</button>
+
     <div>
-      <select [(ngModel)]="selectedValue" (ngModelChange)="showInfo(selectedValue)">
-        <option *ngFor="let c of this.root" [ngValue]="c">{{c[1]}}</option>
+      <select [(ngModel)]="selectedValue" (ngModelChange)="getBooks(selectedValue)">
+        <option *ngFor="let c of this.authors" [ngValue]="c">{{c[0]}}</option>
       </select>
     </div>
+    <div>
+        <select [(ngModel)]="selectedValue2" (ngModelChange)="showInfo(selectedValue2)">
+          <option *ngFor="let d of this.books" [ngValue]="d">{{d[0]}}</option>
+        </select>
+      </div>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>
@@ -64,7 +82,7 @@
     </div>
   </ng-template>
 
-  <ng-template #bib let-modal>
+<ng-template #bib let-modal>
       <div class="modal-header">
         <h4 class="modal-title" id="modal-basic-title">Select your Text</h4>
         <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
@@ -83,7 +101,7 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>
       </div>
-    </ng-template>
+  </ng-template>
 
 <!-- <button type="button" class="btn btn-outline-success" (click)="requestCommentaar()">Query!</button>
 <button type="button" class="btn btn-outline-success" (click)="requestCommentaar(2)">ABT2!</button>
@@ -106,8 +124,8 @@
     <div class="col-sm anyClass">
         <mat-nav-list class="my-list-2">
           <mat-list-item *ngFor="let line of this.root">
-             <a *ngIf="line[0]===null" matLine (click)="requestCommentaar(line[0])"><h5><b>{{ line[1] }}</b></h5></a>
-             <a *ngIf="line[0]!=null" matLine (click)="requestCommentaar(line[0])"><b>{{ line[2] }}{{ line[0] }}:</b> {{ line[1] }}</a>
+             <a *ngIf="line[0]===null"><h5><b>{{ line[1] }}</b></h5></a>
+             <a *ngIf="line[0]!=null" matLine (click)="requestCommentaar(line[0])"><b>{{ line[0] }}:</b> {{ line[1] }}</a>
           </mat-list-item>
         </mat-nav-list>
     </div>
@@ -115,11 +133,14 @@
     <div class="col-sm anyClass">
       <mat-nav-list class="my-list-1">
         <mat-list-item *ngFor="let commentaar of this.commentaar">
-            <a *ngIf="commentaar[0]===commentaar[1]" matLine (click)="open(source)"><b>{{commentaar[1]}}: <i>{{commentaar[2]}}</i></b> <div [innerHTML]="commentaar[3]"></div>--- <i>{{commentaar[4]}}, page(s) {{commentaar[5]}}</i> <br><br></a>
-            <a *ngIf="commentaar[0]!=commentaar[1]" matLine (click)="open(source)"><b>{{commentaar[0]}}-{{commentaar[1]}}: <i>{{commentaar[2]}}</i></b> <div [innerHTML]="commentaar[3]"></div>--- <i>{{commentaar[4]}}, page(s) {{commentaar[5]}}</i> <br><br></a>
+          <a *ngIf="commentaar[0]===commentaar[1]" matLine (click)="open(source)"><b>{{commentaar[1]}}: <i>{{commentaar[2]}}</i></b> <div [innerHTML]="commentaar[3]"></div>--- <i>{{commentaar[4]}}, page(s) {{commentaar[5]}}</i> <br><br></a>
+          <a *ngIf="commentaar[0]!=commentaar[1]" matLine (click)="open(source)"><b>{{commentaar[0]}}-{{commentaar[1]}}: <i>{{commentaar[2]}}</i></b> <div [innerHTML]="commentaar[3]"></div>--- <i>{{commentaar[4]}}, page(s) {{commentaar[5]}}</i> <br><br></a>
+
 
           </mat-list-item>
+
       </mat-nav-list>
+      <!-- Entries found: {{commentaar.length}} --> <!-- this breaks the modals! -->
     </div>
 
   </div>

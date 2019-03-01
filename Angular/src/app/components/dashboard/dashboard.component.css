@@ -18,3 +18,25 @@ body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 .mat-list-item:hover {
   background-color: #63c8cf;
 }
+
+.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.navbar {
+  background-color: #4CAF50;
+}
+
+.btn {
+  background-color: white;
+  color: black;
+  border: 2px solid rgb(0, 17, 255); /* Green */
+}
+
+.btn:hover {
+  background-color: #4CAF50; /* Green */
+  color: white;
+}
+
+
