@@ -12,14 +12,7 @@
         <ul class="navbar-nav ml-auto">
           <li> <button class="btn btn-lg" (click)="open(textChanger)">Change Text</button></li>
           <li> <button class="btn btn-lg" (click)="open(bib)">Bibliography</button></li>
-
-          <!-- <li class="nav-link" [routerLinkActive]="['active']" [routerLinkActiveOptions] = "{exact:true}"><a [routerLink]="['/login']">Login</a></li>
-          <li class="nav-link" [routerLinkActive]="['active']" [routerLinkActiveOptions] = "{exact:true}"><a [routerLink]="['/register']">Register</a></li>
-          <li class="nav-link" [routerLinkActive]="['active']" [routerLinkActiveOptions] = "{exact:true}"><a [routerLink]="['/dashboard']">Dashboard</a></li> -->
-
-          <!-- <li class="nav-link" ><a href="#">Logout</a></li> -->
-          <!-- <li class="nav-item">
-         </li> -->
+          <li> <button class="btn btn-lg" (click)="open(newEntry)">New Entry</button></li>
         </ul>
       </div>
     </div>
@@ -27,39 +20,55 @@
 
 <ng-template #textChanger let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Select your Text</h4>
+    <h4 class="modal-title" id="modal-basic-title">Select an Author and Book</h4>
     <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
-
-      <button class="btn btn-lg" (click)="requestPrimaryText('Thyestes')">Thyestes</button>
-      <button class="btn btn-lg" (click)="requestPrimaryText('Phaedra')">Phaedra</button>
-      <button class="btn btn-lg" (click)="requestPrimaryText('Thyestes')">Thyestes</button>
-      <button class="btn btn-lg" (click)="requestPrimaryText('Phaedra')">Phaedra</button>
-      <button class="btn btn-lg" (click)="requestPrimaryText('Thyestes')">Thyestes</button>
-      <button class="btn btn-lg" (click)="requestPrimaryText('Phaedra')">Phaedra</button>
-      <button class="btn btn-lg" (click)="requestPrimaryText('Thyestes')">Thyestes</button>
-      <button class="btn btn-lg" (click)="requestPrimaryText('Phaedra')">Phaedra</button>
-      <button class="btn btn-lg" (click)="requestPrimaryText('Thyestes')">Thyestes</button>
-      <button class="btn btn-lg" (click)="requestPrimaryText('Phaedra')">Phaedra</button>
-
+    Author:
     <div>
-      <select [(ngModel)]="selectedValue" (ngModelChange)="getBooks(selectedValue)">
-        <option *ngFor="let c of this.authors" [ngValue]="c">{{c[0]}}</option>
+      <select class="dropbtn" [(ngModel)]="selectedAuthor" (ngModelChange)="requestBooks(selectedAuthor[0])">
+        <option *ngFor="let c of this.authors" [ngValue]="c">{{c[1]}}</option>
       </select>
     </div>
+    <br>
+    Book:
     <div>
-        <select [(ngModel)]="selectedValue2" (ngModelChange)="showInfo(selectedValue2)">
-          <option *ngFor="let d of this.books" [ngValue]="d">{{d[0]}}</option>
+        <select class="dropbtn" [(ngModel)]="selectedBook" (ngModelChange)="requestPrimaryText(selectedBook[0])">
+          <option *ngFor="let d of this.books" [ngValue]="d">{{d[1]}}</option>
         </select>
       </div>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>
+    <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Exit</button>
   </div>
 </ng-template>
+
+<ng-template #newEntry let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Add an entry.</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div>
+        Remember to use HTML formatting for bold and italics! <br>
+        <form #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+            lineBegin: <input name="first" ngModel required #first="ngModel"> <br>
+            lineEnd: <input name="last" ngModel> <br>
+            Words: <input name="last" ngModel> <br>
+            Commentary: <input name="last" ngModel> <br>
+            Source: <input name="last" ngModel> <br>
+            <button>Submit</button>
+          </form>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>
+    </div>
+  </ng-template>
 
 <ng-template #source let-modal>
     <div class="modal-header">
@@ -71,8 +80,8 @@
     <div class="modal-body">
       <div>
         <ul>
-            <li *ngFor="let hero of this.commentaar">
-              {{ hero[4] }}
+            <li *ngFor="let hero of this.bib">
+              {{ hero }}
             </li>
           </ul>
       </div>
@@ -91,11 +100,11 @@
       </div>
       <div class="modal-body">
         <div>
-          <ul>
-            <li *ngFor="let hero of this.commentaar">
-              {{ hero[4] }}
-            </li>
-          </ul>
+            <mat-nav-list class="my-list-2">
+                <mat-list-item *ngFor="let line of this.root">
+                  {{ line }}
+                </mat-list-item>
+              </mat-nav-list>
         </div>
       </div>
       <div class="modal-footer">
@@ -111,12 +120,6 @@
 
 
 <br>
-
-<!-- Select your line.
-<form #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
-    <input type="number" name="input" ngModel min="1" required #first="ngModel">
-    <button>Submit</button>
-  </form> -->
 
 <div class="container-fluid">
 
@@ -144,6 +147,3 @@
     </div>
 
   </div>
-
-
-

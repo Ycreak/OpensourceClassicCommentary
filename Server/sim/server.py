@@ -14,9 +14,6 @@ app = Flask(__name__)
 api = Api(app)
 
 CORS(app)
-# moduleimport='k1'.format(SIM_versie)
-# keymodule = KeyModule(moduleimport)
-# keymodule.beschikbare_modulegroepen.sort()
 
 # configuratie = Config()
 
@@ -31,8 +28,60 @@ def ABT2():
     )
 
     mycursor = mydb.cursor()
-    mycursor.execute("SELECT Name FROM Authors")
+    mycursor.execute("SELECT ID, Name FROM Authors")
     myresult = mycursor.fetchall()
+
+    for x in myresult:
+      print(x)
+
+    return jsonify(myresult)
+
+# Geeft alle primaire tekst terug.
+@app.route("/getBooks")
+def ABT8():
+    authorEntry = request.args.get("authorEntry")
+
+    r = (authorEntry)
+
+    mydb = mysql.connector.connect(
+      host="localhost",
+      user="Ycreak",
+      passwd="YcreakPasswd26!",
+      database="OSCC"
+    )
+
+    mycursor = mydb.cursor()
+    mycursor.execute("SELECT ID, Title FROM Books WHERE Author=(%s)"%(r))
+
+    myresult = mycursor.fetchall()
+
+    mycursor.close()
+
+    for x in myresult:
+      print(x)
+
+    return jsonify(myresult)
+
+# Geeft alle primaire tekst terug.
+@app.route("/getBibliography")
+def ABT12():
+    currentText = request.args.get("currentText")
+
+    r = (currentText)
+
+    mydb = mysql.connector.connect(
+      host="localhost",
+      user="Ycreak",
+      passwd="YcreakPasswd26!",
+      database="OSCC"
+    )
+
+    mycursor = mydb.cursor()
+    mycursor.execute("SELECT ID, Author FROM Bibliography WHERE Book=(%s)"%(r))
+
+    myresult = mycursor.fetchall()
+
+    mycursor.close()
 
     for x in myresult:
       print(x)
@@ -42,18 +91,18 @@ def ABT2():
 # Geeft alle primaire tekst terug.
 @app.route("/getPrimaryText")
 def ABT():
-    currentText = request.args.get("currentText")
-    r = (currentText)
+    currentBook = request.args.get("currentBook")
+    r = (currentBook)
 
     mydb = mysql.connector.connect(
       host="localhost",
       user="Ycreak",
       passwd="YcreakPasswd26!",
-      database="myDB"
+      database="OSCC"
     )
 
     mycursor = mydb.cursor()
-    mycursor.execute("SELECT lineNumber, lineContent FROM (%s)"%(r))
+    mycursor.execute("SELECT lineNumber, lineContent FROM Text WHERE Book=(%s)"%(r))
 
     myresult = mycursor.fetchall()
 
@@ -68,23 +117,23 @@ def ABT():
 @app.route("/getCommentary")
 def ABT3():
   requestedLine = request.args.get("requestedLine")
-  currentText = request.args.get("currentText")
-  currentText = currentText + 'Commentaar'
+  currentBook = request.args.get("currentBook")
+  # currentBook = currentBook + 'Commentaar'
   t = (requestedLine)
-  r = (currentText)
+  r = (currentBook)
   print('inside this var is: ' + requestedLine + ' just so you know!')
-  print('inside this var2 is: ' + currentText + ' just so you know!')
+  print('inside this var2 is: ' + currentBook + ' just so you know!')
 
   # check if var is number!
   mydb = mysql.connector.connect(
     host="localhost",
     user="Ycreak",
     passwd="YcreakPasswd26!",
-    database="myDB"
+    database="OSCC"
   )
 
   mycursor = mydb.cursor()
-  mycursor.execute('SELECT lineStart, lineEnd, lineWords, lineCommentaar, source, pages FROM (%s) WHERE lineStart<=(%s) AND lineEnd>=(%s)'%(r,t,t))
+  mycursor.execute('SELECT lineStart, lineEnd, lineWords, lineCommentaar, source, pages FROM Comments WHERE Text=(%s) AND lineStart<=(%s) AND lineEnd>=(%s)'%(r,t,t))
   myresult2 = mycursor.fetchall()
   mycursor.close()
 

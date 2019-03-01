@@ -34,21 +34,20 @@ export class DashboardComponent implements OnInit {
   authors : JSON;
   commentaar : JSON;
   temp : Array<string> = [];
+  books : JSON;
+  bib : JSON;
+
   ready : boolean = false;
-  // selected_features : { [id: string] : boolean; } = {};
-  // all_features : Array<string> = [];
   results : string[] = [];
-  // selected_customs: { [id:string] : { [id:string] : string } } = {};
   closeResult: string;
 
   stringArray : Array<string> = [];
-  typesOfShoes: string[] = ['Boots', 'Clogs', 'Loafers', 'Moccasins', 'Sneakers'];
 
-  currentText : Array<string> = ['Thyestes'];
-  startupText : Array<string> = ['Thyestes'];
-  currentAuthor : Array<string> = ['Seneca'];
-  currentBook : Array<string> = ['Thyestes'];
   givenText : Array<string> = [];
+
+  currentAuthor : Array<string> = ['1'];
+  currentBook : Array<string> = ['1'];
+  startupBook : Array<string> = ['1'];
 
   /* @member "abt_code":  De string welke de abt_code voorstelt, te tonen in de popup modal
    */
@@ -60,15 +59,17 @@ export class DashboardComponent implements OnInit {
    * @author:       bors
    */
   ngOnInit() {
-    this.requestPrimaryText(this.startupText);
+    this.requestPrimaryText(this.startupBook);
     this.requestAuthors();
+    this.requestBibliography();
+
   }
 
-  public requestPrimaryText(givenText: Array<string>){
-    this.currentText = givenText;
+  public requestPrimaryText(currentBook: Array<string>){
+    this.currentBook = currentBook;
     this.api = new APIComponent(this.httpClient);
     this.api
-          .getPrimaryText(givenText)
+          .getPrimaryText(currentBook)
           .then(result => {
             this.root = result as JSON;
             this.getString(this.commentaar);
@@ -82,13 +83,10 @@ export class DashboardComponent implements OnInit {
     // console.log(test1);
     this.api = new APIComponent(this.httpClient);
     this.api
-          .getCommentaar(requestedLine, this.currentText)
+          .getCommentaar(requestedLine, this.currentBook)
           .then(result => {
             this.commentaar = result as JSON;
-            // console.log(this.commentaar[0][0]);
             this.getString(this.commentaar);
-            // console.log(this.commentaar);
-
             this.ready = true;
           })
           .catch(error => console.log(error));
@@ -106,14 +104,37 @@ export class DashboardComponent implements OnInit {
           .catch(error => console.log(error));
   }
 
+  public requestBibliography(){
+    this.api = new APIComponent(this.httpClient);
+    this.api
+          .getBibliography(this.currentBook)
+          .then(result => {
+            this.bib = result as JSON;
+            this.getString(this.bib);
+            this.ready = true;
+          })
+          .catch(error => console.log(error));
+  }
+
+  public requestBooks(authorEntry : Array<string>){
+    this.api = new APIComponent(this.httpClient);
+    this.api
+          .getBooks(authorEntry)
+          .then(result => {
+            this.books = result as JSON;
+            this.getString(this.books);
+            this.ready = true;
+          })
+          .catch(error => console.log(error));
+  }
+
   public getString(insertedJSON: JSON){
-  //  console.log(temp1);
     return JSON.stringify(insertedJSON);
   }
 
   public onSubmit(f: NgForm) {
-    // console.log(f.value.input);
-    this.requestCommentaar(f.value.input);
+    console.log(f.value.first);
+    // console.log(f.value);
   }
 
   public showInfo(temp1: Array<string>){
@@ -155,11 +176,11 @@ class APIComponent {
    * @return:       De promise van de get request.
    * @author:       Bors & Nolden.
    */
-  public getPrimaryText(currentText : Array<string>) : Promise<any> {
+  public getPrimaryText(currentBook : Array<string>) : Promise<any> {
     return this.httpClient
             .get('http://localhost:5002/getPrimaryText',{
               params: {
-                currentText: currentText.toString(),
+                currentBook: currentBook.toString(),
               }
             })
             .toPromise()
@@ -172,13 +193,13 @@ class APIComponent {
    * @return:       De promise van de get request
    * @author:       Bors & Nolden.
    */
-  public getCommentaar(requestedLine : Array<string>, currentText : Array<string>) : Promise<any> {
+  public getCommentaar(requestedLine : Array<string>, currentBook : Array<string>) : Promise<any> {
     // console.log(list);
     return this.httpClient
             .get('http://localhost:5002/getCommentary', {
               params: {
                 requestedLine: requestedLine.toString(),
-                currentText: currentText.toString(),
+                currentBook: currentBook.toString(),
               },
             })
             .toPromise()
@@ -189,6 +210,30 @@ class APIComponent {
   public getAuthors() : Promise<any> {
     return this.httpClient
             .get('http://localhost:5002/getAuthors')
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+  }
+
+  public getBooks(authorEntry : Array<string>) : Promise<any> {
+    return this.httpClient
+            .get('http://localhost:5002/getBooks', {
+              params: {
+                authorEntry: authorEntry.toString(),
+              },
+            })
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+  }
+
+  public getBibliography(currentText : Array<string>) : Promise<any> {
+    return this.httpClient
+            .get('http://localhost:5002/getBibliography', {
+              params: {
+                currentText: currentText.toString(),
+              },
+            })
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);
