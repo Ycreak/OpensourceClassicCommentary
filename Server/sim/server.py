@@ -24,7 +24,7 @@ def ABT2():
       host="localhost",
       user="Ycreak",
       passwd="YcreakPasswd26!",
-      database="myDB"
+      database="OSCC"
     )
 
     mycursor = mydb.cursor()
