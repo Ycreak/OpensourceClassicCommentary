@@ -59,7 +59,7 @@ import {
 } from '@angular/material';
 
 const appRoutes: Routes = [
-  {path: '', component: HomeComponent},
+  {path: '', component: DashboardComponent},
   {path: 'register', component: RegisterComponent},
   {path: 'login', component: LoginComponent},
   {path: 'dashboard', component: DashboardComponent},

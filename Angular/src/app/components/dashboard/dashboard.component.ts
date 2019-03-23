@@ -178,7 +178,7 @@ class APIComponent {
    */
   public getPrimaryText(currentBook : Array<string>) : Promise<any> {
     return this.httpClient
-            .get('http://localhost:5002/getPrimaryText',{
+            .get('http://katwijk.nolden.biz:5002/getPrimaryText',{
               params: {
                 currentBook: currentBook.toString(),
               }
@@ -196,7 +196,7 @@ class APIComponent {
   public getCommentaar(requestedLine : Array<string>, currentBook : Array<string>) : Promise<any> {
     // console.log(list);
     return this.httpClient
-            .get('http://localhost:5002/getCommentary', {
+            .get('http://katwijk.nolden.biz:5002/getCommentary', {
               params: {
                 requestedLine: requestedLine.toString(),
                 currentBook: currentBook.toString(),
@@ -209,7 +209,7 @@ class APIComponent {
 
   public getAuthors() : Promise<any> {
     return this.httpClient
-            .get('http://localhost:5002/getAuthors')
+            .get('http://katwijk.nolden.biz:5002/getAuthors')
             .toPromise()
             .then(this.extractData)
             .catch(this.handleError);
@@ -217,7 +217,7 @@ class APIComponent {
 
   public getBooks(authorEntry : Array<string>) : Promise<any> {
     return this.httpClient
-            .get('http://localhost:5002/getBooks', {
+            .get('http://katwijk.nolden.biz:5002/getBooks', {
               params: {
                 authorEntry: authorEntry.toString(),
               },
@@ -229,7 +229,7 @@ class APIComponent {
 
   public getBibliography(currentText : Array<string>) : Promise<any> {
     return this.httpClient
-            .get('http://localhost:5002/getBibliography', {
+            .get('http://katwijk.nolden.biz:5002/getBibliography', {
               params: {
                 currentText: currentText.toString(),
               },
@@ -264,7 +264,7 @@ class APIComponent {
 
   // public getCommentaarCode(commentaryLine : Array<string>) : Promise<any> {
   //   return  this.httpClient
-  //           .get('http://localhost:5002/3', {
+  //           .get('http://katwijk.nolden.biz:5002/3', {
   //             params: {
   //               commentaryLines: commentaryLine.toString(),
   //               commentaryLines2: commentaryLine.toString()
