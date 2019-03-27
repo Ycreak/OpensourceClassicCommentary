@@ -146,13 +146,15 @@
         <mat-expansion-panel> -->
           <!-- <mat-nav-list class="my-list-2">
             <mat-list-item *ngFor="let commentaar of this.commentaar"> -->
-                <button class="btn btn-outline-success" (click)="allExpandState = true">Expand All </button>
-                <button class="btn btn-outline-success" (click)="allExpandState = false">Collapse All </button>
-
-                          <mat-expansion-panel [expanded]="allExpandState" *ngFor="let commentaar of this.commentaar">
+                <div *ngFor="let commentaar of this.commentaar">
+                  <mat-expansion-panel [expanded]="isValidFoo(commentaar[0])">
                               <mat-expansion-panel-header>
-                                <mat-panel-title>
-                                  {{commentaar[0]}}-{{commentaar[1]}}:
+
+                                <mat-panel-title *ngIf="commentaar[0]===commentaar[1]">
+                                    Line {{commentaar[0]}}
+                                </mat-panel-title>
+                                <mat-panel-title *ngIf="commentaar[0]!=commentaar[1]">
+                                    Lines {{commentaar[0]}}-{{commentaar[1]}}
                                 </mat-panel-title>
                                 <b>{{commentaar[2]}}</b>
                               </mat-expansion-panel-header>
@@ -170,7 +172,7 @@
                             </mat-expansion-panel>
 
 
-
+                              </div>
 
               <!-- </mat-list-item>
 

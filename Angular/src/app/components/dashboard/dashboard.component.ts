@@ -51,6 +51,8 @@ export class DashboardComponent implements OnInit {
   currentBook : Array<string> = ['1'];
   startupBook : Array<string> = ['1'];
 
+  selectedLine : number = 0;
+
   panelOpenState: boolean = false;
   allExpandState = true;
 
@@ -84,7 +86,8 @@ export class DashboardComponent implements OnInit {
 
   public requestCommentaar(requestedLine: Array<string>){
     console.log("Commentaar requested!");
-    // console.log(test1);
+    this.selectedLine = +requestedLine;
+    console.log(this.selectedLine);
     this.api = new APIComponent(this.httpClient);
     this.api
           .getCommentaar(requestedLine, this.currentBook)
@@ -147,6 +150,14 @@ export class DashboardComponent implements OnInit {
 
   public testFunction(){
     console.log('de testfunctie is aangeroepen!')
+  }
+
+  public isValidFoo(commentaarScope : number){
+    if (commentaarScope + 6 > this.selectedLine){
+      return true;
+    } else {
+      return false;
+    }
   }
 
   open(content) {

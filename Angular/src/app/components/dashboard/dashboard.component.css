@@ -39,6 +39,10 @@ body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
   color: white;
 }
 
+.is-active {
+  background-color: red;
+}
+
 .dropbtn {
   background-color: #4CAF50;
   color: white;
