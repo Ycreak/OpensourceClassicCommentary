@@ -1,5 +1,6 @@
 <script src="vendor/jquery/jquery.min.js"></script>
 <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 <!-- Navigation -->
   <nav class="navbar navbar-expand-lg  static-top">
@@ -133,17 +134,62 @@
         </mat-nav-list>
     </div>
 
+    <!-- <p>
+        <button type="button" class="btn btn-outline-primary" (click)="isCollapsed = !isCollapsed"
+                [attr.aria-expanded]="!isCollapsed" aria-controls="collapseExample">
+          Toggle
+        </button>
+      </p> -->
+
     <div class="col-sm anyClass">
-      <mat-nav-list class="my-list-1">
-        <mat-list-item *ngFor="let commentaar of this.commentaar">
-          <a *ngIf="commentaar[0]===commentaar[1]" matLine (click)="open(source)"><b>{{commentaar[1]}}: <i>{{commentaar[2]}}</i></b> <div [innerHTML]="commentaar[3]"></div>--- <i>{{commentaar[4]}}, page(s) {{commentaar[5]}}</i> <br><br></a>
-          <a *ngIf="commentaar[0]!=commentaar[1]" matLine (click)="open(source)"><b>{{commentaar[0]}}-{{commentaar[1]}}: <i>{{commentaar[2]}}</i></b> <div [innerHTML]="commentaar[3]"></div>--- <i>{{commentaar[4]}}, page(s) {{commentaar[5]}}</i> <br><br></a>
+      <!-- <mat-accordion>
+        <mat-expansion-panel> -->
+          <!-- <mat-nav-list class="my-list-2">
+            <mat-list-item *ngFor="let commentaar of this.commentaar"> -->
+                <button class="btn btn-outline-success" (click)="allExpandState = true">Expand All </button>
+                <button class="btn btn-outline-success" (click)="allExpandState = false">Collapse All </button>
+
+                          <mat-expansion-panel [expanded]="allExpandState" *ngFor="let commentaar of this.commentaar">
+                              <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                  {{commentaar[0]}}-{{commentaar[1]}}:
+                                </mat-panel-title>
+                                <b>{{commentaar[2]}}</b>
+                              </mat-expansion-panel-header>
+
+                              <div class="mat-expansion-panel-content">
+                                  <div class="mat-expansion-panel-body">
+                                      <div [innerHTML]="commentaar[3]"></div>
+                                    <!-- {{commentaar[0]}}-{{commentaar[1]}}: {{commentaar[2]}} {{commentaar[3]}} {{commentaar[4]}}{{commentaar[5]}} -->
+                                    <!-- <a *ngIf="commentaar[0]===commentaar[1]" matLine (click)="open(source)"><b>{{commentaar[1]}}: <i>{{commentaar[2]}}</i></b> <div [innerHTML]="commentaar[3]"></div>--- <i>{{commentaar[4]}}, page(s) {{commentaar[5]}}</i> <br><br></a> -->
+                                    <!-- <a *ngIf="commentaar[0]!=commentaar[1]" matLine (click)="open(source)"><b>{{commentaar[0]}}-{{commentaar[1]}}: <i>{{commentaar[2]}}</i></b> <div [innerHTML]="commentaar[3]"></div>--- <i>{{commentaar[4]}}, page(s) {{commentaar[5]}}</i> <br><br></a> -->
+                                  </div>
+                                </div>
 
 
-          </mat-list-item>
+                            </mat-expansion-panel>
 
-      </mat-nav-list>
+
+
+
+              <!-- </mat-list-item>
+
+          </mat-nav-list> -->
+
+          <!-- <div id="collapseExample" [ngbCollapse]="isCollapsed">
+              <div class="card">
+                <div class="card-body">
+                  You can collapse this card by clicking Toggle
+                </div>
+              </div>
+            </div> -->
+
       <!-- Entries found: {{commentaar.length}} --> <!-- this breaks the modals! -->
     </div>
 
+
+
   </div>
+
+
+

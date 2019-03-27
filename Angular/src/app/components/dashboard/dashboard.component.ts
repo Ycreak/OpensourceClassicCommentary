@@ -5,9 +5,11 @@ import { FormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms'
 import { getRandomString } from 'selenium-webdriver/safari';
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
+import { NgbPanelChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import {MatExpansionModule} from '@angular/material/expansion';
 
 import 'hammerjs';
 
@@ -49,6 +51,9 @@ export class DashboardComponent implements OnInit {
   currentBook : Array<string> = ['1'];
   startupBook : Array<string> = ['1'];
 
+  panelOpenState: boolean = false;
+  allExpandState = true;
+
   /* @member "abt_code":  De string welke de abt_code voorstelt, te tonen in de popup modal
    */
   // abt_code : string;
@@ -62,7 +67,6 @@ export class DashboardComponent implements OnInit {
     this.requestPrimaryText(this.startupBook);
     this.requestAuthors();
     this.requestBibliography();
-
   }
 
   public requestPrimaryText(currentBook: Array<string>){
@@ -277,3 +281,18 @@ class APIComponent {
 
 }
 
+// export class NgbdAccordionBasicComponent {
+//   beforeChange($event: NgbPanelChangeEvent) {
+//     if ($event.panelId === 'preventchange-2') {
+//       $event.preventDefault();
+//     }
+
+//     if ($event.panelId === 'preventchange-3' && $event.nextState === false) {
+//       $event.preventDefault();
+//     }
+//   }
+// }
+
+// export class NgbdCollapseBasic {
+//   public isCollapsed = false;
+// }

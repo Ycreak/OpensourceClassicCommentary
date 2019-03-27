@@ -20,6 +20,9 @@ import { ValidateService } from './services/validate.service';
 import { FlashMessagesModule } from 'angular2-flash-messages';
 import { AuthService } from './services/auth.service';
 
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+
+
 import {
   MatAutocompleteModule,
   MatBadgeModule,
@@ -86,6 +89,7 @@ const appRoutes: Routes = [
     NgbModule,
     MatSidenavModule,
     MatNativeDateModule,
+    BrowserAnimationsModule,
     ReactiveFormsModule,
     FlashMessagesModule.forRoot(),
     RouterModule.forRoot(appRoutes),

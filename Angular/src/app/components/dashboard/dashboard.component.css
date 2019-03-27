@@ -78,3 +78,28 @@ body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 .dropdown:hover .dropbtn {
   background-color: #3e8e41;
 }
+
+.mat-expansion-panel-body {
+  visibility: visible;
+}
+
+.mat-expansion-panel-header-title {
+  flex: 0 0 auto; /* make this not grow or shrink */
+  margin-right: 16px;
+}
+
+.mat-expansion-panel-header-description {
+  flex: 1 1 auto; /* make this grow and shrink */
+  min-width: 0; /* see link to see why this is needed */
+  margin-right: 16px;
+}
+
+.mat-expansion-panel-header-description > div {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+div {
+  word-wrap: break-word;
+}
