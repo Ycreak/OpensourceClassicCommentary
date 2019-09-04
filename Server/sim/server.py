@@ -67,7 +67,7 @@ def ABT8():
 def ABT12():
     currentText = request.args.get("currentText")
 
-    r = (currentText)
+    r = 1 #(currentText)
 
     mydb = mysql.connector.connect(
       host="localhost",
@@ -75,7 +75,7 @@ def ABT12():
       passwd="YcreakPasswd26!",
       database="OSCC"
     )
-
+    print("currentText is: ", r)
     mycursor = mydb.cursor()
     mycursor.execute("SELECT ID, Author FROM Bibliography WHERE Book=(%s)"%(r))
 

@@ -2,51 +2,57 @@
 <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-<!-- Navigation -->
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+
+<!-- Navigationbar -->
   <nav class="navbar navbar-expand-lg  static-top">
     <div class="container">
-      <a class="navbar-brand" href="#"><h3>OpensourceClassicsCommentary</h3></a>
+      <a class="navbar-brand"><h3>OpensourceClassicsCommentary</h3></a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
           <li> <button class="btn btn-lg" (click)="open(textChanger)">Change Text</button></li>
-          <li> <button class="btn btn-lg" (click)="open(bib)">Bibliography</button></li>
+          <li> <button class="btn btn-lg" (click)="openLg(bib1)">Bibliography</button></li>
           <li> <button class="btn btn-lg" (click)="open(newEntry)">New Entry</button></li>
         </ul>
       </div>
     </div>
   </nav>
 
-<ng-template #textChanger let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Select an Author and Book</h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    Author:
-    <div>
-      <select class="dropbtn" [(ngModel)]="selectedAuthor" (ngModelChange)="requestBooks(selectedAuthor[0])">
-        <option *ngFor="let c of this.authors" [ngValue]="c">{{c[1]}}</option>
-      </select>
+<!-- Modals from the navigation bar -->
+  <!-- Author and Book selection Modal #textChanger -->
+  <ng-template #textChanger let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Select an Author and Book</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
     </div>
-    <br>
-    Book:
-    <div>
-        <select class="dropbtn" [(ngModel)]="selectedBook" (ngModelChange)="requestPrimaryText(selectedBook[0])">
-          <option *ngFor="let d of this.books" [ngValue]="d">{{d[1]}}</option>
+    <div class="modal-body">
+      Author:
+      <div>
+        <select class="dropbtn" [(ngModel)]="selectedAuthor" (ngModelChange)="requestBooks(selectedAuthor[0])">
+          <option *ngFor="let c of this.authors" [ngValue]="c">{{c[1]}}</option>
         </select>
       </div>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Exit</button>
-  </div>
-</ng-template>
+      <br>
+      Book:
+      <div>
+          <select class="dropbtn" [(ngModel)]="selectedBook" (ngModelChange)="requestPrimaryText(selectedBook[0])">
+            <option *ngFor="let d of this.books" [ngValue]="d">{{d[1]}}</option>
+          </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Exit</button>
+    </div>
+  </ng-template>
 
-<ng-template #newEntry let-modal>
+  <!-- New Entry modal to add a custom piece of commentary -->
+  <ng-template #newEntry let-modal>
     <div class="modal-header">
       <h4 class="modal-title" id="modal-basic-title">Add an entry.</h4>
       <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
@@ -71,127 +77,95 @@
     </div>
   </ng-template>
 
-<ng-template #source let-modal>
+  <!-- Bibliography Modal to show the used bibliography -->
+  <ng-template #bib1 let-modal>
     <div class="modal-header">
-      <h4 class="modal-title" id="modal-basic-title">Select your Text</h4>
+      <h4 class="modal-title" id="modal-basic-title">Bibliography</h4>
       <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
     <div class="modal-body">
       <div>
-        <ul>
-            <li *ngFor="let hero of this.bib">
-              {{ hero }}
-            </li>
-          </ul>
+          <mat-nav-list class="my-list-2">
+              <mat-list-item *ngFor="let line of this.bib">
+                <b>{{ line[0] }} {{ line[1] }} </b> <pre> </pre> <i> {{ line[2] }} {{ line[3] }},</i><pre> </pre>{{ line[4] }} ({{ line[5] }}). {{ line[6] }} {{ line[7] }} - ({{ line[8] }}, {{ line[9] }})
+              </mat-list-item>
+            </mat-nav-list>
       </div>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>
+      <!-- <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button> -->
     </div>
   </ng-template>
-
-<ng-template #bib let-modal>
-      <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">Select your Text</h4>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div>
-            <mat-nav-list class="my-list-2">
-                <mat-list-item *ngFor="let line of this.root">
-                  {{ line }}
-                </mat-list-item>
-              </mat-nav-list>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>
-      </div>
-  </ng-template>
-
-<!-- <button type="button" class="btn btn-outline-success" (click)="requestCommentaar()">Query!</button>
-<button type="button" class="btn btn-outline-success" (click)="requestCommentaar(2)">ABT2!</button>
-<button type="button" class="btn btn-outline-success" (click)="requestCommentaar(3)">ABT3!</button> -->
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
-
 
 <br>
 
-<div class="container-fluid">
-
-  <div class="row">
-    <div class="col-sm anyClass">
-        <mat-nav-list class="my-list-2">
-          <mat-list-item *ngFor="let line of this.root">
-             <a *ngIf="line[0]===null"><h5><b>{{ line[1] }}</b></h5></a>
-             <a *ngIf="line[0]!=null" matLine (click)="requestCommentaar(line[0])"><b>{{ line[0] }}:</b> {{ line[1] }}</a>
-          </mat-list-item>
-        </mat-nav-list>
-    </div>
-
-    <!-- <p>
-        <button type="button" class="btn btn-outline-primary" (click)="isCollapsed = !isCollapsed"
-                [attr.aria-expanded]="!isCollapsed" aria-controls="collapseExample">
-          Toggle
-        </button>
-      </p> -->
-
-    <div class="col-sm anyClass">
-      <!-- <mat-accordion>
-        <mat-expansion-panel> -->
-          <!-- <mat-nav-list class="my-list-2">
-            <mat-list-item *ngFor="let commentaar of this.commentaar"> -->
-                <div *ngFor="let commentaar of this.commentaar">
-                  <mat-expansion-panel [expanded]="isValidFoo(commentaar[0])">
-                              <mat-expansion-panel-header>
-
-                                <mat-panel-title *ngIf="commentaar[0]===commentaar[1]">
-                                    Line {{commentaar[0]}}
-                                </mat-panel-title>
-                                <mat-panel-title *ngIf="commentaar[0]!=commentaar[1]">
-                                    Lines {{commentaar[0]}}-{{commentaar[1]}}
-                                </mat-panel-title>
-                                <b>{{commentaar[2]}}</b>
-                              </mat-expansion-panel-header>
-
-                              <div class="mat-expansion-panel-content">
-                                  <div class="mat-expansion-panel-body">
-                                      <div [innerHTML]="commentaar[3]"></div>
-                                    <!-- {{commentaar[0]}}-{{commentaar[1]}}: {{commentaar[2]}} {{commentaar[3]}} {{commentaar[4]}}{{commentaar[5]}} -->
-                                    <!-- <a *ngIf="commentaar[0]===commentaar[1]" matLine (click)="open(source)"><b>{{commentaar[1]}}: <i>{{commentaar[2]}}</i></b> <div [innerHTML]="commentaar[3]"></div>--- <i>{{commentaar[4]}}, page(s) {{commentaar[5]}}</i> <br><br></a> -->
-                                    <!-- <a *ngIf="commentaar[0]!=commentaar[1]" matLine (click)="open(source)"><b>{{commentaar[0]}}-{{commentaar[1]}}: <i>{{commentaar[2]}}</i></b> <div [innerHTML]="commentaar[3]"></div>--- <i>{{commentaar[4]}}, page(s) {{commentaar[5]}}</i> <br><br></a> -->
-                                  </div>
-                                </div>
-
-
-                            </mat-expansion-panel>
-
-
-                              </div>
-
-              <!-- </mat-list-item>
-
-          </mat-nav-list> -->
-
-          <!-- <div id="collapseExample" [ngbCollapse]="isCollapsed">
-              <div class="card">
-                <div class="card-body">
-                  You can collapse this card by clicking Toggle
+  <!-- Container for the page: one row, two columns. Column Left has the text, Column Right the commentary. -->
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm anyClass">
+          <mat-nav-list class="my-list-2">
+            <mat-list-item *ngFor="let line of this.root">
+              <a *ngIf="line[0]===null"><h5><b>{{ line[1] }}</b></h5></a>
+              <a *ngIf="line[0]!=null" matLine (click)="ophalenCommentaren(line[0])"><b>{{ line[0] }}:</b> {{ line[1] }}</a>
+            </mat-list-item>
+          </mat-nav-list>
+      </div>
+      
+      
+      <div class="col-sm">
+        <div class="col-sm anyClass">
+          <!-- Empty Entry -->
+          <div *ngIf="checkEmptyBlock(this.commentaar)">No entry found.</div>
+          <!-- Valid Entry -->
+          <div *ngFor="let commentaar of this.commentaar">
+            <mat-expansion-panel [expanded]="isValidFoo(commentaar[0])">
+              <!-- Regelnummer -->
+              <mat-expansion-panel-header>
+                <mat-panel-title *ngIf="commentaar[0]===commentaar[1]">
+                  Line {{commentaar[0]}} 
+                </mat-panel-title>
+                <mat-panel-title *ngIf="commentaar[0]!=commentaar[1]">
+                    Lines {{commentaar[0]}}-{{commentaar[1]}}
+                </mat-panel-title>
+              <!-- Woorden in kwestie -->
+                <b>{{commentaar[2]}}</b>
+              </mat-expansion-panel-header>
+              <!-- Commentaar zelf met opmaak -->
+              <div class="mat-expansion-panel-content">
+                <div class="mat-expansion-panel-body">
+                    <div [innerHTML]="commentaar[3]"></div>
                 </div>
               </div>
-            </div> -->
+            </mat-expansion-panel>
+          </div>
 
-      <!-- Entries found: {{commentaar.length}} --> <!-- this breaks the modals! -->
-    </div>
+          <!-- Tweede laag commentaar! Geselecteerd via het regelnummer (via functie ophalenCommentaren) -->
+            <hr>  
+            <div [innerHTML]=this.commentaar2_deels></div>
+            <!-- </div> -->
+        </div>
 
-
-
+      </div>
+  </div>
   </div>
 
-
+  <!-- Extra row for some quick testing! -->
+  <!-- <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm anyClass">
+            <mat-nav-list class="my-list-2">
+              <mat-list-item *ngFor="let line of this.bib">
+                {{line[0]}}-{{line[1]}}
+              </mat-list-item>
+            </mat-nav-list>
+        </div>
+        <div class="col-sm anyClass">
+            <button (click)="requestBibliography()">Hello</button>
+            <div class="list" ng-repeat="thing in this.bib">
+                {{ thing }}
+              </div>
+        </div>
+    </div> -->
 
