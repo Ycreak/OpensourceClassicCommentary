@@ -64,10 +64,13 @@ def ABT8():
 
 # Geeft alle primaire tekst terug.
 @app.route("/getBibliography")
-def ABT12():
-    currentText = request.args.get("currentText")
-
-    r = 1 #(currentText)
+def sendBibliography():
+#    currentBook = request.args.get("currentBook")
+    currentBook = request.args.get("currentText")
+    r = (currentBook)
+    #r = 1
+    print("Bib: currentBook is the following:")
+    print(r)
 
     mydb = mysql.connector.connect(
       host="localhost",
@@ -75,9 +78,9 @@ def ABT12():
       passwd="YcreakPasswd26!",
       database="OSCC"
     )
-    print("currentText is: ", r)
+
     mycursor = mydb.cursor()
-    mycursor.execute("SELECT ID, Author FROM Bibliography WHERE Book=(%s)"%(r))
+    mycursor.execute("SELECT Editors, Author, Book, Article, Journal, Volume, ChapterTitle, Pages, Place, Year, Website, URL, ConsultDate FROM Bibliography WHERE Text=(%s)"%(r))
 
     myresult = mycursor.fetchall()
 
@@ -93,6 +96,8 @@ def ABT12():
 def ABT():
     currentBook = request.args.get("currentBook")
     r = (currentBook)
+    print("Primary text: currentBook is the following:")
+    print(r)
 
     mydb = mysql.connector.connect(
       host="localhost",
@@ -108,8 +113,8 @@ def ABT():
 
     mycursor.close()
 
-    for x in myresult:
-      print(x)
+    #for x in myresult:
+    #  print(x)
 
     return jsonify(myresult)
 
@@ -142,5 +147,32 @@ def ABT3():
     print(x)
   return jsonify(myresult2)
 
+# Geeft tweede laag commentaar terug.
+@app.route("/getSecondaryCommentary")
+def ABT233():
+  currentBook = request.args.get("currentBook")
+  # currentBook = currentBook + 'Commentaar'
+  r = (currentBook)
+  #print('inside this var is: ' + requestedLine + ' just so you know!')
+  #print('inside this var2 is: ' + currentBook + ' just so you know!')
+
+  # check if var is number!
+  mydb = mysql.connector.connect(
+    host="localhost",
+    user="Ycreak",
+    passwd="YcreakPasswd26!",
+    database="OSCC"
+  )
+
+  mycursor = mydb.cursor()
+  mycursor.execute('SELECT lineStart, lineEnd, lineCommentaar FROM Comments2 WHERE Text=(%s)'%(r))
+  myresult2 = mycursor.fetchall()
+  mycursor.close()
+
+
+  for x in myresult2:
+    print(x)
+  return jsonify(myresult2)
+
 if __name__ == '__main__':
-   app.run(port=5002)
+   app.run(host='0.0.0.0', port=5002)
