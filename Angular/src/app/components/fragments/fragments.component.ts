@@ -6,6 +6,7 @@ import { NgForm } from '@angular/forms'
 import { getRandomString } from 'selenium-webdriver/safari';
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 import { NgbPanelChangeEvent } from '@ng-bootstrap/ng-bootstrap';
+import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -18,11 +19,11 @@ import 'hammerjs';
 
 @Component({
   selector: 'app-interface',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css'],
+  templateUrl: './fragments.component.html',
+  styleUrls: ['./fragments.component.css'],
 })
 
-export class DashboardComponent implements OnInit {
+export class FragmentsComponent implements OnInit {
 
   /* @member "api":       Het object dat alle requests behandelt
    * @member "root":      JSON object waarin de interface body in is opgeslagen
@@ -63,6 +64,22 @@ export class DashboardComponent implements OnInit {
   allExpandState = true;
 
   fragments : boolean = false;
+  list1 = [];
+
+  movies = [
+    'Episode I - The Phantom Menace',
+    'Episode II - Attack of the Clones',
+    'Episode III - Revenge of the Sith',
+    'Episode IV - A New Hope',
+    'Episode V - The Empire Strikes Back',
+    'Episode VI - Return of the Jedi',
+    'Episode VII - The Force Awakens',
+    'Episode VIII - The Last Jedi'
+  ];
+  
+
+
+  
 
   /* @member "abt_code":  De string welke de abt_code voorstelt, te tonen in de popup modal
    */
@@ -74,7 +91,7 @@ export class DashboardComponent implements OnInit {
    * @author:       bors
    */
   ngOnInit() {
-    this.requestPrimaryText(this.startupBook);
+    this.requestFragments(this.startupBook);
     this.requestAuthors();
     this.requestBibliography();
     this.requestSecondaryCommentary(this.startupBook);
@@ -95,11 +112,11 @@ export class DashboardComponent implements OnInit {
   //   return requestedJSON;
   // }  
   
-  public requestPrimaryText(currentBook: Array<string>){
+  public requestFragments(currentBook: Array<string>){
     this.currentBook = currentBook;
     this.api = new APIComponent(this.httpClient);
     this.api
-          .getPrimaryText(currentBook)
+          .getFragments(currentBook)
           .then(result => {
             this.root = result as JSON;
             this.getString(this.commentaar);
@@ -107,6 +124,15 @@ export class DashboardComponent implements OnInit {
           })
           .catch(error => console.log(error));
   }
+
+  public putInArray(){
+    for(let arrayElement in this.root){
+        // console.log("found it", this.root[arrayElement][0], this.root[arrayElement][1] );
+        this.list1.push(this.root[arrayElement][1]);
+      }
+    console.log(this.list1);
+  }
+  
 
   public requestCommentaar(requestedLine: Array<string>){
     console.log("Commentaar requested!");
@@ -174,19 +200,59 @@ export class DashboardComponent implements OnInit {
   }
 
   public ophalenCommentaren(gegevenRegel){
-    this.requestCommentaar(gegevenRegel);
-    gegevenRegel = Number(gegevenRegel)
+    gegevenRegel = String(gegevenRegel)
 
-    for(let arrayElement in this.commentaar2){
-      if(Number(this.commentaar2[arrayElement][0]) <= gegevenRegel){
-        if(Number(this.commentaar2[arrayElement][1]) >= gegevenRegel){
-          // console.log("found it", gegevenRegel, this.commentaar2[arrayElement][0], this.commentaar2[arrayElement][1] );
+    // console.log("root: ", gegevenRegel, this.root[1]);
+
+
+    for(let arrayElement in this.root){
+      // console.log("aanwezig: ", gegevenRegel, this.root[arrayElement][1] );
+      if(String(this.root[arrayElement][1]) == gegevenRegel){
+        // if(Number(this.commentaar2[arrayElement][1]) >= gegevenRegel){
+          console.log("found it", gegevenRegel, this.root[arrayElement][1], arrayElement );
+          var temp = Array<string>(arrayElement);
+          this.requestCommentaar(temp);
           this.commentaar2_deels = this.commentaar2[arrayElement][2]
-        }
+        // }
       }
     }
   }
   
+  // Pressing the arrow will expand an expansionpanel.
+  public expandPanel(matExpansionPanel, event): void {
+    event.stopPropagation(); // Preventing event bubbling
+    
+    if (!this._isExpansionIndicator(event.target)) {
+      matExpansionPanel.close(); // Here's the magic
+    }
+  }
+  
+  private _isExpansionIndicator(target: EventTarget): boolean {
+    const expansionIndicatorClass = 'mat-expansion-indicator';
+
+    return (target['classList'] && target['classList'].contains(expansionIndicatorClass) );
+  }
+
+  // public drop(event: CdkDragDrop<string[]>) {
+  //   moveItemInArray(this.movies, event.previousIndex, event.currentIndex);
+  // }
+
+  drop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.movies, event.previousIndex, event.currentIndex);
+  }
+
+  drop1(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.list1, event.previousIndex, event.currentIndex);
+  }
+  // public drop(event: any): void { 
+  //   if (event.previousContainer === event.container) { 
+  //     moveItemInArray(event.container.data, event.previousIndex, event.currentIndex); 
+  //   } 
+  //   else { 
+  //     transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex); 
+  //   } 
+  // }
+
   public switchMode(){
     this.fragments = true;
     console.log(this.fragments);
@@ -266,8 +332,6 @@ export class DashboardComponent implements OnInit {
   }
 }
 
-
-
   /* @class:    Deze component neemt alle requests (API) voor zijn rekening
    */
 class APIComponent {
@@ -278,9 +342,9 @@ class APIComponent {
    * @return:       De promise van de get request.
    * @author:       Bors & Nolden.
    */
-  public getPrimaryText(currentBook : Array<string>) : Promise<any> {
+  public getFragments(currentBook : Array<string>) : Promise<any> {
     return this.httpClient
-            .get('http://katwijk.nolden.biz:5002/getPrimaryText',{
+            .get('http://katwijk.nolden.biz:5002/getFragments',{
               params: {
                 currentBook: currentBook.toString(),
               }
@@ -375,4 +439,3 @@ class APIComponent {
     return Promise.reject(error.message || error);
   }
 }
-

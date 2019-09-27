@@ -10,7 +10,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { LoginComponent } from './components/login/login.component';
-import { RegisterComponent } from './components/register/register.component';
+import { FragmentsComponent } from './components/fragments/fragments.component';
 import { HomeComponent } from './components/home/home.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ProfileComponent } from './components/profile/profile.component';
@@ -21,6 +21,7 @@ import { FlashMessagesModule } from 'angular2-flash-messages';
 import { AuthService } from './services/auth.service';
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
 
 import {
@@ -63,7 +64,7 @@ import {
 
 const appRoutes: Routes = [
   {path: '', component: DashboardComponent},
-  {path: 'register', component: RegisterComponent},
+  {path: 'fragments', component: FragmentsComponent},
   {path: 'login', component: LoginComponent},
   {path: 'dashboard', component: DashboardComponent},
   {path: 'profile', component: ProfileComponent},
@@ -75,7 +76,7 @@ const appRoutes: Routes = [
     AppComponent,
     NavbarComponent,
     LoginComponent,
-    RegisterComponent,
+    FragmentsComponent,
     HomeComponent,
     DashboardComponent,
     ProfileComponent,
@@ -128,6 +129,7 @@ const appRoutes: Routes = [
     MatToolbarModule,
     MatTooltipModule,
     MatTreeModule,
+    DragDropModule
   ],
   exports: [
     MatAutocompleteModule,
@@ -165,6 +167,7 @@ const appRoutes: Routes = [
     MatToolbarModule,
     MatTooltipModule,
     MatTreeModule,
+    DragDropModule
   ],
   providers: [ValidateService, AuthService],
   bootstrap: [AppComponent]

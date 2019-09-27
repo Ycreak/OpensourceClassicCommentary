@@ -95,6 +95,8 @@ THE SOFTWARE.
 
 @angular/material/dialog
 
+@angular/material/expansion
+
 @angular/material/list
 
 @angular/material/snack-bar

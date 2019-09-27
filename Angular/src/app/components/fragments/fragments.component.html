@@ -8,7 +8,7 @@
 <!-- Navigationbar -->
   <nav class="navbar navbar-expand-lg  static-top">
     <div class="container">
-      <a class="navbar-brand"><h3>OpensourceClassicsCommentary</h3></a>
+      <a class="navbar-brand"><h3>OpensourceClassicsFragments</h3></a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -17,14 +17,11 @@
           <li> <button class="btn btn-lg" (click)="open(textChanger)">Change Text</button></li>
           <li> <button class="btn btn-lg" (click)="openLg(bib1)">Bibliography</button></li>
           <li> <button class="btn btn-lg" (click)="open(newEntry)">New Entry</button></li>
-          <li> <a routerLink="/fragments"><button class="btn btn-lg" >Fragments</button></a>
-          </li>  
+          <li> <button class="btn btn-lg" (click)="putInArray()">Retrieve</button></li>  
         </ul>
       </div>
     </div>
   </nav>
-
-
 
 <!-- Modals from the navigation bar -->
   <!-- Author and Book selection Modal #textChanger -->
@@ -106,15 +103,88 @@
 <br>
 
   <!-- Container for the page: one row, two columns. Column Left has the text, Column Right the commentary. -->
+
+
+
   <div class="container-fluid">
     <div class="row">
       <div class="col-sm anyClass">
-          <mat-nav-list class="my-list-2">
+<!-- 
+        <div cdkDropList class="example-list" (cdkDropListDropped)="drop1($event)">
+          <div class="example-box" *ngFor="let movie1 of this.list1" cdkDrag>{{movie1}}</div>
+        </div> -->
+
+        <!-- <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+          <div class="example-box" *ngFor="let movie of this.movies" cdkDrag>{{movie}}</div>
+        </div> -->
+
+          <div cdkDropList class="example-list" (cdkDropListDropped)="drop1($event)">
+              <div class="example-box" *ngFor="let fragment of this.list1" cdkDrag>
+                <!-- <ngb-accordion #acc="ngbAccordion">
+                  <ngb-panel id="toggle-1" title="{{movie}}">
+                    <ng-template ngbPanelContent>
+                      <div [innerHTML]="movie"></div>
+                    </ng-template>
+                  </ngb-panel>
+                </ngb-accordion> -->
+
+                <mat-expansion-panel #expansionPanel>
+                  <mat-expansion-panel-header (click)="testFunction()" (click)="expandPanel(expansionPanel, $event)" [collapsedHeight]="'auto'" [expandedHeight]="'auto'">
+                      <mat-panel-title class="mat-expansion-panel-header-title" (click)="ophalenCommentaren(fragment)"> 
+                          <div [innerHTML]="fragment"></div>
+
+                        <!-- {{movie}} -->
+                      </mat-panel-title>
+                    </mat-expansion-panel-header>
+                      <hr>  
+                      <div [innerHTML]="fragment"></div>
+
+                      <div>
+                        <select class="dropbtn" [(ngModel)]="selectedAuthor" (ngModelChange)="requestBooks(selectedAuthor[0])">
+                          <option *ngFor="let c of this.authors" [ngValue]="c">{{c[1]}}</option>
+                        </select>
+                      </div>
+                      
+                    </mat-expansion-panel>
+
+                
+              </div>
+            </div>
+
+            <!-- <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+              <div class="example-box" *ngFor="let movie of this.movies" cdkDrag>
+                <mat-expansion-panel >
+                  <mat-expansion-panel-header>
+                      <mat-panel-title class="mat-expansion-panel-header-description">
+                          <div><b>{{movie}}</b></div>
+                      </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <p>I'm visible because I am open</p>
+                  </mat-expansion-panel>
+
+                
+              </div>
+            </div>
+
+
+        <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+          <div class="example-box" *ngFor="let line of this.list" cdkDrag>
+            <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
+            {{line}}
+          </div>
+        </div>
+        <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+          <div class="example-box" *ngFor="let movie of this.list" cdkDrag>
+            <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
+            {{movie}}
+          </div>
+        </div> -->
+        <!-- <mat-nav-list class="my-list-2">
             <mat-list-item *ngFor="let line of this.root">
               <a *ngIf="line[0]===null"><h5><b>{{ line[1] }}</b></h5></a>
               <a *ngIf="line[0]!=null" matLine (click)="ophalenCommentaren(line[0])"><b>{{ line[0] }}:</b> {{ line[1] }}</a>
             </mat-list-item>
-          </mat-nav-list>
+          </mat-nav-list> -->
       </div>
       
       
