@@ -104,112 +104,80 @@
 
   <!-- Container for the page: one row, two columns. Column Left has the text, Column Right the commentary. -->
 
-
-
   <div class="container-fluid">
     <div class="row">
       <div class="col-sm anyClass">
-<!-- 
-        <div cdkDropList class="example-list" (cdkDropListDropped)="drop1($event)">
-          <div class="example-box" *ngFor="let movie1 of this.list1" cdkDrag>{{movie1}}</div>
-        </div> -->
-
-        <!-- <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
-          <div class="example-box" *ngFor="let movie of this.movies" cdkDrag>{{movie}}</div>
-        </div> -->
-
           <div cdkDropList class="example-list" (cdkDropListDropped)="drop1($event)">
-              <div class="example-box" *ngFor="let fragment of this.list1" cdkDrag>
-                <!-- <ngb-accordion #acc="ngbAccordion">
-                  <ngb-panel id="toggle-1" title="{{movie}}">
-                    <ng-template ngbPanelContent>
-                      <div [innerHTML]="movie"></div>
-                    </ng-template>
-                  </ngb-panel>
-                </ngb-accordion> -->
-
-                <mat-expansion-panel #expansionPanel>
+              <div class="example-box" *ngFor="let fragment of this.list1; let i = index" [ngStyle]="{'background-color' : i % 2 == 0 ? 'white' : 'Gainsboro'}" cdkDrag>
+                <mat-expansion-panel class="mat-expansion-panel1" #expansionPanel>
                   <mat-expansion-panel-header (click)="testFunction()" (click)="expandPanel(expansionPanel, $event)" [collapsedHeight]="'auto'" [expandedHeight]="'auto'">
                       <mat-panel-title class="mat-expansion-panel-header-title" (click)="ophalenCommentaren(fragment)"> 
                           <div [innerHTML]="fragment"></div>
-
-                        <!-- {{movie}} -->
                       </mat-panel-title>
                     </mat-expansion-panel-header>
                       <hr>  
-                      <div [innerHTML]="fragment"></div>
 
+                      <div *ngFor="let temp2 of this.F_ContextTemp">
+                          <div [innerHTML]="temp2"></div>
+
+                      </div>
+  
+                      <br><br>
                       <div>
-                        <select class="dropbtn" [(ngModel)]="selectedAuthor" (ngModelChange)="requestBooks(selectedAuthor[0])">
-                          <option *ngFor="let c of this.authors" [ngValue]="c">{{c[1]}}</option>
+                        <select class="dropbtn" [(ngModel)]="selectedAuthor" (ngModelChange)="fixContext2(selectedAuthor[0])">
+                          <option *ngFor="let c of this.F_Context" [ngValue]="c">{{c[0]}}</option>
                         </select>
                       </div>
-                      
+                      <!-- <div>{{c}}</div> -->
+
+
                     </mat-expansion-panel>
-
-                
-              </div>
+                </div>
             </div>
-
-            <!-- <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
-              <div class="example-box" *ngFor="let movie of this.movies" cdkDrag>
-                <mat-expansion-panel >
-                  <mat-expansion-panel-header>
-                      <mat-panel-title class="mat-expansion-panel-header-description">
-                          <div><b>{{movie}}</b></div>
-                      </mat-panel-title>
-                    </mat-expansion-panel-header>
-                    <p>I'm visible because I am open</p>
-                  </mat-expansion-panel>
-
-                
-              </div>
-            </div>
-
-
-        <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
-          <div class="example-box" *ngFor="let line of this.list" cdkDrag>
-            <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
-            {{line}}
-          </div>
-        </div>
-        <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
-          <div class="example-box" *ngFor="let movie of this.list" cdkDrag>
-            <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
-            {{movie}}
-          </div>
-        </div> -->
-        <!-- <mat-nav-list class="my-list-2">
-            <mat-list-item *ngFor="let line of this.root">
-              <a *ngIf="line[0]===null"><h5><b>{{ line[1] }}</b></h5></a>
-              <a *ngIf="line[0]!=null" matLine (click)="ophalenCommentaren(line[0])"><b>{{ line[0] }}:</b> {{ line[1] }}</a>
-            </mat-list-item>
-          </mat-nav-list> -->
       </div>
-      
-      
+           
+      <!-- UNCOMMENT VOOR DE DERDE COLOM :D :D :D -->
+      <div class="col-sm anyClass">
+        <div cdkDropList class="example-list" (cdkDropListDropped)="drop1($event)">
+            <div class="example-box" *ngFor="let fragment of this.list1; let i = index" [ngStyle]="{'background-color' : i % 2 == 0 ? 'white' : 'black'}" cdkDrag>
+              <mat-expansion-panel class="mat-expansion-panel1" #expansionPanel>
+                <mat-expansion-panel-header (click)="testFunction()" (click)="expandPanel(expansionPanel, $event)" [collapsedHeight]="'auto'" [expandedHeight]="'auto'">
+                    <mat-panel-title class="mat-expansion-panel-header-title" (click)="ophalenCommentaren(fragment)"> 
+                        <div [innerHTML]="fragment"></div>
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+                    <hr>  
+                    <div [innerHTML]="fragment"></div>
+                    <div>
+                      <select class="dropbtn" [(ngModel)]="selectedAuthor" (ngModelChange)="requestBooks(selectedAuthor[0])">
+                        <option *ngFor="let c of this.authors" [ngValue]="c">{{c[1]}}</option>
+                      </select>
+                    </div>
+                  </mat-expansion-panel>              
+            </div>
+          </div>
+    </div>      
+
       <div class="col-sm">
         <div class="col-sm anyClass">
           <!-- Empty Entry -->
-          <div *ngIf="checkEmptyBlock(this.commentaar)">No entry found.</div>
+          <!-- <div *ngIf="checkEmptyBlock(this.F_commentaar)">No entry found.</div> -->
           <!-- Valid Entry -->
-          <div *ngFor="let commentaar of this.commentaar">
-            <mat-expansion-panel [expanded]="isValidFoo(commentaar[0])">
+          <div *ngFor="let commentaar of this.F_Commentaar">
+            <!-- {{commentaar}} -->
+            <mat-expansion-panel>
               <!-- Regelnummer -->
               <mat-expansion-panel-header>
-                <mat-panel-title *ngIf="commentaar[0]===commentaar[1]">
-                  Line {{commentaar[0]}} 
-                </mat-panel-title>
-                <mat-panel-title *ngIf="commentaar[0]!=commentaar[1]">
-                    Lines {{commentaar[0]}}-{{commentaar[1]}}
+                <mat-panel-title>
+                  <b>Fragment Commentary</b>
                 </mat-panel-title>
               <!-- Woorden in kwestie -->
-                <b>{{commentaar[2]}}</b>
+                <!-- <b>Latin is great</b> -->
               </mat-expansion-panel-header>
               <!-- Commentaar zelf met opmaak -->
               <div class="mat-expansion-panel-content">
                 <div class="mat-expansion-panel-body">
-                    <div [innerHTML]="commentaar[3]"></div>
+                    <div [innerHTML]="commentaar"></div>
                 </div>
               </div>
             </mat-expansion-panel>
@@ -217,7 +185,24 @@
 
           <!-- Tweede laag commentaar! Geselecteerd via het regelnummer (via functie ophalenCommentaren) -->
             <hr>  
-            <div [innerHTML]=this.commentaar2_deels></div>
+
+            <mat-expansion-panel>
+              <!-- Regelnummer -->
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <b>Apparatus Criticus</b>
+                </mat-panel-title>
+              <!-- Woorden in kwestie -->
+                <!-- <b>Latin is great</b> -->
+              </mat-expansion-panel-header>
+              <!-- Commentaar zelf met opmaak -->
+              <div class="mat-expansion-panel-content">
+                <div class="mat-expansion-panel-body">
+                  <div [innerHTML]=this.F_AppCrit></div>
+                </div>
+              </div>
+            </mat-expansion-panel>
+
             <!-- </div> -->
         </div>
 

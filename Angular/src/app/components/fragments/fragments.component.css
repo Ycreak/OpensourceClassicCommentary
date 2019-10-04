@@ -96,6 +96,11 @@ body,h1,h2,h3,h4,h5 {
   margin-right: 16px;
   height: auto;
 } */
+/* :nth-child(n+2) */
+/* .mat-expansion-panel1 {  */
+  /* color: red; */
+  /* background-color: gray; */
+/* } */
 
 .mat-expansion-panel-header{
   /* height: 100%; */

@@ -42,6 +42,11 @@ export class FragmentsComponent implements OnInit {
   commentaar2 : JSON;
   commentaar2_deels : Array<string>;
 
+  F_Commentaar : JSON;
+  F_AppCrit : JSON;
+  F_Context : JSON;
+  F_ContextTemp = [];
+
   requestedItem : Array<String>;
   // requestedJSON : JSON;
 
@@ -53,9 +58,9 @@ export class FragmentsComponent implements OnInit {
 
   givenText : Array<string> = [];
 
-  currentAuthor : Array<string> = ['1'];
-  currentBook : Array<string> = ['1'];
-  startupBook : Array<string> = ['1'];
+  currentAuthor : Array<string> = ['4'];
+  currentBook : Array<string> = ['6'];
+  startupBook : Array<string> = ['6'];
 
   selectedLine : number = 0;
   gegevenRegel : number = 0;
@@ -92,9 +97,9 @@ export class FragmentsComponent implements OnInit {
    */
   ngOnInit() {
     this.requestFragments(this.startupBook);
-    this.requestAuthors();
-    this.requestBibliography();
-    this.requestSecondaryCommentary(this.startupBook);
+    // this.requestAuthors();
+    // this.requestBibliography();
+    // this.requestSecondaryCommentary(this.startupBook);
   }
 
   // public requestItem(requestedItem: Array<string>){
@@ -132,31 +137,66 @@ export class FragmentsComponent implements OnInit {
       }
     console.log(this.list1);
   }
+
+  public fixContext2(requestedAuthor: string){
+    console.log("fixContext author: ", requestedAuthor);
+    // requestedAuthor = String(requestedAuthor)
+
+
+    for(let arrayElement in this.F_Context){
+      // console.log("aanwezig: ", gegevenRegel, this.root[arrayElement][1] );
+      if(String(this.F_Context[arrayElement][0]) == requestedAuthor){
+        // if(Number(this.commentaar2[arrayElement][1]) >= gegevenRegel){
+          console.log("found it", requestedAuthor, this.F_Context[arrayElement][0], arrayElement );
+          // var tempie = Number(arrayElement) // = arrayElement + 1; // Dit kan echt niet.
+          // tempie = tempie + 1;
+          var temp = Array<string>(arrayElement);
+          console.log(this.F_Context[arrayElement][1]);
+          // this.F_ContextTemp = this.F_Context[arrayElement][1]
+          this.F_ContextTemp = [];
+          this.F_ContextTemp.push(this.F_Context[arrayElement][1]);
+
+      }
+    }
+  }
   
 
-  public requestCommentaar(requestedLine: Array<string>){
-    console.log("Commentaar requested!");
+  public requestF_Commentaar(requestedLine: Array<string>){
+    console.log("F_Commentaar requested!");
     this.selectedLine = +requestedLine;
     console.log(this.selectedLine);
     this.api = new APIComponent(this.httpClient);
     this.api
-          .getCommentaar(requestedLine, this.currentBook)
+          .getF_Commentaar(requestedLine, this.currentBook)
           .then(result => {
-            this.commentaar = result as JSON;
-            this.getString(this.commentaar);
+            this.F_Commentaar = result as JSON;
+            this.getString(this.F_Commentaar);
             this.ready = true;
           })
           .catch(error => console.log(error));
   }
 
-  public requestSecondaryCommentary(currentBook: Array<string>){
+  public requestF_Context(currentBook: Array<string>){
     this.currentBook = currentBook;
     this.api = new APIComponent(this.httpClient);
     this.api
-          .getSecondaryCommentary(currentBook)
+          .getF_Context(currentBook)
           .then(result => {
-            this.commentaar2 = result as JSON;
-            this.getString(this.commentaar);
+            this.F_Context = result as JSON;
+            this.getString(this.F_Context);
+            this.ready = true;
+          })
+          .catch(error => console.log(error));
+  }
+
+  public requestF_AppCrit(currentBook: Array<string>){
+    this.currentBook = currentBook;
+    this.api = new APIComponent(this.httpClient);
+    this.api
+          .getF_AppCrit(currentBook)
+          .then(result => {
+            this.F_AppCrit = result as JSON;
+            this.getString(this.F_AppCrit);
             this.ready = true;
           })
           .catch(error => console.log(error));
@@ -199,23 +239,37 @@ export class FragmentsComponent implements OnInit {
           .catch(error => console.log(error));
   }
 
-  public ophalenCommentaren(gegevenRegel){
-    gegevenRegel = String(gegevenRegel)
+  public ophalenCommentaren(gegevenFragment){
+    gegevenFragment = String(gegevenFragment)
+
+    for(let arrayElement in this.root){
+      // console.log("aanwezig: ", gegevenRegel, this.root[arrayElement][1] );
+      if(String(this.root[arrayElement][1]) == gegevenFragment){
+        // if(Number(this.commentaar2[arrayElement][1]) >= gegevenRegel){
+          console.log("found it", gegevenFragment, this.root[arrayElement][1], arrayElement );
+          // var tempie = Number(arrayElement) // = arrayElement + 1; // Dit kan echt niet.
+          // tempie = tempie + 1;
+          var temp = Array<string>(arrayElement);
+
+          // this.requestCommentaar(temp);
+          // this.commentaar2_deels = this.commentaar2[arrayElement][2]
+        // }
+      }
+    }
+
+    // ophalen Commentaar
+    this.requestF_Commentaar(temp);
+
+    // ophalen AppCrit
+    this.requestF_AppCrit(temp);
+
+    // ophalen Context
+    this.requestF_Context(temp);
 
     // console.log("root: ", gegevenRegel, this.root[1]);
 
 
-    for(let arrayElement in this.root){
-      // console.log("aanwezig: ", gegevenRegel, this.root[arrayElement][1] );
-      if(String(this.root[arrayElement][1]) == gegevenRegel){
-        // if(Number(this.commentaar2[arrayElement][1]) >= gegevenRegel){
-          console.log("found it", gegevenRegel, this.root[arrayElement][1], arrayElement );
-          var temp = Array<string>(arrayElement);
-          this.requestCommentaar(temp);
-          this.commentaar2_deels = this.commentaar2[arrayElement][2]
-        // }
-      }
-    }
+
   }
   
   // Pressing the arrow will expand an expansionpanel.
@@ -359,10 +413,10 @@ class APIComponent {
    * @return:       De promise van de get request
    * @author:       Bors & Nolden.
    */
-  public getCommentaar(requestedLine : Array<string>, currentBook : Array<string>) : Promise<any> {
+  public getF_Commentaar(requestedLine : Array<string>, currentBook : Array<string>) : Promise<any> {
     // console.log(list);
     return this.httpClient
-            .get('http://katwijk.nolden.biz:5002/getCommentary', {
+            .get('http://katwijk.nolden.biz:5002/getF_Commentary', {
               params: {
                 requestedLine: requestedLine.toString(),
                 currentBook: currentBook.toString(),
@@ -373,10 +427,23 @@ class APIComponent {
             .catch(this.handleError);
   }
 
-  public getSecondaryCommentary(currentBook : Array<string>) : Promise<any> {
+  public getF_AppCrit(currentBook : Array<string>) : Promise<any> {
     // console.log(list);
     return this.httpClient
-            .get('http://katwijk.nolden.biz:5002/getSecondaryCommentary', {
+            .get('http://katwijk.nolden.biz:5002/getF_AppCrit', {
+              params: {
+                currentBook: currentBook.toString(),
+              },
+            })
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+  }
+
+  public getF_Context(currentBook : Array<string>) : Promise<any> {
+    // console.log(list);
+    return this.httpClient
+            .get('http://katwijk.nolden.biz:5002/getF_Context', {
               params: {
                 currentBook: currentBook.toString(),
               },
