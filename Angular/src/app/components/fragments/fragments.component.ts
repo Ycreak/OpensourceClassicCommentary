@@ -1,16 +1,16 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { HttpErrorResponse } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+// import { HttpErrorResponse } from '@angular/common/http';
+// import { FormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms'
-import { getRandomString } from 'selenium-webdriver/safari';
+// import { getRandomString } from 'selenium-webdriver/safari';
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
-import { NgbPanelChangeEvent } from '@ng-bootstrap/ng-bootstrap';
+// import { NgbPanelChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 
-import { MatListModule } from '@angular/material/list';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import {MatExpansionModule} from '@angular/material/expansion';
+// import { MatListModule } from '@angular/material/list';
+// import { MatSidenavModule } from '@angular/material/sidenav';
+// import {MatExpansionModule} from '@angular/material/expansion';
 
 import 'hammerjs';
 
@@ -71,6 +71,8 @@ export class FragmentsComponent implements OnInit {
   fragments : boolean = false;
   list1 = [];
 
+  show: boolean = false;
+
   movies = [
     'Episode I - The Phantom Menace',
     'Episode II - Attack of the Clones',
@@ -81,10 +83,10 @@ export class FragmentsComponent implements OnInit {
     'Episode VII - The Force Awakens',
     'Episode VIII - The Last Jedi'
   ];
-  
 
 
-  
+
+
 
   /* @member "abt_code":  De string welke de abt_code voorstelt, te tonen in de popup modal
    */
@@ -95,8 +97,11 @@ export class FragmentsComponent implements OnInit {
   /* @function:     Laadt interface in
    * @author:       bors
    */
-  ngOnInit() {
-    this.requestFragments(this.startupBook);
+  async ngOnInit() {
+    // this.requestFragments(this.startupBook);
+    this.global();
+
+    // this.putInArray();
     // this.requestAuthors();
     // this.requestBibliography();
     // this.requestSecondaryCommentary(this.startupBook);
@@ -115,8 +120,18 @@ export class FragmentsComponent implements OnInit {
   //         })
   //         .catch(error => console.log(error));
   //   return requestedJSON;
-  // }  
-  
+  // }
+
+  public delay(ms: number) {
+    return new Promise( resolve => setTimeout(resolve, ms) );
+  }
+
+  async global(){
+    await this.requestFragments(this.startupBook);
+    await this.delay(2000);
+    this.putInArray();
+  }
+
   public requestFragments(currentBook: Array<string>){
     this.currentBook = currentBook;
     this.api = new APIComponent(this.httpClient);
@@ -128,14 +143,17 @@ export class FragmentsComponent implements OnInit {
             this.ready = true;
           })
           .catch(error => console.log(error));
+
   }
 
+  // Adds fragments into an array to be able to move them one the webpage (directly from
+  // JSON not supported by CSS).
   public putInArray(){
     for(let arrayElement in this.root){
         // console.log("found it", this.root[arrayElement][0], this.root[arrayElement][1] );
         this.list1.push(this.root[arrayElement][1]);
       }
-    console.log(this.list1);
+    // console.log(this.list1);
   }
 
   public fixContext2(requestedAuthor: string){
@@ -159,7 +177,7 @@ export class FragmentsComponent implements OnInit {
       }
     }
   }
-  
+
 
   public requestF_Commentaar(requestedLine: Array<string>){
     console.log("F_Commentaar requested!");
@@ -264,6 +282,7 @@ export class FragmentsComponent implements OnInit {
     this.requestF_AppCrit(temp);
 
     // ophalen Context
+    // console.log('Getting Context!');
     this.requestF_Context(temp);
 
     // console.log("root: ", gegevenRegel, this.root[1]);
@@ -271,16 +290,16 @@ export class FragmentsComponent implements OnInit {
 
 
   }
-  
+
   // Pressing the arrow will expand an expansionpanel.
   public expandPanel(matExpansionPanel, event): void {
     event.stopPropagation(); // Preventing event bubbling
-    
+
     if (!this._isExpansionIndicator(event.target)) {
       matExpansionPanel.close(); // Here's the magic
     }
   }
-  
+
   private _isExpansionIndicator(target: EventTarget): boolean {
     const expansionIndicatorClass = 'mat-expansion-indicator';
 
@@ -298,13 +317,13 @@ export class FragmentsComponent implements OnInit {
   drop1(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.list1, event.previousIndex, event.currentIndex);
   }
-  // public drop(event: any): void { 
-  //   if (event.previousContainer === event.container) { 
-  //     moveItemInArray(event.container.data, event.previousIndex, event.currentIndex); 
-  //   } 
-  //   else { 
-  //     transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex); 
-  //   } 
+  // public drop(event: any): void {
+  //   if (event.previousContainer === event.container) {
+  //     moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+  //   }
+  //   else {
+  //     transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
+  //   }
   // }
 
   public switchMode(){
@@ -364,7 +383,7 @@ export class FragmentsComponent implements OnInit {
       // console.log("not empty");
       return false;
     }
-  
+
   }
 
   open(content) {

@@ -17,7 +17,8 @@
           <li> <button class="btn btn-lg" (click)="open(textChanger)">Change Text</button></li>
           <li> <button class="btn btn-lg" (click)="openLg(bib1)">Bibliography</button></li>
           <li> <button class="btn btn-lg" (click)="open(newEntry)">New Entry</button></li>
-          <li> <button class="btn btn-lg" (click)="putInArray()">Retrieve</button></li>  
+          <li> <button class="btn btn-lg" (click)="putInArray()">Retrieve</button></li>
+          <li> <button class="btn btn-lg" (click)="show = !show">3Columns</button></li>
         </ul>
       </div>
     </div>
@@ -110,24 +111,27 @@
           <div cdkDropList class="example-list" (cdkDropListDropped)="drop1($event)">
               <div class="example-box" *ngFor="let fragment of this.list1; let i = index" [ngStyle]="{'background-color' : i % 2 == 0 ? 'white' : 'Gainsboro'}" cdkDrag>
                 <mat-expansion-panel class="mat-expansion-panel1" #expansionPanel>
-                  <mat-expansion-panel-header (click)="testFunction()" (click)="expandPanel(expansionPanel, $event)" [collapsedHeight]="'auto'" [expandedHeight]="'auto'">
-                      <mat-panel-title class="mat-expansion-panel-header-title" (click)="ophalenCommentaren(fragment)"> 
+                  <mat-expansion-panel-header (click)="ophalenCommentaren(fragment)" (click)="expandPanel(expansionPanel, $event)" [collapsedHeight]="'auto'" [expandedHeight]="'auto'">
+                      <mat-panel-title class="mat-expansion-panel-header-title">
                           <div [innerHTML]="fragment"></div>
                       </mat-panel-title>
                     </mat-expansion-panel-header>
-                      <hr>  
+                      <hr>
 
-                      <div *ngFor="let temp2 of this.F_ContextTemp">
+                    Context in the right column (needs some work to get the button working correctly).
+
+                      <!-- CONTEXT SELECTOR (NOT WORKING CORRECTLY AT THIS MOMENT) -->
+                      <!-- <div *ngFor="let temp2 of this.F_ContextTemp">
                           <div [innerHTML]="temp2"></div>
 
                       </div>
-  
+
                       <br><br>
                       <div>
                         <select class="dropbtn" [(ngModel)]="selectedAuthor" (ngModelChange)="fixContext2(selectedAuthor[0])">
                           <option *ngFor="let c of this.F_Context" [ngValue]="c">{{c[0]}}</option>
                         </select>
-                      </div>
+                      </div> -->
                       <!-- <div>{{c}}</div> -->
 
 
@@ -135,34 +139,56 @@
                 </div>
             </div>
       </div>
-           
-      <!-- UNCOMMENT VOOR DE DERDE COLOM :D :D :D -->
-      <div class="col-sm anyClass">
+
+      <!-- Derde column. Gets toggle via variable show. -->
+      <div *ngIf="show" class="col-sm anyClass">
         <div cdkDropList class="example-list" (cdkDropListDropped)="drop1($event)">
             <div class="example-box" *ngFor="let fragment of this.list1; let i = index" [ngStyle]="{'background-color' : i % 2 == 0 ? 'white' : 'black'}" cdkDrag>
               <mat-expansion-panel class="mat-expansion-panel1" #expansionPanel>
                 <mat-expansion-panel-header (click)="testFunction()" (click)="expandPanel(expansionPanel, $event)" [collapsedHeight]="'auto'" [expandedHeight]="'auto'">
-                    <mat-panel-title class="mat-expansion-panel-header-title" (click)="ophalenCommentaren(fragment)"> 
+                    <mat-panel-title class="mat-expansion-panel-header-title" (click)="ophalenCommentaren(fragment)">
                         <div [innerHTML]="fragment"></div>
                     </mat-panel-title>
                   </mat-expansion-panel-header>
-                    <hr>  
+                    <hr>
                     <div [innerHTML]="fragment"></div>
                     <div>
                       <select class="dropbtn" [(ngModel)]="selectedAuthor" (ngModelChange)="requestBooks(selectedAuthor[0])">
                         <option *ngFor="let c of this.authors" [ngValue]="c">{{c[1]}}</option>
                       </select>
                     </div>
-                  </mat-expansion-panel>              
+                  </mat-expansion-panel>
             </div>
           </div>
-    </div>      
+    </div>
 
       <div class="col-sm">
         <div class="col-sm anyClass">
           <!-- Empty Entry -->
           <!-- <div *ngIf="checkEmptyBlock(this.F_commentaar)">No entry found.</div> -->
           <!-- Valid Entry -->
+
+          <div *ngFor="let AppCrit of this.F_AppCrit">
+            <mat-expansion-panel>
+              <!-- Regelnummer -->
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <b>Apparatus Criticus</b>
+                </mat-panel-title>
+              <!-- Woorden in kwestie -->
+                <!-- <b>Latin is great</b> -->
+              </mat-expansion-panel-header>
+              <!-- Commentaar zelf met opmaak -->
+              <div class="mat-expansion-panel-content">
+                <div class="mat-expansion-panel-body">
+                  <div [innerHTML]=AppCrit></div>
+                </div>
+              </div>
+            </mat-expansion-panel>
+          </div>
+
+          <hr>
+
           <div *ngFor="let commentaar of this.F_Commentaar">
             <!-- {{commentaar}} -->
             <mat-expansion-panel>
@@ -183,32 +209,35 @@
             </mat-expansion-panel>
           </div>
 
-          <!-- Tweede laag commentaar! Geselecteerd via het regelnummer (via functie ophalenCommentaren) -->
-            <hr>  
+        <hr>
 
-            <mat-expansion-panel>
-              <!-- Regelnummer -->
-              <mat-expansion-panel-header>
-                <mat-panel-title>
-                  <b>Apparatus Criticus</b>
-                </mat-panel-title>
-              <!-- Woorden in kwestie -->
-                <!-- <b>Latin is great</b> -->
-              </mat-expansion-panel-header>
-              <!-- Commentaar zelf met opmaak -->
-              <div class="mat-expansion-panel-content">
-                <div class="mat-expansion-panel-body">
-                  <div [innerHTML]=this.F_AppCrit></div>
-                </div>
+        <div *ngFor="let F_Context of this.F_Context">
+          <!-- {{commentaar}} -->
+          <mat-expansion-panel>
+            <!-- Regelnummer -->
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <b>Fragment Context</b>
+              </mat-panel-title>
+            <!-- Woorden in kwestie -->
+              {{F_Context[0]}}
+            </mat-expansion-panel-header>
+            <!-- Commentaar zelf met opmaak -->
+            <div class="mat-expansion-panel-content">
+              <div class="mat-expansion-panel-body">
+                  <div [innerHTML]="F_Context[1]"></div>
               </div>
-            </mat-expansion-panel>
-
-            <!-- </div> -->
+            </div>
+          </mat-expansion-panel>
         </div>
 
-      </div>
-  </div>
-  </div>
+
+            <!-- </div> -->
+        <!-- </div>
+
+      </div> -->
+  <!-- </div>
+  </div> -->
 
   <!-- Extra row for some quick testing! -->
   <!-- <div class="container-fluid">
