@@ -189,6 +189,28 @@
 
           <hr>
 
+          <div *ngFor="let differences of this.F_Differences">
+            <!-- {{commentaar}} -->
+            <mat-expansion-panel>
+              <!-- Regelnummer -->
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <b>Fragment Differences</b>
+                </mat-panel-title>
+              <!-- Woorden in kwestie -->
+                <!-- <b>Latin is great</b> -->
+              </mat-expansion-panel-header>
+              <!-- Commentaar zelf met opmaak -->
+              <div class="mat-expansion-panel-content">
+                <div class="mat-expansion-panel-body">
+                    <div [innerHTML]="differences"></div>
+                </div>
+              </div>
+            </mat-expansion-panel>
+          </div>
+
+          <hr>
+
           <div *ngFor="let commentaar of this.F_Commentaar">
             <!-- {{commentaar}} -->
             <mat-expansion-panel>
@@ -231,27 +253,7 @@
           </mat-expansion-panel>
         </div>
 
-        <hr>
 
-        <div *ngFor="let differences of this.F_Differences">
-          <!-- {{commentaar}} -->
-          <mat-expansion-panel>
-            <!-- Regelnummer -->
-            <mat-expansion-panel-header>
-              <mat-panel-title>
-                <b>Fragment Differences</b>
-              </mat-panel-title>
-            <!-- Woorden in kwestie -->
-              <!-- <b>Latin is great</b> -->
-            </mat-expansion-panel-header>
-            <!-- Commentaar zelf met opmaak -->
-            <div class="mat-expansion-panel-content">
-              <div class="mat-expansion-panel-body">
-                  <div [innerHTML]="differences"></div>
-              </div>
-            </div>
-          </mat-expansion-panel>
-        </div>
 
 
             <!-- </div> -->
