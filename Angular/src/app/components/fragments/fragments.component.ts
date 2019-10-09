@@ -46,6 +46,7 @@ export class FragmentsComponent implements OnInit {
   F_AppCrit : JSON;
   F_Context : JSON;
   F_ContextTemp = [];
+  F_Differences : JSON;
 
   requestedItem : Array<String>;
   // requestedJSON : JSON;
@@ -58,9 +59,9 @@ export class FragmentsComponent implements OnInit {
 
   givenText : Array<string> = [];
 
-  currentAuthor : Array<string> = ['4'];
-  currentBook : Array<string> = ['6'];
-  startupBook : Array<string> = ['6'];
+  currentAuthor : String = "4";
+  currentBook : String = "6";
+  startupBook : String = "6";
 
   selectedLine : number = 0;
   gegevenRegel : number = 0;
@@ -72,21 +73,6 @@ export class FragmentsComponent implements OnInit {
   list1 = [];
 
   show: boolean = false;
-
-  movies = [
-    'Episode I - The Phantom Menace',
-    'Episode II - Attack of the Clones',
-    'Episode III - Revenge of the Sith',
-    'Episode IV - A New Hope',
-    'Episode V - The Empire Strikes Back',
-    'Episode VI - Return of the Jedi',
-    'Episode VII - The Force Awakens',
-    'Episode VIII - The Last Jedi'
-  ];
-
-
-
-
 
   /* @member "abt_code":  De string welke de abt_code voorstelt, te tonen in de popup modal
    */
@@ -122,17 +108,19 @@ export class FragmentsComponent implements OnInit {
   //   return requestedJSON;
   // }
 
+  // This will have to be removed ASAP.
   public delay(ms: number) {
     return new Promise( resolve => setTimeout(resolve, ms) );
   }
 
+  // Attempt to get Async working.
   async global(){
     await this.requestFragments(this.startupBook);
     await this.delay(2000);
     this.putInArray();
   }
 
-  public requestFragments(currentBook: Array<string>){
+  public requestFragments(currentBook: String){
     this.currentBook = currentBook;
     this.api = new APIComponent(this.httpClient);
     this.api
@@ -179,7 +167,7 @@ export class FragmentsComponent implements OnInit {
   }
 
 
-  public requestF_Commentaar(requestedLine: Array<string>){
+  public requestF_Commentaar(requestedLine: String){
     console.log("F_Commentaar requested!");
     this.selectedLine = +requestedLine;
     console.log(this.selectedLine);
@@ -194,7 +182,7 @@ export class FragmentsComponent implements OnInit {
           .catch(error => console.log(error));
   }
 
-  public requestF_Context(currentBook: Array<string>){
+  public requestF_Context(currentBook: String){
     this.currentBook = currentBook;
     this.api = new APIComponent(this.httpClient);
     this.api
@@ -207,7 +195,7 @@ export class FragmentsComponent implements OnInit {
           .catch(error => console.log(error));
   }
 
-  public requestF_AppCrit(currentBook: Array<string>){
+  public requestF_AppCrit(currentBook: String){
     this.currentBook = currentBook;
     this.api = new APIComponent(this.httpClient);
     this.api
@@ -215,6 +203,19 @@ export class FragmentsComponent implements OnInit {
           .then(result => {
             this.F_AppCrit = result as JSON;
             this.getString(this.F_AppCrit);
+            this.ready = true;
+          })
+          .catch(error => console.log(error));
+  }
+
+  public requestF_Differences(currentBook: String){
+    this.currentBook = currentBook;
+    this.api = new APIComponent(this.httpClient);
+    this.api
+          .getF_Differences(currentBook)
+          .then(result => {
+            this.F_Differences = result as JSON;
+            this.getString(this.F_Differences);
             this.ready = true;
           })
           .catch(error => console.log(error));
@@ -245,7 +246,7 @@ export class FragmentsComponent implements OnInit {
           .catch(error => console.log(error));
   }
 
-  public requestBooks(authorEntry : Array<string>){
+  public requestBooks(authorEntry : String){
     this.api = new APIComponent(this.httpClient);
     this.api
           .getBooks(authorEntry)
@@ -259,7 +260,6 @@ export class FragmentsComponent implements OnInit {
 
   public ophalenCommentaren(gegevenFragment){
     gegevenFragment = String(gegevenFragment)
-
     for(let arrayElement in this.root){
       // console.log("aanwezig: ", gegevenRegel, this.root[arrayElement][1] );
       if(String(this.root[arrayElement][1]) == gegevenFragment){
@@ -267,8 +267,14 @@ export class FragmentsComponent implements OnInit {
           console.log("found it", gegevenFragment, this.root[arrayElement][1], arrayElement );
           // var tempie = Number(arrayElement) // = arrayElement + 1; // Dit kan echt niet.
           // tempie = tempie + 1;
-          var temp = Array<string>(arrayElement);
-
+          // var temp = Array<string>(arrayElement);
+          var temp = Number(arrayElement) + 1;
+          var line2Request = String(temp)
+          console.log("yello: ", temp);
+          // temp2 = Array<string>(temp2);
+          // MOET NOG EENTJE HOGER ZIJN.
+          
+          // temp = Array<string>(temp2)
           // this.requestCommentaar(temp);
           // this.commentaar2_deels = this.commentaar2[arrayElement][2]
         // }
@@ -276,15 +282,16 @@ export class FragmentsComponent implements OnInit {
     }
 
     // ophalen Commentaar
-    this.requestF_Commentaar(temp);
+    this.requestF_Commentaar(line2Request);
 
     // ophalen AppCrit
-    this.requestF_AppCrit(temp);
+    this.requestF_AppCrit(line2Request);
 
     // ophalen Context
     // console.log('Getting Context!');
-    this.requestF_Context(temp);
+    this.requestF_Context(line2Request);
 
+    this.requestF_Differences(line2Request);
     // console.log("root: ", gegevenRegel, this.root[1]);
 
 
@@ -310,9 +317,7 @@ export class FragmentsComponent implements OnInit {
   //   moveItemInArray(this.movies, event.previousIndex, event.currentIndex);
   // }
 
-  drop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.movies, event.previousIndex, event.currentIndex);
-  }
+
 
   drop1(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.list1, event.previousIndex, event.currentIndex);
@@ -415,7 +420,7 @@ class APIComponent {
    * @return:       De promise van de get request.
    * @author:       Bors & Nolden.
    */
-  public getFragments(currentBook : Array<string>) : Promise<any> {
+  public getFragments(currentBook : String) : Promise<any> {
     return this.httpClient
             .get('http://katwijk.nolden.biz:5002/getFragments',{
               params: {
@@ -432,7 +437,7 @@ class APIComponent {
    * @return:       De promise van de get request
    * @author:       Bors & Nolden.
    */
-  public getF_Commentaar(requestedLine : Array<string>, currentBook : Array<string>) : Promise<any> {
+  public getF_Commentaar(requestedLine : String, currentBook : String) : Promise<any> {
     // console.log(list);
     return this.httpClient
             .get('http://katwijk.nolden.biz:5002/getF_Commentary', {
@@ -446,7 +451,7 @@ class APIComponent {
             .catch(this.handleError);
   }
 
-  public getF_AppCrit(currentBook : Array<string>) : Promise<any> {
+  public getF_AppCrit(currentBook : String) : Promise<any> {
     // console.log(list);
     return this.httpClient
             .get('http://katwijk.nolden.biz:5002/getF_AppCrit', {
@@ -459,10 +464,23 @@ class APIComponent {
             .catch(this.handleError);
   }
 
-  public getF_Context(currentBook : Array<string>) : Promise<any> {
+  public getF_Context(currentBook : String) : Promise<any> {
     // console.log(list);
     return this.httpClient
             .get('http://katwijk.nolden.biz:5002/getF_Context', {
+              params: {
+                currentBook: currentBook.toString(),
+              },
+            })
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+  }
+
+  public getF_Differences(currentBook : String) : Promise<any> {
+    // console.log(list);
+    return this.httpClient
+            .get('http://katwijk.nolden.biz:5002/getF_Differences', {
               params: {
                 currentBook: currentBook.toString(),
               },
@@ -480,7 +498,7 @@ class APIComponent {
             .catch(this.handleError);
   }
 
-  public getBooks(authorEntry : Array<string>) : Promise<any> {
+  public getBooks(authorEntry : String) : Promise<any> {
     return this.httpClient
             .get('http://katwijk.nolden.biz:5002/getBooks', {
               params: {
@@ -492,7 +510,7 @@ class APIComponent {
             .catch(this.handleError);
   }
 
-  public getBibliography(currentText : Array<string>) : Promise<any> {
+  public getBibliography(currentText : String) : Promise<any> {
     return this.httpClient
             .get('http://katwijk.nolden.biz:5002/getBibliography', {
               params: {
