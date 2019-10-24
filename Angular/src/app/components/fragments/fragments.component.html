@@ -108,8 +108,24 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-sm anyClass">
-          <div cdkDropList class="example-list" (cdkDropListDropped)="drop1($event)">
-              <div class="example-box" *ngFor="let fragment of this.list1; let i = index" [ngStyle]="{'background-color' : i % 2 == 0 ? 'white' : 'Gainsboro'}" cdkDrag>
+        <!-- <div class="solid" *ngFor="let fragment of this.result1">
+          {{fragment[2]}}
+        </div> -->
+
+        <div>
+            <select class="dropbtn" [(ngModel)]="selectedEditor" (ngModelChange)="orderColumn1Array(selectedEditor[0], 1)">
+              <option *ngFor="let c of this.editors" [ngValue]="c">{{c[1]}}</option>
+            </select>
+          </div>
+          <br>
+
+        <div class ="solid" *ngFor="let arrayItem of column1Array" (click)="ophalenCommentaren(arrayItem.id, arrayItem.editor)">
+            <p><b>{{arrayItem.number}}</b><p>
+                <div [innerHTML]="arrayItem.line"></div>
+       </div>
+
+          <!-- <div cdkDropList class="example-list" (cdkDropListDropped)="drop1($event)">
+              <div class="example-box" *ngFor="let fragment of this.listColumn1; let i = index" [ngStyle]="{'background-color' : i % 2 == 0 ? 'white' : 'Gainsboro'}" cdkDrag>
                 <mat-expansion-panel class="mat-expansion-panel1" #expansionPanel>
                   <mat-expansion-panel-header (click)="ophalenCommentaren(fragment)" (click)="expandPanel(expansionPanel, $event)" [collapsedHeight]="'auto'" [expandedHeight]="'auto'">
                       <mat-panel-title class="mat-expansion-panel-header-title">
@@ -120,8 +136,7 @@
 
                     Context in the right column (needs some work to get the button working correctly).
 
-                      <!-- CONTEXT SELECTOR (NOT WORKING CORRECTLY AT THIS MOMENT) -->
-                      <!-- <div *ngFor="let temp2 of this.F_ContextTemp">
+                       <div *ngFor="let temp2 of this.F_ContextTemp">
                           <div [innerHTML]="temp2"></div>
 
                       </div>
@@ -131,19 +146,32 @@
                         <select class="dropbtn" [(ngModel)]="selectedAuthor" (ngModelChange)="fixContext2(selectedAuthor[0])">
                           <option *ngFor="let c of this.F_Context" [ngValue]="c">{{c[0]}}</option>
                         </select>
-                      </div> -->
-                      <!-- <div>{{c}}</div> -->
+                      </div>
+
 
 
                     </mat-expansion-panel>
                 </div>
-            </div>
+            </div> -->
       </div>
 
       <!-- Derde column. Gets toggle via variable show. -->
       <div *ngIf="show" class="col-sm anyClass">
-        <div cdkDropList class="example-list" (cdkDropListDropped)="drop1($event)">
-            <div class="example-box" *ngFor="let fragment of this.list1; let i = index" [ngStyle]="{'background-color' : i % 2 == 0 ? 'white' : 'black'}" cdkDrag>
+
+          <div>
+              <select class="dropbtn" [(ngModel)]="selectedEditor2" (ngModelChange)="orderColumn1Array(selectedEditor2[0], 2)">
+                <option *ngFor="let d of this.editors" [ngValue]="d">{{d[1]}}</option>
+              </select>
+            </div>
+            <br>
+
+          <div class ="solid" *ngFor="let arrayItem of column2Array" (click)=testFunction()>
+              <p><b>{{arrayItem.id}}</b><p>
+                  <div [innerHTML]="arrayItem.line"></div>
+         </div>
+
+        <!-- <div cdkDropList class="example-list" (cdkDropListDropped)="drop1($event)">
+            <div class="example-box" *ngFor="let fragment of this.listColumn1; let i = index" [ngStyle]="{'background-color' : i % 2 == 0 ? 'white' : 'black'}" cdkDrag>
               <mat-expansion-panel class="mat-expansion-panel1" #expansionPanel>
                 <mat-expansion-panel-header (click)="testFunction()" (click)="expandPanel(expansionPanel, $event)" [collapsedHeight]="'auto'" [expandedHeight]="'auto'">
                     <mat-panel-title class="mat-expansion-panel-header-title" (click)="ophalenCommentaren(fragment)">
@@ -159,7 +187,7 @@
                     </div>
                   </mat-expansion-panel>
             </div>
-          </div>
+          </div> -->
     </div>
 
       <div class="col-sm">
