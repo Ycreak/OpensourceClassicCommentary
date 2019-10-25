@@ -112,14 +112,14 @@
           {{fragment[2]}}
         </div> -->
 
-        <div>
+        <!-- <div>
             <select class="dropbtn" [(ngModel)]="selectedEditor" (ngModelChange)="orderColumn1Array(selectedEditor[0], 1)">
               <option *ngFor="let c of this.editors" [ngValue]="c">{{c[1]}}</option>
             </select>
           </div>
-          <br>
+          <br> -->
 
-        <div class ="solid" *ngFor="let arrayItem of column1Array" (click)="ophalenCommentaren(arrayItem.id, arrayItem.editor)">
+        <div class ="solid" *ngFor="let arrayItem of mainEditorArray" (click)="ophalenCommentaren(arrayItem.id, arrayItem.editor)">
             <p><b>{{arrayItem.number}}</b><p>
                 <div [innerHTML]="arrayItem.line"></div>
        </div>
@@ -165,8 +165,8 @@
             </div>
             <br>
 
-          <div class ="solid" *ngFor="let arrayItem of column2Array" (click)=testFunction()>
-              <p><b>{{arrayItem.id}}</b><p>
+          <div class ="solid" *ngFor="let arrayItem of selectedEditorArray" (click)=testFunction()>
+              <p><b>{{arrayItem.number}}</b><p>
                   <div [innerHTML]="arrayItem.line"></div>
          </div>
 

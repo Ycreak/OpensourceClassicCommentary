@@ -81,6 +81,9 @@ export class FragmentsComponent implements OnInit {
   column2Array = []
   allFragmentsArray = []
 
+  mainEditorArray = [];
+  selectedEditorArray = [];
+
   /* @member "abt_code":  De string welke de abt_code voorstelt, te tonen in de popup modal
    */
   // abt_code : string;
@@ -127,7 +130,8 @@ export class FragmentsComponent implements OnInit {
     await this.requestFragments(this.startupBook);
     await this.delay(2000);
 
-    this.putInArray();
+    // this.putInArray();
+    this.createArrayOfObjects();
   }
 
   public requestFragments(currentBook: String){
@@ -147,80 +151,78 @@ export class FragmentsComponent implements OnInit {
 
   // Adds fragments into an array to be able to move them one the webpage (directly from
   // JSON not supported by CSS).
-  public putInArray(){
-    let buildString = ""
 
-    const checkLineExistence = roleParam1 => this.allFragmentsArray.some( ({id}) => id == roleParam1)
+  public createArrayOfObjects(){
+    const checkLineExistence = roleParam1 => this.F_Fragments.some( ({id}) => id == roleParam1)
 
     let array2Search = this.F_Fragments
 
     for(let arrayElement in array2Search){
+      this.allFragmentsArray.push({ id: array2Search[arrayElement][0], number: array2Search[arrayElement][1], line: array2Search[arrayElement][3], editor: array2Search[arrayElement][2]})
+  }
+
+  this.orderColumn1Array();
+
+}
+
+  public combineLinesIntoFragments(){
+    let buildString = ""
+
+    let array2Search = this.mainEditorArray;
+
+
+    const checkLineExistence = roleParam1 => this.mainEditorArray.some( ({id}) => id == roleParam1)
+
+
+    for(let arrayElement in array2Search){
       if (checkLineExistence(array2Search[arrayElement][1])){
         // console.log(array2Search[arrayElement][1]);
-        buildString = this.allFragmentsArray.find(x=>x.id == array2Search[arrayElement][1]).line;
+        buildString = this.mainEditorArray.find(x=>x.id == array2Search[arrayElement][1]).line;
         console.log('test', buildString);
         buildString += array2Search[arrayElement][3]
 
-        this.allFragmentsArray = this.allFragmentsArray.filter(x => x.id !== array2Search[arrayElement][1])
-        this.allFragmentsArray.push({ id: array2Search[arrayElement][1], line: buildString, editor: array2Search[arrayElement][2]});
+        this.mainEditorArray = this.mainEditorArray.filter(x => x.id !== array2Search[arrayElement][1])
+        this.mainEditorArray.push({ id: array2Search[arrayElement][1], line: buildString, editor: array2Search[arrayElement][2]});
 
         buildString = ""
       }
-      else this.allFragmentsArray.push({ id: array2Search[arrayElement][0], number: array2Search[arrayElement][1], line: array2Search[arrayElement][3], editor: array2Search[arrayElement][2]})
+      else this.mainEditorArray.push({ id: array2Search[arrayElement][0], number: array2Search[arrayElement][1], line: array2Search[arrayElement][3], editor: array2Search[arrayElement][2]})
        }
-      console.log(this.allFragmentsArray);
+      console.log(this.mainEditorArray);
 
 
 
   }
 
   public orderColumn1Array(selectedEditor: String, column: Number){
-    let mainEditor = 1;
-    let column1ArrayNew = [];
+    let mainEditor = 1; // Moet nog uit de database halen!
 
-    if(column == 1){
+      this.mainEditorArray = this.allFragmentsArray.filter(x => x.editor == mainEditor);
+      this.selectedEditorArray = this.allFragmentsArray.filter(x => x.editor == selectedEditor);
 
-      // // this.column1Array = this.allFragmentsArray;
-      let column1Array = this.allFragmentsArray;
-      // // console.log('orderColumn1Array', selectedEditor);
-      console.log('hoi', column1Array);
+      var line = "";
+      var i = 1;
 
-      let obj = column1Array.find(x => x.id == 1, y => y.editor == mainEditor).line;
-      let obj2 = column1Array.find(x => x.id == 1, y => y.editor == selectedEditor).line;
-      console.log('obj', obj);
-      console.log('obj2', obj2);
+      for (let iterator in this.selectedEditorArray){
 
-      for (let arrayElement in column1Array){
-        console.log(column1Array.find().editor)
+        var objIndex = this.selectedEditorArray.findIndex((obj => obj.id == i));
+        line = this.selectedEditorArray[objIndex].line
+
+        // Substitue Manuwald standard text into the Ribeck Array
+        if(line == "0"){
+          this.selectedEditorArray[objIndex].line = this.mainEditorArray[objIndex].line
+        }
+
+        i++;
       }
+      i = 0;
+      console.log('main:', this.mainEditorArray);
+      console.log('selected:', this.selectedEditorArray);
+
+      this.combineLinesIntoFragments();
+      // this.putInArray()
 
 
-
-
-
-
-
-
-      this.column1Array = this.allFragmentsArray;
-      // console.log('orderColumn1Array', selectedEditor);
-      this.column1Array = this.column1Array.filter(x => x.editor == selectedEditor)
-
-      // }
-
-      // this.column1Array = this.column1Array.filter(x => x.editor == selectedEditor)
-      // console.log(this.column1Array.filter(x => x.editor == selectedEditor));
-    }
-    else if (column == 2){
-      this.column2Array = this.allFragmentsArray;
-      // console.log('orderColumn1Array', selectedEditor);
-      this.column2Array = this.column2Array.filter(x => x.editor == selectedEditor)
-      // console.log(this.column2Array.filter(x => x.editor == selectedEditor));
-    }
-
-    // this.column1Array = this.allFragmentsArray;
-    // console.log('orderColumn1Array', selectedEditor);
-    // this.column1Array = this.column1Array.filter(x => x.editor == selectedEditor)
-    // console.log(this.column1Array.filter(x => x.editor == selectedEditor));
   }
 
   public fixContext2(requestedAuthor: string){
