@@ -77,9 +77,11 @@ export class FragmentsComponent implements OnInit {
 
   show: boolean = false;
 
-  column1Array = []
-  column2Array = []
-  allFragmentsArray = []
+  column1Array = [];
+  column2Array = [];
+  selectedEditor = <any>{};
+  // Contains all data for the build of fragments to show.
+  allFragmentsArray = [];
 
   mainEditorArray = [];
   selectedEditorArray = [];
@@ -132,6 +134,9 @@ export class FragmentsComponent implements OnInit {
 
     // this.putInArray();
     this.createArrayOfObjects();
+
+    // Retrieve Default Editor
+    this.opbouwenFragmentenEditor("1",1);
   }
 
   public requestFragments(currentBook: String){
@@ -153,7 +158,7 @@ export class FragmentsComponent implements OnInit {
   // JSON not supported by CSS).
 
   public createArrayOfObjects(){
-    const checkLineExistence = roleParam1 => this.F_Fragments.some( ({id}) => id == roleParam1)
+    // const checkLineExistence = roleParam1 => this.F_Fragments.some( ({id}) => id == roleParam1)
 
     let array2Search = this.F_Fragments
 
@@ -161,40 +166,67 @@ export class FragmentsComponent implements OnInit {
       this.allFragmentsArray.push({ id: array2Search[arrayElement][0], number: array2Search[arrayElement][1], line: array2Search[arrayElement][3], editor: array2Search[arrayElement][2]})
   }
 
-  this.orderColumn1Array();
 
 }
 
-  public combineLinesIntoFragments(){
+  public combineLinesIntoFragments(givenArray){
     let buildString = ""
 
-    let array2Search = this.mainEditorArray;
+    // Array sorteren op ID
+
+    let array2Search = givenArray;
+
+    // console.log('given array: ', array2Search);
+
+    var merged = [];
+    var oldString = "";
+
+    for(let element in array2Search){
+      // console.log('element:', array2Search[element]);
+      
+      // check if number is there already
+      if (Array.isArray(merged) && merged.length) {
+              
+        if(merged.find(el => el.number === array2Search[element].number)){
+          // console.log('is er al!', merged[0].line);
+
+          // console.log('line in question: ', merged.find(el => el.number === array2Search[element].number).line);           
+
+          // First the original string found in merged
+        buildString = merged.find(el => el.number === array2Search[element].number).line;
+        const index1 = merged.findIndex((obj => obj.number == array2Search[element].number))
+          // Then add the currect string to the original string
+        buildString += array2Search[element].line;
 
 
-    const checkLineExistence = roleParam1 => this.mainEditorArray.some( ({id}) => id == roleParam1)
+        // console.log('buildstring: ', buildString)
+        // console.log('index: ', index1)
 
+        // // if yes: merge
+        
+        // Remove original entry
+        merged.splice(index1,1)
 
-    for(let arrayElement in array2Search){
-      if (checkLineExistence(array2Search[arrayElement][1])){
-        // console.log(array2Search[arrayElement][1]);
-        buildString = this.mainEditorArray.find(x=>x.id == array2Search[arrayElement][1]).line;
-        console.log('test', buildString);
-        buildString += array2Search[arrayElement][3]
-
-        this.mainEditorArray = this.mainEditorArray.filter(x => x.id !== array2Search[arrayElement][1])
-        this.mainEditorArray.push({ id: array2Search[arrayElement][1], line: buildString, editor: array2Search[arrayElement][2]});
-
-        buildString = ""
+        // Add latest entry
+        merged.push({ number: array2Search[element].number, line: buildString, editor: array2Search[element].editor})
+        }
+        else{ 
+          merged.push({ number: array2Search[element].number, line: array2Search[element].line, editor: array2Search[element].editor})
+        }
       }
-      else this.mainEditorArray.push({ id: array2Search[arrayElement][0], number: array2Search[arrayElement][1], line: array2Search[arrayElement][3], editor: array2Search[arrayElement][2]})
-       }
-      console.log(this.mainEditorArray);
+      else{
+        // console.log('initieel')
+        merged.push({ number: array2Search[element].number, line: array2Search[element].line, editor: array2Search[element].editor})
+      }
+      // console.log('merged: ', merged);
+    }
 
+    return merged;
 
 
   }
 
-  public orderColumn1Array(selectedEditor: String, column: Number){
+  public opbouwenFragmentenEditor(selectedEditor: String, column: Number){
     let mainEditor = 1; // Moet nog uit de database halen!
 
       this.mainEditorArray = this.allFragmentsArray.filter(x => x.editor == mainEditor);
@@ -219,39 +251,17 @@ export class FragmentsComponent implements OnInit {
       console.log('main:', this.mainEditorArray);
       console.log('selected:', this.selectedEditorArray);
 
-      this.combineLinesIntoFragments();
-      // this.putInArray()
 
-
+      // Ordering of fragments
+      this.mainEditorArray = this.combineLinesIntoFragments(this.mainEditorArray);
+      this.selectedEditorArray = this.combineLinesIntoFragments(this.selectedEditorArray);
+      // this.column2Array = this.selectedEditorArray;
   }
 
-  public fixContext2(requestedAuthor: string){
-    console.log("fixContext author: ", requestedAuthor);
-    // requestedAuthor = String(requestedAuthor)
-
-
-    for(let arrayElement in this.F_Context){
-      // console.log("aanwezig: ", gegevenRegel, this.root[arrayElement][1] );
-      if(String(this.F_Context[arrayElement][0]) == requestedAuthor){
-        // if(Number(this.commentaar2[arrayElement][1]) >= gegevenRegel){
-          console.log("found it", requestedAuthor, this.F_Context[arrayElement][0], arrayElement );
-          // var tempie = Number(arrayElement) // = arrayElement + 1; // Dit kan echt niet.
-          // tempie = tempie + 1;
-          var temp = Array<string>(arrayElement);
-          console.log(this.F_Context[arrayElement][1]);
-          // this.F_ContextTemp = this.F_Context[arrayElement][1]
-          this.F_ContextTemp = [];
-          this.F_ContextTemp.push(this.F_Context[arrayElement][1]);
-
-      }
-    }
-  }
-
-
-  public requestF_ReferencerID(fragmentID: Number, editorID: Number, currentBook: Number){
+  public requestF_ReferencerID(fragmentID: Number, editorID: Number, currentBook: String){
     console.log("F_Commentaar requested!");
     // this.selectedLine = +requestedLine;
-    // console.log(this.selectedLine);
+    console.log('data: ', fragmentID, editorID, currentBook);
     this.api = new APIComponent(this.httpClient);
     this.api
           .getF_ReferencerID(fragmentID, editorID, currentBook)
@@ -367,36 +377,17 @@ export class FragmentsComponent implements OnInit {
 
 
   async ophalenCommentaren(fragmentID: Number, editorID: Number){
-    // gegevenFragment = String(gegevenFragment)
-    // for(let arrayElement in this.F_Fragments){
-    //   // console.log("aanwezig: ", gegevenRegel, this.root[arrayElement][1] );
-    //   if(String(this.F_Fragments[arrayElement][1]) == gegevenFragment){
-    //     // if(Number(this.commentaar2[arrayElement][1]) >= gegevenRegel){
-    //       console.log("found it", gegevenFragment, this.F_Fragments[arrayElement][1], arrayElement );
-    //       // var tempie = Number(arrayElement) // = arrayElement + 1; // Dit kan echt niet.
-    //       // tempie = tempie + 1;
-    //       // var temp = Array<string>(arrayElement);
-    //       var temp = Number(arrayElement) + 1;
-    //       var line2Request = String(temp)
-    //       console.log("yello: ", temp);
-    //       // temp2 = Array<string>(temp2);
-    //       // MOET NOG EENTJE HOGER ZIJN.
-
-    //       // temp = Array<string>(temp2)
-    //       // this.requestCommentaar(temp);
-    //       // this.commentaar2_deels = this.commentaar2[arrayElement][2]
-    //     // }
-    //   }
-    // }
 
     this.requestF_ReferencerID(fragmentID, editorID, this.currentBook);
     await this.delay(2000);
     // var hello;
     // console.log('JSON: ', this.F_ReferencerID[0]);
 
+    console.log('F_REFERENCER: ', this.F_ReferencerID[0][0]);
+
 
     try{
-      var ReferencerID = JSON.parse(this.F_ReferencerID)
+      var ReferencerID = this.F_ReferencerID[0][0]
     }
     catch(e){
       console.log('wrong!')
@@ -415,7 +406,7 @@ export class FragmentsComponent implements OnInit {
     this.requestF_Differences(ReferencerID);
     // console.log("root: ", gegevenRegel, this.root[1]);
 
-    this.F_ReferencerID = {};
+    // this.F_ReferencerID = {};
 
 
 
@@ -443,14 +434,9 @@ export class FragmentsComponent implements OnInit {
     return (target['classList'] && target['classList'].contains(expansionIndicatorClass) );
   }
 
-  // public drop(event: CdkDragDrop<string[]>) {
-  //   moveItemInArray(this.movies, event.previousIndex, event.currentIndex);
-  // }
-
-
 
   drop1(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.listColumn1, event.previousIndex, event.currentIndex);
+    moveItemInArray(this.selectedEditorArray, event.previousIndex, event.currentIndex);
   }
   // public drop(event: any): void {
   //   if (event.previousContainer === event.container) {
@@ -567,7 +553,7 @@ class APIComponent {
    * @return:       De promise van de get request
    * @author:       Bors & Nolden.
    */
-  public getF_ReferencerID(fragmentID: Number, editorID: Number, currentBook: Number) : Promise<any> {
+  public getF_ReferencerID(fragmentID: Number, editorID: Number, currentBook: String) : Promise<any> {
     // console.log(list);
     return this.httpClient
             .get('http://katwijk.nolden.biz:5002/getF_ReferencerID', {
