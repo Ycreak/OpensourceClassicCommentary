@@ -103,7 +103,7 @@ export class FragmentsComponent implements OnInit {
 
     // this.putInArray();
     // this.requestAuthors();
-    // this.requestBibliography();
+    this.requestBibliography();
     // this.requestSecondaryCommentary(this.startupBook);
   }
 
@@ -475,7 +475,7 @@ export class FragmentsComponent implements OnInit {
   }
 
   openLg(bib1) {
-    this.modalService.open(bib1, { size: 'lg' });
+    this.modalService.open(bib1, { windowClass: 'modal-sizer' });
   }
 
   public isValidFoo(commentaarScope : number){

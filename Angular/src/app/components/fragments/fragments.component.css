@@ -199,3 +199,8 @@ div {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+
+::ng-deep .modal-sizer .modal-dialog { 
+  max-width: 80%;
+  width: 80%;
+}
