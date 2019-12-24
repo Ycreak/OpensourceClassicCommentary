@@ -347,7 +347,25 @@
 
       <hr>
 
-
+      <div *ngFor="let translation of this.F_Translation">
+        <!-- {{commentaar}} -->
+        <mat-expansion-panel>
+          <!-- Regelnummer -->
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <b>Fragment Translation</b>
+            </mat-panel-title>
+          <!-- Woorden in kwestie -->
+            <!-- <b>Latin is great</b> -->
+          </mat-expansion-panel-header>
+          <!-- Commentaar zelf met opmaak -->
+          <div class="mat-expansion-panel-content">
+            <div class="mat-expansion-panel-body">
+                <div [innerHTML]="translation"></div>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      </div>
             <!-- </div> -->
         <!-- </div>
 

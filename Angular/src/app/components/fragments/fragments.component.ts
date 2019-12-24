@@ -46,6 +46,7 @@ export class FragmentsComponent implements OnInit {
   F_Fragments : JSON;
   F_Commentaar : JSON;
   F_AppCrit : JSON;
+  F_Translation : JSON;
   F_Context : JSON;
   F_ContextTemp = [];
   F_Differences : JSON;
@@ -226,28 +227,48 @@ export class FragmentsComponent implements OnInit {
 
   }
 
+  // SORTERINGS ALGORITME VOOR ARRAYS
+  public compare(a, b) {
+    // Use toUpperCase() to ignore character casing
+    const bandA = a.number;
+    const bandB = b.number;
+  
+    let comparison = 0;
+    if (bandA > bandB) {
+      comparison = 1;
+    } else if (bandA < bandB) {
+      comparison = -1;
+    }
+    return comparison;
+  }
+
   public opbouwenFragmentenEditor(selectedEditor: String, column: Number){
     let mainEditor = 1; // Moet nog uit de database halen!
 
       this.mainEditorArray = this.allFragmentsArray.filter(x => x.editor == mainEditor);
       this.selectedEditorArray = this.allFragmentsArray.filter(x => x.editor == selectedEditor);
 
+      console.log('main1:', this.mainEditorArray);
+      console.log('selected1:', this.selectedEditorArray);
+
       var line = "";
       var i = 1;
 
-      for (let iterator in this.selectedEditorArray){
 
-        var objIndex = this.selectedEditorArray.findIndex((obj => obj.id == i));
-        line = this.selectedEditorArray[objIndex].line
+      // this.selectedEditorArray[objIndex] IS NOT DEFINED?! FIND OUT WHY.
+      // for (let iterator in this.selectedEditorArray){
 
-        // Substitue Manuwald standard text into the Ribeck Array
-        if(line == "0"){
-          this.selectedEditorArray[objIndex].line = this.mainEditorArray[objIndex].line
-        }
+      //   var objIndex = this.selectedEditorArray.findIndex((obj => obj.id == i));
+      //   line = this.selectedEditorArray[objIndex].line
 
-        i++;
-      }
-      i = 0;
+      //   // Substitue Manuwald standard text into the Ribeck Array
+      //   if(line == "0"){
+      //     this.selectedEditorArray[objIndex].line = this.mainEditorArray[objIndex].line
+      //   }
+
+      //   i++;
+      // }
+      // i = 0;
       console.log('main:', this.mainEditorArray);
       console.log('selected:', this.selectedEditorArray);
 
@@ -256,6 +277,11 @@ export class FragmentsComponent implements OnInit {
       this.mainEditorArray = this.combineLinesIntoFragments(this.mainEditorArray);
       this.selectedEditorArray = this.combineLinesIntoFragments(this.selectedEditorArray);
       // this.column2Array = this.selectedEditorArray;
+
+      console.log('main: ', this.mainEditorArray);
+
+      // SORTERINGS ALGORITME VOOR ARRAYS
+      this.mainEditorArray.sort(this.compare);
   }
 
   public requestF_ReferencerID(fragmentID: Number, editorID: Number, currentBook: String){
@@ -307,6 +333,19 @@ export class FragmentsComponent implements OnInit {
           .then(result => {
             this.F_AppCrit = result as JSON;
             this.getString(this.F_AppCrit);
+            this.ready = true;
+          })
+          .catch(error => console.log(error));
+  }
+
+  public requestF_Translation(currentBook: String){
+    // this.currentBook = currentBook;
+    this.api = new APIComponent(this.httpClient);
+    this.api
+          .getF_Translation(currentBook)
+          .then(result => {
+            this.F_Translation = result as JSON;
+            this.getString(this.F_Translation);
             this.ready = true;
           })
           .catch(error => console.log(error));
@@ -406,6 +445,7 @@ export class FragmentsComponent implements OnInit {
     this.requestF_Differences(ReferencerID);
     // console.log("root: ", gegevenRegel, this.root[1]);
 
+    this.requestF_Translation(ReferencerID);
     // this.F_ReferencerID = {};
 
 
@@ -593,6 +633,20 @@ class APIComponent {
             .then(this.extractData)
             .catch(this.handleError);
   }
+
+  public getF_Translation(currentBook : String) : Promise<any> {
+    // console.log(list);
+    return this.httpClient
+            .get('http://katwijk.nolden.biz:5002/getF_Translation', {
+              params: {
+                currentBook: currentBook.toString(),
+              },
+            })
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+  }
+
 
   public getF_Context(currentBook : String) : Promise<any> {
     // console.log(list);
