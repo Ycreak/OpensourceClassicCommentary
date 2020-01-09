@@ -77,6 +77,7 @@ export class FragmentsComponent implements OnInit {
   listColumn1 = [];
 
   show: boolean = false;
+  spinner: boolean = true;
 
   column1Array = [];
   column2Array = [];
@@ -132,6 +133,8 @@ export class FragmentsComponent implements OnInit {
   async global(){
     await this.requestFragments(this.startupBook);
     await this.delay(2000);
+    this.spinner = false;
+
 
     // this.putInArray();
     this.createArrayOfObjects();
@@ -416,6 +419,7 @@ export class FragmentsComponent implements OnInit {
 
 
   async ophalenCommentaren(fragmentID: Number, editorID: Number){
+    this.spinner = true;
 
     this.requestF_ReferencerID(fragmentID, editorID, this.currentBook);
     await this.delay(2000);
@@ -455,7 +459,7 @@ export class FragmentsComponent implements OnInit {
 
 
 
-
+    this.spinner = false;
 
   }
 

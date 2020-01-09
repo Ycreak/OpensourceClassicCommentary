@@ -6,26 +6,22 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
 
 <!-- Navigationbar -->
-  <nav class="navbar navbar-expand-lg  static-top">
+  <nav class="navbar navbar-expand-lg static-top">
     <div class="container">
-      <a class="navbar-brand"><h3>OpensourceClassicsFragments</h3></a>
+      <a class="navbar-brand"><h3>Online Classic Commentary</h3></a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
+
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
-          <li>           
-            <div>
-              <select class="dropbtn" [(ngModel)]="selectedEditor" (ngModelChange)="opbouwenFragmentenEditor(selectedEditor[0], 2)">
-                <option *ngFor="let d of this.editors" [ngValue]="d">{{d[1]}}</option>
-              </select>
-            </div>
-          </li>
           <li> <button class="btn btn-lg" (click)="open(textChanger)">Change Text</button></li>
           <li> <button class="btn btn-lg" (click)="openLg(bib1)">Bibliography</button></li>
           <li> <button class="btn btn-lg" (click)="open(newEntry)">New Entry</button></li>
           <!-- <li> <button class="btn btn-lg" (click)="putInArray()">Retrieve</button></li> -->
           <li> <button class="btn btn-lg" (click)="show = !show">3Columns</button></li>
+          <!-- <li> <mat-button-toggle value="bold">Bold</mat-button-toggle></li> -->
+
         </ul>
       </div>
     </div>
@@ -108,155 +104,72 @@
     </div>
   </ng-template>
 
+  <mat-progress-bar mode="query" *ngIf="spinner"></mat-progress-bar>
+  <!-- <hr *ngIf="spinner == false"> -->
+
+
 <br>
 
   <!-- Container for the page: one row, two columns. Column Left has the text, Column Right the commentary. -->
 
+
   <div class="container-fluid">
     <div class="row">
+      <!-- Eerste Colom -->
       <div class="col-sm anyClass">
-        <!-- <div class="solid" *ngFor="let fragment of this.result1">
-          {{fragment[2]}}
-        </div> -->
-
-        <!-- <div>
-            <select class="dropbtn" [(ngModel)]="selectedEditor" (ngModelChange)="orderColumn1Array(selectedEditor[0], 1)">
-              <option *ngFor="let c of this.editors" [ngValue]="c">{{c[1]}}</option>
-            </select>
-          </div>
-          <br> -->
-
-          <!-- <div cdkDropList class="example-list" (cdkDropListDropped)="drop1($event)" (click)="ophalenCommentaren(arrayItem.number, arrayItem.editor)">
-            <div class="example-box" *ngFor="let arrayItem of mainEditorArray" cdkDrag>
-
-                <div><b>{{arrayItem.number}}</b>
-                  <div [innerHTML]="arrayItem.line"></div>
-                </div>
-       </div>
-       </div> -->
-
-        <div class ="example-list" *ngFor="let arrayItem of mainEditorArray" (click)="ophalenCommentaren(arrayItem.number, arrayItem.editor)">
-              <p><b>{{arrayItem.number}}</b></p>
-                <div [innerHTML]="arrayItem.line"></div>
-                </div>
 
 
+        <div class="example-list">
+          <div class="example-box" *ngFor="let arrayItem of mainEditorArray" (click)="ophalenCommentaren(arrayItem.number, arrayItem.editor)">
+            <div><b>{{arrayItem.number}}</b></div>
+            <div [innerHTML]="arrayItem.line"></div>      
+          </div> 
+        </div> 
 
-                
+        <!-- <ul class="fragment-ul" *ngFor="let arrayItem of mainEditorArray" (click)="ophalenCommentaren(arrayItem.number, arrayItem.editor)">
+          <li class="fragment-li">
+            <div class="row">
+              <div class="column1"><b>{{arrayItem.number}}  </b></div>
+              <div class="column1" [innerHTML]="arrayItem.line"></div>
+            </div>                   
+          </li>
+        </ul> -->
       </div>
 
-                
-   
-                
-
-<!-- <div cdkDropList class="example-list" (cdkDropListDropped)="drop1($event)">
-              <div class="example-box" *ngFor="let fragment of this.listColumn1; let i = index" [ngStyle]="{'background-color' : i % 2 == 0 ? 'white' : 'Gainsboro'}" cdkDrag>
-                <mat-expansion-panel class="mat-expansion-panel1" #expansionPanel>
-                  <mat-expansion-panel-header (click)="ophalenCommentaren(fragment)" (click)="expandPanel(expansionPanel, $event)" [collapsedHeight]="'auto'" [expandedHeight]="'auto'">
-                      <mat-panel-title class="mat-expansion-panel-header-title">
-                          <div [innerHTML]="fragment"></div>
-                      </mat-panel-title>
-                    </mat-expansion-panel-header>
-                      <hr>
-
-                    Context in the right column (needs some work to get the button working correctly).
-
-                       <div *ngFor="let temp2 of this.F_ContextTemp">
-                          <div [innerHTML]="temp2"></div>
-
-                      </div>
-
-                      <br><br>
-                      <div>
-                        <select class="dropbtn" [(ngModel)]="selectedAuthor" (ngModelChange)="fixContext2(selectedAuthor[0])">
-                          <option *ngFor="let c of this.F_Context" [ngValue]="c">{{c[0]}}</option>
-                        </select>
-                      </div>
-
-
-
-                    </mat-expansion-panel>
-                </div>
-            </div> -->
-
-       
-
-          <!-- <div cdkDropList class="example-list" (cdkDropListDropped)="drop1($event)">
-              <div class="example-box" *ngFor="let fragment of this.listColumn1; let i = index" [ngStyle]="{'background-color' : i % 2 == 0 ? 'white' : 'Gainsboro'}" cdkDrag>
-                <mat-expansion-panel class="mat-expansion-panel1" #expansionPanel>
-                  <mat-expansion-panel-header (click)="ophalenCommentaren(fragment)" (click)="expandPanel(expansionPanel, $event)" [collapsedHeight]="'auto'" [expandedHeight]="'auto'">
-                      <mat-panel-title class="mat-expansion-panel-header-title">
-                          <div [innerHTML]="fragment"></div>
-                      </mat-panel-title>
-                    </mat-expansion-panel-header>
-                      <hr>
-
-                    Context in the right column (needs some work to get the button working correctly).
-
-                       <div *ngFor="let temp2 of this.F_ContextTemp">
-                          <div [innerHTML]="temp2"></div>
-
-                      </div>
-
-                      <br><br>
-                      <div>
-                        <select class="dropbtn" [(ngModel)]="selectedAuthor" (ngModelChange)="fixContext2(selectedAuthor[0])">
-                          <option *ngFor="let c of this.F_Context" [ngValue]="c">{{c[0]}}</option>
-                        </select>
-                      </div>
-
-
-
-                    </mat-expansion-panel>
-                </div>
-            </div> -->
-
-      <!-- Derde column. Gets toggle via variable show. -->
+      <!-- Tweede column. Gets toggle via variable show. -->
       <div *ngIf="show" class="col-sm anyClass">
 
-          <!-- <div>
-              <select class="dropbtn" [(ngModel)]="selectedEditor2" (ngModelChange)="opbouwenFragmentenEditor(selectedEditor2[0], 2)">
-                <option *ngFor="let d of this.editors" [ngValue]="d">{{d[1]}}</option>
-              </select>
-            </div> -->
-            <!-- <br> -->
+        <mat-form-field>
+            <mat-label>Select editor</mat-label>
+            <mat-select [(ngModel)]="selected2">
+                <mat-option *ngFor="let option of this.editors" [value]="option[1]">{{ option[1] }}</mat-option>
+              </mat-select>
+        </mat-form-field>
+
+        <div>
+
+          </div>
 
 
-            <div cdkDropList class="example-list" (cdkDropListDropped)="drop1($event)">
-              <div class="example-box" *ngFor="let arrayItem of selectedEditorArray" cdkDrag>
-              <!-- <p><b>{{arrayItem.number}}</b></p>
-                  <div [innerHTML]="arrayItem.line"></div> -->
-                  <div><b>{{arrayItem.number}}</b>
-                    <div [innerHTML]="arrayItem.line"></div>
-                  </div>
+        <div cdkDropList class="example-list" (cdkDropListDropped)="drop1($event)">
+          <div class="example-box" *ngFor="let arrayItem of selectedEditorArray" cdkDrag>
+          <!-- <p><b>{{arrayItem.number}}</b></p>
+              <div [innerHTML]="arrayItem.line"></div> -->
+            <div><b>{{arrayItem.number}}</b></div>
+              <div [innerHTML]="arrayItem.line"></div>
          </div>
-         </div>
+        </div>
+      </div>
 
-        <!-- <div cdkDropList class="example-list" (cdkDropListDropped)="drop1($event)">
-            <div class="example-box" *ngFor="let fragment of this.listColumn1; let i = index" [ngStyle]="{'background-color' : i % 2 == 0 ? 'white' : 'black'}" cdkDrag>
-              <mat-expansion-panel class="mat-expansion-panel1" #expansionPanel>
-                <mat-expansion-panel-header (click)="testFunction()" (click)="expandPanel(expansionPanel, $event)" [collapsedHeight]="'auto'" [expandedHeight]="'auto'">
-                    <mat-panel-title class="mat-expansion-panel-header-title" (click)="ophalenCommentaren(fragment)">
-                        <div [innerHTML]="fragment"></div>
-                    </mat-panel-title>
-                  </mat-expansion-panel-header>
-                    <hr>
-                    <div [innerHTML]="fragment"></div>
-                    <div>
-                      <select class="dropbtn" [(ngModel)]="selectedAuthor" (ngModelChange)="requestBooks(selectedAuthor[0])">
-                        <option *ngFor="let c of this.authors" [ngValue]="c">{{c[1]}}</option>
-                      </select>
-                    </div>
-                  </mat-expansion-panel>
-            </div>
-          </div> -->
-    </div>
-
+    <!-- Derde column -->
       <div class="col-sm">
         <div class="col-sm anyClass">
+          <!-- <mat-spinner *ngIf="spinner"></mat-spinner> -->
           <!-- Empty Entry -->
           <!-- <div *ngIf="checkEmptyBlock(this.F_commentaar)">No entry found.</div> -->
           <!-- Valid Entry -->
+
+          <!-- <mat-spinner></mat-spinner> -->
 
           <div *ngFor="let AppCrit of this.F_AppCrit">
             <mat-expansion-panel>

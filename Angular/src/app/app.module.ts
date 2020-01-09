@@ -63,8 +63,10 @@ import {
 } from '@angular/material';
 
 const appRoutes: Routes = [
-  {path: '', component: DashboardComponent},
-  {path: 'fragments', component: FragmentsComponent},
+  // {path: '', component: DashboardComponent},
+  // {path: 'fragments', component: FragmentsComponent},
+  {path: '', component: FragmentsComponent},
+  {path: 'dashboard', component: DashboardComponent},
   {path: 'login', component: LoginComponent},
   {path: 'dashboard', component: DashboardComponent},
   {path: 'profile', component: ProfileComponent},
