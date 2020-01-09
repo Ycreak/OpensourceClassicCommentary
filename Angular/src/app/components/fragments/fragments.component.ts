@@ -52,6 +52,8 @@ export class FragmentsComponent implements OnInit {
   F_Differences : JSON;
   F_ReferencerID : JSON;
 
+  givenJSON : JSON;
+
   requestedItem : Array<String>;
   // requestedJSON : JSON;
 
@@ -109,20 +111,7 @@ export class FragmentsComponent implements OnInit {
     // this.requestSecondaryCommentary(this.startupBook);
   }
 
-  // public requestItem(requestedItem: Array<string>){
-  //   var requestedJSON : JSON;
 
-  //   this.api = new APIComponent(this.httpClient);
-  //   this.api
-  //         .getItem(requestedItem)
-  //         .then(result => {
-  //           requestedJSON = result as JSON;
-  //           // this.getString(this.commentaar);
-  //           this.ready = true;
-  //         })
-  //         .catch(error => console.log(error));
-  //   return requestedJSON;
-  // }
 
   // This will have to be removed ASAP.
   public delay(ms: number) {
@@ -302,6 +291,21 @@ export class FragmentsComponent implements OnInit {
           .catch(error => console.log(error));
   }
 
+  public requestItem(givenJSON: JSON, currentBook: String){
+    this.api = new APIComponent(this.httpClient);
+    this.api
+          .getItem(currentBook)
+          .then(result => {
+            givenJSON = result as JSON;
+            console.log('givenJSON ', givenJSON);
+            this.getString(givenJSON);
+            this.ready = true;
+          })
+          .catch(error => console.log(error));
+    return givenJSON;    
+
+  }
+
   public requestF_Commentaar(currentBook: String){
     // this.currentBook = currentBook;
     this.api = new APIComponent(this.httpClient);
@@ -437,6 +441,11 @@ export class FragmentsComponent implements OnInit {
     }
 
           // ophalen Commentaar
+    // this.F_Commentaar = this.requestItem(this.givenJSON, ReferencerID);
+    // await this.delay(2000);
+
+    console.log(this.F_Commentaar);
+    
     this.requestF_Commentaar(ReferencerID);
 
     // ophalen AppCrit
@@ -604,6 +613,19 @@ class APIComponent {
               params: {
                 fragmentID: fragmentID.toString(),
                 editorID: editorID.toString(),
+                currentBook: currentBook.toString(),
+              },
+            })
+            .toPromise()
+            .then(this.extractData)
+            .catch(this.handleError);
+  }
+
+  public getItem(currentBook : String) : Promise<any> {
+    // console.log(list);
+    return this.httpClient
+            .get('http://katwijk.nolden.biz:5002/getF_Commentaar', {
+              params: {
                 currentBook: currentBook.toString(),
               },
             })
