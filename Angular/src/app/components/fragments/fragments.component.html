@@ -142,7 +142,11 @@
         <mat-form-field>
             <mat-label>Select editor</mat-label>
             <mat-select [(ngModel)]="selected2">
-                <mat-option *ngFor="let option of this.editors" [value]="option[1]">{{ option[1] }}</mat-option>
+                <mat-option *ngFor="let selectedEditor of this.editors" [value]="selectedEditor[1]"
+                (click)="opbouwenFragmentenEditor(selectedEditor[0], 2)">
+                {{ selectedEditor[1] }} 
+                  
+                </mat-option>
               </mat-select>
         </mat-form-field>
 

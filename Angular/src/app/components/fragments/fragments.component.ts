@@ -100,18 +100,11 @@ export class FragmentsComponent implements OnInit {
    * @author:       bors
    */
   async ngOnInit() {
-    // this.requestFragments(this.startupBook);
     this.requestEditors(this.currentBook);
 
     this.global();
-
-    // this.putInArray();
-    // this.requestAuthors();
     this.requestBibliography();
-    // this.requestSecondaryCommentary(this.startupBook);
   }
-
-
 
   // This will have to be removed ASAP.
   public delay(ms: number) {
@@ -124,10 +117,7 @@ export class FragmentsComponent implements OnInit {
     await this.delay(2000);
     this.spinner = false;
 
-
-    // this.putInArray();
     this.createArrayOfObjects();
-
     // Retrieve Default Editor
     this.opbouwenFragmentenEditor("1",1);
   }
@@ -143,34 +133,26 @@ export class FragmentsComponent implements OnInit {
             this.ready = true;
           })
           .catch(error => console.log(error));
-
   }
 
 
   // Adds fragments into an array to be able to move them one the webpage (directly from
   // JSON not supported by CSS).
-
   public createArrayOfObjects(){
-    // const checkLineExistence = roleParam1 => this.F_Fragments.some( ({id}) => id == roleParam1)
-
     let array2Search = this.F_Fragments
 
     for(let arrayElement in array2Search){
       this.allFragmentsArray.push({ id: array2Search[arrayElement][0], number: array2Search[arrayElement][1], line: array2Search[arrayElement][3], editor: array2Search[arrayElement][2]})
+    }
   }
-
-
-}
 
   public combineLinesIntoFragments(givenArray){
     let buildString = ""
 
     // Array sorteren op ID
-
     let array2Search = givenArray;
 
     // console.log('given array: ', array2Search);
-
     var merged = [];
     var oldString = "";
 
@@ -190,7 +172,6 @@ export class FragmentsComponent implements OnInit {
         const index1 = merged.findIndex((obj => obj.number == array2Search[element].number))
           // Then add the currect string to the original string
         buildString += array2Search[element].line;
-
 
         // console.log('buildstring: ', buildString)
         // console.log('index: ', index1)
@@ -215,8 +196,6 @@ export class FragmentsComponent implements OnInit {
     }
 
     return merged;
-
-
   }
 
   // SORTERINGS ALGORITME VOOR ARRAYS
@@ -235,45 +214,52 @@ export class FragmentsComponent implements OnInit {
   }
 
   public opbouwenFragmentenEditor(selectedEditor: String, column: Number){
-    let mainEditor = 1; // Moet nog uit de database halen!
+    let mainEditor = 1; // TODO: Moet nog uit de database halen!
 
-      this.mainEditorArray = this.allFragmentsArray.filter(x => x.editor == mainEditor);
-      this.selectedEditorArray = this.allFragmentsArray.filter(x => x.editor == selectedEditor);
+    this.mainEditorArray = [];
+    this.selectedEditorArray = [];
 
-      console.log('main1:', this.mainEditorArray);
-      console.log('selected1:', this.selectedEditorArray);
+    let tempArray = [];
 
-      var line = "";
-      var i = 1;
+    // Create a mainEditorArray and a selectedEditorArray.
+    this.mainEditorArray = this.allFragmentsArray.filter(x => x.editor == mainEditor);
+    this.selectedEditorArray = this.allFragmentsArray.filter(x => x.editor == selectedEditor);
 
+    console.log('requested author ', selectedEditor);
+    console.log('all:', this.allFragmentsArray);
+    console.log('main1:', this.mainEditorArray);
+    console.log('selected1:', this.selectedEditorArray);
 
-      // this.selectedEditorArray[objIndex] IS NOT DEFINED?! FIND OUT WHY.
-      // for (let iterator in this.selectedEditorArray){
+    // For every entry in mainEditor Array
+    for(var key in this.mainEditorArray){
+      console.log('key: ', this.mainEditorArray[key].id);
+      // Find the ID tag and save this.
+      let idTag = this.mainEditorArray[key].id;
+      // Find this ID tag in the selectedEditor Array
+      let selectTag = this.selectedEditorArray.find(x => x.id === idTag);
+      // And save its index.
+      let foundIndex = this.selectedEditorArray.findIndex(x => x.id === idTag);
+      console.log('SelectTag: ', selectTag, 'foundIndex: ', foundIndex);
+      // If the selectTag exists, the same line is found in the selectedEditor Array
+      if (selectTag != null) {
+        // Save this line and check if it is zero (so the same, just subtitute).
+        let line = selectTag.line;
+        console.log(line)
+        if(line == "0"){
+          // If zero, just add the text from the mainEditorArray into the selectedEditorArray
+          this.selectedEditorArray[foundIndex].line = this.mainEditorArray[key].line;
+        }
+        // TODO: else logic. Dont change anything, just leave it (in short).
+      }
 
-      //   var objIndex = this.selectedEditorArray.findIndex((obj => obj.id == i));
-      //   line = this.selectedEditorArray[objIndex].line
+    }
+    // Combine the different lines into fragments.
+    this.mainEditorArray = this.combineLinesIntoFragments(this.mainEditorArray);
+    this.selectedEditorArray = this.combineLinesIntoFragments(this.selectedEditorArray);
 
-      //   // Substitue Manuwald standard text into the Ribeck Array
-      //   if(line == "0"){
-      //     this.selectedEditorArray[objIndex].line = this.mainEditorArray[objIndex].line
-      //   }
-
-      //   i++;
-      // }
-      // i = 0;
-      console.log('main:', this.mainEditorArray);
-      console.log('selected:', this.selectedEditorArray);
-
-
-      // Ordering of fragments
-      this.mainEditorArray = this.combineLinesIntoFragments(this.mainEditorArray);
-      this.selectedEditorArray = this.combineLinesIntoFragments(this.selectedEditorArray);
-      // this.column2Array = this.selectedEditorArray;
-
-      console.log('main: ', this.mainEditorArray);
-
-      // SORTERINGS ALGORITME VOOR ARRAYS
-      this.mainEditorArray.sort(this.compare);
+    // Sort the fragments numerically.
+    this.mainEditorArray.sort(this.compare);
+    this.selectedEditorArray.sort(this.compare);
   }
 
   public requestF_ReferencerID(fragmentID: Number, editorID: Number, currentBook: String){
