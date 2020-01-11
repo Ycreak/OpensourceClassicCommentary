@@ -23,7 +23,7 @@ import { AuthService } from './services/auth.service';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 
-import {DialogContentExampleDialog} from './components/fragments/fragments.component';
+// import {DialogContentExampleDialog} from './components/fragments/fragments.component';
 
 import {
   MatAutocompleteModule,

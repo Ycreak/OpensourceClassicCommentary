@@ -151,53 +151,16 @@
     {{this.currentAuthor}}
     <h4>Current Book</h4>
     {{this.currentBook}}
-
+    <h4>FragmentArray</h4>
+    {{this.fragmentArray}}
     <hr>
-    
-    <!-- <section fxLayout="row wrap" fxLayoutAlign="center center">
-        <mat-card fxFlex="500px" fxFlex.xs="100%">
-            <mat-card-title>Create a new owner</mat-card-title>
-            <mat-card-content>
-            </mat-card-content>
-            <mat-card-actions>
-              
-            </mat-card-actions>
-          </mat-card>
-      </section>
-
-      <form [formGroup]="ownerForm" autocomplete="off" novalidate (ngSubmit)="createOwner(ownerForm.value)" fxLayout="column wrap"
-            fxLayoutAlign="center center" fxLayoutGap="10px">
-        <mat-card-content>
-        </mat-card-content>
-        <mat-card-actions>
-        </mat-card-actions>
-      </form>
-
-      <mat-form-field>
-          <input matInput type="text" placeholder="Owner's name" formControlName="name" id="name">
-          <mat-hint align="end">Not more then 60 characters long.</mat-hint>
-          <mat-error *ngIf="hasError('name', 'required')">Name is required</mat-error>
-          <mat-error *ngIf="hasError('name', 'maxlength')">You have more than 60 characters</mat-error>
-        </mat-form-field>
-         
-        <mat-form-field>
-          <input matInput [matDatepicker]="picker" placeholder="Choose a date of birth" formControlName="dateOfBirth" id="dateOfBirth" 
-              readonly (click)="picker.open()">
-          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
-         
-        <mat-form-field>
-          <input matInput type="text" placeholder="Owner's address" formControlName="address">
-          <mat-hint align="end">Not more then 100 characters long.</mat-hint>
-          <mat-error *ngIf="hasError('address', 'required')">Address is required</mat-error>
-          <mat-error *ngIf="hasError('address', 'maxlength')">You have more than 100 characters</mat-error>
-        </mat-form-field> -->
+  
 
         <div class="container">
             <div class="row">
-              <div class="col-*-6">
-                  <mat-form-field>
+              <div class="col-*-4">
+                <h4>Create Fragment</h4>
+                <mat-form-field>
                       <mat-label>Select editor</mat-label>
                         <mat-select [(ngModel)]="selected2">
                           <mat-option *ngFor="let selectedEditor of this.editors" [value]="selectedEditor[1]"
@@ -219,8 +182,14 @@
                         </mat-form-field>
                     </div>   
 
+                    <mat-dialog-actions align="end">
+                      <button mat-button matDialogClose="yes">Close</button>
+                      <button mat-button (click)="createFragment()">Create</button>
+                      <button mat-button (click)="makeFragment()">Make</button>
+                  </mat-dialog-actions>
               </div>
-              <div class="col-*-6">
+              <div class="col-*-4">
+                  <h4>Add Commentary</h4>
                   <mat-form-field>
                       <mat-label>Select fragment</mat-label>
                         <mat-select [(ngModel)]="selected2">
@@ -239,15 +208,11 @@
 
                   <div mat-dialog-content>
                       <mat-form-field class="example-full-width">
-                        <input matInput placeholder="Fragment Differences" #input2 [(ngModel)]='given_Differences' id="fragDifferencest">
+                        <input matInput placeholder="Fragment Differences" #input2 [(ngModel)]='given_Differences' id="fragDifferences">
                         </mat-form-field>
                     </div>   
                     
-                  <div mat-dialog-content>
-                      <mat-form-field class="example-full-width">
-                        <input matInput placeholder="Fragment Context" #input2 [(ngModel)]='given_Context' id="fragContext">
-                        </mat-form-field>
-                    </div>   
+ 
                         
                   <div mat-dialog-content>
                       <mat-form-field class="example-full-width">
@@ -261,6 +226,26 @@
                         </mat-form-field>
                     </div>   
 
+                    <mat-dialog-actions align="end">
+                      <button mat-button (click)="uploadCommentary()">Upload</button>
+                  </mat-dialog-actions>
+
+              </div>
+              <div class="col-*-4">
+                <h4>Add Context</h4>
+                <div mat-dialog-content>
+                    <mat-form-field class="example-full-width">
+                      <input matInput placeholder="Fragment Context Author" #input2 [(ngModel)]='given_ContextAuthor' id="fragContextAuthor">
+                      </mat-form-field>
+                  </div>  
+                <div mat-dialog-content>
+                    <mat-form-field class="example-full-width">
+                      <input matInput placeholder="Fragment Context" #input2 [(ngModel)]='given_Context' id="fragContext">
+                      </mat-form-field>
+                  </div> 
+                  <mat-dialog-actions align="end">
+                      <button mat-button (click)="uploadContextAuthor()">Upload</button>
+                  </mat-dialog-actions> 
               </div>
             </div>
           </div>
@@ -282,10 +267,6 @@
         </mat-form-field>
     </form> -->
 
-      <mat-dialog-actions align="end">
-          <button mat-button matDialogClose="yes">Close</button>
-          <button mat-button (click)="updateName()">Create</button>
-      </mat-dialog-actions>
   </ng-template>
 
 

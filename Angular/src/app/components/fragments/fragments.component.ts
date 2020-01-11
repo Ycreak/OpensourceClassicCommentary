@@ -45,6 +45,8 @@ export class FragmentsComponent implements OnInit {
   F_Differences : JSON;
   F_ReferencerID : JSON;
 
+  ReferencerID : Number;
+
   // List with all the fragments numbers.
   fragmentList : Array<Number>;
 
@@ -93,13 +95,7 @@ export class FragmentsComponent implements OnInit {
 
   constructor(private modalService: NgbModal, private httpClient: HttpClient, public dialog: MatDialog) { }
 
-  openDialog() {
-    const dialogRef = this.dialog.open(DialogContentExampleDialog);
 
-    dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
-    });
-  }
 
 
 
@@ -386,7 +382,14 @@ export class FragmentsComponent implements OnInit {
   given_fragContent : String;
   given_Editor : String;
   
+  given_AppCrit : String;
+  given_Differences : String;
+  given_Context : String;
+  given_ContextAuthor : String;
+  given_Commentary : String;
+  given_Translation : String;
 
+  fragmentArray : Array<String> = [];
 
   /**
   * Fetches data from the server. Returns this data in a JSON Array.
@@ -395,7 +398,7 @@ export class FragmentsComponent implements OnInit {
   * @returns data JSON object
   * @author Ycreak
   */
- public async pushData(currentBook : String, url : String, fragmentNo : String, editor : String, content : String){
+ public async pushFragment(currentBook : String, url : String, fragmentNo : String, editor : String, content : String){
   const data = await this.httpClient.get(
     this.serverURL + url,{
       params: {
@@ -409,7 +412,44 @@ export class FragmentsComponent implements OnInit {
     return data;  
   }
 
-  updateName() {
+  public async pushCommentary(currentBook : String, url : String, AppCrit : String, Differences : String, 
+    Commentary : String, Translation : String, fragmentNum : String, ReferencerID : String){
+    const data = await this.httpClient.get(
+      this.serverURL + url,{
+        params: {
+          book : currentBook.toString(),
+          appcrit : AppCrit.toString(),
+          diff : Differences.toString(),
+          comment : Commentary.toString(),
+          trans : Translation.toString(),
+          frag : fragmentNum.toString(),
+          ref : ReferencerID.toString(),
+        }
+      })
+      .toPromise();
+      return data;  
+    }
+
+    public async pushContext(currentBook : String, url : String, Author : String, Context : String, ReferencerID : String){
+      const data = await this.httpClient.get(
+        this.serverURL + url,{
+          params: {
+            context : Context.toString(),
+            author : Author.toString(),
+            ref : ReferencerID.toString(),
+
+          }
+        })
+        .toPromise();
+        return data;  
+    }
+
+  public makeFragment(){
+    this.fragmentArray.push(this.given_fragContent);
+    console.log(this.fragmentArray);
+  }
+
+  public createFragment() {
     // this.input_selectedEditor = selectedEditor;
     // this.input_FragmentNum = fragmentNum;
     console.log(this.given_Editor);
@@ -420,15 +460,60 @@ export class FragmentsComponent implements OnInit {
     // Check all input before sending.
     // TODO
 
-    console.log(this.currentBook);
+    // console.log(this.currentBook);
     if(this.currentBook == '7'){
-      this.pushData(this.currentBook, 'insertFragment', this.input_FragmentNum, this.input_selectedEditor, this.input_FragmentContent);
+      this.pushFragment(this.currentBook, 'insertFragment', this.input_FragmentNum, this.input_selectedEditor, this.input_FragmentContent);
     }
     else{
       console.log("THIS BOOK IS PROTECTED");
     }
 
 
+  }
+
+
+
+  public async uploadCommentary(){
+      // Retrieve the Referencer ID and wait before it is retrieved before proceeding with the rest.
+      let Temp_ReferencerID = await this.fetchReferencerID(Number(this.input_selectedFragment), 1, this.currentBook, 'getF_ReferencerID') as JSON;
+      // Retrieve the ReferencerID from the data. If not possible, throw error.
+      try{
+        var ReferencerID = Temp_ReferencerID[0][0];
+      }
+      catch(e){
+        console.log('Cannot find the ReferencerID!');
+      }
+
+    console.log('ref: ', ReferencerID);
+    
+    if(this.currentBook == '7'){
+      this.pushCommentary(this.currentBook, 'insertCommentary', this.given_AppCrit, this.given_Differences, 
+        this.given_Commentary, this.given_Translation, this.input_selectedFragment, ReferencerID);
+    }
+    else{
+      console.log("THIS BOOK IS PROTECTED");
+    }
+  }
+
+  public async uploadContextAuthor(){
+      // Retrieve the Referencer ID and wait before it is retrieved before proceeding with the rest.
+      let Temp_ReferencerID = await this.fetchReferencerID(Number(this.input_selectedFragment), 1, this.currentBook, 'getF_ReferencerID') as JSON;
+      // Retrieve the ReferencerID from the data. If not possible, throw error.
+      try{
+        var ReferencerID = Temp_ReferencerID[0][0];
+      }
+      catch(e){
+        console.log('Cannot find the ReferencerID!');
+      }
+
+    console.log('ref: ', ReferencerID);
+    
+    if(this.currentBook == '7'){
+      this.pushContext(this.currentBook, 'insertContext', this.given_ContextAuthor, this.given_Context, ReferencerID);
+    }
+    else{
+      console.log("THIS BOOK IS PROTECTED");
+    }
   }
 
   public getFragmentNumbers(){
