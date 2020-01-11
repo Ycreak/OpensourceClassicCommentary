@@ -15,10 +15,10 @@
 
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
-          <li> <button class="btn btn-lg" (click)="open(getStarted)">Get Started</button></li>
-          <li> <button class="btn btn-lg" (click)="open(textChanger)">Change Text</button></li>
+          <li> <button class="btn btn-lg" (click)="openBm(getStarted)">Get Started</button></li>
+          <li> <button class="btn btn-lg" (click)="openBm(textChanger)">Change Text</button></li>
           <li> <button class="btn btn-lg" (click)="openLg(bib1)">Bibliography</button></li>
-          <li> <button class="btn btn-lg" (click)="open(newEntry)">New Entry</button></li>
+          <li> <button class="btn btn-lg" (click)="openBm(newEntry)">New Entry</button></li>
           <!-- <li> <button class="btn btn-lg" (click)="putInArray()">Retrieve</button></li> -->
           <li> <button class="btn btn-lg" (click)="show = !show">3Columns</button></li>
           <!-- <li> <mat-button-toggle value="bold">Bold</mat-button-toggle></li> -->
@@ -72,7 +72,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Exit</button>
       </div>
     </ng-template>
 
@@ -175,7 +175,7 @@
           </div>
 
 
-        <div cdkDropList class="example-list" (cdkDropListDropped)="drop1($event)">
+        <div cdkDropList class="example-list" (cdkDropListDropped)="moveAndDrop($event)">
           <div class="example-box" *ngFor="let arrayItem of selectedEditorArray" cdkDrag>
           <!-- <p><b>{{arrayItem.number}}</b></p>
               <div [innerHTML]="arrayItem.line"></div> -->

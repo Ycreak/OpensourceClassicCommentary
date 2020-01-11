@@ -1,21 +1,10 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-// import { HttpErrorResponse } from '@angular/common/http';
-// import { FormsModule } from '@angular/forms';
-import { NgForm } from '@angular/forms'
-// import { getRandomString } from 'selenium-webdriver/safari';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
-// import { NgbPanelChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 
-// import { MatListModule } from '@angular/material/list';
-// import { MatSidenavModule } from '@angular/material/sidenav';
-// import {MatExpansionModule} from '@angular/material/expansion';
-
 import 'hammerjs';
-
-// import '@angular/material/prebuilt-themes/deeppurple-amber.css';
-// import "../node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css";
 
 @Component({
   selector: 'app-interface',
@@ -32,7 +21,6 @@ export class FragmentsComponent implements OnInit {
    * @member "all_f...":  Heeft alle features van alle modules
    * @member "results":   Heeft alle features gevonden door search
    */
-  api : APIComponent;
   root : JSON;
   authors : JSON;
   editors : JSON;
@@ -51,6 +39,8 @@ export class FragmentsComponent implements OnInit {
   F_ContextTemp = [];
   F_Differences : JSON;
   F_ReferencerID : JSON;
+
+  tempJSON : JSON;
 
   givenJSON : JSON;
 
@@ -86,58 +76,51 @@ export class FragmentsComponent implements OnInit {
   column1Array = [];
   column2Array = [];
   selectedEditor = <any>{};
-  // Contains all data for the build of fragments to show.
   allFragmentsArray = [];
 
   mainEditorArray = [];
   selectedEditorArray = [];
 
-  /* @member "abt_code":  De string welke de abt_code voorstelt, te tonen in de popup modal
-   */
-  // abt_code : string;
+  serverURL = 'http://katwijk.nolden.biz:5002/';  
 
   constructor(private modalService: NgbModal, private httpClient: HttpClient) { }
 
-  /* @function:     Laadt interface in
-   * @author:       bors
+  /* @function:     Loads initial interface: bibliography, editors and the fragments.
+   * @author:       Bors & Ycreak
    */
   async ngOnInit() {
-    this.requestEditors(this.currentBook);
-
-    this.global();
-    this.requestBibliography();
-  }
-
-  // This will have to be removed ASAP.
-  public delay(ms: number) {
-    return new Promise( resolve => setTimeout(resolve, ms) );
-  }
-
-  // Attempt to get Async working.
-  async global(){
-    await this.requestFragments(this.startupBook);
-    
-    await this.delay(2000);
-    this.spinner = false;
-
+    // Request a list of editors from the current text to list in the second column
+    this.editors = await this.fetchData(this.currentBook, 'getEditors') as JSON;
+    // Request the Bibliography that goes with the given text
+    this.bib = await this.fetchData(this.startupBook, 'getBibliography') as JSON;
+    // Retrieve all the fragments from the given text
+    this.F_Fragments = await this.fetchData(this.startupBook, 'getFragments') as JSON;
+    console.log("arrayTemp: ", this.F_Fragments);
+    // Create an Array of Objects from these fragments to allow moving them in the second column.
     this.createArrayOfObjects();
-    // Retrieve Default Editor
+    // Turn the retrieved lines into fragments. Builds for the default editor (1).
     this.opbouwenFragmentenEditor("1",1);
+    // When init is done, turn off the loading bar (spinner)
+    this.spinner = false;
   }
 
-  public requestFragments(currentBook: String){
-    // this.currentBook = currentBook;
-    this.api = new APIComponent(this.httpClient);
-    this.api
-          .getFragments(currentBook)
-          .then(result => {
-            this.F_Fragments = result as JSON;
-            this.getString(this.F_Fragments);
-            this.ready = true;
-          })
-          .catch(error => console.log(error));
+  /**
+  * Fetches data from the server. Returns this data in a JSON Array.
+  * @param currentBook
+  * @param url 
+  * @returns data JSON object
+  * @author Ycreak
+  */
+  public async fetchData(currentBook : String, url : String){
+    const data = await this.httpClient.get(
+      this.serverURL + url,{
+        params: {
+          currentBook: currentBook.toString(),
+        }
+      })
+      .toPromise();
+    return data;  
   }
-
 
   /**
   * Adds fragments into an simple array to allow them to be moved on the webpage.
@@ -150,7 +133,11 @@ export class FragmentsComponent implements OnInit {
     let array = this.F_Fragments
     // Push every element in the allFragmentsArray
     for(let arrayElement in array){
-      this.allFragmentsArray.push({ id: array[arrayElement][0], number: array[arrayElement][1], line: array[arrayElement][3], editor: array[arrayElement][2]})
+      this.allFragmentsArray.push({ 
+        id: array[arrayElement][0], 
+        number: array[arrayElement][1], 
+        line: array[arrayElement][3], 
+        editor: array[arrayElement][2]})
     }
   }
 
@@ -231,19 +218,16 @@ export class FragmentsComponent implements OnInit {
 
     // For every entry in mainEditor Array
     for(var key in this.mainEditorArray){
-      console.log('key: ', this.mainEditorArray[key].id);
       // Find the ID tag and save this.
       let idTag = this.mainEditorArray[key].id;
       // Find this ID tag in the selectedEditor Array
       let selectTag = this.selectedEditorArray.find(x => x.id === idTag);
       // And save its index.
       let foundIndex = this.selectedEditorArray.findIndex(x => x.id === idTag);
-      console.log('SelectTag: ', selectTag, 'foundIndex: ', foundIndex);
       // If the selectTag exists, the same line is found in the selectedEditor Array
       if (selectTag != null) {
         // Save this line and check if it is zero (so the same, just subtitute).
         let line = selectTag.line;
-        console.log(line)
         if(line == "0"){
           // If zero, just add the text from the mainEditorArray into the selectedEditorArray
           this.selectedEditorArray[foundIndex].line = this.mainEditorArray[key].line;
@@ -260,497 +244,77 @@ export class FragmentsComponent implements OnInit {
     this.selectedEditorArray.sort(this.sortArrayNumerically);
   }
 
-  public requestF_ReferencerID(fragmentID: Number, editorID: Number, currentBook: String){
-    console.log("F_Commentaar requested!");
-    // this.selectedLine = +requestedLine;
-    console.log('data: ', fragmentID, editorID, currentBook);
-    this.api = new APIComponent(this.httpClient);
-    this.api
-          .getF_ReferencerID(fragmentID, editorID, currentBook)
-          .then(result => {
-            this.F_ReferencerID = result as JSON;
-            this.getString(this.F_ReferencerID);
-            this.ready = true;
-          })
-          .catch(error => console.log(error));
-  }
-
-  async requestItem(givenJSON: JSON, currentBook: String){
-    this.api = new APIComponent(this.httpClient);
-    this.api
-      .getItem(currentBook)
-      .then(result => {
-        givenJSON = result as JSON;
-        // this.getString(givenJSON);
-        this.ready = true;
-        console.log('givenJSON ', givenJSON);
-
-
+  /**
+  * Fetches referencerID from the server. Returns this data in a JSON Array. Needs to be
+  * combined with the fetchData function (but has different parameters xD)
+  * @param currentBook
+  * @param url 
+  * @returns data JSON object
+  * @author Ycreak
+  */
+  public async fetchReferencerID(fragmentID: Number, editorID: Number, currentBook : String, url : String){
+    const data = await this.httpClient.get(
+      this.serverURL + url,{
+        params: {
+          fragmentID: fragmentID.toString(),
+          editorID: editorID.toString(),
+          currentBook: currentBook.toString(),
+        }
       })
-      .catch(error => console.log(error));
-      return givenJSON;    
-
+      .toPromise();
+    return data;  
   }
-
-  public requestF_Commentaar(currentBook: String){
-    // this.currentBook = currentBook;
-    this.api = new APIComponent(this.httpClient);
-    this.api
-          .getF_Commentaar(currentBook)
-          .then(result => {
-            this.F_Commentaar = result as JSON;
-            this.getString(this.F_Commentaar);
-            this.ready = true;
-          })
-          .catch(error => console.log(error));
-  }
-
-  public requestF_Context(currentBook: String){
-    // this.currentBook = currentBook;
-    this.api = new APIComponent(this.httpClient);
-    this.api
-          .getF_Context(currentBook)
-          .then(result => {
-            this.F_Context = result as JSON;
-            this.getString(this.F_Context);
-            this.ready = true;
-          })
-          .catch(error => console.log(error));
-  }
-
-  public requestF_AppCrit(currentBook: String){
-    // this.currentBook = currentBook;
-    this.api = new APIComponent(this.httpClient);
-    this.api
-          .getF_AppCrit(currentBook)
-          .then(result => {
-            this.F_AppCrit = result as JSON;
-            this.getString(this.F_AppCrit);
-            this.ready = true;
-          })
-          .catch(error => console.log(error));
-  }
-
-  public requestF_Translation(currentBook: String){
-    // this.currentBook = currentBook;
-    this.api = new APIComponent(this.httpClient);
-    this.api
-          .getF_Translation(currentBook)
-          .then(result => {
-            this.F_Translation = result as JSON;
-            this.getString(this.F_Translation);
-            this.ready = true;
-          })
-          .catch(error => console.log(error));
-  }
-
-  public requestF_Differences(currentBook: String){
-    // this.currentBook = currentBook;
-    this.api = new APIComponent(this.httpClient);
-    this.api
-          .getF_Differences(currentBook)
-          .then(result => {
-            this.F_Differences = result as JSON;
-            this.getString(this.F_Differences);
-            this.ready = true;
-          })
-          .catch(error => console.log(error));
-  }
-
-  public requestAuthors(){
-    this.api = new APIComponent(this.httpClient);
-    this.api
-          .getAuthors()
-          .then(result => {
-            this.authors = result as JSON;
-            this.getString(this.authors);
-            this.ready = true;
-          })
-          .catch(error => console.log(error));
-  }
-
-  public requestEditors(currentBook: String){
-    //this.currentBook = currentBook;
-    this.api = new APIComponent(this.httpClient);
-    this.api
-          .getEditors(currentBook)
-          .then(result => {
-            this.editors = result as JSON;
-            this.getString(this.editors);
-            this.ready = true;
-          })
-          .catch(error => console.log(error));
-  }
-
-  public requestBibliography(){
-    this.api = new APIComponent(this.httpClient);
-    this.api
-          .getBibliography(this.currentBook)
-          .then(result => {
-            this.bib = result as JSON;
-            this.getString(this.bib);
-            this.ready = true;
-            console.log("Bib requested")
-          })
-          .catch(error => console.log(error));
-  }
-
-  public requestBooks(authorEntry : String){
-    this.api = new APIComponent(this.httpClient);
-    this.api
-          .getBooks(authorEntry)
-          .then(result => {
-            this.books = result as JSON;
-            this.getString(this.books);
-            this.ready = true;
-          })
-          .catch(error => console.log(error));
-  }
-
-
+  /**
+  * Retrieves commentaries when a fragment is clicked.
+  * @param fragmentID which identifies which fragment is clicked
+  * @editorID ???
+  * @returns none
+  * @author Ycreak
+  */
   async ophalenCommentaren(fragmentID: Number, editorID: Number){
-    this.currentCommentaar = fragmentID;
+    // Turn on the spinner.
     this.spinner = true;
-
-    this.requestF_ReferencerID(fragmentID, editorID, this.currentBook);
-    await this.delay(2000);
-    // var hello;
-    // console.log('JSON: ', this.F_ReferencerID[0]);
-
-    console.log('F_REFERENCER: ', this.F_ReferencerID[0][0]);
-
-
+    // Set current fragment number
+    this.currentCommentaar = fragmentID;
+    // Retrieve the Referencer ID and wait before it is retrieved before proceeding with the rest.
+    this.F_ReferencerID = await this.fetchReferencerID(fragmentID, editorID, this.currentBook, 'getF_ReferencerID') as JSON;
+    // Retrieve the ReferencerID from the data. If not possible, throw error.
     try{
-      var ReferencerID = this.F_ReferencerID[0][0]
+      var ReferencerID = this.F_ReferencerID[0][0];
     }
     catch(e){
-      console.log('wrong!')
+      console.log('Cannot find the ReferencerID!');
     }
-
-          // ophalen Commentaar
-    let tempItem: JSON;
-    tempItem = await this.requestItem(this.F_Commentaar, ReferencerID);
-    // await this.delay(2000);
-    console.log('tempItem: ',tempItem);
-
-    // console.log(this.F_Commentaar);
-    
-    // this.requestF_Commentaar(ReferencerID);
-
-    // ophalen AppCrit
-    this.requestF_AppCrit(ReferencerID);
-
-    // ophalen Context
-    // console.log('Getting Context!');
-    this.requestF_Context(ReferencerID);
-
-    this.requestF_Differences(ReferencerID);
-    // console.log("root: ", gegevenRegel, this.root[1]);
-
-    this.requestF_Translation(ReferencerID);
-    // this.F_ReferencerID = {};
-
-
-
-    // console.log('Referencer: ', json);
-
-
-
-
+    // Retrieves Fragment Commentary
+    this.F_Commentaar = await this.fetchData(ReferencerID, 'getF_Commentaar') as JSON;
+    // Retrieves Fragment Differences
+    this.F_Differences = await this.fetchData(ReferencerID, 'getF_Differences') as JSON;
+    // Retrieves Fragment Context
+    this.F_Context = await this.fetchData(ReferencerID, 'getF_Context') as JSON;
+    // Retrieves Fragment Translation
+    this.F_Translation = await this.fetchData(ReferencerID, 'getF_Translation') as JSON;
+    // Retrieves Fragment App. Crit.
+    this.F_AppCrit = await this.fetchData(ReferencerID, 'getF_AppCrit') as JSON;
+    // Turn off spinner at the end
     this.spinner = false;
-
   }
 
-  // Pressing the arrow will expand an expansionpanel.
-  public expandPanel(matExpansionPanel, event): void {
-    event.stopPropagation(); // Preventing event bubbling
-
-    if (!this._isExpansionIndicator(event.target)) {
-      matExpansionPanel.close(); // Here's the magic
-    }
-  }
-
-  private _isExpansionIndicator(target: EventTarget): boolean {
-    const expansionIndicatorClass = 'mat-expansion-indicator';
-
-    return (target['classList'] && target['classList'].contains(expansionIndicatorClass) );
-  }
-
-
-  drop1(event: CdkDragDrop<string[]>) {
+  // Allows a fragment to be moved and dropped to create a custom ordering
+  moveAndDrop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.selectedEditorArray, event.previousIndex, event.currentIndex);
   }
-  // public drop(event: any): void {
-  //   if (event.previousContainer === event.container) {
-  //     moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-  //   }
-  //   else {
-  //     transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
-  //   }
-  // }
 
-  public switchMode(){
-    this.fragments = true;
-    console.log(this.fragments);
-  }
-
-  public getString(insertedJSON: JSON){
-    return JSON.stringify(insertedJSON);
-  }
-
-  public onSubmit(f: NgForm) {
-    console.log(f.value.first);
-    // console.log(f.value);
-  }
-
-  public showInfo(temp1: Array<string>){
-    console.log(temp1);
-  }
-
-  public testFunction(){
-    console.log('de testfunctie is aangeroepen!')
-  }
-
-
+  // Create a small modal
   openSm(content) {
     this.modalService.open(content, { size: 'sm' });
   }
-
+  // Create a large modal
   openLg(bib1) {
     this.modalService.open(bib1, { windowClass: 'modal-sizer' });
   }
-
-  public isValidFoo(commentaarScope : number){
-    console.log("scope", commentaarScope)
-    if (commentaarScope + 6 > this.selectedLine){
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  public isEmpty(obj) {
-    for(var key in obj) {
-        if(obj.hasOwnProperty(key))
-            return false;
-    }
-    return true;
-}
-
-  public checkEmptyBlock(temp : JSON){
-    // console.log("hi", temp)
-    if(this.isEmpty(temp)) {
-      // console.log("empty");// Object is empty (Would return true in this example)
-      return true;
-    } else {
-      // console.log("not empty");
-      return false;
-    }
-
-  }
-
-  open(content) {
-    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-    });
-  }
-
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return  `with: ${reason}`;
-    }
+  // Allows a basic modal to be opened
+  openBm(content) {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'});
   }
 }
 
-  /* @class:    Deze component neemt alle requests (API) voor zijn rekening
-   */
-class APIComponent {
-
-  constructor(private httpClient: HttpClient) { /* empty */ }
-
-  /* @function:     Haalt de primaire text op.
-   * @return:       De promise van de get request.
-   * @author:       Bors & Nolden.
-   */
-  public getFragments(currentBook : String) : Promise<any> {
-    return this.httpClient
-            .get('http://katwijk.nolden.biz:5002/getFragments',{
-              params: {
-                currentBook: currentBook.toString(),
-              }
-            })
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
-  }
-
-  /* @function:     Een get request naar de abt code
-   * @param "list": Een lijst met namen van features
-   * @return:       De promise van de get request
-   * @author:       Bors & Nolden.
-   */
-  public getF_ReferencerID(fragmentID: Number, editorID: Number, currentBook: String) : Promise<any> {
-    // console.log(list);
-    return this.httpClient
-            .get('http://katwijk.nolden.biz:5002/getF_ReferencerID', {
-              params: {
-                fragmentID: fragmentID.toString(),
-                editorID: editorID.toString(),
-                currentBook: currentBook.toString(),
-              },
-            })
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
-  }
-
-  public getItem(currentBook : String) : Promise<any> {
-    // console.log(list);
-    return this.httpClient
-            .get('http://katwijk.nolden.biz:5002/getF_Commentaar', {
-              params: {
-                currentBook: currentBook.toString(),
-              },
-            })
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
-  }
-
-  public getF_Commentaar(currentBook : String) : Promise<any> {
-    // console.log(list);
-    return this.httpClient
-            .get('http://katwijk.nolden.biz:5002/getF_Commentaar', {
-              params: {
-                currentBook: currentBook.toString(),
-              },
-            })
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
-  }
-
-  public getF_AppCrit(currentBook : String) : Promise<any> {
-    // console.log(list);
-    return this.httpClient
-            .get('http://katwijk.nolden.biz:5002/getF_AppCrit', {
-              params: {
-                currentBook: currentBook.toString(),
-              },
-            })
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
-  }
-
-  public getF_Translation(currentBook : String) : Promise<any> {
-    // console.log(list);
-    return this.httpClient
-            .get('http://katwijk.nolden.biz:5002/getF_Translation', {
-              params: {
-                currentBook: currentBook.toString(),
-              },
-            })
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
-  }
-
-
-  public getF_Context(currentBook : String) : Promise<any> {
-    // console.log(list);
-    return this.httpClient
-            .get('http://katwijk.nolden.biz:5002/getF_Context', {
-              params: {
-                currentBook: currentBook.toString(),
-              },
-            })
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
-  }
-
-  public getF_Differences(currentBook : String) : Promise<any> {
-    // console.log(list);
-    return this.httpClient
-            .get('http://katwijk.nolden.biz:5002/getF_Differences', {
-              params: {
-                currentBook: currentBook.toString(),
-              },
-            })
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
-  }
-
-  public getAuthors() : Promise<any> {
-    return this.httpClient
-            .get('http://katwijk.nolden.biz:5002/getAuthors')
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
-  }
-
-  public getEditors(currentBook : String) : Promise<any> {
-    return this.httpClient
-            .get('http://katwijk.nolden.biz:5002/getEditors',{
-              params: {
-                currentBook: currentBook.toString(),
-              },
-            })
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
-  }
-
-  public getBooks(authorEntry : String) : Promise<any> {
-    return this.httpClient
-            .get('http://katwijk.nolden.biz:5002/getBooks', {
-              params: {
-                authorEntry: authorEntry.toString(),
-              },
-            })
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
-  }
-
-  public getBibliography(currentText : String) : Promise<any> {
-    return this.httpClient
-            .get('http://katwijk.nolden.biz:5002/getBibliography', {
-              params: {
-                currentText: currentText.toString(),
-              },
-            })
-            .toPromise()
-            .then(this.extractData)
-            .catch(this.handleError);
-  }
-
-  /* @function:     Bepaalt wat teruggeven wordt
-   * @param "res":  Een response van de request
-   * @return:       Data of een leeg object
-   * @author:       Bors
-   */
-  private extractData(res: Response) : {} {
-    console.log('The requested array is listed in the next line!');
-    console.log(res);
-    return res || {};
-  }
-
-  /* @function:     Error afhandeling na mislukte request
-   * @param "error" Een lijst met namen van features
-   * @return:       De gerejecte promise
-   * @author:       bors
-   */
-  private handleError(error: any) : Promise<any> {
-    console.error('An error occurred', error);
-    return Promise.reject(error.message || error);
-  }
-}
