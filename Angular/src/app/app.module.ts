@@ -23,6 +23,7 @@ import { AuthService } from './services/auth.service';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 
+import {DialogContentExampleDialog} from './components/fragments/fragments.component';
 
 import {
   MatAutocompleteModule,
@@ -82,7 +83,9 @@ const appRoutes: Routes = [
     HomeComponent,
     DashboardComponent,
     ProfileComponent,
-    SidenavComponent
+    SidenavComponent,
+    // DialogContentExample, 
+    
   ],
   imports: [
     BrowserModule,
@@ -90,6 +93,7 @@ const appRoutes: Routes = [
     HttpClientModule,
     FormsModule,
     NgbModule,
+    
     MatSidenavModule,
     MatNativeDateModule,
     BrowserAnimationsModule,
@@ -169,9 +173,12 @@ const appRoutes: Routes = [
     MatToolbarModule,
     MatTooltipModule,
     MatTreeModule,
-    DragDropModule
+    DragDropModule,
+    
   ],
-  providers: [ValidateService, AuthService],
+  entryComponents: [],
+  // declarations: [DialogContentExample, DialogContentExampleDialog],
+  providers: [ValidateService, AuthService, FragmentsComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

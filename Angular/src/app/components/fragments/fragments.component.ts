@@ -1,8 +1,11 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, Input } from '@angular/core';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 
-import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
-import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import {MatDialog} from '@angular/material/dialog';
+
+import { TemplateRef, ViewChild } from '@angular/core';
 
 import 'hammerjs';
 
@@ -13,6 +16,8 @@ import 'hammerjs';
 })
 
 export class FragmentsComponent implements OnInit {
+
+  @ViewChild('callAPIDialog') callAPIDialog: TemplateRef<any>; // Note: TemplateRef requires a type parameter for the component reference. In this case, we're passing an `any` type as it's not a component.
 
   /* @member "api":       Het object dat alle requests behandelt
    * @member "root":      JSON object waarin de interface body in is opgeslagen
@@ -39,6 +44,9 @@ export class FragmentsComponent implements OnInit {
   F_ContextTemp = [];
   F_Differences : JSON;
   F_ReferencerID : JSON;
+
+  // List with all the fragments numbers.
+  fragmentList : Array<Number>;
 
   tempJSON : JSON;
 
@@ -83,7 +91,17 @@ export class FragmentsComponent implements OnInit {
 
   serverURL = 'http://katwijk.nolden.biz:5002/';  
 
-  constructor(private modalService: NgbModal, private httpClient: HttpClient) { }
+  constructor(private modalService: NgbModal, private httpClient: HttpClient, public dialog: MatDialog) { }
+
+  openDialog() {
+    const dialogRef = this.dialog.open(DialogContentExampleDialog);
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+    });
+  }
+
+
 
   /* @function:     Loads initial interface: bibliography, editors and the fragments.
    * @author:       Bors & Ycreak
@@ -91,6 +109,8 @@ export class FragmentsComponent implements OnInit {
   async ngOnInit() {
     // Request a list of editors from the current text to list in the second column
     this.editors = await this.fetchData(this.currentBook, 'getEditors') as JSON;
+    // Request a list of authors to select a different text
+    this.authors = await this.fetchData(this.currentBook, 'getAuthors') as JSON;
     // Request the Bibliography that goes with the given text
     this.bib = await this.fetchData(this.startupBook, 'getBibliography') as JSON;
     // Retrieve all the fragments from the given text
@@ -100,6 +120,8 @@ export class FragmentsComponent implements OnInit {
     this.createArrayOfObjects();
     // Turn the retrieved lines into fragments. Builds for the default editor (1).
     this.opbouwenFragmentenEditor("1",1);
+    // Create list of FragmentNumbers
+    this.getFragmentNumbers();
     // When init is done, turn off the loading bar (spinner)
     this.spinner = false;
   }
@@ -122,6 +144,25 @@ export class FragmentsComponent implements OnInit {
     return data;  
   }
 
+  // Request Newly Selected Text
+  public async requestSelectedText(selectedText: String){
+    this.currentBook = selectedText;
+    this.F_Fragments = await this.fetchData(selectedText, 'getFragments') as JSON;
+    this.createArrayOfObjects();
+    this.opbouwenFragmentenEditor("1",1);
+    this.bib = await this.fetchData(selectedText, 'getBibliography') as JSON;
+    // List with Fragment Numbers (for input)
+    this.getFragmentNumbers();
+  }
+  // Request Books by given Author (in the modal)
+  public async requestBooks(selectedAuthor: String){
+    this.books = await this.fetchData(selectedAuthor, 'getBooks') as JSON;
+  }
+
+  public async pushComment(fragmentNo, editor, content){
+
+  }
+
   /**
   * Adds fragments into an simple array to allow them to be moved on the webpage.
   * This is necessary as moving directly from JSON is not supported by CSS.
@@ -131,6 +172,7 @@ export class FragmentsComponent implements OnInit {
   */
   public createArrayOfObjects(){
     let array = this.F_Fragments
+    this.allFragmentsArray = [];
     // Push every element in the allFragmentsArray
     for(let arrayElement in array){
       this.allFragmentsArray.push({ 
@@ -242,6 +284,7 @@ export class FragmentsComponent implements OnInit {
     // Sort the fragments numerically.
     this.mainEditorArray.sort(this.sortArrayNumerically);
     this.selectedEditorArray.sort(this.sortArrayNumerically);
+    console.log('mainEditorArray: ', this.mainEditorArray);
   }
 
   /**
@@ -316,5 +359,96 @@ export class FragmentsComponent implements OnInit {
   openBm(content) {
     this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'});
   }
+
+  public callAPI() {
+    let dialogRef = this.dialog.open(this.callAPIDialog);
+    dialogRef.afterClosed().subscribe(result => {
+        // Note: If the user clicks outside the dialog or presses the escape key, there'll be no result
+        if (result !== undefined) {
+            if (result === 'yes') {
+                // TODO: Replace the following line with your code.
+                console.log('User clicked yes.');
+            } else if (result === 'no') {
+                // TODO: Replace the following line with your code.
+                console.log('User clicked no.');
+            }
+        }
+    })  
+  }
+
+  // Data that will be send to the server.
+  input_selectedEditor : String;
+  input_FragmentNum : String;
+  input_FragmentContent : String;
+  input_selectedFragment : String;
+
+  given_fragNum : String;
+  given_fragContent : String;
+  given_Editor : String;
+  
+
+
+  /**
+  * Fetches data from the server. Returns this data in a JSON Array.
+  * @param currentBook
+  * @param url 
+  * @returns data JSON object
+  * @author Ycreak
+  */
+ public async pushData(currentBook : String, url : String, fragmentNo : String, editor : String, content : String){
+  const data = await this.httpClient.get(
+    this.serverURL + url,{
+      params: {
+        currentBook: currentBook.toString(),
+        fragmentNo : fragmentNo.toString(),
+        editor : editor.toString(),
+        content : content.toString(),
+      }
+    })
+    .toPromise();
+    return data;  
+  }
+
+  updateName() {
+    // this.input_selectedEditor = selectedEditor;
+    // this.input_FragmentNum = fragmentNum;
+    console.log(this.given_Editor);
+    this.input_FragmentNum = this.given_fragNum;
+    this.input_FragmentContent = this.given_fragContent
+    console.log("givenValues: ", this.input_FragmentContent, this.input_FragmentNum);
+
+    // Check all input before sending.
+    // TODO
+
+    console.log(this.currentBook);
+    if(this.currentBook == '7'){
+      this.pushData(this.currentBook, 'insertFragment', this.input_FragmentNum, this.input_selectedEditor, this.input_FragmentContent);
+    }
+    else{
+      console.log("THIS BOOK IS PROTECTED");
+    }
+
+
+  }
+
+  public getFragmentNumbers(){
+    this.fragmentList = [];
+    for(let key in this.mainEditorArray){
+      this.fragmentList.push(this.mainEditorArray[key].number);
+    }
+  }
+
+  public inputSelectedEditor(selectedEditor : String){
+    this.input_selectedEditor = selectedEditor;
+    console.log(this.input_selectedEditor);
+  }
+
+  public inputSelectedFragment(selectedFragment : String){
+    this.input_selectedFragment = selectedFragment;
+    console.log(selectedFragment);
+  }
+
+
+
 }
 

@@ -18,7 +18,7 @@
           <li> <button class="btn btn-lg" (click)="openBm(getStarted)">Get Started</button></li>
           <li> <button class="btn btn-lg" (click)="openBm(textChanger)">Change Text</button></li>
           <li> <button class="btn btn-lg" (click)="openLg(bib1)">Bibliography</button></li>
-          <li> <button class="btn btn-lg" (click)="openBm(newEntry)">New Entry</button></li>
+          <li> <button class="btn btn-lg" (click)="callAPI()">New Entry</button></li>
           <!-- <li> <button class="btn btn-lg" (click)="putInArray()">Retrieve</button></li> -->
           <li> <button class="btn btn-lg" (click)="show = !show">3Columns</button></li>
           <!-- <li> <mat-button-toggle value="bold">Bold</mat-button-toggle></li> -->
@@ -47,7 +47,7 @@
       <br>
       Book:
       <div>
-          <select class="dropbtn" [(ngModel)]="selectedBook" (ngModelChange)="requestPrimaryText(selectedBook[0])">
+          <select class="dropbtn" [(ngModel)]="selectedBook" (ngModelChange)="requestSelectedText(selectedBook[0])">
             <option *ngFor="let d of this.books" [ngValue]="d">{{d[1]}}</option>
           </select>
         </div>
@@ -86,6 +86,19 @@
     </div>
     <div class="modal-body">
       <div>
+
+          <mat-form-field>
+              <mat-label>Select editor</mat-label>
+              <mat-select [(ngModel)]="selected2">
+                  <mat-option *ngFor="let selectedEditor of this.editors" [value]="selectedEditor[1]"
+                  >
+                  {{ selectedEditor[1] }} 
+                    
+                  </mat-option>
+                </mat-select>
+          </mat-form-field>
+
+
         Remember to use HTML formatting for bold and italics! <br>
         <form #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
             lineBegin: <input name="first" ngModel required #first="ngModel"> <br>
@@ -132,12 +145,154 @@
 
   <!-- Container for the page: one row, two columns. Column Left has the text, Column Right the commentary. -->
 
+  <ng-template #callAPIDialog>   
+    
+    <h4>Current Author</h4>
+    {{this.currentAuthor}}
+    <h4>Current Book</h4>
+    {{this.currentBook}}
+
+    <hr>
+    
+    <!-- <section fxLayout="row wrap" fxLayoutAlign="center center">
+        <mat-card fxFlex="500px" fxFlex.xs="100%">
+            <mat-card-title>Create a new owner</mat-card-title>
+            <mat-card-content>
+            </mat-card-content>
+            <mat-card-actions>
+              
+            </mat-card-actions>
+          </mat-card>
+      </section>
+
+      <form [formGroup]="ownerForm" autocomplete="off" novalidate (ngSubmit)="createOwner(ownerForm.value)" fxLayout="column wrap"
+            fxLayoutAlign="center center" fxLayoutGap="10px">
+        <mat-card-content>
+        </mat-card-content>
+        <mat-card-actions>
+        </mat-card-actions>
+      </form>
+
+      <mat-form-field>
+          <input matInput type="text" placeholder="Owner's name" formControlName="name" id="name">
+          <mat-hint align="end">Not more then 60 characters long.</mat-hint>
+          <mat-error *ngIf="hasError('name', 'required')">Name is required</mat-error>
+          <mat-error *ngIf="hasError('name', 'maxlength')">You have more than 60 characters</mat-error>
+        </mat-form-field>
+         
+        <mat-form-field>
+          <input matInput [matDatepicker]="picker" placeholder="Choose a date of birth" formControlName="dateOfBirth" id="dateOfBirth" 
+              readonly (click)="picker.open()">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+         
+        <mat-form-field>
+          <input matInput type="text" placeholder="Owner's address" formControlName="address">
+          <mat-hint align="end">Not more then 100 characters long.</mat-hint>
+          <mat-error *ngIf="hasError('address', 'required')">Address is required</mat-error>
+          <mat-error *ngIf="hasError('address', 'maxlength')">You have more than 100 characters</mat-error>
+        </mat-form-field> -->
+
+        <div class="container">
+            <div class="row">
+              <div class="col-*-6">
+                  <mat-form-field>
+                      <mat-label>Select editor</mat-label>
+                        <mat-select [(ngModel)]="selected2">
+                          <mat-option *ngFor="let selectedEditor of this.editors" [value]="selectedEditor[1]"
+                            (click)="inputSelectedEditor(selectedEditor[0])">
+                          {{ selectedEditor[1] }} 
+                          </mat-option>
+                        </mat-select>
+                  </mat-form-field>
+          
+                  <div mat-dialog-content>
+                    <mat-form-field class="example-full-width">
+                      <input matInput type="number" placeholder="Fragment Number" #input2 [(ngModel)]='given_fragNum' id="fragNum">
+                      </mat-form-field>
+                  </div>
+          
+                  <div mat-dialog-content>
+                      <mat-form-field class="example-full-width">
+                        <input matInput placeholder="Fragment Content" #input2 [(ngModel)]='given_fragContent' id="fragContent">
+                        </mat-form-field>
+                    </div>   
+
+              </div>
+              <div class="col-*-6">
+                  <mat-form-field>
+                      <mat-label>Select fragment</mat-label>
+                        <mat-select [(ngModel)]="selected2">
+                          <mat-option *ngFor="let selectedFragment of this.fragmentList" [value]="selectedFragment"
+                            (click)="inputSelectedFragment(selectedFragment)">
+                          {{ selectedFragment }} 
+                          </mat-option>
+                        </mat-select>
+                  </mat-form-field>
+
+                  <div mat-dialog-content>
+                      <mat-form-field class="example-full-width">
+                        <input matInput placeholder="Fragment AppCrit" #input2 [(ngModel)]='given_AppCrit' id="fragAppCrit">
+                        </mat-form-field>
+                    </div>   
+
+                  <div mat-dialog-content>
+                      <mat-form-field class="example-full-width">
+                        <input matInput placeholder="Fragment Differences" #input2 [(ngModel)]='given_Differences' id="fragDifferencest">
+                        </mat-form-field>
+                    </div>   
+                    
+                  <div mat-dialog-content>
+                      <mat-form-field class="example-full-width">
+                        <input matInput placeholder="Fragment Context" #input2 [(ngModel)]='given_Context' id="fragContext">
+                        </mat-form-field>
+                    </div>   
+                        
+                  <div mat-dialog-content>
+                      <mat-form-field class="example-full-width">
+                        <input matInput placeholder="Fragment Commentary" #input2 [(ngModel)]='given_Commentary' id="fragCommentary">
+                        </mat-form-field>
+                    </div>                           
+
+                  <div mat-dialog-content>
+                      <mat-form-field class="example-full-width">
+                        <input matInput placeholder="Fragment Translation" #input2 [(ngModel)]='given_Translation' id="fragTranslation">
+                        </mat-form-field>
+                    </div>   
+
+              </div>
+            </div>
+          </div>
+
+     
+
+
+      
+    <!-- <form [formGroup]="ownerForm" autocomplete="off" novalidate (ngSubmit)="createOwner(ownerForm.value)" fxLayout="column wrap"
+    fxLayoutAlign="center center" fxLayoutGap="10px"class="example-form">
+        <mat-form-field class="example-full-width">
+          <input matInput type="number" placeholder="Fragment number" formControlName="fragmentNum" id="fragmentNum">
+        </mat-form-field>
+    </form>
+
+    <form class="example-form">
+        <mat-form-field class="example-full-width">
+          <input matInput placeholder="Fragment" formControlName="fragmentText" id="fragmentText">
+        </mat-form-field>
+    </form> -->
+
+      <mat-dialog-actions align="end">
+          <button mat-button matDialogClose="yes">Close</button>
+          <button mat-button (click)="updateName()">Create</button>
+      </mat-dialog-actions>
+  </ng-template>
+
 
   <div class="container-fluid">
     <div class="row">
       <!-- Eerste Colom -->
       <div class="col-sm anyClass">
-
 
         <div class="example-list">
           <div class="example-box" *ngFor="let arrayItem of mainEditorArray" (click)="ophalenCommentaren(arrayItem.number, arrayItem.editor)">
@@ -189,7 +344,7 @@
       <div class="col-sm">
         <div class="col-sm anyClass">
           
-          <h4>Manuwald Fragment {{currentCommentaar}}</h4> <hr>
+          <h4>Selected Fragment {{currentCommentaar}}</h4> <hr>
           <!-- <mat-spinner *ngIf="spinner"></mat-spinner> -->
           <!-- Empty Entry -->
           <!-- <div *ngIf="checkEmptyBlock(this.F_commentaar)">No entry found.</div> -->
