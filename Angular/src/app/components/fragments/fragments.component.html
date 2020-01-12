@@ -17,8 +17,8 @@
         <ul class="navbar-nav ml-auto">
           <li> <button class="btn btn-lg" (click)="openBm(getStarted)">Get Started</button></li>
           <li> <button class="btn btn-lg" (click)="openBm(textChanger)">Change Text</button></li>
-          <li> <button class="btn btn-lg" (click)="openLg(bib1)">Bibliography</button></li>
-          <li> <button class="btn btn-lg" (click)="callAPI()">New Entry</button></li>
+          <li> <button class="btn btn-lg" (click)="callAPI()">Bibliography</button></li>
+          <li> <button class="btn btn-lg" (click)="toggleShowFragments()">New Entry</button></li>
           <!-- <li> <button class="btn btn-lg" (click)="putInArray()">Retrieve</button></li> -->
           <li> <button class="btn btn-lg" (click)="show = !show">3Columns</button></li>
           <!-- <li> <mat-button-toggle value="bold">Bold</mat-button-toggle></li> -->
@@ -146,127 +146,13 @@
   <!-- Container for the page: one row, two columns. Column Left has the text, Column Right the commentary. -->
 
   <ng-template #callAPIDialog>   
-    
-    <h4>Current Author</h4>
-    {{this.currentAuthor}}
-    <h4>Current Book</h4>
-    {{this.currentBook}}
-    <h4>FragmentArray</h4>
-    {{this.fragmentArray}}
-    <hr>
   
-
-        <div class="container">
-            <div class="row">
-              <div class="col-*-4">
-                <h4>Create Fragment</h4>
-                <mat-form-field>
-                      <mat-label>Select editor</mat-label>
-                        <mat-select [(ngModel)]="selected2">
-                          <mat-option *ngFor="let selectedEditor of this.editors" [value]="selectedEditor[1]"
-                            (click)="inputSelectedEditor(selectedEditor[0])">
-                          {{ selectedEditor[1] }} 
-                          </mat-option>
-                        </mat-select>
-                  </mat-form-field>
-          
-                  <div mat-dialog-content>
-                    <mat-form-field class="example-full-width">
-                      <input matInput type="number" placeholder="Fragment Number" #input2 [(ngModel)]='given_fragNum' id="fragNum">
-                      </mat-form-field>
-                  </div>
-          
-                  <div mat-dialog-content>
-                      <mat-form-field class="example-full-width">
-                        <input matInput placeholder="Fragment Content" #input2 [(ngModel)]='given_fragContent' id="fragContent">
-                        </mat-form-field>
-                    </div>   
-
-                    <mat-dialog-actions align="end">
-                      <button mat-button matDialogClose="yes">Close</button>
-                      <button mat-button (click)="createFragment()">Create</button>
-                      <button mat-button (click)="makeFragment()">Make</button>
-                  </mat-dialog-actions>
-              </div>
-              <div class="col-*-4">
-                  <h4>Add Commentary</h4>
-                  <mat-form-field>
-                      <mat-label>Select fragment</mat-label>
-                        <mat-select [(ngModel)]="selected2">
-                          <mat-option *ngFor="let selectedFragment of this.fragmentList" [value]="selectedFragment"
-                            (click)="inputSelectedFragment(selectedFragment)">
-                          {{ selectedFragment }} 
-                          </mat-option>
-                        </mat-select>
-                  </mat-form-field>
-
-                  <div mat-dialog-content>
-                      <mat-form-field class="example-full-width">
-                        <input matInput placeholder="Fragment AppCrit" #input2 [(ngModel)]='given_AppCrit' id="fragAppCrit">
-                        </mat-form-field>
-                    </div>   
-
-                  <div mat-dialog-content>
-                      <mat-form-field class="example-full-width">
-                        <input matInput placeholder="Fragment Differences" #input2 [(ngModel)]='given_Differences' id="fragDifferences">
-                        </mat-form-field>
-                    </div>   
-                    
- 
-                        
-                  <div mat-dialog-content>
-                      <mat-form-field class="example-full-width">
-                        <input matInput placeholder="Fragment Commentary" #input2 [(ngModel)]='given_Commentary' id="fragCommentary">
-                        </mat-form-field>
-                    </div>                           
-
-                  <div mat-dialog-content>
-                      <mat-form-field class="example-full-width">
-                        <input matInput placeholder="Fragment Translation" #input2 [(ngModel)]='given_Translation' id="fragTranslation">
-                        </mat-form-field>
-                    </div>   
-
-                    <mat-dialog-actions align="end">
-                      <button mat-button (click)="uploadCommentary()">Upload</button>
-                  </mat-dialog-actions>
-
-              </div>
-              <div class="col-*-4">
-                <h4>Add Context</h4>
-                <div mat-dialog-content>
-                    <mat-form-field class="example-full-width">
-                      <input matInput placeholder="Fragment Context Author" #input2 [(ngModel)]='given_ContextAuthor' id="fragContextAuthor">
-                      </mat-form-field>
-                  </div>  
-                <div mat-dialog-content>
-                    <mat-form-field class="example-full-width">
-                      <input matInput placeholder="Fragment Context" #input2 [(ngModel)]='given_Context' id="fragContext">
-                      </mat-form-field>
-                  </div> 
-                  <mat-dialog-actions align="end">
-                      <button mat-button (click)="uploadContextAuthor()">Upload</button>
-                  </mat-dialog-actions> 
-              </div>
-            </div>
-          </div>
-
-     
-
-
-      
-    <!-- <form [formGroup]="ownerForm" autocomplete="off" novalidate (ngSubmit)="createOwner(ownerForm.value)" fxLayout="column wrap"
-    fxLayoutAlign="center center" fxLayoutGap="10px"class="example-form">
-        <mat-form-field class="example-full-width">
-          <input matInput type="number" placeholder="Fragment number" formControlName="fragmentNum" id="fragmentNum">
-        </mat-form-field>
-    </form>
-
-    <form class="example-form">
-        <mat-form-field class="example-full-width">
-          <input matInput placeholder="Fragment" formControlName="fragmentText" id="fragmentText">
-        </mat-form-field>
-    </form> -->
-
+      <mat-nav-list class="my-list-2">
+          <mat-list-item *ngFor="let line of this.bib">
+            <b>{{ line[0] }} {{ line[1] }} </b> <pre> </pre> <i> {{ line[2] }} {{ line[3] }},</i><pre> </pre>{{ line[4] }} ({{ line[5] }}). {{ line[6] }} {{ line[7] }} - ({{ line[8] }}, {{ line[9] }})
+          </mat-list-item>
+        </mat-nav-list>
+  
   </ng-template>
 
 
@@ -321,17 +207,184 @@
         </div>
       </div>
 
-    <!-- Derde column -->
-      <div class="col-sm">
+      <!-- Input Column -->
+      <div *ngIf="showFragments == false" class="col-sm anyClass">
+
+          <div class="container">
+              <div class="row">
+                <div class="col-sm-6">
+          Current Author: {{this.currentAuthorName}} <br>
+          Current Book: {{this.currentBookName}} <br>
+          Main Editor: {{this.mainEditorName}} <br>
+          </div>
+          <div class="col-sm-6">
+
+                    </div>
+          </div>
+          </div>
+
+
+
+ 
+          <hr>
+  
+          <mat-tab-group>
+              <mat-tab label="Create Fragment"><br>
+                    <div mat-dialog-content>
+                      <mat-form-field class="example-full-width">
+                        <input matInput type="number" placeholder="Fragment Number" #input2 [(ngModel)]='given_fragNum' id="fragNum">
+                        <mat-hint>Number that main editor uses</mat-hint>
+  
+                        </mat-form-field>
+                    </div>
+            
+                    <div mat-dialog-content>
+                        <mat-form-field class="example-full-width">
+                          <input matInput placeholder="Fragment Content" #input2 [(ngModel)]='given_fragContent' id="fragContent">
+                          <mat-hint>Please press Make per line!</mat-hint>
+  
+                        </mat-form-field>
+                      </div>   
+  
+                      <mat-dialog-actions align="end">
+                        <button mat-button (click)="deleteItemFragmentArray()">Delete</button>
+                        <button mat-button (click)="makeFragment()">Make</button>
+                        <button mat-button (click)="createFragment()">Upload</button>
+
+                    </mat-dialog-actions>
+                    <h4>Your fragment per row:</h4>
+                    <ol>
+                        <li *ngFor="let fragmentLine of this.fragmentArray">
+                            {{ fragmentLine }}
+                        </li>
+                      </ol>
+
+              </mat-tab>
+              <mat-tab label="Add Commentary">
+                  <br>
+                  <div class="container">
+                      <div class="row">
+                  <div class="col-sm-6">
+                      <mat-form-field>
+                          <mat-label>Select fragment</mat-label>
+                            <mat-select [(ngModel)]="selected2">
+                              <mat-option *ngFor="let selectedFragment of this.fragmentList" [value]="selectedFragment"
+                                (click)="inputSelectedFragment(selectedFragment)">
+                              {{ selectedFragment }} 
+                              </mat-option>
+                            </mat-select>
+                      </mat-form-field>
+    
+                      <div mat-dialog-content>
+                          <mat-form-field class="example-full-width">
+                            <input matInput placeholder="Fragment AppCrit" #input2 [(ngModel)]='given_AppCrit' id="fragAppCrit">
+                            </mat-form-field>
+                        </div>   
+    
+                      <div mat-dialog-content>
+                          <mat-form-field class="example-full-width">
+                            <input matInput placeholder="Fragment Differences" #input2 [(ngModel)]='given_Differences' id="fragDifferences">
+                            </mat-form-field>
+                        </div>   
+                        
+     
+                            
+                      <div mat-dialog-content>
+                          <mat-form-field class="example-full-width">
+                            <input matInput placeholder="Fragment Commentary" #input2 [(ngModel)]='given_Commentary' id="fragCommentary">
+                            </mat-form-field>
+                        </div>                           
+    
+                      <div mat-dialog-content>
+                          <mat-form-field class="example-full-width">
+                            <input matInput placeholder="Fragment Translation" #input2 [(ngModel)]='given_Translation' id="fragTranslation">
+                            </mat-form-field>
+                        </div>   
+    
+                        <mat-dialog-actions align="end">
+                          <button mat-button (click)="uploadCommentary()">Upload</button>
+                      </mat-dialog-actions>
+    
+                  </div>
+                  <div class="col-sm-6">
+                    <h4>Add Context</h4>
+                    
+                    <div mat-dialog-content>
+                        <mat-form-field class="example-full-width">
+                          <input matInput placeholder="Fragment Context Author" #input2 [(ngModel)]='given_ContextAuthor' id="fragContextAuthor">
+                          </mat-form-field>
+                      </div>  
+                    <div mat-dialog-content>
+                        <mat-form-field class="example-full-width">
+                          <input matInput placeholder="Fragment Context" #input2 [(ngModel)]='given_Context' id="fragContext">
+                          </mat-form-field>
+                      </div> 
+                      <mat-dialog-actions align="end">
+                          <button mat-button (click)="uploadContextAuthor()">Upload</button>
+                      </mat-dialog-actions> 
+                  </div>
+                  </div>
+                  </div>
+
+              </mat-tab>
+              <mat-tab label="Link Fragments"><br>
+                <mat-form-field>
+                    <mat-label>Select fragment</mat-label>
+                      <mat-select [(ngModel)]="selected2">
+                        <mat-option *ngFor="let selectedFragment of this.fragmentList" [value]="selectedFragment"
+                          (click)="inputSelectedFragment(selectedFragment)">
+                        {{ selectedFragment }} 
+                        </mat-option>
+                      </mat-select>
+                </mat-form-field>
+
+                <mat-form-field>
+                  <mat-label>Secondary editor</mat-label>
+                    <mat-select [(ngModel)]="selected3">
+                      <mat-option *ngFor="let selectedEditor2 of this.editors" [value]="selectedEditor2[1]"
+                        (click)="inputSelectedEditor(selectedEditor2[0])">
+                      {{ selectedEditor2[1] }} 
+                      </mat-option>
+                    </mat-select>
+              </mat-form-field>
+    
+              <div mat-dialog-content>
+                  <mat-form-field class="example-full-width">
+                    <input matInput type="number" placeholder="Fragment Number" #input2 [(ngModel)]='given_fragNum' id="fragNum">
+                    </mat-form-field>
+                </div>
+    
+                <mat-dialog-actions align="end">
+                    <button mat-button (click)="uploadContextAuthor()">Upload</button>
+                </mat-dialog-actions> 
+
+
+              </mat-tab>
+            </mat-tab-group>
+
+          <div class="container">
+              <div class="row">
+                <div class="col-*-3">
+
+                    <br>  
+                </div>
+
+                <div class="col-*-3">
+
+                </div>
+
+                <hr>
+                
+              </div>
+            </div>
+
+        </div>
+
+    <!-- Fragment column -->
+      <div *ngIf="showFragments" class="col-sm anyClass">
         <div class="col-sm anyClass">
           
           <h4>Selected Fragment {{currentCommentaar}}</h4> <hr>
-          <!-- <mat-spinner *ngIf="spinner"></mat-spinner> -->
-          <!-- Empty Entry -->
-          <!-- <div *ngIf="checkEmptyBlock(this.F_commentaar)">No entry found.</div> -->
-          <!-- Valid Entry -->
-
-          <!-- <mat-spinner></mat-spinner> -->
 
           <div *ngFor="let AppCrit of this.F_AppCrit">
             <mat-expansion-panel>
@@ -441,28 +494,13 @@
           </div>
         </mat-expansion-panel>
       </div>
-            <!-- </div> -->
+            </div>
+      </div>
         <!-- </div>
 
       </div> -->
-  <!-- </div>
-  </div> -->
+  </div>
+  </div>
 
-  <!-- Extra row for some quick testing! -->
-  <!-- <div class="container-fluid">
-      <div class="row">
-        <div class="col-sm anyClass">
-            <mat-nav-list class="my-list-2">
-              <mat-list-item *ngFor="let line of this.bib">
-                {{line[0]}}-{{line[1]}}
-              </mat-list-item>
-            </mat-nav-list>
-        </div>
-        <div class="col-sm anyClass">
-            <button (click)="requestBibliography()">Hello</button>
-            <div class="list" ng-repeat="thing in this.bib">
-                {{ thing }}
-              </div>
-        </div>
-    </div> -->
+
 

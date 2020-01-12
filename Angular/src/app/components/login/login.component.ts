@@ -3,12 +3,15 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { FlashMessagesService } from 'angular2-flash-messages';
 
+import { FragmentsComponent } from '../fragments/fragments.component'
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
+  
   username: string; // Linked via ngModel.
   password: string;
 

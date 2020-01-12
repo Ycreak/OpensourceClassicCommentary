@@ -81,6 +81,8 @@ export class FragmentsComponent implements OnInit {
   listColumn1 = [];
 
   show: boolean = false;
+  showFragments: boolean = true;
+  // showFragmentsFalse: boolean = false;
   spinner: boolean = true;
 
   column1Array = [];
@@ -91,13 +93,14 @@ export class FragmentsComponent implements OnInit {
   mainEditorArray = [];
   selectedEditorArray = [];
 
+  mainEditorKey : Number = 1;
+  mainEditorName : String = "";
+  currentAuthorName : String;
+  currentBookName : String;
+
   serverURL = 'http://katwijk.nolden.biz:5002/';  
 
   constructor(private modalService: NgbModal, private httpClient: HttpClient, public dialog: MatDialog) { }
-
-
-
-
 
   /* @function:     Loads initial interface: bibliography, editors and the fragments.
    * @author:       Bors & Ycreak
@@ -105,8 +108,30 @@ export class FragmentsComponent implements OnInit {
   async ngOnInit() {
     // Request a list of editors from the current text to list in the second column
     this.editors = await this.fetchData(this.currentBook, 'getEditors') as JSON;
+    console.log('editors: ',this.editors);
+    
+    for(let key in this.editors){
+      if(this.editors[key][2] == 1){
+        this.mainEditorKey = this.editors[key][2];
+        this.mainEditorName = this.editors[key][1];
+      }
+    }
     // Request a list of authors to select a different text
     this.authors = await this.fetchData(this.currentBook, 'getAuthors') as JSON;
+    
+    for(let key in this.authors){
+      if(this.authors[key][0] == this.currentAuthor){
+        this.currentAuthorName = this.authors[key][1];
+      }
+    }
+
+    this.books = await this.fetchData(this.currentAuthor, 'getBooks') as JSON;
+    for(let key in this.books){
+      if(this.books[key][0] == this.currentBook){
+        this.currentBookName = this.books[key][1];
+      }
+    }
+  
     // Request the Bibliography that goes with the given text
     this.bib = await this.fetchData(this.startupBook, 'getBibliography') as JSON;
     // Retrieve all the fragments from the given text
@@ -154,6 +179,7 @@ export class FragmentsComponent implements OnInit {
   public async requestBooks(selectedAuthor: String){
     this.books = await this.fetchData(selectedAuthor, 'getBooks') as JSON;
   }
+  
 
   public async pushComment(fragmentNo, editor, content){
 
@@ -249,7 +275,7 @@ export class FragmentsComponent implements OnInit {
   */
   public opbouwenFragmentenEditor(selectedEditor: String, column: Number){
     let mainEditor = 1; // TODO: Moet nog uit de database halen!
-
+    this.mainEditorKey = mainEditor;
     // Create a mainEditorArray and a selectedEditorArray.
     this.mainEditorArray = this.allFragmentsArray.filter(x => x.editor == mainEditor);
     this.selectedEditorArray = this.allFragmentsArray.filter(x => x.editor == selectedEditor);
@@ -341,6 +367,12 @@ export class FragmentsComponent implements OnInit {
   // Allows a fragment to be moved and dropped to create a custom ordering
   moveAndDrop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.selectedEditorArray, event.previousIndex, event.currentIndex);
+  }
+
+  // Toggles right column
+  public toggleShowFragments(){
+    this.showFragments = !this.showFragments;
+    // this.showFragmentsFalse = !this.showFragmentsFalse;
   }
 
   // Create a small modal
@@ -446,7 +478,11 @@ export class FragmentsComponent implements OnInit {
 
   public makeFragment(){
     this.fragmentArray.push(this.given_fragContent);
-    console.log(this.fragmentArray);
+    console.log("fragmentArray: ", this.fragmentArray);
+  }
+
+  public deleteItemFragmentArray(){
+    this.fragmentArray.pop();
   }
 
   public createFragment() {
@@ -462,7 +498,7 @@ export class FragmentsComponent implements OnInit {
 
     // console.log(this.currentBook);
     if(this.currentBook == '7'){
-      this.pushFragment(this.currentBook, 'insertFragment', this.input_FragmentNum, this.input_selectedEditor, this.input_FragmentContent);
+      this.pushFragment(this.currentBook, 'insertFragment', this.given_fragNum, this.mainEditorKey.toString(), this.given_fragContent);
     }
     else{
       console.log("THIS BOOK IS PROTECTED");
