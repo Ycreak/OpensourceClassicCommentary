@@ -332,7 +332,7 @@
                     <mat-label>Select fragment</mat-label>
                       <mat-select [(ngModel)]="selected2">
                         <mat-option *ngFor="let selectedFragment of this.fragmentList" [value]="selectedFragment"
-                          (click)="inputSelectedFragment(selectedFragment)">
+                          (click)="retrieveSelectedFragment(selectedFragment)">
                         {{ selectedFragment }} 
                         </mat-option>
                       </mat-select>
@@ -355,9 +355,17 @@
                 </div>
     
                 <mat-dialog-actions align="end">
-                    <button mat-button (click)="uploadContextAuthor()">Upload</button>
+                    <button mat-button (click)="retrieveSelectedFragment()">Upload</button>
                 </mat-dialog-actions> 
 
+                <hr>
+
+                <h4>Your fragment per row:</h4>
+                <ol>
+                    <li *ngFor="let fragmentLine of this.tempArray">
+                        {{ fragmentLine.id }} - {{fragmentLine.line}}
+                    </li>
+                  </ol>                
 
               </mat-tab>
             </mat-tab-group>

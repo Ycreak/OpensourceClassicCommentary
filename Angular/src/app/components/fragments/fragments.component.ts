@@ -102,6 +102,17 @@ export class FragmentsComponent implements OnInit {
 
   constructor(private modalService: NgbModal, private httpClient: HttpClient, public dialog: MatDialog) { }
 
+  // Please kill this with fire
+  public retrieveDataFromJSON(givenJSON : JSON, refJSON : String, column1 : number, column2 : number){
+    for(let key in givenJSON){
+      if(givenJSON[key][column1] == refJSON){
+        var foundEntry = givenJSON[key][column2];
+        console.log(foundEntry);
+        return foundEntry;
+      }
+    }
+  }
+
   /* @function:     Loads initial interface: bibliography, editors and the fragments.
    * @author:       Bors & Ycreak
    */
@@ -126,11 +137,8 @@ export class FragmentsComponent implements OnInit {
     }
 
     this.books = await this.fetchData(this.currentAuthor, 'getBooks') as JSON;
-    for(let key in this.books){
-      if(this.books[key][0] == this.currentBook){
-        this.currentBookName = this.books[key][1];
-      }
-    }
+    console.log('books: ', this.books)
+    this.currentBookName = this.retrieveDataFromJSON(this.books, this.currentBook, 0, 1);
   
     // Request the Bibliography that goes with the given text
     this.bib = await this.fetchData(this.startupBook, 'getBibliography') as JSON;
@@ -172,6 +180,7 @@ export class FragmentsComponent implements OnInit {
     this.createArrayOfObjects();
     this.opbouwenFragmentenEditor("1",1);
     this.bib = await this.fetchData(selectedText, 'getBibliography') as JSON;
+    this.currentBookName = this.retrieveDataFromJSON(this.books, this.currentBook, 0, 1);
     // List with Fragment Numbers (for input)
     this.getFragmentNumbers();
   }
@@ -423,14 +432,17 @@ export class FragmentsComponent implements OnInit {
 
   fragmentArray : Array<String> = [];
 
+  tempArray : Array<String>;
+
   /**
   * Fetches data from the server. Returns this data in a JSON Array.
+  * Also takes care of the referencer table (server side).
   * @param currentBook
   * @param url 
   * @returns data JSON object
   * @author Ycreak
   */
- public async pushFragment(currentBook : String, url : String, fragmentNo : String, editor : String, content : String){
+ public async pushFragment(currentBook : String, url : String, fragmentNo : String, editor : String, content : Array<String>){
   const data = await this.httpClient.get(
     this.serverURL + url,{
       params: {
@@ -476,8 +488,19 @@ export class FragmentsComponent implements OnInit {
         return data;  
     }
 
+    public async retrieveSelectedFragment(selectedFragment:String){
+      let Temp_ReferencerID = await this.fetchReferencerID(Number(selectedFragment), 1, this.currentBook, 'getF_ReferencerID') as JSON;
+      console.log('this: ', this.allFragmentsArray);
+
+      this.tempArray = this.allFragmentsArray.filter(x => x.number == selectedFragment);
+      console.log(this.tempArray);
+
+      // let temp = this.fetchData(this.currentBook, 'getEditors') as JSON;
+      // ) as JSON;
+    }
+
   public makeFragment(){
-    this.fragmentArray.push(this.given_fragContent);
+    this.fragmentArray.push('"' + this.given_fragContent + '"@');
     console.log("fragmentArray: ", this.fragmentArray);
   }
 
@@ -498,7 +521,7 @@ export class FragmentsComponent implements OnInit {
 
     // console.log(this.currentBook);
     if(this.currentBook == '7'){
-      this.pushFragment(this.currentBook, 'insertFragment', this.given_fragNum, this.mainEditorKey.toString(), this.given_fragContent);
+      this.pushFragment(this.currentBook, 'insertFragment', this.given_fragNum, this.mainEditorKey.toString(), this.fragmentArray);
     }
     else{
       console.log("THIS BOOK IS PROTECTED");
