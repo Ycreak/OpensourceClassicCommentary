@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from 'src/app/services/auth.service';
-import { Router } from '@angular/router';
-import { FlashMessagesService } from 'angular2-flash-messages';
+import { TemplateRef, ViewChild } from '@angular/core';
+
 
 @Component({
   selector: 'app-navbar',
@@ -9,24 +8,14 @@ import { FlashMessagesService } from 'angular2-flash-messages';
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements OnInit {
+  @ViewChild('childMenu', {static: true}) public childMenu: any;
 
   constructor(
-    private authService: AuthService,
-    private router: Router,
-    private flashMessage: FlashMessagesService
   ) { }
 
   ngOnInit() {
   }
 
-  onLogoutClick(){
-    this.authService.logout();
-    this.flashMessage.show('You are logged out', {
-      cssClass:'alert-success',
-      timout: 3000
-    });
-    this.router.navigate(['/login']);
-    return false;
-  }
+
 
 }

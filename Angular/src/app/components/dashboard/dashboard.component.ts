@@ -16,6 +16,14 @@ import 'hammerjs';
 // import '@angular/material/prebuilt-themes/deeppurple-amber.css';
 // import "../node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css";
 
+// Imports navbar from file Navbar
+@Component({
+  selector: 'app-navbar',
+  // templateUrl: './header.html',
+  // styleUrls: ['../fragments/fragments.component.css'],
+})
+export class DeviceComponent {}
+
 @Component({
   selector: 'app-interface',
   templateUrl: './dashboard.component.html',

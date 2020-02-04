@@ -9,12 +9,19 @@ import { TemplateRef, ViewChild } from '@angular/core';
 
 import 'hammerjs';
 
+// Imports navbar from file Navbar
+@Component({
+  selector: 'app-navbar',
+  // templateUrl: './header.html',
+  // styleUrls: ['./fragments.component.css'],
+})
+export class DeviceComponent {}
+
 @Component({
   selector: 'app-interface',
   templateUrl: './fragments.component.html',
   styleUrls: ['./fragments.component.css'],
 })
-
 export class FragmentsComponent implements OnInit {
 
   @ViewChild('callAPIDialog') callAPIDialog: TemplateRef<any>; // Note: TemplateRef requires a type parameter for the component reference. In this case, we're passing an `any` type as it's not a component.
@@ -430,6 +437,8 @@ export class FragmentsComponent implements OnInit {
   given_Commentary : String;
   given_Translation : String;
 
+  given_note : String;
+
   fragmentArray : Array<String> = [];
 
   tempArray : Array<String>;
@@ -481,7 +490,6 @@ export class FragmentsComponent implements OnInit {
             context : Context.toString(),
             author : Author.toString(),
             ref : ReferencerID.toString(),
-
           }
         })
         .toPromise();
@@ -506,6 +514,14 @@ export class FragmentsComponent implements OnInit {
 
   public deleteItemFragmentArray(){
     this.fragmentArray.pop();
+  }
+
+  public insertNote(){
+    console.log('hey', this.given_note);
+    // this.selectedEditorArray[0] = 'hello'; //.push(12, this.given_note);
+    this.selectedEditorArray.push({ number: 0, line: this.given_note, editor: 0});
+    console.log('hi: ', this.selectedEditorArray);
+
   }
 
   public createFragment() {
