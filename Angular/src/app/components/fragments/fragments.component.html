@@ -60,6 +60,8 @@
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Exit</button>
+      <button type="button" class="btn btn-outline-dark" (click)="requestSelectedText(selectedBook[0])">Retrieve</button>
+
     </div>
   </ng-template>
 
@@ -166,6 +168,7 @@
     <div class="row">
       <!-- Eerste Colom -->
       <div class="col-sm anyClass">
+        <h4>{{this.currentAuthorName}}: {{this.currentBookName}}. {{this.mainEditorName}}</h4>
 
         <div class="example-list">
           <div class="example-box" *ngFor="let arrayItem of mainEditorArray" (click)="ophalenCommentaren(arrayItem.number, arrayItem.editor)">
@@ -201,7 +204,7 @@
           </mat-form-field>
 
           </div>
-          <div class="col-4">
+          <!-- <div class="col-4">
             <div mat-dialog-content>
               <mat-form-field class="example-full-width">
                 <input matInput placeholder="Add Note" #input3 [(ngModel)]='given_note' id="noteContent">
@@ -213,7 +216,7 @@
             <mat-dialog-actions align="end">
               <button mat-button (click)="insertNote()">Insert</button>
           </mat-dialog-actions>
-          </div>
+          </div> -->
         </div>
 
 
@@ -271,23 +274,23 @@
                     <div mat-dialog-content>
                         <mat-form-field class="example-full-width">
                           <input matInput placeholder="Fragment Content" #input2 [(ngModel)]='given_fragContent' id="fragContent">
-                          <mat-hint>Please press Make per line!</mat-hint>
+                          <mat-hint>Separate Lines using HTML Paragraphs</mat-hint>
   
                         </mat-form-field>
                       </div>   
   
                       <mat-dialog-actions align="end">
                         <button mat-button (click)="deleteItemFragmentArray()">Delete</button>
-                        <button mat-button (click)="makeFragment()">Make</button>
+                        <!-- <button mat-button (click)="makeFragment()">Make</button> -->
                         <button mat-button (click)="createFragment()">Upload</button>
 
                     </mat-dialog-actions>
-                    <h4>Your fragment per row:</h4>
+                    <!-- <h4>Your fragment per row:</h4>
                     <ol>
                         <li *ngFor="let fragmentLine of this.fragmentArray">
                             {{ fragmentLine }}
                         </li>
-                      </ol>
+                      </ol> -->
 
               </mat-tab>
               <mat-tab label="Add Commentary">
@@ -357,8 +360,8 @@
                   </div>
 
               </mat-tab>
-              <mat-tab label="Link Fragments"><br>
-                <mat-form-field>
+              <mat-tab label="Add other Authors"><br>
+                <!-- <mat-form-field>
                     <mat-label>Select fragment</mat-label>
                       <mat-select [(ngModel)]="selected2">
                         <mat-option *ngFor="let selectedFragment of this.fragmentList" [value]="selectedFragment"
@@ -366,7 +369,14 @@
                         {{ selectedFragment }} 
                         </mat-option>
                       </mat-select>
+                </mat-form-field> -->
+
+                <mat-form-field class="example-full-width">
+                  <input matInput placeholder="Fragment Content" #input2 [(ngModel)]='given_fragContent' id="fragContent">
+                  <mat-hint>Separate Lines using HTML Paragraphs</mat-hint>
+
                 </mat-form-field>
+
 
                 <mat-form-field>
                   <mat-label>Secondary editor</mat-label>
@@ -385,17 +395,17 @@
                 </div>
     
                 <mat-dialog-actions align="end">
-                    <button mat-button (click)="retrieveSelectedFragment()">Upload</button>
+                    <button mat-button (click)="addOtherFragment()">Upload</button>
                 </mat-dialog-actions> 
 
                 <hr>
 
-                <h4>Your fragment per row:</h4>
+                <!-- <h4>Your fragment per row:</h4>
                 <ol>
                     <li *ngFor="let fragmentLine of this.tempArray">
                         {{ fragmentLine.id }} - {{fragmentLine.line}}
                     </li>
-                  </ol>                
+                  </ol>                 -->
 
               </mat-tab>
             </mat-tab-group>
@@ -423,6 +433,29 @@
         <div class="col-sm anyClass">
           
           <h4>Selected Fragment {{currentCommentaar}}</h4> <hr>
+
+
+          <div *ngFor="let translation of this.F_Translation">
+            <!-- {{commentaar}} -->
+            <mat-expansion-panel>
+              <!-- Regelnummer -->
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <b>Fragment Translation</b>
+                </mat-panel-title>
+              <!-- Woorden in kwestie -->
+                <!-- <b>Latin is great</b> -->
+              </mat-expansion-panel-header>
+              <!-- Commentaar zelf met opmaak -->
+              <div class="mat-expansion-panel-content">
+                <div class="mat-expansion-panel-body">
+                    <div [innerHTML]="translation"></div>
+                </div>
+              </div>
+            </mat-expansion-panel>
+          </div>
+
+          <hr>
 
           <div *ngFor="let AppCrit of this.F_AppCrit">
             <mat-expansion-panel>
@@ -466,8 +499,6 @@
           </div>
 
           <hr>
-
-
 
         <div *ngFor="let F_Context of this.F_Context">
           <!-- {{commentaar}} -->
@@ -513,13 +544,13 @@
 
       <hr>
 
-      <div *ngFor="let translation of this.F_Translation">
+      <div *ngFor="let commentaar of this.F_Reconstruction">
         <!-- {{commentaar}} -->
         <mat-expansion-panel>
           <!-- Regelnummer -->
           <mat-expansion-panel-header>
             <mat-panel-title>
-              <b>Fragment Translation</b>
+              <b>Fragment Reconstruction</b>
             </mat-panel-title>
           <!-- Woorden in kwestie -->
             <!-- <b>Latin is great</b> -->
@@ -527,11 +558,12 @@
           <!-- Commentaar zelf met opmaak -->
           <div class="mat-expansion-panel-content">
             <div class="mat-expansion-panel-body">
-                <div [innerHTML]="translation"></div>
+                <div [innerHTML]="commentaar"></div>
             </div>
           </div>
         </mat-expansion-panel>
       </div>
+
             </div>
       </div>
         <!-- </div>

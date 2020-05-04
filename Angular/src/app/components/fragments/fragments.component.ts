@@ -89,7 +89,6 @@ export class FragmentsComponent implements OnInit {
 
   show: boolean = false;
   showFragments: boolean = true;
-  // showFragmentsFalse: boolean = false;
   spinner: boolean = true;
 
   column1Array = [];
@@ -296,33 +295,35 @@ export class FragmentsComponent implements OnInit {
     this.mainEditorArray = this.allFragmentsArray.filter(x => x.editor == mainEditor);
     this.selectedEditorArray = this.allFragmentsArray.filter(x => x.editor == selectedEditor);
 
-    // For every entry in mainEditor Array
-    for(var key in this.mainEditorArray){
-      // Find the ID tag and save this.
-      let idTag = this.mainEditorArray[key].id;
-      // Find this ID tag in the selectedEditor Array
-      let selectTag = this.selectedEditorArray.find(x => x.id === idTag);
-      // And save its index.
-      let foundIndex = this.selectedEditorArray.findIndex(x => x.id === idTag);
-      // If the selectTag exists, the same line is found in the selectedEditor Array
-      if (selectTag != null) {
-        // Save this line and check if it is zero (so the same, just subtitute).
-        let line = selectTag.line;
-        if(line == "0"){
-          // If zero, just add the text from the mainEditorArray into the selectedEditorArray
-          this.selectedEditorArray[foundIndex].line = this.mainEditorArray[key].line;
-        }
-        // TODO: else logic. Dont change anything, just leave it (in short).
-      }
-    }
-    // Combine the different lines into fragments.
-    this.mainEditorArray = this.combineLinesIntoFragments(this.mainEditorArray);
-    this.selectedEditorArray = this.combineLinesIntoFragments(this.selectedEditorArray);
+    // // For every entry in mainEditor Array
+    // for(var key in this.mainEditorArray){
+    //   // Find the ID tag and save this.
+    //   let idTag = this.mainEditorArray[key].id;
+    //   // Find this ID tag in the selectedEditor Array
+    //   let selectTag = this.selectedEditorArray.find(x => x.id === idTag);
+    //   // And save its index.
+    //   let foundIndex = this.selectedEditorArray.findIndex(x => x.id === idTag);
+    //   // If the selectTag exists, the same line is found in the selectedEditor Array
+    //   if (selectTag != null) {
+    //     // Save this line and check if it is zero (so the same, just subtitute).
+    //     let line = selectTag.line;
+    //     if(line == "0"){
+    //       // If zero, just add the text from the mainEditorArray into the selectedEditorArray
+    //       this.selectedEditorArray[foundIndex].line = this.mainEditorArray[key].line;
+    //     }
+    //     // TODO: else logic. Dont change anything, just leave it (in short).
+    //   }
+    // }
+    // // Combine the different lines into fragments.
+    // this.mainEditorArray = this.combineLinesIntoFragments(this.mainEditorArray);
+    // this.selectedEditorArray = this.combineLinesIntoFragments(this.selectedEditorArray);
 
     // Sort the fragments numerically.
     this.mainEditorArray.sort(this.sortArrayNumerically);
     this.selectedEditorArray.sort(this.sortArrayNumerically);
     console.log('mainEditorArray: ', this.mainEditorArray);
+    console.log('selectedEditorArray: ', this.selectedEditorArray);
+
   }
 
   /**
@@ -451,7 +452,7 @@ export class FragmentsComponent implements OnInit {
   * @returns data JSON object
   * @author Ycreak
   */
- public async pushFragment(currentBook : String, url : String, fragmentNo : String, editor : String, content : Array<String>){
+ public async pushFragment(currentBook : String, url : String, fragmentNo : String, editor : String, content : String, primFrag: String){
   const data = await this.httpClient.get(
     this.serverURL + url,{
       params: {
@@ -459,6 +460,7 @@ export class FragmentsComponent implements OnInit {
         fragmentNo : fragmentNo.toString(),
         editor : editor.toString(),
         content : content.toString(),
+        primFrag : primFrag.toString(),
       }
     })
     .toPromise();
@@ -527,7 +529,7 @@ export class FragmentsComponent implements OnInit {
   public createFragment() {
     // this.input_selectedEditor = selectedEditor;
     // this.input_FragmentNum = fragmentNum;
-    console.log(this.given_Editor);
+    // console.log(this.given_Editor);
     this.input_FragmentNum = this.given_fragNum;
     this.input_FragmentContent = this.given_fragContent
     console.log("givenValues: ", this.input_FragmentContent, this.input_FragmentNum);
@@ -537,7 +539,30 @@ export class FragmentsComponent implements OnInit {
 
     // console.log(this.currentBook);
     if(this.currentBook == '7'){
-      this.pushFragment(this.currentBook, 'insertFragment', this.given_fragNum, this.mainEditorKey.toString(), this.fragmentArray);
+      this.pushFragment(this.currentBook, 'insertFragment', this.given_fragNum, this.mainEditorKey.toString(), this.given_fragContent, '1');
+    }
+    else{
+      console.log("THIS BOOK IS PROTECTED");
+    }
+
+
+  }
+
+  public addOtherFragment() {
+    // this.input_selectedEditor = selectedEditor;
+    // this.input_FragmentNum = fragmentNum;
+    // console.log(this.given_Editor);
+    this.input_FragmentNum = this.given_fragNum;
+    this.input_FragmentContent = this.given_fragContent
+    
+    console.log("givenValues: ", this.input_FragmentContent, this.input_FragmentNum, this.input_selectedEditor);
+
+    // Check all input before sending.
+    // TODO
+
+    // console.log(this.currentBook);
+    if(this.currentBook == '7'){
+      this.pushFragment(this.currentBook, 'insertFragment', this.given_fragNum, this.input_selectedEditor.toString(), this.input_FragmentContent, '0');
     }
     else{
       console.log("THIS BOOK IS PROTECTED");

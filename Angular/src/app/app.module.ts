@@ -8,7 +8,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { NavbarComponent } from './components/navbar/navbar.component';
+// import { NavbarComponent } from './components/navbar/navbar.component';
 import { LoginComponent } from './components/login/login.component';
 import { FragmentsComponent } from './components/fragments/fragments.component';
 import { HomeComponent } from './components/home/home.component';
@@ -77,7 +77,7 @@ const appRoutes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
-    NavbarComponent,
+    // NavbarComponent,
     LoginComponent,
     FragmentsComponent,
     HomeComponent,
