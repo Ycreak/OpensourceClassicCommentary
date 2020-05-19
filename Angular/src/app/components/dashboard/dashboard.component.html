@@ -15,10 +15,10 @@
 
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav ml-auto">
-        <li> <button class="btn btn-lg" (click)="openBm(textChanger)">Change Text</button></li>
-        <li> <button class="btn btn-lg" (click)="callAPI()">Bibliography</button></li>
-        <li> <button class="btn btn-lg" (click)="toggleShowFragments()">New Entry</button></li>
-        <li> <button class="btn btn-lg" (click)="show = !show">3Columns</button></li>
+        <!-- <li> <button class="btn btn-lg" (click)="openBm(textChanger)">Change Text</button></li> -->
+        <!-- <li> <button class="btn btn-lg" (click)="callAPI()">Bibliography</button></li> -->
+        <!-- <li> <button class="btn btn-lg" (click)="toggleShowFragments()">New Entry</button></li> -->
+        <!-- <li> <button class="btn btn-lg" (click)="show = !show">3Columns</button></li> -->
         <li> <button class="btn btn-lg" [matMenuTriggerFor]="appMenu">More</button></li>
       </ul>
     </div>
@@ -28,7 +28,7 @@
 <mat-menu #appMenu="matMenu">
   <button routerLink="/dashboard" mat-menu-item>Text</button>
   <button routerLink="/fragments" mat-menu-item>Fragments</button>
-  <button (click)="openBm(getStarted)" mat-menu-item>Get Started</button>
+  <!-- <button (click)="openBm(getStarted)" mat-menu-item>Get Started</button> -->
 </mat-menu>
   <!-- <app-navbar></app-navbar> -->
 

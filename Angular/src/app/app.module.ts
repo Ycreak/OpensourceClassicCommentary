@@ -9,7 +9,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 // import { NavbarComponent } from './components/navbar/navbar.component';
-import { LoginComponent } from './components/login/login.component';
+// import { LoginComponent } from './components/login/login.component';
 import { FragmentsComponent } from './components/fragments/fragments.component';
 import { HomeComponent } from './components/home/home.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
@@ -17,7 +17,7 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
 
 import { ValidateService } from './services/validate.service';
-import { FlashMessagesModule } from 'angular2-flash-messages';
+// import { FlashMessagesModule } from 'angular2-flash-messages';
 import { AuthService } from './services/auth.service';
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -68,8 +68,8 @@ const appRoutes: Routes = [
   // {path: 'fragments', component: FragmentsComponent},
   {path: '', component: FragmentsComponent},
   {path: 'dashboard', component: DashboardComponent},
-  {path: 'login', component: LoginComponent},
-  {path: 'dashboard', component: DashboardComponent},
+  // {path: 'login', component: LoginComponent},
+  // {path: 'dashboard', component: DashboardComponent},
   {path: 'profile', component: ProfileComponent},
   {path: '**', redirectTo: ''}
 ]
@@ -78,7 +78,7 @@ const appRoutes: Routes = [
   declarations: [
     AppComponent,
     // NavbarComponent,
-    LoginComponent,
+    // LoginComponent,
     FragmentsComponent,
     HomeComponent,
     DashboardComponent,
@@ -98,7 +98,7 @@ const appRoutes: Routes = [
     MatNativeDateModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
-    FlashMessagesModule.forRoot(),
+    // FlashMessagesModule.forRoot(),
     RouterModule.forRoot(appRoutes),
     MatAutocompleteModule,
     MatBadgeModule,

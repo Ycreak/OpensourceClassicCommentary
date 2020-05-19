@@ -166,25 +166,16 @@
 
   <div class="container-fluid">
     <div class="row">
-      <!-- Eerste Colom -->
+      <!-- FIRST COLUMN -->
       <div class="col-sm anyClass">
         <h4>{{this.currentAuthorName}}: {{this.currentBookName}}. {{this.mainEditorName}}</h4>
 
         <div class="example-list">
           <div class="example-box" *ngFor="let arrayItem of mainEditorArray" (click)="ophalenCommentaren(arrayItem.number, arrayItem.editor)">
-            <div><b>{{arrayItem.number}}</b></div>
+            <div><b>{{arrayItem.fragmentNo2}}: {{arrayItem.number}} </b> <i> {{arrayItem.status}}</i></div>
             <div [innerHTML]="arrayItem.line"></div>      
           </div> 
         </div> 
-
-        <!-- <ul class="fragment-ul" *ngFor="let arrayItem of mainEditorArray" (click)="ophalenCommentaren(arrayItem.number, arrayItem.editor)">
-          <li class="fragment-li">
-            <div class="row">
-              <div class="column1"><b>{{arrayItem.number}}  </b></div>
-              <div class="column1" [innerHTML]="arrayItem.line"></div>
-            </div>                   
-          </li>
-        </ul> -->
       </div>
 
       <!-- Tweede column. Gets toggle via variable show. -->
@@ -204,19 +195,6 @@
           </mat-form-field>
 
           </div>
-          <!-- <div class="col-4">
-            <div mat-dialog-content>
-              <mat-form-field class="example-full-width">
-                <input matInput placeholder="Add Note" #input3 [(ngModel)]='given_note' id="noteContent">
-                <mat-hint>Insert a note</mat-hint>
-              </mat-form-field>
-            </div>   
-          </div>
-          <div class="col-2">
-            <mat-dialog-actions align="end">
-              <button mat-button (click)="insertNote()">Insert</button>
-          </mat-dialog-actions>
-          </div> -->
         </div>
 
 
@@ -234,7 +212,7 @@
           <div class="example-box" *ngFor="let arrayItem of selectedEditorArray" cdkDrag>
           <!-- <p><b>{{arrayItem.number}}</b></p>
               <div [innerHTML]="arrayItem.line"></div> -->
-            <div><b>{{arrayItem.number}}</b></div>
+            <div><i>Frg {{arrayItem.fragmentNo2}}, {{arrayItem.number}}</i></div>
               <div [innerHTML]="arrayItem.line"></div>
          </div>
         </div>
@@ -408,6 +386,40 @@
                   </ol>                 -->
 
               </mat-tab>
+
+              <mat-tab label="Dashboard"><br>
+
+                <!-- <section class="example-section">
+                  <mat-checkbox class="example-margin">Check me!</mat-checkbox>
+                  <mat-checkbox class="example-margin" [disabled]="true">Disabled</mat-checkbox>
+                </section> -->
+
+                <section class="example-section">
+                  <span class="example-list-section">
+                    <mat-checkbox class="example-margin"
+                                  [checked]="allComplete"
+                                  [indeterminate]="someComplete()"
+                                  (change)="setAll($event.checked)">
+                      Select all
+                    </mat-checkbox>
+                  </span>
+                  <span class="example-list-section">
+                    <ul>
+                      <li *ngFor="let subtask of mainEditorArray">
+                        <mat-checkbox [(ngModel)]="subtask.completed"
+                                      [color]="subtask.color"
+                                      (ngModelChange)="updateAllComplete(subtask.id)">
+                          {{subtask.number}}
+
+                        </mat-checkbox>
+                      </li>
+                    </ul>
+                  </span>
+                </section>
+
+              </mat-tab>
+
+
             </mat-tab-group>
 
           <div class="container">

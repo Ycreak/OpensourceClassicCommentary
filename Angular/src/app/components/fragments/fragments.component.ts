@@ -5,17 +5,27 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {MatDialog} from '@angular/material/dialog';
 
+import {ThemePalette} from '@angular/material/core';
+
 import { TemplateRef, ViewChild } from '@angular/core';
 
 import 'hammerjs';
 
-// Imports navbar from file Navbar
-@Component({
-  selector: 'app-navbar',
-  // templateUrl: './header.html',
-  // styleUrls: ['./fragments.component.css'],
-})
-export class DeviceComponent {}
+export interface Task {
+  name: string;
+  completed: boolean;
+  color: ThemePalette;
+  subtasks?: Task[];
+}
+
+
+// // Imports navbar from file Navbar
+// @Component({
+//   selector: 'app-navbar',
+//   // templateUrl: './header.html',
+//   // styleUrls: ['./fragments.component.css'],
+// })
+// export class DeviceComponent {}
 
 @Component({
   selector: 'app-interface',
@@ -51,7 +61,7 @@ export class FragmentsComponent implements OnInit {
   F_ContextTemp = [];
   F_Differences : JSON;
   F_ReferencerID : JSON;
-
+  F_Reconstruction : JSON;
   ReferencerID : Number;
 
   // List with all the fragments numbers.
@@ -210,14 +220,25 @@ export class FragmentsComponent implements OnInit {
   public createArrayOfObjects(){
     let array = this.F_Fragments
     this.allFragmentsArray = [];
+
+    console.log('incoming data: ', array);
+
     // Push every element in the allFragmentsArray
     for(let arrayElement in array){
       this.allFragmentsArray.push({ 
         id: array[arrayElement][0], 
         number: array[arrayElement][1], 
-        line: array[arrayElement][3], 
-        editor: array[arrayElement][2]})
+        fragmentNo2: array[arrayElement][2],
+        editor: array[arrayElement][3],
+        line: array[arrayElement][4], 
+        published: array[arrayElement][5],
+        status: array[arrayElement][6],
+      })
     }
+
+    console.log('sorted data: ', this.allFragmentsArray);
+
+
   }
 
   /**
@@ -375,8 +396,12 @@ export class FragmentsComponent implements OnInit {
     this.F_Context = await this.fetchData(ReferencerID, 'getF_Context') as JSON;
     // Retrieves Fragment Translation
     this.F_Translation = await this.fetchData(ReferencerID, 'getF_Translation') as JSON;
+
     // Retrieves Fragment App. Crit.
     this.F_AppCrit = await this.fetchData(ReferencerID, 'getF_AppCrit') as JSON;
+
+    this.F_Reconstruction = await this.fetchData(ReferencerID, 'getF_Reconstruction') as JSON;
+
     // Turn off spinner at the end
     this.spinner = false;
   }
@@ -633,7 +658,72 @@ export class FragmentsComponent implements OnInit {
     console.log(selectedFragment);
   }
 
+  task: Task = {
+    name: 'Indeterminate',
+    completed: false,
+    color: 'primary',
+    subtasks: [
+      {name: 'Primary', completed: false, color: 'primary'},
+      {name: 'Accent', completed: false, color: 'accent'},
+      {name: 'Warn', completed: false, color: 'warn'}
+    ]
+  };
 
+  allComplete: boolean = false;
+
+  updateAllComplete(id: Number) {
+    this.allComplete = this.task.subtasks != null && this.task.subtasks.every(t => t.completed);
+    console.log('updateAllComplete', id)
+  }
+
+  someComplete(): boolean {
+    if (this.task.subtasks == null) {
+      return false;
+    }
+    return this.task.subtasks.filter(t => t.completed).length > 0 && !this.allComplete;
+  }
+
+  setAll(completed: boolean) {
+    this.allComplete = completed;
+    if (this.task.subtasks == null) {
+      return;
+    }
+    this.task.subtasks.forEach(t => t.completed = completed);
+  }
 
 }
+
+// export class CheckboxOverviewExample {
+//   task: Task = {
+//     name: 'Indeterminate',
+//     completed: false,
+//     color: 'primary',
+//     subtasks: [
+//       {name: 'Primary', completed: false, color: 'primary'},
+//       {name: 'Accent', completed: false, color: 'accent'},
+//       {name: 'Warn', completed: false, color: 'warn'}
+//     ]
+//   };
+
+//   allComplete: boolean = false;
+
+//   updateAllComplete() {
+//     this.allComplete = this.task.subtasks != null && this.task.subtasks.every(t => t.completed);
+//   }
+
+//   someComplete(): boolean {
+//     if (this.task.subtasks == null) {
+//       return false;
+//     }
+//     return this.task.subtasks.filter(t => t.completed).length > 0 && !this.allComplete;
+//   }
+
+//   setAll(completed: boolean) {
+//     this.allComplete = completed;
+//     if (this.task.subtasks == null) {
+//       return;
+//     }
+//     this.task.subtasks.forEach(t => t.completed = completed);
+//   }
+// }
 

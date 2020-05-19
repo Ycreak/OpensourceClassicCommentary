@@ -8,7 +8,7 @@
 //   styleUrls: ['./navbar.component.css']
 // })
 // export class NavbarComponent implements OnInit {
-//   @ViewChild('childMenu', {static: true}) public childMenu: any;
+//   // @ViewChild('childMenu', {static: true}) public childMenu: any;
 
 //   constructor(
 //   ) { }
