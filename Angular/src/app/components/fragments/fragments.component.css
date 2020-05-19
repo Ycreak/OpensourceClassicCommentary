@@ -65,6 +65,8 @@ div.solid {border-style: solid;}
 
 .mat-form-field{
   padding-left: 1em;
+  width: auto;
+  size: 100%;
 }
 
 /* .mat-label{

@@ -19,7 +19,6 @@ import { SidenavComponent } from './components/sidenav/sidenav.component';
 import { ValidateService } from './services/validate.service';
 // import { FlashMessagesModule } from 'angular2-flash-messages';
 import { AuthService } from './services/auth.service';
-
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 
@@ -93,7 +92,6 @@ const appRoutes: Routes = [
     HttpClientModule,
     FormsModule,
     NgbModule,
-    
     MatSidenavModule,
     MatNativeDateModule,
     BrowserAnimationsModule,

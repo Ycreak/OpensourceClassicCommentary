@@ -25,9 +25,10 @@
 </nav>
 
 <mat-menu #appMenu="matMenu">
-  <button routerLink="/dashboard" mat-menu-item>Text</button>
-  <button routerLink="/fragments" mat-menu-item>Fragments</button>
+  <button routerLink="/dashboard" mat-menu-item>Text OSCC</button>
+  <!-- <button routerLink="/fragments" mat-menu-item>Fragments</button> -->
   <button (click)="openBm(getStarted)" mat-menu-item>Get Started</button>
+  <button (click)="openBm(About)" mat-menu-item>About</button>
 </mat-menu>
 
   <!-- <app-navbar></app-navbar> -->
@@ -83,6 +84,39 @@
         <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Exit</button>
       </div>
     </ng-template>
+
+    <ng-template #About let-modal>
+        <div class="modal-header">
+          <h4 class="modal-title" id="modal-basic-title">About OSCC.</h4>
+          <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div>
+            <p>This project lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+              Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+              Duis aute irure dolor in reprehenderit.</p>
+            <hr>
+            <p>The series contains two texts as of now: Ennius' Thyestes and Accius' [book]</p>
+            <p> Ennius' Thyestes was created in 2019. The commentaries were created by the following students:</p>
+  
+                <ul>
+                    <li>TRF 22: Anja X</li>
+                    <li>TRF 312: Thomas Y</li>
+                    <li>TRF 313: Kees Z</li>
+                </ul> 
+                
+                
+            
+  
+            <p>For more information about this project, visit realwebsite.com</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Exit</button>
+        </div>
+      </ng-template>
 
   <!-- New Entry modal to add a custom piece of commentary -->
   <ng-template #newEntry let-modal>
@@ -166,19 +200,20 @@
 
   <div class="container-fluid">
     <div class="row">
+
       <!-- FIRST COLUMN -->
       <div class="col-sm anyClass">
         <h4>{{this.currentAuthorName}}: {{this.currentBookName}}. {{this.mainEditorName}}</h4>
 
         <div class="example-list">
-          <div class="example-box" *ngFor="let arrayItem of mainEditorArray" (click)="ophalenCommentaren(arrayItem.number, arrayItem.editor)">
-            <div><b>{{arrayItem.fragmentNo2}}: {{arrayItem.number}} </b> <i> {{arrayItem.status}}</i></div>
-            <div [innerHTML]="arrayItem.line"></div>      
+          <div class="example-box" *ngFor="let arrayItem of mainEditorArray" (click)="ophalenCommentaren(arrayItem.lineNumber, arrayItem.editor)">
+            <div><b>{{arrayItem.fragmentNo2}}: {{arrayItem.lineNumber}} </b> <i> {{arrayItem.status}}</i></div>
+            <div [innerHTML]="arrayItem.lineContent"></div>      
           </div> 
         </div> 
       </div>
 
-      <!-- Tweede column. Gets toggle via variable show. -->
+      <!-- SELECTED EDITOR COLUMN -->
       <div *ngIf="show" class="col-sm anyClass">
 
         <div class="row">
@@ -187,7 +222,7 @@
               <mat-label>Select editor</mat-label>
               <mat-select [(ngModel)]="selected2">
                   <mat-option *ngFor="let selectedEditor of this.editors" [value]="selectedEditor[1]"
-                  (click)="opbouwenFragmentenEditor(selectedEditor[0], 2)">
+                  (click)="this.selectedEditorArray = opbouwenFragmentenEditor(selectedEditor[0], this.allFragmentsArray)">
                   {{ selectedEditor[1] }} 
                     
                   </mat-option>
@@ -197,14 +232,7 @@
           </div>
         </div>
 
-
-
-
-
-
-
         <div>
-
           </div>
 
 
@@ -212,31 +240,28 @@
           <div class="example-box" *ngFor="let arrayItem of selectedEditorArray" cdkDrag>
           <!-- <p><b>{{arrayItem.number}}</b></p>
               <div [innerHTML]="arrayItem.line"></div> -->
-            <div><i>Frg {{arrayItem.fragmentNo2}}, {{arrayItem.number}}</i></div>
-              <div [innerHTML]="arrayItem.line"></div>
+            <div><i>Frg {{arrayItem.fragNumber}}, {{arrayItem.lineNumber}}</i></div>
+              <div [innerHTML]="arrayItem.lineContent"></div>
          </div>
         </div>
       </div>
 
-      <!-- Input Column -->
+      <!-- INPUT COLUMN -->
       <div *ngIf="showFragments == false" class="col-sm anyClass">
 
           <div class="container">
               <div class="row">
                 <div class="col-sm-6">
-          Current Author: {{this.currentAuthorName}} <br>
-          Current Book: {{this.currentBookName}} <br>
-          Main Editor: {{this.mainEditorName}} <br>
+                  Current Author: {{this.currentAuthorName}} <br>
+                  Current Book: {{this.currentBookName}} <br>
+                  <!-- Main Editor: {{this.mainEditorName}} <br> -->
+                </div>
+                <div class="col-sm-6">
+
+                </div>
+              </div>
           </div>
-          <div class="col-sm-6">
 
-                    </div>
-          </div>
-          </div>
-
-
-
- 
           <hr>
   
           <mat-tab-group>
@@ -263,12 +288,7 @@
                         <button mat-button (click)="createFragment()">Upload</button>
 
                     </mat-dialog-actions>
-                    <!-- <h4>Your fragment per row:</h4>
-                    <ol>
-                        <li *ngFor="let fragmentLine of this.fragmentArray">
-                            {{ fragmentLine }}
-                        </li>
-                      </ol> -->
+
 
               </mat-tab>
               <mat-tab label="Add Commentary">
@@ -339,16 +359,6 @@
 
               </mat-tab>
               <mat-tab label="Add other Authors"><br>
-                <!-- <mat-form-field>
-                    <mat-label>Select fragment</mat-label>
-                      <mat-select [(ngModel)]="selected2">
-                        <mat-option *ngFor="let selectedFragment of this.fragmentList" [value]="selectedFragment"
-                          (click)="retrieveSelectedFragment(selectedFragment)">
-                        {{ selectedFragment }} 
-                        </mat-option>
-                      </mat-select>
-                </mat-form-field> -->
-
                 <mat-form-field class="example-full-width">
                   <input matInput placeholder="Fragment Content" #input2 [(ngModel)]='given_fragContent' id="fragContent">
                   <mat-hint>Separate Lines using HTML Paragraphs</mat-hint>
@@ -388,37 +398,143 @@
               </mat-tab>
 
               <mat-tab label="Dashboard"><br>
+                <mat-tab-group>
+                <mat-tab label="Fix Content"><br>
+                <h4>Press one of the fragments to change its contents fields.</h4>
+                <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit(checkoutForm.value)">
 
-                <!-- <section class="example-section">
-                  <mat-checkbox class="example-margin">Check me!</mat-checkbox>
-                  <mat-checkbox class="example-margin" [disabled]="true">Disabled</mat-checkbox>
-                </section> -->
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Fragment Commentary</mat-label>
+                      <input matInput value='{{this.F_Commentaar}}' id="F_Commentaar" type="text" formControlName="F_Commentaar">
+                      <!-- <button type="button" (click)="redactGivenFragment('F_Commentaar')">Upload</button> -->
+                    </mat-form-field>
+
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Fragment Differences</mat-label>
+                      <input matInput value='{{this.F_Differences}}' id="F_Differences" type="text" formControlName="F_Differences">
+                      <!-- <button type="button" (click)="redactGivenFragment('F_Commentaar')">Upload</button> -->
+                    </mat-form-field>
+                                       
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Fragment Translation</mat-label>
+                      <input matInput value='{{this.F_Translation}}' id="F_Translation" type="text" formControlName="F_Translation">
+                      <!-- <button type="button" (click)="redactGivenFragment('F_Commentaar')">Upload</button> -->
+                    </mat-form-field>
+                    
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Fragment AppCrit</mat-label>
+                      <input matInput value='{{this.F_AppCrit}}' id="F_AppCrit" type="text" formControlName="F_AppCrit">
+                      <!-- <button type="button" (click)="redactGivenFragment('F_Commentaar')">Upload</button> -->
+                    </mat-form-field>
+                    
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Fragment Reconstruction</mat-label>
+                      <input matInput value='{{this.F_Reconstruction}}' id="F_Reconstruction" type="text" formControlName="F_Reconstruction">
+                      <!-- <button type="button" (click)="redactGivenFragment('F_Commentaar')">Upload</button> -->
+                    </mat-form-field>
+                              
+                  <button mat-button class="button" type="submit">Upload</button>
+                
+                </form>
+              </mat-tab>
+
+              <mat-tab label="Fix Context"><br>
+                <h4>Press one of the fragments to change its context fields.</h4>
+                <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit(checkoutForm.value)">
+                  <mat-form-field class="example-full-width">
+                    <mat-label>Fragment Context</mat-label>
+                    <input matInput value='{{this.F_Context}}' id="F_Context" type="text" formControlName="F_Context">
+                    <!-- <button type="button" (click)="redactGivenFragment('F_Commentaar')">Upload</button> -->
+                  </mat-form-field>
+                </form>
+
+                <mat-form-field>
+                    <mat-label>Select editor</mat-label>
+                    <mat-select [(ngModel)]="selected3">
+                        <mat-option *ngFor="let i of this.F_Context">
+                        {{ i[0] }} 
+                          
+                        </mat-option>
+                      </mat-select>
+                  </mat-form-field>
+
+
+
+
+              </mat-tab>
+
+              <mat-tab label="Fix Fragment"><br>
+                <h4>Press one of the fragments to change.</h4>
+                <mat-form-field>
+                  <mat-label>Select editor</mat-label>
+                  <mat-select [(ngModel)]="selected2">
+                      <mat-option *ngFor="let selectedEditor of this.editors" [value]="selectedEditor[1]"
+                      (click)="changeSelectedEditor(selectedEditor[0])">
+                      {{ selectedEditor[1] }} 
+                        
+                      </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field>
+                  <mat-label>Select fragment</mat-label>
+                    <mat-select [(ngModel)]="selected2">
+                      <mat-option *ngFor="let subtask of this.selectedEditorArray" [value]="selectedFragment"
+                        (click)="retrieveSelectedLine(subtask.lineNumber)">
+                      {{ subtask.lineNumber }} 
+                      </mat-option>
+                    </mat-select>
+              </mat-form-field>
+
+              <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit(checkoutForm.value)">
+                  <mat-form-field class="example-full-width">
+                    <mat-label>Fragment Content</mat-label>
+                    <input matInput value='{{this.F_Content}}' id="F_Content" type="text" formControlName="F_Content">
+                    <!-- <button type="button" (click)="redactGivenFragment('F_Commentaar')">Upload</button> -->
+                  </mat-form-field>
+                  <button mat-button class="button" type="submit">Upload</button>
+                </form>
+
+              </mat-tab>
+
+                <mat-tab label="Publish"><br>
+                  <h4>What fragments should be published?</h4>
+                
+                  <mat-form-field>
+                  <mat-label>Select editor</mat-label>
+                  <mat-select [(ngModel)]="selected2">
+                      <mat-option *ngFor="let selectedEditor of this.editors" [value]="selectedEditor[1]"
+                      (click)="changeSelectedEditor(selectedEditor[0])">
+                      {{ selectedEditor[1] }} 
+                        
+                      </mat-option>
+                    </mat-select>
+                </mat-form-field>
 
                 <section class="example-section">
-                  <span class="example-list-section">
-                    <mat-checkbox class="example-margin"
-                                  [checked]="allComplete"
-                                  [indeterminate]="someComplete()"
-                                  (change)="setAll($event.checked)">
-                      Select all
-                    </mat-checkbox>
-                  </span>
+
                   <span class="example-list-section">
                     <ul>
-                      <li *ngFor="let subtask of mainEditorArray">
+                      <div *ngFor="let subtask of selectedEditorArray">
                         <mat-checkbox [(ngModel)]="subtask.completed"
                                       [color]="subtask.color"
-                                      (ngModelChange)="updateAllComplete(subtask.id)">
-                          {{subtask.number}}
+                                      (ngModelChange)="publishFragment(subtask.lineNumber)">
+                          {{subtask.lineNumber}}
 
                         </mat-checkbox>
-                      </li>
+                      </div>
                     </ul>
                   </span>
                 </section>
 
+
+                
+
+
               </mat-tab>
 
+              </mat-tab-group>
+            </mat-tab>
 
             </mat-tab-group>
 
@@ -440,7 +556,7 @@
 
         </div>
 
-    <!-- Fragment column -->
+    <!-- COMMENTARY COLUMN -->
       <div *ngIf="showFragments" class="col-sm anyClass">
         <div class="col-sm anyClass">
           
@@ -578,9 +694,7 @@
 
             </div>
       </div>
-        <!-- </div>
 
-      </div> -->
   </div>
   </div>
 
