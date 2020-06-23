@@ -1,0 +1,115 @@
+body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
+
+h3{
+  color: white;
+}
+
+.anyClass {
+  height:90vh;
+  overflow-y: scroll;
+}
+
+.my-list-1 .mat-list-item {
+  height: auto;
+
+}
+
+.my-list-2 .mat-list-item {
+  height: auto;
+  width: 100%;
+}
+
+.mat-list-item:hover {
+  background-color: #6495ED;
+}
+
+.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.navbar {
+  background-color: #3F51B5;
+}
+
+.btn {
+  background-color: #3F51B5;
+  color: #FFFFFC;
+  font-family: 'Arial';
+  /* border: 2px solid rgb(0, 17, 255); */
+}
+
+.btn:hover {
+  background-color: #5363BD; /* Green */
+  color: white;
+}
+
+.is-active {
+  background-color: red;
+}
+
+.dropbtn {
+  background-color: white;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  border: 2px solid black;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown:hover .dropbtn {
+  background-color: #5363BD;
+}
+
+.mat-expansion-panel-body {
+  visibility: visible;
+}
+
+.mat-expansion-panel-header-title {
+  flex: 0 0 auto; /* make this not grow or shrink */
+  margin-right: 16px;
+}
+
+.mat-expansion-panel-header-description {
+  flex: 1 1 auto; /* make this grow and shrink */
+  min-width: 0; /* see link to see why this is needed */
+  margin-right: 16px;
+}
+
+.mat-expansion-panel-header-description > div {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+div {
+  word-wrap: break-word;
+}

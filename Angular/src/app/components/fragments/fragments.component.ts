@@ -254,7 +254,7 @@ export class FragmentsComponent implements OnInit {
   * @returns none
   * @author Ycreak
   */
-  private opbouwenFragmentenEditor(selectedEditor: String, givenArray: Array<string>){
+  private opbouwenFragmentenEditor(selectedEditor: String, givenArray){
     // Filter the given array on the given editor.
     let array = givenArray.filter(x => x.editor == selectedEditor);
     array.sort(this.sortArrayNumerically);
@@ -326,25 +326,25 @@ export class FragmentsComponent implements OnInit {
   }
 
   // Toggles right column
-  private toggleShowFragments(){
+  public toggleShowFragments(){
     this.showFragments = !this.showFragments;
     // this.showFragmentsFalse = !this.showFragmentsFalse;
   }
 
   // Create a small modal
-  private openSm(content) {
+  public openSm(content) {
     this.modalService.open(content, { size: 'sm' });
   }
   // Create a large modal
-  private openLg(bib1) {
+  public openLg(bib1) {
     this.modalService.open(bib1, { windowClass: 'modal-sizer' });
   }
   // Allows a basic modal to be opened
-  private openBm(content) {
+  public openBm(content) {
     this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'});
   }
 
-  private callAPI() {
+  public callAPI() {
     let dialogRef = this.dialog.open(this.callAPIDialog);
     dialogRef.afterClosed().subscribe(result => {
         // Note: If the user clicks outside the dialog or presses the escape key, there'll be no result

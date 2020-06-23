@@ -11,7 +11,6 @@ import { AppComponent } from './app.component';
 // import { NavbarComponent } from './components/navbar/navbar.component';
 // import { LoginComponent } from './components/login/login.component';
 import { FragmentsComponent } from './components/fragments/fragments.component';
-import { HomeComponent } from './components/home/home.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
@@ -61,14 +60,15 @@ import {
   MatTooltipModule,
   MatTreeModule,
 } from '@angular/material';
+import { TextComponent } from './components/text/text.component';
 
 const appRoutes: Routes = [
   // {path: '', component: DashboardComponent},
   // {path: 'fragments', component: FragmentsComponent},
   {path: '', component: FragmentsComponent},
-  {path: 'dashboard', component: DashboardComponent},
+  {path: 'text', component: TextComponent},
   // {path: 'login', component: LoginComponent},
-  // {path: 'dashboard', component: DashboardComponent},
+  {path: 'dashboard', component: DashboardComponent},
   {path: 'profile', component: ProfileComponent},
   {path: '**', redirectTo: ''}
 ]
@@ -79,7 +79,7 @@ const appRoutes: Routes = [
     // NavbarComponent,
     // LoginComponent,
     FragmentsComponent,
-    HomeComponent,
+    TextComponent,
     DashboardComponent,
     ProfileComponent,
     SidenavComponent,
