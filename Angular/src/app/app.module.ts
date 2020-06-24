@@ -63,9 +63,8 @@ import {
 import { TextComponent } from './components/text/text.component';
 
 const appRoutes: Routes = [
-  // {path: '', component: DashboardComponent},
-  // {path: 'fragments', component: FragmentsComponent},
-  {path: '', component: FragmentsComponent},
+  {path: '', component: DashboardComponent},
+  // {path: '', component: FragmentsComponent},
   {path: 'text', component: TextComponent},
   // {path: 'login', component: LoginComponent},
   {path: 'dashboard', component: DashboardComponent},

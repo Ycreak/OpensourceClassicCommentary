@@ -177,6 +177,73 @@ export class DashboardComponent implements OnInit {
     return data;  
   }
 
+  // ADD REMOVE TAB GROUP
+  private createAuthor(author : String){
+    console.log(author);
+  }
+
+  private deleteAuthor(author : Array<String>){
+    let key = author[0]
+    let name = author[1]
+    console.log(author, key, name);
+  }
+
+  // Gets author array [key, name] and book array [key, name]
+  // Returns them to server to be added.
+  private createBook(author : Array<String>, book : String){
+    console.log(author, book);
+  }
+
+  private deleteBook(author : Array<String>, book : Array<String>){
+    console.log(author, book);
+  }
+
+  private createEditor(author : Array<String>, book : Array<String>, editor : String){
+    console.log(author, book, editor);
+  }
+
+  private deleteEditor(author : Array<String>, book : Array<String>, editor : Array<String>){
+    console.log(author, book, editor);
+  }
+
+  private setMainEditor(author : Array<String>, book : Array<String>, editor : Array<String>){
+    console.log(author, book, editor);
+  }
+
+  // CREATE FRAGMENT TAB GROUP
+  private setCreateFragmentParameters(author : Array<String>, book : Array<String>, editor : Array<String>){
+    this.currentAuthor = author[0]; // = key
+    this.currentBook = book[0]; // = key
+    this.currentEditor = Number(editor[0]); // = key
+    console.log(this.currentAuthor, this.currentBook, this.currentEditor)
+  }
+
+  private createFragment(fragNum : String, lineNum : String, content : String){
+    console.log(fragNum, lineNum, content);
+    
+    // if(this.currentBook == '7'){
+      // this.pushFragment(this.currentBook, 'insertFragment', fragNum, this.currentEditor, content, '1');
+    // }
+  }
+
+  private async requestEditors(author : String, book : String){
+    this.editors = await this.fetchData(book, 'getEditors') as JSON;
+    console.log(this.editors);
+  }
+
+  // Retrieves fragment numbers of a editor. Function is spaghetti and needs rewriting. 
+  private getFragNumbersSelectedEditor(author : Array<String>, book : Array<String>, editor : Array<String>){
+    let selectedEditorArray = this.opbouwenFragmentenEditor(editor[0], this.allFragmentsArray);
+
+    this.fragmentList = [];
+    for(let key in selectedEditorArray){
+      this.fragmentList.push(selectedEditorArray[key].lineNumber);
+    }
+  }
+
+
+
+
   // Request Newly Selected Text
   private async requestSelectedText(selectedText: String){
     // Update CurrentBook.
@@ -450,27 +517,7 @@ export class DashboardComponent implements OnInit {
       console.log(this.tempArray);
     }
 
-  public createFragment() {
-    // this.input_selectedEditor = selectedEditor;
-    // this.input_FragmentNum = fragmentNum;
-    // console.log(this.given_Editor);
-    this.input_FragmentNum = this.given_fragNum;
-    this.input_FragmentContent = this.given_fragContent
-    console.log("givenValues: ", this.input_FragmentContent, this.input_FragmentNum);
 
-    // Check all input before sending.
-    // TODO
-
-    // console.log(this.currentBook);
-    if(this.currentBook == '7'){
-      this.pushFragment(this.currentBook, 'insertFragment', this.given_fragNum, this.mainEditorKey.toString(), this.given_fragContent, '1');
-    }
-    else{
-      console.log("THIS BOOK IS PROTECTED");
-    }
-
-
-  }
 
   public async uploadCommentary(){
       // Retrieve the Referencer ID and wait before it is retrieved before proceeding with the rest.
@@ -520,6 +567,7 @@ export class DashboardComponent implements OnInit {
     for(let key in this.mainEditorArray){
       this.fragmentList.push(this.mainEditorArray[key].lineNumber);
     }
+    console.log(this.mainEditorArray, this.fragmentList)
   }
 
   public inputSelectedEditor(selectedEditor : String){
