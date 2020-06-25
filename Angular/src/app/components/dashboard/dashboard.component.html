@@ -45,8 +45,9 @@
       <mat-form-field>
         <mat-label>Select Author</mat-label>
         <mat-select [(ngModel)]="selectedAuthor">
-          <mat-option *ngFor="let selectedAuthor of this.authors" [value]="selectedAuthor"
-          (click)="requestBooks(selectedAuthor[0])">
+          <mat-option *ngFor="let selectedAuthor of this.authorsJSON" [value]="selectedAuthor"
+          (click)="requestBooks(selectedAuthor[0])"
+          (click)="setAuthorBookEditor(selectedAuthor[0], '', '')">
             {{ selectedAuthor[1] }}                       
           </mat-option>
         </mat-select>
@@ -55,8 +56,10 @@
         <mat-form-field>
           <mat-label>Select Book</mat-label>
           <mat-select [(ngModel)]="selectedBook">
-            <mat-option *ngFor="let selectedBook of this.books" [value]="selectedBook"
-            (click)="requestEditors(selectedAuthor[0], selectedBook[0])">
+            <mat-option *ngFor="let selectedBook of this.booksJSON" [value]="selectedBook"
+            (click)="requestEditors(selectedAuthor[0], selectedBook[0])"
+            (click)="setAuthorBookEditor(selectedAuthor[0], selectedBook[0], '')"
+            (click)="requestSelectedText()">
               {{ selectedBook[1] }}                       
             </mat-option>
           </mat-select>
@@ -65,11 +68,12 @@
 
         <mat-form-field>
           <mat-label>Select Editor</mat-label>
-          <mat-select [(ngModel)]="selectedEditor">
-            <mat-option *ngFor="let selectedEditor of this.editors" [value]="selectedEditor"
-            (click)="setCreateFragmentParameters(selectedAuthor, selectedBook, selectedEditor)"
-            (click)="getFragNumbersSelectedEditor(selectedAuthor, selectedBook, selectedEditor)">
-              {{ selectedEditor[1] }}                       
+          <!-- selectedEditor1 because duplicate with backend. Needs fixing! -->
+          <mat-select [(ngModel)]="selectedEditor1">
+            <mat-option *ngFor="let selectedEditor1 of this.editorsJSON" [value]="selectedEditor1"
+            (click)="getFragNumbersSelectedEditor(selectedAuthor, selectedBook, selectedEditor1)"
+            (click)="setAuthorBookEditor(selectedAuthor[0], selectedBook[0], selectedEditor1[0])">
+              {{ selectedEditor1[1] }}                       
             </mat-option>
           </mat-select>
           <mat-hint>Select an Editor</mat-hint>
@@ -134,8 +138,8 @@
             </div>  
             <br>
             <button mat-button (click)="createEditor(selectedAuthor, selectedBook, inputEditor)">Create Editor</button>
-            <button mat-button (click)="deleteEditor(selectedAuthor, selectedBook, selectedEditor)">Delete Editor</button>
-            <button mat-button (click)="setMainEditor(selectedAuthor, selectedBook, selectedEditor)">Set as Main Editor</button>
+            <button mat-button (click)="deleteEditor(selectedAuthor, selectedBook, selectedEditor1)">Delete Editor</button>
+            <button mat-button (click)="setMainEditor(selectedAuthor, selectedBook, selectedEditor1)">Set as Main Editor</button>
           </mat-tab>
         </mat-tab-group>
 

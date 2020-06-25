@@ -37,23 +37,12 @@ export class DashboardComponent implements OnInit {
 
   @ViewChild('callAPIDialog') callAPIDialog: TemplateRef<any>; // Note: TemplateRef requires a type parameter for the component reference. In this case, we're passing an `any` type as it's not a component.
 
-  /* @member "api":       Het object dat alle requests behandelt
-   * @member "root":      JSON object waarin de interface body in is opgeslagen
-   * @member "ready":     Houdt bij of de interface is ingeladen
-   * @member "selec...":  Houdt de waarden van de checkboxes bij
-   * @member "all_f...":  Heeft alle features van alle modules
-   * @member "results":   Heeft alle features gevonden door search
-   */
-  root : JSON;
-  authors : JSON;
-  editors : JSON;
-  recievedCommentary : JSON;
-  temp : Array<string> = [];
-  books : JSON;
-  bib : JSON;
-  commentaar2 : JSON;
-  commentaar2_deels : Array<string>;
+  authorsJSON : JSON; // JSON that contains all available Authors and their data.
+  editorsJSON : JSON; // JSON that contains all available Editors and their data for a specific book.
+  booksJSON : JSON; // JSON that contains all available Books and their data given a specific editor.
+  bibJSON : JSON; // JSON that contains all available Bibliography data given a specific book.
 
+  // Global Class Variables with text data corresponding to the front-end text fields.
   F_Fragments : JSON;
   F_Commentaar : JSON;
   F_AppCrit : JSON;
@@ -63,62 +52,47 @@ export class DashboardComponent implements OnInit {
   F_Differences : JSON;
   F_ReferencerID : JSON;
   F_Reconstruction : JSON;
-  ReferencerID : Number;
-
+  
   F_ContextField : String;
 
-  // List with all the fragments numbers.
-  fragmentList : Array<Number>;
+  // ID that links a specific fragment to its commentary. Used in the database.
+  ReferencerID : Number;
 
-  tempJSON : JSON;
+  // List with all the fragments numbers. Used to select a specific fragment for a specific editor.
+  fragmentNumberList : Array<Number>;
 
-  givenJSON : JSON;
-
-  requestedItem : Array<String>;
-  // requestedJSON : JSON;
-
-  ready : boolean = false;
-  results : string[] = [];
-  closeResult: string;
-
-  currentCommentaar: Number;
-
-  stringArray : Array<string> = [];
-
-  givenText : Array<string> = [];
-
+  // Variables with currentAuthor, Book and Editor. Placeholder data.
   currentAuthor : String = "4";
   currentBook : String = "6";
-  startupBook : String = "6";
+  currentEditor : String = "1";
 
-  selectedLine : number = 0;
-  gegevenRegel : number = 0;
-
+  // Does this have to do with the Bibliography modal?
   panelOpenState: boolean = false;
   allExpandState = true;
 
-  fragments : boolean = false;
-  listColumn1 = [];
+  ColumnsToggle: boolean = false; // Boolean to toggle between 2 and 3 column mode.
+  spinner: boolean = true; // Boolean to toggle the spinner.
 
-  show: boolean = false;
-  showFragments: boolean = true;
-  spinner: boolean = true;
-
-  column1Array = [];
-  column2Array = [];
   selectedEditor = <any>{};
+  
+  // This array contains all the information from a specific book. Functions can use this data.
   allFragmentsArray = [];
 
+  // Array with the fragments of the mainEditor (left column) and of the secondary editor (right column)
   mainEditorArray = [];
   selectedEditorArray = [];
 
-  mainEditorKey : Number = 1;
+  // These should be retrieved from the database.
   mainEditorName : String = "TRF";
   currentAuthorName : String = "Ennius";
   currentBookName : String = "Thyestes";
-  currentEditor : Number = 1;
 
+  // URL for the server.
   serverURL = 'http://katwijk.nolden.biz:5002/';  
+
+  // Items for the forms.
+  items;
+  contentForm;
 
   constructor(
     private modalService: NgbModal, 
@@ -136,7 +110,6 @@ export class DashboardComponent implements OnInit {
         F_Reconstruction: '',
         F_Content: '',
       });
-
     }
 
 
@@ -144,19 +117,12 @@ export class DashboardComponent implements OnInit {
   /* @function:     Loads initial interface: bibliography, editors and the fragments.
    * @author:       Bors & Ycreak
    */
-  async ngOnInit() {
-    // Request a list of editors from the current text to list in the second column
-    this.editors = await this.fetchData(this.currentBook, 'getEditors') as JSON;
-    
+  async ngOnInit() {   
     // Request a list of authors to select a different text
-    this.authors = await this.fetchData(this.currentBook, 'getAuthors') as JSON;
+    this.authorsJSON = await this.fetchData(this.currentBook, 'getAuthors') as JSON;
     
-    // Retrieves everything surrounding the text.
-    this.requestSelectedText(this.currentBook);
- 
     // When init is done, turn off the loading bar (spinner)
     this.spinner = false;
-
   }
 
   /**
@@ -176,6 +142,19 @@ export class DashboardComponent implements OnInit {
       .toPromise();
     return data;  
   }
+
+  // Takes two arrays: one with author, book, editor and fragnum,
+  // the other with the parameters to send: commentary and so on.
+  public async pushData(currentParameters, items2Send, url){
+    const data = await this.httpClient.get(
+      this.serverURL + url,{
+        params: {
+
+        }
+      })
+      .toPromise();
+      return data;  
+    }
 
   // ADD REMOVE TAB GROUP
   private createAuthor(author : String){
@@ -211,13 +190,12 @@ export class DashboardComponent implements OnInit {
   }
 
   // CREATE FRAGMENT TAB GROUP
-  private setCreateFragmentParameters(author : Array<String>, book : Array<String>, editor : Array<String>){
-    this.currentAuthor = author[0]; // = key
-    this.currentBook = book[0]; // = key
-    this.currentEditor = Number(editor[0]); // = key
+  private setAuthorBookEditor(author : String, book : String, editor : String){
+    this.currentAuthor = author; // = key
+    this.currentBook = book; // = key
+    this.currentEditor = editor; // = key
     console.log('Author, Book and Editor set.')
     console.log(this.currentAuthor, this.currentBook, this.currentEditor)
-
   }
 
   private createFragment(fragNum : String, lineNum : String, content : String){
@@ -229,17 +207,22 @@ export class DashboardComponent implements OnInit {
   }
 
   private async requestEditors(author : String, book : String){
-    this.editors = await this.fetchData(book, 'getEditors') as JSON;
-    console.log(this.editors);
+    this.editorsJSON = await this.fetchData(book, 'getEditors') as JSON;
+    console.log(this.editorsJSON);
+  }
+
+  // Request Books by given Author (in the modal)
+  private async requestBooks(selectedAuthor: String){
+    this.booksJSON = await this.fetchData(selectedAuthor, 'getBooks') as JSON;
   }
 
   // Retrieves fragment numbers of a editor. Function is spaghetti and needs rewriting. 
   private getFragNumbersSelectedEditor(author : Array<String>, book : Array<String>, editor : Array<String>){
     let selectedEditorArray = this.opbouwenFragmentenEditor(editor[0], this.allFragmentsArray);
 
-    this.fragmentList = [];
+    this.fragmentNumberList = [];
     for(let key in selectedEditorArray){
-      this.fragmentList.push(selectedEditorArray[key].lineNumber);
+      this.fragmentNumberList.push(selectedEditorArray[key].lineNumber);
     }
   }
 
@@ -249,23 +232,30 @@ export class DashboardComponent implements OnInit {
 
   private retrieveFragmentData(fragment : Number){
     // console.log(fragment)
-    this.ophalenCommentaren(fragment, this.currentEditor)
+
+    // This should be a check whether the current editor is also a main editor
+    // If the current editor has no commentary, we should not retrieve it.
+    if(this.currentEditor ==  '1'){
+      this.ophalenCommentaren(fragment, this.currentEditor)
+    }
+
   }
 
   private getFragmentContent(lineNumber: Number){
-    console.log(lineNumber);
-    console.log(this.currentEditor, lineNumber);
+    // console.log(this.currentEditor, lineNumber);
 
     this.changeSelectedEditor(String(this.currentEditor));
 
     let item1 = this.selectedEditorArray.find(i => i.lineNumber === lineNumber);
     console.log(item1.lineContent)
     this.F_Content = item1.lineContent
+
+
+
   }
 
 
-  items;
-  contentForm;
+
 
   public submitChangedContent(input){    
     // Process checkout data here
@@ -292,32 +282,13 @@ export class DashboardComponent implements OnInit {
   }  
 
   // Request Newly Selected Text
-  private async requestSelectedText(selectedText: String){
-    // Update CurrentBook.
-    this.currentBook = selectedText;
+  private async requestSelectedText(){
     // Get new fragments from the selected text.
-    this.F_Fragments = await this.fetchData(selectedText, 'getFragments') as JSON;
+    this.F_Fragments = await this.fetchData(this.currentBook, 'getFragments') as JSON;
     // Create an array of the retrieved objects to allow them to be moved in CSS.
     this.allFragmentsArray = this.createArrayOfObjects(this.F_Fragments);
-    // Select the fragments from the editor you want in the left column.
-    this.mainEditorArray = this.opbouwenFragmentenEditor("1", this.allFragmentsArray);
-    // Retrieve the bibliography corresponding to the text.
-    this.bib = await this.fetchData(selectedText, 'getBibliography') as JSON;
-    
-    // TODO: method to get current editor name
-    // TODO: method to get current author name
-    // TODO: method to get current book name
-        // this.currentBookName = this.retrieveDataFromJSON(this.books, this.currentBook, 0, 1);
-
-    // List with Fragment Numbers (for input) (No idea what this function does)
-    this.getFragmentNumbers();
   }
 
-  // Request Books by given Author (in the modal)
-  private async requestBooks(selectedAuthor: String){
-    this.books = await this.fetchData(selectedAuthor, 'getBooks') as JSON;
-  }
-  
   /**
   * Adds fragments into an simple array to allow them to be moved on the webpage.
   * This is necessary as moving directly from JSON is not supported by CSS.
@@ -384,7 +355,7 @@ export class DashboardComponent implements OnInit {
   * @returns data JSON object
   * @author Ycreak
   */
-  private async fetchReferencerID(fragmentID: Number, editorID: Number, currentBook : String, url : String){
+  private async fetchReferencerID(fragmentID: Number, editorID: String, currentBook : String, url : String){
     const data = await this.httpClient.get(
       this.serverURL + url,{
         params: {
@@ -403,7 +374,7 @@ export class DashboardComponent implements OnInit {
   * @returns none
   * @author Ycreak
   */
-  async ophalenCommentaren(fragmentID: Number, editorID: Number){
+  async ophalenCommentaren(fragmentID: Number, editorID: String){
     // Turn on the spinner.
     this.spinner = true;
     // Retrieve the Referencer ID and wait before it is retrieved before proceeding with the rest.
@@ -429,49 +400,6 @@ export class DashboardComponent implements OnInit {
     this.F_Reconstruction = await this.fetchData(ReferencerID, 'getF_Reconstruction') as JSON;
     // Turn off spinner at the end
     this.spinner = false;
-  }
-
-     ////////////////////////////
-    // HTML RELATED FUNCTIONS //
-   ////////////////////////////
-  // Allows a fragment to be moved and dropped to create a custom ordering
-  moveAndDrop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.selectedEditorArray, event.previousIndex, event.currentIndex);
-  }
-
-  // Toggles right column
-  public toggleShowFragments(){
-    this.showFragments = !this.showFragments;
-    // this.showFragmentsFalse = !this.showFragmentsFalse;
-  }
-
-  // Create a small modal
-  public openSm(content) {
-    this.modalService.open(content, { size: 'sm' });
-  }
-  // Create a large modal
-  public openLg(bib1) {
-    this.modalService.open(bib1, { windowClass: 'modal-sizer' });
-  }
-  // Allows a basic modal to be opened
-  public openBm(content) {
-    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'});
-  }
-
-  public callAPI() {
-    let dialogRef = this.dialog.open(this.callAPIDialog);
-    dialogRef.afterClosed().subscribe(result => {
-        // Note: If the user clicks outside the dialog or presses the escape key, there'll be no result
-        if (result !== undefined) {
-            if (result === 'yes') {
-                // TODO: Replace the following line with your code.
-                console.log('User clicked yes.');
-            } else if (result === 'no') {
-                // TODO: Replace the following line with your code.
-                console.log('User clicked no.');
-            }
-        }
-    })  
   }
 
      /////////////////////////
@@ -556,19 +484,19 @@ export class DashboardComponent implements OnInit {
         return data;  
     }
 
-    public async retrieveSelectedFragment(selectedFragment:String){
-      let Temp_ReferencerID = await this.fetchReferencerID(Number(selectedFragment), 1, this.currentBook, 'getF_ReferencerID') as JSON;
-      console.log('this: ', this.allFragmentsArray);
+    // public async retrieveSelectedFragment(selectedFragment:String){
+    //   let Temp_ReferencerID = await this.fetchReferencerID(Number(selectedFragment), 1, this.currentBook, 'getF_ReferencerID') as JSON;
+    //   console.log('this: ', this.allFragmentsArray);
 
-      this.tempArray = this.allFragmentsArray.filter(x => x.lineNumber == selectedFragment);
-      console.log(this.tempArray);
-    }
+    //   this.tempArray = this.allFragmentsArray.filter(x => x.lineNumber == selectedFragment);
+    //   console.log(this.tempArray);
+    // }
 
 
 
   public async uploadCommentary(){
       // Retrieve the Referencer ID and wait before it is retrieved before proceeding with the rest.
-      let Temp_ReferencerID = await this.fetchReferencerID(Number(this.input_selectedFragment), 1, this.currentBook, 'getF_ReferencerID') as JSON;
+      let Temp_ReferencerID = await this.fetchReferencerID(Number(this.input_selectedFragment), '1', this.currentBook, 'getF_ReferencerID') as JSON;
       // Retrieve the ReferencerID from the data. If not possible, throw error.
       try{
         var ReferencerID = Temp_ReferencerID[0][0];
@@ -590,13 +518,13 @@ export class DashboardComponent implements OnInit {
 
   public async uploadContextAuthor(){
       // Retrieve the Referencer ID and wait before it is retrieved before proceeding with the rest.
-      let Temp_ReferencerID = await this.fetchReferencerID(Number(this.input_selectedFragment), 1, this.currentBook, 'getF_ReferencerID') as JSON;
+      let Temp_ReferencerID = await this.fetchReferencerID(Number(this.input_selectedFragment), '1', this.currentBook, 'getF_ReferencerID') as JSON;
       // Retrieve the ReferencerID from the data. If not possible, throw error.
       try{
         var ReferencerID = Temp_ReferencerID[0][0];
       }
       catch(e){
-        console.log('Cannot find the ReferencerID!');
+        console.log('Cannot find the ReferencerID! Your probably working with a secondary editor.');
       }
 
     console.log('ref: ', ReferencerID);
@@ -608,25 +536,6 @@ export class DashboardComponent implements OnInit {
       console.log("THIS BOOK IS PROTECTED");
     }
   }
-
-  public getFragmentNumbers(){
-    this.fragmentList = [];
-    for(let key in this.mainEditorArray){
-      this.fragmentList.push(this.mainEditorArray[key].lineNumber);
-    }
-    console.log(this.mainEditorArray, this.fragmentList)
-  }
-
-  public inputSelectedEditor(selectedEditor : String){
-    this.input_selectedEditor = selectedEditor;
-    console.log(this.input_selectedEditor);
-  }
-
-  public inputSelectedFragment(selectedFragment : String){
-    this.input_selectedFragment = selectedFragment;
-    console.log(selectedFragment);
-  }
-
 
      ////////////////////////////
     // TASK RELATED FUNCTIONS //
@@ -643,8 +552,6 @@ export class DashboardComponent implements OnInit {
   };
 
   allComplete: boolean = false;
-
-
 
   publishFragment(lineNumber: Number) {
     // this.allComplete = this.task.subtasks != null && this.task.subtasks.every(t => t.completed);

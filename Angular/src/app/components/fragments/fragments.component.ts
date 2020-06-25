@@ -37,23 +37,12 @@ export class FragmentsComponent implements OnInit {
 
   @ViewChild('callAPIDialog') callAPIDialog: TemplateRef<any>; // Note: TemplateRef requires a type parameter for the component reference. In this case, we're passing an `any` type as it's not a component.
 
-  /* @member "api":       Het object dat alle requests behandelt
-   * @member "root":      JSON object waarin de interface body in is opgeslagen
-   * @member "ready":     Houdt bij of de interface is ingeladen
-   * @member "selec...":  Houdt de waarden van de checkboxes bij
-   * @member "all_f...":  Heeft alle features van alle modules
-   * @member "results":   Heeft alle features gevonden door search
-   */
-  root : JSON;
-  authors : JSON;
-  editors : JSON;
-  recievedCommentary : JSON;
-  temp : Array<string> = [];
-  books : JSON;
-  bib : JSON;
-  commentaar2 : JSON;
-  commentaar2_deels : Array<string>;
+  authorsJSON : JSON; // JSON that contains all available Authors and their data.
+  editorsJSON : JSON; // JSON that contains all available Editors and their data for a specific book.
+  booksJSON : JSON; // JSON that contains all available Books and their data given a specific editor.
+  bibJSON : JSON; // JSON that contains all available Bibliography data given a specific book.
 
+  // Global Class Variables with text data corresponding to the front-end text fields.
   F_Fragments : JSON;
   F_Commentaar : JSON;
   F_AppCrit : JSON;
@@ -63,93 +52,58 @@ export class FragmentsComponent implements OnInit {
   F_Differences : JSON;
   F_ReferencerID : JSON;
   F_Reconstruction : JSON;
+  
+  // ID that links a specific fragment to its commentary. Used in the database.
   ReferencerID : Number;
 
-  // List with all the fragments numbers.
-  fragmentList : Array<Number>;
+  // List with all the fragments numbers. Used to select a specific fragment for a specific editor.
+  fragmentNumberList : Array<Number>;
 
-  tempJSON : JSON;
-
-  givenJSON : JSON;
-
-  requestedItem : Array<String>;
-  // requestedJSON : JSON;
-
-  ready : boolean = false;
-  results : string[] = [];
-  closeResult: string;
-
-  currentCommentaar: Number;
-
-  stringArray : Array<string> = [];
-
-  givenText : Array<string> = [];
-
+  // Variables with currentAuthor, Book and Editor. Placeholder data.
   currentAuthor : String = "4";
   currentBook : String = "6";
-  startupBook : String = "6";
+  currentEditor : String = "1";
 
-  selectedLine : number = 0;
-  gegevenRegel : number = 0;
-
+  // Does this have to do with the Bibliography modal?
   panelOpenState: boolean = false;
   allExpandState = true;
 
-  fragments : boolean = false;
-  listColumn1 = [];
+  ColumnsToggle: boolean = false; // Boolean to toggle between 2 and 3 column mode.
+  spinner: boolean = true; // Boolean to toggle the spinner.
 
-  show: boolean = false;
-  showFragments: boolean = true;
-  spinner: boolean = true;
-
-  column1Array = [];
-  column2Array = [];
   selectedEditor = <any>{};
+  
+  // This array contains all the information from a specific book. Functions can use this data.
   allFragmentsArray = [];
 
+  // Array with the fragments of the mainEditor (left column) and of the secondary editor (right column)
   mainEditorArray = [];
   selectedEditorArray = [];
 
-  mainEditorKey : Number = 1;
+  // These should be retrieved from the database.
   mainEditorName : String = "TRF";
   currentAuthorName : String = "Ennius";
   currentBookName : String = "Thyestes";
-  currentEditor : Number = 1;
 
+  // URL for the server.
   serverURL = 'http://katwijk.nolden.biz:5002/';  
-
 
 
   constructor(
     private modalService: NgbModal, 
     private httpClient: HttpClient, 
     public dialog: MatDialog, 
-    private formBuilder: FormBuilder,
-    ) { 
-
-      this.checkoutForm = this.formBuilder.group({
-        F_Commentaar: '',
-        F_Differences: '',
-        F_Context: '',
-        F_Translation: '',
-        F_AppCrit: '',
-        F_Reconstruction: '',
-        F_Content: '',
-      });
-
-    }
-
-
+    ) { }
 
   /* @function:     Loads initial interface: bibliography, editors and the fragments.
    * @author:       Bors & Ycreak
    */
   async ngOnInit() {
     // Request a list of editors from the current text to list in the second column
-    this.editors = await this.fetchData(this.currentBook, 'getEditors') as JSON;
+    this.editorsJSON = await this.fetchData(this.currentBook, 'getEditors') as JSON;
     
     // Request a list of authors to select a different text
-    this.authors = await this.fetchData(this.currentBook, 'getAuthors') as JSON;
+    this.authorsJSON = await this.fetchData(this.currentBook, 'getAuthors') as JSON;
     
     // Retrieves everything surrounding the text.
     this.requestSelectedText(this.currentBook);
@@ -188,20 +142,13 @@ export class FragmentsComponent implements OnInit {
     // Select the fragments from the editor you want in the left column.
     this.mainEditorArray = this.opbouwenFragmentenEditor("1", this.allFragmentsArray);
     // Retrieve the bibliography corresponding to the text.
-    this.bib = await this.fetchData(selectedText, 'getBibliography') as JSON;
+    this.bibJSON = await this.fetchData(selectedText, 'getBibliography') as JSON;
     
-    // TODO: method to get current editor name
-    // TODO: method to get current author name
-    // TODO: method to get current book name
-        // this.currentBookName = this.retrieveDataFromJSON(this.books, this.currentBook, 0, 1);
-
-    // List with Fragment Numbers (for input) (No idea what this function does)
-    this.getFragmentNumbers();
   }
 
   // Request Books by given Author (in the modal)
   private async requestBooks(selectedAuthor: String){
-    this.books = await this.fetchData(selectedAuthor, 'getBooks') as JSON;
+    this.booksJSON = await this.fetchData(selectedAuthor, 'getBooks') as JSON;
   }
   
   /**
@@ -325,12 +272,6 @@ export class FragmentsComponent implements OnInit {
     moveItemInArray(this.selectedEditorArray, event.previousIndex, event.currentIndex);
   }
 
-  // Toggles right column
-  public toggleShowFragments(){
-    this.showFragments = !this.showFragments;
-    // this.showFragmentsFalse = !this.showFragmentsFalse;
-  }
-
   // Create a small modal
   public openSm(content) {
     this.modalService.open(content, { size: 'sm' });
@@ -359,243 +300,6 @@ export class FragmentsComponent implements OnInit {
         }
     })  
   }
-
-     /////////////////////////
-    // DATA TO SERVER PART //
-   /////////////////////////
-  // Data that will be send to the server.
-  input_selectedEditor : String;
-  input_FragmentNum : String;
-  input_FragmentContent : String;
-  input_selectedFragment : String;
-
-  given_fragNum : String;
-  given_fragContent : String;
-  given_Editor : String;
-  
-  given_AppCrit : String;
-  given_Differences : String;
-  given_Context : String;
-  given_ContextAuthor : String;
-  given_Commentary : String;
-  given_Translation : String;
-
-  given_note : String;
-
-  fragmentArray : Array<String> = [];
-
-  tempArray : Array<String>;
-
-  F_Content : JSON;
-
-  /**
-  * Fetches data from the server. Returns this data in a JSON Array.
-  * Also takes care of the referencer table (server side).
-  * @param currentBook
-  * @param url 
-  * @returns data JSON object
-  * @author Ycreak
-  */
- public async pushFragment(currentBook : String, url : String, fragmentNo : String, editor : String, content : String, primFrag: String){
-  const data = await this.httpClient.get(
-    this.serverURL + url,{
-      params: {
-        currentBook: currentBook.toString(),
-        fragmentNo : fragmentNo.toString(),
-        editor : editor.toString(),
-        content : content.toString(),
-        primFrag : primFrag.toString(),
-      }
-    })
-    .toPromise();
-    return data;  
-  }
-
-  public async pushCommentary(currentBook : String, url : String, AppCrit : String, Differences : String, 
-    Commentary : String, Translation : String, fragmentNum : String, ReferencerID : String){
-    const data = await this.httpClient.get(
-      this.serverURL + url,{
-        params: {
-          book : currentBook.toString(),
-          appcrit : AppCrit.toString(),
-          diff : Differences.toString(),
-          comment : Commentary.toString(),
-          trans : Translation.toString(),
-          frag : fragmentNum.toString(),
-          ref : ReferencerID.toString(),
-        }
-      })
-      .toPromise();
-      return data;  
-    }
-
-    public async pushContext(currentBook : String, url : String, Author : String, Context : String, ReferencerID : String){
-      const data = await this.httpClient.get(
-        this.serverURL + url,{
-          params: {
-            context : Context.toString(),
-            author : Author.toString(),
-            ref : ReferencerID.toString(),
-          }
-        })
-        .toPromise();
-        return data;  
-    }
-
-    public async retrieveSelectedFragment(selectedFragment:String){
-      let Temp_ReferencerID = await this.fetchReferencerID(Number(selectedFragment), 1, this.currentBook, 'getF_ReferencerID') as JSON;
-      console.log('this: ', this.allFragmentsArray);
-
-      this.tempArray = this.allFragmentsArray.filter(x => x.lineNumber == selectedFragment);
-      console.log(this.tempArray);
-    }
-
-  public createFragment() {
-    // this.input_selectedEditor = selectedEditor;
-    // this.input_FragmentNum = fragmentNum;
-    // console.log(this.given_Editor);
-    this.input_FragmentNum = this.given_fragNum;
-    this.input_FragmentContent = this.given_fragContent
-    console.log("givenValues: ", this.input_FragmentContent, this.input_FragmentNum);
-
-    // Check all input before sending.
-    // TODO
-
-    // console.log(this.currentBook);
-    if(this.currentBook == '7'){
-      this.pushFragment(this.currentBook, 'insertFragment', this.given_fragNum, this.mainEditorKey.toString(), this.given_fragContent, '1');
-    }
-    else{
-      console.log("THIS BOOK IS PROTECTED");
-    }
-
-
-  }
-
-  public async uploadCommentary(){
-      // Retrieve the Referencer ID and wait before it is retrieved before proceeding with the rest.
-      let Temp_ReferencerID = await this.fetchReferencerID(Number(this.input_selectedFragment), 1, this.currentBook, 'getF_ReferencerID') as JSON;
-      // Retrieve the ReferencerID from the data. If not possible, throw error.
-      try{
-        var ReferencerID = Temp_ReferencerID[0][0];
-      }
-      catch(e){
-        console.log('Cannot find the ReferencerID!');
-      }
-
-    console.log('ref: ', ReferencerID);
-    
-    if(this.currentBook == '7'){
-      this.pushCommentary(this.currentBook, 'insertCommentary', this.given_AppCrit, this.given_Differences, 
-        this.given_Commentary, this.given_Translation, this.input_selectedFragment, ReferencerID);
-    }
-    else{
-      console.log("THIS BOOK IS PROTECTED");
-    }
-  }
-
-  public async uploadContextAuthor(){
-      // Retrieve the Referencer ID and wait before it is retrieved before proceeding with the rest.
-      let Temp_ReferencerID = await this.fetchReferencerID(Number(this.input_selectedFragment), 1, this.currentBook, 'getF_ReferencerID') as JSON;
-      // Retrieve the ReferencerID from the data. If not possible, throw error.
-      try{
-        var ReferencerID = Temp_ReferencerID[0][0];
-      }
-      catch(e){
-        console.log('Cannot find the ReferencerID!');
-      }
-
-    console.log('ref: ', ReferencerID);
-    
-    if(this.currentBook == '7'){
-      this.pushContext(this.currentBook, 'insertContext', this.given_ContextAuthor, this.given_Context, ReferencerID);
-    }
-    else{
-      console.log("THIS BOOK IS PROTECTED");
-    }
-  }
-
-  public getFragmentNumbers(){
-    this.fragmentList = [];
-    for(let key in this.mainEditorArray){
-      this.fragmentList.push(this.mainEditorArray[key].lineNumber);
-    }
-  }
-
-  public inputSelectedEditor(selectedEditor : String){
-    this.input_selectedEditor = selectedEditor;
-    console.log(this.input_selectedEditor);
-  }
-
-  public inputSelectedFragment(selectedFragment : String){
-    this.input_selectedFragment = selectedFragment;
-    console.log(selectedFragment);
-  }
-
-
-     ////////////////////////////
-    // TASK RELATED FUNCTIONS //
-   ////////////////////////////
-  task: Task = {
-    name: 'Indeterminate',
-    completed: false,
-    color: 'primary',
-    subtasks: [
-      {name: 'Primary', completed: false, color: 'primary'},
-      {name: 'Accent', completed: false, color: 'accent'},
-      {name: 'Warn', completed: false, color: 'warn'}
-    ]
-  };
-
-  allComplete: boolean = false;
-
-  retrieveSelectedLine(lineNumber: Number){
-    console.log(this.selectedEditor, lineNumber);
-    console.log(this.selectedEditorArray);
-    let item1 = this.selectedEditorArray.find(i => i.lineNumber === lineNumber);
-    console.log(item1.lineContent)
-    this.F_Content = item1.lineContent
-  }
-
-  publishFragment(lineNumber: Number) {
-    // this.allComplete = this.task.subtasks != null && this.task.subtasks.every(t => t.completed);
-    console.log('updateAllComplete', lineNumber, this.currentBook, this.selectedEditor)
-  }
-
-  someComplete(): boolean {
-    if (this.task.subtasks == null) {
-      return false;
-    }
-    return this.task.subtasks.filter(t => t.completed).length > 0 && !this.allComplete;
-  }
-
-  setAll(completed: boolean) {
-    this.allComplete = completed;
-    if (this.task.subtasks == null) {
-      return;
-    }
-    this.task.subtasks.forEach(t => t.completed = completed);
-  }
-
-  changeSelectedEditor(givenEditor: String){
-    this.selectedEditor = givenEditor;
-    this.selectedEditorArray = this.opbouwenFragmentenEditor(givenEditor, this.allFragmentsArray);
-  }
-
-  items;
-  checkoutForm;
-
-  onSubmit(input) {
-    // Process checkout data here
-    // this.items = this.cartService.clearCart();
-    this.checkoutForm.reset();
-
-    console.log('Your order has been submitted', input, input.name);
-  }
-
-  // temp2: String = ""
-
-
 
 } // CLASS ENDS HERE
 
