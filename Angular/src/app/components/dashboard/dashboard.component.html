@@ -41,20 +41,61 @@
 
     <!-- Main Mat tab group -->
     <div class="col-sm anyClass">
-    <mat-tab-group>
+      <br>
+      <mat-form-field>
+        <mat-label>Select Author</mat-label>
+        <mat-select [(ngModel)]="selectedAuthor">
+          <mat-option *ngFor="let selectedAuthor of this.authors" [value]="selectedAuthor"
+          (click)="requestBooks(selectedAuthor[0])">
+            {{ selectedAuthor[1] }}                       
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Select Book</mat-label>
+          <mat-select [(ngModel)]="selectedBook">
+            <mat-option *ngFor="let selectedBook of this.books" [value]="selectedBook"
+            (click)="requestEditors(selectedAuthor[0], selectedBook[0])">
+              {{ selectedBook[1] }}                       
+            </mat-option>
+          </mat-select>
+          <mat-hint>Select a book</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Select Editor</mat-label>
+          <mat-select [(ngModel)]="selectedEditor">
+            <mat-option *ngFor="let selectedEditor of this.editors" [value]="selectedEditor"
+            (click)="setCreateFragmentParameters(selectedAuthor, selectedBook, selectedEditor)"
+            (click)="getFragNumbersSelectedEditor(selectedAuthor, selectedBook, selectedEditor)">
+              {{ selectedEditor[1] }}                       
+            </mat-option>
+          </mat-select>
+          <mat-hint>Select an Editor</mat-hint>
+        </mat-form-field>
+        
+        <mat-form-field>
+          <mat-label>Select fragment</mat-label>
+          <mat-select [(ngModel)]="selectedFragment">
+            <mat-option *ngFor="let selectedFragment of this.fragmentList" [value]="selectedFragment"
+            (click)="retrieveFragmentData(selectedFragment)"
+            (click)="getFragmentContent(selectedFragment)">
+
+              {{ selectedFragment }} 
+            </mat-option>
+          </mat-select>
+        </mat-form-field>      
+    
+        <hr>
+    
+    
+      <mat-tab-group>
       <mat-tab label="Add/Remove"><br>
         <!-- Group to add/remove Authors, Books and Editors -->
         <mat-tab-group>
           <!-- Tab to add/remove Authors -->
           <mat-tab label="Author add/remove"><br>
-            <mat-form-field>
-              <mat-label>Select Author</mat-label>
-              <mat-select [(ngModel)]="selectedAuthor">
-                <mat-option *ngFor="let selectedAuthor of this.authors" [value]="selectedAuthor">
-                  {{ selectedAuthor[1] }}                       
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
 
             <div mat-dialog-content>
               <mat-form-field class="example-form">
@@ -70,25 +111,6 @@
 
           <!-- Tab to add/remove Books -->
           <mat-tab label="Book add/remove"><br>
-            <mat-form-field>
-              <mat-label>Select Author</mat-label>
-              <mat-select [(ngModel)]="selectedAuthor">
-                <mat-option *ngFor="let selectedAuthor of this.authors" [value]="selectedAuthor"
-                (click)="requestBooks(selectedAuthor[0])">
-                  {{ selectedAuthor[1] }}                       
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-
-            <mat-form-field>
-              <mat-label>Select Book</mat-label>
-              <mat-select [(ngModel)]="selectedBook">
-                <mat-option *ngFor="let selectedBook of this.books" [value]="selectedBook">
-                  {{ selectedBook[1] }}                       
-                </mat-option>
-              </mat-select>
-              <mat-hint>Select a book to be deleted</mat-hint>
-            </mat-form-field>
 
             <div mat-dialog-content>
               <mat-form-field class="example-form">
@@ -103,39 +125,7 @@
           </mat-tab>
 
           <!-- Tab to add/remove Editors -->
-          <mat-tab label="Editor add/remove"><br>
-
-            <mat-form-field>
-              <mat-label>Select Author</mat-label>
-              <mat-select [(ngModel)]="selectedAuthor">
-                <mat-option *ngFor="let selectedAuthor of this.authors" [value]="selectedAuthor"
-                (click)="requestBooks(selectedAuthor[0])">
-                  {{ selectedAuthor[1] }}                       
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-  
-            <mat-form-field>
-              <mat-label>Select Book</mat-label>
-              <mat-select [(ngModel)]="selectedBook">
-                <mat-option *ngFor="let selectedBook of this.books" [value]="selectedBook"
-                (click)="requestEditors(selectedAuthor[0], selectedBook[0])">
-                  {{ selectedBook[1] }}                       
-                </mat-option>
-              </mat-select>
-              <mat-hint>Select a book to be deleted</mat-hint>
-            </mat-form-field>
-
-            <mat-form-field>
-              <mat-label>Select Editor</mat-label>
-              <mat-select [(ngModel)]="selectedEditor">
-                <mat-option *ngFor="let selectedEditor of this.editors" [value]="selectedEditor">
-                  {{ selectedEditor[1] }}                       
-                </mat-option>
-              </mat-select>
-              <mat-hint>Select an Editor to be deleted</mat-hint>
-            </mat-form-field>
-          
+          <mat-tab label="Editor add/remove"><br>         
             <div mat-dialog-content>
               <mat-form-field class="example-form">
                 <input matInput placeholder="Add Editor" #input2 [(ngModel)]='inputEditor' id="inputEditor">
@@ -151,41 +141,7 @@
 
         <!-- Mat Tab Group to create a fragment and everything related to it. -->
         </mat-tab>  
-        <mat-tab label="Create Fragment"><br>
-          <!-- First select your author, book and editor. This will be saved and used. -->
-          <mat-form-field>
-            <mat-label>Select Author</mat-label>
-            <mat-select [(ngModel)]="selectedAuthor">
-              <mat-option *ngFor="let selectedAuthor of this.authors" [value]="selectedAuthor"
-              (click)="requestBooks(selectedAuthor[0])">
-                {{ selectedAuthor[1] }}                       
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-  
-            <mat-form-field>
-              <mat-label>Select Book</mat-label>
-              <mat-select [(ngModel)]="selectedBook">
-                <mat-option *ngFor="let selectedBook of this.books" [value]="selectedBook"
-                (click)="requestEditors(selectedAuthor[0], selectedBook[0])">
-                  {{ selectedBook[1] }}                       
-                </mat-option>
-              </mat-select>
-              <mat-hint>Select a book</mat-hint>
-            </mat-form-field>
-
-            <mat-form-field>
-              <mat-label>Select Editor</mat-label>
-              <mat-select [(ngModel)]="selectedEditor">
-                <mat-option *ngFor="let selectedEditor of this.editors" [value]="selectedEditor"
-                (click)="setCreateFragmentParameters(selectedAuthor, selectedBook, selectedEditor)"
-                (click)="getFragNumbersSelectedEditor(selectedAuthor, selectedBook, selectedEditor)">
-                  {{ selectedEditor[1] }}                       
-                </mat-option>
-              </mat-select>
-              <mat-hint>Select an Editor</mat-hint>
-            </mat-form-field>        
-
+        <mat-tab label="Create Fragment"><br>     
           <mat-tab-group>
             <!-- Tab to create a fragment given Fragment number, line number and content -->
             <mat-tab label="Create Fragment"><br>
@@ -211,19 +167,10 @@
               <button mat-button (click)="createFragment(inputFragNum, inputLineNum, inputFragContent)">Create Fragment</button>
               </mat-tab>
               <!-- Tab to add commentary to the selected Fragment -->
-              <mat-tab label="Add Commentary">
+              <mat-tab label="Add Commentary"><br>
                 <div class="container">
                   <div class="row">
                     <div class="col-sm-6">
-                      <mat-form-field>
-                        <mat-label>Select fragment</mat-label>
-                        <mat-select [(ngModel)]="selectedFragment">
-                          <mat-option *ngFor="let selectedFragment of this.fragmentList" [value]="selectedFragment"
-                          (click)="inputSelectedFragment(selectedFragment)">
-                            {{ selectedFragment }} 
-                          </mat-option>
-                        </mat-select>
-                      </mat-form-field>
     
                       <div mat-dialog-content>
                         <mat-form-field class="example-full-width">
@@ -238,15 +185,15 @@
                       </div>   
                               
                       <div mat-dialog-content>
-                          <mat-form-field class="example-full-width">
-                            <input matInput placeholder="Fragment Commentary" #input2 [(ngModel)]='inputCommentary' id="inputCommentary">
-                            </mat-form-field>
-                        </div>                           
+                        <mat-form-field class="example-full-width">
+                          <input matInput placeholder="Fragment Commentary" #input2 [(ngModel)]='inputCommentary' id="inputCommentary">
+                        </mat-form-field>
+                      </div>                           
     
                       <div mat-dialog-content>
-                          <mat-form-field class="example-full-width">
-                            <input matInput placeholder="Fragment Translation" #input2 [(ngModel)]='inputTranslation' id="inputTranslation">
-                            </mat-form-field>
+                        <mat-form-field class="example-full-width">
+                          <input matInput placeholder="Fragment Translation" #input2 [(ngModel)]='inputTranslation' id="inputTranslation">
+                        </mat-form-field>
                       </div>   
 
                       <br>
@@ -274,16 +221,7 @@
                 </div>
               </mat-tab>
               <!-- Tab to add the fragments by secondary editors -->
-              <mat-tab label="Add secondary editors"><br>
-                <mat-form-field>
-                  <mat-label>Secondary editor</mat-label>
-                  <mat-select [(ngModel)]="selectedEditor">
-                    <mat-option *ngFor="let selectedEditor of this.editors" [value]="selectedEditor">
-                      {{ selectedEditor[1] }} 
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-               
+              <mat-tab label="Add fragment secondary editors"><br>              
                 <mat-form-field class="example-full-width">
                   <input matInput placeholder="Fragment Content" #input2 [(ngModel)]='inputFragContent' id="inputFragContent">
                   <mat-hint>Separate Lines using HTML Paragraphs</mat-hint>
@@ -301,107 +239,80 @@
                   </mat-form-field>
                 </div>                
 
-                <button mat-button (click)="addOtherFrag(inputFragContent, inputFragNum, inputLineNum)">Upload Secondary Line</button>
+                <button mat-button (click)="addSecondaryFrag(inputFragNum, inputLineNum, inputFragContent)">Upload Secondary Line</button>
               </mat-tab>
             </mat-tab-group>
           </mat-tab> 
         
         <!-- Tab Group to change a fragment. -->
         <mat-tab label="Change Fragment"><br>
+          <!-- Tab to change the fragment commentary fields -->
           <mat-tab-group>
-
-          <mat-tab label="Fix Content"><br>
-            <h4>Press one of the fragments to change its contents fields.</h4>
-            <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit(checkoutForm.value)">
-
+            <mat-tab label="Fix Content"><br>
+              <h4>Select one of the fragments to change its contents fields.</h4>
+              <!-- Uses form group! On pressing upload, changes will be put in the form. -->
+              <form [formGroup]="contentForm" (ngSubmit)="submitChangedContent(contentForm.value)">
                 <mat-form-field class="example-full-width">
                   <mat-label>Fragment Commentary</mat-label>
                   <input matInput value='{{this.F_Commentaar}}' id="F_Commentaar" type="text" formControlName="F_Commentaar">
-                  <!-- <button type="button" (click)="redactGivenFragment('F_Commentaar')">Upload</button> -->
                 </mat-form-field>
 
                 <mat-form-field class="example-full-width">
                   <mat-label>Fragment Differences</mat-label>
                   <input matInput value='{{this.F_Differences}}' id="F_Differences" type="text" formControlName="F_Differences">
-                  <!-- <button type="button" (click)="redactGivenFragment('F_Commentaar')">Upload</button> -->
                 </mat-form-field>
                                     
                 <mat-form-field class="example-full-width">
                   <mat-label>Fragment Translation</mat-label>
                   <input matInput value='{{this.F_Translation}}' id="F_Translation" type="text" formControlName="F_Translation">
-                  <!-- <button type="button" (click)="redactGivenFragment('F_Commentaar')">Upload</button> -->
                 </mat-form-field>
                 
                 <mat-form-field class="example-full-width">
                   <mat-label>Fragment AppCrit</mat-label>
                   <input matInput value='{{this.F_AppCrit}}' id="F_AppCrit" type="text" formControlName="F_AppCrit">
-                  <!-- <button type="button" (click)="redactGivenFragment('F_Commentaar')">Upload</button> -->
                 </mat-form-field>
                 
                 <mat-form-field class="example-full-width">
                   <mat-label>Fragment Reconstruction</mat-label>
                   <input matInput value='{{this.F_Reconstruction}}' id="F_Reconstruction" type="text" formControlName="F_Reconstruction">
-                  <!-- <button type="button" (click)="redactGivenFragment('F_Commentaar')">Upload</button> -->
                 </mat-form-field>
-                          
-              <button mat-button class="button" type="submit">Upload</button>
-            
-            </form>
-          </mat-tab>
+                <!-- Button is linked via the submit type! -->
+                <button mat-button class="button" type="submit">Upload</button>
+              </form>
+            </mat-tab>
 
-          <mat-tab label="Fix Context"><br>
-            <h4>Press one of the fragments to change its context fields.</h4>
-            <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit(checkoutForm.value)">
-              <mat-form-field class="example-full-width">
-                <mat-label>Fragment Context</mat-label>
-                <input matInput value='{{this.F_Context}}' id="F_Context" type="text" formControlName="F_Context">
-                <!-- <button type="button" (click)="redactGivenFragment('F_Commentaar')">Upload</button> -->
-              </mat-form-field>
-            </form>
-
-            <mat-form-field>
+            <!-- Tab to fix the context: select author and change its content. -->
+            <mat-tab label="Fix Context"><br>
+              <h4>Select one of the fragments to change its context fields.</h4>
+              
+              <mat-form-field>
                 <mat-label>Select context author</mat-label>
-                <mat-select [(ngModel)]="selected3">
-                    <mat-option *ngFor="let i of this.F_Context">
-                    {{ i[0] }} 
-                      
-                    </mat-option>
-                  </mat-select>
+                <mat-select [(ngModel)]="contextAuthor">
+                  <mat-option *ngFor="let contextAuthor of this.F_Context" [value]="contextAuthor[0]"
+                  (click)="selectCorrespondingContext(contextAuthor)">                  
+                    {{ contextAuthor[0] }}                       
+                  </mat-option>
+                </mat-select>
               </mat-form-field>
+              
+              <form [formGroup]="contentForm" (ngSubmit)="submitChangedContent(contentForm.value)">
+                <mat-form-field class="example-full-width">
+                  <mat-label>Fragment Context</mat-label>
+                  <input matInput value='{{this.F_ContextField}}' id="F_Context" type="text" formControlName="F_Context">
+                </mat-form-field>
+                <!-- Button is linked via the submit type! -->
+                <button mat-button class="button" type="submit">Upload</button>
+              </form>
+            </mat-tab>
 
+            <!-- Tab to change the content of a fragment -->
+            <mat-tab label="Fix Fragment"><br>
+            <h4>Select one of the fragments to change.</h4>
 
-
-
-          </mat-tab>
-
-          <mat-tab label="Fix Fragment"><br>
-            <h4>Press one of the fragments to change.</h4>
-            <mat-form-field>
-              <mat-label>Select editor</mat-label>
-              <mat-select [(ngModel)]="selected2">
-                  <mat-option *ngFor="let selectedEditor of this.editors" [value]="selectedEditor[1]"
-                  (click)="changeSelectedEditor(selectedEditor[0])">
-                  {{ selectedEditor[1] }} 
-                    
-                  </mat-option>
-                </mat-select>
-            </mat-form-field>
-
-            <mat-form-field>
-              <mat-label>Select fragment</mat-label>
-                <mat-select [(ngModel)]="selected2">
-                  <mat-option *ngFor="let subtask of this.selectedEditorArray" [value]="selectedFragment"
-                    (click)="retrieveSelectedLine(subtask.lineNumber)">
-                  {{ subtask.lineNumber }} 
-                  </mat-option>
-                </mat-select>
-          </mat-form-field>
-
-          <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit(checkoutForm.value)">
+            <form [formGroup]="contentForm" (ngSubmit)="submitChangedContent(contentForm.value)">
               <mat-form-field class="example-full-width">
                 <mat-label>Fragment Content</mat-label>
                 <input matInput value='{{this.F_Content}}' id="F_Content" type="text" formControlName="F_Content">
-                <!-- <button type="button" (click)="redactGivenFragment('F_Commentaar')">Upload</button> -->
               </mat-form-field>
               <button mat-button class="button" type="submit">Upload</button>
             </form>
@@ -410,20 +321,8 @@
 
             <mat-tab label="Publish"><br>
               <h4>What fragments should be published?</h4>
-            
-              <mat-form-field>
-              <mat-label>Select editor</mat-label>
-              <mat-select [(ngModel)]="selected2">
-                  <mat-option *ngFor="let selectedEditor of this.editors" [value]="selectedEditor[1]"
-                  (click)="changeSelectedEditor(selectedEditor[0])">
-                  {{ selectedEditor[1] }} 
-                    
-                  </mat-option>
-                </mat-select>
-            </mat-form-field>
 
             <section class="example-section">
-
               <span class="example-list-section">
                 <ul>
                   <div *ngFor="let subtask of selectedEditorArray">
@@ -431,31 +330,21 @@
                                   [color]="subtask.color"
                                   (ngModelChange)="publishFragment(subtask.lineNumber)">
                       {{subtask.lineNumber}}
-
                     </mat-checkbox>
                   </div>
                 </ul>
               </span>
             </section>
-
-
-            
-
-
           </mat-tab>
         </mat-tab-group>
 
         </mat-tab> 
-
-
-
-    </mat-tab-group>
-
-
-
-      </div>
-
-</div>
+        <mat-tab label="Delete Fragment">
+          empty
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  </div>
 </div>
 
 

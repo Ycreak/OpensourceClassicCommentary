@@ -65,6 +65,8 @@ export class DashboardComponent implements OnInit {
   F_Reconstruction : JSON;
   ReferencerID : Number;
 
+  F_ContextField : String;
+
   // List with all the fragments numbers.
   fragmentList : Array<Number>;
 
@@ -118,16 +120,14 @@ export class DashboardComponent implements OnInit {
 
   serverURL = 'http://katwijk.nolden.biz:5002/';  
 
-
-
   constructor(
     private modalService: NgbModal, 
     private httpClient: HttpClient, 
     public dialog: MatDialog, 
     private formBuilder: FormBuilder,
     ) { 
-
-      this.checkoutForm = this.formBuilder.group({
+      // Form to revise the commentary of a fragment.
+      this.contentForm = this.formBuilder.group({
         F_Commentaar: '',
         F_Differences: '',
         F_Context: '',
@@ -215,7 +215,9 @@ export class DashboardComponent implements OnInit {
     this.currentAuthor = author[0]; // = key
     this.currentBook = book[0]; // = key
     this.currentEditor = Number(editor[0]); // = key
+    console.log('Author, Book and Editor set.')
     console.log(this.currentAuthor, this.currentBook, this.currentEditor)
+
   }
 
   private createFragment(fragNum : String, lineNum : String, content : String){
@@ -241,8 +243,53 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+  private addSecondaryFrag(fragNum : String, lineNum : String, content : String){
+      console.log('addSecondaryFrag');
+  }
+
+  private retrieveFragmentData(fragment : Number){
+    // console.log(fragment)
+    this.ophalenCommentaren(fragment, this.currentEditor)
+  }
+
+  private getFragmentContent(lineNumber: Number){
+    console.log(lineNumber);
+    console.log(this.currentEditor, lineNumber);
+
+    this.changeSelectedEditor(String(this.currentEditor));
+
+    let item1 = this.selectedEditorArray.find(i => i.lineNumber === lineNumber);
+    console.log(item1.lineContent)
+    this.F_Content = item1.lineContent
+  }
 
 
+  items;
+  contentForm;
+
+  public submitChangedContent(input){    
+    // Process checkout data here
+    // this.items = this.cartService.clearCart();
+    this.contentForm.reset();
+
+    console.log('Your order has been submitted', input, input.name);
+  }
+
+  private uploadReworkedCommentary(){
+    // Needed values are in the form. 
+  }
+
+  private selectCorrespondingContext(author : Array<String>){
+    this.F_ContextField = author[1];
+    let currentAuthor = author[0]; // Used to combine Author + Text
+    console.log(this.F_Context, author)
+  }
+
+  private uploadReworkedContext(author : String){
+
+    console.log(this.F_ContextField);
+
+  }  
 
   // Request Newly Selected Text
   private async requestSelectedText(selectedText: String){
@@ -597,13 +644,7 @@ export class DashboardComponent implements OnInit {
 
   allComplete: boolean = false;
 
-  retrieveSelectedLine(lineNumber: Number){
-    console.log(this.selectedEditor, lineNumber);
-    console.log(this.selectedEditorArray);
-    let item1 = this.selectedEditorArray.find(i => i.lineNumber === lineNumber);
-    console.log(item1.lineContent)
-    this.F_Content = item1.lineContent
-  }
+
 
   publishFragment(lineNumber: Number) {
     // this.allComplete = this.task.subtasks != null && this.task.subtasks.every(t => t.completed);
@@ -630,164 +671,7 @@ export class DashboardComponent implements OnInit {
     this.selectedEditorArray = this.opbouwenFragmentenEditor(givenEditor, this.allFragmentsArray);
   }
 
-  items;
-  checkoutForm;
-
-  onSubmit(input) {
-    // Process checkout data here
-    // this.items = this.cartService.clearCart();
-    this.checkoutForm.reset();
-
-    console.log('Your order has been submitted', input, input.name);
-  }
-
-  // temp2: String = ""
 
 
 
-} // CLASS ENDS HERE
-
-// export class CheckboxOverviewExample {
-//   task: Task = {
-//     name: 'Indeterminate',
-//     completed: false,
-//     color: 'primary',
-//     subtasks: [
-//       {name: 'Primary', completed: false, color: 'primary'},
-//       {name: 'Accent', completed: false, color: 'accent'},
-//       {name: 'Warn', completed: false, color: 'warn'}
-//     ]
-//   };
-
-//   allComplete: boolean = false;
-
-//   updateAllComplete() {
-//     this.allComplete = this.task.subtasks != null && this.task.subtasks.every(t => t.completed);
-//   }
-
-//   someComplete(): boolean {
-//     if (this.task.subtasks == null) {
-//       return false;
-//     }
-//     return this.task.subtasks.filter(t => t.completed).length > 0 && !this.allComplete;
-//   }
-
-//   setAll(completed: boolean) {
-//     this.allComplete = completed;
-//     if (this.task.subtasks == null) {
-//       return;
-//     }
-//     this.task.subtasks.forEach(t => t.completed = completed);
-//   }
-// }
-
-// UNUSED
-//   /**
-//   * Combines the separate lines from the given array into fragments.
-//   * @param givenArray with separate lines.
-//   * @returns array with lines combined into fragment.
-//   * @author Ycreak
-//   */
-//  public combineLinesIntoFragments(givenArray){
-//   // String that will be used to build the fragment
-//   let buildString = ""
-//   // Array that will be used to return a merged array
-//   var merged = [];
-//   // For every element in the givenArray, check if it is merged into one fragment.
-//   for(let element in givenArray){      
-//     // Check if merged array is exists
-//     if (Array.isArray(merged) && merged.length) {
-//       // If it does, check if the fragment already exists
-//       if(merged.find(el => el.number === givenArray[element].number)){
-//         // First, find the original string found in the array merged
-//         buildString = merged.find(el => el.number === givenArray[element].number).line;
-//         // Save the index to use later to delete the original entry
-//         const index1 = merged.findIndex((obj => obj.number == givenArray[element].number))
-//         // Then add the currect string to the original string
-//         buildString += givenArray[element].line;
-//         // Remove the old string without the new entry using the index
-//         merged.splice(index1,1)
-//         // Push this newly created string to the array merged.
-//         merged.push({ number: givenArray[element].number, line: buildString, editor: givenArray[element].editor})
-//       }
-//       else{ 
-//         // If the fragment does not exist yet in the array, create the entry and push
-//         merged.push({ number: givenArray[element].number, line: givenArray[element].line, editor: givenArray[element].editor})
-//       }
-//     }
-//     else{
-//       // If the array is completely empty, push the element from the givenArray to merged
-//       merged.push({ number: givenArray[element].number, line: givenArray[element].line, editor: givenArray[element].editor})
-//     }
-//   }
-//   // Return the newly merged array. This has all the separate strings combined in an array
-//   return merged;
-// }
-
-//   /**
-//   * Creates fragments for the main editor and the selected editor
-//   * @param selectedEditor given from the middle column
-//   * @returns none
-//   * @author Ycreak
-//   */
-//  public opbouwenFragmentenEditor(selectedEditor: String){
-//   let mainEditor = 1; // TODO: Moet nog uit de database halen!
-//   this.mainEditorKey = mainEditor;
-//   // Create a mainEditorArray and a selectedEditorArray.
-//   this.mainEditorArray = this.allFragmentsArray.filter(x => x.editor == mainEditor);
-//   this.selectedEditorArray = this.allFragmentsArray.filter(x => x.editor == selectedEditor);
-
-//   // // For every entry in mainEditor Array
-//   // for(var key in this.mainEditorArray){
-//   //   // Find the ID tag and save this.
-//   //   let idTag = this.mainEditorArray[key].id;
-//   //   // Find this ID tag in the selectedEditor Array
-//   //   let selectTag = this.selectedEditorArray.find(x => x.id === idTag);
-//   //   // And save its index.
-//   //   let foundIndex = this.selectedEditorArray.findIndex(x => x.id === idTag);
-//   //   // If the selectTag exists, the same line is found in the selectedEditor Array
-//   //   if (selectTag != null) {
-//   //     // Save this line and check if it is zero (so the same, just subtitute).
-//   //     let line = selectTag.line;
-//   //     if(line == "0"){
-//   //       // If zero, just add the text from the mainEditorArray into the selectedEditorArray
-//   //       this.selectedEditorArray[foundIndex].line = this.mainEditorArray[key].line;
-//   //     }
-//   //     // TODO: else logic. Dont change anything, just leave it (in short).
-//   //   }
-//   // }
-//   // // Combine the different lines into fragments.
-//   // this.mainEditorArray = this.combineLinesIntoFragments(this.mainEditorArray);
-//   // this.selectedEditorArray = this.combineLinesIntoFragments(this.selectedEditorArray);
-
-//   // Sort the fragments numerically.
-//   this.mainEditorArray.sort(this.sortArrayNumerically);
-//   this.selectedEditorArray.sort(this.sortArrayNumerically);
-//   console.log('mainEditorArray: ', this.mainEditorArray);
-//   console.log('selectedEditorArray: ', this.selectedEditorArray);
-
-// }
-
-// public addOtherFragment() {
-//   // this.input_selectedEditor = selectedEditor;
-//   // this.input_FragmentNum = fragmentNum;
-//   // console.log(this.given_Editor);
-//   this.input_FragmentNum = this.given_fragNum;
-//   this.input_FragmentContent = this.given_fragContent
-  
-//   console.log("givenValues: ", this.input_FragmentContent, this.input_FragmentNum, this.input_selectedEditor);
-
-//   // Check all input before sending.
-//   // TODO
-
-//   // console.log(this.currentBook);
-//   if(this.currentBook == '7'){
-//     this.pushFragment(this.currentBook, 'insertFragment', this.given_fragNum, this.input_selectedEditor.toString(), this.input_FragmentContent, '0');
-//   }
-//   else{
-//     console.log("THIS BOOK IS PROTECTED");
-//   }
-
-
-// }
-
+}
