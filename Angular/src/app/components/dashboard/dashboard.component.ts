@@ -145,11 +145,13 @@ export class DashboardComponent implements OnInit {
 
   // Takes two arrays: one with author, book, editor and fragnum,
   // the other with the parameters to send: commentary and so on.
-  public async pushData(currentParameters, items2Send, url){
+  public async pushData(givenData){
+    let url = "process"
+
     const data = await this.httpClient.get(
       this.serverURL + url,{
         params: {
-
+          stuff : givenData,
         }
       })
       .toPromise();
@@ -159,6 +161,8 @@ export class DashboardComponent implements OnInit {
   // ADD REMOVE TAB GROUP
   private createAuthor(author : String){
     console.log(author);
+    let itemArray = ['papa', 'mama'];
+    this.pushData(itemArray);
   }
 
   private deleteAuthor(author : Array<String>){

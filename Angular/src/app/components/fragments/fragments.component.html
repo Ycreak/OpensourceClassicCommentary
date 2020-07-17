@@ -56,7 +56,7 @@
       <br>
       Book:
       <div>
-          <select class="dropbtn" [(ngModel)]="selectedBook" (ngModelChange)="requestSelectedText(selectedBook[0])">
+          <select class="dropbtn" [(ngModel)]="selectedBook" (ngModelChange)="requestSelectedText(selectedAuthor[0], selectedBook[0])">
             <option *ngFor="let d of this.books" [ngValue]="d">{{d[1]}}</option>
           </select>
         </div>
@@ -170,7 +170,7 @@
 
         <div class="example-list">
           <div class="example-box" *ngFor="let arrayItem of mainEditorArray" (click)="ophalenCommentaren(arrayItem.lineNumber, arrayItem.editor)">
-            <div><b>{{arrayItem.fragmentNo2}}: {{arrayItem.lineNumber}} </b> <i> {{arrayItem.status}}</i></div>
+            <div><b>Fragment {{arrayItem.fragNumber}} </b> <i> {{arrayItem.status}}</i></div>
             <div [innerHTML]="arrayItem.lineContent"></div>      
           </div> 
         </div> 
@@ -185,7 +185,7 @@
               <mat-label>Select editor</mat-label>
               <mat-select [(ngModel)]="selected2">
                   <mat-option *ngFor="let selectedEditor of this.editorsJSON" [value]="selectedEditor[1]"
-                  (click)="this.selectedEditorArray = opbouwenFragmentenEditor(selectedEditor[0], this.allFragmentsArray)">
+                  (click)="this.selectedEditorArray = createEditorArray(selectedEditor[0], this.ArrayWithAllFragments)">
                   {{ selectedEditor[1] }} 
                     
                   </mat-option>
@@ -203,7 +203,7 @@
           <div class="example-box" *ngFor="let arrayItem of selectedEditorArray" cdkDrag>
           <!-- <p><b>{{arrayItem.number}}</b></p>
               <div [innerHTML]="arrayItem.line"></div> -->
-            <div><i>Frg {{arrayItem.fragNumber}}, {{arrayItem.lineNumber}}</i></div>
+            <div><b>Fragment {{arrayItem.fragNumber}}</b></div>
               <div [innerHTML]="arrayItem.lineContent"></div>
          </div>
         </div>
