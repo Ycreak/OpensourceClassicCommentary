@@ -26,9 +26,7 @@
 
 <mat-menu #appMenu="matMenu">
   <button routerLink="/text" mat-menu-item>Text OSCC</button>
-  <button routerLink="/dashboard" mat-menu-item>Dashboard</button>
-
-  <!-- <button routerLink="/fragments" mat-menu-item>Fragments</button> -->
+  <!-- <button routerLink="/dashboard" mat-menu-item>Dashboard</button> -->
   <button (click)="openBm(getStarted)" mat-menu-item>Get Started</button>
   <button (click)="openBm(About)" mat-menu-item>About</button>
 </mat-menu>
@@ -130,8 +128,9 @@
     </div>
     <div class="modal-body">
       <div>
+        hello
           <mat-nav-list class="my-list-2">
-              <mat-list-item *ngFor="let line of this.bib">
+              <mat-list-item *ngFor="let line of this.bibJSON">
                 <b>{{ line[0] }} {{ line[1] }} </b> <pre> </pre> <i> {{ line[2] }} {{ line[3] }},</i><pre> </pre>{{ line[4] }} ({{ line[5] }}). {{ line[6] }} {{ line[7] }} - ({{ line[8] }}, {{ line[9] }})
               </mat-list-item>
             </mat-nav-list>
@@ -142,6 +141,7 @@
     </div>
   </ng-template>
 
+  <!-- Show a spinner if query with database is in progress -->
   <mat-progress-bar mode="query" *ngIf="spinner"></mat-progress-bar>
   <!-- <hr *ngIf="spinner == false"> -->
 
@@ -166,12 +166,30 @@
 
       <!-- FIRST COLUMN -->
       <div class="col-sm anyClass">
-        <h4>{{this.currentAuthorName}}: {{this.currentBookName}}. {{this.mainEditorName}}</h4>
+        <div class="row">
+          <div class="col-6"><h4>{{this.currentAuthorName}}: {{this.currentBookName}}.</h4></div>  
+          <div class="col-6">
+              <mat-form-field>
+                <mat-label>Select main editor</mat-label>
+                <mat-select [(ngModel)]="selected1">
+                    <mat-option *ngFor="let mainEditor of this.mainEditorsJSON" [value]="mainEditor[1]"
+                    (click)="this.mainEditorArray = createEditorArray(mainEditor[0], this.ArrayWithAllFragments)">
+                    {{ mainEditor[1] }} 
+                      
+                    </mat-option>
+                  </mat-select>
+            </mat-form-field>
+  
+            </div>
+          </div>
 
         <div class="example-list">
-          <div class="example-box" *ngFor="let arrayItem of mainEditorArray" (click)="ophalenCommentaren(arrayItem.lineNumber, arrayItem.editor)">
-            <div><b>Fragment {{arrayItem.fragNumber}} </b> <i> {{arrayItem.status}}</i></div>
-            <div [innerHTML]="arrayItem.lineContent"></div>      
+          <div class="example-box" *ngFor="let arrayItem of mainEditorArray" (click)="ophalenCommentaren(arrayItem.fragNumber)">
+            <div><b>Fragment {{arrayItem.fragNumber}} </b> &nbsp; <i>{{arrayItem.status}}</i></div>
+            <!-- Heeft nog werk nodig! -->
+            <div class="example-box" *ngFor="let arrayItem2 of arrayItem.content">           
+              <div [innerHTML]="arrayItem2.lineComplete"></div>             
+            </div>     
           </div> 
         </div> 
       </div>
@@ -203,8 +221,14 @@
           <div class="example-box" *ngFor="let arrayItem of selectedEditorArray" cdkDrag>
           <!-- <p><b>{{arrayItem.number}}</b></p>
               <div [innerHTML]="arrayItem.line"></div> -->
-            <div><b>Fragment {{arrayItem.fragNumber}}</b></div>
-              <div [innerHTML]="arrayItem.lineContent"></div>
+            <div><b>Fragment {{arrayItem.fragNumber}}</b> &nbsp; <i>{{arrayItem.status}}</i></div>
+
+            <!-- Heeft nog werk nodig! -->
+            <div class="example-box" *ngFor="let arrayItem2 of arrayItem.content">           
+              <div [innerHTML]="arrayItem2.lineComplete"></div> 
+            </div>  
+
+              <!-- <div [innerHTML]="arrayItem.lineContent"></div> -->
          </div>
         </div>
       </div>
@@ -212,104 +236,130 @@
     <!-- COMMENTARY COLUMN -->
       <div class="col-sm anyClass">
         <div class="col-sm anyClass">
-          
+
           <h4>Selected Fragment {{currentCommentaar}}</h4> <hr>
 
-
-          <div *ngFor="let translation of this.F_Translation">
-            <!-- {{commentaar}} -->
-            <mat-expansion-panel>
-              <!-- Regelnummer -->
-              <mat-expansion-panel-header>
-                <mat-panel-title>
-                  <b>Fragment Translation</b>
-                </mat-panel-title>
-              <!-- Woorden in kwestie -->
-                <!-- <b>Latin is great</b> -->
-              </mat-expansion-panel-header>
-              <!-- Commentaar zelf met opmaak -->
-              <div class="mat-expansion-panel-content">
-                <div class="mat-expansion-panel-body">
-                    <div [innerHTML]="translation"></div>
-                </div>
-              </div>
-            </mat-expansion-panel>
+          <div *ngIf="noCommentary" class="alert alert-info" role="alert">
+            No commentary is available for this fragment.
           </div>
 
-          <hr>
-
-          <div *ngFor="let AppCrit of this.F_AppCrit">
-            <mat-expansion-panel>
-              <!-- Regelnummer -->
-              <mat-expansion-panel-header>
-                <mat-panel-title>
-                  <b>Apparatus Criticus</b>
-                </mat-panel-title>
-              <!-- Woorden in kwestie -->
-                <!-- <b>Latin is great</b> -->
-              </mat-expansion-panel-header>
-              <!-- Commentaar zelf met opmaak -->
-              <div class="mat-expansion-panel-content">
-                <div class="mat-expansion-panel-body">
-                  <div [innerHTML]=AppCrit></div>
+          <div *ngIf="noCommentary === false">
+            <div *ngFor="let translation of this.F_Translation">
+              <!-- {{commentaar}} -->
+              <mat-expansion-panel>
+                <!-- Regelnummer -->
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <b>Fragment Translation</b>
+                  </mat-panel-title>
+                <!-- Woorden in kwestie -->
+                  <!-- <b>Latin is great</b> -->
+                </mat-expansion-panel-header>
+                <!-- Commentaar zelf met opmaak -->
+                <div class="mat-expansion-panel-content">
+                  <div class="mat-expansion-panel-body">
+                      <div [innerHTML]="translation"></div>
+                  </div>
                 </div>
-              </div>
-            </mat-expansion-panel>
-          </div>
-
-          <hr>
-
-          <div *ngFor="let differences of this.F_Differences">
-            <!-- {{commentaar}} -->
-            <mat-expansion-panel>
-              <!-- Regelnummer -->
-              <mat-expansion-panel-header>
-                <mat-panel-title>
-                  <b>Fragment Differences</b>
-                </mat-panel-title>
-              <!-- Woorden in kwestie -->
-                <!-- <b>Latin is great</b> -->
-              </mat-expansion-panel-header>
-              <!-- Commentaar zelf met opmaak -->
-              <div class="mat-expansion-panel-content">
-                <div class="mat-expansion-panel-body">
-                    <div [innerHTML]="differences"></div>
-                </div>
-              </div>
-            </mat-expansion-panel>
-          </div>
-
-          <hr>
-
-        <div *ngFor="let F_Context of this.F_Context">
-          <!-- {{commentaar}} -->
-          <mat-expansion-panel>
-            <!-- Regelnummer -->
-            <mat-expansion-panel-header>
-              <mat-panel-title>
-                <b>Fragment Context</b>
-              </mat-panel-title>
-            <!-- Woorden in kwestie -->
-              <div [innerHTML]="F_Context[0]"></div>
-            </mat-expansion-panel-header>
-            <!-- Commentaar zelf met opmaak -->
-            <div class="mat-expansion-panel-content">
-              <div class="mat-expansion-panel-body">
-                  <div [innerHTML]="F_Context[1]"></div>
-              </div>
+              </mat-expansion-panel>
             </div>
-          </mat-expansion-panel>
-        </div>
-        
+
+            <hr>
+
+            <div *ngFor="let AppCrit of this.F_AppCrit">
+              <mat-expansion-panel>
+                <!-- Regelnummer -->
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <b>Apparatus Criticus</b>
+                  </mat-panel-title>
+                <!-- Woorden in kwestie -->
+                  <!-- <b>Latin is great</b> -->
+                </mat-expansion-panel-header>
+                <!-- Commentaar zelf met opmaak -->
+                <div class="mat-expansion-panel-content">
+                  <div class="mat-expansion-panel-body">
+                    <div [innerHTML]=AppCrit></div>
+                  </div>
+                </div>
+              </mat-expansion-panel>
+            </div>
+
+            <hr>
+
+            <div *ngFor="let differences of this.F_Differences">
+              <!-- {{commentaar}} -->
+              <mat-expansion-panel>
+                <!-- Regelnummer -->
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <b>Fragment Differences</b>
+                  </mat-panel-title>
+                <!-- Woorden in kwestie -->
+                  <!-- <b>Latin is great</b> -->
+                </mat-expansion-panel-header>
+                <!-- Commentaar zelf met opmaak -->
+                <div class="mat-expansion-panel-content">
+                  <div class="mat-expansion-panel-body">
+                      <div [innerHTML]="differences"></div>
+                  </div>
+                </div>
+              </mat-expansion-panel>
+            </div>
+
+            <hr>
+
+          <div *ngFor="let F_Context of this.F_Context">
+            <!-- {{commentaar}} -->
+            <mat-expansion-panel>
+              <!-- Regelnummer -->
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <b>Fragment Context</b>
+                </mat-panel-title>
+              <!-- Woorden in kwestie -->
+                <div [innerHTML]="F_Context[0]"></div>
+              </mat-expansion-panel-header>
+              <!-- Commentaar zelf met opmaak -->
+              <div class="mat-expansion-panel-content">
+                <div class="mat-expansion-panel-body">
+                    <div [innerHTML]="F_Context[1]"></div>
+                </div>
+              </div>
+            </mat-expansion-panel>
+          </div>
+          
+          <hr>
+
+          <div *ngFor="let commentaar of this.F_Commentaar">
+            <!-- {{commentaar}} -->
+            <mat-expansion-panel>
+              <!-- Regelnummer -->
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <b>Fragment Commentary</b>
+                </mat-panel-title>
+              <!-- Woorden in kwestie -->
+                <!-- <b>Latin is great</b> -->
+              </mat-expansion-panel-header>
+              <!-- Commentaar zelf met opmaak -->
+              <div class="mat-expansion-panel-content">
+                <div class="mat-expansion-panel-body">
+                    <div [innerHTML]="commentaar"></div>
+                </div>
+              </div>
+            </mat-expansion-panel>
+          </div>
+
         <hr>
 
-        <div *ngFor="let commentaar of this.F_Commentaar">
+        <div *ngFor="let commentaar of this.F_Reconstruction">
           <!-- {{commentaar}} -->
           <mat-expansion-panel>
             <!-- Regelnummer -->
             <mat-expansion-panel-header>
               <mat-panel-title>
-                <b>Fragment Commentary</b>
+                <b>Fragment Reconstruction</b>
               </mat-panel-title>
             <!-- Woorden in kwestie -->
               <!-- <b>Latin is great</b> -->
@@ -322,34 +372,12 @@
             </div>
           </mat-expansion-panel>
         </div>
-
-      <hr>
-
-      <div *ngFor="let commentaar of this.F_Reconstruction">
-        <!-- {{commentaar}} -->
-        <mat-expansion-panel>
-          <!-- Regelnummer -->
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              <b>Fragment Reconstruction</b>
-            </mat-panel-title>
-          <!-- Woorden in kwestie -->
-            <!-- <b>Latin is great</b> -->
-          </mat-expansion-panel-header>
-          <!-- Commentaar zelf met opmaak -->
-          <div class="mat-expansion-panel-content">
-            <div class="mat-expansion-panel-body">
-                <div [innerHTML]="commentaar"></div>
-            </div>
-          </div>
-        </mat-expansion-panel>
       </div>
-
-            </div>
-      </div>
-
+    </div>
   </div>
-  </div>
+
+</div>
+</div>
 
 
 
