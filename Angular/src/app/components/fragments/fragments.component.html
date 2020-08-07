@@ -26,7 +26,7 @@
 
 <mat-menu #appMenu="matMenu">
   <button routerLink="/text" mat-menu-item>Text OSCC</button>
-  <!-- <button routerLink="/dashboard" mat-menu-item>Dashboard</button> -->
+  <button routerLink="/dashboard" mat-menu-item>Dashboard</button>
   <button (click)="openBm(getStarted)" mat-menu-item>Get Started</button>
   <button (click)="openBm(About)" mat-menu-item>About</button>
 </mat-menu>
@@ -171,7 +171,7 @@
           <div class="col-6">
               <mat-form-field>
                 <mat-label>Select main editor</mat-label>
-                <mat-select [(ngModel)]="selected1">
+                <mat-select>
                     <mat-option *ngFor="let mainEditor of this.mainEditorsJSON" [value]="mainEditor[1]"
                     (click)="this.mainEditorArray = createEditorArray(mainEditor[0], this.ArrayWithAllFragments)">
                     {{ mainEditor[1] }} 
@@ -201,7 +201,7 @@
           <div class="col-6">
             <mat-form-field>
               <mat-label>Select editor</mat-label>
-              <mat-select [(ngModel)]="selected2">
+              <mat-select>
                   <mat-option *ngFor="let selectedEditor of this.editorsJSON" [value]="selectedEditor[1]"
                   (click)="this.selectedEditorArray = createEditorArray(selectedEditor[0], this.ArrayWithAllFragments)">
                   {{ selectedEditor[1] }} 
@@ -237,7 +237,7 @@
       <div class="col-sm anyClass">
         <div class="col-sm anyClass">
 
-          <h4>Selected Fragment {{currentCommentaar}}</h4> <hr>
+          <h4>Fragment {{currentFragment}}</h4> <hr>
 
           <div *ngIf="noCommentary" class="alert alert-info" role="alert">
             No commentary is available for this fragment.

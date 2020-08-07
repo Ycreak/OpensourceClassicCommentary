@@ -1,6 +1,6 @@
 /Server/sim/Data.py
 public
-
+.vscode/*
 # Logs
 logs
 *.log

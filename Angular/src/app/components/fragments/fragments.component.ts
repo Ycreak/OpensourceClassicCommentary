@@ -64,7 +64,8 @@ export class FragmentsComponent implements OnInit {
   currentAuthor : Number = 4;
   currentBook : Number = 6;
   currentEditor : Number = 1;
-
+  currentFragment : Number;
+  
   // Does this have to do with the Bibliography modal?
   panelOpenState: boolean = false;
   allExpandState = true;
@@ -222,17 +223,9 @@ export class FragmentsComponent implements OnInit {
     return comparison;
   }
 
+  // This function merges the multiple lines in a single fragment.
+  // The structure looks as follows: Fragment 2, [[1, "hello"],[2,"hi"]]
   public mergeLinesIntoFragment(givenArray){
-
-    // outputArray.push({ 
-    //   // id: array[arrayElement][0], 
-    //   lineNumber: array[arrayElement][1], 
-    //   fragNumber: array[arrayElement][0],
-    //   lineContent: array[arrayElement][3], 
-    //   editor: array[arrayElement][2],
-    //   published: array[arrayElement][5],
-    //   status: array[arrayElement][6],
-    // })
     console.warn('start of the function')
     // String that will be used to build the fragment
     let buildString = ""
@@ -334,96 +327,6 @@ export class FragmentsComponent implements OnInit {
     console.log('sorted', merged)
 
     return merged;
-  //     // Check if the next fragment number already exist.
-
-  //     // Check if merged array is exists
-  //     if (Array.isArray(merged) && merged.length) {
-  //       // If it does, check if the fragment already exists
-  //       if(merged.find(el => el.fragNumber === givenArray[element].fragNumber)){
-  //         // First, find the original string found in the array merged
-  //         // buildString = merged.find(el => el.fragNumber === givenArray[element].fragNumber).lineContent;
-  //         // Save the index to use later to delete the original entry
-  //         // const index1 = merged.findIndex((obj => obj.fragNumber == givenArray[element].fragNumber))
-  //         // Then add the currect string to the original string
-  //         // buildString += givenArray[element].lineContent;
-  //         // buildString += givenArray[element].lineNumber + ': ' + givenArray[element].lineContent;
-
-
-  
-  //         // This is the shitty part with the merging.
-
-  //         array = [givenArray[element].lineNumber, givenArray[element].lineContent]
-  //         console.log('your new element:', givenArray[element].fragNumber, 'array', array)
-          
-  //         buildString = merged.find(el => el.fragNumber === givenArray[element].fragNumber).lineContent;
-  //         console.log('where it needs to go', buildString)
-          
-  //         let array2 = [];
-  //         array2.push(buildString);
-  //         array2.push(array);
-  //         console.log('our result:',array2)
-  //         // console.warn(givenArray[element].lineContent)
-
-  //         // currentArray.push(givenArray[element].lineContent)
-
-  //         // console.log('array', array)
-  //         // console.log('current1', currentArray);
-  //         // console.log('lineContent', givenArray[element].lineContent)
-
-  //         // currentArray.push(array);
-
-  //         // console.log('current2', currentArray);
-
-
-  //         // Remove the old string without the new entry using the index
-  //         // merged.splice(index1,1)
-  //         // Push this newly created string to the array merged.
-  //         merged.push({ fragNumber: givenArray[element].fragNumber, lineContent: array2, status: givenArray[element].status})
-
-  //         // currentArray = [];
-
-  //       }
-  //       else{ 
-  //         // If the fragment does not exist yet in the array, create the entry and push
-  //         array = [givenArray[element].lineNumber, givenArray[element].lineContent]
-  //         // console.log('array2', array)
-  //         // console.log('frag', givenArray[element].fragNumber)
-
-          
-  //         // buildString = [givenArray[element].lineContent.slice(0, 3), givenArray[element].lineNumber + ': ', givenArray[element].lineContent.slice(3)].join('');
-  //         // array = [givenArray[element].lineNumber, givenArray[element].lineContent]
-  //         // console.warn(givenArray[element].lineContent)
-          
-  //         // currentArray.push(givenArray[element].lineContent)
-  //         // currentArray.push(array);
-
-  //         // console.log('array', array)
-  //         // console.log('current1', currentArray);
-  //         // console.log('lineContent', merged[element].lineContent)
-
-  //         // currentArray = givenArray[element].lineContent;
-  //         // currentArray.push(array)
-  //         merged.push({ fragNumber: givenArray[element].fragNumber, lineContent: array, status: givenArray[element].status})
-  //         // currentArray = [];
-
-  //       }
-  //     }
-  //     else{
-  //       // If the array is completely empty, push the element from the givenArray to merged. This only happens once per fragment to initiate!
-  //       array = [givenArray[element].lineNumber, givenArray[element].lineContent]
-  //       // currentArray = givenArray[element].lineContent;
-  //       // currentArray.push(array)
-  //       merged.push({ fragNumber: givenArray[element].fragNumber, lineContent: array, status: givenArray[element].status})
-  //       // console.log('merged', merged)
-  //       // console.warn('hello')
-  //       // console.log('lineContent', merged.lineContent);
-
-  //     }
-  //   }
-  //   console.log('end result: ', merged)
-  //   // Return the newly merged array. This has all the separate strings combined in an array
-
-  //   return merged;
   }
 
   /**
@@ -481,7 +384,7 @@ export class FragmentsComponent implements OnInit {
   */
   async ophalenCommentaren(fragmentID: Number){
     console.log(fragmentID, this.currentEditor, this.currentBook)
-    
+    this.currentFragment = fragmentID;
     // Turn on the spinner.
     this.spinner = true;
     // Retrieve the Referencer ID and wait before it is retrieved before proceeding with the rest.

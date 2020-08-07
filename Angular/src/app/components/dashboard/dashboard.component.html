@@ -14,10 +14,6 @@
 
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav ml-auto">
-        <!-- <li> <button class="btn btn-lg" (click)="openBm(textChanger)">Change Text</button></li> -->
-        <!-- <li> <button class="btn btn-lg" (click)="callAPI()">Bibliography</button></li> -->
-        <!-- <li> <button class="btn btn-lg" (click)="toggleShowFragments()">New Entry</button></li> -->
-        <!-- <li> <button class="btn btn-lg" (click)="show = !show">3Columns</button></li> -->
         <li> <button class="btn btn-lg" [matMenuTriggerFor]="appMenu">More</button></li>
       </ul>
     </div>
@@ -29,11 +25,9 @@
   <button routerLink="/fragments" mat-menu-item>Fragments</button>
 
   <!-- <button routerLink="/fragments" mat-menu-item>Fragments</button> -->
-  <button (click)="openBm(getStarted)" mat-menu-item>Get Started</button>
-  <button (click)="openBm(About)" mat-menu-item>About</button>
+  <!-- <button (click)="openBm(getStarted)" mat-menu-item>Get Started</button>
+  <button (click)="openBm(About)" mat-menu-item>About</button> -->
 </mat-menu>
-
-  <!-- <app-navbar></app-navbar> -->
 
 <!-- Main container -->
 <div class="container-fluid">
@@ -44,10 +38,9 @@
       <br>
       <mat-form-field>
         <mat-label>Select Author</mat-label>
-        <mat-select [(ngModel)]="selectedAuthor">
+        <mat-select [(ngModel)]="selectedAuthorData">
           <mat-option *ngFor="let selectedAuthor of this.authorsJSON" [value]="selectedAuthor"
-          (click)="requestBooks(selectedAuthor[0])"
-          (click)="setAuthorBookEditor(selectedAuthor[0], '', '')">
+          (click)="requestBooks(selectedAuthor[0])">
             {{ selectedAuthor[1] }}                       
           </mat-option>
         </mat-select>
@@ -55,11 +48,10 @@
 
         <mat-form-field>
           <mat-label>Select Book</mat-label>
-          <mat-select [(ngModel)]="selectedBook">
+          <mat-select [(ngModel)]="selectedBookData">
             <mat-option *ngFor="let selectedBook of this.booksJSON" [value]="selectedBook"
-            (click)="requestEditors(selectedAuthor[0], selectedBook[0])"
-            (click)="setAuthorBookEditor(selectedAuthor[0], selectedBook[0], '')"
-            (click)="requestSelectedText()">
+            (click)="requestEditors(selectedBook[0])"
+            (click)="requestSelectedText(selectedBook[0])">
               {{ selectedBook[1] }}                       
             </mat-option>
           </mat-select>
@@ -68,12 +60,11 @@
 
         <mat-form-field>
           <mat-label>Select Editor</mat-label>
-          <!-- selectedEditor1 because duplicate with backend. Needs fixing! -->
-          <mat-select [(ngModel)]="selectedEditor1">
-            <mat-option *ngFor="let selectedEditor1 of this.editorsJSON" [value]="selectedEditor1"
-            (click)="getFragNumbersSelectedEditor(selectedAuthor, selectedBook, selectedEditor1)"
-            (click)="setAuthorBookEditor(selectedAuthor[0], selectedBook[0], selectedEditor1[0])">
-              {{ selectedEditor1[1] }}                       
+          <!-- selectedEditor because duplicate with backend. Needs fixing! -->
+          <mat-select [(ngModel)]="selectedEditorData">
+            <mat-option *ngFor="let selectedEditor of this.editorsJSON" [value]="selectedEditor"
+            (click)="getFragNumbersSelectedEditor(selectedEditor[0])">
+              {{ selectedEditor[1] }}                       
             </mat-option>
           </mat-select>
           <mat-hint>Select an Editor</mat-hint>
@@ -81,16 +72,24 @@
         
         <mat-form-field>
           <mat-label>Select fragment</mat-label>
-          <mat-select [(ngModel)]="selectedFragment">
-            <mat-option *ngFor="let selectedFragment of this.fragmentList" [value]="selectedFragment"
-            (click)="retrieveFragmentData(selectedFragment)"
-            (click)="getFragmentContent(selectedFragment)">
-
+          <mat-select [(ngModel)]="selectedFragmentData">
+            <mat-option *ngFor="let selectedFragment of this.fragmentNumberList" [value]="selectedFragment"
+            (click)="getLineNumbersSelectedEditor(selectedFragment)"
+            (click)="retrieveFragmentData(selectedFragment)">
               {{ selectedFragment }} 
             </mat-option>
           </mat-select>
         </mat-form-field>      
     
+        <mat-form-field>
+          <mat-label>Select line</mat-label>
+          <mat-select [(ngModel)]="selectedLineData">
+            <mat-option *ngFor="let selectedLine of this.lineNumberList" [value]="selectedLine"
+            (click)="getFragmentLine(selectedLine)">
+              {{ selectedLine }} 
+            </mat-option>
+          </mat-select>
+        </mat-form-field>            
         <hr>
     
     
@@ -103,14 +102,14 @@
 
             <div mat-dialog-content>
               <mat-form-field class="example-form">
-                <input matInput placeholder="Add Author" #input2 [(ngModel)]='inputAuthor' id="inputAuthor">
+                <input matInput placeholder="Add Author" [(ngModel)]='inputAuthor'>
                 <mat-hint>Fill in the name of a new Author</mat-hint>
               </mat-form-field>
             </div>  
 
             <br>
             <button mat-button (click)="createAuthor(inputAuthor)">Create author</button>
-            <button mat-button (click)="deleteAuthor(selectedAuthor)">Delete selected Author</button>
+            <button mat-button (click)="deleteAuthor()">Delete selected Author</button>
           </mat-tab>
 
           <!-- Tab to add/remove Books -->
@@ -118,28 +117,28 @@
 
             <div mat-dialog-content>
               <mat-form-field class="example-form">
-                <input matInput placeholder="Add Book" #input2 [(ngModel)]='inputBook' id="inputBook">
+                <input matInput placeholder="Add Book" [(ngModel)]='inputBook'>
                 <mat-hint>Select an Author and fill in the name of the new Book</mat-hint>
               </mat-form-field>
             </div>  
   
             <br>
-            <button mat-button (click)="createBook(selectedAuthor, inputBook)">Create Book</button>
-            <button mat-button (click)="deleteBook(selectedAuthor, selectedBook)">Delete selected Book</button>
+            <button mat-button (click)="createBook(inputBook)">Create Book</button>
+            <button mat-button (click)="deleteBook()">Delete selected Book</button>
           </mat-tab>
 
           <!-- Tab to add/remove Editors -->
           <mat-tab label="Editor add/remove"><br>         
             <div mat-dialog-content>
               <mat-form-field class="example-form">
-                <input matInput placeholder="Add Editor" #input2 [(ngModel)]='inputEditor' id="inputEditor">
+                <input matInput placeholder="Add Editor" [(ngModel)]='inputEditor'>
                 <mat-hint>Select an Author and Book and fill in the name of the new Editor</mat-hint>
               </mat-form-field>
             </div>  
             <br>
-            <button mat-button (click)="createEditor(selectedAuthor, selectedBook, inputEditor)">Create Editor</button>
-            <button mat-button (click)="deleteEditor(selectedAuthor, selectedBook, selectedEditor1)">Delete Editor</button>
-            <button mat-button (click)="setMainEditor(selectedAuthor, selectedBook, selectedEditor1)">Set as Main Editor</button>
+            <button mat-button (click)="createEditor(inputEditor)">Create Editor</button>
+            <button mat-button (click)="deleteEditor()">Delete Editor</button>
+            <button mat-button (click)="setMainEditor()">Set as Main Editor</button>
           </mat-tab>
         </mat-tab-group>
 
@@ -151,19 +150,19 @@
             <mat-tab label="Create Fragment"><br>
               <div mat-dialog-content>
                 <mat-form-field class="example-full-width">
-                  <input matInput type="number" placeholder="Fragment Number" #input2 [(ngModel)]='inputFragNum' id="inputFragNum">
+                  <input matInput type="number" placeholder="Fragment Number" [(ngModel)]='inputFragNum'>
                   <mat-hint>Fragment Number that the editor uses</mat-hint>
                 </mat-form-field>
               </div>
               <div mat-dialog-content>
                 <mat-form-field class="example-full-width">
-                  <input matInput type="number" placeholder="Line Number" #input2 [(ngModel)]='inputLineNum' id="inputLineNum">
+                  <input matInput type="number" placeholder="Line Number" [(ngModel)]='inputLineNum'>
                   <mat-hint>Line Number that the editor uses</mat-hint>
                 </mat-form-field>
               </div>
               <div mat-dialog-content>
                 <mat-form-field class="example-full-width">
-                  <input matInput placeholder="Fragment Content" #input2 [(ngModel)]='inputFragContent' id="inputFragContent">
+                  <input matInput placeholder="Fragment Content" [(ngModel)]='inputFragContent'>
                   <mat-hint>Separate Lines using HTML Paragraphs</mat-hint>
                 </mat-form-field>
               </div>   
@@ -178,25 +177,25 @@
     
                       <div mat-dialog-content>
                         <mat-form-field class="example-full-width">
-                          <input matInput placeholder="Fragment AppCrit" #input2 [(ngModel)]='inputAppCrit' id="inputAppCrit">
+                          <input matInput placeholder="Fragment AppCrit" [(ngModel)]='inputAppCrit'>
                         </mat-form-field>
                       </div>   
     
                       <div mat-dialog-content>
                         <mat-form-field class="example-full-width">
-                          <input matInput placeholder="Fragment Differences" #input2 [(ngModel)]='inputDifferences' id="inputDifferences">
+                          <input matInput placeholder="Fragment Differences" [(ngModel)]='inputDifferences'>
                         </mat-form-field>
                       </div>   
                               
                       <div mat-dialog-content>
                         <mat-form-field class="example-full-width">
-                          <input matInput placeholder="Fragment Commentary" #input2 [(ngModel)]='inputCommentary' id="inputCommentary">
+                          <input matInput placeholder="Fragment Commentary" [(ngModel)]='inputCommentary'>
                         </mat-form-field>
                       </div>                           
     
                       <div mat-dialog-content>
                         <mat-form-field class="example-full-width">
-                          <input matInput placeholder="Fragment Translation" #input2 [(ngModel)]='inputTranslation' id="inputTranslation">
+                          <input matInput placeholder="Fragment Translation" [(ngModel)]='inputTranslation'>
                         </mat-form-field>
                       </div>   
 
@@ -208,12 +207,12 @@
                     <h4>Add Context</h4>                    
                     <div mat-dialog-content>
                       <mat-form-field class="example-full-width">
-                        <input matInput placeholder="Fragment Context Author" #input2 [(ngModel)]='inputContextAuthor' id="inputContextAuthor">
+                        <input matInput placeholder="Fragment Context Author" [(ngModel)]='inputContextAuthor'>
                       </mat-form-field>
                     </div>  
                     <div mat-dialog-content>
                       <mat-form-field class="example-full-width">
-                        <input matInput placeholder="Fragment Context" #input2 [(ngModel)]='inputContext' id="inputContext">
+                        <input matInput placeholder="Fragment Context" [(ngModel)]='inputContext'>
                       </mat-form-field>
                     </div> 
 
@@ -223,27 +222,6 @@
                     </div>
                   </div>
                 </div>
-              </mat-tab>
-              <!-- Tab to add the fragments by secondary editors -->
-              <mat-tab label="Add fragment secondary editors"><br>              
-                <mat-form-field class="example-full-width">
-                  <input matInput placeholder="Fragment Content" #input2 [(ngModel)]='inputFragContent' id="inputFragContent">
-                  <mat-hint>Separate Lines using HTML Paragraphs</mat-hint>
-                </mat-form-field>
-   
-                <div mat-dialog-content>
-                  <mat-form-field class="example-full-width">
-                    <input matInput type="number" placeholder="Fragment Number" #input2 [(ngModel)]='inputFragNum' id="inputFragNum">
-                  </mat-form-field>
-                </div>
-    
-                <div mat-dialog-content>
-                  <mat-form-field class="example-full-width">
-                    <input matInput type="number" placeholder="Line Number" #input2 [(ngModel)]='inputLineNum' id="inputLineNum">
-                  </mat-form-field>
-                </div>                
-
-                <button mat-button (click)="addSecondaryFrag(inputFragNum, inputLineNum, inputFragContent)">Upload Secondary Line</button>
               </mat-tab>
             </mat-tab-group>
           </mat-tab> 
@@ -255,7 +233,7 @@
             <mat-tab label="Fix Content"><br>
               <h4>Select one of the fragments to change its contents fields.</h4>
               <!-- Uses form group! On pressing upload, changes will be put in the form. -->
-              <form [formGroup]="contentForm" (ngSubmit)="submitChangedContent(contentForm.value)">
+              <form [formGroup]="contentForm" (ngSubmit)="uploadNewFragmentContent(contentForm.value)">
                 <mat-form-field class="example-full-width">
                   <mat-label>Fragment Commentary</mat-label>
                   <input matInput value='{{this.F_Commentaar}}' id="F_Commentaar" type="text" formControlName="F_Commentaar">
@@ -291,7 +269,7 @@
               
               <mat-form-field>
                 <mat-label>Select context author</mat-label>
-                <mat-select [(ngModel)]="contextAuthor">
+                <mat-select>
                   <mat-option *ngFor="let contextAuthor of this.F_Context" [value]="contextAuthor[0]"
                   (click)="selectCorrespondingContext(contextAuthor)">                  
                     {{ contextAuthor[0] }}                       
@@ -299,7 +277,7 @@
                 </mat-select>
               </mat-form-field>
               
-              <form [formGroup]="contentForm" (ngSubmit)="submitChangedContent(contentForm.value)">
+              <form [formGroup]="contentForm" (ngSubmit)="uploadNewFragmentContent(contentForm.value)">
                 <mat-form-field class="example-full-width">
                   <mat-label>Fragment Context</mat-label>
                   <input matInput value='{{this.F_ContextField}}' id="F_Context" type="text" formControlName="F_Context">
@@ -313,7 +291,7 @@
             <mat-tab label="Fix Fragment"><br>
             <h4>Select one of the fragments to change.</h4>
 
-            <form [formGroup]="contentForm" (ngSubmit)="submitChangedContent(contentForm.value)">
+            <form [formGroup]="contentForm" (ngSubmit)="uploadNewFragmentContent(contentForm.value)">
               <mat-form-field class="example-full-width">
                 <mat-label>Fragment Content</mat-label>
                 <input matInput value='{{this.F_Content}}' id="F_Content" type="text" formControlName="F_Content">
@@ -344,7 +322,8 @@
 
         </mat-tab> 
         <mat-tab label="Delete Fragment">
-          empty
+          <button mat-button (click)="deleteFragment()">Delete Selected Fragment</button>
+
         </mat-tab>
       </mat-tab-group>
     </div>
