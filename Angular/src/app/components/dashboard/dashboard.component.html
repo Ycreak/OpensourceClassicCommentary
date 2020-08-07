@@ -139,6 +139,8 @@
             <button mat-button (click)="createEditor(inputEditor)">Create Editor</button>
             <button mat-button (click)="deleteEditor()">Delete Editor</button>
             <button mat-button (click)="setMainEditor()">Set as Main Editor</button>
+            <button mat-button (click)="deleteMainEditor()">Delete as Main Editor</button>
+
           </mat-tab>
         </mat-tab-group>
 
@@ -165,9 +167,15 @@
                   <input matInput placeholder="Fragment Content" [(ngModel)]='inputFragContent'>
                   <mat-hint>Separate Lines using HTML Paragraphs</mat-hint>
                 </mat-form-field>
-              </div>   
+              </div>  
+              <div mat-dialog-content>
+                <mat-form-field class="example-full-width">
+                  <input matInput placeholder="Fragment Status" [(ngModel)]='inputFragStatus'>
+                  <mat-hint>Adesp. or Incertum?</mat-hint>
+                </mat-form-field>
+              </div> 
               <br>
-              <button mat-button (click)="createFragment(inputFragNum, inputLineNum, inputFragContent)">Create Fragment</button>
+              <button mat-button (click)="createFragment(inputFragNum, inputLineNum, inputFragContent, inputFragStatus)">Create Fragment</button>
               </mat-tab>
               <!-- Tab to add commentary to the selected Fragment -->
               <mat-tab label="Add Commentary"><br>
@@ -322,6 +330,7 @@
 
         </mat-tab> 
         <mat-tab label="Delete Fragment">
+          <br>
           <button mat-button (click)="deleteFragment()">Delete Selected Fragment</button>
 
         </mat-tab>

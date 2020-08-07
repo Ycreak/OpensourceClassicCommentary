@@ -96,29 +96,30 @@ export class DashboardComponent implements OnInit {
   contentForm;
 
   // Values that are inputted by the user. Should be sanitized.
-  inputAuthor: String;
-  inputBook: String;
-  inputEditor: String;
+  inputAuthor: String = '';
+  inputBook: String = '';
+  inputEditor: String = '';
 
-  inputFragNum: String; 
-  inputLineNum: String;
-  inputFragContent: String;
+  inputFragNum: String = ''; 
+  inputLineNum: String = '';
+  inputFragContent: String = '';
+  inputFragStatus: String = '';
 
-  inputAppCrit: String;
-  inputDifferences: String;
-  inputCommentary: String;
-  inputTranslation: String;
+  inputAppCrit: String = '';
+  inputDifferences: String = '';
+  inputCommentary: String = '';
+  inputTranslation: String = '';
 
-  inputContextAuthor: String; 
-  inputContext: String;
+  inputContextAuthor: String = ''; 
+  inputContext: String = '';
 
 
   // FORM FIELD DATA, VERY IMPORTANT
-  selectedAuthorData: Array<String>;
-  selectedBookData: Array<String>;
-  selectedEditorData: Array<String>;
-  selectedFragmentData: Array<String>;
-  selectedLineData: Array<String>;
+  selectedAuthorData: Array<String> = [''];
+  selectedBookData: Array<String> = [''];
+  selectedEditorData: Array<String> = [''];
+  selectedFragmentData: Array<String> = [''];
+  selectedLineData: Array<String> = [''];
 
   constructor(
     private modalService: NgbModal, 
@@ -260,41 +261,59 @@ export class DashboardComponent implements OnInit {
       return data;  
     }
 
-  public createAuthor(author : String){
+  public async createAuthor(author : String){
     console.log(author);
+    this.pushFragment('createAuthor') // TODO: Here needs a wait
+    this.authorsJSON = await this.fetchData(this.currentBook, 'getAuthors') as JSON;
   }
 
-  public deleteAuthor(){
+  public async deleteAuthor(){
     console.log(this.selectedAuthorData[0]);
+    this.pushFragment('deleteAuthor')
+    this.authorsJSON = await this.fetchData(this.currentBook, 'getAuthors') as JSON;
   }
 
   public createBook(book : String){
     console.log(this.selectedAuthorData[0], book);
+    this.pushFragment('createBook')
   }
 
   public deleteBook(){
     console.log(this.selectedAuthorData[0], this.selectedBookData[0]);
+    this.pushFragment('deleteBook')
   }
 
   public createEditor(editor : String){
     console.log(this.selectedAuthorData[0], this.selectedBookData[0], editor);
+    this.pushFragment('createEditor')
   }
 
   public deleteEditor(){
     console.log(this.selectedAuthorData[0], this.selectedBookData[0], this.selectedEditorData[0]);
+    this.pushFragment('deleteEditor')
   }
 
   public setMainEditor(){
     console.log(this.selectedAuthorData[0], this.selectedBookData[0], this.selectedEditorData[0]);
+    this.pushFragment('setMainEditor')
+  }
+
+  public deleteMainEditor(){
+    console.log(this.selectedAuthorData[0], this.selectedBookData[0], this.selectedEditorData[0]);
+    this.pushFragment('deleteMainEditor')
   }
 
   public createFragment(fragNum : String, lineNum : String, content : String){
     console.log(fragNum, lineNum, content);
     console.log(this.selectedAuthorData[0], this.selectedBookData[0], this.selectedEditorData[0]);
+    this.pushFragment('createFragment')
+
   }
   
   public deleteFragment(){
     console.log(this.selectedAuthorData[0], this.selectedBookData[0], this.selectedEditorData[0], this.selectedFragmentData);
+    this.pushFragment('deleteFragment')
+
   }
 
   public uploadNewFragmentContent(input){    
@@ -302,6 +321,7 @@ export class DashboardComponent implements OnInit {
 
     console.log('The entered data is as follows:', input);
     console.log(this.selectedAuthorData[0], this.selectedBookData[0], this.selectedEditorData[0], this.inputContextAuthor);
+    this.pushFragment('createFragCommentary')
   }
 
   public async uploadCommentary(inputAppCrit: String, inputDifferences: String, inputCommentary: String, inputTranslation: String){
@@ -437,53 +457,56 @@ export class DashboardComponent implements OnInit {
 //      /////////////////////////
 //     // DATA TO SERVER PART //
 //    /////////////////////////
-//   // Data that will be send to the server.
-//   input_selectedEditor : String;
-//   input_FragmentNum : String;
-//   input_FragmentContent : String;
-//   input_selectedFragment : String;
+  /**
+  * Fetches data from the server. Returns this data in a JSON Array.
+  * Also takes care of the referencer table (server side).
+  * @param currentBook
+  * @param url 
+  * @returns data JSON object
+  * @author Ycreak
+  */
+ public async pushFragment(command: String){
+  const data = await this.httpClient.get(
+    this.serverURL + 'process',{
+      params: { // Why toString()? Url is already a string! :D
+        selectedAuthor:     this.selectedAuthorData[0].toString(), 
+        selectedBook:       this.selectedBookData[0].toString(), 
+        selectedEditor:     this.selectedEditorData[0].toString(), 
+        selectedFragment:   this.selectedFragmentData.toString(),
+        selectedLineData:   this.selectedLineData.toString(),
+        inputAuthor:        this.inputAuthor.toString(),
+        inputBook:          this.inputBook.toString(),
+        inputEditor:        this.inputEditor.toString(),
+      
+        inputFragNum:       this.inputFragNum.toString(),
+        inputLineNum:       this.inputLineNum.toString(),
+        inputFragContent:   this.inputFragContent.toString(),
+        inputFragStatus:    this.inputFragStatus.toString(),
+        
+        inputAppCrit:       this.inputAppCrit.toString(),
+        inputDifferences:   this.inputDifferences.toString(),
+        inputCommentary:    this.inputCommentary.toString(),
+        inputTranslation:   this.inputTranslation.toString(),
+      
+        // inputContextAuthor: this.inputContextAuthor.toString(),
+        // inputContext :      this.inputContext.toString(),
+      
+        // F_Commentaar:       this.F_Commentaar.toString(),
+        // F_Differences:      this.F_Differences.toString(),
+        // F_Context:          this.F_Context.toString(),
+        // F_Translation:      this.F_Translation.toString(),
+        // F_AppCrit:          this.F_AppCrit.toString(),
+        // F_Reconstruction:   this.F_Reconstruction.toString(),
+        // F_Content:          this.F_Content.toString(),
 
-//   given_fragNum : String;
-//   given_fragContent : String;
-//   given_Editor : String;
-  
-//   given_AppCrit : String;
-//   given_Differences : String;
-//   given_Context : String;
-//   given_ContextAuthor : String;
-//   given_Commentary : String;
-//   given_Translation : String;
+        command:                command.toString(),
+      }
+    })
+    .toPromise();
+    return data;  
+  }
 
-//   given_note : String;
 
-//   fragmentArray : Array<String> = [];
-
-//   tempArray : Array<String>;
-
-//   F_Content : JSON;
-
-//   /**
-//   * Fetches data from the server. Returns this data in a JSON Array.
-//   * Also takes care of the referencer table (server side).
-//   * @param currentBook
-//   * @param url 
-//   * @returns data JSON object
-//   * @author Ycreak
-//   */
-//  public async pushFragment(currentBook : String, url : String, fragmentNo : String, editor : String, content : String, primFrag: String){
-//   const data = await this.httpClient.get(
-//     this.serverURL + url,{
-//       params: {
-//         currentBook: currentBook.toString(),
-//         fragmentNo : fragmentNo.toString(),
-//         editor : editor.toString(),
-//         content : content.toString(),
-//         primFrag : primFrag.toString(),
-//       }
-//     })
-//     .toPromise();
-//     return data;  
-//   }
 
 //   public async pushCommentary(currentBook : String, url : String, AppCrit : String, Differences : String, 
 //     Commentary : String, Translation : String, fragmentNum : String, ReferencerID : String){
