@@ -138,11 +138,15 @@ export class FragmentsComponent implements OnInit {
     // Update CurrentBook.
     this.currentBook = selectedText;
     this.currentAuthor = selectedAuthor;
+
+    this.editorsJSON = await this.fetchData(this.currentBook, 'getEditors') as JSON;
+
     // Get new fragments from the selected text.
     this.F_Fragments = await this.fetchData(selectedText, 'getFragments') as JSON;
     // Create an array of the retrieved objects to allow them to be moved in CSS.
     this.ArrayWithAllFragments = this.putFragmentsInMoveableArray(this.F_Fragments);
     // Select the fragments from the editor you want in the left column.
+
     this.mainEditorArray = this.createEditorArray(this.currentEditor, this.ArrayWithAllFragments);
     // Retrieve the bibliography corresponding to the text.
     this.bibJSON = await this.fetchData(selectedText, 'getBibliography') as JSON;
@@ -152,6 +156,7 @@ export class FragmentsComponent implements OnInit {
 
   // Request Books by given Author (in the modal)
   private async requestBooks(selectedAuthor: Number){
+    this.currentAuthor = selectedAuthor;
     this.booksJSON = await this.fetchData(selectedAuthor, 'getBooks') as JSON;
   }
   
@@ -222,6 +227,15 @@ export class FragmentsComponent implements OnInit {
     }
     return comparison;
   }
+
+  private isEmpty(obj) {
+    for(var prop in obj) {
+        if(obj.hasOwnProperty(prop))
+            return false;
+    }
+
+    return true;
+}
 
   // This function merges the multiple lines in a single fragment.
   // The structure looks as follows: Fragment 2, [[1, "hello"],[2,"hi"]]
@@ -313,7 +327,7 @@ export class FragmentsComponent implements OnInit {
       
       // return merged
     }
-    console.log(merged)
+    console.log('merged:', merged)
 
     // Sort the lines in merged, needs to be own function
     for(let element in merged){
@@ -324,7 +338,7 @@ export class FragmentsComponent implements OnInit {
 
 
 
-    console.log('sorted', merged)
+    console.log('sorted:', merged)
 
     return merged;
   }
@@ -337,6 +351,7 @@ export class FragmentsComponent implements OnInit {
   */
   private createEditorArray(selectedEditor: Number, givenArray){
     // Filter the given array on the given editor.
+    this.currentEditor = selectedEditor;
     let array = givenArray.filter(x => x.editor == selectedEditor);
     array.sort(this.sortArrayNumerically);
 
@@ -349,9 +364,9 @@ export class FragmentsComponent implements OnInit {
 
   // Creates main editor array: the third field has the mainEditor key. Should be named properly.
   private createMainEditorArray(givenArray){
-    console.log(givenArray)
+    console.log('all editors:', givenArray)
     let array = givenArray.filter(x => x[2] == 1);
-    console.log(array)
+    console.log('main editors:', array)
     return array;
   }
 
@@ -392,7 +407,6 @@ export class FragmentsComponent implements OnInit {
     // Retrieve the ReferencerID from the data. If not possible, throw error.
     try{
       var ReferencerID = F_ReferencerID[0][0];
-      this.noCommentary = false;
 
       // Retrieves Fragment Commentary
       this.F_Commentaar = await this.fetchData(ReferencerID, 'getF_Commentaar') as JSON;
@@ -408,11 +422,18 @@ export class FragmentsComponent implements OnInit {
       this.F_Reconstruction = await this.fetchData(ReferencerID, 'getF_Reconstruction') as JSON;
       // Turn off spinner at the end
     }
-    catch(e){ // This is so dirty, I love it.
+    catch(e){
       console.log('Cannot find the ReferencerID!');
-      this.noCommentary = true;
       this.F_Commentaar = JSON;
     }
+
+    if(this.isEmpty(this.F_Commentaar)){
+      this.noCommentary = true;
+    }
+    else{
+      this.noCommentary = false;
+    }
+
 
     this.spinner = false;
 

@@ -54,8 +54,21 @@ export class DashboardComponent implements OnInit {
   F_Reconstruction : JSON;
   F_Content : JSON;
   
+  // F_Fragments = {};
+  // F_Commentaar = {};
+  // F_AppCrit = {};
+  // F_Translation = {};
+  // F_Context = {};
+  // F_ContextTemp = [];
+  // F_Differences = {};
+  // F_ReferencerID = {};
+  // F_Reconstruction = {};
+  // F_Content = {};
+
   F_ContextField : String;
 
+
+  
   // ID that links a specific fragment to its commentary. Used in the database.
   ReferencerID : Number;
 
@@ -109,6 +122,7 @@ export class DashboardComponent implements OnInit {
   inputDifferences: String = '';
   inputCommentary: String = '';
   inputTranslation: String = '';
+  inputReconstruction: String = '';
 
   inputContextAuthor: String = ''; 
   inputContext: String = '';
@@ -169,6 +183,8 @@ export class DashboardComponent implements OnInit {
   }
 
   private async requestEditors(book: String){
+    // We change the current book.
+    this.currentBook = book;
     this.editorsJSON = await this.fetchData(book, 'getEditors') as JSON;
     console.log(this.editorsJSON);
   }
@@ -214,6 +230,9 @@ export class DashboardComponent implements OnInit {
 
   // Retrieves fragment numbers of a editor. Function needs rewriting. 
   private getFragNumbersSelectedEditor(editor: String){
+    // New editor, so set him as the current one!
+    this.currentEditor = editor;
+
     let selectedEditorArray = this.opbouwenFragmentenEditor(editor, this.allFragmentsArray);
 
     this.fragmentNumberList = [];
@@ -313,7 +332,6 @@ export class DashboardComponent implements OnInit {
   public deleteFragment(){
     console.log(this.selectedAuthorData[0], this.selectedBookData[0], this.selectedEditorData[0], this.selectedFragmentData);
     this.pushFragment('deleteFragment')
-
   }
 
   public uploadNewFragmentContent(input){    
@@ -324,18 +342,55 @@ export class DashboardComponent implements OnInit {
     this.pushFragment('createFragCommentary')
   }
 
+  public uploadRevisedFragmentContent(input){
+    console.log('input', input.F_AppCrit)
+
+    this.inputAppCrit = input.F_AppCrit;
+    this.inputDifferences = input.F_Differences;
+    this.inputCommentary = input.F_Commentaar;
+    this.inputTranslation = input.F_Translation;
+    this.inputReconstruction = input.F_Reconstruction;
+
+    this.pushFragment('reviseFragCommentary')
+
+  }
+
+  public uploadRevisedContext(input){
+    this.inputContext = input.F_Context;
+    this.pushFragment('reviseFragContext')
+  }
+
+  public uploadRevisedFragment(input){
+    this.inputFragContent = input.F_Content;
+    this.pushFragment('reviseFragContent')
+
+  }
+
+
+
+  // Function to add commentary to a fragment
   public async uploadCommentary(inputAppCrit: String, inputDifferences: String, inputCommentary: String, inputTranslation: String){
     console.log(inputAppCrit, inputDifferences, inputCommentary, inputTranslation)
     console.log(this.selectedAuthorData[0], this.selectedBookData[0], this.selectedEditorData[0], this.selectedFragmentData[0]);
+  
+    this.pushFragment('createFragCommentary')  
   }
 
   public async uploadContext(inputContextAuthor: String, inputContext: String){
     console.log(inputContextAuthor, inputContext)
     console.log(this.selectedAuthorData[0], this.selectedBookData[0], this.selectedEditorData[0], this.selectedFragmentData[0]);
+    this.pushFragment('createContext')  
+
   }
 
   public publishFragment(lineNumber: Number) {
     console.log(this.selectedAuthorData[0], this.selectedBookData[0], this.selectedEditorData[0], this.selectedFragmentData[0]);
+    this.pushFragment('publishFragment')
+  }
+
+  public unpublishFragment(lineNumber: Number) {
+    console.log(this.selectedAuthorData[0], this.selectedBookData[0], this.selectedEditorData[0], this.selectedFragmentData[0]);
+    this.pushFragment('unpublishFragment')
   }
 
   /**
@@ -427,13 +482,17 @@ export class DashboardComponent implements OnInit {
   async ophalenCommentaren(fragmentID: Number, editorID: String){
     // Turn on the spinner.
     this.spinner = true;
+
+    console.log('data:', fragmentID, editorID)
+
     // Retrieve the Referencer ID and wait before it is retrieved before proceeding with the rest.
     let F_ReferencerID = await this.fetchReferencerID(fragmentID, editorID, this.currentBook, 'getF_ReferencerID') as JSON;
     
-    console.log(fragmentID, editorID, F_ReferencerID);
+    console.log('data2:',fragmentID, editorID, F_ReferencerID);
     // Retrieve the ReferencerID from the data. If not possible, throw error.
     try{
       var ReferencerID = F_ReferencerID[0][0];
+      this.ReferencerID = ReferencerID;
       // Retrieves Fragment Commentary
       this.F_Commentaar = await this.fetchData(ReferencerID, 'getF_Commentaar') as JSON;
       // Retrieves Fragment Differences
@@ -473,7 +532,7 @@ export class DashboardComponent implements OnInit {
         selectedBook:       this.selectedBookData[0].toString(), 
         selectedEditor:     this.selectedEditorData[0].toString(), 
         selectedFragment:   this.selectedFragmentData.toString(),
-        selectedLineData:   this.selectedLineData.toString(),
+        selectedLine:       this.selectedLineData.toString(),
         inputAuthor:        this.inputAuthor.toString(),
         inputBook:          this.inputBook.toString(),
         inputEditor:        this.inputEditor.toString(),
@@ -487,16 +546,18 @@ export class DashboardComponent implements OnInit {
         inputDifferences:   this.inputDifferences.toString(),
         inputCommentary:    this.inputCommentary.toString(),
         inputTranslation:   this.inputTranslation.toString(),
+        inputReconstruction: this.inputReconstruction.toString(),
+        
+        ReferencerID:       this.ReferencerID.toString(),
+        inputContextAuthor: this.inputContextAuthor.toString(),
+        inputContext :      this.inputContext.toString(),
       
-        // inputContextAuthor: this.inputContextAuthor.toString(),
-        // inputContext :      this.inputContext.toString(),
-      
-        // F_Commentaar:       this.F_Commentaar.toString(),
-        // F_Differences:      this.F_Differences.toString(),
-        // F_Context:          this.F_Context.toString(),
-        // F_Translation:      this.F_Translation.toString(),
-        // F_AppCrit:          this.F_AppCrit.toString(),
-        // F_Reconstruction:   this.F_Reconstruction.toString(),
+        F_Commentaar:       this.F_Commentaar.toString(),
+        F_Differences:      this.F_Differences.toString(),
+        F_Context:          this.F_Context.toString(),
+        F_Translation:      this.F_Translation.toString(),
+        F_AppCrit:          this.F_AppCrit.toString(),
+        F_Reconstruction:   this.F_Reconstruction.toString(),
         // F_Content:          this.F_Content.toString(),
 
         command:                command.toString(),

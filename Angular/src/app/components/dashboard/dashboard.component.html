@@ -207,6 +207,12 @@
                         </mat-form-field>
                       </div>   
 
+                      <div mat-dialog-content>
+                        <mat-form-field class="example-full-width">
+                          <input matInput placeholder="Fragment Reconstruction" [(ngModel)]='inputReconstruction'>
+                        </mat-form-field>
+                      </div>   
+
                       <br>
                       <button mat-button (click)="uploadCommentary(inputAppCrit, inputDifferences, inputCommentary, inputTranslation)">Upload Commentary</button>
                     </div>
@@ -241,7 +247,7 @@
             <mat-tab label="Fix Content"><br>
               <h4>Select one of the fragments to change its contents fields.</h4>
               <!-- Uses form group! On pressing upload, changes will be put in the form. -->
-              <form [formGroup]="contentForm" (ngSubmit)="uploadNewFragmentContent(contentForm.value)">
+              <form [formGroup]="contentForm" (ngSubmit)="uploadRevisedFragmentContent(contentForm.value)">
                 <mat-form-field class="example-full-width">
                   <mat-label>Fragment Commentary</mat-label>
                   <input matInput value='{{this.F_Commentaar}}' id="F_Commentaar" type="text" formControlName="F_Commentaar">
@@ -285,13 +291,13 @@
                 </mat-select>
               </mat-form-field>
               
-              <form [formGroup]="contentForm" (ngSubmit)="uploadNewFragmentContent(contentForm.value)">
+              <form [formGroup]="contentForm" (ngSubmit)="uploadRevisedContext(contentForm.value)">
                 <mat-form-field class="example-full-width">
                   <mat-label>Fragment Context</mat-label>
                   <input matInput value='{{this.F_ContextField}}' id="F_Context" type="text" formControlName="F_Context">
                 </mat-form-field>
                 <!-- Button is linked via the submit type! -->
-                <button mat-button class="button" type="submit">Upload</button>
+                <button mat-button class="button" type="submit">Update Context</button>
               </form>
             </mat-tab>
 
@@ -299,18 +305,20 @@
             <mat-tab label="Fix Fragment"><br>
             <h4>Select one of the fragments to change.</h4>
 
-            <form [formGroup]="contentForm" (ngSubmit)="uploadNewFragmentContent(contentForm.value)">
+            <form [formGroup]="contentForm" (ngSubmit)="uploadRevisedFragment(contentForm.value)">
               <mat-form-field class="example-full-width">
                 <mat-label>Fragment Content</mat-label>
                 <input matInput value='{{this.F_Content}}' id="F_Content" type="text" formControlName="F_Content">
               </mat-form-field>
-              <button mat-button class="button" type="submit">Upload</button>
+              <button mat-button class="button" type="submit">Update Fragment</button>
             </form>
 
           </mat-tab>
 
             <mat-tab label="Publish"><br>
               <h4>What fragments should be published?</h4>
+              <button mat-button (click)="publishFragment()">Publish Selected Fragment</button>
+              <button mat-button (click)="unpublishFragment()">unPublish Selected Fragment</button>
 
             <section class="example-section">
               <span class="example-list-section">
