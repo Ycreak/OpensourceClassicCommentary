@@ -47,14 +47,14 @@
     <div class="modal-body">
       Author:
       <div>
-        <select class="dropbtn" [(ngModel)]="selectedAuthor" (ngModelChange)="requestBooks(selectedAuthor[0])">
+        <select class="dropbtn" [(ngModel)]="selectedAuthor" (ngModelChange)="requestBooks(selectedAuthor)">
           <option *ngFor="let c of this.authorsJSON" [ngValue]="c">{{c[1]}}</option>
         </select>
       </div>
       <br>
       Book:
       <div>
-          <select class="dropbtn" [(ngModel)]="selectedBook" (ngModelChange)="requestSelectedText(selectedAuthor[0], selectedBook[0])">
+          <select class="dropbtn" [(ngModel)]="selectedBook" (ngModelChange)="requestSelectedText(selectedAuthor, selectedBook)">
             <option *ngFor="let d of this.booksJSON" [ngValue]="d">{{d[1]}}</option>
           </select>
         </div>

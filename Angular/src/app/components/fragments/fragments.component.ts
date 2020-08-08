@@ -82,6 +82,8 @@ export class FragmentsComponent implements OnInit {
 
   // Array with the fragments of the mainEditor (left column) and of the secondary editor (right column)
   mainEditorArray = [];
+  fixedMainEditorArray = [];
+
   selectedEditorArray = [];
 
   // These should be retrieved from the database.
@@ -108,8 +110,8 @@ export class FragmentsComponent implements OnInit {
     // Request a list of authors to select a different text
     this.authorsJSON = await this.fetchData(this.currentBook, 'getAuthors') as JSON;
     
-    // Retrieves everything surrounding the text.
-    this.requestSelectedText(this.currentAuthor, this.currentBook);
+    // Retrieves everything surrounding the text. TODO. Needs fixing
+    this.requestSelectedText(['4','Ennius'], ['6','Thyestes']);
  
     // When init is done, turn off the loading bar (spinner)
     this.spinner = false;
@@ -134,32 +136,50 @@ export class FragmentsComponent implements OnInit {
   }
 
   // Request Newly Selected Text, called on Init and after selecting new text.
-  private async requestSelectedText(selectedAuthor: Number, selectedText: Number){
+  private async requestSelectedText(selectedAuthor: Array<String>, selectedText: Array<String>){
     // Update CurrentBook.
-    this.currentBook = selectedText;
-    this.currentAuthor = selectedAuthor;
+    this.currentBook = Number(selectedText[0]);
+    this.currentBookName = selectedText[1];
+
+    this.currentAuthor = Number(selectedAuthor[0]);
+    this.currentAuthorName = selectedAuthor[1];
 
     this.editorsJSON = await this.fetchData(this.currentBook, 'getEditors') as JSON;
 
     // Get new fragments from the selected text.
-    this.F_Fragments = await this.fetchData(selectedText, 'getFragments') as JSON;
+    this.F_Fragments = await this.fetchData(this.currentBook, 'getFragments') as JSON;
     // Create an array of the retrieved objects to allow them to be moved in CSS.
     this.ArrayWithAllFragments = this.putFragmentsInMoveableArray(this.F_Fragments);
     // Select the fragments from the editor you want in the left column.
 
     this.mainEditorArray = this.createEditorArray(this.currentEditor, this.ArrayWithAllFragments);
+    
+    // this.fixedMainEditorArray = this.combineLines(this.mainEditorArray);
+    
     // Retrieve the bibliography corresponding to the text.
-    this.bibJSON = await this.fetchData(selectedText, 'getBibliography') as JSON;
+    this.bibJSON = await this.fetchData(this.currentBook, 'getBibliography') as JSON;
     // Create a list of main Editors.
     this.mainEditorsJSON = this.createMainEditorArray(this.editorsJSON)
   }
 
   // Request Books by given Author (in the modal)
-  private async requestBooks(selectedAuthor: Number){
-    this.currentAuthor = selectedAuthor;
-    this.booksJSON = await this.fetchData(selectedAuthor, 'getBooks') as JSON;
+  private async requestBooks(selectedAuthor: Array<String>){
+    this.currentAuthor = Number(selectedAuthor[0]);
+    // this.currentAuthorName = selectedAuthor[1];
+    this.booksJSON = await this.fetchData(this.currentAuthor, 'getBooks') as JSON;
   }
   
+  // private combineLines(array){
+  //   let array2 = [];
+  //   for(let element in array){
+  //     for(let item in array[element]){
+  //       array2.push(array[element][item])
+  //     }
+  //   }
+  //   console.log(array2)
+  //   return array2
+  // }
+
   /**
   * Adds fragments into an simple array to allow them to be moved on the webpage.
   * This is necessary as moving directly from JSON is not supported by CSS.
