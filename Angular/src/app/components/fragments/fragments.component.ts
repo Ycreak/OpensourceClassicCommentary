@@ -10,14 +10,17 @@ import {FormControl, FormGroupDirective, FormGroup, NgForm, Validators} from '@a
 import { TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 
+import {DashboardComponent} from '../dashboard/dashboard.component'
+import {ProfileComponent} from '../profile/profile.component'
+
 import 'hammerjs';
 
-export interface Task {
-  name: string;
-  completed: boolean;
-  color: ThemePalette;
-  subtasks?: Task[];
-}
+// export interface Task {
+//   name: string;
+//   completed: boolean;
+//   color: ThemePalette;
+//   subtasks?: Task[];
+// }
 
 
 // // Imports navbar from file Navbar
@@ -35,7 +38,7 @@ export interface Task {
 })
 export class FragmentsComponent implements OnInit {
 
-  @ViewChild('callAPIDialog') callAPIDialog: TemplateRef<any>; // Note: TemplateRef requires a type parameter for the component reference. In this case, we're passing an `any` type as it's not a component.
+  // @ViewChild('callAPIDialog') callAPIDialog: TemplateRef<any>; // Note: TemplateRef requires a type parameter for the component reference. In this case, we're passing an `any` type as it's not a component.
 
   authorsJSON : JSON; // JSON that contains all available Authors and their data.
   editorsJSON : JSON; // JSON that contains all available Editors and their data for a specific book.
@@ -99,6 +102,22 @@ export class FragmentsComponent implements OnInit {
     private httpClient: HttpClient, 
     public dialog: MatDialog, 
     ) { }
+
+  public openDashboard() {
+    const dialogRef = this.dialog.open(DashboardComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+    });
+  }
+
+  public openBibliography() {
+    const dialogRef = this.dialog.open(DialogContentExampleDialog);
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+    });
+  }
 
   /* @function:     Loads initial interface: bibliography, editors and the fragments.
    * @author:       Bors & Ycreak
@@ -481,23 +500,31 @@ export class FragmentsComponent implements OnInit {
     this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'});
   }
 
-  public callAPI() {
-    let dialogRef = this.dialog.open(this.callAPIDialog);
-    dialogRef.afterClosed().subscribe(result => {
-        // Note: If the user clicks outside the dialog or presses the escape key, there'll be no result
-        if (result !== undefined) {
-            if (result === 'yes') {
-                // TODO: Replace the following line with your code.
-                console.log('User clicked yes.');
-            } else if (result === 'no') {
-                // TODO: Replace the following line with your code.
-                console.log('User clicked no.');
-            }
-        }
-    })  
-  }
+  // public callAPI() {
+  //   let dialogRef = this.dialog.open(this.callAPIDialog);
+  //   dialogRef.afterClosed().subscribe(result => {
+  //       // Note: If the user clicks outside the dialog or presses the escape key, there'll be no result
+  //       if (result !== undefined) {
+  //           if (result === 'yes') {
+  //               // TODO: Replace the following line with your code.
+  //               console.log('User clicked yes.');
+  //           } else if (result === 'no') {
+  //               // TODO: Replace the following line with your code.
+  //               console.log('User clicked no.');
+  //           }
+  //       }
+  //   })  
+  // }
+
+
 
 } // CLASS ENDS HERE
 
+@Component({
+  selector: 'dialog-content-example-dialog',
+  templateUrl: 'dialog-content-example-dialog.html',
+})
+export class DialogContentExampleDialog {
 
 
+}

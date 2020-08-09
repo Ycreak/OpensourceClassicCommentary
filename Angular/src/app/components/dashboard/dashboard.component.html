@@ -7,27 +7,18 @@
 
 <nav class="navbar navbar-expand-lg static-top">
   <div class="container">
-    <a class="navbar-brand"><h3>Online Classic Commentary</h3></a>
+    <a class="navbar-brand"><h3>Dashboard</h3></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav ml-auto">
-        <li> <button class="btn btn-lg" [matMenuTriggerFor]="appMenu">More</button></li>
+        <!-- <li> <button class="btn btn-lg" [matMenuTriggerFor]="appMenu">More</button></li> -->
       </ul>
     </div>
   </div>
 </nav>
-
-<mat-menu #appMenu="matMenu">
-  <button routerLink="/text" mat-menu-item>Text OSCC</button>
-  <button routerLink="/fragments" mat-menu-item>Fragments</button>
-
-  <!-- <button routerLink="/fragments" mat-menu-item>Fragments</button> -->
-  <!-- <button (click)="openBm(getStarted)" mat-menu-item>Get Started</button>
-  <button (click)="openBm(About)" mat-menu-item>About</button> -->
-</mat-menu>
 
 <!-- Main container -->
 <div class="container-fluid">
@@ -36,7 +27,7 @@
     <!-- Main Mat tab group -->
     <div class="col-sm anyClass">
       <br>
-      <mat-form-field>
+      <mat-form-field class="select-form">
         <mat-label>Author</mat-label>
         <mat-select [(ngModel)]="selectedAuthorData">
           <mat-option *ngFor="let selectedAuthor of this.authorsJSON" [value]="selectedAuthor"
@@ -47,7 +38,7 @@
         <mat-hint>Select an author</mat-hint>
       </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field class="select-form">
           <mat-label>Book</mat-label>
           <mat-select [(ngModel)]="selectedBookData">
             <mat-option *ngFor="let selectedBook of this.booksJSON" [value]="selectedBook"
@@ -59,7 +50,7 @@
           <mat-hint>Select a book</mat-hint>
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field class="select-form">
           <mat-label>Editor</mat-label>
           <!-- selectedEditor because duplicate with backend. Needs fixing! -->
           <mat-select [(ngModel)]="selectedEditorData">
@@ -71,7 +62,7 @@
           <mat-hint>Select an editor</mat-hint>
         </mat-form-field>
         
-        <mat-form-field>
+        <mat-form-field class="select-form">
           <mat-label>Fragment</mat-label>
           <mat-select [(ngModel)]="selectedFragmentData">
             <mat-option *ngFor="let selectedFragment of this.fragmentNumberList" [value]="selectedFragment"
@@ -83,7 +74,7 @@
           <mat-hint>Select a fragment</mat-hint>
         </mat-form-field>      
     
-        <mat-form-field>
+        <mat-form-field class="select-form">
           <mat-label>Line</mat-label>
           <mat-select [(ngModel)]="selectedLineData">
             <mat-option *ngFor="let selectedLine of this.lineNumberList" [value]="selectedLine"
@@ -104,8 +95,8 @@
           <mat-tab label="Author"><br>
 
             <div mat-dialog-content>
-              <mat-form-field class="example-form">
-                <input matInput placeholder="Add Author" [(ngModel)]='inputAuthor'>
+              <mat-form-field class="input-form">
+                <input matInput placeholder="Add author" [(ngModel)]='inputAuthor'>
                 <mat-hint>Fill in the name of a new author</mat-hint>
               </mat-form-field>
             </div>  
@@ -119,8 +110,8 @@
           <mat-tab label="Book"><br>
 
             <div mat-dialog-content>
-              <mat-form-field class="example-form">
-                <input matInput placeholder="Add Book" [(ngModel)]='inputBook'>
+              <mat-form-field class="input-form">
+                <input matInput placeholder="Add book" [(ngModel)]='inputBook'>
                 <mat-hint>Select an author and fill in the name of his/her new book</mat-hint>
               </mat-form-field>
             </div>  
@@ -133,8 +124,8 @@
           <!-- Tab to add/remove Editors -->
           <mat-tab label="Editor"><br>         
             <div mat-dialog-content>
-              <mat-form-field class="example-form">
-                <input matInput placeholder="Add Editor" [(ngModel)]='inputEditor'>
+              <mat-form-field class="input-form">
+                <input matInput placeholder="Add editor" [(ngModel)]='inputEditor'>
                 <mat-hint>Select an author and book and fill in the name of its new editor</mat-hint>
               </mat-form-field>
             </div>  
@@ -154,26 +145,26 @@
             <!-- Tab to create a fragment given Fragment number, line number and content -->
             <mat-tab label="Create Fragment"><br>
               <div mat-dialog-content>
-                <mat-form-field class="example-full-width">
-                  <input matInput type="number" placeholder="Fragment Number" [(ngModel)]='inputFragNum'>
+                <mat-form-field class="input-form-full-width">
+                  <input matInput type="number" placeholder="Fragment number" [(ngModel)]='inputFragNum'>
                   <mat-hint>Provide the fragment number the selected editor uses</mat-hint>
                 </mat-form-field>
               </div>
               <div mat-dialog-content>
-                <mat-form-field class="example-full-width">
-                  <input matInput type="number" placeholder="Line Number" [(ngModel)]='inputLineNum'>
+                <mat-form-field class="input-form-full-width">
+                  <input matInput type="number" placeholder="Line number" [(ngModel)]='inputLineNum'>
                   <mat-hint>Provide the line number the selected editor uses (if none, start numbering from 1)</mat-hint>
                 </mat-form-field>
               </div>
               <div mat-dialog-content>
-                <mat-form-field class="example-full-width">
-                  <input matInput placeholder="Fragment Content" [(ngModel)]='inputFragContent'>
+                <mat-form-field class="input-form-full-width">
+                  <input matInput placeholder="Fragment content" [(ngModel)]='inputFragContent'>
                   <mat-hint>Provide the fragment content per line. HTML formatting is allowed here</mat-hint>
                 </mat-form-field>
               </div>  
               <div mat-dialog-content>
-                <mat-form-field class="example-full-width">
-                  <input matInput placeholder="Fragment Status" [(ngModel)]='inputFragStatus'>
+                <mat-form-field class="input-form-full-width">
+                  <input matInput placeholder="Fragment status" [(ngModel)]='inputFragStatus'>
                   <mat-hint>Provide the status of the given fragment. Incertum or Adespota? Leave empty otherwise</mat-hint>
                 </mat-form-field>
               </div> 
@@ -181,44 +172,44 @@
               <button mat-button (click)="createFragment(inputFragNum, inputLineNum, inputFragContent, inputFragStatus)">Create given fragment</button>
               </mat-tab>
               <!-- Tab to add commentary to the selected Fragment -->
-              <mat-tab label="Add fragment content"><br>
+              <mat-tab label="Add Fragment Content"><br>
                 <div class="container">
                   <div class="row">
-                    <h4>Note that every fragment has only one apparatus criticus, differences, commentary, translation and reconstruction. The upload button can therefore be clicked only once.
+                    <h4>Note that every fragment has only one apparatus criticus, differences, commentary, translation and reconstruction. The corresponding upload button can therefore be clicked only once.
                       A fragment can however have multiple context authors and their context fields, allowing this button to be clicked multiple times.</h4>
                     <div class="col-sm-6">
                       <h4>Add fragment content</h4>                    
 
                       <div mat-dialog-content>
-                        <mat-form-field class="example-full-width">
+                        <mat-form-field class="input-form-full-width">
                           <input matInput placeholder="Fragment apparatus criticus" [(ngModel)]='inputAppCrit'>
                           <mat-hint>Provide the apparatus criticus of the selected fragment</mat-hint>
                         </mat-form-field>
                       </div>   
     
                       <div mat-dialog-content>
-                        <mat-form-field class="example-full-width">
+                        <mat-form-field class="input-form-full-width">
                           <input matInput placeholder="Fragment differences" [(ngModel)]='inputDifferences'>
                           <mat-hint>Provide the differences of the selected fragment</mat-hint>
                         </mat-form-field>
                       </div>   
                               
                       <div mat-dialog-content>
-                        <mat-form-field class="example-full-width">
+                        <mat-form-field class="input-form-full-width">
                           <input matInput placeholder="Fragment commentary" [(ngModel)]='inputCommentary'>
                           <mat-hint>Provide the commentary of the selected fragment</mat-hint>
                         </mat-form-field>
                       </div>                           
     
                       <div mat-dialog-content>
-                        <mat-form-field class="example-full-width">
+                        <mat-form-field class="input-form-full-width">
                           <input matInput placeholder="Fragment translation" [(ngModel)]='inputTranslation'>
                           <mat-hint>Provide the translation of the selected fragment</mat-hint>                       
                         </mat-form-field>
                       </div>   
 
                       <div mat-dialog-content>
-                        <mat-form-field class="example-full-width">
+                        <mat-form-field class="input-form-full-width">
                           <input matInput placeholder="Fragment reconstruction" [(ngModel)]='inputReconstruction'>
                           <mat-hint>Provide the reconstruction of the selected fragment</mat-hint>
                         </mat-form-field>
@@ -231,14 +222,14 @@
                   <div class="col-sm-6">
                     <h4>Add fragment context</h4>                    
                     <div mat-dialog-content>
-                      <mat-form-field class="example-full-width">
+                      <mat-form-field class="input-form-full-width">
                         <input matInput placeholder="Fragment context author" [(ngModel)]='inputContextAuthor'>
                         <mat-hint>Provide the author of the provided context for the selected fragment</mat-hint>
                       </mat-form-field>
                     </div>  
                     <div mat-dialog-content>
-                      <mat-form-field class="example-full-width">
-                        <input matInput placeholder="Fragment Context" [(ngModel)]='inputContext'>
+                      <mat-form-field class="input-form-full-width">
+                        <input matInput placeholder="Fragment context" [(ngModel)]='inputContext'>
                         <mat-hint>Provide the context for the given author and the selected fragment</mat-hint>
                       </mat-form-field>
                     </div> 
@@ -254,84 +245,96 @@
           </mat-tab> 
         
         <!-- Tab Group to change a fragment. -->
-        <mat-tab label="Change Fragment"><br>
+        <mat-tab label="Change Fragment Content"><br>
           <!-- Tab to change the fragment commentary fields -->
           <mat-tab-group>
-            <mat-tab label="Fix Content"><br>
-              <h4>Select one of the fragments to change its contents fields.</h4>
+
+            <!-- Tab to change the content of a fragment -->
+            <mat-tab label="Revise fragment"><br> 
+              <form [formGroup]="contentForm" (ngSubmit)="uploadRevisedFragment(contentForm.value)">
+                <mat-form-field class="input-form-full-width">
+                  <mat-label>Fragment content</mat-label>
+                  <input matInput value='{{this.F_Content}}' id="F_Content" type="text" formControlName="F_Content">
+                  <mat-hint>Provide the revised line of the selected fragment line</mat-hint>                       
+                </mat-form-field>
+              </form>
+              <br>
+              <button mat-button class="button" type="submit">Update Fragment</button>
+
+            </mat-tab>
+
+            <mat-tab label="Revise fragment content"><br>
+              <h4>Select one of the fragments to change its contents fields. Only changes will be saved.</h4>
               <!-- Uses form group! On pressing upload, changes will be put in the form. -->
               <form [formGroup]="contentForm" (ngSubmit)="uploadRevisedFragmentContent(contentForm.value)">
-                <mat-form-field class="example-full-width">
-                  <mat-label>Fragment Commentary</mat-label>
+                <mat-form-field class="input-form-full-width">
+                  <mat-label>Fragment commentary</mat-label>
                   <input matInput value='{{this.F_Commentaar}}' id="F_Commentaar" type="text" formControlName="F_Commentaar">
+                  <mat-hint>Provide the revised commentary of the selected fragment</mat-hint>                       
                 </mat-form-field>
 
-                <mat-form-field class="example-full-width">
-                  <mat-label>Fragment Differences</mat-label>
+                <mat-form-field class="input-form-full-width">
+                  <mat-label>Fragment differences</mat-label>
                   <input matInput value='{{this.F_Differences}}' id="F_Differences" type="text" formControlName="F_Differences">
+                  <mat-hint>Provide the revised differences of the selected fragment</mat-hint>                       
                 </mat-form-field>
                                     
-                <mat-form-field class="example-full-width">
-                  <mat-label>Fragment Translation</mat-label>
+                <mat-form-field class="input-form-full-width">
+                  <mat-label>Fragment translation</mat-label>
                   <input matInput value='{{this.F_Translation}}' id="F_Translation" type="text" formControlName="F_Translation">
+                  <mat-hint>Provide the revised translation of the selected fragment</mat-hint>                       
                 </mat-form-field>
                 
-                <mat-form-field class="example-full-width">
-                  <mat-label>Fragment AppCrit</mat-label>
+                <mat-form-field class="input-form-full-width">
+                  <mat-label>Fragment apparatus criticus</mat-label>
                   <input matInput value='{{this.F_AppCrit}}' id="F_AppCrit" type="text" formControlName="F_AppCrit">
+                  <mat-hint>Provide the revised apparatus criticus of the selected fragment</mat-hint>                       
                 </mat-form-field>
                 
-                <mat-form-field class="example-full-width">
-                  <mat-label>Fragment Reconstruction</mat-label>
+                <mat-form-field class="input-form-full-width">
+                  <mat-label>Fragment reconstruction</mat-label>
                   <input matInput value='{{this.F_Reconstruction}}' id="F_Reconstruction" type="text" formControlName="F_Reconstruction">
+                  <mat-hint>Provide the revised reconstruction of the selected fragment</mat-hint>                       
                 </mat-form-field>
                 <!-- Button is linked via the submit type! -->
-                <button mat-button class="button" type="submit">Upload</button>
+                <br><br>
+                <button mat-button class="button" type="submit">Upload revised fragment content</button>
               </form>
             </mat-tab>
 
             <!-- Tab to fix the context: select author and change its content. -->
-            <mat-tab label="Fix Context"><br>
+            <mat-tab label="Revise fragment context"><br>
               <h4>Select one of the fragments to change its context fields.</h4>
               
-              <mat-form-field>
-                <mat-label>Select context author</mat-label>
+              <mat-form-field class="input-form ">
+                <mat-label>Fragment context author</mat-label>
                 <mat-select>
                   <mat-option *ngFor="let contextAuthor of this.F_Context" [value]="contextAuthor[0]"
                   (click)="selectCorrespondingContext(contextAuthor)">                  
                     {{ contextAuthor[0] }}                       
                   </mat-option>
                 </mat-select>
+                <mat-hint>Select the author of the requested context for the selected fragment</mat-hint>
               </mat-form-field>
-              
+
+              <div class="div-padding"></div>
+
               <form [formGroup]="contentForm" (ngSubmit)="uploadRevisedContext(contentForm.value)">
-                <mat-form-field class="example-full-width">
-                  <mat-label>Fragment Context</mat-label>
+                <mat-form-field class="input-form-full-width">
+                  <mat-label>Fragment context</mat-label>
                   <input matInput value='{{this.F_ContextField}}' id="F_Context" type="text" formControlName="F_Context">
+                  <mat-hint>Provide the revised context for the given author and the selected fragment</mat-hint>
                 </mat-form-field>
                 <!-- Button is linked via the submit type! -->
-                <button mat-button class="button" type="submit">Update Context</button>
               </form>
+              <br>
+              <button mat-button class="button" type="submit">Update Context</button>
+
             </mat-tab>
 
-            <!-- Tab to change the content of a fragment -->
-            <mat-tab label="Fix Fragment"><br>
-            <h4>Select one of the fragments to change.</h4>
-
-            <form [formGroup]="contentForm" (ngSubmit)="uploadRevisedFragment(contentForm.value)">
-              <mat-form-field class="example-full-width">
-                <mat-label>Fragment Content</mat-label>
-                <input matInput value='{{this.F_Content}}' id="F_Content" type="text" formControlName="F_Content">
-              </mat-form-field>
-              <button mat-button class="button" type="submit">Update Fragment</button>
-            </form>
-
-          </mat-tab>
-
             <mat-tab label="Publish"><br>
-              <h4>What fragments should be published?</h4>
-              <button mat-button (click)="publishFragment()">Publish Selected Fragment</button>
-              <button mat-button (click)="unpublishFragment()">unPublish Selected Fragment</button>
+              <button mat-button (click)="publishFragment()">Publish selected fragment</button>
+              <button mat-button (click)="unpublishFragment()">Unpublish selected fragment</button>
 
             <section class="example-section">
               <span class="example-list-section">

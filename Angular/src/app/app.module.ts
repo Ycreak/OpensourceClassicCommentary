@@ -15,6 +15,8 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
 
+import { DialogContentExampleDialog } from './components/fragments/fragments.component';
+
 import { ValidateService } from './services/validate.service';
 // import { FlashMessagesModule } from 'angular2-flash-messages';
 import { AuthService } from './services/auth.service';
@@ -63,7 +65,7 @@ import {
 import { TextComponent } from './components/text/text.component';
 
 const appRoutes: Routes = [
-  {path: '', component: DashboardComponent},
+  {path: '', component: FragmentsComponent},
   {path: 'fragments', component: FragmentsComponent},
   {path: 'text', component: TextComponent},
   // {path: 'login', component: LoginComponent},
@@ -82,7 +84,7 @@ const appRoutes: Routes = [
     DashboardComponent,
     ProfileComponent,
     SidenavComponent,
-    // DialogContentExample, 
+    DialogContentExampleDialog, 
     
   ],
   imports: [
@@ -171,10 +173,11 @@ const appRoutes: Routes = [
     MatTooltipModule,
     MatTreeModule,
     DragDropModule,
+    DialogContentExampleDialog,
     
   ],
-  entryComponents: [],
-  // declarations: [DialogContentExample, DialogContentExampleDialog],
+  entryComponents: [DialogContentExampleDialog], //Why here?! :D
+  // declarations: [DialogContentExampleDialog],
   providers: [ValidateService, AuthService, FragmentsComponent],
   bootstrap: [AppComponent]
 })

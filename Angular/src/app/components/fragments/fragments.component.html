@@ -15,7 +15,8 @@
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav ml-auto">
         <li> <button class="btn btn-lg" (click)="openBm(textChanger)">Change Text</button></li>
-        <li> <button class="btn btn-lg" (click)="callAPI()">Bibliography</button></li>
+        <li> <button class="btn btn-lg" (click)="openBibliography()">Bibliography</button></li>
+        <li> <button class="btn btn-lg" (click)="openDashboard()">Dashboard</button> </li>
         <!-- <li> <button class="btn btn-lg" (click)="toggleShowFragments()">New Entry</button></li> -->
         <li> <button class="btn btn-lg" (click)="ColumnsToggle = !ColumnsToggle">3Columns</button></li>
         <li> <button class="btn btn-lg" [matMenuTriggerFor]="appMenu">More</button></li>
@@ -26,7 +27,7 @@
 
 <mat-menu #appMenu="matMenu">
   <button routerLink="/text" mat-menu-item>Text OSCC</button>
-  <button routerLink="/dashboard" mat-menu-item>Dashboard</button>
+  <!-- <button routerLink="/dashboard" mat-menu-item>Dashboard</button> -->
   <button (click)="openBm(getStarted)" mat-menu-item>Get Started</button>
   <button (click)="openBm(About)" mat-menu-item>About</button>
 </mat-menu>
@@ -149,17 +150,6 @@
 <br>
 
   <!-- Container for the page: one row, two columns. Column Left has the text, Column Right the commentary. -->
-
-  <ng-template #callAPIDialog>   
-  
-      <mat-nav-list class="my-list-2">
-          <mat-list-item *ngFor="let line of this.bib">
-            <b>{{ line[0] }} {{ line[1] }} </b> <pre> </pre> <i> {{ line[2] }} {{ line[3] }},</i><pre> </pre>{{ line[4] }} ({{ line[5] }}). {{ line[6] }} {{ line[7] }} - ({{ line[8] }}, {{ line[9] }})
-          </mat-list-item>
-        </mat-nav-list>
-  
-  </ng-template>
-
 
   <div class="container-fluid">
     <div class="row">

@@ -69,6 +69,12 @@ div.solid {border-style: solid;}
   size: 100%;
 }
 
+.mat-form-field-large{
+  padding-left: 1em;
+  width: auto;
+  /* size: 100%; */
+}
+
 /* .mat-label{
   color: red;
 }
@@ -156,6 +162,10 @@ div.solid {border-style: solid;}
 
 div {
   word-wrap: break-word;
+}
+
+.div-padding {
+  padding: 1em;
 }
 
 .example-list {
@@ -282,12 +292,17 @@ div {
   /* color: white; */
 }
 
-.example-form {
-  min-width: 150px;
-  max-width: 500px;
-  width: 100%;
+.input-form {
+  min-width: 50%;
+  max-width: 90%;
+  /* width: 100%; */
 }
 
-.example-full-width {
-  width: 100%;
+.input-form-full-width {
+  width: 90%;
+}
+
+/* This assumes only 5 buttons exist. */
+.select-form {
+  width: 20%;
 }

@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>Install Angular</h2>
+
+{{this.currentBook}} {{this.currentAuthorName}}
+
+<div>
+    hello
+      <mat-nav-list class="my-list-2">
+          <mat-list-item *ngFor="let line of this.bibJSON">
+            <b>{{ line[0] }} {{ line[1] }} </b> <pre> </pre> <i> {{ line[2] }} {{ line[3] }},</i><pre> </pre>{{ line[4] }} ({{ line[5] }}). {{ line[6] }} {{ line[7] }} - ({{ line[8] }}, {{ line[9] }})
+          </mat-list-item>
+        </mat-nav-list>
+  </div>
+
+  <div class="example-list"> new
+      <div class="example-box" *ngFor="let arrayItem of mainEditorArray" (click)="ophalenCommentaren(arrayItem.fragNumber)">
+        <div><b>Fragment {{arrayItem.fragNumber}} </b> &nbsp; <i>{{arrayItem.status}}</i></div>
+        <!-- Heeft nog werk nodig! -->
+        <div class="example-box" *ngFor="let arrayItem2 of arrayItem.content">           
+          <div [innerHTML]="arrayItem2.lineComplete"></div>             
+        </div>     
+      </div> 
+    </div> 
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Close</button>
+</mat-dialog-actions>
