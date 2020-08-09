@@ -200,7 +200,7 @@
         <div class="row">
           <div class="col-6">
             <mat-form-field>
-              <mat-label>Select editor</mat-label>
+              <mat-label>Select secondary editor</mat-label>
               <mat-select>
                   <mat-option *ngFor="let selectedEditor of this.editorsJSON" [value]="selectedEditor[1]"
                   (click)="this.selectedEditorArray = createEditorArray(selectedEditor[0], this.ArrayWithAllFragments)">

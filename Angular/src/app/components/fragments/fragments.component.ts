@@ -402,7 +402,7 @@ export class FragmentsComponent implements OnInit {
     const data = await this.httpClient.get(
       this.serverURL + url,{
         params: {
-          fragmentID: fragmentID.toString(),
+          fragment: fragmentID.toString(),
           editorID: editorID.toString(),
           currentBook: currentBook.toString(),
         }

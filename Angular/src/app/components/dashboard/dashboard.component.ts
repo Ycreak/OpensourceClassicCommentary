@@ -205,6 +205,7 @@ export class DashboardComponent implements OnInit {
   private retrieveFragmentData(fragment : Number){
     // This should be a check whether the current editor is also a main editor
     // If the current editor has no commentary, we should not retrieve it.
+    console.log('selectedFragment', fragment)
     this.ophalenCommentaren(fragment, this.currentEditor)
   }
 
