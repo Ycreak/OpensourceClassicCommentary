@@ -102,8 +102,16 @@
                                     <p> Every editor has a name a corresponding book and a tag whether he or she is a main editor of the text in question.</p>
                                     <p> Every bibliography has multiple fields with all the information necessary to properly cite literature</p>
                                     <p> A fragment has a verse number, line number, editor, content and tags whether the fragment is published and whether it is incertum, adespota or normal.</p>
+
+                                    <p>Beware! ON DELETE CASCADE is activated for these tables!</p>
+
                                     <p> Using the unique combination Editor, book, fragment number, a referencer ID is stored in the ReferencerID table. To this number the AppCrit, Commentaries, Differences, Reconsturctions, Translation and Contexts are linked. A fragment can have one AppCrit, Commentary, Differences, Reconstruction and Translation, but multiple Contexts.</p>
 
+
+                                    <h3>Unique Keys</h3>
+                                    <p>Fragments: Book, Editor, fragmentName, lineName</p>
+                                    <p>FragmentReferencer: Book, Editor, FragmentNo</p>
+                                    <p>Editors: Book, editorName</p>
                                     <div class="row">
                                      <img src="img/Database.png">
                                     </div><!--//row-->

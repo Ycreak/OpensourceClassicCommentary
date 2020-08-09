@@ -70,7 +70,7 @@ export class DashboardComponent implements OnInit {
 
   
   // ID that links a specific fragment to its commentary. Used in the database.
-  ReferencerID : Number;
+  ReferencerID : Number = 0;
 
   // List with all the fragments numbers. Used to select a specific fragment for a specific editor.
   fragmentNumberList : Array<Number>;
@@ -464,7 +464,7 @@ export class DashboardComponent implements OnInit {
     const data = await this.httpClient.get(
       this.serverURL + url,{
         params: {
-          fragmentID: fragmentID.toString(),
+          fragment: fragmentID.toString(),
           editorID: editorID.toString(),
           currentBook: currentBook.toString(),
         }
@@ -552,12 +552,12 @@ export class DashboardComponent implements OnInit {
         inputContextAuthor: this.inputContextAuthor.toString(),
         inputContext :      this.inputContext.toString(),
       
-        F_Commentaar:       this.F_Commentaar.toString(),
-        F_Differences:      this.F_Differences.toString(),
-        F_Context:          this.F_Context.toString(),
-        F_Translation:      this.F_Translation.toString(),
-        F_AppCrit:          this.F_AppCrit.toString(),
-        F_Reconstruction:   this.F_Reconstruction.toString(),
+        // F_Commentaar:       this.F_Commentaar.toString(),
+        // F_Differences:      this.F_Differences.toString(),
+        // F_Context:          this.F_Context.toString(),
+        // F_Translation:      this.F_Translation.toString(),
+        // F_AppCrit:          this.F_AppCrit.toString(),
+        // F_Reconstruction:   this.F_Reconstruction.toString(),
         // F_Content:          this.F_Content.toString(),
 
         command:                command.toString(),
