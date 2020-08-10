@@ -15,7 +15,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
 
-import { DialogContentExampleDialog } from './components/fragments/fragments.component';
+// import { DialogContentExampleDialog } from './components/fragments/fragments.component';
 
 import { ValidateService } from './services/validate.service';
 // import { FlashMessagesModule } from 'angular2-flash-messages';
@@ -84,7 +84,6 @@ const appRoutes: Routes = [
     DashboardComponent,
     ProfileComponent,
     SidenavComponent,
-    DialogContentExampleDialog, 
     
   ],
   imports: [
@@ -173,10 +172,9 @@ const appRoutes: Routes = [
     MatTooltipModule,
     MatTreeModule,
     DragDropModule,
-    DialogContentExampleDialog,
     
   ],
-  entryComponents: [DialogContentExampleDialog], //Why here?! :D
+  entryComponents: [],
   // declarations: [DialogContentExampleDialog],
   providers: [ValidateService, AuthService, FragmentsComponent],
   bootstrap: [AppComponent]
