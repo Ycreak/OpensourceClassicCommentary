@@ -14,10 +14,9 @@
 
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav ml-auto">
-        <li> <button class="btn btn-lg" (click)="openBm(textChanger)">Change Text</button></li>
+        <li> <button class="btn btn-lg" (click)="openBookSelect()">Change Text</button></li>
         <li> <button class="btn btn-lg" (click)="openBibliography()">Bibliography</button></li>
         <li> <button class="btn btn-lg" (click)="openDashboard()">Dashboard</button> </li>
-        <!-- <li> <button class="btn btn-lg" (click)="callAPI()">New Entry</button></li> -->
         <li> <button class="btn btn-lg" (click)="ColumnsToggle = !ColumnsToggle">3Columns</button></li>
         <li> <button class="btn btn-lg" [matMenuTriggerFor]="appMenu">More</button></li>
       </ul>
@@ -27,298 +26,199 @@
 
 <mat-menu #appMenu="matMenu">
   <button routerLink="/text" mat-menu-item>Text OSCC</button>
-  <!-- <button routerLink="/dashboard" mat-menu-item>Dashboard</button> -->
-  <button (click)="openBm(getStarted)" mat-menu-item>Get Started</button>
-  <button (click)="openBm(About)" mat-menu-item>About</button>
+  <!-- <button (click)="openBm(getStarted)" mat-menu-item>Get Started</button> -->
+  <button (click)="openAbout()" mat-menu-item>About</button>
 </mat-menu>
 
-  <!-- <app-navbar></app-navbar> -->
+<!-- Author and Book select dialog -->
+<ng-template #callBookSelect>   
+  <h3>Select an author and a book to display.</h3>
+  <hr>
+  <mat-form-field>
+    <mat-label>Select author</mat-label>
+    <mat-select>
+      <mat-option *ngFor="let author of this.api.authorsJSON" [value]="author" (click)="requestBooks(author)">
+        {{ author[1] }} 
+      </mat-option>
+    </mat-select>  
+  </mat-form-field> 
 
-
-
-<!-- Modals from the navigation bar -->
-  <!-- Author and Book selection Modal #textChanger -->
-  <ng-template #textChanger let-modal>
-    <div class="modal-header">
-      <h4 class="modal-title" id="modal-basic-title">Select an Author and Book</h4>
-      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div class="modal-body">
-      Author:
-      <div>
-        <select class="dropbtn" [(ngModel)]="selectedAuthor" (ngModelChange)="requestBooks(selectedAuthor)">
-          <option *ngFor="let c of this.authorsJSON" [ngValue]="c">{{c[1]}}</option>
-        </select>
-      </div>
-      <br>
-      Book:
-      <div>
-          <select class="dropbtn" [(ngModel)]="selectedBook" (ngModelChange)="requestSelectedText(selectedAuthor, selectedBook)">
-            <option *ngFor="let d of this.booksJSON" [ngValue]="d">{{d[1]}}</option>
-          </select>
-        </div>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Exit</button>
-      <button type="button" class="btn btn-outline-dark" (click)="test()">Retrieve</button>
-
-    </div>
-  </ng-template>
-
-  <ng-template #getStarted let-modal>
-      <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">Getting Started.</h4>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div>
-          <p>Click the fragments in the left column to retrieve their commentary.</p>
-          <hr>
-          <p>Press the 3Column button to see the fragments as edited by other authors. These fragments can be moved with the mouse cursor to create a personal ordering.</p>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Exit</button>
-      </div>
-    </ng-template>
-
-    <ng-template #About let-modal>
-        <div class="modal-header">
-          <h4 class="modal-title" id="modal-basic-title">About OSCC.</h4>
-          <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div>
-            <p>This project lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-              Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-              Duis aute irure dolor in reprehenderit.</p>
-            <hr>
-            <p>The series contains two texts as of now: Ennius' Thyestes and Accius' [book]</p>
-            <p> Ennius' Thyestes was created in 2019. The commentaries were created by the following students:</p>
-  
-                <ul>
-                    <li>TRF 22: Anja X</li>
-                    <li>TRF 312: Thomas Y</li>
-                    <li>TRF 313: Kees Z</li>
-                </ul> 
-                
-                
-            
-  
-            <p>For more information about this project, visit realwebsite.com</p>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Exit</button>
-        </div>
-      </ng-template>
-
-  <!-- Bibliography Modal to show the used bibliography -->
-  <ng-template #callBibliography>   
-    <h3>Bibliography for {{this.currentAuthorName}}: {{this.currentBookName}}</h3>
-    <hr>
-    <h4>Books</h4>
-    <mat-nav-list class="my-list-2">
-      <mat-list-item *ngFor="let line of this.bibBooks">
-        <b>{{ line[1] }}</b> &nbsp; <i>{{ line[2] }}.</i> &nbsp; ({{ line[8] }}, {{ line[9] }}).
-      </mat-list-item>
-    </mat-nav-list>
-    <hr>
-    <h4>Articles</h4>
-    <mat-nav-list class="my-list-2">
-      <mat-list-item *ngFor="let line of this.bibArticles">
-        <b>{{ line[1] }}</b> &nbsp; "{{ line[3] }}". In: &nbsp; <i>{{ line[4] }}</i> &nbsp; {{ line[5] }}, &nbsp; ({{ line[8] }}, {{ line[9] }}), {{ line[7] }}.
-      </mat-list-item>
-    </mat-nav-list>
-    <hr>
-    <h4>Websites</h4>
-    <mat-nav-list class="my-list-2">
-      <mat-list-item *ngFor="let line of this.bibWebsites">
-        <b>{{ line[10] }}.</b> &nbsp; URL: {{ line[11] }} &nbsp; (visited on {{ line[12] }})
-      </mat-list-item>
-    </mat-nav-list>
-
+  <mat-form-field>
+    <mat-label>Select book</mat-label>
+    <mat-select>
+      <mat-option *ngFor="let book of this.api.booksJSON" [value]="book" (click)="requestSelectedText(book)">
+        {{ book[1] }}                
+      </mat-option>
+    </mat-select>
+  </mat-form-field>    
 </ng-template>
 
+<!-- Bibliography dialog to show the used bibliography -->
+<ng-template #callBibliography>   
+  <h3>Bibliography for {{this.api.currentAuthorName}}: {{this.api.currentBookName}}</h3>
+  <hr>
+  <h4>Books</h4>
+  <mat-nav-list class="my-list-2">
+    <mat-list-item *ngFor="let line of this.bibBooks">
+      <b>{{ line[1] }}</b> &nbsp; <i>{{ line[2] }}.</i> &nbsp; ({{ line[8] }}, {{ line[9] }}).
+    </mat-list-item>
+  </mat-nav-list>
+  <hr>
+  <h4>Articles</h4>
+  <mat-nav-list class="my-list-2">
+    <mat-list-item *ngFor="let line of this.bibArticles">
+      <b>{{ line[1] }}</b> &nbsp; "{{ line[3] }}". In: &nbsp; <i>{{ line[4] }}</i> &nbsp; {{ line[5] }}, &nbsp; ({{ line[8] }}, {{ line[9] }}), {{ line[7] }}.
+    </mat-list-item>
+  </mat-nav-list>
+  <hr>
+  <h4>Websites</h4>
+  <mat-nav-list class="my-list-2">
+    <mat-list-item *ngFor="let line of this.bibWebsites">
+      <b>{{ line[10] }}.</b> &nbsp; URL: {{ line[11] }} &nbsp; (visited on {{ line[12] }})
+    </mat-list-item>
+  </mat-nav-list>
+</ng-template>
 
-  <!-- Show a spinner if query with database is in progress -->
-  <mat-progress-bar mode="query" *ngIf="spinner"></mat-progress-bar>
-  <!-- <hr *ngIf="spinner == false"> -->
-
-
+<!-- Show a spinner if query with database is in progress -->
+<mat-progress-bar mode="query" *ngIf="this.api.spinner"></mat-progress-bar>
 <br>
 
-  <!-- Container for the page: one row, two columns. Column Left has the text, Column Right the commentary. -->
-
-  <div class="container-fluid">
-    <div class="row">
-
-      <!-- FIRST COLUMN -->
-      <div class="col-sm anyClass">
-        <div class="row">
-          <div class="col-6"><h4>{{this.currentAuthorName}}: {{this.currentBookName}}.</h4></div>  
-          <div class="col-6">
-              <mat-form-field>
-                <mat-label>Select main editor</mat-label>
-                <mat-select>
-                    <mat-option *ngFor="let mainEditor of this.mainEditorsJSON" [value]="mainEditor[1]"
-                    (click)="this.mainEditorArray = createEditorArray(mainEditor[0], this.ArrayWithAllFragments)">
-                    {{ mainEditor[1] }} 
-                      
-                    </mat-option>
-                  </mat-select>
-            </mat-form-field>
-  
-            </div>
-          </div>
-
-        <div class="example-list">
-          <div class="example-box" *ngFor="let arrayItem of mainEditorArray" (click)="ophalenCommentaren(arrayItem.fragNumber)">
-            <div><b>Fragment {{arrayItem.fragNumber}} </b> &nbsp; <i>{{arrayItem.status}}</i></div>
-            <!-- Heeft nog werk nodig! -->
-            <div class="example-box" *ngFor="let arrayItem2 of arrayItem.content">           
-              <div [innerHTML]="arrayItem2.lineComplete"></div>             
-            </div>     
-          </div> 
-        </div> 
-      </div>
-
-      <!-- SELECTED EDITOR COLUMN -->
-      <div *ngIf="ColumnsToggle" class="col-sm anyClass">
-
-        <div class="row">
-          <div class="col-6">
-            <mat-form-field>
-              <mat-label>Select secondary editor</mat-label>
-              <mat-select>
-                  <mat-option *ngFor="let selectedEditor of this.editorsJSON" [value]="selectedEditor[1]"
-                  (click)="this.selectedEditorArray = createEditorArray(selectedEditor[0], this.ArrayWithAllFragments)">
-                  {{ selectedEditor[1] }} 
-                    
-                  </mat-option>
-                </mat-select>
+<!-- Container for the page: one row, two columns. Column Left has the text, Column Right the commentary. -->
+<div class="container-fluid">
+  <div class="row">
+    <!-- FIRST COLUMN -->
+    <div class="col-sm anyClass">
+      <div class="row">
+        <div class="col-6">
+          <h4>{{this.api.currentAuthorName}}: {{this.api.currentBookName}}.</h4>
+        </div>  
+        <div class="col-6">
+          <mat-form-field>
+            <mat-label>Select main editor</mat-label>
+            <mat-select>
+              <mat-option *ngFor="let mainEditor of this.api.mainEditorsJSON" [value]="mainEditor[1]"
+              (click)="this.mainEditorArray = createEditorArray(mainEditor[0], this.api.ArrayWithAllFragments)">
+                {{ mainEditor[1] }}                     
+              </mat-option>
+            </mat-select>
           </mat-form-field>
-
-          </div>
-        </div>
-
-        <div>
-          </div>
-
-
-        <div cdkDropList class="example-list" (cdkDropListDropped)="moveAndDrop($event)">
-          <div class="example-box" *ngFor="let arrayItem of selectedEditorArray" cdkDrag>
-          <!-- <p><b>{{arrayItem.number}}</b></p>
-              <div [innerHTML]="arrayItem.line"></div> -->
-            <div><b>Fragment {{arrayItem.fragNumber}}</b> &nbsp; <i>{{arrayItem.status}}</i></div>
-
-            <!-- Heeft nog werk nodig! -->
-            <div class="example-box" *ngFor="let arrayItem2 of arrayItem.content">           
-              <div [innerHTML]="arrayItem2.lineComplete"></div> 
-            </div>  
-
-              <!-- <div [innerHTML]="arrayItem.lineContent"></div> -->
-         </div>
         </div>
       </div>
+      <!-- Listing of the fragments -->
+      <div class="example-list">
+        <div class="example-box" *ngFor="let arrayItem of mainEditorArray" (click)="this.api.ophalenCommentaren(arrayItem.fragNumber)">
+          <div>
+            <b>Fragment {{arrayItem.fragNumber}} </b> &nbsp; <i>{{arrayItem.status}}</i>
+          </div>
+          <div *ngFor="let arrayItem2 of arrayItem.content">           
+            <div [innerHTML]="arrayItem2.lineComplete"></div>             
+          </div>     
+        </div> 
+      </div> 
+    </div>
+
+    <!-- SELECTED EDITOR COLUMN -->
+    <div *ngIf="ColumnsToggle" class="col-sm anyClass">
+      <div class="row">
+        <div class="col-6">
+          <mat-form-field>
+            <mat-label>Select secondary editor</mat-label>
+            <mat-select>
+              <mat-option *ngFor="let selectedEditor of this.api.editorsJSON" [value]="selectedEditor[1]"
+              (click)="this.selectedEditorArray = createEditorArray(selectedEditor[0], this.api.ArrayWithAllFragments)">
+                {{ selectedEditor[1] }} 
+                
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Movable array column -->
+      <div cdkDropList class="example-list" (cdkDropListDropped)="moveAndDrop($event)">
+        <div class="example-box" *ngFor="let arrayItem of selectedEditorArray" cdkDrag>
+          <div>
+            <b>Fragment {{arrayItem.fragNumber}}</b> &nbsp; <i>{{arrayItem.status}}</i>
+          </div>
+          <div *ngFor="let arrayItem2 of arrayItem.content">           
+            <div [innerHTML]="arrayItem2.lineComplete"></div> 
+          </div>  
+        </div>
+      </div>
+    </div>
 
     <!-- COMMENTARY COLUMN -->
+    <div class="col-sm anyClass">
       <div class="col-sm anyClass">
-        <div class="col-sm anyClass">
-
-          <h4>Fragment {{currentFragment}}</h4> <hr>
-
-          <div *ngIf="noCommentary" class="alert alert-info" role="alert">
-            No commentary is available for this fragment.
+        <h4>Fragment {{this.api.currentFragment}}</h4> <hr>
+        <!-- Show banner if no commentary available -->
+        <div *ngIf="this.api.noCommentary" class="alert alert-info" role="alert">
+          No commentary is available for this fragment.
+        </div>
+        <div *ngIf="this.api.noCommentary === false">
+          <div *ngFor="let translation of this.api.F_Translation">
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <b>Fragment Translation</b>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <!-- Commentary with HTML formatting. -->
+              <div class="mat-expansion-panel-content">
+                <div class="mat-expansion-panel-body">
+                  <div [innerHTML]="translation"></div>
+                </div>
+              </div>
+            </mat-expansion-panel>
           </div>
 
-          <div *ngIf="noCommentary === false">
-            <div *ngFor="let translation of this.F_Translation">
-              <!-- {{commentaar}} -->
-              <mat-expansion-panel>
-                <!-- Regelnummer -->
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    <b>Fragment Translation</b>
-                  </mat-panel-title>
-                <!-- Woorden in kwestie -->
-                  <!-- <b>Latin is great</b> -->
-                </mat-expansion-panel-header>
-                <!-- Commentaar zelf met opmaak -->
-                <div class="mat-expansion-panel-content">
-                  <div class="mat-expansion-panel-body">
-                      <div [innerHTML]="translation"></div>
-                  </div>
-                </div>
-              </mat-expansion-panel>
-            </div>
+          <hr>
 
-            <hr>
-
-            <div *ngFor="let AppCrit of this.F_AppCrit">
-              <mat-expansion-panel>
-                <!-- Regelnummer -->
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    <b>Apparatus Criticus</b>
-                  </mat-panel-title>
-                <!-- Woorden in kwestie -->
-                  <!-- <b>Latin is great</b> -->
-                </mat-expansion-panel-header>
-                <!-- Commentaar zelf met opmaak -->
-                <div class="mat-expansion-panel-content">
-                  <div class="mat-expansion-panel-body">
-                    <div [innerHTML]=AppCrit></div>
-                  </div>
-                </div>
-              </mat-expansion-panel>
-            </div>
-
-            <hr>
-
-            <div *ngFor="let differences of this.F_Differences">
-              <!-- {{commentaar}} -->
-              <mat-expansion-panel>
-                <!-- Regelnummer -->
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    <b>Fragment Differences</b>
-                  </mat-panel-title>
-                <!-- Woorden in kwestie -->
-                  <!-- <b>Latin is great</b> -->
-                </mat-expansion-panel-header>
-                <!-- Commentaar zelf met opmaak -->
-                <div class="mat-expansion-panel-content">
-                  <div class="mat-expansion-panel-body">
-                      <div [innerHTML]="differences"></div>
-                  </div>
-                </div>
-              </mat-expansion-panel>
-            </div>
-
-            <hr>
-
-          <div *ngFor="let F_Context of this.F_Context">
-            <!-- {{commentaar}} -->
+          <div *ngFor="let AppCrit of this.api.F_AppCrit">
             <mat-expansion-panel>
-              <!-- Regelnummer -->
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <b>Apparatus Criticus</b>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <div class="mat-expansion-panel-content">
+                <div class="mat-expansion-panel-body">
+                  <div [innerHTML]=AppCrit></div>
+                </div>
+              </div>
+            </mat-expansion-panel>
+          </div>
+
+          <hr>
+
+          <div *ngFor="let differences of this.api.F_Differences">
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <b>Fragment Differences</b>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <div class="mat-expansion-panel-content">
+                <div class="mat-expansion-panel-body">
+                  <div [innerHTML]="differences"></div>
+                </div>
+              </div>
+            </mat-expansion-panel>
+          </div>
+
+          <hr>
+
+          <div *ngFor="let F_Context of this.api.F_Context">
+            <mat-expansion-panel>
               <mat-expansion-panel-header>
                 <mat-panel-title>
                   <b>Fragment Context</b>
                 </mat-panel-title>
-              <!-- Woorden in kwestie -->
                 <div [innerHTML]="F_Context[0]"></div>
               </mat-expansion-panel-header>
-              <!-- Commentaar zelf met opmaak -->
               <div class="mat-expansion-panel-content">
                 <div class="mat-expansion-panel-body">
-                    <div [innerHTML]="F_Context[1]"></div>
+                  <div [innerHTML]="F_Context[1]"></div>
                 </div>
               </div>
             </mat-expansion-panel>
@@ -326,52 +226,41 @@
           
           <hr>
 
-          <div *ngFor="let commentaar of this.F_Commentaar">
-            <!-- {{commentaar}} -->
+          <div *ngFor="let commentaar of this.api.F_Commentaar">
             <mat-expansion-panel>
-              <!-- Regelnummer -->
               <mat-expansion-panel-header>
                 <mat-panel-title>
                   <b>Fragment Commentary</b>
                 </mat-panel-title>
-              <!-- Woorden in kwestie -->
-                <!-- <b>Latin is great</b> -->
               </mat-expansion-panel-header>
-              <!-- Commentaar zelf met opmaak -->
               <div class="mat-expansion-panel-content">
                 <div class="mat-expansion-panel-body">
-                    <div [innerHTML]="commentaar"></div>
+                  <div [innerHTML]="commentaar"></div>
                 </div>
               </div>
             </mat-expansion-panel>
           </div>
 
-        <hr>
+          <hr>
 
-        <div *ngFor="let commentaar of this.F_Reconstruction">
-          <!-- {{commentaar}} -->
-          <mat-expansion-panel>
-            <!-- Regelnummer -->
-            <mat-expansion-panel-header>
-              <mat-panel-title>
-                <b>Fragment Reconstruction</b>
-              </mat-panel-title>
-            <!-- Woorden in kwestie -->
-              <!-- <b>Latin is great</b> -->
-            </mat-expansion-panel-header>
-            <!-- Commentaar zelf met opmaak -->
-            <div class="mat-expansion-panel-content">
-              <div class="mat-expansion-panel-body">
+          <div *ngFor="let commentaar of this.api.F_Reconstruction">
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <b>Fragment Reconstruction</b>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <div class="mat-expansion-panel-content">
+                <div class="mat-expansion-panel-body">
                   <div [innerHTML]="commentaar"></div>
+                </div>
               </div>
-            </div>
-          </mat-expansion-panel>
+            </mat-expansion-panel>
+          </div>
         </div>
       </div>
     </div>
   </div>
-
-</div>
 </div>
 
 
