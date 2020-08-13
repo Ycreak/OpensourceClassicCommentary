@@ -226,8 +226,8 @@ export class DashboardComponent implements OnInit {
     this.pushData('deleteMainEditor')
   }
 
-  public createFragment(fragNum : String, lineNum : String, content : String){
-    console.log(fragNum, lineNum, content);
+  public createFragment(fragNum : String, lineNum : String, content : String, status: String){
+    console.log(fragNum, lineNum, content, status);
     console.log(this.selectedAuthorData[0], this.selectedBookData[0], this.selectedEditorData[0]);
     this.pushData('createFragment')
 
@@ -285,12 +285,12 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  public publishFragment(lineNumber: Number) {
+  public publishFragment() {
     console.log(this.selectedAuthorData[0], this.selectedBookData[0], this.selectedEditorData[0], this.selectedFragmentData[0]);
     this.pushData('publishFragment')
   }
 
-  public unpublishFragment(lineNumber: Number) {
+  public unpublishFragment() {
     console.log(this.selectedAuthorData[0], this.selectedBookData[0], this.selectedEditorData[0], this.selectedFragmentData[0]);
     this.pushData('unpublishFragment')
   }

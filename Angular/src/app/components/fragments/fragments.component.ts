@@ -219,7 +219,7 @@ export class FragmentsComponent implements OnInit {
   public openBookSelect() {
     let dialogRef = this.dialog.open(this.callBookSelect); 
   }
-  private openAbout() {
+  public openAbout() {
     const dialogRef = this.dialog.open(DialogContentExampleDialog);
   }
   // Create a small modal
