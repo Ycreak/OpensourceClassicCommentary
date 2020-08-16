@@ -44,6 +44,7 @@ export class DashboardComponent implements OnInit {
   // Items for the forms.
   items;
   contentForm;
+  bibForm;
 
   // Values that are inputted by the user. Should be sanitized.
   inputAuthor: String = '';
@@ -87,6 +88,19 @@ export class DashboardComponent implements OnInit {
         iF_Reconstruction: '',
         iF_Content: '',
       });
+      this.bibForm = this.formBuilder.group({
+        bAuthor: '',
+        bBook: '',
+        bPlace: '',
+        bYear: '',
+        bArticle: '',
+        bJournal: '',
+        bVolume: '',
+        bPages: '',
+        bWebsite: '',
+        bURL: '',
+        bConsultDate: '',
+      })
     }
 
   /* @function:     Loads initial interface: bibliography, editors and the fragments.
@@ -115,6 +129,8 @@ export class DashboardComponent implements OnInit {
   private async requestSelectedText(book: string){
     // Get new fragments from the selected text.
     this.api.F_Fragments = await this.api.fetchData(book, 'getFragments') as JSON;
+    this.api.bibJSON = await this.api.fetchData(this.api.currentBook, 'getBibliography') as JSON;
+    console.log('bib', this.api.bibJSON)
     // Create an array of the retrieved objects to allow them to be moved in CSS.
     this.api.ArrayWithAllFragments = this.api.putFragmentsInMoveableArray(this.api.F_Fragments);
   }
@@ -267,6 +283,14 @@ export class DashboardComponent implements OnInit {
   public uploadRevisedFragment(input){
     this.inputFragContent = input.iF_Content;
     this.pushData('reviseFragContent')
+
+  }
+
+  public doBibForm(input){
+    console.log('input', input)
+
+
+    // this.pushData('reviseFragCommentary')
 
   }
 

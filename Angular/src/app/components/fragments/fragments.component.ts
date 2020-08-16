@@ -53,10 +53,6 @@ export class FragmentsComponent implements OnInit {
 
   public openDashboard() {
     const dialogRef = this.dialog.open(DashboardComponent);
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
-    });
   }
 
   /* @function:     Loads initial interface: bibliography, editors and the fragments.

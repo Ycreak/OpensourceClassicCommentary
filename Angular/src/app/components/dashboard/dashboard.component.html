@@ -139,11 +139,92 @@
 
           </mat-tab>
 
-          <mat-tab label="Bib entry"><br>         
-            <div mat-dialog-content>
-              (In Progress)
-            </div>  
-            <br>
+          <mat-tab label="Bib entry"><br>
+            <h4>Select Bibliography entry:</h4>
+            <mat-form-field class="input-form ">
+              <mat-label>Fragment context author</mat-label>
+              <mat-select>
+                <mat-option *ngFor="let b of this.api.bibJSON" [value]="b[1]"
+                (click)="setBibUpdate(1)">                  
+                  {{ b[1] }} {{ b[9] }} {{ b[11] }}                     
+                </mat-option>
+              </mat-select>
+              <mat-hint>Select the bibliography entry you want to edit.</mat-hint>
+            </mat-form-field>
+
+            <div class="div-padding"></div>            
+
+            <h4>Add Bibliography entry</h4>                    
+            <form [formGroup]="bibForm" (ngSubmit)="doBibForm(bibForm.value)">
+              <mat-form-field class="input-form">
+                <mat-label>Author</mat-label>
+                <input matInput value='' type="text" formControlName="bAuthor">
+                <mat-hint>Provide the revised commentary of the selected fragment</mat-hint>                       
+              </mat-form-field>
+
+              <mat-form-field class="input-form">
+                <mat-label>Book</mat-label>
+                <input matInput value='' type="text" formControlName="bBook">
+                <mat-hint>Provide the revised differences of the selected fragment</mat-hint>                       
+              </mat-form-field>
+                                  
+              <mat-form-field class="input-form">
+                <mat-label>Place</mat-label>
+                <input matInput value='' type="text" formControlName="bPlace">
+                <mat-hint>Provide the revised translation of the selected fragment</mat-hint>                       
+              </mat-form-field>
+              
+              <mat-form-field class="input-form">
+                <mat-label>Year</mat-label>
+                <input matInput value='' type="text" formControlName="bYear">
+                <mat-hint>Provide the revised apparatus criticus of the selected fragment</mat-hint>                       
+              </mat-form-field>
+              
+              <mat-form-field class="input-form">
+                <mat-label>Article</mat-label>
+                <input matInput value='' type="text" formControlName="bArticle">
+                <mat-hint>Provide the revised apparatus criticus of the selected fragment</mat-hint>                       
+              </mat-form-field>     
+
+              <mat-form-field class="input-form">
+                <mat-label>Journal</mat-label>
+                <input matInput value='' type="text" formControlName="bJournal">
+                <mat-hint>Provide the revised apparatus criticus of the selected fragment</mat-hint>                       
+              </mat-form-field>   
+
+              <mat-form-field class="input-form">
+                <mat-label>Volume</mat-label>
+                <input matInput value='' type="text" formControlName="bVolume">
+                <mat-hint>Provide the revised apparatus criticus of the selected fragment</mat-hint>                       
+              </mat-form-field>   
+              
+              <mat-form-field class="input-form">
+                <mat-label>Pages</mat-label>
+                <input matInput value='' type="text" formControlName="bPages">
+                <mat-hint>Provide the revised apparatus criticus of the selected fragment</mat-hint>                       
+              </mat-form-field>       
+              
+              <mat-form-field class="input-form">
+                <mat-label>Website</mat-label>
+                <input matInput value='' type="text" formControlName="bWebsite">
+                <mat-hint>Provide the revised apparatus criticus of the selected fragment</mat-hint>                       
+              </mat-form-field> 
+              
+              <mat-form-field class="input-form">
+                <mat-label>URL</mat-label>
+                <input matInput value='' type="text" formControlName="bURL">
+                <mat-hint>Provide the revised apparatus criticus of the selected fragment</mat-hint>                       
+              </mat-form-field>  
+              
+              <mat-form-field class="input-form">
+                <mat-label>Consult date</mat-label>
+                <input matInput value='' type="text" formControlName="bConsultDate">
+                <mat-hint>Provide the revised apparatus criticus of the selected fragment</mat-hint>                       
+              </mat-form-field>                
+              <!-- Button is linked via the submit type! -->
+              <br><br>
+              <button mat-button class="button" type="submit">Upload Bib Entry</button>
+            </form>  
           </mat-tab>
 
 
