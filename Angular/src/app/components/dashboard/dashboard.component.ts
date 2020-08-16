@@ -309,6 +309,28 @@ export class DashboardComponent implements OnInit {
     return array;
   }
 
+  public async test(){
+    let temp = await this.checkPassword('luuk', 'nolden2');
+    if(temp == '1'){
+      console.log(temp, 'succesful!')
+    }
+    else{
+      console.log(temp, 'nope!')
+    }
+  }
+
+  public async checkPassword(username: string, password: string){
+    const data = await this.httpClient.get(
+      this.api.serverURL + 'testHash',{
+        params: { // Why toString()? Url is already a string! :D
+          username:     username.toString(), 
+          password:     password.toString(), 
+        }
+      })
+      .toPromise();
+      return data;  
+    }
+
 //      /////////////////////////
 //     // DATA TO SERVER PART //
 //    /////////////////////////

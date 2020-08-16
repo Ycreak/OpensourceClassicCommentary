@@ -104,6 +104,7 @@ export class FragmentsComponent implements OnInit {
     this.api.booksJSON = await this.api.fetchData(selectedAuthor[0], 'getBooks') as JSON;
   }
   
+  // Separate bib entries using unique field filters.
   private processBib(bib){
     this.bibArticles = bib.filter(x => x[3] !== null);
     this.bibBooks = bib.filter(x => x[2] !== null);
@@ -190,7 +191,7 @@ export class FragmentsComponent implements OnInit {
   */
   private createEditorArray(selectedEditor: string, givenArray){
     // Filter the given array on the given editor.
-    this.api.currentEditor = selectedEditor;
+    // this.api.currentEditor = selectedEditor;
     let array = givenArray.filter(x => x.editor == selectedEditor);
     
     array.sort(this.api.sortArrayNumerically);
