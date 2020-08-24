@@ -134,6 +134,11 @@
         </div>
       </div>
 
+      <div class="test-box" cdkDrag>
+        Drag me around
+      </div>
+      
+      
       <!-- Movable array column -->
       <div cdkDropList class="example-list" (cdkDropListDropped)="moveAndDrop($event)">
         <div class="example-box" *ngFor="let arrayItem of selectedEditorArray" cdkDrag>
