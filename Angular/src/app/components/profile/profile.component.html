@@ -1,0 +1,19 @@
+Hello there!
+
+<div class="example-box" cdkDrag>
+    Drag me around
+  </div>
+  
+{{ mainEditorArray }}
+
+      <!-- Movable array column -->
+      <div cdkDropList class="example-list" (cdkDropListDropped)="moveAndDrop($event)">
+            <div class="example-box2" *ngFor="let arrayItem of mainEditorArray" cdkDrag>
+              <div>
+                <b>Fragment {{arrayItem.fragNumber}}</b> &nbsp; <i>{{arrayItem.status}}</i>
+              </div>
+              <div *ngFor="let arrayItem2 of arrayItem.content">           
+                <div [innerHTML]="arrayItem2.lineComplete"></div> 
+              </div>  
+            </div>
+          </div>

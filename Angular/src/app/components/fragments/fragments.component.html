@@ -26,6 +26,9 @@
 
 <mat-menu #appMenu="matMenu">
   <button routerLink="/text" mat-menu-item>Text OSCC</button>
+  <button routerLink="/login" mat-menu-item>Playroom</button>
+  <button routerLink="/profile" mat-menu-item>Playroom2</button>
+
   <!-- <button (click)="openBm(getStarted)" mat-menu-item>Get Started</button> -->
   <button (click)="openAbout()" mat-menu-item>About</button>
 </mat-menu>
@@ -97,7 +100,7 @@
             <mat-label>Select main editor</mat-label>
             <mat-select>
               <mat-option *ngFor="let mainEditor of this.api.mainEditorsJSON" [value]="mainEditor[1]"
-              (click)="this.mainEditorArray = createEditorArray(mainEditor[0], this.api.ArrayWithAllFragments)">
+              (click)="this.api.mainEditorArray = createEditorArray(mainEditor[0], this.api.ArrayWithAllFragments)">
                 {{ mainEditor[1] }}                     
               </mat-option>
             </mat-select>
@@ -106,7 +109,7 @@
       </div>
       <!-- Listing of the fragments -->
       <div class="example-list">
-        <div class="example-box" *ngFor="let arrayItem of mainEditorArray" (click)="this.api.ophalenCommentaren(arrayItem.fragNumber)">
+        <div class="example-box" *ngFor="let arrayItem of this.api.mainEditorArray" (click)="this.api.ophalenCommentaren(arrayItem.fragNumber)">
           <div>
             <b>Fragment {{arrayItem.fragNumber}} </b> &nbsp; <i>{{arrayItem.status}}</i>
           </div>
@@ -125,7 +128,7 @@
             <mat-label>Select secondary editor</mat-label>
             <mat-select>
               <mat-option *ngFor="let selectedEditor of this.api.editorsJSON" [value]="selectedEditor[1]"
-              (click)="this.selectedEditorArray = createEditorArray(selectedEditor[0], this.api.ArrayWithAllFragments)">
+              (click)="this.api.selectedEditorArray = createEditorArray(selectedEditor[0], this.api.ArrayWithAllFragments)">
                 {{ selectedEditor[1] }} 
                 
               </mat-option>
@@ -134,14 +137,11 @@
         </div>
       </div>
 
-      <div class="test-box" cdkDrag>
-        Drag me around
-      </div>
-      
+   
       
       <!-- Movable array column -->
       <div cdkDropList class="example-list" (cdkDropListDropped)="moveAndDrop($event)">
-        <div class="example-box" *ngFor="let arrayItem of selectedEditorArray" cdkDrag>
+        <div class="example-box" *ngFor="let arrayItem of this.api.selectedEditorArray" cdkDrag>
           <div>
             <b>Fragment {{arrayItem.fragNumber}}</b> &nbsp; <i>{{arrayItem.status}}</i>
           </div>

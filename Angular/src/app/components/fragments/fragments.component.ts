@@ -42,8 +42,8 @@ export class FragmentsComponent implements OnInit {
   // This array contains all the information from a specific book. Functions can use this data.
   // ArrayWithAllFragments = [];
   // Array with the fragments of the mainEditor (left column) and of the secondary editor (right column)
-  mainEditorArray = [];
-  selectedEditorArray = []; // This array is filled by the HTML side.
+  // mainEditorArray = [];
+  // selectedEditorArray = []; // This array is filled by the HTML side.
 
   constructor(
     private modalService: NgbModal, 
@@ -85,7 +85,7 @@ export class FragmentsComponent implements OnInit {
     // Create an array of the retrieved objects to allow them to be moved in CSS.
     this.api.ArrayWithAllFragments = this.api.putFragmentsInMoveableArray(this.api.F_Fragments);   
     // Select the fragments from the editor you want in the left column.
-    this.mainEditorArray = this.createEditorArray(this.api.currentEditor, this.api.ArrayWithAllFragments);
+    this.api.mainEditorArray = this.createEditorArray(this.api.currentEditor, this.api.ArrayWithAllFragments);
     // Retrieve the bibliography corresponding to the text.
     this.api.bibJSON = await this.api.fetchData(this.api.currentBook, 'getBibliography') as JSON;
     this.processBib(this.api.bibJSON);
@@ -206,7 +206,7 @@ export class FragmentsComponent implements OnInit {
    ////////////////////////////
   // Allows a fragment to be moved and dropped to create a custom ordering
   moveAndDrop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.selectedEditorArray, event.previousIndex, event.currentIndex);
+    moveItemInArray(this.api.selectedEditorArray, event.previousIndex, event.currentIndex);
   }
   // Allows a bibliography dialog to be created.
   public openBibliography() {

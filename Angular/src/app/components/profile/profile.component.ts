@@ -47,7 +47,9 @@ export class ProfileComponent implements OnInit {
 
   // This array contains all the information from a specific book. Functions can use this data.
   ArrayWithAllFragments = [];
-
+  selectedEditorArray = [];
+  mainEditorArray = [];
+  
   serverURL = 'http://katwijk.nolden.biz:5002/';  
 
   spinner: boolean = true; // Boolean to toggle the spinner.
@@ -59,6 +61,7 @@ export class ProfileComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    
   }
 
   public test(){
