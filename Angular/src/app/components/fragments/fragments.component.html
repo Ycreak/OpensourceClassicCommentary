@@ -42,7 +42,7 @@
   <mat-form-field>
     <mat-label>Select author</mat-label>
     <mat-select>
-      <mat-option *ngFor="let author of this.api.authorsJSON" [value]="author" (click)="requestBooks(author)">
+      <mat-option *ngFor="let author of this.api.authorsJSON" [value]="author" (click)="getBooks(author)">
         {{ author[1] }} 
       </mat-option>
     </mat-select>  

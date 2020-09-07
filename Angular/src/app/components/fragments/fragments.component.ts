@@ -64,7 +64,7 @@ export class FragmentsComponent implements OnInit {
     // Update current book and author
     this.api.currentBook = selectedText[0];
     this.api.currentBookName = selectedText[1];
-    // Create the JSON with the Editros for the current book.
+    // Create the JSON with the Editors for the current book.
     this.api.editorsJSON = await this.api.fetchData(this.api.currentBook, 'getEditors') as JSON;
     // Get new fragments from the selected text.
     this.api.F_Fragments = await this.api.fetchData(this.api.currentBook, 'getFragments') as JSON;
@@ -79,13 +79,41 @@ export class FragmentsComponent implements OnInit {
     this.processBib(this.api.bibJSON);
   }
 
+  // is called to get authors
+  private async getAuthors(book){
+    return await this.api.fetchData(book, 'getAuthors');
+  }
+
+  // is called to get authors
+  private async getEditors(book){
+    return await this.api.fetchData(book, 'getEditors');
+  }
+
   // Request Books by given Author (in the modal)
-  private async requestBooks(selectedAuthor: Array<string>){
+  private async getBooks(selectedAuthor: Array<string>){
     this.api.currentAuthor = Number(selectedAuthor[0])
     this.api.currentAuthorName = selectedAuthor[1];
     this.api.booksJSON = await this.api.fetchData(selectedAuthor[0], 'getBooks') as JSON;
   }
   
+  private getCurrentBookData(){
+
+  }
+
+  private setCurrentBookData(){
+    // this.api.currentBook = Number(selectedAuthor[0])
+    // this.api.currentBookName = selectedAuthor[1];
+  }
+
+  private getCurrentAuthorData(){
+
+  }
+
+  private setCurrentAuthorData(){
+    // this.api.currentAuthor = Number(selectedAuthor[0])
+    // this.api.currentAuthorName = selectedAuthor[1];
+  }
+
   // Separate bib entries using unique field filters.
   private processBib(bib){
     this.bibArticles = bib.filter(x => x[3] !== null);
