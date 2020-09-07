@@ -11,7 +11,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import {MatExpansionModule} from '@angular/material/expansion';
 
-import 'hammerjs';
+// import 'hammerjs';
 
 // import '@angular/material/prebuilt-themes/deeppurple-amber.css';
 // import "../node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css";
