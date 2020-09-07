@@ -1,185 +1,77 @@
+// Library Imports
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
-
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-// import { NavbarComponent } from './components/navbar/navbar.component';
-import { FragmentsComponent } from './components/fragments/fragments.component';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { ProfileComponent } from './components/profile/profile.component';
-import { SidenavComponent } from './components/sidenav/sidenav.component';
-
-// import { DialogContentExampleDialog } from './components/fragments/fragments.component';
-
-import { ValidateService } from './services/validate.service';
-// import { FlashMessagesModule } from 'angular2-flash-messages';
-import { AuthService } from './services/auth.service';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {DragDropModule} from '@angular/cdk/drag-drop';
-
-import {DialogContentExampleDialog} from './components/fragments/fragments.component';
-
-import {
-  MatAutocompleteModule,
-  MatBadgeModule,
-  MatBottomSheetModule,
-  MatButtonModule,
-  MatButtonToggleModule,
-  MatCardModule,
-  MatCheckboxModule,
-  MatChipsModule,
-  MatDatepickerModule,
-  MatDialogModule,
-  MatDividerModule,
-  MatExpansionModule,
-  MatGridListModule,
-  MatIconModule,
-  MatInputModule,
-  MatListModule,
-  MatMenuModule,
-  MatNativeDateModule,
-  MatPaginatorModule,
-  MatProgressBarModule,
-  MatProgressSpinnerModule,
-  MatRadioModule,
-  MatRippleModule,
-  MatSelectModule,
-  MatSidenavModule,
-  MatSliderModule,
-  MatSlideToggleModule,
-  MatSnackBarModule,
-  MatSortModule,
-  MatStepperModule,
-  MatTableModule,
-  MatTabsModule,
-  MatToolbarModule,
-  MatTooltipModule,
-  MatTreeModule,
-} from '@angular/material';
+// Component Imports
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { FragmentsComponent } from './components/fragments/fragments.component';
+import { DashboardComponent } from './components/fragments/dashboard/dashboard.component';
 import { TextComponent } from './components/text/text.component';
-import { LoginComponent } from './components/login/login.component';
+// Class Imports
+import {ShowAboutDialog} from './components/fragments/fragments.component';
+// Material Imports
+import {
+  MatFormFieldModule,
+  MatSelectModule,
+  MatListModule,
+  MatProgressBarModule,
+  MatExpansionModule,
+  MatTabsModule,
+  MatDialogModule,
+  MatMenuModule,
+  MatInputModule,
+  MatButtonModule,
+} from '@angular/material';
 
+// Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
   {path: '', component: FragmentsComponent},
   {path: 'fragments', component: FragmentsComponent},
   {path: 'text', component: TextComponent},
-  {path: 'login', component: LoginComponent},
   {path: 'dashboard', component: DashboardComponent},
-  {path: 'profile', component: ProfileComponent},
   {path: '**', redirectTo: ''}
 ]
 
 @NgModule({
   declarations: [
     AppComponent,
-    // NavbarComponent,
-    LoginComponent,
     FragmentsComponent,
     TextComponent,
     DashboardComponent,
-    ProfileComponent,
-    SidenavComponent,
-    DialogContentExampleDialog
-    
-  ],
+    ShowAboutDialog,
+    ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    NgbModule,
-    MatSidenavModule,
-    MatNativeDateModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
-    // FlashMessagesModule.forRoot(),
     RouterModule.forRoot(appRoutes),
-    MatAutocompleteModule,
-    MatBadgeModule,
-    MatBottomSheetModule,
-    MatButtonModule,
-    MatButtonToggleModule,
-    MatCardModule,
-    MatCheckboxModule,
-    MatChipsModule,
-    MatStepperModule,
-    MatDatepickerModule,
+
     MatDialogModule,
-    MatDividerModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatProgressBarModule,
     MatExpansionModule,
-    MatGridListModule,
-    MatIconModule,
-    MatInputModule,
     MatListModule,
     MatMenuModule,
-    MatNativeDateModule,
-    MatPaginatorModule,
-    MatProgressBarModule,
-    MatProgressSpinnerModule,
-    MatRadioModule,
-    MatRippleModule,
-    MatSelectModule,
-    MatSidenavModule,
-    MatSliderModule,
-    MatSlideToggleModule,
-    MatSnackBarModule,
-    MatSortModule,
-    MatTableModule,
     MatTabsModule,
-    MatToolbarModule,
-    MatTooltipModule,
-    MatTreeModule,
-    DragDropModule,
-    // DialogContentExampleDialog
-  ],
-  exports: [
-    MatAutocompleteModule,
-    MatBadgeModule,
-    MatBottomSheetModule,
-    MatButtonModule,
-    MatButtonToggleModule,
-    MatCardModule,
-    MatCheckboxModule,
-    MatChipsModule,
-    MatStepperModule,
-    MatDatepickerModule,
-    MatDialogModule,
-    MatDividerModule,
-    MatExpansionModule,
-    MatGridListModule,
-    MatIconModule,
+    MatFormFieldModule,
     MatInputModule,
-    MatListModule,
-    MatMenuModule,
-    MatNativeDateModule,
-    MatPaginatorModule,
-    MatProgressBarModule,
-    MatProgressSpinnerModule,
-    MatRadioModule,
-    MatRippleModule,
-    MatSelectModule,
-    MatSidenavModule,
-    MatSliderModule,
-    MatSlideToggleModule,
-    MatSnackBarModule,
-    MatSortModule,
-    MatTableModule,
-    MatTabsModule,
-    MatToolbarModule,
-    MatTooltipModule,
-    MatTreeModule,
+    MatButtonModule,
+
     DragDropModule,
-    DialogContentExampleDialog,
-    
   ],
-  entryComponents: [DialogContentExampleDialog],
-  // declarations: [DialogContentExampleDialog],
-  providers: [ValidateService, AuthService, FragmentsComponent],
+  exports: [   
+  ],
+  entryComponents: [ShowAboutDialog],
+  providers: [FragmentsComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

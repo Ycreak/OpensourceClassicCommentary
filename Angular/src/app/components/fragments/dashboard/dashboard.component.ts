@@ -1,27 +1,10 @@
-import { Component, OnInit, ViewEncapsulation, Input } from '@angular/core';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { Component, OnInit} from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-// import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {MatDialog} from '@angular/material/dialog';
-
-import {ThemePalette} from '@angular/material/core';
-// import {FormControl, FormGroupDirective, FormGroup, NgForm, Validators} from '@angular/forms';
-import { TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 
-import {ProfileComponent} from '../profile/profile.component'
-
-
-import 'hammerjs';
-// import { Profile } from 'selenium-webdriver/firefox';
-
-export interface Task {
-  name: string;
-  completed: boolean;
-  color: ThemePalette;
-  subtasks?: Task[];
-}
+import { MainComponent } from '../fragments.component';
 
 @Component({
   selector: 'app-interface',
@@ -29,23 +12,16 @@ export interface Task {
   styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements OnInit {
-
-  @ViewChild('callAPIDialog') callAPIDialog: TemplateRef<any>; // Note: TemplateRef requires a type parameter for the component reference. In this case, we're passing an `any` type as it's not a component.
-
-  api : ProfileComponent =  new ProfileComponent(this.httpClient, this.modalService);
-
+  api = new MainComponent(this.httpClient);
   // List with all the fragments numbers. Used to select a specific fragment for a specific editor.
   fragmentNumberList : Array<Number>;
   lineNumberList : Array<Number>;
-
   // Array with the fragments of the mainEditor (left column) and of the secondary editor (right column)
   selectedEditorArray = []; // This one is different from the fragments.ts one!
-
   // Items for the forms.
   items;
   contentForm;
   bibForm;
-
   // Values that are inputted by the user. Should be sanitized.
   inputAuthor: String = '';
   inputBook: String = '';
@@ -73,7 +49,6 @@ export class DashboardComponent implements OnInit {
   selectedLineData: Array<String> = [''];
 
   constructor(
-    private modalService: NgbModal, 
     private httpClient: HttpClient, 
     public dialog: MatDialog, 
     private formBuilder: FormBuilder,
@@ -139,41 +114,47 @@ export class DashboardComponent implements OnInit {
     // This should be a check whether the current editor is also a main editor
     // If the current editor has no commentary, we should not retrieve it.
     console.log('selectedFragment', fragment)
-    this.api.ophalenCommentaren(fragment)
+    this.api.retrieveCommentaries(fragment)
   }
 
+  // Retrieves the content of a fragment using the provided lineNumber of the current editor
+  // Puts this value in F_Content
   private getFragmentLine(lineNum: Number){
+    // Get the current editor and the selected fragment number
     let editor = this.selectedEditorData[0]
-
     let fragNum = this.selectedFragmentData
-
+    // Create the corresponding selectedEditorArray
     let selectedEditorArray = this.opbouwenFragmentenEditor(editor, this.api.ArrayWithAllFragments);
-    
+    // Filter on the given fragment number and the given lineNumber
     selectedEditorArray = selectedEditorArray.filter(x => x.fragNumber === fragNum);
     selectedEditorArray = selectedEditorArray.filter(x => x.lineNumber === lineNum);
-
+    // Return the found content to be shown on screen
     this.api.F_Content = selectedEditorArray[0].lineContent
   }
 
+  // Returns a list of uniq numbers. Used for fragmentnumber lists.
   private uniq(a) {
     return a.sort().filter(function(item, pos, ary) {
         return !pos || item != ary[pos - 1];
     });
   }
 
-  // Retrieves fragment numbers of a editor. Function needs rewriting. 
+  // Retrieves fragment numbers of a editor. Used for selecting a fragment.
+  // Function needs rewriting. 
   private getFragNumbersSelectedEditor(editor: string){
-    // New editor, so set him as the current one!
+    // Retrieve current editor
     this.api.currentEditor = editor;
-
+    // Create the corresponding selectedEditorArray
     let selectedEditorArray = this.opbouwenFragmentenEditor(editor, this.api.ArrayWithAllFragments);
-
+    // Initialise list
     this.fragmentNumberList = [];
+    // Push all fragment numbers to a list
     for(let key in selectedEditorArray){      
       this.fragmentNumberList.push(selectedEditorArray[key].fragNumber);
     } 
+    // Only take the unique values from this list
     this.fragmentNumberList = this.uniq(this.fragmentNumberList);
-
+    // Sort list numerically
     this.fragmentNumberList.sort(this.api.sortArrayNumerically3);
   }
 
@@ -283,22 +264,16 @@ export class DashboardComponent implements OnInit {
   public uploadRevisedFragment(input){
     this.inputFragContent = input.iF_Content;
     this.pushData('reviseFragContent')
-
   }
 
   public doBibForm(input){
     console.log('input', input)
-
-
-    // this.pushData('reviseFragCommentary')
-
   }
 
   // Function to add commentary to a fragment
   public async uploadCommentary(inputAppCrit: String, inputDifferences: String, inputCommentary: String, inputTranslation: String){
     console.log(inputAppCrit, inputDifferences, inputCommentary, inputTranslation)
     console.log(this.selectedAuthorData[0], this.selectedBookData[0], this.selectedEditorData[0], this.selectedFragmentData[0]);
-  
     this.pushData('createFragCommentary')  
   }
 
