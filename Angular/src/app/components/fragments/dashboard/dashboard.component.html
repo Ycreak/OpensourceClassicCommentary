@@ -15,7 +15,7 @@
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav ml-auto">
         <!-- <li> <button class="btn btn-lg" [matMenuTriggerFor]="appMenu">More</button></li> -->
-        <li> <button class="btn btn-lg" (click)="test()">Test</button></li>
+        <!-- <li> <button class="btn btn-lg" (click)="test()">Test</button></li> -->
 
       </ul>
     </div>
@@ -32,7 +32,7 @@
       <mat-form-field class="select-form">
         <mat-label>Author</mat-label>
         <mat-select [(ngModel)]="selectedAuthorData">
-          <mat-option *ngFor="let selectedAuthor of this.api.authorsJSON" [value]="selectedAuthor"
+          <mat-option *ngFor="let selectedAuthor of this.main.authorsJSON" [value]="selectedAuthor"
           (click)="requestBooks(selectedAuthor[0])">
             {{ selectedAuthor[1] }}                       
           </mat-option>
@@ -43,8 +43,9 @@
         <mat-form-field class="select-form">
           <mat-label>Book</mat-label>
           <mat-select [(ngModel)]="selectedBookData">
-            <mat-option *ngFor="let selectedBook of this.api.booksJSON" [value]="selectedBook"
-            (click)="requestEditors(selectedBook[0])"
+            <mat-option *ngFor="let selectedBook of this.main.booksJSON" [value]="selectedBook"
+            (click)="this.main.editorsJSON = this.requestEditors(selectedBook[0])"
+            (click)="this.main.setCurrentBookData(selectedBook)"
             (click)="requestSelectedText(selectedBook[0])">
               {{ selectedBook[1] }}                       
             </mat-option>
@@ -56,7 +57,7 @@
           <mat-label>Editor</mat-label>
           <!-- selectedEditor because duplicate with backend. Needs fixing! -->
           <mat-select [(ngModel)]="selectedEditorData">
-            <mat-option *ngFor="let selectedEditor of this.api.editorsJSON" [value]="selectedEditor"
+            <mat-option *ngFor="let selectedEditor of this.main.editorsJSON" [value]="selectedEditor"
             (click)="getFragNumbersSelectedEditor(selectedEditor[0])">
               {{ selectedEditor[1] }}                       
             </mat-option>
@@ -144,7 +145,7 @@
             <mat-form-field class="input-form ">
               <mat-label>Fragment context author</mat-label>
               <mat-select>
-                <mat-option *ngFor="let b of this.api.bibJSON" [value]="b[1]"
+                <mat-option *ngFor="let b of this.main.bibJSON" [value]="b[1]"
                 (click)="setBibUpdate(1)">                  
                   {{ b[1] }} {{ b[9] }} {{ b[11] }}                     
                 </mat-option>
@@ -346,7 +347,7 @@
               <form [formGroup]="contentForm" (ngSubmit)="uploadRevisedFragment(contentForm.value)">
                 <mat-form-field class="input-form-full-width">
                   <mat-label>Fragment content</mat-label>
-                  <input matInput value='{{this.api.F_Content}}' id="iF_Content" type="text" formControlName="iF_Content">
+                  <input matInput value='{{this.main.F_Content}}' id="iF_Content" type="text" formControlName="iF_Content">
                   <mat-hint>Provide the revised line of the selected fragment line</mat-hint>                       
                 </mat-form-field>
               </form>
@@ -361,31 +362,31 @@
               <form [formGroup]="contentForm" (ngSubmit)="uploadRevisedFragmentContent(contentForm.value)">
                 <mat-form-field class="input-form-full-width">
                   <mat-label>Fragment commentary</mat-label>
-                  <input matInput value='{{this.api.F_Commentaar}}' id="iF_Commentaar" type="text" formControlName="iF_Commentaar">
+                  <input matInput value='{{this.main.F_Commentary}}' id="iF_Commentary" type="text" formControlName="iF_Commentary">
                   <mat-hint>Provide the revised commentary of the selected fragment</mat-hint>                       
                 </mat-form-field>
 
                 <mat-form-field class="input-form-full-width">
                   <mat-label>Fragment differences</mat-label>
-                  <input matInput value='{{this.api.F_Differences}}' id="iF_Differences" type="text" formControlName="iF_Differences">
+                  <input matInput value='{{this.main.F_Differences}}' id="iF_Differences" type="text" formControlName="iF_Differences">
                   <mat-hint>Provide the revised differences of the selected fragment</mat-hint>                       
                 </mat-form-field>
                                     
                 <mat-form-field class="input-form-full-width">
                   <mat-label>Fragment translation</mat-label>
-                  <input matInput value='{{this.api.F_Translation}}' id="iF_Translation" type="text" formControlName="iF_Translation">
+                  <input matInput value='{{this.main.F_Translation}}' id="iF_Translation" type="text" formControlName="iF_Translation">
                   <mat-hint>Provide the revised translation of the selected fragment</mat-hint>                       
                 </mat-form-field>
                 
                 <mat-form-field class="input-form-full-width">
                   <mat-label>Fragment apparatus criticus</mat-label>
-                  <input matInput value='{{this.api.F_AppCrit}}' id="iF_AppCrit" type="text" formControlName="iF_AppCrit">
+                  <input matInput value='{{this.main.F_AppCrit}}' id="iF_AppCrit" type="text" formControlName="iF_AppCrit">
                   <mat-hint>Provide the revised apparatus criticus of the selected fragment</mat-hint>                       
                 </mat-form-field>
                 
                 <mat-form-field class="input-form-full-width">
                   <mat-label>Fragment reconstruction</mat-label>
-                  <input matInput value='{{this.api.F_Reconstruction}}' id="iF_Reconstruction" type="text" formControlName="iF_Reconstruction">
+                  <input matInput value='{{this.main.F_Reconstruction}}' id="iF_Reconstruction" type="text" formControlName="iF_Reconstruction">
                   <mat-hint>Provide the revised reconstruction of the selected fragment</mat-hint>                       
                 </mat-form-field>
                 <!-- Button is linked via the submit type! -->
@@ -401,7 +402,7 @@
               <mat-form-field class="input-form ">
                 <mat-label>Fragment context author</mat-label>
                 <mat-select>
-                  <mat-option *ngFor="let contextAuthor of this.api.F_Context" [value]="contextAuthor[0]"
+                  <mat-option *ngFor="let contextAuthor of this.main.F_Context" [value]="contextAuthor[0]"
                   (click)="selectCorrespondingContext(contextAuthor)">                  
                     {{ contextAuthor[0] }}                       
                   </mat-option>
@@ -414,7 +415,7 @@
               <form [formGroup]="contentForm" (ngSubmit)="uploadRevisedContext(contentForm.value)">
                 <mat-form-field class="input-form-full-width">
                   <mat-label>Fragment context</mat-label>
-                  <input matInput value='{{this.api.F_ContextField}}' id="iF_Context" type="text" formControlName="iF_Context">
+                  <input matInput value='{{this.main.F_ContextField}}' id="iF_Context" type="text" formControlName="iF_Context">
                   <mat-hint>Provide the revised context for the given author and the selected fragment</mat-hint>
                 </mat-form-field>
                 <!-- Button is linked via the submit type! -->

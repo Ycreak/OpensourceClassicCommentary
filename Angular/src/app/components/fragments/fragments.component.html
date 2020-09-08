@@ -42,7 +42,7 @@
   <mat-form-field>
     <mat-label>Select author</mat-label>
     <mat-select>
-      <mat-option *ngFor="let author of this.api.authorsJSON" [value]="author" (click)="getBooks(author)">
+      <mat-option *ngFor="let author of this.main.authorsJSON" [value]="author" (click)="requestBooks(author)" (click)="setCurrentAuthorData(author)">
         {{ author[1] }} 
       </mat-option>
     </mat-select>  
@@ -51,7 +51,7 @@
   <mat-form-field>
     <mat-label>Select book</mat-label>
     <mat-select>
-      <mat-option *ngFor="let book of this.api.booksJSON" [value]="book" (click)="requestSelectedText(book)">
+      <mat-option *ngFor="let book of this.main.booksJSON" [value]="book" (click)="requestSelectedText(book)">
         {{ book[1] }}                
       </mat-option>
     </mat-select>
@@ -60,7 +60,7 @@
 
 <!-- Bibliography dialog to show the used bibliography -->
 <ng-template #callBibliography>   
-  <h3>Bibliography for {{this.api.currentAuthorName}}: {{this.api.currentBookName}}</h3>
+  <h3>Bibliography for {{this.main.currentAuthorName}}: {{this.main.currentBookName}}</h3>
   <hr>
   <h4>Books</h4>
   <mat-nav-list class="bibList">
@@ -85,7 +85,7 @@
 </ng-template>
 
 <!-- Show a spinner if query with database is in progress -->
-<mat-progress-bar mode="query" *ngIf="this.api.spinner"></mat-progress-bar>
+<mat-progress-bar mode="query" *ngIf="this.main.spinner"></mat-progress-bar>
 <br>
 
 <!-- Container for the page: one row, two columns. Column Left has the text, Column Right the commentary. -->
@@ -95,14 +95,14 @@
     <div class="col-sm overflowColumn">
       <div class="row">
         <div class="col-6">
-          <h4>{{this.api.currentAuthorName}}: {{this.api.currentBookName}}.</h4>
+          <h4>{{this.main.currentAuthorName}}: {{this.main.currentBookName}}.</h4>
         </div>  
         <div class="col-6">
           <mat-form-field>
             <mat-label>Select main editor</mat-label>
             <mat-select>
-              <mat-option *ngFor="let mainEditor of this.api.mainEditorsJSON" [value]="mainEditor[1]"
-              (click)="this.api.mainEditorArray = createEditorArray(mainEditor[0], this.api.ArrayWithAllFragments)">
+              <mat-option *ngFor="let mainEditor of this.main.mainEditorsJSON" [value]="mainEditor[1]"
+              (click)="this.main.mainEditorArray = createEditorArray(mainEditor[0], this.main.ArrayWithAllFragments)">
                 {{ mainEditor[1] }}                     
               </mat-option>
             </mat-select>
@@ -111,7 +111,7 @@
       </div>
       <!-- Listing of the fragments -->
       <div class="fragment-list">
-        <div class="fragment-box" *ngFor="let arrayItem of this.api.mainEditorArray" (click)="this.api.retrieveCommentaries(arrayItem.fragNumber)">
+        <div class="fragment-box" *ngFor="let arrayItem of this.main.mainEditorArray" (click)="this.main.retrieveCommentaries(arrayItem.fragNumber)">
           <div>
             <b>Fragment {{arrayItem.fragNumber}} </b> &nbsp; <i>{{arrayItem.status}}</i>
           </div>
@@ -129,8 +129,8 @@
           <mat-form-field>
             <mat-label>Select secondary editor</mat-label>
             <mat-select>
-              <mat-option *ngFor="let selectedEditor of this.api.editorsJSON" [value]="selectedEditor[1]"
-              (click)="this.api.selectedEditorArray = createEditorArray(selectedEditor[0], this.api.ArrayWithAllFragments)">
+              <mat-option *ngFor="let selectedEditor of this.main.editorsJSON" [value]="selectedEditor[1]"
+              (click)="this.main.selectedEditorArray = createEditorArray(selectedEditor[0], this.main.ArrayWithAllFragments)">
                 {{ selectedEditor[1] }} 
                 
               </mat-option>
@@ -143,7 +143,7 @@
       
       <!-- Movable array column -->
       <div cdkDropList class="fragment-list" (cdkDropListDropped)="moveAndDrop($event)">
-        <div class="fragment-box" *ngFor="let arrayItem of this.api.selectedEditorArray" cdkDrag>
+        <div class="fragment-box" *ngFor="let arrayItem of this.main.selectedEditorArray" cdkDrag>
           <div>
             <b>Fragment {{arrayItem.fragNumber}}</b> &nbsp; <i>{{arrayItem.status}}</i>
           </div>
@@ -156,13 +156,13 @@
 
     <!-- COMMENTARY COLUMN -->
     <div class="col-sm overflowColumn">
-      <h4>Fragment {{this.api.currentFragment}}</h4> <hr>
+      <h4>Fragment {{this.main.currentFragment}}</h4> <hr>
       <!-- Show banner if no commentary available -->
-      <div *ngIf="this.api.noCommentary" class="alert alert-info" role="alert">
+      <div *ngIf="this.main.noCommentary" class="alert alert-info" role="alert">
         No commentary is available for this fragment.
       </div>
-      <div *ngIf="this.api.noCommentary === false">
-        <div *ngFor="let translation of this.api.F_Translation">
+      <div *ngIf="this.main.noCommentary === false">
+        <div *ngFor="let translation of this.main.F_Translation">
           <mat-expansion-panel>
             <mat-expansion-panel-header>
               <mat-panel-title>
@@ -180,7 +180,7 @@
 
         <hr>
 
-        <div *ngFor="let AppCrit of this.api.F_AppCrit">
+        <div *ngFor="let AppCrit of this.main.F_AppCrit">
           <mat-expansion-panel>
             <mat-expansion-panel-header>
               <mat-panel-title>
@@ -197,7 +197,7 @@
 
         <hr>
 
-        <div *ngFor="let differences of this.api.F_Differences">
+        <div *ngFor="let differences of this.main.F_Differences">
           <mat-expansion-panel>
             <mat-expansion-panel-header>
               <mat-panel-title>
@@ -214,7 +214,7 @@
 
         <hr>
 
-        <div *ngFor="let F_Context of this.api.F_Context">
+        <div *ngFor="let F_Context of this.main.F_Context">
           <mat-expansion-panel>
             <mat-expansion-panel-header>
               <mat-panel-title>
@@ -232,7 +232,7 @@
         
         <hr>
 
-        <div *ngFor="let commentaar of this.api.F_Commentaar">
+        <div *ngFor="let commentaar of this.main.F_Commentary">
           <mat-expansion-panel>
             <mat-expansion-panel-header>
               <mat-panel-title>
@@ -249,7 +249,7 @@
 
         <hr>
 
-        <div *ngFor="let commentaar of this.api.F_Reconstruction">
+        <div *ngFor="let commentaar of this.main.F_Reconstruction">
           <mat-expansion-panel>
             <mat-expansion-panel-header>
               <mat-panel-title>

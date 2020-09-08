@@ -5,6 +5,7 @@ import {MatDialog} from '@angular/material/dialog';
 import { FormBuilder } from '@angular/forms';
 
 import { MainComponent } from '../fragments.component';
+import { ServerCommunicator } from '../fragments.component';
 
 @Component({
   selector: 'app-interface',
@@ -12,7 +13,9 @@ import { MainComponent } from '../fragments.component';
   styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements OnInit {
-  api = new MainComponent(this.httpClient);
+  main = new MainComponent(this.httpClient);
+  server = new ServerCommunicator(this.httpClient);
+
   // List with all the fragments numbers. Used to select a specific fragment for a specific editor.
   fragmentNumberList : Array<Number>;
   lineNumberList : Array<Number>;
@@ -55,7 +58,7 @@ export class DashboardComponent implements OnInit {
     ) { 
       // Form to revise the commentary of a fragment.
       this.contentForm = this.formBuilder.group({
-        iF_Commentaar: '', // Horrible naming, should be rethought.
+        iF_Commentary: '', // Horrible naming, should be rethought.
         iF_Differences: '',
         iF_Context: '',
         iF_Translation: '',
@@ -83,38 +86,34 @@ export class DashboardComponent implements OnInit {
    */
   async ngOnInit() {   
     // Request a list of authors to select a different text
-    this.api.authorsJSON = await this.api.fetchData(this.api.currentBook, 'getAuthors') as JSON;
+    this.main.authorsJSON = await this.server.fetchData(this.main.currentBook, 'getAuthors') as JSON;
     // When init is done, turn off the loading bar (spinner)
-    this.api.spinner = false;
+    this.main.spinner = false;
   }
 
   private async requestEditors(book: string){
-    // We change the current book.
-    this.api.currentBook = book;
-    this.api.editorsJSON = await this.api.fetchData(book, 'getEditors') as JSON;
-    console.log(this.api.editorsJSON);
+    this.main.editorsJSON = await this.server.fetchData(book, 'getEditors') as JSON;
   }
 
   // Request Books by given Author (in the modal)
   private async requestBooks(selectedAuthor: string){
-    this.api.booksJSON = await this.api.fetchData(selectedAuthor, 'getBooks') as JSON;
+    this.main.booksJSON = await this.server.fetchData(selectedAuthor, 'getBooks') as JSON;
   }
 
   // Request Newly Selected Text
   private async requestSelectedText(book: string){
     // Get new fragments from the selected text.
-    this.api.F_Fragments = await this.api.fetchData(book, 'getFragments') as JSON;
-    this.api.bibJSON = await this.api.fetchData(this.api.currentBook, 'getBibliography') as JSON;
-    console.log('bib', this.api.bibJSON)
+    this.main.F_Fragments = await this.server.fetchData(book, 'getFragments') as JSON;
+    this.main.bibJSON = await this.server.fetchData(this.main.currentBook, 'getBibliography') as JSON;
     // Create an array of the retrieved objects to allow them to be moved in CSS.
-    this.api.ArrayWithAllFragments = this.api.putFragmentsInMoveableArray(this.api.F_Fragments);
+    this.main.FragmentsArray = this.main.tagFragments(this.main.F_Fragments);
   }
 
   private retrieveFragmentData(fragment : Number){
     // This should be a check whether the current editor is also a main editor
     // If the current editor has no commentary, we should not retrieve it.
     console.log('selectedFragment', fragment)
-    this.api.retrieveCommentaries(fragment)
+    this.main.retrieveCommentaries(fragment)
   }
 
   // Retrieves the content of a fragment using the provided lineNumber of the current editor
@@ -124,12 +123,12 @@ export class DashboardComponent implements OnInit {
     let editor = this.selectedEditorData[0]
     let fragNum = this.selectedFragmentData
     // Create the corresponding selectedEditorArray
-    let selectedEditorArray = this.opbouwenFragmentenEditor(editor, this.api.ArrayWithAllFragments);
+    let selectedEditorArray = this.opbouwenFragmentenEditor(editor, this.main.FragmentsArray);
     // Filter on the given fragment number and the given lineNumber
     selectedEditorArray = selectedEditorArray.filter(x => x.fragNumber === fragNum);
     selectedEditorArray = selectedEditorArray.filter(x => x.lineNumber === lineNum);
     // Return the found content to be shown on screen
-    this.api.F_Content = selectedEditorArray[0].lineContent
+    this.main.F_Content = selectedEditorArray[0].lineContent
   }
 
   // Returns a list of uniq numbers. Used for fragmentnumber lists.
@@ -143,9 +142,9 @@ export class DashboardComponent implements OnInit {
   // Function needs rewriting. 
   private getFragNumbersSelectedEditor(editor: string){
     // Retrieve current editor
-    this.api.currentEditor = editor;
+    this.main.currentEditor = editor;
     // Create the corresponding selectedEditorArray
-    let selectedEditorArray = this.opbouwenFragmentenEditor(editor, this.api.ArrayWithAllFragments);
+    let selectedEditorArray = this.opbouwenFragmentenEditor(editor, this.main.FragmentsArray);
     // Initialise list
     this.fragmentNumberList = [];
     // Push all fragment numbers to a list
@@ -155,13 +154,13 @@ export class DashboardComponent implements OnInit {
     // Only take the unique values from this list
     this.fragmentNumberList = this.uniq(this.fragmentNumberList);
     // Sort list numerically
-    this.fragmentNumberList.sort(this.api.sortArrayNumerically3);
+    this.fragmentNumberList.sort(this.main.sortArrayNumerically3);
   }
 
   // Retrieves fragment numbers of a editor. Function needs rewriting. 
   private getLineNumbersSelectedEditor(fragNum: String){
     let editor = this.selectedEditorData[0];
-    let selectedEditorArray = this.opbouwenFragmentenEditor(editor, this.api.ArrayWithAllFragments);
+    let selectedEditorArray = this.opbouwenFragmentenEditor(editor, this.main.FragmentsArray);
 
     let array = selectedEditorArray.filter(x => x.fragNumber === fragNum);
 
@@ -172,25 +171,25 @@ export class DashboardComponent implements OnInit {
 
     this.lineNumberList = this.uniq(this.lineNumberList);
     
-    this.lineNumberList.sort(this.api.sortArrayNumerically3);
+    this.lineNumberList.sort(this.main.sortArrayNumerically3);
   }  
 
   private selectCorrespondingContext(author : Array<String>){
     console.log(author)
-    this.api.F_ContextField = author[1];
+    this.main.F_ContextField = author[1];
     this.inputContextAuthor = author[0];
   }
 
   public async createAuthor(author : String){
     console.log(author);
     this.pushData('createAuthor') // TODO: Here needs a wait
-    this.api.authorsJSON = await this.api.fetchData(this.api.currentBook, 'getAuthors') as JSON;
+    this.main.authorsJSON = await this.server.fetchData(this.main.currentBook, 'getAuthors') as JSON;
   }
 
   public async deleteAuthor(){
     console.log(this.selectedAuthorData[0]);
     this.pushData('deleteAuthor')
-    this.api.authorsJSON = await this.api.fetchData(this.api.currentBook, 'getAuthors') as JSON;
+    this.main.authorsJSON = await this.server.fetchData(this.main.currentBook, 'getAuthors') as JSON;
   }
 
   public createBook(book : String){
@@ -248,7 +247,7 @@ export class DashboardComponent implements OnInit {
 
     this.inputAppCrit = input.iF_AppCrit;
     this.inputDifferences = input.iF_Differences;
-    this.inputCommentary = input.iF_Commentaar;
+    this.inputCommentary = input.iF_Commentary;
     this.inputTranslation = input.iF_Translation;
     this.inputReconstruction = input.iF_Reconstruction;
 
@@ -303,7 +302,7 @@ export class DashboardComponent implements OnInit {
   private opbouwenFragmentenEditor(selectedEditor: String, givenArray){
     // Filter the given array on the given editor.
     let array = givenArray.filter(x => x.editor == selectedEditor);
-    array.sort(this.api.sortArrayNumerically3);
+    array.sort(this.main.sortArrayNumerically3);
 
     return array;
   }
@@ -320,7 +319,7 @@ export class DashboardComponent implements OnInit {
 
   public async checkPassword(username: string, password: string){
     const data = await this.httpClient.get(
-      this.api.serverURL + 'testHash',{
+      this.main.serverURL + 'testHash',{
         params: { // Why toString()? Url is already a string! :D
           username:     username.toString(), 
           password:     password.toString(), 
@@ -343,7 +342,7 @@ export class DashboardComponent implements OnInit {
   */
  public async pushData(command: String){
   const data = await this.httpClient.get(
-    this.api.serverURL + 'process',{
+    this.main.serverURL + 'process',{
       params: { // Why toString()? Url is already a string! :D
         selectedAuthor:     this.selectedAuthorData[0].toString(), 
         selectedBook:       this.selectedBookData[0].toString(), 
@@ -365,7 +364,7 @@ export class DashboardComponent implements OnInit {
         inputTranslation:   this.inputTranslation.toString(),
         inputReconstruction: this.inputReconstruction.toString(),
         
-        ReferencerID:       this.api.ReferencerID.toString(),
+        ReferencerID:       this.main.ReferencerID.toString(),
         inputContextAuthor: this.inputContextAuthor.toString(),
         inputContext :      this.inputContext.toString(),
       
