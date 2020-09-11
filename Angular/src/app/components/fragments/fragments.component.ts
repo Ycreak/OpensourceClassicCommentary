@@ -64,7 +64,9 @@ export class FragmentsComponent implements OnInit {
     // Create the JSON with the Editors for the current book.
     this.main.editorsJSON = await this.server.requestEditors(this.main.currentBook);
     // Create a list of main Editors from the retrieved editorsJSON.
-    this.main.mainEditorsJSON = this.createMainEditorArray(this.main.editorsJSON)    
+    this.main.mainEditorsJSON = this.createMainEditorArray(this.main.editorsJSON)  
+    // Set the first found main editor as default
+    this.main.currentEditor = this.main.mainEditorsJSON[0][0]
     // Get new fragments from the selected text.
     this.main.F_Fragments = await this.server.requestFragments(this.main.currentBook);
     // Create an array of the retrieved objects to allow them to be moved in CSS.
@@ -75,6 +77,16 @@ export class FragmentsComponent implements OnInit {
     this.main.bibJSON = await this.server.requestBibliography(this.main.currentBook);
     // Process the retrieved bibliography to appear formatted in the dialog.
     this.processBib(this.main.bibJSON);
+  }
+
+  //FIXME: this is horrible hacking
+  private async tempBooks(author){
+    this.main.booksJSON = await this.server.requestBooks(author) as JSON;
+  }
+
+  //FIXME: hacking, hacking everywhere!
+  public async TEMPrequestSelectedText(){
+    this.requestSelectedText([this.main.currentBook,this.main.currentBookName]);
   }
 
   // Separate bib entries using unique field filters.
@@ -92,12 +104,12 @@ export class FragmentsComponent implements OnInit {
   */
   private createEditorArray(editor: string, array){
     // Filter the given array on the given editor.
-    array = array.filter(x => x.editor == editor);
+    let tempArray = array.filter(x => x.editor == editor);
     // Sort the lines numerically.
-    array.sort(this.main.sortArrayNumerically);
+    tempArray.sort(this.main.sortArrayNumerically);
     // Merge the different lines into their corresponding fragments
-    array = this.mergeLinesIntoFragment(array);
-    return array;
+    
+    return this.mergeLinesIntoFragment(tempArray);
   }
 
   // Creates main editor array: the third field has the mainEditor key. Should be named properly.
@@ -109,6 +121,7 @@ export class FragmentsComponent implements OnInit {
   // The structure looks as follows: Fragment 2, [[1, "hello"],[2,"hi"]]
   // Function way to long... Function in function needed here.
   public mergeLinesIntoFragment(givenArray){
+    console.log('givenArray', givenArray)
     // String that will be used to build the fragment
     let buildString = ""
     // Array that will be used to return a merged array
@@ -215,6 +228,9 @@ export class FragmentsComponent implements OnInit {
 export class ShowAboutDialog {}
 
 // This class holds all the information necessary for the program to work properly
+@Component({
+  template: ''
+})
 export class MainComponent implements OnInit {
   // Import of class used for database communication
   server = new ServerCommunicator(this.httpClient);
@@ -243,7 +259,7 @@ export class MainComponent implements OnInit {
   currentEditor : string = '1';
   currentFragment : Number;
   currentAuthorName : String = "Ennius";
-  currentBookName : String = "Thyestes";
+  currentBookName : string = "Thyestes";
   // This array contains all the information from a specific book. Functions can use this data.
   FragmentsArray = [];
   selectedEditorArray = [];
@@ -346,6 +362,7 @@ export class MainComponent implements OnInit {
       status:       array[arrayElement][6],
     })
   }
+  console.log('taggedArray:', taggedArray)
   return taggedArray;
 }
 
@@ -425,11 +442,17 @@ export class MainComponent implements OnInit {
   }  
 }
 
+
+
 /* @class:    This class communicates with the server
   */
+ @Component({
+  template: ''
+})
  export class ServerCommunicator implements OnInit{
   // Server URL to communicate with database
   serverURL = 'http://katwijk.nolden.biz:5002/';  
+  // main = new MainComponent(this.httpClient);
 
   constructor(private httpClient: HttpClient) { /* empty */ }
     /* @function:     Een get request naar de interface body

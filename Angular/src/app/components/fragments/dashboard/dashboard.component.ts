@@ -92,6 +92,7 @@ export class DashboardComponent implements OnInit {
   }
 
   private async requestEditors(book: string){
+    this.main.currentBook = book;
     this.main.editorsJSON = await this.server.fetchData(book, 'getEditors') as JSON;
   }
 
@@ -188,7 +189,7 @@ export class DashboardComponent implements OnInit {
 
   public async deleteAuthor(){
     console.log(this.selectedAuthorData[0]);
-    this.pushData('deleteAuthor')
+    // this.pushData('deleteAuthor')
     this.main.authorsJSON = await this.server.fetchData(this.main.currentBook, 'getAuthors') as JSON;
   }
 
@@ -199,7 +200,7 @@ export class DashboardComponent implements OnInit {
 
   public deleteBook(){
     console.log(this.selectedAuthorData[0], this.selectedBookData[0]);
-    this.pushData('deleteBook')
+    // this.pushData('deleteBook')
   }
 
   public createEditor(editor : String){
@@ -209,7 +210,7 @@ export class DashboardComponent implements OnInit {
 
   public deleteEditor(){
     console.log(this.selectedAuthorData[0], this.selectedBookData[0], this.selectedEditorData[0]);
-    this.pushData('deleteEditor')
+    // this.pushData('deleteEditor')
   }
 
   public setMainEditor(){
@@ -219,7 +220,7 @@ export class DashboardComponent implements OnInit {
 
   public deleteMainEditor(){
     console.log(this.selectedAuthorData[0], this.selectedBookData[0], this.selectedEditorData[0]);
-    this.pushData('deleteMainEditor')
+    // this.pushData('deleteMainEditor')
   }
 
   public createFragment(fragNum : String, lineNum : String, content : String, status: String){
@@ -257,6 +258,7 @@ export class DashboardComponent implements OnInit {
 
   public uploadRevisedContext(input){
     this.inputContext = input.iF_Context;
+    console.log(this.inputContext);
     this.pushData('reviseFragContext')
   }
 
@@ -319,7 +321,7 @@ export class DashboardComponent implements OnInit {
 
   public async checkPassword(username: string, password: string){
     const data = await this.httpClient.get(
-      this.main.serverURL + 'testHash',{
+      this.server.serverURL + 'testHash',{
         params: { // Why toString()? Url is already a string! :D
           username:     username.toString(), 
           password:     password.toString(), 
@@ -341,8 +343,10 @@ export class DashboardComponent implements OnInit {
   * @author Ycreak
   */
  public async pushData(command: String){
+  console.log('input',this.inputAuthor);
+  
   const data = await this.httpClient.get(
-    this.main.serverURL + 'process',{
+    this.server.serverURL + 'process',{
       params: { // Why toString()? Url is already a string! :D
         selectedAuthor:     this.selectedAuthorData[0].toString(), 
         selectedBook:       this.selectedBookData[0].toString(), 

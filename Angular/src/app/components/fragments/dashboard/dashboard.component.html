@@ -44,8 +44,7 @@
           <mat-label>Book</mat-label>
           <mat-select [(ngModel)]="selectedBookData">
             <mat-option *ngFor="let selectedBook of this.main.booksJSON" [value]="selectedBook"
-            (click)="this.main.editorsJSON = this.requestEditors(selectedBook[0])"
-            (click)="this.main.setCurrentBookData(selectedBook)"
+            (click)="this.requestEditors(selectedBook[0])"
             (click)="requestSelectedText(selectedBook[0])">
               {{ selectedBook[1] }}                       
             </mat-option>
@@ -350,9 +349,9 @@
                   <input matInput value='{{this.main.F_Content}}' id="iF_Content" type="text" formControlName="iF_Content">
                   <mat-hint>Provide the revised line of the selected fragment line</mat-hint>                       
                 </mat-form-field>
+                <button mat-button class="button" type="submit">Update Fragment</button>
               </form>
               <br>
-              <button mat-button class="button" type="submit">Update Fragment</button>
 
             </mat-tab>
 
@@ -419,9 +418,9 @@
                   <mat-hint>Provide the revised context for the given author and the selected fragment</mat-hint>
                 </mat-form-field>
                 <!-- Button is linked via the submit type! -->
+                <button mat-button class="button" type="submit">Update Context</button>
               </form>
               <br>
-              <button mat-button class="button" type="submit">Update Context</button>
 
             </mat-tab>
 

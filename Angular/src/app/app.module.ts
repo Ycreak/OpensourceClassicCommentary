@@ -12,6 +12,8 @@ import { AppComponent } from './app.component';
 import { FragmentsComponent } from './components/fragments/fragments.component';
 import { DashboardComponent } from './components/fragments/dashboard/dashboard.component';
 import { TextComponent } from './components/text/text.component';
+import { LoginComponent } from './components/login/login.component';
+
 // Class Imports
 import {ShowAboutDialog} from './components/fragments/fragments.component';
 // Material Imports
@@ -31,7 +33,7 @@ import {MatButtonModule} from '@angular/material/button';
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
-  {path: '', component: FragmentsComponent},
+  {path: '', component: LoginComponent},
   {path: 'fragments', component: FragmentsComponent},
   {path: 'text', component: TextComponent},
   {path: 'dashboard', component: DashboardComponent},
@@ -45,6 +47,7 @@ const appRoutes: Routes = [
     TextComponent,
     DashboardComponent,
     ShowAboutDialog,
+    LoginComponent,
     ],
   imports: [
     BrowserModule,
