@@ -1,6 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Fragment } from './models/Fragment';
+import { Author } from './models/Author';
+import { Editor } from './models/Editor';
+import { Bibliography } from './models/Bibliography';
+import { FragmentReferencer } from './models/FragmentReferencer';
+import { Context } from './models/Context';
+import { Book } from './models/Book';
+import { Reconstruction } from './models/Reconstruction';
+import { AppCrit } from './models/AppCrit';
+import { Translation } from './models/Translation';
+import { Differences } from './models/Differences';
+import { Commentary } from './models/Commentary';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +21,7 @@ export class ApiService {
 
   constructor(private http: HttpClient) { }
 
-  ApiUrl: String = 'http://localhost:5001/';
+  ApiUrl: String = 'https://localhost:5001/';
 
   /*
    *
@@ -19,25 +31,24 @@ export class ApiService {
 
   /**
   * ... ... ...
-  * @param fragment
-  * @param editorId
-  * @param book
+  * @param fragmentID
+  * @param editorID
+  * @param bookID
   * @returns
   * @author Ycreak, ppbors
-  * TODO:FIXME: Parameters doorgeven kan op verschillende manieren. Ik vind deze het mooist.
   */
-  GetReferencerID(fragment: string, editor: string, book: string): Observable<string[]> {
-    return this.http.get<string[]>(this.ApiUrl + `...?fragment=${fragment}&editor=${editor}&book=${book}`);
+  GetReferencerID(fragmentID: number, editorID: number, bookID: number): Observable<string[]> {
+    return this.http.get<string[]>(this.ApiUrl + `fragmentreferencer?fragmentID=${fragmentID}&editorID=${editorID}&bookID=${bookID}`);
   }
 
   /**
   * ... ... ...
-  * @param book
+  * @param bookID
   * @returns
   * @author Ycreak, ppbors
   */
-  GetFragments(book: string): Observable<string[]>{
-    return this.http.get<string[]>(this.ApiUrl + '...?book=' + book);
+  GetFragments(bookID: number): Observable<Fragment[]> {
+    return this.http.get<Fragment[]>(this.ApiUrl + `fragments?bookID=${bookID}`);
   }
 
   /**
@@ -45,98 +56,98 @@ export class ApiService {
   * @returns
   * @author Ycreak, ppbors
   */
-  GetAuthors(): Observable<string[]> {
-    return this.http.get<string[]>(this.ApiUrl + '...');
+  GetAuthors(): Observable<Author[]> {
+    return this.http.get<Author[]>(this.ApiUrl + `authors`);
   }
 
   /**
   * ... ... ...
-  * @param book
+  * @param bookID
   * @returns
   * @author Ycreak, ppbors
   */
-  GetEditors(book: string): Observable<string[]> {
-    return this.http.get<string[]>(this.ApiUrl + '...?book=' + book);
+  GetEditors(bookID: number): Observable<Editor[]> {
+    return this.http.get<Editor[]>(this.ApiUrl + `editors?bookID=${bookID}`);
   }
 
   /**
   * ... ... ...
-  * @param book
+  * @param title
   * @returns
   * @author Ycreak, ppbors
   */
-  GetBibliography(book: string): Observable<string[]> {
-    return this.http.get<string[]>(this.ApiUrl + '...?book=' + book);
+  GetBibliography(title: string): Observable<Bibliography[]> {
+    return this.http.get<Bibliography[]>(this.ApiUrl + `bibliography?title=${title}`);
   }
 
   /**
   * ... ... ...
-  * @param book
+  * @param fragmentID
   * @returns
   * @author Ycreak, ppbors
   */
-  GetCommentary(book: string): Observable<string[]> {
-    return this.http.get<string[]>(this.ApiUrl + '...?book=' + book);
+  GetCommentary(fragmentID: number): Observable<Commentary[]> {
+    return this.http.get<Commentary[]>(this.ApiUrl + `fcommentary?fragmentID=${fragmentID}`);
   }
 
   /**
   * ... ... ...
-  * @param book
+  * @param fragmentID
   * @returns
   * @author Ycreak, ppbors
   */
-  GetDifferences(book: string): Observable<string[]> {
-    return this.http.get<string[]>(this.ApiUrl + '...?book=' + book);
+  GetDifferences(fragmentID: number): Observable<Differences[]> {
+    return this.http.get<Differences[]>(this.ApiUrl + `fdifferences?fragmentID=${fragmentID}`);
   }
 
   /**
   * ... ... ...
-  * @param book
+  * @param fragmentID
   * @returns
   * @author Ycreak, ppbors
   */
-  GetContext(book: string): Observable<string[]> {
-    return this.http.get<string[]>(this.ApiUrl + '...?book=' + book);
+  GetContext(fragmentID: number): Observable<Context[]> {
+    return this.http.get<Context[]>(this.ApiUrl + `fcontext?fragmentID=${fragmentID}`);
   }
 
   /**
   * ... ... ...
-  * @param book
+  * @param fragmentID
   * @returns
   * @author Ycreak, ppbors
   */
-  GetTranslation(book: string): Observable<string[]> {
-    return this.http.get<string[]>(this.ApiUrl + '...?book=' + book);
+  GetTranslation(fragmentID: number): Observable<Translation[]> {
+    return this.http.get<Translation[]>(this.ApiUrl + `ftranslations?fragmentID=${fragmentID}`);
   }
 
   /**
   * ... ... ...
-  * @param book
+  * @param fragmentID
   * @returns
   * @author Ycreak, ppbors
   */
-  GetAppCrit(book: string): Observable<string[]> {
-    return this.http.get<string[]>(this.ApiUrl + '...?book=' + book);
+  GetAppCrit(fragmentID: number): Observable<AppCrit[]> {
+    return this.http.get<AppCrit[]>(this.ApiUrl + `fappcrit?fragmentID=${fragmentID}`); // XD FAP CRIT
   }
 
   /**
   * ... ... ...
-  * @param book
+  * @param fragmentID
   * @returns
   * @author Ycreak, ppbors
   */
-  GetReconstruction(book: string): Observable<string[]> {
-    return this.http.get<string[]>(this.ApiUrl + '...?book=' + book);
+  GetReconstruction(fragmentID: number): Observable<Reconstruction[]> {
+    return this.http.get<Reconstruction[]>(this.ApiUrl + `freconstruction?fragmentID=${fragmentID}`);
   }
 
   /**
   * ... ... ...
-  * @param book
+  * @param authorID
   * @returns
   * @author Ycreak, ppbors
   */
-  GetBooks(author: string): Observable<string[]> {
-    return this.http.get<string[]>(this.ApiUrl + '...?author=' + author);
+  GetBooks(authorID: number): Observable<Book[]> {
+    return this.http.get<Book[]>(this.ApiUrl + `books?authorID=${authorID}`);
   }
 
   /**
@@ -145,108 +156,91 @@ export class ApiService {
    * @returns ... ... ...
    * @author ppbors
    */
-  CreateAuthor(author: string): Observable<string[]> {
-    return this.http.get<string[]>(this.ApiUrl + '...?author=' + author);
+  CreateAuthor(author: Author): Observable<any> {
+    return this.http.post<any>(this.ApiUrl + `authors`, author);
   }
 
   /**
    * ... ... ...
-   * @param author 
+   * @param name
    * @returns ... ... ...
    * @author ppbors
    */
-  DeleteAuthor(author: string): Observable<string[]> {
-    return this.http.get<string[]>(this.ApiUrl + '...?author=' + author);
+  DeleteAuthor(name: string): Observable<any> {
+    return this.http.post<any>(this.ApiUrl + `authors/delete`, new Author(0, name));
   }
 
   /**
    * ... ... ...
-   * @param author
+   * @param book
+   * @returns ... ... ...
+   * @author ppbors
+   */
+  CreateBook(book: Book): Observable<any> {
+    return this.http.post<any>(this.ApiUrl + `books`, book);
+  }
+
+  /**
+   * ... ... ...
    * @param title
    * @returns ... ... ...
    * @author ppbors
    */
-  CreateBook(author: string, title: string): Observable<string[]> {
-    return this.http.get<string[]>(this.ApiUrl + '...?author=' + author + '&title=' + title);
+  DeleteBook(title: string): Observable<any> {
+    return this.http.post<any>(this.ApiUrl + `books/delete`, new Book(0, 0, title));
   }
 
   /**
    * ... ... ...
-   * @param book
+   * @param editor
    * @returns ... ... ...
    * @author ppbors
    */
-  DeleteBook(book: string): Observable<string[]> {
-    return this.http.get<string[]>(this.ApiUrl + '...?book=' + book);
-  }
-
-  /**
-   * ... ... ...
-   * @param book 
-   * @param editorName
-   * @returns ... ... ...
-   * @author ppbors
-   */
-  CreateEditor(book: string, editor: string): Observable<string[]> {
-    return this.http.get<string[]>(this.ApiUrl + '...?book=' + book + '&editor=' + editor);
+  CreateEditor(editor: Editor): Observable<any> {
+    return this.http.post<any>(this.ApiUrl + `editors`, editor);
   }
   
   /**
    * ... ... ...
-   * @param editorName
+   * @param name
    * @returns ... ... ...
    * @author ppbors
    */
-  DeleteEditor(editor: string): Observable<string[]> {
-    return this.http.get<string[]>(this.ApiUrl + '...?editor=' + editor);
+  DeleteEditor(name: string): Observable<any> {
+    return this.http.post<any>(this.ApiUrl + `editors/delete`, new Editor(0, 0, name, 0));
   }
 
   /**
    * ... ... ...
-   * @param editor
+   * @param editorID
+   * @param flag
    * @returns ... ... ...
    * @author ppbors
    */
-  SetMainEditor(editor: string): Observable<string[]> {
-    return this.http.get<string[]>(this.ApiUrl + '...?editor=' + editor);
-  }
-
-  /**
-   * ... ... ...
-   * @param editor
-   * @returns ... ... ...
-   * @author ppbors
-   */
-  DeleteMainEditor(editor: string): Observable<string[]> {
-    return this.http.get<string[]>(this.ApiUrl + '...?editor=' + editor);
-  }
-
-  /**
-   * ... ... ...
-   * @param author
-   * @param fragment
-   * @param line
-   * @param editor
-   * @param content
-   * @param status
-   * @returns ... ... ...
-   * @author ppbors
-   */
-  CreateFragment(book: string, fragment: string, line: string, editor: string, content: string, status: string): Observable<string[]> {
-    return this.http.get<string[]>(this.ApiUrl + '...?book=' + book + '&fragment=' + fragment + '&line=' + 
-                                   line + '&editor=' + editor + '&content=' + content + '&status=' + status);
+  SetMainEditorFlag(editorID: number, flag: boolean): Observable<any> {
+    return this.http.post<any>(this.ApiUrl + `editors/setmainflag`, new Editor(editorID, 0, '', flag? 1 : null));
   }
 
   /**
    * ... ... ...
    * @param fragment
-   * @param book
-   * @param editor
    * @returns ... ... ...
    * @author ppbors
    */
-  DeleteFragment(fragment: string, book: string, editor: string): Observable<string[]> {
-    return this.http.get<string[]>(this.ApiUrl + '...?fragment=' + fragment + '&book=' + book + '&editor=' + editor);
+  CreateFragment(fragment: Fragment): Observable<any> {
+    return this.http.post<any>(this.ApiUrl + `fragments`, fragment);
+  }
+
+  /**
+   * ... ... ...
+   * @param name
+   * @param bookID
+   * @param editorID
+   * @returns ... ... ...
+   * @author ppbors
+   */
+  DeleteFragment(name: string, bookID: number, editorID: number): Observable<any> {
+    return this.http.post<any>(this.ApiUrl + `fragments/delete`, new Fragment(0, bookID, name, '', editorID, '', 0, ''));
   }
 
   /**
@@ -259,6 +253,7 @@ export class ApiService {
    * @param translation
    * @returns ... ... ...
    * @author ppbors
+   * TODO:FIXME: make call in api
    */
   CreateFragmentCommentary(referencer: string, appCrit: string, commentary: string, differences: string, reconstruction: string, translation: string): Observable<string[]> {
     return this.http.get<string[]>(this.ApiUrl + '...?referencer=' + referencer + '&appCrit=' + appCrit + '&commentary=' + commentary + '&differences=' + 
@@ -267,14 +262,12 @@ export class ApiService {
 
    /**
    * ... ... ...
-   * @param referencer
-   * @param author
    * @param context
    * @returns ... ... ...
    * @author ppbors
    */
-  CreateContext(referencer: string, author: string, context: string): Observable<string[]> {
-    return this.http.get<string[]>(this.ApiUrl + '...?referencer=' + referencer + '&author=' + author + '&context=' + context);
+  CreateContext(context: Context): Observable<any> {
+    return this.http.post<any>(this.ApiUrl + `fcontext`, context);
   }
 
    /**
@@ -287,6 +280,7 @@ export class ApiService {
    * @param reconstruction
    * @returns ... ... ...
    * @author ppbors
+   * TODO:FIXME: make call in api
    */
   ReviseFragmentCommentary(appCrit: string, referencer: string, differences: string, commentary: string, translation: string, reconstruction: string): Observable<string[]> {
     return this.http.get<string[]>(this.ApiUrl + '...?appCrit=' + appCrit + '&referencer=' + referencer + '&differences='
@@ -300,6 +294,7 @@ export class ApiService {
    * @param contextAuthor
    * @returns ... ... ...
    * @author ppbors
+   * TODO:FIXME: make call in api
    */
   ReviseFragmentContext(context: string, referencer: string, contextAuthor: string): Observable<string[]> {
     return this.http.get<string[]>(this.ApiUrl + '...?context=' + context + '&referencer=' + referencer + '&contextAuthor=' + contextAuthor);
@@ -313,6 +308,7 @@ export class ApiService {
    * @param line
    * @returns ... ... ...
    * @author ppbors
+   * TODO:FIXME: make call in api
    */
   ReviseFragmentContent(content: string, book: string, fragment: string, line: string): Observable<string[]> {
     return this.http.get<string[]>(this.ApiUrl + '...?content=' + content + '&book=' + book + '&fragment=' + fragment + '&line=' + line);
@@ -320,25 +316,14 @@ export class ApiService {
 
   /**
    * ... ... ...
-   * @param editor
-   * @param book
-   * @param fragment
+   * @param editorID
+   * @param bookID
+   * @param fragmentID
+   * @param flag
    * @returns ... ... ...
    * @author ppbors
    */
-  PublishFragment(editor: string, book: string, fragment: string): Observable<string[]> {
-    return this.http.get<string[]>(this.ApiUrl + '...?editor=' + editor + '&book=' + book + '&fragment' + fragment);
-  }
-
-  /**
-   * ... ... ...
-   * @param editor
-   * @param book
-   * @param fragment
-   * @returns ... ... ...
-   * @author ppbors
-   */
-  UnpublishFragment(editor: string, book: string, fragment: string): Observable<string[]> {
-    return this.http.get<string[]>(this.ApiUrl + '...?editor=' + editor + '&book=' + book + '&fragment=' + fragment);
+  SetPublishFlag(editorID: number, bookID: number, fragmentID: number, flag: boolean): Observable<any> {
+    return this.http.post<any>(this.ApiUrl + 'fragmentreferencer/setpublishflag', new FragmentReferencer(0, bookID, editorID, fragmentID, flag ? 1 : null));
   }
 }
