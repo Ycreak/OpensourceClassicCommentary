@@ -1,22 +1,73 @@
+// Library Imports
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { RouterModule, Routes } from '@angular/router';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
+// Component Imports
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { FragmentsComponent } from './fragments/fragments.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { HttpClientModule } from '@angular/common/http';
+
+
+// Material Imports
+import {MatFormFieldModule} from '@angular/material/form-field'; 
+import {MatSelectModule} from '@angular/material/select'; 
+import {MatListModule} from '@angular/material/list'; 
+import {MatProgressBarModule} from '@angular/material/progress-bar'; 
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatTabsModule} from '@angular/material/tabs';  
+import {MatDialogModule} from '@angular/material/dialog'; 
+import {MatMenuModule} from '@angular/material/menu';
+import {MatInputModule} from '@angular/material/input';
+import {MatButtonModule} from '@angular/material/button';
+import {MatToolbarModule} from '@angular/material/toolbar'; 
+
+// Routes to take. Disallows Path Traversal.
+const appRoutes: Routes = [
+  {path: '', component: FragmentsComponent},
+  {path: 'fragments', component: FragmentsComponent},
+  // {path: 'text', component: TextComponent},
+  {path: 'dashboard', component: DashboardComponent},
+  {path: '**', redirectTo: ''}
+]
+
 
 @NgModule({
   declarations: [
     AppComponent,
     FragmentsComponent,
-    DashboardComponent
+    DashboardComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    RouterModule.forRoot(appRoutes),
+
+    FormsModule,
+    BrowserAnimationsModule,
+    ReactiveFormsModule,
+    // All needed Material modules
+    MatDialogModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatProgressBarModule,
+    MatExpansionModule,
+    MatListModule,
+    MatMenuModule,
+    MatTabsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatToolbarModule,
+    // To allow the drag and drop
+    DragDropModule,
+
   ],
   providers: [],
   bootstrap: [AppComponent]
