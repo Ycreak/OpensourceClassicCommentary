@@ -70,8 +70,7 @@ export class FragmentsComponent implements OnInit {
   constructor(
     private api: ApiService,
     private utility: UtilityService,
-
-    public dialog: MatDialog, 
+    private dialog: MatDialog, 
     ) { }
 
   ngOnInit(): void {
@@ -237,11 +236,9 @@ export class FragmentsComponent implements OnInit {
   */
  public retrieveReferencerID(fragmentID: number){
   console.log('fragment, editor, book: ', fragmentID, this.currentEditor, this.currentBook)
-  // this.setCurrentFragmentData(fragmentID);
   // Turn on the spinner.
   this.spinner = true;
   // Retrieve the Referencer ID and wait before it is retrieved before proceeding with the rest.
-  
   this.api.GetReferencerID(fragmentID, this.currentEditor, this.currentBook).subscribe(
     data => {
       let F_ReferencerID = data;
