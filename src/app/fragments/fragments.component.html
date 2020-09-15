@@ -32,7 +32,7 @@
     <mat-form-field>
         <mat-label>Select author</mat-label>
         <mat-select>
-        <mat-option *ngFor="let author of this.authorsJSON" [value]="author" (click)="this.tempBooks(author)" (click)="this.setCurrentAuthorData(author)">
+        <mat-option *ngFor="let author of this.AuthorsJSON" [value]="author" (click)="this.tempBooks(author)" (click)="this.setCurrentAuthorData(author)">
             {{ author.name }} 
         </mat-option>
         </mat-select>  
@@ -91,7 +91,7 @@
             <mat-form-field>
                 <mat-label>Select main editor</mat-label>
                 <mat-select>
-                <mat-option *ngFor="let mainEditor of this.mainEditorsJSON" [value]="mainEditor[1]"
+                <mat-option *ngFor="let mainEditor of this.MainEditorsJSON" [value]="mainEditor[1]"
                 (click)="this.mainEditorArray = createEditorArray(mainEditor[0], this.FragmentsArray)">
                     {{ mainEditor[1] }}                     
                 </mat-option>
@@ -119,9 +119,9 @@
             <mat-form-field>
                 <mat-label>Select secondary editor</mat-label>
                 <mat-select>
-                <mat-option *ngFor="let selectedEditor of this.editorsJSON" [value]="selectedEditor[1]"
+                <mat-option *ngFor="let selectedEditor of this.EditorsJSON" [value]="selectedEditor[1]"
                 (click)="this.selectedEditorArray = createEditorArray(selectedEditor[0], this.FragmentsArray)">
-                    {{ selectedEditor[1] }} 
+                    {{ selectedEditor.name }} 
                     
                 </mat-option>
                 </mat-select>
