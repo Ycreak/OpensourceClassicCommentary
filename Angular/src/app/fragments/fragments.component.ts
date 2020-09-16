@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api.service';
 import { UtilityService } from '../utility.service';
-
 // Allows for drag and drop items in HTML
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 // Library used for interacting with the page
@@ -99,10 +98,6 @@ export class FragmentsComponent implements OnInit {
   public Test(thing){
     // console.log(this.authorsJSON)
     console.log('test', thing)
-  }
-
-  public RequestBooks(book){
-    this.api.GetBooks(book).subscribe(data => this.booksJSON = data);
   }
 
   // Function used to set the current Author data given the selected Author array
