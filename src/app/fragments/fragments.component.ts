@@ -17,9 +17,9 @@ import { TemplateRef, ViewChild } from '@angular/core';
 })
 export class FragmentsComponent implements OnInit {
 
-  @ViewChild('callBibliography') callBibliography: TemplateRef<any>;
-  @ViewChild('callBookSelect') callBookSelect: TemplateRef<any>;
-  @ViewChild('callAbout') callAbout: TemplateRef<any>;
+  @ViewChild('CallBibliography') CallBibliography: TemplateRef<any>;
+  @ViewChild('CallBookSelect') CallBookSelect: TemplateRef<any>;
+  @ViewChild('CallAbout') CallAbout: TemplateRef<any>;
 
   // Variables to split the bibliography in different sections.
   bibBooks : JSON;
@@ -28,44 +28,34 @@ export class FragmentsComponent implements OnInit {
   bibInCollection : JSON; //TODO: this one should be added.
   // Toggle switches
   columnsToggle: boolean = true; // Boolean to toggle between 2 and 3 column mode.
-  // Need to rethink this
-  selectedEditor = <any>{}; // EHm?
- 
+  spinner: boolean = true; // Boolean to toggle the spinner.
+  noCommentary: boolean = false; // Shows banner if no commentary is available.
+  // FIXME: proper data types
   authorsJSON; // JSON that contains all available Authors and their data.
   editorsJSON; // JSON that contains all available Editors and their data for a specific book.
   mainEditorsJSON : JSON; // JSON that contains all available main Editors and their data for a specific book.
-  booksJSON : JSON; // JSON that contains all available Books and their data given a specific editor.
-  bibJSON : JSON; // JSON that contains all available Bibliography data given a specific book.
+  booksJSON; // JSON that contains all available Books and their data given a specific editor.
+  bibJSON; // JSON that contains all available Bibliography data given a specific book.
   // Global Class Variables with text data corresponding to the front-end text fields.
   F_Fragments;
   F_Commentary;
   F_AppCrit;
   F_Translation;
   F_Context;
-  F_ContextField : String;
-  F_Content;
   F_Differences;
   F_ReferencerID;
   F_Reconstruction;
-  // This variable holds the link between the commentaries and the selected fragment
-  ReferencerID : string = '0';
-  // Variables with currentAuthor, Book and Editor. Placeholder data.
+  // Variables with currentAuthor, Book and Editor. Mostly placeholder data.
   currentAuthor : number = 4;
   currentBook : number = 6;
   currentEditor : number = 1;
-  currentFragment : Number;
-  currentAuthorName : String = "Ennius";
+  currentFragment : number;
+  currentAuthorName : string = "Ennius";
   currentBookName : string = "Thyestes";
+  currentEditorName : string = "Manuwald";
   // This array contains all the information from a specific book. Functions can use this data.
-  fragmentsArray = [];
   selectedEditorArray = [];
   mainEditorArray = [];
-
-  spinner: boolean = true; // Boolean to toggle the spinner.
-  noCommentary: boolean = false; // Shows banner if no commentary is available.
-
-  temp;
-  temp2; 
 
   constructor(
     private api: ApiService,
@@ -77,42 +67,60 @@ export class FragmentsComponent implements OnInit {
   // Request a list of authors to select a different text    
   this.api.GetAuthors().subscribe(data => this.authorsJSON = data);
   // Retrieves everything surrounding the text. TODO. Needs fixing
-  this.requestSelectedText(this.currentBook);
+  this.RequestSelectedText(this.currentBook);
   // When init is done, turn off the loading bar (spinner)
   this.spinner = false;    
   }
 
   // Request Newly Selected Text, called on Init and after selecting new text.
-  private async requestSelectedText(book: number){  
+  public RequestSelectedText(book: number){  
+    console.log('req', book)
     // Create the JSON with the Editors for the current book.
     this.api.GetEditors(book).subscribe(
       data => {
         // Set the editorsJSON to contain the retrieved data.
         this.editorsJSON = data;
-        // Create a list of main Editors from the retrieved editorsJSON.
-        this.mainEditorsJSON = this.createMainEditorArray(data);
+        // Select the fragments from the editor you want in the left column.
+        this.mainEditorsJSON = this.CreateMainEditorArray(data);
         this.currentEditor = this.mainEditorsJSON[0].id //FIXME:
       });
     // Get new fragments from the selected text.
     this.api.GetFragments(book).subscribe(
       data => {
         this.F_Fragments = data;
-        this.mainEditorArray = this.createEditorArray(1, this.F_Fragments);
-      });
-    // Create an array of the retrieved objects to allow them to be moved in CSS.
-    // this.FragmentsArray = this.tagFragments(this.F_Fragments); //FIXME: probably not needed anymore
-    // Select the fragments from the editor you want in the left column.
-    // this.mainEditorArray = this.createEditorArray(this.currentEditor, this.F_Fragments);
-    
+        this.mainEditorArray = this.CreateEditorArray(1, this.F_Fragments);
+      });   
     // Retrieve the bibliography corresponding to the text. FIXME: I need the entire bib for a book here, not just an entry
     // this.main.bibJSON = await this.server.requestBibliography(this.main.currentBook);
     // Process the retrieved bibliography to appear formatted in the dialog.
     // this.processBib(this.main.bibJSON);
   }
 
-  public test(thing){
+  public Test(thing){
     // console.log(this.authorsJSON)
     console.log('test', thing)
+  }
+
+  public RequestBooks(book){
+    this.api.GetBooks(book).subscribe(data => this.booksJSON = data);
+  }
+
+  // Function used to set the current Author data given the selected Author array
+  public SetCurrentAuthorData(data){
+    this.currentAuthor = data.id
+    this.currentAuthorName = data.name;
+  }
+
+  // Function used to set the current Book data given the selected Book array
+  public SetCurrentBookData(data){
+    this.currentBook = data.id;
+    this.currentBookName = data.title;
+  }
+
+  // Function used to set the current Book data given the selected Book array
+  public SetCurrentEditorData(data){
+    this.currentEditor = data.id;
+    this.currentEditorName = data.editorName;
   }
 
   /**
@@ -121,110 +129,60 @@ export class FragmentsComponent implements OnInit {
   * @returns none
   * @author Ycreak
   */
-  private createEditorArray(editor: number, array){
+  private CreateEditorArray(editor: number, array){
+    // console.log('CreateEditorArray', editor)
     // Filter the given array on the given editor.
     let tempArray = array.filter(x => x.editor == editor);
     // Sort the lines numerically.
-    tempArray.sort(this.utility.SortNumeric);
+    tempArray.sort(this.utility.SortArrayNumerically);
     // Merge the different lines into their corresponding fragments
-    return this.mergeLinesIntoFragment(tempArray);
+    return this.MergeLinesIntoFragment(tempArray);
   }
 
   // Creates main editor array: the third field has the mainEditor key. Should be named properly.
-  private createMainEditorArray(array){
-    console.log('createMainEditorArray', array);
+  private CreateMainEditorArray(array){
+    // console.log('createMainEditorArray', array);
     return array.filter(x => x.defaultEditor == 1);
   }
 
   // This function merges the multiple lines in a single fragment.
   // The structure looks as follows: Fragment 2, [[1, "hello"],[2,"hi"]]
-  // Function way to long... Function in function needed here.
-  public mergeLinesIntoFragment(givenArray){
-    console.log('givenArray', givenArray)
-    // String that will be used to build the fragment
-    let buildString = ""
-    // Array that will be used to return a merged array
-    var merged = [];
-    var contentObject = [];
-    var tempContent = [];
-
-    // For every element in the givenArray, check if it is merged into one fragment.
-    for(let element in givenArray){ 
-      let fragNum = givenArray[element].fragmentName;
-      let lineNum = givenArray[element].lineName;
-      let lineCont = givenArray[element].fragmentContent;
-      let stat = givenArray[element].status  
-      let buildString = '<p>' + lineNum + ': ' + lineCont + '</p>';
-
-      console.log(fragNum, lineNum, lineCont);
-
-      // Push the first item always, as the array is empty.
-      contentObject.push({
-        lineName: lineNum,
-        fragmentContent: lineCont,
+  public MergeLinesIntoFragment(givenArray){
+    let array = [];
+    let contentArray = [];
+    // For each element in the given array
+    for(let element in givenArray){
+      // Data needed for proper retrieval
+      let fragmentName = givenArray[element].fragmentName
+      let fragmentContent = givenArray[element].fragmentContent //FIXME: Should be lineContent
+      let lineName = givenArray[element].lineName
+      let status = givenArray[element].status 
+      let buildString = '<p>' + lineName + ': ' + fragmentContent + '</p>';
+      // Find the element.fragmentName in the array and check whether it exists.
+      let currentFragment = array.find(x => x.fragmentName === fragmentName)
+      if(currentFragment){ // The current fragmentName is already in the array.
+        // Save the content found in a temporary array
+        contentArray = currentFragment.content;
+        // Delete the entry (to allow it to be recreated after this if)
+        array.splice(array.findIndex((x => x.fragmentName === fragmentName)),1);   
+      }
+      // Push the content (either completely new or with the stored content included)      
+      contentArray.push({
+        lineName: lineName,
+        fragmentContent: fragmentContent,
         lineComplete: buildString,
       })
-
-      merged.push({ fragmentName: givenArray[element].fragmentName, content: contentObject, status: stat})
-      contentObject = [];
-      console.log('init', merged)
-
-    //   // Check if array has at least one element.
-    //   if (Array.isArray(merged) && merged.length) {
-    //     // Check if a new fragment needs to be created, or if there should be a merge
-    //     if(merged.find(el => el.fragmentName === fragNum)){
-    //       console.log('fragnum', fragNum)
-    //       // Fragment already present, merging.
-    //       let foundFragment = merged.find(el => el.fragmentName === fragNum)
-    //       console.log('foundFragment', foundFragment)
-    //       tempContent = foundFragment.content[0].fragmentContent;
-    //       console.log('tempcontent', tempContent)
-    //       tempContent.push({
-    //         lineName: lineNum,
-    //         fragmentContent: lineCont,
-    //         lineComplete: buildString,
-    //       })
-
-    //       // Horrible code to find the current merge entry to be deleted.
-    //       const index1 = merged.findIndex((el => el.fragmentName === fragNum))
-    //       merged.splice(index1,1)
-
-    //       merged.push({ fragmentName: fragNum, content: tempContent, status: stat})
-
-    //       contentObject = [];
-    //     }
-    //     else{
-    //       // Fragment to be created
-    //       contentObject.push({
-    //         lineName: lineNum,
-    //         fragmentContent: lineCont,
-    //         lineComplete: buildString,
-    //       })
-          
-    //       merged.push({ fragmentName: fragNum, content: contentObject, status: stat})
-
-    //       contentObject = [];
-    //     }
-    //   }
-    //   else{    
-    //     // Push the first item always, as the array is empty.
-    //     contentObject.push({
-    //       lineName: lineNum,
-    //       fragmentContent: lineCont,
-    //       lineComplete: buildString,
-    //     })
-
-    //     merged.push({ fragmentName: givenArray[element].fragmentName, content: contentObject, status: stat})
-    //     contentObject = [];
-    //     console.log('init', merged)
-    //   }     
+      // Push the created data to the array and empty the used arrays.
+      array.push({ fragmentName: givenArray[element].fragmentName, content: contentArray, status: status})
+      contentArray = [];
     }
-    // Sort the lines in merged, needs to be own function
-    for(let element in merged){
-      merged[element].content.sort(this.utility.SortNumeric);
+    // Sort the lines in array, needs to be own function
+    for(let element in array){
+      array[element].content.sort(this.utility.SortFragmentsArrayNumerically);
     }
-    console.log('sorted:', merged)
-    return merged;
+    // Show that everything went well
+    console.log('merged', array)
+    return array;
   }
 
   /**
@@ -234,7 +192,7 @@ export class FragmentsComponent implements OnInit {
   * @returns none
   * @author Ycreak
   */
- public retrieveReferencerID(fragmentID: number){
+ public RetrieveReferencerID(fragmentID: number){
   console.log('fragment, editor, book: ', fragmentID, this.currentEditor, this.currentBook)
   // Turn on the spinner.
   this.spinner = true;
@@ -242,12 +200,12 @@ export class FragmentsComponent implements OnInit {
   this.api.GetReferencerID(fragmentID, this.currentEditor, this.currentBook).subscribe(
     data => {
       let F_ReferencerID = data;
-      let numberRef = Number(F_ReferencerID[0]);
-      this.retrieveCommentaries(numberRef) // FIXME: must be number
+      console.log(F_ReferencerID[0])
+      this.RetrieveCommentaries(Number(F_ReferencerID[0]))// FIXME: not very elegant
     });
  }
 
-public retrieveCommentaries(referencerID: number){ //FIXME: must be number
+public RetrieveCommentaries(referencerID: number){ //FIXME: must be number
   // Check if ReferencerID is valid. If not, no commentary available
   if (Number.isNaN(referencerID)){
     this.noCommentary = true;
@@ -276,26 +234,25 @@ public retrieveCommentaries(referencerID: number){ //FIXME: must be number
     // HTML RELATED FUNCTIONS //
    ////////////////////////////
   // Allows a fragment to be moved and dropped to create a custom ordering
-  // moveAndDrop(event: CdkDragDrop<string[]>) {
-  //   moveItemInArray(this.main.selectedEditorArray, event.previousIndex, event.currentIndex);
-  // }
+  moveAndDrop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.selectedEditorArray, event.previousIndex, event.currentIndex);
+  }
   // Opens dialog for the bibliography
-  public openBibliography() {
-    let dialogRef = this.dialog.open(this.callBibliography); 
+  public OpenBibliography() {
+    let dialogRef = this.dialog.open(this.CallBibliography); 
   }
   // Opens dialog to select a new book
-  public openBookSelect() {
-    let dialogRef = this.dialog.open(this.callBookSelect); 
+  public OpenBookSelect() {
+    let dialogRef = this.dialog.open(this.CallBookSelect); 
   }
   // Opens dialog for the about information
-  public openAbout() {
+  public OpenAbout() {
     const dialogRef = this.dialog.open(ShowAboutDialog);
   }
   // Opens dialog for the dashboard
   // public openDashboard() {
   //   const dialogRef = this.dialog.open(DashboardComponent);
   // }
-
 }
 
 // Simple class to open the about information written in said html file.

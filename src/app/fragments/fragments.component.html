@@ -11,28 +11,30 @@
 <mat-toolbar color="primary">
     <span><h3 class='h3-title'>Online Fragment Commentary</h3></span>
     <span class="spacer"></span>
-    <button mat-button class="btn" (click)="openBookSelect()">CHANGE TEXT</button>
-    <button mat-button class="btn" (click)="openBibliography()">BIBLIOGRAPHY</button>
-    <button mat-button class="btn" (click)="test('hoi')">DASHBOARD</button>
+    <button mat-button class="btn" (click)="OpenBookSelect()">CHANGE TEXT</button>
+    <button mat-button class="btn" (click)="OpenBibliography()">BIBLIOGRAPHY</button>
+    <button mat-button class="btn" routerLink="/dashboard">DASHBOARD</button>
     <button mat-button class="btn" (click)="columnsToggle = !columnsToggle">3COLUMNS</button>
     <button mat-button class="btn" [matMenuTriggerFor]="menu">MENU</button>
 </mat-toolbar>
 <!-- Small menu for the toolbar -->
 <mat-menu #menu="matMenu">
-    <button routerLink="/text" mat-menu-item>Text OSCC</button>
-    <button routerLink="/login" mat-menu-item>Playroom</button>
-    <button routerLink="/profile" mat-menu-item>Playroom2</button>
-    <button (click)="openAbout()" mat-menu-item>About</button>
+    <!-- <button routerLink="/text" mat-menu-item>Text OSCC</button> -->
+    <!-- <button routerLink="/login" mat-menu-item>Playroom</button> -->
+    <!-- <button routerLink="/profile" mat-menu-item>Playroom2</button> -->
+    <button (click)="OpenAbout()" mat-menu-item>About</button>
 </mat-menu>
          
 <!-- Author and Book select dialog -->
-<ng-template #callBookSelect>   
+<ng-template #CallBookSelect>   
     <h3>Select an author and a book to display.</h3>
     <hr>
     <mat-form-field>
         <mat-label>Select author</mat-label>
         <mat-select>
-        <mat-option *ngFor="let author of this.authorsJSON" [value]="author" (click)="this.tempBooks(author)" (click)="this.setCurrentAuthorData(author)">
+        <mat-option *ngFor="let author of this.authorsJSON" [value]="author" 
+            (click)="this.RequestBooks(author.id)" 
+            (click)="this.SetCurrentAuthorData(author)">
             {{ author.name }} 
         </mat-option>
         </mat-select>  
@@ -41,15 +43,17 @@
     <mat-form-field>
         <mat-label>Select book</mat-label>
         <mat-select>
-        <mat-option *ngFor="let book of this.booksJSON" [value]="book" (click)="requestSelectedText(book)">
-            {{ book[1] }}                
+        <mat-option *ngFor="let book of this.booksJSON" [value]="book" 
+            (click)="RequestSelectedText(book.id)"
+            (click)="SetCurrentBookData(book)">
+            {{ book.title }}                
         </mat-option>
         </mat-select>
     </mat-form-field>    
 </ng-template>
 
 <!-- Bibliography dialog to show the used bibliography -->
-<ng-template #callBibliography>   
+<ng-template #CallBibliography>   
     <h3>Bibliography for {{this.currentAuthorName}}: {{this.currentBookName}}</h3>
     <hr>
     <h4>Books</h4>
@@ -91,8 +95,9 @@
             <mat-form-field>
                 <mat-label>Select main editor</mat-label>
                 <mat-select>
-                <mat-option *ngFor="let mainEditor of this.mainEditorsJSON" [value]="mainEditor[1]"
-                (click)="this.mainEditorArray = createEditorArray(mainEditor[0], this.FragmentsArray)">
+                <mat-option *ngFor="let mainEditor of this.mainEditorsJSON" [value]="mainEditor.editorName"
+                (click)="this.mainEditorArray = CreateEditorArray(mainEditor.id, this.F_Fragments)"
+                (click)="this.SetCurrentEditorData(mainEditor)">
                     {{ mainEditor.editorName }}                     
                 </mat-option>
                 </mat-select>
@@ -101,7 +106,7 @@
         </div>
         <!-- Listing of the fragments -->
         <div class="fragment-list">
-            <div class="fragment-box" *ngFor="let arrayItem of this.mainEditorArray" (click)="this.retrieveReferencerID(arrayItem.fragmentName)">
+            <div class="fragment-box" *ngFor="let arrayItem of this.mainEditorArray" (click)="this.RetrieveReferencerID(arrayItem.fragmentName)">
             <div>
                 <b>Fragment {{arrayItem.fragmentName}} </b> &nbsp; <i>{{arrayItem.status}}</i>
             </div>
@@ -119,10 +124,9 @@
             <mat-form-field>
                 <mat-label>Select secondary editor</mat-label>
                 <mat-select>
-                <mat-option *ngFor="let selectedEditor of this.editorsJSON" [value]="selectedEditor[1]"
-                (click)="this.selectedEditorArray = createEditorArray(selectedEditor[0], this.FragmentsArray)">
+                <mat-option *ngFor="let selectedEditor of this.editorsJSON" [value]="selectedEditor.id"
+                (click)="this.selectedEditorArray = CreateEditorArray(selectedEditor.id, this.F_Fragments)">
                     {{ selectedEditor.editorName }} 
-                    
                 </mat-option>
                 </mat-select>
             </mat-form-field>
@@ -133,7 +137,7 @@
         <div cdkDropList class="fragment-list" (cdkDropListDropped)="moveAndDrop($event)">
             <div class="fragment-box" *ngFor="let arrayItem of this.selectedEditorArray" cdkDrag>
             <div>
-                <b>Fragment {{arrayItem.fragNumber}}</b> &nbsp; <i>{{arrayItem.status}}</i>
+                <b>Fragment {{arrayItem.fragmentName}}</b> &nbsp; <i>{{arrayItem.status}}</i>
             </div>
             <div *ngFor="let arrayItem2 of arrayItem.content">           
                 <div [innerHTML]="arrayItem2.lineComplete"></div> 
@@ -151,105 +155,105 @@
         </div>
         <div *ngIf="this.noCommentary === false">
             <div *ngFor="let item of this.F_Translation">
-            <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                <mat-panel-title>
-                    <b>Fragment Translation</b>
-                </mat-panel-title>
-                </mat-expansion-panel-header>
-                <!-- Commentary with HTML formatting. -->
-                <div class="mat-expansion-panel-content">
-                <div class="mat-expansion-panel-body">
-                    <div [innerHTML]="item.translation"></div>
-                </div>
-                </div>
-            </mat-expansion-panel>
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <b>Fragment Translation</b>
+                    </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <!-- Commentary with HTML formatting. -->
+                    <div class="mat-expansion-panel-content">
+                    <div class="mat-expansion-panel-body">
+                        <div [innerHTML]="item.translation"></div>
+                    </div>
+                    </div>
+                </mat-expansion-panel>
             </div>
     
             <hr>
     
             <div *ngFor="let item of this.F_AppCrit">
-            <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                <mat-panel-title>
-                    <b>Apparatus Criticus</b>
-                </mat-panel-title>
-                </mat-expansion-panel-header>
-                <div class="mat-expansion-panel-content">
-                <div class="mat-expansion-panel-body">
-                    <div [innerHTML]=item.appCrit></div>
-                </div>
-                </div>
-            </mat-expansion-panel>
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <b>Apparatus Criticus</b>
+                    </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div class="mat-expansion-panel-content">
+                    <div class="mat-expansion-panel-body">
+                        <div [innerHTML]=item.appCrit></div>
+                    </div>
+                    </div>
+                </mat-expansion-panel>
             </div>
     
             <hr>
     
             <div *ngFor="let item of this.F_Differences">
-            <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                <mat-panel-title>
-                    <b>Fragment Differences</b>
-                </mat-panel-title>
-                </mat-expansion-panel-header>
-                <div class="mat-expansion-panel-content">
-                <div class="mat-expansion-panel-body">
-                    <div [innerHTML]="item.differences"></div>
-                </div>
-                </div>
-            </mat-expansion-panel>
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <b>Fragment Differences</b>
+                    </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div class="mat-expansion-panel-content">
+                    <div class="mat-expansion-panel-body">
+                        <div [innerHTML]="item.differences"></div>
+                    </div>
+                    </div>
+                </mat-expansion-panel>
             </div>
     
             <hr>
     
             <div *ngFor="let item of this.F_Context">
-            <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                <mat-panel-title>
-                    <b>Fragment Context</b>
-                </mat-panel-title>
-                <div [innerHTML]="item.contextAuthor"></div>
-                </mat-expansion-panel-header>
-                <div class="mat-expansion-panel-content">
-                <div class="mat-expansion-panel-body">
-                    <div [innerHTML]="item.context"></div>
-                </div>
-                </div>
-            </mat-expansion-panel>
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <b>Fragment Context</b>
+                    </mat-panel-title>
+                    <div [innerHTML]="item.contextAuthor"></div>
+                    </mat-expansion-panel-header>
+                    <div class="mat-expansion-panel-content">
+                    <div class="mat-expansion-panel-body">
+                        <div [innerHTML]="item.context"></div>
+                    </div>
+                    </div>
+                </mat-expansion-panel>
             </div>
             
             <hr>
     
             <div *ngFor="let item of this.F_Commentary">
-            <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                <mat-panel-title>
-                    <b>Fragment Commentary</b>
-                </mat-panel-title>
-                </mat-expansion-panel-header>
-                <div class="mat-expansion-panel-content">
-                <div class="mat-expansion-panel-body">
-                    <div [innerHTML]="item.commentaar"></div>
-                </div>
-                </div>
-            </mat-expansion-panel>
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <b>Fragment Commentary</b>
+                    </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div class="mat-expansion-panel-content">
+                    <div class="mat-expansion-panel-body">
+                        <div [innerHTML]="item.commentaar"></div>
+                    </div>
+                    </div>
+                </mat-expansion-panel>
             </div>
     
             <hr>
     
             <div *ngFor="let item of this.F_Reconstruction">
-            <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                <mat-panel-title>
-                    <b>Fragment Reconstruction</b>
-                </mat-panel-title>
-                </mat-expansion-panel-header>
-                <div class="mat-expansion-panel-content">
-                <div class="mat-expansion-panel-body">
-                    <div [innerHTML]="item.reconstruction"></div>
-                </div>
-                </div>
-            </mat-expansion-panel>
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <b>Fragment Reconstruction</b>
+                    </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div class="mat-expansion-panel-content">
+                    <div class="mat-expansion-panel-body">
+                        <div [innerHTML]="item.reconstruction"></div>
+                    </div>
+                    </div>
+                </mat-expansion-panel>
             </div>
         </div>
         </div>
