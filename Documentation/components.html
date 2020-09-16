@@ -58,25 +58,42 @@
                                 <h2 class="section-title">Angular Components</h2>
                                 <div id="projects" class="section-block">
                                     <h3 class="block-title">Fragments</h3>
-                                    <p>The fragment component takes care of the fragments: retrieving them, combining the lines into fragments and displaying them. It imports the Dashboard component to allow inserting new information using a dialog. Furthermore, it imports the Profile component in which functions are stored used by both Dashboard and Fragments. This should be fixed.</p>
+                                    <p>The fragment component takes care of the fragments: retrieving them, combining the lines into fragments and displaying them.</p>
 
                                     
-
                                 </div><!--//section-block-->
-                                <div id="discussions" class="section-block">
-                                    <h3 class="block-title">Profile</h3>
-                                    <p>This component holds the functions and variables used by both Fragments and Dashboard.</p>
-                                </div><!--//section-block-->
+                                
+																<div id="discussions" class="section-block">
+                                    <h3 class="block-title">Utility</h3>
+																		<p>Lorem ipsum Bors TODO</p>
+																</div><!--//section-block-->
+                                
+																<div id="discussions" class="section-block">
+                                    <h3 class="block-title">Api</h3>
+																		<p>Lorem ipsum Bors TODO</p>
+																</div><!--//section-block-->
                                 
                                 <div id="members" class="section-block">
                                     <h3 class="block-title">Dashboard</h3>
+                                    <p>This component allows the input and updating of fragments and data into the database.</p>
                                 </div><!--//section-block-->
-                                    <p>This component allows the input and updating of fragments and data into the database. Is called within a dialog from Fragment component.</p>
 
+																<div id="discussions" class="section-block">
+                                    <h3 class="block-title">Text</h3>
+																		<p>Lorem ipsum Ycreak TODO</p>
+																</div><!--//section-block-->
                             </section><!--//doc-section-->
-                            <section id="ui-components" class="doc-section">
+ 
+ 														<section id="ui-components" class="doc-section">
                                 <h2 class="section-title">Database</h2>
                                 <div class="section-block">
+																<div id="discussions" class="section-block">
+                                    <h3 class="block-title">.NET Core</h3>
+																		<p>Lorem ipsum Bors TODO:</p>
+																</div><!--//section-block-->
+																
+																	<div id="discussions" class="section-block">
+                                    <h3 class="block-title">MySQL</h3>
                                     <p>Regarding the database, for the fragments the following is important. An author has a name and can have written zero or more books. Every book has a title and to its ID are linked editors who have written commentaries on said book and a bibliography with an entry per citation. Most importantly, a book consists of fragments.</p>
                                     <p> Every editor has a name a corresponding book and a tag whether he or she is a main editor of the text in question.</p>
                                     <p> Every bibliography has multiple fields with all the information necessary to properly cite literature</p>
@@ -87,9 +104,10 @@
                                     <p> Using the unique combination Editor, book, fragment number, a referencer ID is stored in the ReferencerID table. To this number the AppCrit, Commentaries, Differences, Reconsturctions, Translation and Contexts are linked. A fragment can have one AppCrit, Commentary, Differences, Reconstruction and Translation, but multiple Contexts.</p>
 
                                     <p>Publishing fragments is done using the FragmentReferencer. This means that a fragment once created is always shown, though its commentary can be hidden.</p>
+																</div><!--//section-block-->
 
                                     <div id="keys" class="section-block">
-                                    <h3 class="block-title">Unique Keys</h3>
+                                    <h4 class="block-title">Unique Keys</h4>
                                     <p>Fragments: Book, Editor, fragmentName, lineName</p>
                                     <p>FragmentReferencer: Book, Editor, FragmentNo</p>
                                     <p>Editors: Book, editorName</p>
@@ -100,14 +118,6 @@
                                 </div><!--//section-block-->
                             </section><!--//doc-section-->
                             
-                            <section id="backend-components" class="doc-section">
-                                <h2 class="section-title">Database</h2>
-                                <div class="section-block">
-
-                                    <p>The backend is written in Python using the Flask framework.</p>
-
-                                </div>
-                            </section>
 
 
                         </div><!--//content-inner-->
