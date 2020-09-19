@@ -66,15 +66,13 @@ export class FragmentsComponent implements OnInit {
   // Request a list of authors to select a different text    
   this.api.GetAuthors().subscribe(data => this.authorsJSON = data);
   // Retrieves everything surrounding the text. TODO. Needs fixing
-  this.RequestSelectedText(this.currentBook);
+  this.RequestEditors(this.currentBook);
+  this.RequestFragments(this.currentBook);
   // When init is done, turn off the loading bar (spinner)
   this.spinner = false;    
   }
 
-  // Request Newly Selected Text, called on Init and after selecting new text.
-  public RequestSelectedText(book: number){  
-    console.log('req', book)
-    // Create the JSON with the Editors for the current book.
+  public RequestEditors(book: number){
     this.api.GetEditors(book).subscribe(
       data => {
         // Set the editorsJSON to contain the retrieved data.
@@ -82,13 +80,30 @@ export class FragmentsComponent implements OnInit {
         // Select the fragments from the editor you want in the left column.
         this.mainEditorsJSON = this.CreateMainEditorArray(data);
         this.currentEditor = this.mainEditorsJSON[0].id //FIXME:
-      });
-    // Get new fragments from the selected text.
+      }
+    );
+  }
+ 
+  public RequestFragments(book: number){
     this.api.GetFragments(book).subscribe(
       data => {
         this.F_Fragments = data;
         this.mainEditorArray = this.CreateEditorArray(1, this.F_Fragments);
-      });   
+      }
+    );  
+  }
+
+  public RequestBooks(author: number){
+    this.api.GetBooks(author).subscribe(
+      data => {
+        this.booksJSON = data;
+        console.log(data);
+      }
+    );      
+  }
+
+  // Request Newly Selected Text, called on Init and after selecting new text.
+  public RequestBibliography(book: number){  
     // Retrieve the bibliography corresponding to the text. FIXME: I need the entire bib for a book here, not just an entry
     // this.main.bibJSON = await this.server.requestBibliography(this.main.currentBook);
     // Process the retrieved bibliography to appear formatted in the dialog.
@@ -131,53 +146,13 @@ export class FragmentsComponent implements OnInit {
     // Sort the lines numerically.
     tempArray.sort(this.utility.SortArrayNumerically);
     // Merge the different lines into their corresponding fragments
-    return this.MergeLinesIntoFragment(tempArray);
+    return this.utility.MergeLinesIntoFragment(tempArray);
   }
 
   // Creates main editor array: the third field has the mainEditor key. Should be named properly.
   private CreateMainEditorArray(array){
     // console.log('createMainEditorArray', array);
     return array.filter(x => x.defaultEditor == 1);
-  }
-
-  // This function merges the multiple lines in a single fragment.
-  // The structure looks as follows: Fragment 2, [[1, "hello"],[2,"hi"]]
-  public MergeLinesIntoFragment(givenArray){
-    let array = [];
-    let contentArray = [];
-    // For each element in the given array
-    for(let element in givenArray){
-      // Data needed for proper retrieval
-      let fragmentName = givenArray[element].fragmentName
-      let fragmentContent = givenArray[element].fragmentContent //FIXME: Should be lineContent
-      let lineName = givenArray[element].lineName
-      let status = givenArray[element].status 
-      let buildString = '<p>' + lineName + ': ' + fragmentContent + '</p>';
-      // Find the element.fragmentName in the array and check whether it exists.
-      let currentFragment = array.find(x => x.fragmentName === fragmentName)
-      if(currentFragment){ // The current fragmentName is already in the array.
-        // Save the content found in a temporary array
-        contentArray = currentFragment.content;
-        // Delete the entry (to allow it to be recreated after this if)
-        array.splice(array.findIndex((x => x.fragmentName === fragmentName)),1);   
-      }
-      // Push the content (either completely new or with the stored content included)      
-      contentArray.push({
-        lineName: lineName,
-        fragmentContent: fragmentContent,
-        lineComplete: buildString,
-      })
-      // Push the created data to the array and empty the used arrays.
-      array.push({ fragmentName: givenArray[element].fragmentName, content: contentArray, status: status})
-      contentArray = [];
-    }
-    // Sort the lines in array, needs to be own function
-    for(let element in array){
-      array[element].content.sort(this.utility.SortFragmentsArrayNumerically);
-    }
-    // Show that everything went well
-    console.log('merged', array)
-    return array;
   }
 
   /**

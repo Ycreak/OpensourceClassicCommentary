@@ -84,4 +84,55 @@ export class UtilityService {
     }
     return true;
   }
+
+  // Returns a list of uniq numbers. Used for fragmentnumber lists.
+  public uniq(a) {
+    return a.sort().filter(function(item, pos, ary) {
+        return !pos || item != ary[pos - 1];
+    });
+  }
+
+  // This function merges the multiple lines in a single fragment.
+  // The structure looks as follows: Fragment 2, [[1, "hello"],[2,"hi"]]
+  public MergeLinesIntoFragment(givenArray){
+    let array = [];
+    let contentArray = [];
+    // For each element in the given array
+    for(let element in givenArray){
+      // Data needed for proper retrieval
+      let fragmentName = givenArray[element].fragmentName
+      let fragmentContent = givenArray[element].fragmentContent //FIXME: Should be lineContent
+      let lineName = givenArray[element].lineName
+      let status = givenArray[element].status 
+      let buildString = '<p>' + lineName + ': ' + fragmentContent + '</p>';
+      // Find the element.fragmentName in the array and check whether it exists.
+      let currentFragment = array.find(x => x.fragmentName === fragmentName)
+      if(currentFragment){ // The current fragmentName is already in the array.
+        // Save the content found in a temporary array
+        contentArray = currentFragment.content;
+        // Delete the entry (to allow it to be recreated after this if)
+        array.splice(array.findIndex((x => x.fragmentName === fragmentName)),1);   
+      }
+      // Push the content (either completely new or with the stored content included)      
+      contentArray.push({
+        lineName: lineName,
+        fragmentContent: fragmentContent,
+        lineComplete: buildString,
+      })
+      // Push the created data to the array and empty the used arrays.
+      array.push({ fragmentName: givenArray[element].fragmentName, content: contentArray, status: status})
+      contentArray = [];
+    }
+    // Sort the lines in array, needs to be own function
+    for(let element in array){
+      array[element].content.sort(this.SortFragmentsArrayNumerically);
+    }
+    // Show that everything went well
+    console.log('merged', array)
+    return array;
+  }
+
+
 }
+
+

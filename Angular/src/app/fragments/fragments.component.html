@@ -44,7 +44,8 @@
         <mat-label>Select book</mat-label>
         <mat-select>
         <mat-option *ngFor="let book of this.booksJSON" [value]="book" 
-            (click)="RequestSelectedText(book.id)"
+            (click)="RequestEditors(book.id)"
+            (click)="RequestFragments(book.id)"
             (click)="SetCurrentBookData(book)">
             {{ book.title }}                
         </mat-option>
