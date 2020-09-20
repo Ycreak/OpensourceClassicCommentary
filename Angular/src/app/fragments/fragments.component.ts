@@ -56,6 +56,8 @@ export class FragmentsComponent implements OnInit {
   selectedEditorArray = [];
   mainEditorArray = [];
 
+  Referencer;
+
   constructor(
     private api: ApiService,
     private utility: UtilityService,
@@ -172,6 +174,29 @@ export class FragmentsComponent implements OnInit {
       let F_ReferencerID = data;
       console.log(F_ReferencerID[0])
       this.RequestCommentaries(Number(F_ReferencerID[0]))// FIXME: not very elegant
+    });
+ }
+
+  /**
+  * Retrieves commentaries when a fragment is clicked.
+  * @param fragmentID which identifies which fragment is clicked
+  * @editorID ???
+  * @returns none
+  * @author Ycreak
+  */
+ public RequestReferencerID2(fragmentName: string, editor: number, book: number){
+  console.log('You called! fragment, editor, book: ', fragmentName, editor, book)
+  // Turn on the spinner.
+  this.spinner = true;
+  // Retrieve the Referencer ID and wait before it is retrieved before proceeding with the rest.
+  this.api.GetReferencerID2(fragmentName, editor, book).subscribe(
+    data => {
+      let F_ReferencerID = data;
+      console.log('new', F_ReferencerID)
+      // console.log(data.))
+      data.sort(this.utility.SortNumeric); //FIXME: this must support naming schemes like Warmington.
+      this.RequestCommentaries(Math.min.apply(Math, data)); // The lowest ID is used as a referencer
+      // return Math.min.apply(Math, data);
     });
  }
 
