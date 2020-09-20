@@ -5,6 +5,11 @@ import { UtilityService } from '../utility.service';
 // To allow the use of forms
 import { FormBuilder } from '@angular/forms';
 
+import { Author } from '../models/Author';
+import { Book } from '../models/Book';
+import { Editor } from '../models/Editor';
+import { Fragment } from '../models/Fragment';
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -39,13 +44,61 @@ export class DashboardComponent implements OnInit {
   fragmentNumberList = [];
   lineNumberList = [];
 
+  selectedBook;
+  selectedAuthor;
+  selectedEditor;
+  selectedFragment;
+  selectedLine;
+
+  // Values that are inputted by the user. Should be sanitized.
+  inputAuthor: String = '';
+  inputBook: String = '';
+  inputEditor: String = '';
+
+  inputFragNum: String = ''; 
+  inputLineNum: String = '';
+  inputFragContent: String = '';
+  inputFragStatus: String = '';
+
+  inputAppCrit: String = '';
+  inputDifferences: String = '';
+  inputCommentary: String = '';
+  inputTranslation: String = '';
+  inputReconstruction: String = '';
+
+  inputContextAuthor: String = ''; 
+  inputContext: String = '';
+
+  noCommentary: boolean;
+
+  contentForm;
+
   constructor(
     private api: ApiService,
     private utility: UtilityService,
-    ) { }
+    private formBuilder: FormBuilder,
+    ) {
+      // Form to revise the commentary of a fragment.
+      this.contentForm = this.formBuilder.group({
+        iF_Commentary: '', // Horrible naming, should be rethought.
+        iF_Differences: '',
+        iF_Context: '',
+        iF_Translation: '',
+        iF_AppCrit: '',
+        iF_Reconstruction: '',
+        iF_Content: '',
+      });
+
+
+     }
 
   ngOnInit(): void {
     this.api.GetAuthors().subscribe(data => this.authorsJSON = data);
+  }
+
+  public Test(thing){
+    console.log(this.F_Reconstruction)
+    console.log('test', thing)
   }
 
   /**
@@ -104,6 +157,51 @@ export class DashboardComponent implements OnInit {
     return array[0].fragmentContent;
   }
 
+  /**
+  * Retrieves commentaries when a fragment is clicked.
+  * @param fragmentID which identifies which fragment is clicked
+  * @editorID ???
+  * @returns none
+  * @author Ycreak
+  */
+ public RequestReferencerID(fragment: number, editor: number, book: number){
+  console.log('fragment, editor, book: ', fragment, editor, book)
+  // Turn on the spinner.
+  // this.spinner = true;
+  // Retrieve the Referencer ID and wait before it is retrieved before proceeding with the rest.
+  this.api.GetReferencerID(fragment, editor, book).subscribe(
+    data => {
+      let F_ReferencerID = data;
+      console.log(F_ReferencerID[0])
+      this.RequestCommentaries(Number(F_ReferencerID[0]))// FIXME: not very elegant
+    });
+ }
+
+ public RequestCommentaries(referencerID: number){ //FIXME: must be number
+  // Check if ReferencerID is valid. If not, no commentary available
+  if (Number.isNaN(referencerID)){
+    this.noCommentary = true;
+  }
+  else{
+    // Set commentary available
+    this.noCommentary = false;
+    // Retrieves Fragment Commentary    
+    this.api.GetCommentary(referencerID).subscribe(data => this.F_Commentary = data);
+    // Retrieves Fragment Differences
+    this.api.GetDifferences(referencerID).subscribe(data => this.F_Differences = data);
+    // Retrieves Fragment Context
+    this.api.GetContext(referencerID).subscribe(data => this.F_Context = data);
+    // Retrieves Fragment Translation
+    this.api.GetTranslation(referencerID).subscribe(data => this.F_Translation = data);
+    // Retrieves Fragment App. Crit.
+    this.api.GetAppCrit(referencerID).subscribe(data => this.F_AppCrit = data);
+    // Retrieves Fragment Reconstruction
+    this.api.GetReconstruction(referencerID).subscribe(data => this.F_Reconstruction = data);
+  }
+  // Turn off spinner at the end
+  // this.spinner = false;
+}
+
   // REQUEST FUNCTIONS
   public RequestBooks(author: number){
     this.api.GetBooks(author).subscribe(
@@ -127,9 +225,60 @@ export class DashboardComponent implements OnInit {
     this.api.GetFragments(book).subscribe(
       data => {
         this.F_Fragments = data;
-        // this.mainEditorArray = this.CreateEditorArray(1, this.F_Fragments);
       }
     );  
+  }
+
+    // this.api.DeleteAuthor('Job Zwaag').subscribe();
+    // this.api.CreateBook(new Book(77, 69, 'Zwarte piet is racistisch')).subscribe();
+    // this.api.DeleteBook('Zwarte piet is racistisch').subscribe();
+    // this.api.CreateEditor(new Editor(8, 6, 'The best editor', 1)).subscribe();
+    // this.api.DeleteEditor('The best editor').subscribe();
+    // this.api.SetMainEditorFlag(7, false).subscribe();
+    // this.api.CreateFragment(new Fragment(222, 200, 'Best frag', '400-401', 81, 'Classical nonsense', 1, 'ok')).subscribe();
+    // this.api.DeleteFragment('8', 6, 5).subscribe();
+    // this.api.CreateContext(new Context(88, 3, 'Ugh', 'Some content')).subscribe();
+    // this.api.SetPublishFlag(1, 6, 134, false).subscribe();
+
+
+  public RequestCreateAuthor(authorName: String){
+    console.log(authorName);
+    // this.api.CreateAuthor(new Author(authorName)).subscribe();
+
+  }
+
+  public  RequestDeleteAuthor(author: number){
+    console.log(author);
+  }
+
+  public RequestCreateBook(bookName: String, author: number){
+    console.log(bookName);
+    // this.pushData('createBook')
+  }
+
+  public RequestDeleteBook(book: number, author: number){
+    console.log(book);
+    // this.pushData('deleteBook')
+  }
+
+  public RequestCreateEditor(editorName : String, book: number, author: number){
+    console.log(editorName);
+    // this.pushData('createEditor')
+  }
+
+  public RequestDeleteEditor(editor: number, book: number, author: number){
+    console.log(editor);
+    // this.pushData('deleteEditor')
+  }
+
+  public RequestSetMainEditor(editor: number, book: number, author: number){
+    console.log(editor);
+    // this.pushData('setMainEditor')
+  }
+
+  public RequestDeleteMainEditor(editor: number, book: number, author: number){
+    console.log(editor);
+    // this.pushData('deleteMainEditor')
   }
 
 }

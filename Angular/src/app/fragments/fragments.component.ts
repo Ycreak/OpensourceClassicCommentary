@@ -162,20 +162,20 @@ export class FragmentsComponent implements OnInit {
   * @returns none
   * @author Ycreak
   */
- public RetrieveReferencerID(fragmentID: number){
-  console.log('fragment, editor, book: ', fragmentID, this.currentEditor, this.currentBook)
+ public RequestReferencerID(fragment: number, editor: number, book: number){
+  console.log('fragment, editor, book: ', fragment, editor, book)
   // Turn on the spinner.
   this.spinner = true;
   // Retrieve the Referencer ID and wait before it is retrieved before proceeding with the rest.
-  this.api.GetReferencerID(fragmentID, this.currentEditor, this.currentBook).subscribe(
+  this.api.GetReferencerID(fragment, editor, book).subscribe(
     data => {
       let F_ReferencerID = data;
       console.log(F_ReferencerID[0])
-      this.RetrieveCommentaries(Number(F_ReferencerID[0]))// FIXME: not very elegant
+      this.RequestCommentaries(Number(F_ReferencerID[0]))// FIXME: not very elegant
     });
  }
 
-public RetrieveCommentaries(referencerID: number){ //FIXME: must be number
+public RequestCommentaries(referencerID: number){ //FIXME: must be number
   // Check if ReferencerID is valid. If not, no commentary available
   if (Number.isNaN(referencerID)){
     this.noCommentary = true;

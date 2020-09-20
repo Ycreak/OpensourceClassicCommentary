@@ -12,12 +12,13 @@
     <span><h3 class='h3-title'>Dashboard</h3></span>
 </mat-toolbar>
 
+<!-- SELECTING ROW -->
 <div class="container-fluid">
     <div class="row">
         <!-- Need some space here please  -->
         <mat-form-field class="select-form">
             <mat-label>Author</mat-label>
-            <mat-select [(ngModel)]="selectedAuthorData">
+            <mat-select [(ngModel)]="selectedAuthor">
                 <mat-option *ngFor="let data of this.authorsJSON" [value]="data"
                 (click)="this.currentAuthor = data.id"
                 (click)="RequestBooks(data.id)">
@@ -29,7 +30,7 @@
     
         <mat-form-field class="select-form">
             <mat-label>Book</mat-label>
-            <mat-select [(ngModel)]="selectedBookData">
+            <mat-select [(ngModel)]="selectedBook">
             <mat-option *ngFor="let data of this.booksJSON" [value]="data"
             (click)="this.currentBook = data.id"
             (click)="this.RequestEditors(data.id)"
@@ -42,7 +43,7 @@
     
         <mat-form-field class="select-form">
             <mat-label>Editor</mat-label>
-            <mat-select [(ngModel)]="selectedEditorData">
+            <mat-select [(ngModel)]="selectedEditor">
             <mat-option *ngFor="let data of this.editorsJSON" [value]="data"
             (click)="this.currentEditor = data.id"
             (click)="this.selectedEditorArray = CreateEditorArray(data.id, this.F_Fragments)"
@@ -55,8 +56,9 @@
             
         <mat-form-field class="select-form">
             <mat-label>Fragment</mat-label>
-            <mat-select [(ngModel)]="selectedFragmentData">
+            <mat-select [(ngModel)]="selectedFragment">
             <mat-option *ngFor="let data of this.fragmentNumberList" [value]="data"
+            (click)="this.RequestReferencerID(this.selectedFragment, this.selectedEditor.id, this.selectedBook.id)"
             (click)="this.currentFragment = data"
             (click)="this.lineNumberList = GetLineNumbers(data, this.selectedEditorArray)">
                 {{ data }} 
@@ -67,9 +69,10 @@
         
         <mat-form-field class="select-form">
             <mat-label>Line</mat-label>
-            <mat-select [(ngModel)]="selectedLineData">
+            <mat-select [(ngModel)]="selectedLine">
             <mat-option *ngFor="let data of this.lineNumberList" [value]="data"
             (click)="this.currentLine = data"
+            (click)="this.Test('hello')"
             (click)="this.F_FragmentLine = GetFragmentLine(data, this.currentFragment, this.selectedEditorArray)">
                 {{ data }} 
             </mat-option>
@@ -81,9 +84,67 @@
 
 <hr>
 
+<!-- TAB GROUPS TO ENTER DATA -->
 <div class="container-fluid">
     <div class="row">
-        Dashboard here.
-        {{ this.F_FragmentLine }}
+        <mat-tab-group>
+            <mat-tab label="Add/Remove"><br>
+                <!-- Group to add/remove Authors, Books and Editors -->
+                <mat-tab-group>
+                  <!-- Tab to add/remove Authors -->
+                    <mat-tab label="Author"><br>
+                        <div mat-dialog-content>
+                        <mat-form-field class="input-form">
+                            <input matInput placeholder="Add author" [(ngModel)]='inputAuthor'>
+                            <mat-hint>Fill in the name of a new author</mat-hint>
+                        </mat-form-field>
+                        </div>  
+            
+                        <br>
+                        <button mat-button (click)="RequestCreateAuthor(inputAuthor)">Create added author</button>
+                        <button mat-button (click)="RequestDeleteAuthor(this.selectedAuthor.id)">Delete selected author</button>
+                    </mat-tab>
+        
+                    <!-- Tab to add/remove Books -->
+                    <mat-tab label="Book"><br>
+            
+                        <div mat-dialog-content>
+                        <mat-form-field class="input-form">
+                            <input matInput placeholder="Add book" [(ngModel)]='inputBook'>
+                            <mat-hint>Select an author and fill in the name of his/her new book</mat-hint>
+                        </mat-form-field>
+                        </div>  
+            
+                        <br>
+                        <button mat-button (click)="RequestCreateBook(inputBook, this.selectedAuthor.id)">Create added book</button>
+                        <button mat-button (click)="RequestDeleteBook(this.selectedBook.id, this.selectedAuthor.id)">Delete selected book</button>
+                    </mat-tab>
+        
+                    <!-- Tab to add/remove Editors -->
+                    <mat-tab label="Editor"><br>         
+                        <div mat-dialog-content>
+                        <mat-form-field class="input-form">
+                            <input matInput placeholder="Add editor" [(ngModel)]='inputEditor'>
+                            <mat-hint>Select an author and book and fill in the name of its new editor</mat-hint>
+                        </mat-form-field>
+                        </div>  
+                        <br>
+                        <button mat-button (click)="RequestCreateEditor(inputEditor, this.selectedBook.id, this.selectedAuthor.id)">Create added editor</button>
+                        <button mat-button (click)="RequestDeleteEditor(this.selectedEditor.id, this.selectedBook.id, this.selectedAuthor.id)">Delete selected editor</button>
+                        <button mat-button (click)="RequestSetMainEditor(this.selectedEditor.id, this.selectedBook.id, this.selectedAuthor.id)">Set selected editor as main editor</button>
+                        <button mat-button (click)="RequestDeleteMainEditor(this.selectedEditor.id, this.selectedBook.id, this.selectedAuthor.id)">Remove selected editor as main editor</button>
+            
+                    </mat-tab>
+                </mat-tab-group>
+            </mat-tab>
+        
+            <!-- Tab Group to change a fragment. -->
+
+                  
+
+
+        </mat-tab-group>
+        
+
     </div>
 </div>
