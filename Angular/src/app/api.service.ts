@@ -9,7 +9,7 @@ import { FragmentReferencer } from './models/FragmentReferencer';
 import { Context } from './models/Context';
 import { Book } from './models/Book';
 import { Reconstruction } from './models/Reconstruction';
-import { AppCrit } from './models/AppCrit';
+import { Apparatus } from './models/Apparatus';
 import { Translation } from './models/Translation';
 import { Differences } from './models/Differences';
 import { Commentary } from './models/Commentary';
@@ -130,8 +130,8 @@ export class ApiService {
   * @returns
   * @author Ycreak, ppbors
   */
-  GetAppCrit(fragmentID: number): Observable<AppCrit[]> {
-    return this.http.get<AppCrit[]>(this.ApiUrl + `fappcrit?fragmentID=${fragmentID}`); // XD FAP CRIT
+  GetApparatus(fragmentID: number): Observable<Apparatus[]> {
+    return this.http.get<Apparatus[]>(this.ApiUrl + `fapparatus?fragmentID=${fragmentID}`); // XD FAP CRIT
   }
 
   /**

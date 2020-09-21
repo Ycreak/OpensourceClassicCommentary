@@ -38,7 +38,7 @@ export class FragmentsComponent implements OnInit {
   // Global Class Variables with text data corresponding to the front-end text fields.
   F_Fragments;
   F_Commentary;
-  F_AppCrit;
+  F_Apparatus;
   F_Translation;
   F_Context;
   F_Differences;
@@ -132,7 +132,7 @@ export class FragmentsComponent implements OnInit {
   // Function used to set the current Book data given the selected Book array
   public SetCurrentEditorData(data){
     this.currentEditor = data.id;
-    this.currentEditorName = data.editorName;
+    this.currentEditorName = data.name;
   }
 
   /**
@@ -154,11 +154,11 @@ export class FragmentsComponent implements OnInit {
   // Creates main editor array: the third field has the mainEditor key. Should be named properly.
   private CreateMainEditorArray(array){
     // console.log('createMainEditorArray', array);
-    return array.filter(x => x.defaultEditor == 1);
+    return array.filter(x => x.mainEditor == 1);
   }
 
   /**
-  * Retrieves commentaries when a fragment is clicked.
+  * Retrieves commentaries when a fragment is clicked. DEPRECATED
   * @param fragmentID which identifies which fragment is clicked
   * @editorID ???
   * @returns none
@@ -172,7 +172,7 @@ export class FragmentsComponent implements OnInit {
   this.api.GetReferencerID(fragment, editor, book).subscribe(
     data => {
       let F_ReferencerID = data;
-      console.log(F_ReferencerID[0])
+      console.log('OldReferencer', F_ReferencerID[0])
       this.RequestCommentaries(Number(F_ReferencerID[0]))// FIXME: not very elegant
     });
  }
@@ -217,7 +217,7 @@ public RequestCommentaries(referencerID: number){ //FIXME: must be number
     // Retrieves Fragment Translation
     this.api.GetTranslation(referencerID).subscribe(data => this.F_Translation = data);
     // Retrieves Fragment App. Crit.
-    this.api.GetAppCrit(referencerID).subscribe(data => this.F_AppCrit = data);
+    this.api.GetApparatus(referencerID).subscribe(data => this.F_Apparatus = data);
     // Retrieves Fragment Reconstruction
     this.api.GetReconstruction(referencerID).subscribe(data => this.F_Reconstruction = data);
   }

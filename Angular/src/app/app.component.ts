@@ -32,7 +32,7 @@ export class AppComponent {
     // this.api.GetDifferences(7).subscribe(data => console.log(data));
     // this.api.GetContext(49).subscribe(data => console.log(data));
     // this.api.GetTranslation(9).subscribe(data => console.log(data));
-    // this.api.GetAppCrit(8).subscribe(data => console.log(data));
+    // this.api.GetApparatus(8).subscribe(data => console.log(data));
     // this.api.GetReconstruction(5).subscribe(data => console.log(data));
     // this.api.GetBooks(7).subscribe(data => console.log(data));
 

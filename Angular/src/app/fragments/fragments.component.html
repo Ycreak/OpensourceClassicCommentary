@@ -96,10 +96,10 @@
             <mat-form-field>
                 <mat-label>Select main editor</mat-label>
                 <mat-select>
-                <mat-option *ngFor="let mainEditor of this.mainEditorsJSON" [value]="mainEditor.editorName"
+                <mat-option *ngFor="let mainEditor of this.mainEditorsJSON" [value]="mainEditor.Name"
                 (click)="this.mainEditorArray = CreateEditorArray(mainEditor.id, this.F_Fragments)"
                 (click)="this.SetCurrentEditorData(mainEditor)">
-                    {{ mainEditor.editorName }}                     
+                    {{ mainEditor.name }}                     
                 </mat-option>
                 </mat-select>
             </mat-form-field>
@@ -128,7 +128,7 @@
                 <mat-select>
                 <mat-option *ngFor="let selectedEditor of this.editorsJSON" [value]="selectedEditor.id"
                 (click)="this.selectedEditorArray = CreateEditorArray(selectedEditor.id, this.F_Fragments)">
-                    {{ selectedEditor.editorName }} 
+                    {{ selectedEditor.name }} 
                 </mat-option>
                 </mat-select>
             </mat-form-field>
@@ -174,7 +174,7 @@
     
             <hr>
     
-            <div *ngFor="let item of this.F_AppCrit">
+            <div *ngFor="let item of this.F_Apparatus">
                 <mat-expansion-panel>
                     <mat-expansion-panel-header>
                     <mat-panel-title>
@@ -183,7 +183,7 @@
                     </mat-expansion-panel-header>
                     <div class="mat-expansion-panel-content">
                     <div class="mat-expansion-panel-body">
-                        <div [innerHTML]=item.appCrit></div>
+                        <div [innerHTML]=item.apparatus></div>
                     </div>
                     </div>
                 </mat-expansion-panel>
@@ -235,7 +235,7 @@
                     </mat-expansion-panel-header>
                     <div class="mat-expansion-panel-content">
                     <div class="mat-expansion-panel-body">
-                        <div [innerHTML]="item.commentaar"></div>
+                        <div [innerHTML]="item.commentary"></div>
                     </div>
                     </div>
                 </mat-expansion-panel>

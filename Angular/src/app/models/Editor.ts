@@ -1,15 +1,15 @@
 export class Editor
 {
-    constructor(id: number, bookID: number, name: string, defaultEditor: number)
+    constructor(id: number, bookID: number, name: string, MainEditor: number)
     {
         this.id = id;
         this.book = bookID;
-        this.editorName = name;
-        this.defaultEditor = defaultEditor;
+        this.name = name;
+        this.MainEditor = MainEditor;
     }
 
     id: number;
     book: number;
-    editorName: string;
-    defaultEditor?: number;
+    name: string;
+    MainEditor?: number;
 }

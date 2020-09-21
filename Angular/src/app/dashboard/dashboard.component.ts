@@ -25,7 +25,7 @@ export class DashboardComponent implements OnInit {
   // Global Class Variables with text data corresponding to the front-end text fields.
   F_Fragments;
   F_Commentary;
-  F_AppCrit;
+  F_Apparatus;
   F_Translation;
   F_Context;
   F_Differences;
@@ -60,7 +60,7 @@ export class DashboardComponent implements OnInit {
   inputFragContent: String = '';
   inputFragStatus: String = '';
 
-  inputAppCrit: String = '';
+  inputApparatus: String = '';
   inputDifferences: String = '';
   inputCommentary: String = '';
   inputTranslation: String = '';
@@ -84,7 +84,7 @@ export class DashboardComponent implements OnInit {
         iF_Differences: '',
         iF_Context: '',
         iF_Translation: '',
-        iF_AppCrit: '',
+        iF_Apparatus: '',
         iF_Reconstruction: '',
         iF_Content: '',
       });
@@ -154,7 +154,7 @@ export class DashboardComponent implements OnInit {
     array = array[0].content // Only one entry can exist, so pick that one.
     array = array.filter(x => x.lineName === line);
     // Return the found content to be shown on screen
-    return array[0].fragmentContent;
+    return array[0].lineContent;
   }
 
   /**
@@ -194,7 +194,7 @@ export class DashboardComponent implements OnInit {
     // Retrieves Fragment Translation
     this.api.GetTranslation(referencerID).subscribe(data => this.F_Translation = data);
     // Retrieves Fragment App. Crit.
-    this.api.GetAppCrit(referencerID).subscribe(data => this.F_AppCrit = data);
+    this.api.GetApparatus(referencerID).subscribe(data => this.F_Apparatus = data);
     // Retrieves Fragment Reconstruction
     this.api.GetReconstruction(referencerID).subscribe(data => this.F_Reconstruction = data);
   }

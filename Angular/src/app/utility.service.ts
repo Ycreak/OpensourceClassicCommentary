@@ -101,10 +101,10 @@ export class UtilityService {
     for(let element in givenArray){
       // Data needed for proper retrieval
       let fragmentName = givenArray[element].fragmentName
-      let fragmentContent = givenArray[element].fragmentContent //FIXME: Should be lineContent
+      let lineContent = givenArray[element].lineContent //FIXME: Should be lineContent
       let lineName = givenArray[element].lineName
       let status = givenArray[element].status 
-      let buildString = '<p>' + lineName + ': ' + fragmentContent + '</p>';
+      let buildString = '<p>' + lineName + ': ' + lineContent + '</p>';
       // Find the element.fragmentName in the array and check whether it exists.
       let currentFragment = array.find(x => x.fragmentName === fragmentName)
       if(currentFragment){ // The current fragmentName is already in the array.
@@ -116,7 +116,7 @@ export class UtilityService {
       // Push the content (either completely new or with the stored content included)      
       contentArray.push({
         lineName: lineName,
-        fragmentContent: fragmentContent,
+        lineContent: lineContent,
         lineComplete: buildString,
       })
       // Push the created data to the array and empty the used arrays.
