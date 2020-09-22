@@ -108,7 +108,7 @@
         <!-- Listing of the fragments -->
         <div class="fragment-list">
             <div class="fragment-box" *ngFor="let arrayItem of this.mainEditorArray" 
-            (click)="this.Referencer = this.RequestReferencerID2(arrayItem.fragmentName, this.currentEditor, this.currentBook)">
+            (click)="this.Referencer = this.RequestReferencerID(arrayItem.fragmentName, this.currentEditor, this.currentBook)">
             <div>
                 <b>Fragment {{arrayItem.fragmentName}} </b> &nbsp; <i>{{arrayItem.status}}</i>
             </div>

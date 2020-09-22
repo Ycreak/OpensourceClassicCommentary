@@ -48,7 +48,7 @@
             (click)="this.currentEditor = data.id"
             (click)="this.selectedEditorArray = CreateEditorArray(data.id, this.F_Fragments)"
             (click)="this.fragmentNumberList = GetFragmentNumbers(data.id, this.selectedEditorArray)">
-                {{ data.editorName }}                       
+                {{ data.name }}                       
             </mat-option>
             </mat-select>
             <mat-hint>Select an editor</mat-hint>
@@ -138,9 +138,83 @@
                 </mat-tab-group>
             </mat-tab>
         
+            <mat-tab label="Create/Revise Fragment"><br> 
+                <form [formGroup]="fragmentForm" (ngSubmit)="Test(fragmentForm.value)">
+                  
+                  <mat-form-field class="input-form-full-width">
+                    <mat-label>Fragment number</mat-label>
+                    <input matInput value='' id="inputFragmentNumber" type="text" formControlName="inputFragmentNumber">
+                    <mat-hint>Provide the revised line of the selected fragment line</mat-hint>                       
+                  </mat-form-field>
+
+                  <mat-form-field class="input-form-full-width">
+                    <mat-label>Line number</mat-label>
+                    <input matInput value='' id="inputLineNumber" type="text" formControlName="inputLineNumber">
+                    <mat-hint>Provide the revised line of the selected fragment line</mat-hint>                       
+                  </mat-form-field>
+
+                  <mat-form-field class="input-form-full-width">
+                    <mat-label>Line content</mat-label>
+                    <input matInput value='' id="inputLineContent" type="text" formControlName="inputLineContent">
+                    <mat-hint>Provide the revised line of the selected fragment line</mat-hint>                       
+                  </mat-form-field>
+
+                  <mat-form-field class="input-form-full-width">
+                    <mat-label>Line status</mat-label>
+                    <input matInput value='' id="inputLineStatus" type="text" formControlName="inputLineStatus">
+                    <mat-hint>Provide the revised line of the selected fragment line</mat-hint>                       
+                  </mat-form-field>
+
+
+
+                  <button mat-button class="button" type="submit">Update Fragment</button>
+                </form>
+                <br>
+  
+              </mat-tab>
+
             <!-- Tab Group to change a fragment. -->
 
+            <mat-tab label="Create/Revise Content"><br>
+                <h4>Select one of the fragments to change its contents fields. Only changes will be saved.</h4>
+                <!-- Uses form group! On pressing upload, changes will be put in the form. -->
+                <form [formGroup]="contentForm" (ngSubmit)="Test(contentForm.value)">
+                  <mat-form-field class="input-form-full-width">
+                    <mat-label>Fragment commentary</mat-label>
+                    <input matInput value='{{this.F_Commentary}}' id="inputCommentary" type="text" formControlName="inputCommentary">
+                    <mat-hint>Provide the revised commentary of the selected fragment</mat-hint>                       
+                  </mat-form-field>
                   
+                  <mat-form-field class="input-form-full-width">
+                    <mat-label>Fragment differences</mat-label>
+                    <input matInput value='{{this.F_Differences}}' id="inputDifferences" type="text" formControlName="inputDifferences">
+                    <mat-hint>Provide the revised differences of the selected fragment</mat-hint>                       
+                  </mat-form-field>
+                                      
+                  <mat-form-field class="input-form-full-width">
+                    <mat-label>Fragment translation</mat-label>
+                    <input matInput value='{{this.F_Translation}}' id="inputTranslation" type="text" formControlName="inputTranslation">
+                    <mat-hint>Provide the revised translation of the selected fragment</mat-hint>                       
+                  </mat-form-field>
+                  
+                  <mat-form-field class="input-form-full-width">
+                    <mat-label>Fragment apparatus criticus</mat-label>
+                    <input matInput value='{{this.F_Apparatus}}' id="inputApparatus" type="text" formControlName="inputApparatus">
+                    <mat-hint>Provide the revised apparatus criticus of the selected fragment</mat-hint>                       
+                  </mat-form-field>
+                  
+                  <mat-form-field class="input-form-full-width">
+                    <mat-label>Fragment reconstruction</mat-label>
+                    <input matInput value='{{this.F_Reconstruction}}' id="inputReconstruction" type="text" formControlName="inputReconstruction">
+                    <mat-hint>Provide the revised reconstruction of the selected fragment</mat-hint>                       
+                  </mat-form-field>                  
+                  
+                  <!-- Button is linked via the submit type! -->
+                  <br><br>
+                  <button mat-button class="button" type="submit">Upload</button>
+                </form>
+              </mat-tab>
+                    
 
 
         </mat-tab-group>

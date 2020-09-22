@@ -9,6 +9,9 @@ import { Author } from '../models/Author';
 import { Book } from '../models/Book';
 import { Editor } from '../models/Editor';
 import { Fragment } from '../models/Fragment';
+import { Context } from '../models/Context';
+import { Commentary } from '../models/Commentary';
+
 
 @Component({
   selector: 'app-dashboard',
@@ -24,7 +27,8 @@ export class DashboardComponent implements OnInit {
   bibJSON; // JSON that contains all available Bibliography data given a specific book.
   // Global Class Variables with text data corresponding to the front-end text fields.
   F_Fragments;
-  F_Commentary;
+  // F_Commentary;
+  F_Commentary = new Array<Commentary>(); //FIXME: cannot read F_Commentary.id in HTML as it does not exist yet.
   F_Apparatus;
   F_Translation;
   F_Context;
@@ -50,28 +54,14 @@ export class DashboardComponent implements OnInit {
   selectedFragment;
   selectedLine;
 
-  // Values that are inputted by the user. Should be sanitized.
-  inputAuthor: String = '';
-  inputBook: String = '';
-  inputEditor: String = '';
-
-  inputFragNum: String = ''; 
-  inputLineNum: String = '';
-  inputFragContent: String = '';
-  inputFragStatus: String = '';
-
-  inputApparatus: String = '';
-  inputDifferences: String = '';
-  inputCommentary: String = '';
-  inputTranslation: String = '';
-  inputReconstruction: String = '';
-
-  inputContextAuthor: String = ''; 
-  inputContext: String = '';
-
   noCommentary: boolean;
 
   contentForm;
+  fragmentForm;
+
+  inputAuthor = '';
+  inputBook = '';
+  inputEditor = '';
 
   constructor(
     private api: ApiService,
@@ -80,24 +70,31 @@ export class DashboardComponent implements OnInit {
     ) {
       // Form to revise the commentary of a fragment.
       this.contentForm = this.formBuilder.group({
-        iF_Commentary: '', // Horrible naming, should be rethought.
-        iF_Differences: '',
-        iF_Context: '',
-        iF_Translation: '',
-        iF_Apparatus: '',
-        iF_Reconstruction: '',
-        iF_Content: '',
+        inputCommentary: '',
+        inputDifferences: '',
+        inputContext: '',
+        inputTranslation: '',
+        inputApparatus: '',
+        inputReconstruction: '',
+        inputContent: '',
       });
-
+      // Form to create/revise a fragment.
+      this.fragmentForm = this.formBuilder.group({
+        inputFragmentNumber: '', // Horrible naming, should be rethought.
+        inputLineNumber: '',
+        inputLineContent: '',
+        inputLineStatus: '',
+      });
 
      }
 
   ngOnInit(): void {
     this.api.GetAuthors().subscribe(data => this.authorsJSON = data);
+    console.log('commen', this.F_Commentary)
   }
 
   public Test(thing){
-    console.log(this.F_Reconstruction)
+    console.log('commen', this.F_Commentary)
     console.log('test', thing)
   }
 
@@ -164,7 +161,7 @@ export class DashboardComponent implements OnInit {
   * @returns none
   * @author Ycreak
   */
- public RequestReferencerID(fragment: number, editor: number, book: number){
+ public RequestReferencerID(fragment: string, editor: number, book: number){
   console.log('fragment, editor, book: ', fragment, editor, book)
   // Turn on the spinner.
   // this.spinner = true;

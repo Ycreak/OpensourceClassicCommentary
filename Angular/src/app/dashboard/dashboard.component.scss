@@ -136,3 +136,19 @@ body, h1, h2, h3, h4, h5 {
   .spacer {
     flex: 1 1 auto;
   }
+
+// Dashboard specific
+  .input-form {
+    min-width: 50%;
+    max-width: 90%;
+    /* width: 100%; */
+  }
+  
+  .input-form-full-width {
+    width: 90%;
+  }
+  
+  /* This assumes only 5 buttons exist. */
+  .select-form {
+    width: 20%;
+  }

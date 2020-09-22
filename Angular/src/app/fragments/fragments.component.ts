@@ -81,6 +81,8 @@ export class FragmentsComponent implements OnInit {
         this.editorsJSON = data;
         // Select the fragments from the editor you want in the left column.
         this.mainEditorsJSON = this.CreateMainEditorArray(data);
+        // console.log('filter',this.FilterArray(data, 'mainEditor', 1));
+
         this.currentEditor = this.mainEditorsJSON[0].id //FIXME:
       }
     );
@@ -151,31 +153,15 @@ export class FragmentsComponent implements OnInit {
     return this.utility.MergeLinesIntoFragment(tempArray);
   }
 
+  private FilterArray(array, field, value){
+    return array.filter(x => x.field == value);
+  }
+
   // Creates main editor array: the third field has the mainEditor key. Should be named properly.
   private CreateMainEditorArray(array){
     // console.log('createMainEditorArray', array);
     return array.filter(x => x.mainEditor == 1);
   }
-
-  /**
-  * Retrieves commentaries when a fragment is clicked. DEPRECATED
-  * @param fragmentID which identifies which fragment is clicked
-  * @editorID ???
-  * @returns none
-  * @author Ycreak
-  */
- public RequestReferencerID(fragment: number, editor: number, book: number){
-  console.log('fragment, editor, book: ', fragment, editor, book)
-  // Turn on the spinner.
-  this.spinner = true;
-  // Retrieve the Referencer ID and wait before it is retrieved before proceeding with the rest.
-  this.api.GetReferencerID(fragment, editor, book).subscribe(
-    data => {
-      let F_ReferencerID = data;
-      console.log('OldReferencer', F_ReferencerID[0])
-      this.RequestCommentaries(Number(F_ReferencerID[0]))// FIXME: not very elegant
-    });
- }
 
   /**
   * Retrieves commentaries when a fragment is clicked.
@@ -184,43 +170,38 @@ export class FragmentsComponent implements OnInit {
   * @returns none
   * @author Ycreak
   */
- public RequestReferencerID2(fragmentName: string, editor: number, book: number){
+ public RequestReferencerID(fragmentName: string, editor: number, book: number){
   console.log('You called! fragment, editor, book: ', fragmentName, editor, book)
   // Turn on the spinner.
   this.spinner = true;
   // Retrieve the Referencer ID and wait before it is retrieved before proceeding with the rest.
-  this.api.GetReferencerID2(fragmentName, editor, book).subscribe(
+  this.api.GetReferencerID(fragmentName, editor, book).subscribe(
     data => {
-      let F_ReferencerID = data;
-      console.log('new', F_ReferencerID)
-      // console.log(data.))
       data.sort(this.utility.SortNumeric); //FIXME: this must support naming schemes like Warmington.
-      this.RequestCommentaries(Math.min.apply(Math, data)); // The lowest ID is used as a referencer
-      // return Math.min.apply(Math, data);
+      let referencer = Math.min.apply(Math, data)
+      this.RequestCommentaries(referencer); // The lowest ID is used as a referencer
+      return referencer;
     });
  }
 
-public RequestCommentaries(referencerID: number){ //FIXME: must be number
-  // Check if ReferencerID is valid. If not, no commentary available
-  if (Number.isNaN(referencerID)){
-    this.noCommentary = true;
-  }
-  else{
-    // Set commentary available
-    this.noCommentary = false;
-    // Retrieves Fragment Commentary    
-    this.api.GetCommentary(referencerID).subscribe(data => this.F_Commentary = data);
-    // Retrieves Fragment Differences
-    this.api.GetDifferences(referencerID).subscribe(data => this.F_Differences = data);
-    // Retrieves Fragment Context
-    this.api.GetContext(referencerID).subscribe(data => this.F_Context = data);
-    // Retrieves Fragment Translation
-    this.api.GetTranslation(referencerID).subscribe(data => this.F_Translation = data);
-    // Retrieves Fragment App. Crit.
-    this.api.GetApparatus(referencerID).subscribe(data => this.F_Apparatus = data);
-    // Retrieves Fragment Reconstruction
-    this.api.GetReconstruction(referencerID).subscribe(data => this.F_Reconstruction = data);
-  }
+public RequestCommentaries(referencer: number){
+  // Set commentary available
+  this.noCommentary = false;
+  // Retrieves Fragment Commentary    
+  this.api.GetCommentary(referencer).subscribe(data => this.F_Commentary = data);
+  // Retrieves Fragment Differences
+  this.api.GetDifferences(referencer).subscribe(data => this.F_Differences = data);
+  // Retrieves Fragment Context
+  this.api.GetContext(referencer).subscribe(data => this.F_Context = data);
+  // Retrieves Fragment Translation
+  this.api.GetTranslation(referencer).subscribe(data => this.F_Translation = data);
+  // Retrieves Fragment App. Crit.
+  this.api.GetApparatus(referencer).subscribe(data => this.F_Apparatus = data);
+  // Retrieves Fragment Reconstruction
+  this.api.GetReconstruction(referencer).subscribe(data => this.F_Reconstruction = data);
+  
+  // TODO: check if F_Commentary is empty. If so, set the noCommentary flag to true.
+  
   // Turn off spinner at the end
   this.spinner = false;
 }

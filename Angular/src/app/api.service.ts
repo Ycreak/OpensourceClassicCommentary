@@ -37,11 +37,7 @@ export class ApiService {
   * @returns
   * @author Ycreak, ppbors
   */
-  GetReferencerID(fragmentID: number, editorID: number, bookID: number): Observable<string[]> {
-    return this.http.get<string[]>(this.ApiUrl + `fragmentreferencer?fragmentID=${fragmentID}&editorID=${editorID}&bookID=${bookID}`);
-  }
-
-  GetReferencerID2(fragmentName: string, editorID: number, bookID: number): Observable<string[]> {
+  GetReferencerID(fragmentName: string, editorID: number, bookID: number): Observable<string[]> {
     return this.http.get<string[]>(this.ApiUrl + `fragments/hello?fragmentID=${fragmentName}&editorID=${editorID}&bookID=${bookID}`);
   }
 
