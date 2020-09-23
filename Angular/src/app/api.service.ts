@@ -166,8 +166,8 @@ export class ApiService {
    * @returns ... ... ...
    * @author ppbors
    */
-  DeleteAuthor(name: string): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `authors/delete`, new Author(0, name));
+  DeleteAuthor(id: number): Observable<any> {
+    return this.http.post<any>(this.ApiUrl + `authors/delete`, new Author(id, ''));
   }
 
   /**
@@ -186,8 +186,8 @@ export class ApiService {
    * @returns ... ... ...
    * @author ppbors
    */
-  DeleteBook(title: string): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `books/delete`, new Book(0, 0, title));
+  DeleteBook(id: number, author: number): Observable<any> {
+    return this.http.post<any>(this.ApiUrl + `books/delete`, new Book(id, author, ''));
   }
 
   /**
@@ -206,8 +206,8 @@ export class ApiService {
    * @returns ... ... ...
    * @author ppbors
    */
-  DeleteEditor(name: string): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `editors/delete`, new Editor(0, 0, name, 0));
+  DeleteEditor(id: number): Observable<any> {
+    return this.http.post<any>(this.ApiUrl + `editors/delete`, new Editor(id, 0, '', 0));
   }
 
   /**

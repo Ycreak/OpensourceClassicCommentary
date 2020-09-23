@@ -27,17 +27,24 @@ export class DashboardComponent implements OnInit {
   bibJSON; // JSON that contains all available Bibliography data given a specific book.
   // Global Class Variables with text data corresponding to the front-end text fields.
   F_Fragments;
-  // F_Commentary;
-  F_Commentary = new Array<Commentary>(); //FIXME: cannot read F_Commentary.id in HTML as it does not exist yet.
+  F_Context; // Context object, dissected in the dashboard itself (multiple can exist).
+  F_Commentary;
   F_Apparatus;
   F_Translation;
-  F_Context;
   F_Differences;
   F_ReferencerID;
   F_Reconstruction;
-  F_Content;
-  F_FragmentLine;
+  // All the content strings used in the dashboard
+  commentaryContent: string = '';
+  apparatusContent: string = '';
+  translationContent: string = '';
+  contextContent: string = '';
+  differencesContent: string = '';
+  reconstructionContent: string = '';
+  contentContent: string = '';
+  fragmentLineContent: string = '';
 
+  // DEPRECATED
   currentAuthor: number;
   currentBook: number;
   currentEditor: number;
@@ -53,11 +60,17 @@ export class DashboardComponent implements OnInit {
   selectedEditor;
   selectedFragment;
   selectedLine;
+  selectedLineStatus;
+  selectedContextContent; 
 
   noCommentary: boolean;
 
+  inputContext;
+  inputContextAuthor;
+
   contentForm;
   fragmentForm;
+  contextForm;
 
   inputAuthor = '';
   inputBook = '';
@@ -85,16 +98,21 @@ export class DashboardComponent implements OnInit {
         inputLineContent: '',
         inputLineStatus: '',
       });
+      // Form to create/revise context
+      this.contextForm = this.formBuilder.group({
+        inputContext: '',
+        inputContextAuthor: '',
+      })
 
      }
 
   ngOnInit(): void {
     this.api.GetAuthors().subscribe(data => this.authorsJSON = data);
-    console.log('commen', this.F_Commentary)
+    // console.log('commen', this.F_Commentary)
   }
 
   public Test(thing){
-    console.log('commen', this.F_Commentary)
+    // console.log('commen', this.F_Commentary)
     console.log('test', thing)
   }
 
@@ -148,8 +166,13 @@ export class DashboardComponent implements OnInit {
   public GetFragmentLine(line: number, fragment: string, array){
     // Filter on the given fragment number and the given lineNumber
     array = array.filter(x => x.fragmentName === fragment);
+    
+    //FIXME: Very dirty hack, should be at a better place.
+    this.selectedLineStatus = array[0].status;
+
     array = array[0].content // Only one entry can exist, so pick that one.
     array = array.filter(x => x.lineName === line);
+    
     // Return the found content to be shown on screen
     return array[0].lineContent;
   }
@@ -174,7 +197,7 @@ export class DashboardComponent implements OnInit {
     });
  }
 
- public RequestCommentaries(referencerID: number){ //FIXME: must be number
+ public async RequestCommentaries(referencerID: number){ //FIXME: must be number
   // Check if ReferencerID is valid. If not, no commentary available
   if (Number.isNaN(referencerID)){
     this.noCommentary = true;
@@ -182,22 +205,54 @@ export class DashboardComponent implements OnInit {
   else{
     // Set commentary available
     this.noCommentary = false;
-    // Retrieves Fragment Commentary    
-    this.api.GetCommentary(referencerID).subscribe(data => this.F_Commentary = data);
+    // Retrieves Fragment Commentary: we have all identifiers, so just get the content.    
+    this.api.GetCommentary(referencerID).subscribe(data => {
+      this.F_Commentary = data;
+      this.commentaryContent = this.RetrieveContentField(data, 'commentary');
+    });
     // Retrieves Fragment Differences
-    this.api.GetDifferences(referencerID).subscribe(data => this.F_Differences = data);
+    this.api.GetDifferences(referencerID).subscribe(data => {
+      this.F_Differences = data;
+      this.differencesContent = this.RetrieveContentField(data, 'differences');
+    });
+    // Retrieves Fragment Translation
+    this.api.GetTranslation(referencerID).subscribe(data => {
+      this.F_Translation = data;
+      this.translationContent = this.RetrieveContentField(data, 'translation');
+    });
+    // Retrieves Fragment App. Crit.
+    this.api.GetApparatus(referencerID).subscribe(data => {
+      this.F_Apparatus = data;
+      this.apparatusContent = this.RetrieveContentField(data, 'apparatus');
+    });
+    // Retrieves Fragment Reconstruction
+    this.api.GetReconstruction(referencerID).subscribe(data => {
+      this.F_Reconstruction = data;
+      this.reconstructionContent = this.RetrieveContentField(data, 'reconstruction');
+    });    
     // Retrieves Fragment Context
     this.api.GetContext(referencerID).subscribe(data => this.F_Context = data);
-    // Retrieves Fragment Translation
-    this.api.GetTranslation(referencerID).subscribe(data => this.F_Translation = data);
-    // Retrieves Fragment App. Crit.
-    this.api.GetApparatus(referencerID).subscribe(data => this.F_Apparatus = data);
-    // Retrieves Fragment Reconstruction
-    this.api.GetReconstruction(referencerID).subscribe(data => this.F_Reconstruction = data);
   }
   // Turn off spinner at the end
   // this.spinner = false;
 }
+
+  private RetrieveContentField(obj, key){
+    if(this.utility.IsEmptyArray(obj)){
+      console.log('empty')
+      return ''
+    }
+    else{
+      return obj[0][key];
+    }
+  }
+
+  public SelectCorrespondingContext(context){
+    console.log(context)
+    this.selectedContextContent = context.id;
+    this.inputContext = context.context;
+    this.inputContextAuthor = context.contextAuthor;
+  }
 
   // REQUEST FUNCTIONS
   public RequestBooks(author: number){
@@ -225,12 +280,10 @@ export class DashboardComponent implements OnInit {
       }
     );  
   }
-
-    // this.api.DeleteAuthor('Job Zwaag').subscribe();
+    // this.api.CreateAuthor(new Author(id, authorName)).subscribe();
     // this.api.CreateBook(new Book(77, 69, 'Zwarte piet is racistisch')).subscribe();
-    // this.api.DeleteBook('Zwarte piet is racistisch').subscribe();
     // this.api.CreateEditor(new Editor(8, 6, 'The best editor', 1)).subscribe();
-    // this.api.DeleteEditor('The best editor').subscribe();
+    
     // this.api.SetMainEditorFlag(7, false).subscribe();
     // this.api.CreateFragment(new Fragment(222, 200, 'Best frag', '400-401', 81, 'Classical nonsense', 1, 'ok')).subscribe();
     // this.api.DeleteFragment('8', 6, 5).subscribe();
@@ -240,12 +293,11 @@ export class DashboardComponent implements OnInit {
 
   public RequestCreateAuthor(authorName: String){
     console.log(authorName);
-    // this.api.CreateAuthor(new Author(authorName)).subscribe();
-
   }
 
-  public  RequestDeleteAuthor(author: number){
+  public RequestDeleteAuthor(author: number){
     console.log(author);
+    this.api.DeleteAuthor(author).subscribe();
   }
 
   public RequestCreateBook(bookName: String, author: number){
@@ -255,7 +307,7 @@ export class DashboardComponent implements OnInit {
 
   public RequestDeleteBook(book: number, author: number){
     console.log(book);
-    // this.pushData('deleteBook')
+    this.api.DeleteBook(book, author).subscribe();
   }
 
   public RequestCreateEditor(editorName : String, book: number, author: number){
@@ -265,7 +317,7 @@ export class DashboardComponent implements OnInit {
 
   public RequestDeleteEditor(editor: number, book: number, author: number){
     console.log(editor);
-    // this.pushData('deleteEditor')
+    this.api.DeleteEditor(editor).subscribe();
   }
 
   public RequestSetMainEditor(editor: number, book: number, author: number){

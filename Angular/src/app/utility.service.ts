@@ -85,6 +85,15 @@ export class UtilityService {
     return true;
   }
 
+  public IsEmptyArray(array) : boolean {
+    if(Array.isArray(array) && array.length){
+      return false;
+    }
+    else{
+      return true;
+    }
+  }
+
   // Returns a list of uniq numbers. Used for fragmentnumber lists.
   public uniq(a) {
     return a.sort().filter(function(item, pos, ary) {
@@ -132,6 +141,10 @@ export class UtilityService {
     return array;
   }
 
+  // Creates main editor array: the third field has the mainEditor key. Should be named properly.
+  public FilterArrayOnKey(array, key){
+    return array.filter(x => x[key] == 1);
+  }
 
 }
 

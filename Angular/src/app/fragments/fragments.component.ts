@@ -80,8 +80,7 @@ export class FragmentsComponent implements OnInit {
         // Set the editorsJSON to contain the retrieved data.
         this.editorsJSON = data;
         // Select the fragments from the editor you want in the left column.
-        this.mainEditorsJSON = this.CreateMainEditorArray(data);
-        // console.log('filter',this.FilterArray(data, 'mainEditor', 1));
+        this.mainEditorsJSON = this.utility.FilterArrayOnKey(data, 'mainEditor');
 
         this.currentEditor = this.mainEditorsJSON[0].id //FIXME:
       }
@@ -151,16 +150,6 @@ export class FragmentsComponent implements OnInit {
     tempArray.sort(this.utility.SortArrayNumerically);
     // Merge the different lines into their corresponding fragments
     return this.utility.MergeLinesIntoFragment(tempArray);
-  }
-
-  private FilterArray(array, field, value){
-    return array.filter(x => x.field == value);
-  }
-
-  // Creates main editor array: the third field has the mainEditor key. Should be named properly.
-  private CreateMainEditorArray(array){
-    // console.log('createMainEditorArray', array);
-    return array.filter(x => x.mainEditor == 1);
   }
 
   /**
