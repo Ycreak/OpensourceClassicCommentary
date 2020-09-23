@@ -26,7 +26,9 @@ export class FragmentsComponent implements OnInit {
   bibWebsites: JSON;
   bibInCollection : JSON; //TODO: this one should be added.
   // Toggle switches
-  columnsToggle: boolean = true; // Boolean to toggle between 2 and 3 column mode.
+  columnOneToggle: boolean = false;
+  columnTwoToggle: boolean = false; // Boolean to toggle between 2 and 3 column mode.
+  columnThreeToggle: boolean = false;
   spinner: boolean = true; // Boolean to toggle the spinner.
   noCommentary: boolean = false; // Shows banner if no commentary is available.
   // FIXME: proper data types
@@ -57,7 +59,9 @@ export class FragmentsComponent implements OnInit {
   mainEditorArray = [];
 
   Referencer;
-
+  noteArray = [];
+  addedArray = []; // just trying something
+  
   constructor(
     private api: ApiService,
     private utility: UtilityService,
@@ -81,7 +85,6 @@ export class FragmentsComponent implements OnInit {
         this.editorsJSON = data;
         // Select the fragments from the editor you want in the left column.
         this.mainEditorsJSON = this.utility.FilterArrayOnKey(data, 'mainEditor');
-
         this.currentEditor = this.mainEditorsJSON[0].id //FIXME:
       }
     );
@@ -92,6 +95,8 @@ export class FragmentsComponent implements OnInit {
       data => {
         this.F_Fragments = data;
         this.mainEditorArray = this.CreateEditorArray(1, this.F_Fragments);
+        this.selectedEditorArray = this.CreateEditorArray(2, this.F_Fragments); //FIXME: just a quick hack
+
       }
     );  
   }
@@ -116,6 +121,18 @@ export class FragmentsComponent implements OnInit {
   public Test(thing){
     // console.log(this.authorsJSON)
     console.log('test', thing)
+  }
+
+  public PushToArray(note, array){
+    array.push(note);
+    console.log('noteArray',this.noteArray);
+    return array;
+  }
+
+  public PopArray(array){
+    console.log('ar', array)
+    array.pop();
+    return array;
   }
 
   // Function used to set the current Author data given the selected Author array
@@ -193,6 +210,28 @@ public RequestCommentaries(referencer: number){
   
   // Turn off spinner at the end
   this.spinner = false;
+}
+
+// Quickly stolen from Dashboard. Utility maybe?
+public GetFragmentNumbers(editor: number, array){
+  // Initialise list
+  let list = [];
+  // Push all fragment numbers to a list
+  for(let key in array){      
+    list.push(array[key].fragmentName);
+  } 
+  // Only take the unique values from this list
+  list = this.utility.uniq(list);
+  // Sort list numerically
+  return list.sort(this.utility.SortNumeric);    
+}
+
+public AddFragmentToArray(array, fragment){
+  console.log(array)
+  let tempArray = array.filter(x => x.fragmentName == fragment);
+  console.log(tempArray)
+  this.addedArray.push(tempArray)
+  console.log('added',this.addedArray, this.selectedEditorArray)
 }
 
      ////////////////////////////

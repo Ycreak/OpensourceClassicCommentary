@@ -330,9 +330,7 @@ export class DashboardComponent implements OnInit {
 
   public RequestCreateFragment(formInput, editor: number, book: number){
     //FIXME: this needs to be an update statement! :D
-    
     this.api.CreateFragment(new Fragment(0, book, editor, formInput.inputFragmentNumber, formInput.inputLineNumber, formInput.inputLineContent, 0, '')).subscribe();
-
   }
 
   public RequestDeleteFragment(editor: number, book: number, fragmentname: string){
