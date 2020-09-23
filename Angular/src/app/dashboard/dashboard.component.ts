@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ɵConsole } from '@angular/core';
 import { ApiService } from '../api.service';
 import { UtilityService } from '../utility.service';
 
@@ -93,7 +93,7 @@ export class DashboardComponent implements OnInit {
       });
       // Form to create/revise a fragment.
       this.fragmentForm = this.formBuilder.group({
-        inputFragmentNumber: '', // Horrible naming, should be rethought.
+        inputFragmentNumber: '',
         inputLineNumber: '',
         inputLineContent: '',
         inputLineStatus: '',
@@ -280,19 +280,15 @@ export class DashboardComponent implements OnInit {
       }
     );  
   }
-    // this.api.CreateAuthor(new Author(id, authorName)).subscribe();
-    // this.api.CreateBook(new Book(77, 69, 'Zwarte piet is racistisch')).subscribe();
-    // this.api.CreateEditor(new Editor(8, 6, 'The best editor', 1)).subscribe();
     
-    // this.api.SetMainEditorFlag(7, false).subscribe();
-    // this.api.CreateFragment(new Fragment(222, 200, 'Best frag', '400-401', 81, 'Classical nonsense', 1, 'ok')).subscribe();
-    // this.api.DeleteFragment('8', 6, 5).subscribe();
     // this.api.CreateContext(new Context(88, 3, 'Ugh', 'Some content')).subscribe();
     // this.api.SetPublishFlag(1, 6, 134, false).subscribe();
 
 
-  public RequestCreateAuthor(authorName: String){
+  public RequestCreateAuthor(authorName: string){
     console.log(authorName);
+    this.api.CreateAuthor(new Author(0, authorName)).subscribe(); //FIXME: dont pass ID. autoincrement
+
   }
 
   public RequestDeleteAuthor(author: number){
@@ -300,9 +296,9 @@ export class DashboardComponent implements OnInit {
     this.api.DeleteAuthor(author).subscribe();
   }
 
-  public RequestCreateBook(bookName: String, author: number){
+  public RequestCreateBook(bookName: string, author: number){
     console.log(bookName);
-    // this.pushData('createBook')
+    this.api.CreateBook(new Book(0, author, bookName)).subscribe(); //FIXME: dont pass ID. autoincrement
   }
 
   public RequestDeleteBook(book: number, author: number){
@@ -310,9 +306,10 @@ export class DashboardComponent implements OnInit {
     this.api.DeleteBook(book, author).subscribe();
   }
 
-  public RequestCreateEditor(editorName : String, book: number, author: number){
+  public RequestCreateEditor(editorName : string, book: number, author: number){
     console.log(editorName);
-    // this.pushData('createEditor')
+    // Create editor as not being a main editor.
+    this.api.CreateEditor(new Editor(0, book, editorName, 0)).subscribe(); //FIXME: dont pass ID. autoincrement
   }
 
   public RequestDeleteEditor(editor: number, book: number, author: number){
@@ -322,12 +319,26 @@ export class DashboardComponent implements OnInit {
 
   public RequestSetMainEditor(editor: number, book: number, author: number){
     console.log(editor);
+    this.api.SetMainEditorFlag(editor, 1).subscribe();
     // this.pushData('setMainEditor')
   }
 
   public RequestDeleteMainEditor(editor: number, book: number, author: number){
     console.log(editor);
-    // this.pushData('deleteMainEditor')
+    this.api.SetMainEditorFlag(editor, 0).subscribe();
+  }
+
+  public RequestCreateFragment(formInput, editor: number, book: number){
+    //FIXME: this needs to be an update statement! :D
+    
+    this.api.CreateFragment(new Fragment(0, book, editor, formInput.inputFragmentNumber, formInput.inputLineNumber, formInput.inputLineContent, 0, '')).subscribe();
+
+  }
+
+  public RequestDeleteFragment(editor: number, book: number, fragmentname: string){
+    console.log(editor, book, fragmentname)  
+    this.api.DeleteFragment(editor, book, fragmentname).subscribe();
+
   }
 
 }

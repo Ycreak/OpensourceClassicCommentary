@@ -141,7 +141,7 @@
             </mat-tab>
         
             <mat-tab label="Create/Revise Fragment"><br> 
-                <form [formGroup]="fragmentForm" (ngSubmit)="Test(fragmentForm.value)">
+                <form [formGroup]="fragmentForm" (ngSubmit)="RequestCreateFragment(fragmentForm.value, this.selectedEditor.id, this.selectedBook.id)">
                   
                   <mat-form-field class="input-form-full-width">
                     <mat-label>Fragment number</mat-label>
@@ -172,7 +172,8 @@
                   <button mat-button class="button" type="submit">Update Fragment</button>
                 </form>
                 <br>
-  
+                <button mat-button (click)="RequestDeleteFragment(this.selectedEditor.id, this.selectedBook.id, this.selectedFragment)">Deleted selected Fragment</button>
+
               </mat-tab>
 
             <!-- Tab Group to change a fragment. -->

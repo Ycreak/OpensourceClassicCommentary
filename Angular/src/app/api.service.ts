@@ -217,7 +217,7 @@ export class ApiService {
    * @returns ... ... ...
    * @author ppbors
    */
-  SetMainEditorFlag(editorID: number, flag: boolean): Observable<any> {
+  SetMainEditorFlag(editorID: number, flag: number): Observable<any> {
     return this.http.post<any>(this.ApiUrl + `editors/setmainflag`, new Editor(editorID, 0, '', flag? 1 : null));
   }
 
@@ -239,8 +239,8 @@ export class ApiService {
    * @returns ... ... ...
    * @author ppbors
    */
-  DeleteFragment(name: string, bookID: number, editorID: number): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `fragments/delete`, new Fragment(0, bookID, name, '', editorID, '', 0, ''));
+  DeleteFragment(editorID: number, bookID: number, fragmentname: string): Observable<any> {
+    return this.http.post<any>(this.ApiUrl + `fragments/delete`, new Fragment(0, bookID, editorID, fragmentname, '', '', 0, ''));
   }
 
   /**
