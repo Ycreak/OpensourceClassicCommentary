@@ -58,9 +58,13 @@ export class FragmentsComponent implements OnInit {
   selectedEditorArray = [];
   mainEditorArray = [];
 
-  Referencer;
+  referencer : number = 0;
+  note;
   noteArray = [];
   addedArray = []; // just trying something
+  selectedEditor;
+  selectedFragment;
+  fragmentNumberList;
   
   constructor(
     private api: ApiService,

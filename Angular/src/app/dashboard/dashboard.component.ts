@@ -10,8 +10,12 @@ import { Book } from '../models/Book';
 import { Editor } from '../models/Editor';
 import { Fragment } from '../models/Fragment';
 import { Context } from '../models/Context';
-import { Commentary } from '../models/Commentary';
 
+import { Translation } from '../models/Translation';
+import { Apparatus } from '../models/Apparatus';
+import { Differences } from '../models/Differences';
+import { Commentary } from '../models/Commentary';
+import { Reconstruction } from '../models/Reconstruction';
 
 @Component({
   selector: 'app-dashboard',
@@ -44,13 +48,6 @@ export class DashboardComponent implements OnInit {
   contentContent: string = '';
   fragmentLineContent: string = '';
 
-  // DEPRECATED
-  currentAuthor: number;
-  currentBook: number;
-  currentEditor: number;
-  currentFragment: number;
-  currentLine: number;
-
   selectedEditorArray = [];
   fragmentNumberList = [];
   lineNumberList = [];
@@ -75,6 +72,8 @@ export class DashboardComponent implements OnInit {
   inputAuthor = '';
   inputBook = '';
   inputEditor = '';
+
+  referencer : number = 0;
 
   constructor(
     private api: ApiService,
@@ -111,9 +110,34 @@ export class DashboardComponent implements OnInit {
     // console.log('commen', this.F_Commentary)
   }
 
+
+
   public Test(thing){
     // console.log('commen', this.F_Commentary)
     console.log('test', thing)
+
+  }
+
+  public RequestReviseContent(form){
+    this.api.CreateTranslation(new Translation(0, this.referencer, form.inputTranslation)).subscribe(); //FIXME: dont pass ID. autoincrement
+    
+    this.api.CreateApparatus(new Apparatus(0, this.referencer, form.inputApparatus)).subscribe(); //FIXME: dont pass ID. autoincrement
+
+    this.api.CreateDifferences(new Differences(0, this.referencer, form.inputDifferences)).subscribe(res => { 
+                                                                                      if (res.status == 200) { console.log(res); }
+                                                                                      });
+    
+    this.api.CreateCommentary(new Commentary(0, this.referencer, form.inputCommentary)).subscribe(); //FIXME: dont pass ID. autoincrement
+
+    this.api.CreateReconstruction(new Reconstruction(0, this.referencer, form.inputReconstruction)).subscribe(); //FIXME: dont pass ID. autoincrement
+  }
+
+  public RequestReviseContext(form){
+    this.api.CreateContext(new Context(0, this.referencer, form.inputContextAuthor, form.inputContext)).subscribe(); //FIXME: dont pass ID. autoincrement
+  }
+
+  public RequestPublishFlag(editorID: number, bookID: number, fragmentID: string, flag: number){
+    this.api.SetPublishFlag(editorID, bookID, fragmentID, flag);
   }
 
   /**
@@ -158,7 +182,7 @@ export class DashboardComponent implements OnInit {
       }
     } 
     // Sort list numerically
-    console.log('list', list);
+    // console.log('list', list);
 
     return list.sort(this.utility.SortNumeric);    
   }
@@ -184,16 +208,18 @@ export class DashboardComponent implements OnInit {
   * @returns none
   * @author Ycreak
   */
- public RequestReferencerID(fragment: string, editor: number, book: number){
-  console.log('fragment, editor, book: ', fragment, editor, book)
+ public RequestReferencerID(fragmentName: string, editor: number, book: number){
+  console.log('You called! fragment, editor, book: ', fragmentName, editor, book)
   // Turn on the spinner.
   // this.spinner = true;
   // Retrieve the Referencer ID and wait before it is retrieved before proceeding with the rest.
-  this.api.GetReferencerID(fragment, editor, book).subscribe(
+  this.api.GetReferencerID(fragmentName, editor, book).subscribe(
     data => {
-      let F_ReferencerID = data;
-      console.log(F_ReferencerID[0])
-      this.RequestCommentaries(Number(F_ReferencerID[0]))// FIXME: not very elegant
+      data.sort(this.utility.SortNumeric); //FIXME: this must support naming schemes like Warmington.
+      let referencer = Math.min.apply(Math, data)
+      console.log('ref', referencer)
+      this.RequestCommentaries(referencer); // The lowest ID is used as a referencer
+      this.referencer = referencer; //FIXME: should return?
     });
  }
 
@@ -281,13 +307,9 @@ export class DashboardComponent implements OnInit {
     );  
   }
     
-    // this.api.CreateContext(new Context(88, 3, 'Ugh', 'Some content')).subscribe();
-    // this.api.SetPublishFlag(1, 6, 134, false).subscribe();
-
-
   public RequestCreateAuthor(authorName: string){
     console.log(authorName);
-    this.api.CreateAuthor(new Author(0, authorName)).subscribe(); //FIXME: dont pass ID. autoincrement
+    this.api.CreateAuthor(new Author(0, authorName)).subscribe(data => console.log(data)); //FIXME: dont pass ID. autoincrement
 
   }
 

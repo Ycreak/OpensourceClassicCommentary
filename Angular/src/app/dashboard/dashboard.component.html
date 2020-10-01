@@ -22,7 +22,6 @@
             <mat-label>Author</mat-label>
             <mat-select [(ngModel)]="selectedAuthor">
                 <mat-option *ngFor="let data of this.authorsJSON" [value]="data"
-                (click)="this.currentAuthor = data.id"
                 (click)="RequestBooks(data.id)">
                 {{ data.name }}                       
                 </mat-option>
@@ -34,7 +33,6 @@
             <mat-label>Book</mat-label>
             <mat-select [(ngModel)]="selectedBook">
             <mat-option *ngFor="let data of this.booksJSON" [value]="data"
-            (click)="this.currentBook = data.id"
             (click)="this.RequestEditors(data.id)"
             (click)="this.RequestFragments(data.id)">
                 {{ data.title }}                       
@@ -47,7 +45,6 @@
             <mat-label>Editor</mat-label>
             <mat-select [(ngModel)]="selectedEditor">
             <mat-option *ngFor="let data of this.editorsJSON" [value]="data"
-            (click)="this.currentEditor = data.id"
             (click)="this.selectedEditorArray = CreateEditorArray(data.id, this.F_Fragments)"
             (click)="this.fragmentNumberList = GetFragmentNumbers(data.id, this.selectedEditorArray)">
                 {{ data.name }}                       
@@ -64,7 +61,6 @@
             (click)="fragmentLineContent = ''"
             (click)="selectedLineStatus = ''"
             (click)="this.RequestReferencerID(this.selectedFragment, this.selectedEditor.id, this.selectedBook.id)"
-            (click)="this.currentFragment = data"
             (click)="this.lineNumberList = GetLineNumbers(data, this.selectedEditorArray)">
                 {{ data }} 
             </mat-option>
@@ -76,8 +72,7 @@
             <mat-label>Line</mat-label>
             <mat-select [(ngModel)]="selectedLine">
             <mat-option *ngFor="let data of this.lineNumberList" [value]="data"
-            (click)="this.Test('hello')"
-            (click)="this.fragmentLineContent = GetFragmentLine(data, this.currentFragment, this.selectedEditorArray)">
+            (click)="this.fragmentLineContent = GetFragmentLine(data, this.selectedFragment, this.selectedEditorArray)">
                 {{ data }} 
             </mat-option>
             </mat-select>
@@ -183,7 +178,7 @@
             <mat-tab label="Create/Revise Content"><br>
                 <h4>Select one of the fragments to change its contents fields. Only changes will be saved.</h4>
                 <!-- Uses form group! On pressing upload, changes will be put in the form. -->
-                <form [formGroup]="contentForm" (ngSubmit)="Test(contentForm.value)">
+                <form [formGroup]="contentForm" (ngSubmit)="RequestReviseContent(contentForm.value)">
                   <mat-form-field class="input-form-full-width">
                     <mat-label>Fragment commentary</mat-label>
                     <input matInput value='{{commentaryContent}}' id="inputCommentary" type="text" formControlName="inputCommentary">
@@ -237,7 +232,7 @@
                 </mat-form-field>
                 <div class="div-padding"></div>
 
-                <form [formGroup]="contextForm" (ngSubmit)="Test(contextForm.value)">
+                <form [formGroup]="contextForm" (ngSubmit)="RequestReviseContext(contextForm.value)">
 
                   <mat-form-field class="input-form-full-width">
                     <mat-label>Context Author</mat-label>
@@ -261,6 +256,13 @@
 
 
               </mat-tab>
+
+              <mat-tab label="Publish"><br>
+                <button mat-button (click)="this.RequestPublishFlag(this.selectedEditor.id, this.selectedBook.id, this.selectedFragment, 1)">Publish selected fragment</button>
+                <button mat-button (click)="this.RequestPublishFlag(this.selectedEditor.id, this.selectedBook.id, this.selectedFragment, 0)">Unpublish selected fragment</button>
+            </mat-tab>
+
+            
 
         </mat-tab-group>
         

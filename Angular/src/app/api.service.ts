@@ -245,20 +245,53 @@ export class ApiService {
 
   /**
    * ... ... ...
-   * @param referencer
-   * @param appCrit
-   * @param commentary
-   * @param differences
-   * @param reconstruction
    * @param translation
    * @returns ... ... ...
    * @author ppbors
-   * TODO:FIXME: make call in api
    */
-  CreateFragmentCommentary(referencer: string, appCrit: string, commentary: string, differences: string, reconstruction: string, translation: string): Observable<string[]> {
-    return this.http.get<string[]>(this.ApiUrl + '...?referencer=' + referencer + '&appCrit=' + appCrit + '&commentary=' + commentary + '&differences=' + 
-                                   differences + '&reconstruction=' + reconstruction + '&translation=' + translation);
+  CreateTranslation(translation: Translation): Observable<any> {
+    return this.http.post<any>(this.ApiUrl + `ftranslations/create`, translation);
   }
+
+  /**
+   * ... ... ...
+   * @param apparatus
+   * @returns ... ... ...
+   * @author ppbors
+   */
+  CreateApparatus(apparatus: Apparatus): Observable<any> {
+    return this.http.post<any>(this.ApiUrl + `fapparatus/create`, apparatus);
+  }
+
+  /**
+   * ... ... ...
+   * @param differences
+   * @returns ... ... ...
+   * @author ppbors
+   */
+  CreateDifferences(differences: Differences): Observable<any> {
+    return this.http.post<any>(this.ApiUrl + `fdifferences/create`, differences, { observe: 'response' });
+  }
+  
+  /**
+   * ... ... ...
+   * @param commentary
+   * @returns ... ... ...
+   * @author ppbors
+   */
+  CreateCommentary(commentary: Commentary): Observable<any> {
+    return this.http.post<any>(this.ApiUrl + `fcommentary/create`, commentary);
+  }
+  
+  /**
+   * ... ... ...
+   * @param reconstruction
+   * @returns ... ... ...
+   * @author ppbors
+   */
+  CreateReconstruction(reconstruction: Reconstruction): Observable<any> {
+    return this.http.post<any>(this.ApiUrl + `freconstruction/create`, reconstruction);
+  }  
 
    /**
    * ... ... ...
@@ -267,51 +300,7 @@ export class ApiService {
    * @author ppbors
    */
   CreateContext(context: Context): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `fcontext`, context);
-  }
-
-   /**
-   * ... ... ...
-   * @param appCrit
-   * @param referencer
-   * @param differences
-   * @param commentary
-   * @param translation
-   * @param reconstruction
-   * @returns ... ... ...
-   * @author ppbors
-   * TODO:FIXME: make call in api
-   */
-  ReviseFragmentCommentary(appCrit: string, referencer: string, differences: string, commentary: string, translation: string, reconstruction: string): Observable<string[]> {
-    return this.http.get<string[]>(this.ApiUrl + '...?appCrit=' + appCrit + '&referencer=' + referencer + '&differences='
-                                   + differences + '&commentary=' + commentary + '&translation=' + translation + '&reconstruction=' + reconstruction);
-  }
-
-   /**
-   * ... ... ...
-   * @param context
-   * @param referencer
-   * @param contextAuthor
-   * @returns ... ... ...
-   * @author ppbors
-   * TODO:FIXME: make call in api
-   */
-  ReviseFragmentContext(context: string, referencer: string, contextAuthor: string): Observable<string[]> {
-    return this.http.get<string[]>(this.ApiUrl + '...?context=' + context + '&referencer=' + referencer + '&contextAuthor=' + contextAuthor);
-  }
-
-   /**
-   * ... ... ...
-   * @param content
-   * @param book
-   * @param fragment
-   * @param line
-   * @returns ... ... ...
-   * @author ppbors
-   * TODO:FIXME: make call in api
-   */
-  ReviseFragmentContent(content: string, book: string, fragment: string, line: string): Observable<string[]> {
-    return this.http.get<string[]>(this.ApiUrl + '...?content=' + content + '&book=' + book + '&fragment=' + fragment + '&line=' + line);
+    return this.http.post<any>(this.ApiUrl + `fcontext/create`, context);
   }
 
   /**
@@ -323,7 +312,71 @@ export class ApiService {
    * @returns ... ... ...
    * @author ppbors
    */
-  SetPublishFlag(editorID: number, bookID: number, fragmentID: number, flag: boolean): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + 'fragmentreferencer/setpublishflag', new FragmentReferencer(0, bookID, editorID, fragmentID, flag ? 1 : null));
+  SetPublishFlag(editorID: number, bookID: number, fragmentID: string, flag: number): Observable<any> {
+    return this.http.post<any>(this.ApiUrl + 'fragmentreferencer/setpublishflag', new Fragment(0, bookID, editorID, fragmentID, '', '', flag, ''));
   }
+
+
+  /**
+   * ... ... ...
+   * @param referencer
+   * @param appCrit
+   * @param commentary
+   * @param differences
+   * @param reconstruction
+   * @param translation
+   * @returns ... ... ...
+   * @author ppbors
+   * TODO:FIXME: make call in api
+   */
+  // CreateFragmentCommentary(referencer: string, appCrit: string, commentary: string, differences: string, reconstruction: string, translation: string): Observable<string[]> {
+  //   return this.http.get<string[]>(this.ApiUrl + '...?referencer=' + referencer + '&appCrit=' + appCrit + '&commentary=' + commentary + '&differences=' + 
+  //                                  differences + '&reconstruction=' + reconstruction + '&translation=' + translation);
+  // }
+
+  //  /**
+  //  * ... ... ...
+  //  * @param appCrit
+  //  * @param referencer
+  //  * @param differences
+  //  * @param commentary
+  //  * @param translation
+  //  * @param reconstruction
+  //  * @returns ... ... ...
+  //  * @author ppbors
+  //  * TODO:FIXME: make call in api
+  //  */
+  // ReviseFragmentCommentary(appCrit: string, referencer: string, differences: string, commentary: string, translation: string, reconstruction: string): Observable<string[]> {
+  //   return this.http.get<string[]>(this.ApiUrl + '...?appCrit=' + appCrit + '&referencer=' + referencer + '&differences='
+  //                                  + differences + '&commentary=' + commentary + '&translation=' + translation + '&reconstruction=' + reconstruction);
+  // }
+
+  //  /**
+  //  * ... ... ...
+  //  * @param context
+  //  * @param referencer
+  //  * @param contextAuthor
+  //  * @returns ... ... ...
+  //  * @author ppbors
+  //  * TODO:FIXME: make call in api
+  //  */
+  // ReviseFragmentContext(context: string, referencer: string, contextAuthor: string): Observable<string[]> {
+  //   return this.http.get<string[]>(this.ApiUrl + '...?context=' + context + '&referencer=' + referencer + '&contextAuthor=' + contextAuthor);
+  // }
+
+  //  /**
+  //  * ... ... ...
+  //  * @param content
+  //  * @param book
+  //  * @param fragment
+  //  * @param line
+  //  * @returns ... ... ...
+  //  * @author ppbors
+  //  * TODO:FIXME: make call in api
+  //  */
+  // ReviseFragmentContent(content: string, book: string, fragment: string, line: string): Observable<string[]> {
+  //   return this.http.get<string[]>(this.ApiUrl + '...?content=' + content + '&book=' + book + '&fragment=' + fragment + '&line=' + line);
+  // }
+
+
 }
