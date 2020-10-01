@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
+
 import { Observable } from 'rxjs';
+import { throwError } from 'rxjs';
+import { catchError, retry } from 'rxjs/operators';
+
 import { Fragment } from './models/Fragment';
 import { Author } from './models/Author';
 import { Editor } from './models/Editor';
@@ -13,6 +18,7 @@ import { Apparatus } from './models/Apparatus';
 import { Translation } from './models/Translation';
 import { Differences } from './models/Differences';
 import { Commentary } from './models/Commentary';
+
 
 @Injectable({
   providedIn: 'root'
@@ -157,7 +163,13 @@ export class ApiService {
    * @author ppbors
    */
   CreateAuthor(author: Author): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `authors`, author);
+    return this.http.post<any>(this.ApiUrl + `authors`, author, { observe: 'response' });
+  }
+
+  
+  private handleError(error: HttpErrorResponse) {
+    // Return an observable with a user-facing error message.
+    return throwError(error.status);
   }
 
   /**
@@ -167,7 +179,10 @@ export class ApiService {
    * @author ppbors
    */
   DeleteAuthor(id: number): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `authors/delete`, new Author(id, ''));
+    return this.http.post<any>(this.ApiUrl + `authors/delete`, new Author(id, ''), { observe: 'response' })
+      .pipe(
+        catchError(this.handleError)
+      );
   }
 
   /**
@@ -177,7 +192,7 @@ export class ApiService {
    * @author ppbors
    */
   CreateBook(book: Book): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `books`, book);
+    return this.http.post<any>(this.ApiUrl + `books`, book, { observe: 'response' });
   }
 
   /**
@@ -187,7 +202,7 @@ export class ApiService {
    * @author ppbors
    */
   DeleteBook(id: number, author: number): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `books/delete`, new Book(id, author, ''));
+    return this.http.post<any>(this.ApiUrl + `books/delete`, new Book(id, author, ''), { observe: 'response' });
   }
 
   /**
@@ -197,7 +212,7 @@ export class ApiService {
    * @author ppbors
    */
   CreateEditor(editor: Editor): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `editors`, editor);
+    return this.http.post<any>(this.ApiUrl + `editors`, editor, { observe: 'response' });
   }
   
   /**
@@ -207,7 +222,7 @@ export class ApiService {
    * @author ppbors
    */
   DeleteEditor(id: number): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `editors/delete`, new Editor(id, 0, '', 0));
+    return this.http.post<any>(this.ApiUrl + `editors/delete`, new Editor(id, 0, '', 0), { observe: 'response' });
   }
 
   /**
@@ -218,7 +233,7 @@ export class ApiService {
    * @author ppbors
    */
   SetMainEditorFlag(editorID: number, flag: number): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `editors/setmainflag`, new Editor(editorID, 0, '', flag? 1 : null));
+    return this.http.post<any>(this.ApiUrl + `editors/setmainflag`, new Editor(editorID, 0, '', flag? 1 : null), { observe: 'response' });
   }
 
   /**
@@ -228,7 +243,7 @@ export class ApiService {
    * @author ppbors
    */
   CreateFragment(fragment: Fragment): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `fragments`, fragment);
+    return this.http.post<any>(this.ApiUrl + `fragments`, fragment, { observe: 'response' });
   }
 
   /**
@@ -240,7 +255,7 @@ export class ApiService {
    * @author ppbors
    */
   DeleteFragment(editorID: number, bookID: number, fragmentname: string): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `fragments/delete`, new Fragment(0, bookID, editorID, fragmentname, '', '', 0, ''));
+    return this.http.post<any>(this.ApiUrl + `fragments/delete`, new Fragment(0, bookID, editorID, fragmentname, '', '', 0, ''), { observe: 'response' });
   }
 
   /**
@@ -250,7 +265,7 @@ export class ApiService {
    * @author ppbors
    */
   CreateTranslation(translation: Translation): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `ftranslations/create`, translation);
+    return this.http.post<any>(this.ApiUrl + `ftranslations/create`, translation, { observe: 'response' });
   }
 
   /**
@@ -260,7 +275,7 @@ export class ApiService {
    * @author ppbors
    */
   CreateApparatus(apparatus: Apparatus): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `fapparatus/create`, apparatus);
+    return this.http.post<any>(this.ApiUrl + `fapparatus/create`, apparatus, { observe: 'response' });
   }
 
   /**
@@ -280,7 +295,7 @@ export class ApiService {
    * @author ppbors
    */
   CreateCommentary(commentary: Commentary): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `fcommentary/create`, commentary);
+    return this.http.post<any>(this.ApiUrl + `fcommentary/create`, commentary, { observe: 'response' });
   }
   
   /**
@@ -290,7 +305,7 @@ export class ApiService {
    * @author ppbors
    */
   CreateReconstruction(reconstruction: Reconstruction): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `freconstruction/create`, reconstruction);
+    return this.http.post<any>(this.ApiUrl + `freconstruction/create`, reconstruction, { observe: 'response' });
   }  
 
    /**
@@ -300,7 +315,7 @@ export class ApiService {
    * @author ppbors
    */
   CreateContext(context: Context): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `fcontext/create`, context);
+    return this.http.post<any>(this.ApiUrl + `fcontext/create`, context, { observe: 'response' });
   }
 
   /**
@@ -313,7 +328,7 @@ export class ApiService {
    * @author ppbors
    */
   SetPublishFlag(editorID: number, bookID: number, fragmentID: string, flag: number): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + 'fragmentreferencer/setpublishflag', new Fragment(0, bookID, editorID, fragmentID, '', '', flag, ''));
+    return this.http.post<any>(this.ApiUrl + 'fragmentreferencer/setpublishflag', new Fragment(0, bookID, editorID, fragmentID, '', '', flag, ''), { observe: 'response' });
   }
 
 

@@ -49,6 +49,7 @@ import {MatMenuModule} from '@angular/material/menu';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {MatToolbarModule} from '@angular/material/toolbar'; 
+import {MatSnackBarModule} from '@angular/material/snack-bar'; 
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
@@ -88,6 +89,7 @@ const appRoutes: Routes = [
     MatInputModule,
     MatButtonModule,
     MatToolbarModule,
+    MatSnackBarModule,
     // To allow the drag and drop
     DragDropModule,
 

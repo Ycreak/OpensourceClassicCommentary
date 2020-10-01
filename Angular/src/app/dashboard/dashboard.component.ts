@@ -4,6 +4,7 @@ import { UtilityService } from '../utility.service';
 
 // To allow the use of forms
 import { FormBuilder } from '@angular/forms';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 import { Author } from '../models/Author';
 import { Book } from '../models/Book';
@@ -16,6 +17,7 @@ import { Apparatus } from '../models/Apparatus';
 import { Differences } from '../models/Differences';
 import { Commentary } from '../models/Commentary';
 import { Reconstruction } from '../models/Reconstruction';
+import { stringify } from '@angular/compiler/src/util';
 
 @Component({
   selector: 'app-dashboard',
@@ -74,10 +76,12 @@ export class DashboardComponent implements OnInit {
   inputEditor = '';
 
   referencer : number = 0;
+  serverStatus : number;
 
   constructor(
     private api: ApiService,
     private utility: UtilityService,
+    private _snackBar: MatSnackBar,
     private formBuilder: FormBuilder,
     ) {
       // Form to revise the commentary of a fragment.
@@ -106,7 +110,7 @@ export class DashboardComponent implements OnInit {
      }
 
   ngOnInit(): void {
-    this.api.GetAuthors().subscribe(data => this.authorsJSON = data);
+    this.api.GetAuthors().subscribe(data => this.authorsJSON = data); //FIXME: should be requestAuthors
     // console.log('commen', this.F_Commentary)
   }
 
@@ -119,25 +123,23 @@ export class DashboardComponent implements OnInit {
   }
 
   public RequestReviseContent(form){
-    this.api.CreateTranslation(new Translation(0, this.referencer, form.inputTranslation)).subscribe(); //FIXME: dont pass ID. autoincrement
+    this.api.CreateTranslation(new Translation(0, this.referencer, form.inputTranslation)).subscribe(res => this.openSnackBar(res.status)); //FIXME: dont pass ID. autoincrement
     
-    this.api.CreateApparatus(new Apparatus(0, this.referencer, form.inputApparatus)).subscribe(); //FIXME: dont pass ID. autoincrement
+    this.api.CreateApparatus(new Apparatus(0, this.referencer, form.inputApparatus)).subscribe(res => this.openSnackBar(res.status)); //FIXME: dont pass ID. autoincrement
 
-    this.api.CreateDifferences(new Differences(0, this.referencer, form.inputDifferences)).subscribe(res => { 
-                                                                                      if (res.status == 200) { console.log(res); }
-                                                                                      });
+    this.api.CreateDifferences(new Differences(0, this.referencer, form.inputDifferences)).subscribe(res => this.openSnackBar(res.status));
     
-    this.api.CreateCommentary(new Commentary(0, this.referencer, form.inputCommentary)).subscribe(); //FIXME: dont pass ID. autoincrement
+    this.api.CreateCommentary(new Commentary(0, this.referencer, form.inputCommentary)).subscribe(res => this.openSnackBar(res.status)); //FIXME: dont pass ID. autoincrement
 
-    this.api.CreateReconstruction(new Reconstruction(0, this.referencer, form.inputReconstruction)).subscribe(); //FIXME: dont pass ID. autoincrement
+    this.api.CreateReconstruction(new Reconstruction(0, this.referencer, form.inputReconstruction)).subscribe(res => this.openSnackBar(res.status)); //FIXME: dont pass ID. autoincrement
   }
 
   public RequestReviseContext(form){
-    this.api.CreateContext(new Context(0, this.referencer, form.inputContextAuthor, form.inputContext)).subscribe(); //FIXME: dont pass ID. autoincrement
+    this.api.CreateContext(new Context(0, this.referencer, form.inputContextAuthor, form.inputContext)).subscribe(res => this.openSnackBar(res.status)); //FIXME: dont pass ID. autoincrement
   }
 
   public RequestPublishFlag(editorID: number, bookID: number, fragmentID: string, flag: number){
-    this.api.SetPublishFlag(editorID, bookID, fragmentID, flag);
+    this.api.SetPublishFlag(editorID, bookID, fragmentID, flag).subscribe(res => this.openSnackBar(res.status));;
   }
 
   /**
@@ -281,6 +283,16 @@ export class DashboardComponent implements OnInit {
   }
 
   // REQUEST FUNCTIONS
+  public RequestAuthors(){
+    this.api.GetAuthors().subscribe(
+      data => {
+        this.authorsJSON = data;
+        console.log(data);
+      }
+    );      
+  }
+
+
   public RequestBooks(author: number){
     this.api.GetBooks(author).subscribe(
       data => {
@@ -309,56 +321,102 @@ export class DashboardComponent implements OnInit {
     
   public RequestCreateAuthor(authorName: string){
     console.log(authorName);
-    this.api.CreateAuthor(new Author(0, authorName)).subscribe(data => console.log(data)); //FIXME: dont pass ID. autoincrement
-
+    this.api.CreateAuthor(new Author(0, authorName)).subscribe(res => {
+      this.openSnackBar(res.status), 
+      this.RequestAuthors()
+    }); //FIXME: dont pass ID. autoincrement
   }
 
+ 
   public RequestDeleteAuthor(author: number){
     console.log(author);
-    this.api.DeleteAuthor(author).subscribe();
+    this.api.DeleteAuthor(author).subscribe(res => {
+      console.log('res', res)
+      this.openSnackBar(res.status),
+      this.RequestAuthors()
+    },
+    err => this.openSnackBar(err)
+    );  
   }
 
   public RequestCreateBook(bookName: string, author: number){
     console.log(bookName);
-    this.api.CreateBook(new Book(0, author, bookName)).subscribe(); //FIXME: dont pass ID. autoincrement
+    this.api.CreateBook(new Book(0, author, bookName)).subscribe(res => {
+      this.openSnackBar(res.status),
+      this.RequestBooks(this.selectedAuthor.id);
+    }); //FIXME: dont pass ID. autoincrement
   }
 
   public RequestDeleteBook(book: number, author: number){
     console.log(book);
-    this.api.DeleteBook(book, author).subscribe();
+    this.api.DeleteBook(book, author).subscribe(res => {
+      this.openSnackBar(res.status)
+      this.RequestBooks(this.selectedAuthor.id);   
+    });
   }
 
   public RequestCreateEditor(editorName : string, book: number, author: number){
     console.log(editorName);
     // Create editor as not being a main editor.
-    this.api.CreateEditor(new Editor(0, book, editorName, 0)).subscribe(); //FIXME: dont pass ID. autoincrement
+    this.api.CreateEditor(new Editor(0, book, editorName, 0)).subscribe(res => {
+      this.openSnackBar(res.status),
+      this.RequestEditors(this.selectedBook.id);   
+    }); //FIXME: dont pass ID. autoincrement
   }
 
   public RequestDeleteEditor(editor: number, book: number, author: number){
     console.log(editor);
-    this.api.DeleteEditor(editor).subscribe();
+    this.api.DeleteEditor(editor).subscribe(res => {
+      this.openSnackBar(res.status),
+      this.RequestEditors(this.selectedBook.id);   
+    });
   }
 
   public RequestSetMainEditor(editor: number, book: number, author: number){
     console.log(editor);
-    this.api.SetMainEditorFlag(editor, 1).subscribe();
+    this.api.SetMainEditorFlag(editor, 1).subscribe(res => this.openSnackBar(res.status));
     // this.pushData('setMainEditor')
   }
 
   public RequestDeleteMainEditor(editor: number, book: number, author: number){
     console.log(editor);
-    this.api.SetMainEditorFlag(editor, 0).subscribe();
+    this.api.SetMainEditorFlag(editor, 0).subscribe(res => this.openSnackBar(res.status));
   }
+
+  temp;
 
   public RequestCreateFragment(formInput, editor: number, book: number){
     //FIXME: this needs to be an update statement! :D
-    this.api.CreateFragment(new Fragment(0, book, editor, formInput.inputFragmentNumber, formInput.inputLineNumber, formInput.inputLineContent, 0, '')).subscribe();
+    this.api.CreateFragment(new Fragment(0, book, editor, formInput.inputFragmentNumber, formInput.inputLineNumber, formInput.inputLineContent, 0, '')).subscribe(res =>
+      this.openSnackBar(res.status));
   }
 
   public RequestDeleteFragment(editor: number, book: number, fragmentname: string){
     console.log(editor, book, fragmentname)  
-    this.api.DeleteFragment(editor, book, fragmentname).subscribe();
+    this.api.DeleteFragment(editor, book, fragmentname).subscribe(res => this.openSnackBar(res.status));
 
   }
 
+  openSnackBar(status: number) {
+    console.log(status)
+    let message = ''
+    
+    if(status == 200){
+      message = 'Operation succesful.' 
+    }
+    else{
+      message = 'Please try again.'
+    }
+
+    message = String(status) + ': ' + message;
+
+    this._snackBar.open(message, 'Close', {
+      duration: 2000,
+    });
+  }
+
+
+  
 }
+
+
