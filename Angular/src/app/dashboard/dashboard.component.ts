@@ -122,26 +122,6 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  public RequestReviseContent(form){
-    this.api.CreateTranslation(new Translation(0, this.referencer, form.inputTranslation)).subscribe(res => this.openSnackBar(res.status)); //FIXME: dont pass ID. autoincrement
-    
-    this.api.CreateApparatus(new Apparatus(0, this.referencer, form.inputApparatus)).subscribe(res => this.openSnackBar(res.status)); //FIXME: dont pass ID. autoincrement
-
-    this.api.CreateDifferences(new Differences(0, this.referencer, form.inputDifferences)).subscribe(res => this.openSnackBar(res.status));
-    
-    this.api.CreateCommentary(new Commentary(0, this.referencer, form.inputCommentary)).subscribe(res => this.openSnackBar(res.status)); //FIXME: dont pass ID. autoincrement
-
-    this.api.CreateReconstruction(new Reconstruction(0, this.referencer, form.inputReconstruction)).subscribe(res => this.openSnackBar(res.status)); //FIXME: dont pass ID. autoincrement
-  }
-
-  public RequestReviseContext(form){
-    this.api.CreateContext(new Context(0, this.referencer, form.inputContextAuthor, form.inputContext)).subscribe(res => this.openSnackBar(res.status)); //FIXME: dont pass ID. autoincrement
-  }
-
-  public RequestPublishFlag(editorID: number, bookID: number, fragmentID: string, flag: number){
-    this.api.SetPublishFlag(editorID, bookID, fragmentID, flag).subscribe(res => this.openSnackBar(res.status));;
-  }
-
   /**
   * Creates fragments for the main editor and the selected editor
   * @param selectedEditor given from the middle column
@@ -282,137 +262,180 @@ export class DashboardComponent implements OnInit {
     this.inputContextAuthor = context.contextAuthor;
   }
 
-  // REQUEST FUNCTIONS
+
+
+//   _____  ______ ____  _    _ ______  _____ _______ _____ 
+//  |  __ \|  ____/ __ \| |  | |  ____|/ ____|__   __/ ____|
+//  | |__) | |__ | |  | | |  | | |__  | (___    | | | (___  
+//  |  _  /|  __|| |  | | |  | |  __|  \___ \   | |  \___ \ 
+//  | | \ \| |___| |__| | |__| | |____ ____) |  | |  ____) |
+//  |_|  \_\______\___\_\\____/|______|_____/   |_| |_____/                                                    
+
+  public RequestReviseContent(form){
+    if (form.inputTranslation != ''){
+      this.api.CreateTranslation(new Translation(0, this.referencer, form.inputTranslation)).subscribe(
+        res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)); //FIXME: dont pass ID. autoincrement
+    }
+    if (form.inputApparatus != ''){
+      this.api.CreateApparatus(new Apparatus(0, this.referencer, form.inputApparatus)).subscribe(
+        res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)); //FIXME: dont pass ID. autoincrement
+    }
+    if (form.inputDifferences != ''){
+      this.api.CreateDifferences(new Differences(0, this.referencer, form.inputDifferences)).subscribe(
+        res => this.handleErrorMessage(res), err => this.handleErrorMessage(err));
+    }
+    if (form.inputCommentary != ''){
+      this.api.CreateCommentary(new Commentary(0, this.referencer, form.inputCommentary)).subscribe(
+        res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)); //FIXME: dont pass ID. autoincrement
+    }
+    if (form.inputReconstruction != ''){
+      this.api.CreateReconstruction(new Reconstruction(0, this.referencer, form.inputReconstruction)).subscribe(
+        res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)); //FIXME: dont pass ID. autoincrement
+    }
+  }
+
+  public RequestReviseContext(form){
+    if (form.inputContext != '' || form.inputContextAuthor != ''){
+      this.api.CreateContext(new Context(0, this.referencer, form.inputContextAuthor, form.inputContext)).subscribe(
+        res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)); //FIXME: dont pass ID. autoincrement
+    }
+  }
+
+  public RequestPublishFlag(editorID: number, bookID: number, fragmentID: string, flag: number){
+    this.api.SetPublishFlag(editorID, bookID, fragmentID, flag).subscribe(
+      res => this.handleErrorMessage(res), err => this.handleErrorMessage(err));
+  }
+
+
   public RequestAuthors(){
     this.api.GetAuthors().subscribe(
-      data => {
-        this.authorsJSON = data;
-        console.log(data);
-      }
+      data => this.authorsJSON = data,
+      err => this.handleErrorMessage(err),
     );      
   }
 
 
   public RequestBooks(author: number){
     this.api.GetBooks(author).subscribe(
-      data => {
-        this.booksJSON = data;
-        console.log(data);
-      }
+      data => this.booksJSON = data,
+      err => this.handleErrorMessage(err),
     );      
   }
 
   public RequestEditors(book: number){
     this.api.GetEditors(book).subscribe(
-      data => {
-        // Set the editorsJSON to contain the retrieved data.
-        this.editorsJSON = data;
-      }
+      data => this.editorsJSON = data,
+      err => this.handleErrorMessage(err),
     );
   }
 
   public RequestFragments(book: number){
     this.api.GetFragments(book).subscribe(
-      data => {
-        this.F_Fragments = data;
-      }
+      data => this.F_Fragments = data,
+      err => this.handleErrorMessage(err),
     );  
   }
     
   public RequestCreateAuthor(authorName: string){
     console.log(authorName);
-    this.api.CreateAuthor(new Author(0, authorName)).subscribe(res => {
-      this.openSnackBar(res.status), 
-      this.RequestAuthors()
-    }); //FIXME: dont pass ID. autoincrement
+    this.api.CreateAuthor(new Author(0, authorName)).subscribe(
+      res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
+    ); //FIXME: Can this be done more elegant?
   }
 
  
   public RequestDeleteAuthor(author: number){
     console.log(author);
-    this.api.DeleteAuthor(author).subscribe(res => {
-      console.log('res', res)
-      this.openSnackBar(res.status),
-      this.RequestAuthors()
-    },
-    err => this.openSnackBar(err)
+    this.api.DeleteAuthor(author).subscribe(
+      res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
     );  
   }
 
   public RequestCreateBook(bookName: string, author: number){
     console.log(bookName);
-    this.api.CreateBook(new Book(0, author, bookName)).subscribe(res => {
-      this.openSnackBar(res.status),
-      this.RequestBooks(this.selectedAuthor.id);
-    }); //FIXME: dont pass ID. autoincrement
+    this.api.CreateBook(new Book(0, author, bookName)).subscribe(
+      res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
+    ); //FIXME: dont pass ID. autoincrement
   }
 
   public RequestDeleteBook(book: number, author: number){
     console.log(book);
-    this.api.DeleteBook(book, author).subscribe(res => {
-      this.openSnackBar(res.status)
-      this.RequestBooks(this.selectedAuthor.id);   
-    });
+    this.api.DeleteBook(book, author).subscribe(
+      res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
+    );
   }
 
   public RequestCreateEditor(editorName : string, book: number, author: number){
     console.log(editorName);
     // Create editor as not being a main editor.
-    this.api.CreateEditor(new Editor(0, book, editorName, 0)).subscribe(res => {
-      this.openSnackBar(res.status),
-      this.RequestEditors(this.selectedBook.id);   
-    }); //FIXME: dont pass ID. autoincrement
+    this.api.CreateEditor(new Editor(0, book, editorName, 0)).subscribe(
+      res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
+    ); //FIXME: dont pass ID. autoincrement
   }
 
   public RequestDeleteEditor(editor: number, book: number, author: number){
     console.log(editor);
-    this.api.DeleteEditor(editor).subscribe(res => {
-      this.openSnackBar(res.status),
-      this.RequestEditors(this.selectedBook.id);   
-    });
+    this.api.DeleteEditor(editor).subscribe(
+      res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
+    );
   }
 
   public RequestSetMainEditor(editor: number, book: number, author: number){
     console.log(editor);
-    this.api.SetMainEditorFlag(editor, 1).subscribe(res => this.openSnackBar(res.status));
-    // this.pushData('setMainEditor')
+    this.api.SetMainEditorFlag(editor, 1).subscribe(
+      res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
+    );
   }
 
   public RequestDeleteMainEditor(editor: number, book: number, author: number){
     console.log(editor);
-    this.api.SetMainEditorFlag(editor, 0).subscribe(res => this.openSnackBar(res.status));
+    this.api.SetMainEditorFlag(editor, 0).subscribe(
+      res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
+    );
   }
 
-  temp;
-
-  public RequestCreateFragment(formInput, editor: number, book: number){
+  public RequestCreateFragment(form, editor: number, book: number){
     //FIXME: this needs to be an update statement! :D
-    this.api.CreateFragment(new Fragment(0, book, editor, formInput.inputFragmentNumber, formInput.inputLineNumber, formInput.inputLineContent, 0, '')).subscribe(res =>
-      this.openSnackBar(res.status));
+    // These fields may not be empty!
+    if(form.inputFragmentNumber != '' && form.inputLineNumber != '' && form.inputLineContent != ''){
+      this.api.CreateFragment(new Fragment(0, book, editor, form.inputFragmentNumber, form.inputLineNumber, form.inputLineContent, 0, '')).subscribe(
+        res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
+      );
+    }
+    else{
+      this.openSnackbar('Please fill in all required fields!')
+    }
   }
 
   public RequestDeleteFragment(editor: number, book: number, fragmentname: string){
     console.log(editor, book, fragmentname)  
-    this.api.DeleteFragment(editor, book, fragmentname).subscribe(res => this.openSnackBar(res.status));
+    this.api.DeleteFragment(editor, book, fragmentname).subscribe(
+      res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
+    );
 
   }
 
-  openSnackBar(status: number) {
-    console.log(status)
-    let message = ''
+  public openSnackbar(input){
+    this._snackBar.open(input, 'Close', {
+      duration: 5000,
+    });
+  }
+
+  //TODO: message handling and outputting to snackbar should be separated in two functions.
+  handleErrorMessage(message) { //FIXME: needs renaming of error and message
+    console.log(message)
+    let output = ''
     
-    if(status == 200){
-      message = 'Operation succesful.' 
+    if(message.statusText == 'OK'){
+      output = 'Operation succesful.' 
     }
     else{
-      message = 'Please try again.'
+      output = 'Something went wrong.'
     }
 
-    message = String(status) + ': ' + message;
+    output = String(message.status) + ': ' + output + ' ' + message.statusText;
 
-    this._snackBar.open(message, 'Close', {
-      duration: 2000,
-    });
+    this.openSnackbar(output); //FIXME: Spaghetti.
   }
 
 

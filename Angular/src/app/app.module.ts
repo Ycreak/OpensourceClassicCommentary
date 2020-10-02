@@ -37,6 +37,9 @@ import { FragmentsComponent } from './fragments/fragments.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 
 
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpErrorInterceptor } from './api.service';
+
 // Material Imports
 import {MatFormFieldModule} from '@angular/material/form-field'; 
 import {MatSelectModule} from '@angular/material/select'; 
@@ -94,7 +97,13 @@ const appRoutes: Routes = [
     DragDropModule,
 
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpErrorInterceptor,
+      multi: true,
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

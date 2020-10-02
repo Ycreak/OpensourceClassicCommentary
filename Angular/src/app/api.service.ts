@@ -20,6 +20,15 @@ import { Differences } from './models/Differences';
 import { Commentary } from './models/Commentary';
 
 
+import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpResponse,
+        } from '@angular/common/http';
+// import 'rxjs/add/operator/catch';
+// import 'rxjs/add/observable/of';
+// import 'rxjs/add/observable/empty';
+// import 'rxjs/add/operator/retry'; // don't forget the imports
+
+import { EMPTY, of } from 'rxjs';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -29,12 +38,14 @@ export class ApiService {
 
   ApiUrl: String = 'https://localhost:5001/';
 
-  /*
-   *
-   * 
-   * 
-   */
 
+//   _____ ______ _______ 
+//   / ____|  ____|__   __|
+//  | |  __| |__     | |   
+//  | | |_ |  __|    | |   
+//  | |__| | |____   | |   
+//   \_____|______|  |_|   
+                                    
   /**
   * ... ... ...
   * @param fragmentID
@@ -156,6 +167,13 @@ export class ApiService {
     return this.http.get<Book[]>(this.ApiUrl + `books?authorID=${authorID}`);
   }
 
+//   _____   ____   _____ _______ 
+//  |  __ \ / __ \ / ____|__   __|
+//  | |__) | |  | | (___    | |   
+//  |  ___/| |  | |\___ \   | |   
+//  | |    | |__| |____) |  | |   
+//  |_|     \____/|_____/   |_|   
+
   /**
    * ... ... ...
    * @param author 
@@ -163,13 +181,7 @@ export class ApiService {
    * @author ppbors
    */
   CreateAuthor(author: Author): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `authors`, author, { observe: 'response' });
-  }
-
-  
-  private handleError(error: HttpErrorResponse) {
-    // Return an observable with a user-facing error message.
-    return throwError(error.status);
+    return this.http.post<any>(this.ApiUrl + `authors`, author, { observe: 'response' })
   }
 
   /**
@@ -180,9 +192,6 @@ export class ApiService {
    */
   DeleteAuthor(id: number): Observable<any> {
     return this.http.post<any>(this.ApiUrl + `authors/delete`, new Author(id, ''), { observe: 'response' })
-      .pipe(
-        catchError(this.handleError)
-      );
   }
 
   /**
@@ -332,66 +341,30 @@ export class ApiService {
   }
 
 
-  /**
-   * ... ... ...
-   * @param referencer
-   * @param appCrit
-   * @param commentary
-   * @param differences
-   * @param reconstruction
-   * @param translation
-   * @returns ... ... ...
-   * @author ppbors
-   * TODO:FIXME: make call in api
-   */
-  // CreateFragmentCommentary(referencer: string, appCrit: string, commentary: string, differences: string, reconstruction: string, translation: string): Observable<string[]> {
-  //   return this.http.get<string[]>(this.ApiUrl + '...?referencer=' + referencer + '&appCrit=' + appCrit + '&commentary=' + commentary + '&differences=' + 
-  //                                  differences + '&reconstruction=' + reconstruction + '&translation=' + translation);
-  // }
+}
 
-  //  /**
-  //  * ... ... ...
-  //  * @param appCrit
-  //  * @param referencer
-  //  * @param differences
-  //  * @param commentary
-  //  * @param translation
-  //  * @param reconstruction
-  //  * @returns ... ... ...
-  //  * @author ppbors
-  //  * TODO:FIXME: make call in api
-  //  */
-  // ReviseFragmentCommentary(appCrit: string, referencer: string, differences: string, commentary: string, translation: string, reconstruction: string): Observable<string[]> {
-  //   return this.http.get<string[]>(this.ApiUrl + '...?appCrit=' + appCrit + '&referencer=' + referencer + '&differences='
-  //                                  + differences + '&commentary=' + commentary + '&translation=' + translation + '&reconstruction=' + reconstruction);
-  // }
+@Injectable()
+export class HttpErrorInterceptor implements HttpInterceptor { 
+  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    return next.handle(request).pipe(
+      catchError((error: HttpErrorResponse) => {
+        // if (error.error instanceof Error) {
+        //   // A client-side or network error occurred. Handle it accordingly.
+        //   console.error('An error occurred:', error.error.message);
+        // } else {
+        //   // The backend returned an unsuccessful response code.
+        //   // The response body may contain clues as to what went wrong,
+        //   // console.error(`Backend returned code ${error.status}, body was: ${error.error}`);
+        // }
 
-  //  /**
-  //  * ... ... ...
-  //  * @param context
-  //  * @param referencer
-  //  * @param contextAuthor
-  //  * @returns ... ... ...
-  //  * @author ppbors
-  //  * TODO:FIXME: make call in api
-  //  */
-  // ReviseFragmentContext(context: string, referencer: string, contextAuthor: string): Observable<string[]> {
-  //   return this.http.get<string[]>(this.ApiUrl + '...?context=' + context + '&referencer=' + referencer + '&contextAuthor=' + contextAuthor);
-  // }
+        // If you want to return a new response:
+        // return of(new HttpResponse({body: [{name: "Default value..."}]}));
 
-  //  /**
-  //  * ... ... ...
-  //  * @param content
-  //  * @param book
-  //  * @param fragment
-  //  * @param line
-  //  * @returns ... ... ...
-  //  * @author ppbors
-  //  * TODO:FIXME: make call in api
-  //  */
-  // ReviseFragmentContent(content: string, book: string, fragment: string, line: string): Observable<string[]> {
-  //   return this.http.get<string[]>(this.ApiUrl + '...?content=' + content + '&book=' + book + '&fragment=' + fragment + '&line=' + line);
-  // }
+        // If you want to return the error on the upper level:
+        return throwError(error);
 
 
+      })
+    );
+  }
 }
