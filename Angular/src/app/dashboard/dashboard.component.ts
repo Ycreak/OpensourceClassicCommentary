@@ -1,6 +1,7 @@
-import { Component, OnInit, ɵConsole } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { ApiService } from '../api.service';
 import { UtilityService } from '../utility.service';
+import { Observable } from 'rxjs';
 
 // To allow the use of forms
 import { FormBuilder } from '@angular/forms';
@@ -18,6 +19,10 @@ import { Differences } from '../models/Differences';
 import { Commentary } from '../models/Commentary';
 import { Reconstruction } from '../models/Reconstruction';
 import { stringify } from '@angular/compiler/src/util';
+
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {Inject} from '@angular/core';
+// import { resolve } from 'path';
 
 @Component({
   selector: 'app-dashboard',
@@ -78,10 +83,13 @@ export class DashboardComponent implements OnInit {
   referencer : number = 0;
   serverStatus : number;
 
+  spinner : boolean = false;
+
   constructor(
     private api: ApiService,
     private utility: UtilityService,
     private _snackBar: MatSnackBar,
+    public dialog: MatDialog,
     private formBuilder: FormBuilder,
     ) {
       // Form to revise the commentary of a fragment.
@@ -113,8 +121,6 @@ export class DashboardComponent implements OnInit {
     this.api.GetAuthors().subscribe(data => this.authorsJSON = data); //FIXME: should be requestAuthors
     // console.log('commen', this.F_Commentary)
   }
-
-
 
   public Test(thing){
     // console.log('commen', this.F_Commentary)
@@ -314,6 +320,18 @@ export class DashboardComponent implements OnInit {
     );      
   }
 
+  public sortByKey(jsObj){
+    var sortedArray = [];
+
+    // Push each JSON Object entry in array by [key, value]
+    for(var i in jsObj)
+    {
+        sortedArray.push([i, jsObj[i]]);
+    }
+
+    // Run native sort function and returns sorted array.
+    return sortedArray.sort();
+}
 
   public RequestBooks(author: number){
     this.api.GetBooks(author).subscribe(
@@ -335,49 +353,66 @@ export class DashboardComponent implements OnInit {
       err => this.handleErrorMessage(err),
     );  
   }
-    
-  public RequestCreateAuthor(authorName: string){
-    console.log(authorName);
-    this.api.CreateAuthor(new Author(0, authorName)).subscribe(
-      res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
-    ); //FIXME: Can this be done more elegant?
+
+  public async RequestCreateAuthor(authorName: string){
+    this.openConfirmationDialog('Are you sure you want to CREATE this author?', authorName).subscribe(result => {
+      if(result){
+        this.api.CreateAuthor(new Author(0, authorName)).subscribe(
+          res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
+        );
+      }
+    });//FIXME: Can this be done more elegant?
   }
 
  
   public RequestDeleteAuthor(author: number){
-    console.log(author);
-    this.api.DeleteAuthor(author).subscribe(
-      res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
-    );  
+    this.openConfirmationDialog('Are you sure you want to DELETE this author?', this.selectedAuthor.name).subscribe(result => {
+      if(result){
+        this.api.DeleteAuthor(author).subscribe(
+          res => this.handleErrorMessage(res), err => this.handleErrorMessage(err),
+        );  
+      }
+    });
   }
 
   public RequestCreateBook(bookName: string, author: number){
-    console.log(bookName);
-    this.api.CreateBook(new Book(0, author, bookName)).subscribe(
-      res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
-    ); //FIXME: dont pass ID. autoincrement
+    this.openConfirmationDialog('Are you sure you want to CREATE this book?',bookName).subscribe(result => {
+      if(result){
+        this.api.CreateBook(new Book(0, author, bookName)).subscribe(//FIXME: dont pass ID. autoincrement
+          res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
+        );  
+      }
+    });    
   }
 
   public RequestDeleteBook(book: number, author: number){
-    console.log(book);
-    this.api.DeleteBook(book, author).subscribe(
-      res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
-    );
+    this.openConfirmationDialog('Are you sure you want to DELETE this book?', this.selectedBook.name).subscribe(result => {
+      if(result){
+        this.api.DeleteBook(book, author).subscribe(
+          res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
+        );  
+      }
+    });  
   }
 
   public RequestCreateEditor(editorName : string, book: number, author: number){
-    console.log(editorName);
-    // Create editor as not being a main editor.
-    this.api.CreateEditor(new Editor(0, book, editorName, 0)).subscribe(
-      res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
-    ); //FIXME: dont pass ID. autoincrement
+    this.openConfirmationDialog('Are you sure you want to CREATE this editor?', editorName).subscribe(result => {
+      if(result){     // Create editor as not being a main editor.
+        this.api.CreateEditor(new Editor(0, book, editorName, 0)).subscribe(//FIXME: dont pass ID. autoincrement
+          res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
+        );  
+      }
+    });  
   }
 
   public RequestDeleteEditor(editor: number, book: number, author: number){
-    console.log(editor);
-    this.api.DeleteEditor(editor).subscribe(
-      res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
-    );
+    this.openConfirmationDialog('Are you sure you want to DELETE this editor?', this.selectedEditor.name).subscribe(result => {
+      if(result){
+        this.api.DeleteEditor(editor).subscribe(
+          res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
+        );  
+      }
+    });  
   }
 
   public RequestSetMainEditor(editor: number, book: number, author: number){
@@ -396,7 +431,7 @@ export class DashboardComponent implements OnInit {
 
   public RequestCreateFragment(form, editor: number, book: number){
     //FIXME: this needs to be an update statement! :D
-    // These fields may not be empty!
+    // These fields may not be empty! TODO: this needs to be added to the form logic.
     if(form.inputFragmentNumber != '' && form.inputLineNumber != '' && form.inputLineContent != ''){
       this.api.CreateFragment(new Fragment(0, book, editor, form.inputFragmentNumber, form.inputLineNumber, form.inputLineContent, 0, '')).subscribe(
         res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
@@ -409,15 +444,30 @@ export class DashboardComponent implements OnInit {
 
   public RequestDeleteFragment(editor: number, book: number, fragmentname: string){
     console.log(editor, book, fragmentname)  
-    this.api.DeleteFragment(editor, book, fragmentname).subscribe(
-      res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
-    );
+    this.openConfirmationDialog('Are you sure you want to DELETE this fragment?', fragmentname).subscribe(result => {
+      if(result){
+        this.api.DeleteFragment(editor, book, fragmentname).subscribe(
+          res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
+        );  
+      }
+    });     
+  }
 
+  public openConfirmationDialog(message, item): Observable<boolean>{
+    const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
+      width: 'auto',
+      data: {
+        message: message,
+        item: item,
+      }
+    });  
+    return dialogRef.afterClosed(); // Returns observable.
   }
 
   public openSnackbar(input){
     this._snackBar.open(input, 'Close', {
       duration: 5000,
+      panelClass: ['primary'], //FIXME: doesnt work
     });
   }
 
@@ -436,10 +486,21 @@ export class DashboardComponent implements OnInit {
     output = String(message.status) + ': ' + output + ' ' + message.statusText;
 
     this.openSnackbar(output); //FIXME: Spaghetti.
-  }
-
-
-  
+  } 
 }
+
+  //TODO: change name to something more appropriate.
+  @Component({
+    selector: 'dialog-overview-example-dialog',
+    templateUrl: 'dialog-overview-example-dialog.html',
+  })
+  export class DialogOverviewExampleDialog {
+    constructor(
+      public dialogRef: MatDialogRef<DialogOverviewExampleDialog>,
+      @Inject(MAT_DIALOG_DATA) public data) { }
+    onNoClick(): void {
+      this.dialogRef.close();
+    }
+  }
 
 

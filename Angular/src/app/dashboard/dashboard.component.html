@@ -12,6 +12,10 @@
     <span><h3 class='h3-title'>Dashboard</h3></span>
 </mat-toolbar>
 
+<!-- Show a spinner if query with database is in progress -->
+<mat-progress-bar mode="query" *ngIf="this.spinner"></mat-progress-bar>
+<br>
+
 <div class="div-padding"></div>
 
 <!-- SELECTING ROW -->
@@ -87,7 +91,7 @@
 <div class="container-fluid">
     <div class="row">
         <mat-tab-group>
-            <mat-tab label="Add/Remove"><br>
+            <mat-tab label="Add/Remove Items"><br>
                 <!-- Group to add/remove Authors, Books and Editors -->
                 <mat-tab-group>
                   <!-- Tab to add/remove Authors -->
@@ -148,13 +152,13 @@
 
                   <mat-form-field class="input-form-full-width">
                     <mat-label>Line number</mat-label>
-                    <input matInput value='{{this.selectedLine}}' id="inputLineNumber" type="text" formControlName="inputLineNumber">
+                    <input matInput value='{{this.selectedLine}}' id="inputLineNumber" type="text" formControlName="inputLineNumber" required>
                     <mat-hint>Provide the revised line of the selected fragment line</mat-hint>                       
                   </mat-form-field>
 
                   <mat-form-field class="input-form-full-width">
                     <mat-label>Line content</mat-label>
-                    <input matInput value='{{this.fragmentLineContent}}' id="inputLineContent" type="text" formControlName="inputLineContent">
+                    <input matInput value='{{this.fragmentLineContent}}' id="inputLineContent" type="text" formControlName="inputLineContent" required>
                     <mat-hint>Provide the revised line of the selected fragment line</mat-hint>                       
                   </mat-form-field>
 
@@ -236,13 +240,13 @@
 
                   <mat-form-field class="input-form-full-width">
                     <mat-label>Context Author</mat-label>
-                    <input matInput value='{{this.inputContextAuthor}}' id="inputContextAuthor" type="text" formControlName="inputContextAuthor">
+                    <input matInput value='{{this.inputContextAuthor}}' id="inputContextAuthor" type="text" formControlName="inputContextAuthor" required>
                     <mat-hint>Provide the revised commentary of the selected fragment</mat-hint>                       
                   </mat-form-field>                  
 
                   <mat-form-field class="input-form-full-width">
                     <mat-label>Context</mat-label>
-                    <input matInput value='{{this.inputContext}}' id="inputContext" type="text" formControlName="inputContext">
+                    <input matInput value='{{this.inputContext}}' id="inputContext" type="text" formControlName="inputContext" required>
                     <mat-hint>Provide the revised commentary of the selected fragment</mat-hint>                       
                   </mat-form-field>             
                   

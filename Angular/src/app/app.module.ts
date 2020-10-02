@@ -35,7 +35,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { FragmentsComponent } from './fragments/fragments.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-
+import { DialogOverviewExampleDialog } from './dashboard/dashboard.component';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorInterceptor } from './api.service';
@@ -69,6 +69,7 @@ const appRoutes: Routes = [
     AppComponent,
     FragmentsComponent,
     DashboardComponent,
+    DialogOverviewExampleDialog,
   ],
   imports: [
     BrowserModule,
