@@ -35,6 +35,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { FragmentsComponent } from './fragments/fragments.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { LoginComponent } from './login/login.component';
+
 import { DialogOverviewExampleDialog } from './dashboard/dashboard.component';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -52,17 +54,16 @@ import {MatMenuModule} from '@angular/material/menu';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {MatToolbarModule} from '@angular/material/toolbar'; 
-import {MatSnackBarModule} from '@angular/material/snack-bar'; 
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
-  {path: '', component: FragmentsComponent},
+  {path: '', component: LoginComponent},
   {path: 'fragments', component: FragmentsComponent},
   // {path: 'text', component: TextComponent},
   {path: 'dashboard', component: DashboardComponent},
   {path: '**', redirectTo: ''}
 ]
-
 
 @NgModule({
   declarations: [
@@ -70,6 +71,7 @@ const appRoutes: Routes = [
     FragmentsComponent,
     DashboardComponent,
     DialogOverviewExampleDialog,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,

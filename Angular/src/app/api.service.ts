@@ -10,7 +10,6 @@ import { Fragment } from './models/Fragment';
 import { Author } from './models/Author';
 import { Editor } from './models/Editor';
 import { Bibliography } from './models/Bibliography';
-import { FragmentReferencer } from './models/FragmentReferencer';
 import { Context } from './models/Context';
 import { Book } from './models/Book';
 import { Reconstruction } from './models/Reconstruction';

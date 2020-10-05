@@ -123,9 +123,9 @@ export class DashboardComponent implements OnInit {
   }
 
   public Test(thing){
-    // console.log('commen', this.F_Commentary)
     console.log('test', thing)
-
+    this.api.CreateContext(new Context(0, 54, 'Geeltje3', 'ik ben geel3')).subscribe(
+      res => this.handleErrorMessage(res), err => this.handleErrorMessage(err));
   }
 
   /**

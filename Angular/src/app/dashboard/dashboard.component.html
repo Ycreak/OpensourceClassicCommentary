@@ -16,6 +16,9 @@
 <mat-progress-bar mode="query" *ngIf="this.spinner"></mat-progress-bar>
 <br>
 
+<button mat-button (click)="Test('hoi')">Add Note</button>
+
+
 <div class="div-padding"></div>
 
 <!-- SELECTING ROW -->
@@ -183,18 +186,7 @@
                 <h4>Select one of the fragments to change its contents fields. Only changes will be saved.</h4>
                 <!-- Uses form group! On pressing upload, changes will be put in the form. -->
                 <form [formGroup]="contentForm" (ngSubmit)="RequestReviseContent(contentForm.value)">
-                  <mat-form-field class="input-form-full-width">
-                    <mat-label>Fragment commentary</mat-label>
-                    <input matInput value='{{commentaryContent}}' id="inputCommentary" type="text" formControlName="inputCommentary">
-                    <mat-hint>Provide the revised commentary of the selected fragment</mat-hint>                       
-                  </mat-form-field>
-                  
-                  <mat-form-field class="input-form-full-width">
-                    <mat-label>Fragment differences</mat-label>
-                    <input matInput value='{{differencesContent}}' id="inputDifferences" type="text" formControlName="inputDifferences">
-                    <mat-hint>Provide the revised differences of the selected fragment</mat-hint>                       
-                  </mat-form-field>
-                                      
+                                                        
                   <mat-form-field class="input-form-full-width">
                     <mat-label>Fragment translation</mat-label>
                     <input matInput value='{{translationContent}}' id="inputTranslation" type="text" formControlName="inputTranslation">
@@ -206,7 +198,19 @@
                     <input matInput value='{{apparatusContent}}' id="inputApparatus" type="text" formControlName="inputApparatus">
                     <mat-hint>Provide the revised apparatus criticus of the selected fragment</mat-hint>                       
                   </mat-form-field>
-                  
+                                  
+                  <mat-form-field class="input-form-full-width">
+                    <mat-label>Fragment differences</mat-label>
+                    <input matInput value='{{differencesContent}}' id="inputDifferences" type="text" formControlName="inputDifferences">
+                    <mat-hint>Provide the revised differences of the selected fragment</mat-hint>                       
+                  </mat-form-field>
+
+                  <mat-form-field class="input-form-full-width">
+                    <mat-label>Fragment commentary</mat-label>
+                    <input matInput value='{{commentaryContent}}' id="inputCommentary" type="text" formControlName="inputCommentary">
+                    <mat-hint>Provide the revised commentary of the selected fragment</mat-hint>                       
+                  </mat-form-field>
+
                   <mat-form-field class="input-form-full-width">
                     <mat-label>Fragment reconstruction</mat-label>
                     <input matInput value='{{reconstructionContent}}' id="inputReconstruction" type="text" formControlName="inputReconstruction">
