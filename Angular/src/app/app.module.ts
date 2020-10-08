@@ -55,10 +55,11 @@ import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {MatToolbarModule} from '@angular/material/toolbar'; 
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle'; 
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
-  {path: '', component: LoginComponent},
+  {path: '', component: FragmentsComponent},
   {path: 'fragments', component: FragmentsComponent},
   // {path: 'text', component: TextComponent},
   {path: 'dashboard', component: DashboardComponent},
@@ -96,6 +97,7 @@ const appRoutes: Routes = [
     MatButtonModule,
     MatToolbarModule,
     MatSnackBarModule,
+    MatSlideToggleModule,
     // To allow the drag and drop
     DragDropModule,
 

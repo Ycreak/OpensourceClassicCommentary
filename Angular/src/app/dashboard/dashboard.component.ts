@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 
 // To allow the use of forms
 import { FormBuilder } from '@angular/forms';
+import { ReactiveFormsModule, FormControl, FormGroup, Validators, FormArray } from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 
 import { Author } from '../models/Author';
@@ -18,7 +19,6 @@ import { Apparatus } from '../models/Apparatus';
 import { Differences } from '../models/Differences';
 import { Commentary } from '../models/Commentary';
 import { Reconstruction } from '../models/Reconstruction';
-import { stringify } from '@angular/compiler/src/util';
 
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {Inject} from '@angular/core';
@@ -71,10 +71,9 @@ export class DashboardComponent implements OnInit {
 
   inputContext;
   inputContextAuthor;
+  contextID;
+  createContext : boolean = false;
 
-  contentForm;
-  fragmentForm;
-  contextForm;
 
   inputAuthor = '';
   inputBook = '';
@@ -85,48 +84,91 @@ export class DashboardComponent implements OnInit {
 
   spinner : boolean = false;
 
+
+  profileForm = this.formBuilder.group({
+    firstName: ['', Validators.required],
+    lastName: [''],
+    address: this.formBuilder.group({
+      street: [''],
+      city: [''],
+      state: [''],
+      zip: ['']
+    }),
+    aliases: this.formBuilder.array([
+      this.formBuilder.control('')
+    ])
+  });
+
+  fragmentForm = this.formBuilder.group({
+    fragmentNumber: ['', Validators.required],
+    lineNumber: ['', Validators.required],
+    lineContent: ['', Validators.required],
+    lineStatus: [''],
+  });
+
+  contentForm = this.formBuilder.group({
+    commentary: [''],
+    differences: [''],
+    translation: [''],
+    apparatus: [''],
+    reconstruction: [''],
+  });
+
+  contextForm = this.formBuilder.group({
+    contextAuthor: ['', Validators.required],
+    context: ['', Validators.required],
+  });
+
   constructor(
     private api: ApiService,
     private utility: UtilityService,
     private _snackBar: MatSnackBar,
     public dialog: MatDialog,
     private formBuilder: FormBuilder,
-    ) {
-      // Form to revise the commentary of a fragment.
-      this.contentForm = this.formBuilder.group({
-        inputCommentary: '',
-        inputDifferences: '',
-        inputContext: '',
-        inputTranslation: '',
-        inputApparatus: '',
-        inputReconstruction: '',
-        inputContent: '',
-      });
-      // Form to create/revise a fragment.
-      this.fragmentForm = this.formBuilder.group({
-        inputFragmentNumber: '',
-        inputLineNumber: '',
-        inputLineContent: '',
-        inputLineStatus: '',
-      });
-      // Form to create/revise context
-      this.contextForm = this.formBuilder.group({
-        inputContext: '',
-        inputContextAuthor: '',
-      })
+    ) {}
 
-     }
+
 
   ngOnInit(): void {
     this.api.GetAuthors().subscribe(data => this.authorsJSON = data); //FIXME: should be requestAuthors
     // console.log('commen', this.F_Commentary)
   }
 
+  addAlias() {
+    this.aliases.push(this.formBuilder.control(''));
+  }
+
+  get aliases() {
+    return this.profileForm.get('aliases') as FormArray;
+  }
+
+  public updateFragmentForm(key, value) {
+    this.fragmentForm.patchValue({[key]: value});
+  }
+
+  public updateContentForm(key, value) {
+    this.contentForm.patchValue({[key]: value});
+  }
+
+  public updateContextForm(key, value) {
+    this.contextForm.patchValue({[key]: value});
+  }
+
   public Test(thing){
     console.log('test', thing)
-    this.api.CreateContext(new Context(0, 54, 'Geeltje3', 'ik ben geel3')).subscribe(
-      res => this.handleErrorMessage(res), err => this.handleErrorMessage(err));
+    console.log(this.selectedLineStatus, this.selectedFragment, this.fragmentLineContent)
+    console.log('selection', this.selectedAuthor.id, this.selectedBook.id, this.selectedEditor.id, this.selectedFragment, this.selectedLine)
+    
+    let temp = this.selectedLineStatus
+    
+    this.selectedLineStatus = temp
+    this.fragmentLineContent = this.fragmentLineContent
+
+    // this.api.CreateContext(new Context(0, 54, 'Geeltje3', 'ik ben geel3')).subscribe(
+    //   res => this.handleErrorMessage(res), err => this.handleErrorMessage(err));
   }
+
+
 
   /**
   * Creates fragments for the main editor and the selected editor
@@ -175,18 +217,23 @@ export class DashboardComponent implements OnInit {
     return list.sort(this.utility.SortNumeric);    
   }
 
+  public GetFragmentStatus(fragment: string, array){   
+    array = array.filter(x => x.fragmentName === fragment);
+    let item = array[0]
+    console.log('stat', item.status)
+    
+    return item.status;
+  }
+
+  //FIXME: horrible function: maybe just a retrieve from server?
   public GetFragmentLine(line: number, fragment: string, array){
     // Filter on the given fragment number and the given lineNumber
     array = array.filter(x => x.fragmentName === fragment);
-    
-    //FIXME: Very dirty hack, should be at a better place.
-    this.selectedLineStatus = array[0].status;
-
-    array = array[0].content // Only one entry can exist, so pick that one.
-    array = array.filter(x => x.lineName === line);
-    
+    let item = array[0] // Only one entry can exist, so pick that one.
+    let myArray = item.content 
+    let myLine = myArray.filter(x => x.lineName === line);
     // Return the found content to be shown on screen
-    return array[0].lineContent;
+    return myLine[0].lineContent;
   }
 
   /**
@@ -216,33 +263,33 @@ export class DashboardComponent implements OnInit {
   if (Number.isNaN(referencerID)){
     this.noCommentary = true;
   }
-  else{
+  else{ 
     // Set commentary available
     this.noCommentary = false;
     // Retrieves Fragment Commentary: we have all identifiers, so just get the content.    
     this.api.GetCommentary(referencerID).subscribe(data => {
       this.F_Commentary = data;
-      this.commentaryContent = this.RetrieveContentField(data, 'commentary');
+      this.updateContentForm('commentary', this.RetrieveContentField(data, 'commentary'));
     });
     // Retrieves Fragment Differences
     this.api.GetDifferences(referencerID).subscribe(data => {
       this.F_Differences = data;
-      this.differencesContent = this.RetrieveContentField(data, 'differences');
+      this.updateContentForm('differences', this.RetrieveContentField(data, 'differences'));
     });
     // Retrieves Fragment Translation
     this.api.GetTranslation(referencerID).subscribe(data => {
       this.F_Translation = data;
-      this.translationContent = this.RetrieveContentField(data, 'translation');
+      this.updateContentForm('translation', this.RetrieveContentField(data, 'translation'));
     });
     // Retrieves Fragment App. Crit.
     this.api.GetApparatus(referencerID).subscribe(data => {
       this.F_Apparatus = data;
-      this.apparatusContent = this.RetrieveContentField(data, 'apparatus');
+      this.updateContentForm('apparatus', this.RetrieveContentField(data, 'apparatus'));
     });
     // Retrieves Fragment Reconstruction
     this.api.GetReconstruction(referencerID).subscribe(data => {
       this.F_Reconstruction = data;
-      this.reconstructionContent = this.RetrieveContentField(data, 'reconstruction');
+      this.updateContentForm('reconstruction', this.RetrieveContentField(data, 'reconstruction'));
     });    
     // Retrieves Fragment Context
     this.api.GetContext(referencerID).subscribe(data => this.F_Context = data);
@@ -261,12 +308,7 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  public SelectCorrespondingContext(context){
-    console.log(context)
-    this.selectedContextContent = context.id;
-    this.inputContext = context.context;
-    this.inputContextAuthor = context.contextAuthor;
-  }
+
 
 
 
@@ -278,33 +320,51 @@ export class DashboardComponent implements OnInit {
 //  |_|  \_\______\___\_\\____/|______|_____/   |_| |_____/                                                    
 
   public RequestReviseContent(form){
-    if (form.inputTranslation != ''){
-      this.api.CreateTranslation(new Translation(0, this.referencer, form.inputTranslation)).subscribe(
+    //FIXME: dont just push everything to the database.
+   
+    // if (form.inputTranslation != null){
+      this.api.CreateTranslation(new Translation(0, this.referencer, form.translation)).subscribe(
         res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)); //FIXME: dont pass ID. autoincrement
-    }
-    if (form.inputApparatus != ''){
-      this.api.CreateApparatus(new Apparatus(0, this.referencer, form.inputApparatus)).subscribe(
+    // }
+    // if (form.inputApparatus != null){
+      this.api.CreateApparatus(new Apparatus(0, this.referencer, form.apparatus)).subscribe(
         res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)); //FIXME: dont pass ID. autoincrement
-    }
-    if (form.inputDifferences != ''){
-      this.api.CreateDifferences(new Differences(0, this.referencer, form.inputDifferences)).subscribe(
+    // }
+    // if (form.inputDifferences != null){
+      this.api.CreateDifferences(new Differences(0, this.referencer, form.differences)).subscribe(
         res => this.handleErrorMessage(res), err => this.handleErrorMessage(err));
-    }
-    if (form.inputCommentary != ''){
-      this.api.CreateCommentary(new Commentary(0, this.referencer, form.inputCommentary)).subscribe(
+    // }
+    // if (form.inputCommentary != null){
+      this.api.CreateCommentary(new Commentary(0, this.referencer, form.commentary)).subscribe(
         res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)); //FIXME: dont pass ID. autoincrement
-    }
-    if (form.inputReconstruction != ''){
-      this.api.CreateReconstruction(new Reconstruction(0, this.referencer, form.inputReconstruction)).subscribe(
+    // }
+    // if (form.inputReconstruction != null){
+      this.api.CreateReconstruction(new Reconstruction(0, this.referencer, form.reconstruction)).subscribe(
         res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)); //FIXME: dont pass ID. autoincrement
-    }
+    // }
+  }
+
+  public SelectCorrespondingContext(context){
+    console.log('context',context)
+    this.contextID = context.id;
+    this.inputContext = context.context;
+    this.inputContextAuthor = context.contextAuthor;
+  }
+
+  public RequestCreateContext(form){
+      this.api.CreateContext(new Context(0, this.referencer, form.contextAuthor, form.context)).subscribe(
+        res => this.handleErrorMessage(res), err => this.handleErrorMessage(err));
+
+      
+      
+
   }
 
   public RequestReviseContext(form){
-    if (form.inputContext != '' || form.inputContextAuthor != ''){
-      this.api.CreateContext(new Context(0, this.referencer, form.inputContextAuthor, form.inputContext)).subscribe(
-        res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)); //FIXME: dont pass ID. autoincrement
-    }
+
+    this.api.CreateContext(new Context(this.contextID, this.referencer, form.contextAuthor, form.context)).subscribe(
+      res => this.handleErrorMessage(res), err => this.handleErrorMessage(err));
+
   }
 
   public RequestPublishFlag(editorID: number, bookID: number, fragmentID: string, flag: number){
@@ -430,16 +490,11 @@ export class DashboardComponent implements OnInit {
   }
 
   public RequestCreateFragment(form, editor: number, book: number){
-    //FIXME: this needs to be an update statement! :D
-    // These fields may not be empty! TODO: this needs to be added to the form logic.
-    if(form.inputFragmentNumber != '' && form.inputLineNumber != '' && form.inputLineContent != ''){
-      this.api.CreateFragment(new Fragment(0, book, editor, form.inputFragmentNumber, form.inputLineNumber, form.inputLineContent, 0, '')).subscribe(
-        res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
-      );
-    }
-    else{
-      this.openSnackbar('Please fill in all required fields!')
-    }
+    console.log(form)
+    
+    this.api.CreateFragment(new Fragment(0, book, editor, form.fragmentNumber, form.lineNumber, form.lineContent, 0, '')).subscribe(
+      res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
+    );
   }
 
   public RequestDeleteFragment(editor: number, book: number, fragmentname: string){

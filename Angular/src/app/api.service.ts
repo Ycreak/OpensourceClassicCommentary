@@ -35,7 +35,8 @@ export class ApiService {
 
   constructor(private http: HttpClient) { }
 
-  ApiUrl: String = 'https://localhost:5001/';
+  // ApiUrl: String = 'https://localhost:5000/';
+  ApiUrl: String = 'http://nolden.biz:5000/'; // For deployment (http! not https)
 
 
 //   _____ ______ _______ 

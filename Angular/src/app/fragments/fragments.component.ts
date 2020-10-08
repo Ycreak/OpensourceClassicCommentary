@@ -73,13 +73,13 @@ export class FragmentsComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
-  // Request a list of authors to select a different text    
-  this.api.GetAuthors().subscribe(data => this.authorsJSON = data);
-  // Retrieves everything surrounding the text. TODO. Needs fixing
-  this.RequestEditors(this.currentBook);
-  this.RequestFragments(this.currentBook);
-  // When init is done, turn off the loading bar (spinner)
-  this.spinner = false;    
+    // Request a list of authors to select a different text    
+    this.api.GetAuthors().subscribe(data => this.authorsJSON = data);
+    // Retrieves everything surrounding the text. TODO. Needs fixing
+    this.RequestEditors(this.currentBook);
+    this.RequestFragments(this.currentBook);
+    // When init is done, turn off the loading bar (spinner)
+    this.spinner = false;    
   }
 
   public RequestEditors(book: number){
