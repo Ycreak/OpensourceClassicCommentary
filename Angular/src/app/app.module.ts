@@ -33,7 +33,7 @@ import {MatButtonModule} from '@angular/material/button';
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
-  {path: '', component: LoginComponent},
+  {path: '', component: FragmentsComponent},
   {path: 'fragments', component: FragmentsComponent},
   {path: 'text', component: TextComponent},
   {path: 'dashboard', component: DashboardComponent},

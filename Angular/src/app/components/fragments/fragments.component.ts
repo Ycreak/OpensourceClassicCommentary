@@ -8,7 +8,7 @@ import {MatDialog} from '@angular/material/dialog';
 // To allow dialog windows within the current window
 import { TemplateRef, ViewChild } from '@angular/core';
 // Imports of different components to be shown within a dialog within the page
-import {DashboardComponent} from './dashboard/dashboard.component'
+// import {DashboardComponent} from './dashboard/dashboard.component'
 
 // Main class to show the fragments on screen.
 @Component({
@@ -35,7 +35,7 @@ export class FragmentsComponent implements OnInit {
   bibWebsites: JSON;
   // bibInCollection : JSON; // Maybe add this one yet?
   // Toggle switches
-  ColumnsToggle: boolean = true; // Boolean to toggle between 2 and 3 column mode.
+  ColumnsToggle: boolean = false; // Boolean to toggle between 2 and 3 column mode.
   // Need to rethink this
   selectedEditor = <any>{}; // EHm?
   
@@ -210,9 +210,9 @@ export class FragmentsComponent implements OnInit {
     const dialogRef = this.dialog.open(ShowAboutDialog);
   }
   // Opens dialog for the dashboard
-  public openDashboard() {
-    const dialogRef = this.dialog.open(DashboardComponent);
-  }
+  // public openDashboard() {
+  //   const dialogRef = this.dialog.open(DashboardComponent);
+  // }
   // Simple test function for debugging purposes
   public test(){
     console.log('hello there!', this.main.booksJSON);

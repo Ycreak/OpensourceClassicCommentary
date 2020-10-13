@@ -4,8 +4,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms'
 import { getRandomString } from 'selenium-webdriver/safari';
-import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
-import { NgbPanelChangeEvent } from '@ng-bootstrap/ng-bootstrap';
+// import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
+// import { NgbPanelChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -76,7 +76,7 @@ export class TextComponent implements OnInit {
    */
   // abt_code : string;
 
-  constructor(private modalService: NgbModal, private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient) { }
 
   /* @function:     Laadt interface in
    * @author:       bors
@@ -218,13 +218,13 @@ export class TextComponent implements OnInit {
   }
 
 
-  openSm(content) {
-    this.modalService.open(content, { size: 'sm' });
-  }
+  // openSm(content) {
+  //   this.modalService.open(content, { size: 'sm' });
+  // }
 
-  openLg(bib1) {
-    this.modalService.open(bib1, { size: 'lg' });
-  }
+  // openLg(bib1) {
+  //   this.modalService.open(bib1, { size: 'lg' });
+  // }
 
   public isValidFoo(commentaarScope : number){
     console.log("scope", commentaarScope)
@@ -255,23 +255,23 @@ export class TextComponent implements OnInit {
   
   }
 
-  open(content) {
-    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-    });
-  }
+  // open(content) {
+  //   this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
+  //     this.closeResult = `Closed with: ${result}`;
+  //   }, (reason) => {
+  //     this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+  //   });
+  // }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return  `with: ${reason}`;
-    }
-  }
+  // private getDismissReason(reason: any): string {
+  //   if (reason === ModalDismissReasons.ESC) {
+  //     return 'by pressing ESC';
+  //   } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+  //     return 'by clicking on a backdrop';
+  //   } else {
+  //     return  `with: ${reason}`;
+  //   }
+  // }
 }
 
 
