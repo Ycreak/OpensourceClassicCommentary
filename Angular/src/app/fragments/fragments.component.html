@@ -16,9 +16,9 @@
     <button mat-button class="btn" routerLink="/dashboard">DASHBOARD</button>
     <button mat-button class="btn" (click)="ngOnInit()">RELOAD DATA</button>
 
-    <mat-checkbox class="checkbox" [(ngModel)]="columnOneToggle">COLUMN1</mat-checkbox>
-    <mat-checkbox class="checkbox" [(ngModel)]="columnTwoToggle">COLUMN2</mat-checkbox>
-    <mat-checkbox class="checkbox" [(ngModel)]="columnThreeToggle">COLUMN3</mat-checkbox>
+    <mat-checkbox class="btn" [(ngModel)]="columnOneToggle">COL1</mat-checkbox>
+    <mat-checkbox class="btn" [(ngModel)]="columnTwoToggle">COL2</mat-checkbox>
+    <mat-checkbox class="btn" [(ngModel)]="columnThreeToggle">COL3</mat-checkbox>
 
     <!-- <mat-slide-toggle (click)="columnThreeToggle = !columnThreeToggle"></mat-slide-toggle> -->
     <button mat-button class="btn" [matMenuTriggerFor]="menu">MENU</button>
