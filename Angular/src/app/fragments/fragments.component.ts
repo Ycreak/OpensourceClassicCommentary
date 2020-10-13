@@ -1,10 +1,18 @@
 import { Component, OnInit } from '@angular/core';
+
+import {LoginComponent} from '../login/login.component'
+
 import { ApiService } from '../api.service';
 import { UtilityService } from '../utility.service';
+import { AuthService } from '../auth/auth.service';
+import { Router } from '@angular/router';
 // Allows for drag and drop items in HTML
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 // Library used for interacting with the page
-import {MatDialog} from '@angular/material/dialog';
+// import {MatDialog} from '@angular/material/dialog';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {Inject} from '@angular/core';
+
 // To allow dialog windows within the current window
 import { TemplateRef, ViewChild } from '@angular/core';
 // Imports of different components to be shown within a dialog within the page
@@ -29,6 +37,8 @@ export class FragmentsComponent implements OnInit {
   columnOneToggle: boolean = true;
   columnTwoToggle: boolean = false; // Boolean to toggle between 2 and 3 column mode.
   columnThreeToggle: boolean = true;
+  Playground: boolean = false;
+  
   spinner: boolean = true; // Boolean to toggle the spinner.
   noCommentary: boolean = false; // Shows banner if no commentary is available.
   // FIXME: proper data types
@@ -69,6 +79,8 @@ export class FragmentsComponent implements OnInit {
   constructor(
     private api: ApiService,
     private utility: UtilityService,
+    public authService: AuthService,
+    // private router: Router,
     private dialog: MatDialog, 
     ) { }
 
@@ -80,6 +92,10 @@ export class FragmentsComponent implements OnInit {
     this.RequestFragments(this.currentBook);
     // When init is done, turn off the loading bar (spinner)
     this.spinner = false;    
+  }
+
+  public Login() {
+    const dialogRef = this.dialog.open(LoginComponent);
   }
 
   public RequestEditors(book: number){
@@ -263,9 +279,12 @@ public AddFragmentToArray(array, fragment){
   // }
 }
 
+
+
 // Simple class to open the about information written in said html file.
 @Component({
   selector: 'about-dialog',
   templateUrl: './dialogs/about-dialog.html',
 })
 export class ShowAboutDialog {}
+

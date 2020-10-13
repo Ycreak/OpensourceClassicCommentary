@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../auth/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -6,30 +8,31 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  authorCorrect : boolean = false;
-  seneca : boolean;
-  notSeneca : boolean;
-  author : String;
 
-  constructor(
-  ) { }
+  message = 'status: N/A' ;
+  passwd = '';
+  hide = true;
 
-  ngOnInit(): void {
+  constructor(public authService: AuthService, public router: Router) {
   }
-  public async testAuthor(password){
-    if(password == "Seneca"){
-      this.seneca = true;
-      this.notSeneca = false;
-    }
-    else if(password == "StackCanary"){
-      
-      this.authorCorrect = true;
-      this.notSeneca = true;
-      this.seneca = false;
-    }    
-    else{
-      this.seneca = false;
-      this.notSeneca = true;
+
+  ngOnInit() {
+    if(this.authService.isLoggedIn) {
+      this.message = 'status: logged in'
     }
   }
+
+
+  public Login(passwd) {
+    this.authService.login(passwd)
+    // .subscribe((res) => {
+    //   if (this.authService.isLoggedIn) {
+    //     const redirect = this.authService.redirectUrl ? this.router.parseUrl(this.authService.redirectUrl) : 'login';
+    //     this.message = 'status: logged in'
+
+    //     // this.router.navigateByUrl(redirect);
+    //   }
+    // });
+  }
+
 }

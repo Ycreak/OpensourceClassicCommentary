@@ -36,6 +36,7 @@ import { AppComponent } from './app.component';
 import { FragmentsComponent } from './fragments/fragments.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
+import { AuthGuard } from './auth/auth.guard';
 
 import { DialogOverviewExampleDialog } from './dashboard/dashboard.component';
 
@@ -57,6 +58,8 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle'; 
 import {MatCheckboxModule} from '@angular/material/checkbox'; 
+import {MatIconModule} from '@angular/material/icon'; 
+
 import {ClipboardModule} from '@angular/cdk/clipboard'; 
 
 // Routes to take. Disallows Path Traversal.
@@ -64,7 +67,7 @@ const appRoutes: Routes = [
   {path: '', component: FragmentsComponent},
   {path: 'fragments', component: FragmentsComponent},
   // {path: 'text', component: TextComponent},
-  {path: 'dashboard', component: DashboardComponent},
+  {path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
   {path: '**', redirectTo: ''}
 ]
 
@@ -101,6 +104,7 @@ const appRoutes: Routes = [
     MatSnackBarModule,
     MatSlideToggleModule,
     MatCheckboxModule,
+    MatIconModule,
     // To allow the drag and drop
     DragDropModule,
     ClipboardModule,

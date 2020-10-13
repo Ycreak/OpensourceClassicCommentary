@@ -9,16 +9,16 @@
 
 <!-- Simple toolbar with all the different buttons and the title -->
 <mat-toolbar color="primary">
-    <span><h3 class='h3-title'>Online Fragment Commentary</h3></span>
+    <span><h3 class='h3-title'>Open Source Classics Commentary</h3></span>
     <span class="spacer"></span>
     <button mat-button class="btn" (click)="OpenBookSelect()">CHANGE TEXT</button>
     <button mat-button class="btn" (click)="OpenBibliography()">BIBLIOGRAPHY</button>
-    <button mat-button class="btn" routerLink="/dashboard">DASHBOARD</button>
-    <button mat-button class="btn" (click)="ngOnInit()">RELOAD DATA</button>
-
+    <button mat-button class="btn" routerLink="/dashboard" *ngIf="this.authService.isLoggedIn">DASHBOARD</button>
+    <button mat-button class="btn" (click)="ngOnInit()" *ngIf="this.authService.isLoggedIn">RELOAD DATA</button>
     <mat-checkbox class="btn" [(ngModel)]="columnOneToggle">COL1</mat-checkbox>
     <mat-checkbox class="btn" [(ngModel)]="columnTwoToggle">COL2</mat-checkbox>
     <mat-checkbox class="btn" [(ngModel)]="columnThreeToggle">COL3</mat-checkbox>
+    <mat-checkbox class="btn" [(ngModel)]="Playground">PLY</mat-checkbox>
 
     <!-- <mat-slide-toggle (click)="columnThreeToggle = !columnThreeToggle"></mat-slide-toggle> -->
     <button mat-button class="btn" [matMenuTriggerFor]="menu">MENU</button>
@@ -28,6 +28,7 @@
     <!-- <button routerLink="/text" mat-menu-item>Text OSCC</button> -->
     <!-- <button routerLink="/login" mat-menu-item>Playroom</button> -->
     <!-- <button routerLink="/profile" mat-menu-item>Playroom2</button> -->
+    <button (click)="Login()" mat-menu-item>Login</button>
     <button (click)="OpenAbout()" mat-menu-item>About</button>
 </mat-menu>
 
@@ -292,7 +293,7 @@
 
     </div>
 
-    <div class="row">
+    <div class="row" *ngIf="Playground">
 
         <div class="col-6">
             <div mat-dialog-content>
