@@ -56,6 +56,8 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatToolbarModule} from '@angular/material/toolbar'; 
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle'; 
+import {MatCheckboxModule} from '@angular/material/checkbox'; 
+import {ClipboardModule} from '@angular/cdk/clipboard'; 
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
@@ -98,9 +100,10 @@ const appRoutes: Routes = [
     MatToolbarModule,
     MatSnackBarModule,
     MatSlideToggleModule,
+    MatCheckboxModule,
     // To allow the drag and drop
     DragDropModule,
-
+    ClipboardModule,
   ],
   providers: [
     {

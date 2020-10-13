@@ -12,7 +12,7 @@
     <span><h3 class='h3-title'>Dashboard</h3></span>
     <span class="spacer"></span>
     <button mat-button class="btn" (click)="RequestAuthors()">RELOAD AUTHORS</button>
-    <button mat-button (click)="Test('hoi')">Test</button>
+    <!-- <button mat-button (click)="Test('hoi')">Test</button> -->
 </mat-toolbar>
 
 <!-- Show a spinner if query with database is in progress -->
@@ -203,7 +203,7 @@
                     <input matInput type="text" formControlName="translation">
                     <mat-hint>Provide the revised translation of the selected fragment</mat-hint>                       
                   </mat-form-field>
-                  
+
                   <div class="div-padding-sm"></div>
 
                   <mat-form-field class="input-form-full-width">
@@ -241,6 +241,10 @@
                   <br><br>
                   <button mat-button class="button" type="submit" [disabled]="!contentForm.valid">Upload</button>
                 </form>
+
+                <!-- <button [cdkCopyToClipboard]="value">Copy to clipboard</button> -->
+
+
               </mat-tab>
                     
               <!-- Tab to fix the context: select author and change its content. -->

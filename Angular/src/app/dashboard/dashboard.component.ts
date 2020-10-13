@@ -84,6 +84,7 @@ export class DashboardComponent implements OnInit {
 
   spinner : boolean = false;
 
+  value;
 
   profileForm = this.formBuilder.group({
     firstName: ['', Validators.required],
