@@ -1,0 +1,70 @@
+<!-- I think this can be removed. -->
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+
+<!-- Maybe we should get a local stylesheet? -->
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+<!-- Simple toolbar with all the different buttons and the title -->
+<mat-toolbar color="primary">
+    <span><h3 class='h3-title'>Open Source Classics Commentary</h3></span>
+    <span class="spacer"></span>
+    <button mat-button class="btn" [matMenuTriggerFor]="menu">MENU</button>
+</mat-toolbar>
+<!-- Small menu for the toolbar -->
+<mat-menu #menu="matMenu">
+    <button routerLink="/fragments" mat-menu-item>Fragments</button>
+    <button (click)="OpenAbout()" mat-menu-item>About</button>
+</mat-menu>
+
+<!-- Container for the page: one row, two columns. Column Left has the text, Column Right the commentary. -->
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm anyClass">
+          <mat-nav-list class="my-list-2">
+            <mat-list-item *ngFor="let line of this.T_Text">
+              <a *ngIf="line.lineNumber === null"><h5><b>{{ line.lineContent }}</b></h5></a>
+              <a *ngIf="line.lineNumber != null" matLine (click)="RequestCommentary(line.lineNumber)"><b>{{ line.lineNumber }}:</b> {{ line.lineContent }}</a>
+            </mat-list-item>
+          </mat-nav-list>
+      </div>
+      
+      
+      <div class="col-sm">
+        <div class="col-sm anyClass">
+          <!-- Empty Entry -->
+          <div *ngIf="checkEmptyBlock(this.commentaar)">No entry found.</div>
+          <!-- Valid Entry -->
+          <div *ngFor="let commentaar of this.commentaar">
+            <mat-expansion-panel [expanded]="isValidFoo(commentaar[0])">
+              <!-- Regelnummer -->
+              <mat-expansion-panel-header>
+                <mat-panel-title *ngIf="commentaar[0]===commentaar[1]">
+                  Line {{commentaar[0]}} 
+                </mat-panel-title>
+                <mat-panel-title *ngIf="commentaar[0]!=commentaar[1]">
+                    Lines {{commentaar[0]}}-{{commentaar[1]}}
+                </mat-panel-title>
+              <!-- Woorden in kwestie -->
+                <b>{{commentaar[2]}}</b>
+              </mat-expansion-panel-header>
+              <!-- Commentaar zelf met opmaak -->
+              <div class="mat-expansion-panel-content">
+                <div class="mat-expansion-panel-body">
+                    <div [innerHTML]="commentaar[3]"></div>
+                </div>
+              </div>
+            </mat-expansion-panel>
+          </div>
+
+          <!-- Tweede laag commentaar! Geselecteerd via het regelnummer (via functie ophalenCommentaren) -->
+            <hr>  
+            <div [innerHTML]=this.commentaar2_deels></div>
+            <!-- </div> -->
+        </div>
+
+      </div>
+  </div>
+  </div>

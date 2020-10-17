@@ -2,6 +2,7 @@ export class Text
 {
     id: number;
     book: number;
-    lineNumber?: number;
+    lineNumber: number;
     lineContent: string;
+
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import {LoginComponent} from '../login/login.component'
+import {TextComponent} from '../text/text.component'
 
 import { ApiService } from '../api.service';
 import { UtilityService } from '../utility.service';
@@ -92,6 +93,11 @@ export class FragmentsComponent implements OnInit {
     this.RequestFragments(this.currentBook);
     // When init is done, turn off the loading bar (spinner)
     this.spinner = false;    
+  }
+
+  // Opens dialog for the dashboard
+  public OpenText() {
+    const dialogRef = this.dialog.open(TextComponent);
   }
 
   public Login() {

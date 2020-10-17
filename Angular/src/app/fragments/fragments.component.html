@@ -25,8 +25,8 @@
 </mat-toolbar>
 <!-- Small menu for the toolbar -->
 <mat-menu #menu="matMenu">
-    <!-- <button routerLink="/text" mat-menu-item>Text OSCC</button> -->
-    <!-- <button routerLink="/login" mat-menu-item>Playroom</button> -->
+    <button routerLink="/text" mat-menu-item>Text OSCC</button>
+    <button (click)="OpenText()" mat-menu-item>Text Inside</button>
     <!-- <button routerLink="/profile" mat-menu-item>Playroom2</button> -->
     <button (click)="Login()" mat-menu-item>Login</button>
     <button (click)="OpenAbout()" mat-menu-item>About</button>

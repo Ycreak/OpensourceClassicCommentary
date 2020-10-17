@@ -17,6 +17,8 @@ import { Apparatus } from './models/Apparatus';
 import { Translation } from './models/Translation';
 import { Differences } from './models/Differences';
 import { Commentary } from './models/Commentary';
+import { Text } from './models/Text';
+import { TextCommentary } from './models/TextCommentary';
 
 
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpResponse,
@@ -35,8 +37,8 @@ export class ApiService {
 
   constructor(private http: HttpClient) { }
 
-  // ApiUrl: String = 'https://localhost:5000/';
-  ApiUrl: String = 'http://nolden.biz:5000/'; // For deployment (http! not https)
+  ApiUrl: String = 'http://localhost:5000/';
+  // ApiUrl: String = 'http://nolden.biz:5000/'; // For deployment (http! not https)
 
 
 //   _____ ______ _______ 
@@ -165,6 +167,20 @@ export class ApiService {
   */
   GetBooks(authorID: number): Observable<Book[]> {
     return this.http.get<Book[]>(this.ApiUrl + `books?authorID=${authorID}`);
+  }
+
+  /**
+  * ... ... ...
+  * @param bookID
+  * @returns
+  * @author Ycreak, ppbors
+  */
+  GetText(bookID: number): Observable<Text[]> {
+    return this.http.get<Text[]>(this.ApiUrl + `ttext?textID=${bookID}`);
+  }
+
+  GetTextCommentary(textID: number, lineNumber: number): Observable<TextCommentary[]> {
+    return this.http.get<TextCommentary[]>(this.ApiUrl + `comments?textID=${textID}&lineNumber=${lineNumber}`); //FIXME: needs to be TCommentary
   }
 
 //   _____   ____   _____ _______ 

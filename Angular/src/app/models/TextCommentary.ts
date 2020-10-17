@@ -1,12 +1,11 @@
-export class Comment
+export class TextCommentary
 {
     id: number;
-    text: number;
+    book: number;
     lineStart: number;
     lineEnd: number;
-
-    lineWords: string;
-    lineCommentaar: string;
+    relevantWords: string;
+    commentary: string;
     source: string;
     pages: string;
 }

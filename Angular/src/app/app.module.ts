@@ -60,13 +60,14 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatCheckboxModule} from '@angular/material/checkbox'; 
 import {MatIconModule} from '@angular/material/icon'; 
 
-import {ClipboardModule} from '@angular/cdk/clipboard'; 
+import {ClipboardModule} from '@angular/cdk/clipboard';
+import { TextComponent } from './text/text.component'; 
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
   {path: '', component: FragmentsComponent},
   {path: 'fragments', component: FragmentsComponent},
-  // {path: 'text', component: TextComponent},
+  {path: 'text', component: TextComponent},
   {path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
   {path: '**', redirectTo: ''}
 ]
@@ -78,6 +79,7 @@ const appRoutes: Routes = [
     DashboardComponent,
     DialogOverviewExampleDialog,
     LoginComponent,
+    TextComponent,
   ],
   imports: [
     BrowserModule,
