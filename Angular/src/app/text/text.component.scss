@@ -4,6 +4,11 @@ body, h1, h2, h3, h4, h5 {
   font-family: "Raleway", sans-serif;
 }
 
+.anyClass {
+  height:90vh;
+  overflow-y: scroll;
+}
+
 .h3-title {
   color: white;
 }
@@ -14,6 +19,10 @@ div {
 }
 
 .div-padding {
+  padding: 1em;
+}
+
+.div-padding-sm {
   padding: 1em;
 }
 

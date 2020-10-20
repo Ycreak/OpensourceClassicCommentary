@@ -16,7 +16,7 @@
 <!-- Small menu for the toolbar -->
 <mat-menu #menu="matMenu">
     <button routerLink="/fragments" mat-menu-item>Fragments</button>
-    <button (click)="OpenAbout()" mat-menu-item>About</button>
+    <!-- <button (click)="OpenAbout()" mat-menu-item>About</button> -->
 </mat-menu>
 
 <!-- Container for the page: one row, two columns. Column Left has the text, Column Right the commentary. -->
@@ -31,40 +31,36 @@
           </mat-nav-list>
       </div>
       
-      
       <div class="col-sm">
         <div class="col-sm anyClass">
+          <br>
           <!-- Empty Entry -->
-          <div *ngIf="checkEmptyBlock(this.commentaar)">No entry found.</div>
+          <div *ngIf="CheckEmptyBlock(this.T_TextCommentary)">No entry found.</div>
           <!-- Valid Entry -->
-          <div *ngFor="let commentaar of this.commentaar">
-            <mat-expansion-panel [expanded]="isValidFoo(commentaar[0])">
+          <div *ngFor="let commentary of this.T_TextCommentary">
+            <mat-expansion-panel [expanded]="IsWithinScope(commentary.lineStart)">
               <!-- Regelnummer -->
               <mat-expansion-panel-header>
-                <mat-panel-title *ngIf="commentaar[0]===commentaar[1]">
-                  Line {{commentaar[0]}} 
+                <mat-panel-title *ngIf="commentary.lineStart == commentary.lineEnd">
+                  Line {{commentary.lineStart}} 
                 </mat-panel-title>
-                <mat-panel-title *ngIf="commentaar[0]!=commentaar[1]">
-                    Lines {{commentaar[0]}}-{{commentaar[1]}}
+                <mat-panel-title *ngIf="commentary.lineStart != commentary.lineEnd">
+                    Lines {{commentary.lineStart}}-{{commentary.lineEnd}}
                 </mat-panel-title>
               <!-- Woorden in kwestie -->
-                <b>{{commentaar[2]}}</b>
+                <b>{{commentary.relevantWords}}</b> <div class="div-padding-sm"></div>
               </mat-expansion-panel-header>
               <!-- Commentaar zelf met opmaak -->
               <div class="mat-expansion-panel-content">
                 <div class="mat-expansion-panel-body">
-                    <div [innerHTML]="commentaar[3]"></div>
+                    <div [innerHTML]="commentary.commentary"></div>
                 </div>
               </div>
             </mat-expansion-panel>
           </div>
-
-          <!-- Tweede laag commentaar! Geselecteerd via het regelnummer (via functie ophalenCommentaren) -->
-            <hr>  
-            <div [innerHTML]=this.commentaar2_deels></div>
-            <!-- </div> -->
         </div>
 
       </div>
+
   </div>
-  </div>
+</div>

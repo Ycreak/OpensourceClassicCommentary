@@ -37,8 +37,8 @@ export class ApiService {
 
   constructor(private http: HttpClient) { }
 
-  ApiUrl: String = 'http://localhost:5000/';
-  // ApiUrl: String = 'http://nolden.biz:5000/'; // For deployment (http! not https)
+  // ApiUrl: String = 'http://localhost:5000/';
+  ApiUrl: String = 'http://katwijk.nolden.biz:5000/'; // For deployment (http! not https)
 
 
 //   _____ ______ _______ 
@@ -176,11 +176,11 @@ export class ApiService {
   * @author Ycreak, ppbors
   */
   GetText(bookID: number): Observable<Text[]> {
-    return this.http.get<Text[]>(this.ApiUrl + `ttext?textID=${bookID}`);
+    return this.http.get<Text[]>(this.ApiUrl + `tlines?textID=${bookID}`);
   }
 
   GetTextCommentary(textID: number, lineNumber: number): Observable<TextCommentary[]> {
-    return this.http.get<TextCommentary[]>(this.ApiUrl + `comments?textID=${textID}&lineNumber=${lineNumber}`); //FIXME: needs to be TCommentary
+    return this.http.get<TextCommentary[]>(this.ApiUrl + `tcommentary?textID=${textID}&lineNumber=${lineNumber}`); //FIXME: needs to be TCommentary
   }
 
 //   _____   ____   _____ _______ 
