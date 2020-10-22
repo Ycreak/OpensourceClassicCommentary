@@ -35,6 +35,15 @@ body, h1, h2, h3, h4, h5 {
     font-size: 13px;
   }
 
+  span {
+    display: inline-block;
+    width: 2em;
+  }
+
+  .div-padding-sm {
+    padding: 1em;
+  }
+
   .btn {
     background-color: #3F51B5;
     color: #FFFFFC;

@@ -63,6 +63,30 @@ import {MatIconModule} from '@angular/material/icon';
 import {ClipboardModule} from '@angular/cdk/clipboard';
 import { TextComponent } from './text/text.component'; 
 
+import { IKeyboardLayouts, keyboardLayouts, MAT_KEYBOARD_LAYOUTS, MatKeyboardModule } from 'angular-onscreen-material-keyboard';
+
+// Virtual Keyboard Layout
+const customLayouts: IKeyboardLayouts = {
+  ...keyboardLayouts,
+  'OSCCLayout': {
+    'name': 'OSCCLayout',
+    'keys': [
+      [
+        ['⟨', '⟨'],
+        ['⟩', '⟩'],
+        ['†', '†'],
+        ['<b>', '</b>'],
+        ['<i>', '</i>'],
+        ['<p>', '</p>'],
+        ['<sub>', '</sub>'],
+        ['<sup>', '</sup>'],
+        ['<span>', '</span>'],        
+      ]
+    ],
+    'lang': ['OSCC']
+  }
+};
+
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
   {path: '', component: FragmentsComponent},
@@ -110,14 +134,19 @@ const appRoutes: Routes = [
     // To allow the drag and drop
     DragDropModule,
     ClipboardModule,
-    
+    MatKeyboardModule,
   ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpErrorInterceptor,
       multi: true,
-    }
+      
+    },
+    { 
+      provide: MAT_KEYBOARD_LAYOUTS, 
+      useValue: customLayouts 
+    },
   ],
   bootstrap: [AppComponent]
 })

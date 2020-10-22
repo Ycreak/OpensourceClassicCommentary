@@ -172,19 +172,10 @@
 
                 <mat-form-field class="input-form-full-width">
                   <mat-label>Line content</mat-label>
-                  <input matInput type="text" formControlName="lineContent" required id="LC">
-                  <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('LC', '⟨')">
-                    <mat-icon>{{'navigate_before'}}</mat-icon>
-                  </button>
-                  <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('LC', '⟩') ">
-                    <mat-icon>{{'navigate_next'}}</mat-icon>
-                  </button>
-                  <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('LC', '†') ">
-                    <mat-icon>{{'add'}}</mat-icon>
-                  </button>
+                  <input matInput type="text" formControlName="lineContent" required id="LC" [matKeyboard]="'OSCC'">
                   <mat-hint>Provide the content of the line</mat-hint>                       
                 </mat-form-field>
-                
+
                 <div class="div-padding-sm"></div>
 
                 <mat-form-field class="input-form-full-width">
@@ -206,90 +197,44 @@
                 <h4>Select one of the fragments to change its contents fields. Only changes will be saved.</h4>
                 <!-- Uses form group! On pressing upload, changes will be put in the form. -->
                 <form [formGroup]="contentForm" (ngSubmit)="RequestReviseContent(contentForm.value)">
-                                                        
+                                                                         
                   <mat-form-field class="input-form-full-width">
-                    <mat-label>Fragment translation</mat-label>
-                    <textarea matInput type="text" formControlName="translation" id="FT"></textarea>
-                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('FT', '⟨')">
-                      <mat-icon>{{'navigate_before'}}</mat-icon>
-                    </button>
-                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('FT', '⟩') ">
-                      <mat-icon>{{'navigate_next'}}</mat-icon>
-                    </button>
-                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('FT', '†') ">
-                      <mat-icon>{{'add'}}</mat-icon>
-                    </button>
-                    <mat-hint>Provide the revised translation of the selected fragment</mat-hint>                       
+                    <mat-label><b>Fragment translation</b></mat-label>
+                    <textarea matInput type="text" formControlName="translation" id="FT" [matKeyboard]="'OSCC'"></textarea>
+                    <!-- <mat-hint>Provide the revised translation of the selected fragment</mat-hint>  -->
                   </mat-form-field>
 
                   <div class="div-padding-sm"></div>
 
                   <mat-form-field class="input-form-full-width">
-                    <mat-label>Fragment apparatus criticus</mat-label>
-                    <textarea matInput type="text" formControlName="apparatus" id="FA"></textarea>
-                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('FA', '⟨')">
-                      <mat-icon>{{'navigate_before'}}</mat-icon>
-                    </button>
-                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('FA', '⟩') ">
-                      <mat-icon>{{'navigate_next'}}</mat-icon>
-                    </button>
-                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('FA', '†') ">
-                      <mat-icon>{{'add'}}</mat-icon>
-                    </button>
-                    <mat-hint>Provide the revised apparatus criticus of the selected fragment</mat-hint>                       
+                    <mat-label><b>Fragment apparatus criticus</b></mat-label>
+                    <textarea matInput type="text" formControlName="apparatus" id="FA" [matKeyboard]="'OSCC'"></textarea>
+                    <!-- <mat-hint>Provide the revised apparatus criticus of the selected fragment</mat-hint>                        -->
                   </mat-form-field>
 
                   <div class="div-padding-sm"></div>
           
                   <mat-form-field class="input-form-full-width">
-                    <mat-label>Fragment differences</mat-label>
-                    <textarea matInput type="text" formControlName="differences" id="FD"></textarea>
-                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('FD', '⟨')">
-                      <mat-icon>{{'navigate_before'}}</mat-icon>
-                    </button>
-                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('FD', '⟩') ">
-                      <mat-icon>{{'navigate_next'}}</mat-icon>
-                    </button>
-                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('FD', '†') ">
-                      <mat-icon>{{'add'}}</mat-icon>
-                    </button>
-                    <mat-hint>Provide the revised differences of the selected fragment</mat-hint>                       
+                    <mat-label><b>Fragment differences</b></mat-label>
+                    <textarea matInput type="text" formControlName="differences" id="FD" [matKeyboard]="'OSCC'"></textarea>
+                    <!-- <mat-hint>Provide the revised differences of the selected fragment</mat-hint>                        -->
                   </mat-form-field>
 
                   <div class="div-padding-sm"></div>
 
                   <mat-form-field class="input-form-full-width">
-                    <mat-label>Fragment commentary</mat-label>
-                    <textarea matInput type="text" formControlName="commentary" id="FC"></textarea>
-                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('FC', '⟨')">
-                      <mat-icon>{{'navigate_before'}}</mat-icon>
-                    </button>
-                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('FC', '⟩') ">
-                      <mat-icon>{{'navigate_next'}}</mat-icon>
-                    </button>
-                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('FC', '†') ">
-                      <mat-icon>{{'add'}}</mat-icon>
-                    </button>
-                    <mat-hint>Provide the revised commentary of the selected fragment</mat-hint>                       
+                    <mat-label><b>Fragment commentary</b></mat-label>
+                    <textarea matInput type="text" formControlName="commentary" id="FC" [matKeyboard]="'OSCC'"></textarea>
+                    <!-- <mat-hint>Provide the revised commentary of the selected fragment</mat-hint>                        -->
                   </mat-form-field>
                   
                   <div class="div-padding-sm"></div>
 
                   <mat-form-field class="input-form-full-width">
-                    <mat-label>Fragment reconstruction</mat-label>
-                    <textarea matInput type="text" formControlName="reconstruction" id="FR"></textarea>
-                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('FR', '⟨')">
-                      <mat-icon>{{'navigate_before'}}</mat-icon>
-                    </button>
-                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('FR', '⟩') ">
-                      <mat-icon>{{'navigate_next'}}</mat-icon>
-                    </button>
-                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('FR', '†') ">
-                      <mat-icon>{{'add'}}</mat-icon>
-                    </button>
-                    <mat-hint>Provide the revised reconstruction of the selected fragment</mat-hint>                       
+                    <mat-label><b>Fragment reconstruction</b></mat-label>
+                    <textarea matInput type="text" formControlName="reconstruction" id="FR" [matKeyboard]="'OSCC'"></textarea>
+                    <!-- <mat-hint>Provide the revised reconstruction of the selected fragment</mat-hint>                        -->
                   </mat-form-field>                  
-                  
 
                   <!-- Button is linked via the submit type! -->
                   <br><br>
@@ -322,31 +267,14 @@
 
                   <mat-form-field class="input-form-full-width">
                     <mat-label>Context Author</mat-label>
-                    <input matInput type="text" formControlName="contextAuthor" required id="CA">
-                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('CA', '⟨')">
-                      <mat-icon>{{'navigate_before'}}</mat-icon>
-                    </button>
-                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('CA', '⟩') ">
-                      <mat-icon>{{'navigate_next'}}</mat-icon>
-                    </button>
-                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('CA', '†') ">
-                      <mat-icon>{{'add'}}</mat-icon>
-                    </button>
+                    <input matInput type="text" formControlName="contextAuthor" required id="CA" [matKeyboard]="'OSCC'">
                     <mat-hint>Provide the context author</mat-hint>                       
                   </mat-form-field>                  
 
+
                   <mat-form-field class="input-form-full-width">
                     <mat-label>Context</mat-label>
-                    <textarea matInput type="text" formControlName="context" required id="CC"></textarea>
-                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('CC', '⟨')">
-                      <mat-icon>{{'navigate_before'}}</mat-icon>
-                    </button>
-                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('CC', '⟩') ">
-                      <mat-icon>{{'navigate_next'}}</mat-icon>
-                    </button>
-                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('CC', '†') ">
-                      <mat-icon>{{'add'}}</mat-icon>
-                    </button>
+                    <textarea matInput type="text" formControlName="context" required id="CC" [matKeyboard]="'OSCC'"></textarea>
                     <mat-hint>Provide the context</mat-hint>                       
                   </mat-form-field>             
                   

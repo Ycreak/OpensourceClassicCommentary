@@ -21,6 +21,7 @@
     "@angular/platform-browser": "~10.1.0",
     "@angular/platform-browser-dynamic": "~10.1.0",
     "@angular/router": "~10.1.0",
+    "angular-onscreen-material-keyboard": "^0.4.0",
     "bootstrap": "^4.5.2",
     "insert-text-at-cursor": "^0.3.0",
     "jquery": "^3.5.1",

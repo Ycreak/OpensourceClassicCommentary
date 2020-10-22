@@ -25,9 +25,12 @@ import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog
 import {Inject} from '@angular/core';
 // import { resolve } from 'path';
 
+// CUSTOM LIBRARIES
 // NPM Library. Hopefully not soon deprecated
 import insertTextAtCursor from 'insert-text-at-cursor';
 
+// npm i angular-onscreen-material-keyboard
+import { IKeyboardLayouts, keyboardLayouts, MAT_KEYBOARD_LAYOUTS, MatKeyboardModule } from 'angular-onscreen-material-keyboard';
 
 import {ClipboardModule} from '@angular/cdk/clipboard'; 
 
@@ -52,20 +55,21 @@ export class DashboardComponent implements OnInit {
   F_Differences;
   F_ReferencerID;
   F_Reconstruction;
-  // All the content strings used in the dashboard
-  commentaryContent: string = '';
-  apparatusContent: string = '';
-  translationContent: string = '';
-  contextContent: string = '';
-  differencesContent: string = '';
-  reconstructionContent: string = '';
-  contentContent: string = '';
-  fragmentLineContent: string = '';
+  // All the content strings used in the dashboard DEPRECATED
+  // commentaryContent: string = '';
+  // apparatusContent: string = '';
+  // translationContent: string = '';
+  // contextContent: string = '';
+  // differencesContent: string = '';
+  // reconstructionContent: string = '';
+  // contentContent: string = '';
+  // fragmentLineContent: string = '';
 
   selectedEditorArray = [];
   fragmentNumberList = [];
   lineNumberList = [];
 
+  // These variables hold the selected items
   selectedBook;
   selectedAuthor;
   selectedEditor;
@@ -76,12 +80,12 @@ export class DashboardComponent implements OnInit {
 
   noCommentary: boolean;
 
-  inputContext;
-  inputContextAuthor;
+  // inputContext;
+  // inputContextAuthor;
   contextID;
   createContext : boolean = false;
 
-
+  // Fields that allow creating
   inputAuthor = '';
   inputBook = '';
   inputEditor = '';
@@ -91,21 +95,7 @@ export class DashboardComponent implements OnInit {
 
   spinner : boolean = false;
 
-  value;
-
-  profileForm = this.formBuilder.group({
-    firstName: ['', Validators.required],
-    lastName: [''],
-    address: this.formBuilder.group({
-      street: [''],
-      city: [''],
-      state: [''],
-      zip: ['']
-    }),
-    aliases: this.formBuilder.array([
-      this.formBuilder.control('')
-    ])
-  });
+  // value;
 
   fragmentForm = this.formBuilder.group({
     fragmentNumber: ['', Validators.required],
@@ -134,6 +124,7 @@ export class DashboardComponent implements OnInit {
     public dialog: MatDialog,
     private formBuilder: FormBuilder,
     public authService: AuthService,
+    
     ) {}
 
 
@@ -349,8 +340,8 @@ export class DashboardComponent implements OnInit {
   public SelectCorrespondingContext(context){
     console.log('context',context)
     this.contextID = context.id;
-    this.inputContext = context.context;
-    this.inputContextAuthor = context.contextAuthor;
+    // this.inputContext = context.context;
+    // this.inputContextAuthor = context.contextAuthor;
   }
 
   public RequestCreateContext(form){
