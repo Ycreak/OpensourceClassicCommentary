@@ -110,6 +110,7 @@ const appRoutes: Routes = [
     // To allow the drag and drop
     DragDropModule,
     ClipboardModule,
+    
   ],
   providers: [
     {

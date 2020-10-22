@@ -7,12 +7,19 @@ import { tap } from 'rxjs/operators';
 })
 export class AuthService {
   isLoggedIn = false;
+  isStudent = false;
+  isTeacher = false;
   redirectUrl: string;
 
   //TODO: self evident.
   public login(passwd){
     if(passwd == 'StackCanary'){
       this.isLoggedIn = true;
+      this.isTeacher = true;
     }
+    if(passwd == 'StudentCanary'){
+      this.isStudent = true;
+      this.isLoggedIn = true;
+    }    
   }
 }

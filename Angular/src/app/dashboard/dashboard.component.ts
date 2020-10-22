@@ -2,6 +2,7 @@ import { Component, OnInit} from '@angular/core';
 import { ApiService } from '../api.service';
 import { UtilityService } from '../utility.service';
 import { Observable } from 'rxjs';
+import { AuthService } from '../auth/auth.service';
 
 // To allow the use of forms
 import { FormBuilder } from '@angular/forms';
@@ -23,6 +24,12 @@ import { Reconstruction } from '../models/Reconstruction';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {Inject} from '@angular/core';
 // import { resolve } from 'path';
+
+// NPM Library. Hopefully not soon deprecated
+import insertTextAtCursor from 'insert-text-at-cursor';
+
+
+import {ClipboardModule} from '@angular/cdk/clipboard'; 
 
 @Component({
   selector: 'app-dashboard',
@@ -126,6 +133,7 @@ export class DashboardComponent implements OnInit {
     private _snackBar: MatSnackBar,
     public dialog: MatDialog,
     private formBuilder: FormBuilder,
+    public authService: AuthService,
     ) {}
 
 
@@ -135,14 +143,13 @@ export class DashboardComponent implements OnInit {
     // console.log('commen', this.F_Commentary)
   }
 
-  addAlias() {
-    this.aliases.push(this.formBuilder.control(''));
+  // Adds text at given id. At cursor!
+  public AddAtCursor(id, text){
+    const el = document.getElementById(id);
+    insertTextAtCursor(el, text);
   }
 
-  get aliases() {
-    return this.profileForm.get('aliases') as FormArray;
-  }
-
+  // Functions to update the fragment form given
   public updateFragmentForm(key, value) {
     this.fragmentForm.patchValue({[key]: value});
   }
@@ -157,13 +164,7 @@ export class DashboardComponent implements OnInit {
 
   public Test(thing){
     console.log('test', thing)
-    console.log(this.selectedLineStatus, this.selectedFragment, this.fragmentLineContent)
-    console.log('selection', this.selectedAuthor.id, this.selectedBook.id, this.selectedEditor.id, this.selectedFragment, this.selectedLine)
-    
-    let temp = this.selectedLineStatus
-    
-    this.selectedLineStatus = temp
-    this.fragmentLineContent = this.fragmentLineContent
+
 
     // this.api.CreateContext(new Context(0, 54, 'Geeltje3', 'ik ben geel3')).subscribe(
     //   res => this.handleErrorMessage(res), err => this.handleErrorMessage(err));
@@ -419,7 +420,11 @@ export class DashboardComponent implements OnInit {
     this.openConfirmationDialog('Are you sure you want to CREATE this author?', authorName).subscribe(result => {
       if(result){
         this.api.CreateAuthor(new Author(0, authorName)).subscribe(
-          res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
+          res => {
+            this.handleErrorMessage(res),
+            this.RequestAuthors()
+           },
+          err => this.handleErrorMessage(err),
         );
       }
     });//FIXME: Can this be done more elegant?
@@ -430,7 +435,11 @@ export class DashboardComponent implements OnInit {
     this.openConfirmationDialog('Are you sure you want to DELETE this author?', this.selectedAuthor.name).subscribe(result => {
       if(result){
         this.api.DeleteAuthor(author).subscribe(
-          res => this.handleErrorMessage(res), err => this.handleErrorMessage(err),
+          res => {
+            this.handleErrorMessage(res),
+            this.RequestAuthors()
+           },
+          err => this.handleErrorMessage(err),
         );  
       }
     });
@@ -508,6 +517,7 @@ export class DashboardComponent implements OnInit {
       }
     });     
   }
+
 
   public openConfirmationDialog(message, item): Observable<boolean>{
     const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {

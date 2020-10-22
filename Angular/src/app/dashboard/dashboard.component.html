@@ -11,14 +11,14 @@
 <mat-toolbar color="primary">
     <span><h3 class='h3-title'>Dashboard</h3></span>
     <span class="spacer"></span>
-    <button mat-button class="btn" (click)="RequestAuthors()">RELOAD AUTHORS</button>
+    <button mat-button class="btn" routerLink="/fragments">FRAGMENTS</button>
+    <!-- <button mat-button class="btn" (click)="RequestAuthors()">RELOAD AUTHORS</button> -->
     <!-- <button mat-button (click)="Test('hoi')">Test</button> -->
 </mat-toolbar>
 
 <!-- Show a spinner if query with database is in progress -->
 <mat-progress-bar mode="query" *ngIf="this.spinner"></mat-progress-bar>
 <br>
-
 
 <!-- SELECTING ROW -->
 <div class="container-fluid">
@@ -101,7 +101,7 @@
 <div class="container-fluid">
     <div class="row">
         <mat-tab-group>
-            <mat-tab label="Add/Remove Items"><br>
+            <mat-tab label="Add/Remove Items" *ngIf="this.authService.isTeacher"><br>
                 <!-- Group to add/remove Authors, Books and Editors -->
                 <mat-tab-group>
                   <!-- Tab to add/remove Authors -->
@@ -172,7 +172,16 @@
 
                 <mat-form-field class="input-form-full-width">
                   <mat-label>Line content</mat-label>
-                  <input matInput type="text" formControlName="lineContent" required>
+                  <input matInput type="text" formControlName="lineContent" required id="LC">
+                  <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('LC', '⟨')">
+                    <mat-icon>{{'navigate_before'}}</mat-icon>
+                  </button>
+                  <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('LC', '⟩') ">
+                    <mat-icon>{{'navigate_next'}}</mat-icon>
+                  </button>
+                  <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('LC', '†') ">
+                    <mat-icon>{{'add'}}</mat-icon>
+                  </button>
                   <mat-hint>Provide the content of the line</mat-hint>                       
                 </mat-form-field>
                 
@@ -187,7 +196,7 @@
                 <button mat-button type="submit" [disabled]="!fragmentForm.valid">Upload</button>
               </form>
               <div class="div-padding"></div>
-              <button mat-button (click)="RequestDeleteFragment(this.selectedEditor.id, this.selectedBook.id, this.selectedFragment)">Deleted selected Fragment</button>
+              <button mat-button (click)="RequestDeleteFragment(this.selectedEditor.id, this.selectedBook.id, this.selectedFragment)"  *ngIf="this.authService.isTeacher">Delete selected Fragment</button>
 
               </mat-tab>
 
@@ -200,7 +209,16 @@
                                                         
                   <mat-form-field class="input-form-full-width">
                     <mat-label>Fragment translation</mat-label>
-                    <input matInput type="text" formControlName="translation">
+                    <textarea matInput type="text" formControlName="translation" id="FT"></textarea>
+                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('FT', '⟨')">
+                      <mat-icon>{{'navigate_before'}}</mat-icon>
+                    </button>
+                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('FT', '⟩') ">
+                      <mat-icon>{{'navigate_next'}}</mat-icon>
+                    </button>
+                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('FT', '†') ">
+                      <mat-icon>{{'add'}}</mat-icon>
+                    </button>
                     <mat-hint>Provide the revised translation of the selected fragment</mat-hint>                       
                   </mat-form-field>
 
@@ -208,7 +226,16 @@
 
                   <mat-form-field class="input-form-full-width">
                     <mat-label>Fragment apparatus criticus</mat-label>
-                    <input matInput type="text" formControlName="apparatus">
+                    <textarea matInput type="text" formControlName="apparatus" id="FA"></textarea>
+                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('FA', '⟨')">
+                      <mat-icon>{{'navigate_before'}}</mat-icon>
+                    </button>
+                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('FA', '⟩') ">
+                      <mat-icon>{{'navigate_next'}}</mat-icon>
+                    </button>
+                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('FA', '†') ">
+                      <mat-icon>{{'add'}}</mat-icon>
+                    </button>
                     <mat-hint>Provide the revised apparatus criticus of the selected fragment</mat-hint>                       
                   </mat-form-field>
 
@@ -216,7 +243,16 @@
           
                   <mat-form-field class="input-form-full-width">
                     <mat-label>Fragment differences</mat-label>
-                    <input matInput type="text" formControlName="differences">
+                    <textarea matInput type="text" formControlName="differences" id="FD"></textarea>
+                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('FD', '⟨')">
+                      <mat-icon>{{'navigate_before'}}</mat-icon>
+                    </button>
+                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('FD', '⟩') ">
+                      <mat-icon>{{'navigate_next'}}</mat-icon>
+                    </button>
+                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('FD', '†') ">
+                      <mat-icon>{{'add'}}</mat-icon>
+                    </button>
                     <mat-hint>Provide the revised differences of the selected fragment</mat-hint>                       
                   </mat-form-field>
 
@@ -224,7 +260,16 @@
 
                   <mat-form-field class="input-form-full-width">
                     <mat-label>Fragment commentary</mat-label>
-                    <input matInput type="text" formControlName="commentary">
+                    <textarea matInput type="text" formControlName="commentary" id="FC"></textarea>
+                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('FC', '⟨')">
+                      <mat-icon>{{'navigate_before'}}</mat-icon>
+                    </button>
+                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('FC', '⟩') ">
+                      <mat-icon>{{'navigate_next'}}</mat-icon>
+                    </button>
+                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('FC', '†') ">
+                      <mat-icon>{{'add'}}</mat-icon>
+                    </button>
                     <mat-hint>Provide the revised commentary of the selected fragment</mat-hint>                       
                   </mat-form-field>
                   
@@ -232,7 +277,16 @@
 
                   <mat-form-field class="input-form-full-width">
                     <mat-label>Fragment reconstruction</mat-label>
-                    <input matInput type="text" formControlName="reconstruction">
+                    <textarea matInput type="text" formControlName="reconstruction" id="FR"></textarea>
+                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('FR', '⟨')">
+                      <mat-icon>{{'navigate_before'}}</mat-icon>
+                    </button>
+                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('FR', '⟩') ">
+                      <mat-icon>{{'navigate_next'}}</mat-icon>
+                    </button>
+                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('FR', '†') ">
+                      <mat-icon>{{'add'}}</mat-icon>
+                    </button>
                     <mat-hint>Provide the revised reconstruction of the selected fragment</mat-hint>                       
                   </mat-form-field>                  
                   
@@ -268,13 +322,31 @@
 
                   <mat-form-field class="input-form-full-width">
                     <mat-label>Context Author</mat-label>
-                    <input matInput type="text" formControlName="contextAuthor" required>
+                    <input matInput type="text" formControlName="contextAuthor" required id="CA">
+                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('CA', '⟨')">
+                      <mat-icon>{{'navigate_before'}}</mat-icon>
+                    </button>
+                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('CA', '⟩') ">
+                      <mat-icon>{{'navigate_next'}}</mat-icon>
+                    </button>
+                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('CA', '†') ">
+                      <mat-icon>{{'add'}}</mat-icon>
+                    </button>
                     <mat-hint>Provide the context author</mat-hint>                       
                   </mat-form-field>                  
 
                   <mat-form-field class="input-form-full-width">
                     <mat-label>Context</mat-label>
-                    <input matInput type="text" formControlName="context" required>
+                    <textarea matInput type="text" formControlName="context" required id="CC"></textarea>
+                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('CC', '⟨')">
+                      <mat-icon>{{'navigate_before'}}</mat-icon>
+                    </button>
+                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('CC', '⟩') ">
+                      <mat-icon>{{'navigate_next'}}</mat-icon>
+                    </button>
+                    <button type="button" mat-icon-button matSuffix (click)="AddAtCursor('CC', '†') ">
+                      <mat-icon>{{'add'}}</mat-icon>
+                    </button>
                     <mat-hint>Provide the context</mat-hint>                       
                   </mat-form-field>             
                   
@@ -287,7 +359,7 @@
     
               </mat-tab>
 
-              <mat-tab label="Publish"><br>
+              <mat-tab label="Publish" *ngIf="this.authService.isTeacher"><br>
                 <button mat-button (click)="this.RequestPublishFlag(this.selectedEditor.id, this.selectedBook.id, this.selectedFragment, 1)">Publish selected fragment</button>
                 <button mat-button (click)="this.RequestPublishFlag(this.selectedEditor.id, this.selectedBook.id, this.selectedFragment, 0)">Unpublish selected fragment</button>
             </mat-tab>
