@@ -69,8 +69,8 @@ export class DashboardComponent implements OnInit {
   selectedLine;
   selectedLineStatus;
   selectedContextContent; 
+  selectedContext;
   // Variables to allow creating context //FIXME: Type
-  contextID;
   createContext : boolean = false;
   // Fields that allow creating
   inputAuthor : string = '';
@@ -125,14 +125,12 @@ export class DashboardComponent implements OnInit {
     private formBuilder: FormBuilder,
     public authService: AuthService,
     ) {}
-
   /**
    * On Init, we just load the list of authors. From here, selection is started
    */
   ngOnInit(): void {
     this.api.GetAuthors().subscribe(data => this.authorsJSON = data); //FIXME: should be requestAuthors?
   }
-
   /**
    * Updates a value of a key in the given form
    * @param form what form is to be updated
@@ -142,7 +140,6 @@ export class DashboardComponent implements OnInit {
   public UpdateForm(form, key, value) {
     this[form].patchValue({[key]: value});
   }
-
   /**
    * Simple test function, can be used for whatever
    * @param thing item to be printed
@@ -150,7 +147,6 @@ export class DashboardComponent implements OnInit {
   public Test(thing){
     console.log('test', thing)
   }
-
   /**
   * Creates fragments for the main editor and the selected editor
   * @param selectedEditor given from the middle column
@@ -214,7 +210,6 @@ export class DashboardComponent implements OnInit {
     
     return item.status;
   }
-
   //FIXME: horrible function: maybe just a retrieve from server?
   /**
    * Returns content of a specific fragment line
@@ -231,7 +226,6 @@ export class DashboardComponent implements OnInit {
     // Return the found content to be shown on screen
     return myLine[0].lineContent;
   }
-
   /**
    * Sets the global referencer variable to allow finding content of a fragment
    * @param fragmentName name of the fragment who's content is requested
@@ -250,7 +244,6 @@ export class DashboardComponent implements OnInit {
       this.referencer = referencer; //FIXME: should return?
     });
   }
-
   /**
    * Fills the global content variables with the content of the selected fragment
    * @param referencerID referencer id used to identify the requested fragment
@@ -284,7 +277,6 @@ export class DashboardComponent implements OnInit {
     // Retrieves Fragment Context
     this.api.GetContext(referencerID).subscribe(data => this.F_Context = data);
   }
-
   /**
    * The content is returned in an object of objects. Only one object exists here,
    * so just take the first one and return that. //FIXME: very unelegant, needs reworking
@@ -308,210 +300,264 @@ export class DashboardComponent implements OnInit {
 //  | | \ \| |___| |__| | |__| | |____ ____) |  | |  ____) |
 //  |_|  \_\______\___\_\\____/|______|_____/   |_| |_____/                                                    
 
-  public RequestReviseContent(form){
-    //FIXME: dont just push everything to the database.
-   
-    // if (form.inputTranslation != null){
-      this.api.CreateTranslation(new Translation(0, this.referencer, form.translation)).subscribe(
-        res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)); //FIXME: dont pass ID. autoincrement
-    // }
-    // if (form.inputApparatus != null){
-      this.api.CreateApparatus(new Apparatus(0, this.referencer, form.apparatus)).subscribe(
-        res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)); //FIXME: dont pass ID. autoincrement
-    // }
-    // if (form.inputDifferences != null){
-      this.api.CreateDifferences(new Differences(0, this.referencer, form.differences)).subscribe(
-        res => this.handleErrorMessage(res), err => this.handleErrorMessage(err));
-    // }
-    // if (form.inputCommentary != null){
-      this.api.CreateCommentary(new Commentary(0, this.referencer, form.commentary)).subscribe(
-        res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)); //FIXME: dont pass ID. autoincrement
-    // }
-    // if (form.inputReconstruction != null){
-      this.api.CreateReconstruction(new Reconstruction(0, this.referencer, form.reconstruction)).subscribe(
-        res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)); //FIXME: dont pass ID. autoincrement
-    // }
+    //////////////////
+   // GET REQUESTS //
+  //////////////////
+  /**
+   * Requests all authors from the database. No parameters needed
+   */
+  public RequestAuthors(){
+    this.api.GetAuthors().subscribe(
+      data => this.authorsJSON = data,
+      err => this.HandleErrorMessage(err),
+    );      
+  }
+  /**
+   * Requests all books from a given author
+   * @param author number of author who's books are requested
+   */
+  public RequestBooks(author: number){
+    this.api.GetBooks(author).subscribe(
+      data => this.booksJSON = data,
+      err => this.HandleErrorMessage(err),
+    );      
+  }
+  /**
+   * Requests all editors from a given book
+   * @param book number of book who's editors are requested
+   */
+  public RequestEditors(book: number){
+    this.api.GetEditors(book).subscribe(
+      data => this.editorsJSON = data,
+      err => this.HandleErrorMessage(err),
+    );
+  }
+  /**
+   * Requests all fragments from a given book
+   * @param book number of book who's fragments are requested
+   */
+  public RequestFragments(book: number){
+    this.api.GetFragments(book).subscribe(
+      data => this.F_Fragments = data,
+      err => this.HandleErrorMessage(err),
+    );  
   }
 
+      ///////////////////
+     // POST REQUESTS //
+    ///////////////////
+  /**
+   * Pushes the content form to the database via the api
+   * @param form content form from the dashboard
+   */
+  public RequestReviseContent(form){
+    //FIXME: dont just push everything to the database.
+    this.api.CreateTranslation(new Translation(0, this.referencer, form.translation)).subscribe(
+      res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err)); 
+
+    this.api.CreateApparatus(new Apparatus(0, this.referencer, form.apparatus)).subscribe(
+      res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err)); 
+
+    this.api.CreateDifferences(new Differences(0, this.referencer, form.differences)).subscribe(
+      res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err));
+
+    this.api.CreateCommentary(new Commentary(0, this.referencer, form.commentary)).subscribe(
+      res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err)); 
+
+    this.api.CreateReconstruction(new Reconstruction(0, this.referencer, form.reconstruction)).subscribe(
+      res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err)); 
+  }
+  /**
+   * Pushes the bibliography form to the database via the api
+   * @param form bibliography form from the dashboard
+   */
   RequestReviseBib(form){
     this.api.CreateBibliography(new Bibliography(0, this.selectedBook,
       form.editors, form.author, form.book, form.article, form.journal,
       form.volume, form.chapterTitle, form.pages, form.place, form.year,
       form.website, form.url, form.consultDate)).subscribe(
-      res => this.handleErrorMessage(res), err => this.handleErrorMessage(err));
+      res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err));
   }
-
-  public SelectCorrespondingContext(context){
-    console.log('context',context)
-    this.contextID = context.id;
-    // this.inputContext = context.context;
-    // this.inputContextAuthor = context.contextAuthor;
-  }
-
+  /**
+   * Pushes a new context form to the database via the api
+   * @param form context form from the dashboard
+   */
   public RequestCreateContext(form){
-      this.api.CreateContext(new Context(0, this.referencer, form.contextAuthor, form.context)).subscribe(
-        res => this.handleErrorMessage(res), err => this.handleErrorMessage(err));
+    this.api.CreateContext(new Context(0, this.referencer, form.contextAuthor, form.context)).subscribe(
+      res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err));
   }
-
+  /**
+   * Pushes a revised context form to the database via the api
+   * The distinction with RequestCreateContext allows multiple 
+   * contexts to exists for a single fragment
+   * @param form context form from the dashboard
+   */
   public RequestReviseContext(form){
-
-    this.api.CreateContext(new Context(this.contextID, this.referencer, form.contextAuthor, form.context)).subscribe(
-      res => this.handleErrorMessage(res), err => this.handleErrorMessage(err));
-
+    this.api.CreateContext(new Context(this.selectedContext, this.referencer, form.contextAuthor, form.context)).subscribe(
+      res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err));
   }
-
+  /**
+   * Pushes the publish flag to the database for the given parameters
+   * @param editorID which editor the fragment belongs to
+   * @param bookID what book the fragment belongs to
+   * @param fragmentID what fragment should be published
+   * @param flag what flag should be set
+   */
   public RequestPublishFlag(editorID: number, bookID: number, fragmentID: string, flag: number){
     this.api.SetPublishFlag(editorID, bookID, fragmentID, flag).subscribe(
-      res => this.handleErrorMessage(res), err => this.handleErrorMessage(err));
+      res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err));
   }
-
-
-  public RequestAuthors(){
-    this.api.GetAuthors().subscribe(
-      data => this.authorsJSON = data,
-      err => this.handleErrorMessage(err),
-    );      
-  }
-
-  public sortByKey(jsObj){
-    var sortedArray = [];
-
-    // Push each JSON Object entry in array by [key, value]
-    for(var i in jsObj)
-    {
-        sortedArray.push([i, jsObj[i]]);
-    }
-
-    // Run native sort function and returns sorted array.
-    return sortedArray.sort();
-}
-
-  public RequestBooks(author: number){
-    this.api.GetBooks(author).subscribe(
-      data => this.booksJSON = data,
-      err => this.handleErrorMessage(err),
-    );      
-  }
-
-  public RequestEditors(book: number){
-    this.api.GetEditors(book).subscribe(
-      data => this.editorsJSON = data,
-      err => this.handleErrorMessage(err),
-    );
-  }
-
-  public RequestFragments(book: number){
-    this.api.GetFragments(book).subscribe(
-      data => this.F_Fragments = data,
-      err => this.handleErrorMessage(err),
-    );  
-  }
-
-  public async RequestCreateAuthor(authorName: string){
-    this.openConfirmationDialog('Are you sure you want to CREATE this author?', authorName).subscribe(result => {
+  /**
+   * Creates the given author via the api
+   * @param authorName name of author to be created
+   */
+  public RequestCreateAuthor(authorName: string){
+    this.OpenConfirmationDialog('Are you sure you want to CREATE this author?', authorName).subscribe(result => {
       if(result){
         this.api.CreateAuthor(new Author(0, authorName)).subscribe(
           res => {
-            this.handleErrorMessage(res),
+            this.HandleErrorMessage(res),
             this.RequestAuthors()
            },
-          err => this.handleErrorMessage(err),
+          err => this.HandleErrorMessage(err),
         );
       }
-    });//FIXME: Can this be done more elegant?
+    });
   }
-
- 
+  /**
+   * Deletes the in the dashboard selected author
+   * @param author number of selected author
+   */
   public RequestDeleteAuthor(author: number){
-    this.openConfirmationDialog('Are you sure you want to DELETE this author?', this.selectedAuthor.name).subscribe(result => {
+    this.OpenConfirmationDialog('Are you sure you want to DELETE this author?', this.selectedAuthor.name).subscribe(result => {
       if(result){
         this.api.DeleteAuthor(author).subscribe(
           res => {
-            this.handleErrorMessage(res),
+            this.HandleErrorMessage(res),
             this.RequestAuthors()
            },
-          err => this.handleErrorMessage(err),
+          err => this.HandleErrorMessage(err),
         );  
       }
     });
   }
-
+  /**
+   * Creates the given book via the api
+   * @param bookName name of book to be created
+   * @param author number of the author of the book
+   */
   public RequestCreateBook(bookName: string, author: number){
-    this.openConfirmationDialog('Are you sure you want to CREATE this book?',bookName).subscribe(result => {
+    this.OpenConfirmationDialog('Are you sure you want to CREATE this book?',bookName).subscribe(result => {
       if(result){
         this.api.CreateBook(new Book(0, author, bookName)).subscribe(//FIXME: dont pass ID. autoincrement
-          res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
+          res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err)
         );  
       }
     });    
   }
-
+  /**
+   * Deletes the in the dashboard selected book
+   * @param book number of selected book
+   * @param author number of the author of the book
+   */
   public RequestDeleteBook(book: number, author: number){
-    this.openConfirmationDialog('Are you sure you want to DELETE this book?', this.selectedBook.name).subscribe(result => {
+    this.OpenConfirmationDialog('Are you sure you want to DELETE this book?', this.selectedBook.name).subscribe(result => {
       if(result){
         this.api.DeleteBook(book, author).subscribe(
-          res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
+          res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err)
         );  
       }
     });  
   }
-
+  /**
+   * Creates the given editor via the api
+   * @param editorName name of author to be created
+   * @param book number of selected book
+   * @param author number of the author of the book
+   */
   public RequestCreateEditor(editorName : string, book: number, author: number){
-    this.openConfirmationDialog('Are you sure you want to CREATE this editor?', editorName).subscribe(result => {
+    this.OpenConfirmationDialog('Are you sure you want to CREATE this editor?', editorName).subscribe(result => {
       if(result){     // Create editor as not being a main editor.
         this.api.CreateEditor(new Editor(0, book, editorName, 0)).subscribe(//FIXME: dont pass ID. autoincrement
-          res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
+          res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err)
         );  
       }
     });  
   }
-
+  /**
+   * Deletes the in the dashboard selected editor
+   * @param editor number of selected editor
+   * @param book number of selected book
+   * @param author number of the author of the book
+   */
   public RequestDeleteEditor(editor: number, book: number, author: number){
-    this.openConfirmationDialog('Are you sure you want to DELETE this editor?', this.selectedEditor.name).subscribe(result => {
+    this.OpenConfirmationDialog('Are you sure you want to DELETE this editor?', this.selectedEditor.name).subscribe(result => {
       if(result){
         this.api.DeleteEditor(editor).subscribe(
-          res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
+          res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err)
         );  
       }
     });  
   }
-
+  /**
+   * Sets the selected editor as a main editor
+   * @param editor number of selected editor
+   * @param book number of selected book
+   * @param author number of the author of the book
+   */
   public RequestSetMainEditor(editor: number, book: number, author: number){
-    console.log(editor);
     this.api.SetMainEditorFlag(editor, 1).subscribe(
-      res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
+      res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err)
     );
   }
-
+  /**
+   * Deletes the selected editor as a main editor
+   * @param editor number of selected editor
+   * @param book number of selected book
+   * @param author number of the author of the book
+   */
   public RequestDeleteMainEditor(editor: number, book: number, author: number){
-    console.log(editor);
     this.api.SetMainEditorFlag(editor, 0).subscribe(
-      res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
+      res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err)
     );
   }
-
-  public RequestCreateFragment(form, editor: number, book: number){
-    console.log(form)
-    
+  /**
+   * Creates the fragment as given to the dashboard
+   * @param form stores all the fragment data
+   * @param editor number of the selected editor
+   * @param book number of the selected book
+   */
+  public RequestCreateFragment(form, editor: number, book: number){  
     this.api.CreateFragment(new Fragment(0, book, editor, form.fragmentNumber, form.lineNumber, form.lineContent, 0, '')).subscribe(
-      res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
+      res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err)
     );
   }
-
+  /**
+   * Deletes the selected fragment via the api
+   * @param editor number of the selected editor
+   * @param book number of the selected book
+   * @param fragmentname name of the selected fragment
+   */
   public RequestDeleteFragment(editor: number, book: number, fragmentname: string){
     console.log(editor, book, fragmentname)  
-    this.openConfirmationDialog('Are you sure you want to DELETE this fragment?', fragmentname).subscribe(result => {
+    this.OpenConfirmationDialog('Are you sure you want to DELETE this fragment?', fragmentname).subscribe(result => {
       if(result){
         this.api.DeleteFragment(editor, book, fragmentname).subscribe(
-          res => this.handleErrorMessage(res), err => this.handleErrorMessage(err)
+          res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err)
         );  
       }
     });     
   }
 
+  // VARIOUS FUNCTIONS
 
-  public openConfirmationDialog(message, item): Observable<boolean>{
-    const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
+  /**
+   * Opens a confirmation dialog with the provided message
+   * @param message shows text about what is happening
+   * @param item the item that is about to change
+   */
+  public OpenConfirmationDialog(message, item): Observable<boolean>{
+    const dialogRef = this.dialog.open(ConfirmationDialog, {
       width: 'auto',
       data: {
         message: message,
@@ -520,40 +566,46 @@ export class DashboardComponent implements OnInit {
     });  
     return dialogRef.afterClosed(); // Returns observable.
   }
-
-  public openSnackbar(input){
-    this._snackBar.open(input, 'Close', {
+  /**
+   * Opens Material popup window with the given message
+   * @param message information that is showed in the popup
+   */
+  public OpenSnackbar(message){
+    this._snackBar.open(message, 'Close', {
       duration: 5000,
-      panelClass: ['primary'], //FIXME: doesnt work
     });
   }
 
-  //TODO: message handling and outputting to snackbar should be separated in two functions.
-  handleErrorMessage(message) { //FIXME: needs renaming of error and message
-    console.log(message)
+  /**
+   * Function to handle the error err. Calls Snackbar to show it on screen
+   * @param err the generated error
+   */
+  HandleErrorMessage(err) {
+    console.log(err)
     let output = ''
-    
-    if(message.statusText == 'OK'){
+    //TODO: needs to be more sophisticated
+    if(err.statusText == 'OK'){
       output = 'Operation succesful.' 
     }
     else{
       output = 'Something went wrong.'
     }
-
-    output = String(message.status) + ': ' + output + ' ' + message.statusText;
-
-    this.openSnackbar(output); //FIXME: Spaghetti.
+    output = String(err.status) + ': ' + output + ' ' + err.statusText;
+    this.OpenSnackbar(output); //FIXME: Spaghetti.
   } 
 }
 
-  //TODO: change name to something more appropriate.
+  /**
+   * Class to show a confirmation dialog when needed. 
+   * Shows whatever data is given
+   */
   @Component({
-    selector: 'dialog-overview-example-dialog',
-    templateUrl: 'dialog-overview-example-dialog.html',
+    selector: 'confirmation-dialog',
+    templateUrl: 'confirmation-dialog.html',
   })
-  export class DialogOverviewExampleDialog {
+  export class ConfirmationDialog {
     constructor(
-      public dialogRef: MatDialogRef<DialogOverviewExampleDialog>,
+      public dialogRef: MatDialogRef<ConfirmationDialog>,
       @Inject(MAT_DIALOG_DATA) public data) { }
     onNoClick(): void {
       this.dialogRef.close();

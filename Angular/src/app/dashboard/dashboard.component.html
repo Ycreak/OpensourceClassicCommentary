@@ -251,9 +251,8 @@
                 <h4>Select one of the fragments to change its context fields.</h4>
                 <mat-form-field class="input-form">
                   <mat-label>Fragment context author</mat-label>
-                  <mat-select>
+                  <mat-select [(ngModel)]="selectedContext">
                     <mat-option *ngFor="let item of this.F_Context" [value]="item.id"
-                    (click)="SelectCorrespondingContext(item)"
                     (click)="UpdateForm('contextForm','contextAuthor',item.contextAuthor)"
                     (click)="UpdateForm('contextForm','context',item.context)">                  
                       {{ item.contextAuthor }}                       
