@@ -71,7 +71,7 @@
             <mat-option *ngFor="let fragmentData of this.fragmentNumberList" [value]="fragmentData"
             (click)="this.selectedLine = ''"
             (click)="this.fragmentForm.reset(); this.contentForm.reset(); this.contextForm.reset()"
-            (click)="updateFragmentForm('fragmentNumber',fragmentData)"
+            (click)="UpdateForm('fragmentForm', 'fragmentNumber',fragmentData)"
             (click)="this.RequestReferencerID(this.selectedFragment, this.selectedEditor.id, this.selectedBook.id)"
             (click)="this.lineNumberList = GetLineNumbers(fragmentData, this.selectedEditorArray)">
                 {{ fragmentData }} 
@@ -84,9 +84,9 @@
             <mat-label>Line</mat-label>
             <mat-select [(ngModel)]="selectedLine">
             <mat-option *ngFor="let lineData of this.lineNumberList" [value]="lineData"
-            (click)="updateFragmentForm('lineNumber',lineData)"
-            (click)="updateFragmentForm('lineStatus',GetFragmentStatus(this.selectedFragment, this.selectedEditorArray))"
-            (click)="updateFragmentForm('lineContent',GetFragmentLine(lineData, this.selectedFragment, this.selectedEditorArray))">            
+            (click)="UpdateForm('fragmentForm', 'lineNumber',lineData)"
+            (click)="UpdateForm('fragmentForm', 'lineStatus',GetFragmentStatus(this.selectedFragment, this.selectedEditorArray))"
+            (click)="UpdateForm('fragmentForm', 'lineContent',GetFragmentLine(lineData, this.selectedFragment, this.selectedEditorArray))">            
               {{ lineData }} 
             </mat-option>
             </mat-select>
@@ -254,8 +254,8 @@
                   <mat-select>
                     <mat-option *ngFor="let item of this.F_Context" [value]="item.id"
                     (click)="SelectCorrespondingContext(item)"
-                    (click)="updateContextForm('contextAuthor',item.contextAuthor)"
-                    (click)="updateContextForm('context',item.context)">                  
+                    (click)="UpdateForm('contextForm','contextAuthor',item.contextAuthor)"
+                    (click)="UpdateForm('contextForm','context',item.context)">                  
                       {{ item.contextAuthor }}                       
                     </mat-option>
                   </mat-select>
@@ -285,6 +285,147 @@
                 <div class="div-padding"></div>    
                 <button mat-button (click)="RequestCreateContext(contextForm.value)" [disabled]="!contextForm.valid">Create New Context</button>
     
+              </mat-tab>
+              
+              <mat-tab label="Bibliography">
+                  <form [formGroup]="bibForm" (ngSubmit)="RequestReviseBib(bibForm.value)">
+                    <h4>Book</h4>
+                      <mat-form-field class="input-form-full-width">
+                        <mat-label>Author Name</mat-label>
+                        <input matInput type="text" formControlName="author">
+                        <mat-hint>Provide the author</mat-hint>                       
+                      </mat-form-field> 
+                      
+                      <mat-form-field class="input-form-full-width">
+                        <mat-label>Book Title</mat-label>
+                        <input matInput type="text" formControlName="book">
+                        <mat-hint>Provide the Book title</mat-hint>                       
+                      </mat-form-field>   
+
+                      <mat-form-field class="input-form-full-width">
+                        <mat-label>Year</mat-label>
+                        <input matInput type="text" formControlName="year">
+                        <mat-hint>Provide the year</mat-hint>                       
+                      </mat-form-field>   
+
+                      <mat-form-field class="input-form-full-width">
+                        <mat-label>Place</mat-label>
+                        <input matInput type="text" formControlName="place">
+                        <mat-hint>Provide the place</mat-hint>                       
+                      </mat-form-field>   
+
+                      <div class="div-padding"></div>
+                      <button mat-button class="button" type="submit">Upload Bib Entry</button>
+                      <div class="div-padding"></div>
+
+                      <h4>Article</h4>
+                      <mat-form-field class="input-form-full-width">
+                        <mat-label>Author Name</mat-label>
+                        <input matInput type="text" formControlName="author">
+                        <mat-hint>Provide the author</mat-hint>                       
+                      </mat-form-field> 
+                        
+                      <mat-form-field class="input-form-full-width">
+                        <mat-label>Article Title</mat-label>
+                        <input matInput type="text" formControlName="article">
+                        <mat-hint>Provide the Article title</mat-hint>                       
+                      </mat-form-field>   
+
+                      <mat-form-field class="input-form-full-width">
+                        <mat-label>Journal Title</mat-label>
+                        <input matInput type="text" formControlName="journal">
+                        <mat-hint>Provide the Journal title</mat-hint>                       
+                      </mat-form-field>  
+
+                      <mat-form-field class="input-form-full-width">
+                        <mat-label>Volume Title</mat-label>
+                        <input matInput type="text" formControlName="volume">
+                        <mat-hint>Provide the volume title</mat-hint>                       
+                      </mat-form-field>  
+
+                      <mat-form-field class="input-form-full-width">
+                        <mat-label>Pages</mat-label>
+                        <input matInput type="text" formControlName="pages">
+                        <mat-hint>Provide the pages</mat-hint>                       
+                      </mat-form-field>  
+
+                      <mat-form-field class="input-form-full-width">
+                        <mat-label>Year</mat-label>
+                        <input matInput type="text" formControlName="year">
+                        <mat-hint>Provide the year</mat-hint>                       
+                      </mat-form-field>   
+
+                      <div class="div-padding"></div>
+                      <button mat-button class="button" type="submit">Upload Bib Entry</button>
+                      <div class="div-padding"></div>
+
+                      <h4>Edition</h4>
+                      <mat-form-field class="input-form-full-width">
+                        <mat-label>Editor Name</mat-label>
+                        <input matInput type="text" formControlName="editor">
+                        <mat-hint>Provide the editor</mat-hint>                       
+                      </mat-form-field> 
+
+                      <mat-form-field class="input-form-full-width">
+                        <mat-label>Author Name</mat-label>
+                        <input matInput type="text" formControlName="author">
+                        <mat-hint>Provide the author</mat-hint>                       
+                      </mat-form-field> 
+
+                      <mat-form-field class="input-form-full-width">
+                        <mat-label>Book Title</mat-label>
+                        <input matInput type="text" formControlName="book">
+                        <mat-hint>Provide the Book title</mat-hint>                       
+                      </mat-form-field>   
+
+                      <mat-form-field class="input-form-full-width">
+                        <mat-label>Chapter</mat-label>
+                        <input matInput type="text" formControlName="chapterTitle">
+                        <mat-hint>Provide the chapter title</mat-hint>                       
+                      </mat-form-field>   
+
+                      <mat-form-field class="input-form-full-width">
+                        <mat-label>Pages</mat-label>
+                        <input matInput type="text" formControlName="pages">
+                        <mat-hint>Provide the pages</mat-hint>                       
+                      </mat-form-field>  
+
+                      <mat-form-field class="input-form-full-width">
+                        <mat-label>Year</mat-label>
+                        <input matInput type="text" formControlName="year">
+                        <mat-hint>Provide the year</mat-hint>                       
+                      </mat-form-field>   
+
+                      <div class="div-padding"></div>
+                      <button mat-button class="button" type="submit">Upload Bib Entry</button>
+                      <div class="div-padding"></div>
+
+                      <h4>Website</h4>
+                      <mat-form-field class="input-form-full-width">
+                        <mat-label>Website Title</mat-label>
+                        <input matInput type="text" formControlName="website">
+                        <mat-hint>Provide the website title</mat-hint>                       
+                      </mat-form-field>  
+
+                      <mat-form-field class="input-form-full-width">
+                        <mat-label>URL</mat-label>
+                        <input matInput type="text" formControlName="url">
+                        <mat-hint>Provide the website url</mat-hint>                       
+                      </mat-form-field>  
+
+                      <mat-form-field class="input-form-full-width">
+                        <mat-label>Consult date</mat-label>
+                        <input matInput type="text" formControlName="consultDate">
+                        <mat-hint>Provide the consult date</mat-hint>                       
+                      </mat-form-field>   
+                      
+                      <!-- Button is linked via the submit type! -->
+                      <div class="div-padding"></div>
+                      <button mat-button class="button" type="submit">Upload Bib Entry</button>
+                    </form>
+                    <div class="div-padding"></div>    
+                    <!-- <button mat-button (click)="RequestCreateContext(contextForm.value)" [disabled]="!contextForm.valid">Create New Context</button> -->
+        
               </mat-tab>
 
               <mat-tab label="Publish" *ngIf="this.authService.isTeacher"><br>

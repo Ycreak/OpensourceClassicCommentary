@@ -343,6 +343,13 @@ export class ApiService {
     return this.http.post<any>(this.ApiUrl + `fcontext/create`, context, { observe: 'response' });
   }
 
+  CreateBibliography(bibliography: Bibliography): Observable<any> {
+    return this.http.post<any>(this.ApiUrl + `bibliography/create`, bibliography, { observe: 'response' });
+  }
+
+
+
+  
   /**
    * ... ... ...
    * @param editorID
