@@ -38,7 +38,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './auth/auth.guard';
 
-import { DialogOverviewExampleDialog } from './dashboard/dashboard.component';
+import { ConfirmationDialog } from './dashboard/dashboard.component';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorInterceptor } from './api.service';
@@ -101,7 +101,7 @@ const appRoutes: Routes = [
     AppComponent,
     FragmentsComponent,
     DashboardComponent,
-    DialogOverviewExampleDialog,
+    ConfirmationDialog,
     LoginComponent,
     TextComponent,
   ],
