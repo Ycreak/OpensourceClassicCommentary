@@ -11,6 +11,7 @@
 <mat-toolbar color="primary">
     <span><h3 class='h3-title'>Open Source Classics Commentary</h3></span>
     <span class="spacer"></span>
+    <button mat-button class="btn" (click)="OpenBookSelect()">CHANGE TEXT</button>
     <button mat-button class="btn" routerLink="/fragments">FRAGMENTS</button>
     <button mat-button class="btn" [matMenuTriggerFor]="menu">MENU</button>
 </mat-toolbar>
@@ -20,11 +21,37 @@
     <!-- <button (click)="OpenAbout()" mat-menu-item>About</button> -->
 </mat-menu>
 
+<!-- Author and Book select dialog -->
+<ng-template #CallBookSelect>   
+  <h3>Select an author and a book to display.</h3>
+  <hr>
+  <mat-form-field>
+      <mat-label>Select author</mat-label>
+      <mat-select>
+      <mat-option *ngFor="let author of this.authorsJSON" [value]="author" 
+          (click)="this.RequestBooks(author.id)">
+          {{ author.name }} 
+      </mat-option>
+      </mat-select>  
+  </mat-form-field> 
+  
+  <mat-form-field>
+      <mat-label>Select book</mat-label>
+      <mat-select>
+      <mat-option *ngFor="let book of this.booksJSON" [value]="book" 
+          (click)="RequestText(book.id)">
+          {{ book.title }}                
+      </mat-option>
+      </mat-select>
+  </mat-form-field>    
+</ng-template>
+
 <!-- Container for the page: one row, two columns. Column Left has the text, Column Right the commentary. -->
   <div class="container-fluid">
     <div class="row">
       <div class="col-sm anyClass">
           <mat-nav-list class="my-list-2">
+            <h3>{{currentBookTitle}}</h3>
             <mat-list-item *ngFor="let line of this.T_Text">
               <a *ngIf="line.lineNumber === null"><h5><b>{{ line.lineContent }}</b></h5></a>
               <a *ngIf="line.lineNumber != null" matLine (click)="RequestCommentary(line.lineNumber)"><b>{{ line.lineNumber }}:</b> {{ line.lineContent }}</a>
