@@ -300,9 +300,6 @@ export class DashboardComponent implements OnInit {
 //  | | \ \| |___| |__| | |__| | |____ ____) |  | |  ____) |
 //  |_|  \_\______\___\_\\____/|______|_____/   |_| |_____/                                                    
 
-    //////////////////
-   // GET REQUESTS //
-  //////////////////
   /**
    * Requests all authors from the database. No parameters needed
    */
@@ -343,9 +340,13 @@ export class DashboardComponent implements OnInit {
     );  
   }
 
-      ///////////////////
-     // POST REQUESTS //
-    ///////////////////
+//   _____   ____   _____ _______ 
+//  |  __ \ / __ \ / ____|__   __|
+//  | |__) | |  | | (___    | |   
+//  |  ___/| |  | |\___ \   | |   
+//  | |    | |__| |____) |  | |   
+//  |_|     \____/|_____/   |_|   
+                         
   /**
    * Pushes the content form to the database via the api
    * @param form content form from the dashboard
@@ -549,8 +550,15 @@ export class DashboardComponent implements OnInit {
     });     
   }
 
-  // VARIOUS FUNCTIONS
 
+
+//   _    _ _______ __  __ _      
+//  | |  | |__   __|  \/  | |     
+//  | |__| |  | |  | \  / | |     
+//  |  __  |  | |  | |\/| | |     
+//  | |  | |  | |  | |  | | |____ 
+//  |_|  |_|  |_|  |_|  |_|______|
+                               
   /**
    * Opens a confirmation dialog with the provided message
    * @param message shows text about what is happening

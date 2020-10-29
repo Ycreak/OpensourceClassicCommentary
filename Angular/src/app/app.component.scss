@@ -1,0 +1,80 @@
+/* GENERAL CSS STYLING */
+body, h1, h2, h3, h4, h5 {
+    font-family: "Raleway", sans-serif;
+}
+
+.h3-title {
+    color: white;
+}
+
+/* HTML Elements */
+.overflowColumn {
+    height: 90vh;
+    overflow-y: scroll;
+}
+
+div {
+    word-wrap: break-word;
+}
+
+.div-padding {
+    padding: 1em;
+}
+
+.div-padding-sm {
+    padding: 0.2em;
+}
+
+.navbar {
+    background-color: #3F51B5;
+}
+  
+.checkbox{
+    background-color: #3F51B5;
+    color: #FFFFFC;
+    font-family: 'Arial';
+    font-size: 13px;
+}
+
+span {
+    display: inline-block;
+    width: 2em;
+}
+
+.btn {
+    background-color: #3F51B5;
+    color: #FFFFFC;
+    font-family: 'Arial';
+    font-size: 13px;
+   
+    &:hover {
+      background-color: #5363BD;
+  
+      color: white;
+    }
+}
+
+.spacer {
+    flex: 1 1 auto;
+}
+
+/** MODALS **/
+.bibList {
+    height: auto;
+    width: 100%;
+}
+
+/** MATERIAL **/
+.mat-list-item:hover {
+    background-color: #6495ED;
+}
+  
+.mat-form-field {
+    padding-left: 1em;
+    width: auto;
+    size: 100%;
+}
+  
+.mat-expansion-panel-header {
+    flex: 1 1 auto;
+}

@@ -98,21 +98,21 @@
     <div class="row">
         <!-- FIRST COLUMN -->
         <div *ngIf="columnOneToggle" class="col-sm overflowColumn">
-        <div class="row">
-            <div class="col-6">
-            <h4>{{this.currentAuthorName}}: {{this.currentBookName}}.</h4>
-            </div>  
-            <div class="col-6">
-            <mat-form-field>
-                <mat-label>Select main editor</mat-label>
-                <mat-select>
-                <mat-option *ngFor="let mainEditor of this.mainEditorsJSON" [value]="mainEditor.Name"
-                (click)="this.mainEditorArray = CreateEditorArray(mainEditor.id, this.F_Fragments)"
-                (click)="this.SetCurrentEditorData(mainEditor)">
-                    {{ mainEditor.name }}                     
-                </mat-option>
-                </mat-select>
-            </mat-form-field>
+            <div class="row">
+                <div class="col-6">
+                <h4>{{this.currentAuthorName}}: {{this.currentBookName}}.</h4>
+                </div>  
+                <div class="col-6">
+                <mat-form-field>
+                    <mat-label>Select main editor</mat-label>
+                    <mat-select>
+                    <mat-option *ngFor="let mainEditor of this.mainEditorsJSON" [value]="mainEditor.Name"
+                    (click)="this.mainEditorArray = CreateEditorArray(mainEditor.id, this.F_Fragments)"
+                    (click)="this.SetCurrentEditorData(mainEditor)">
+                        {{ mainEditor.name }}                     
+                    </mat-option>
+                    </mat-select>
+                </mat-form-field>
             </div>
         </div>
         <!-- Listing of the fragments -->
@@ -133,7 +133,7 @@
         <div *ngIf="columnTwoToggle" class="col-sm overflowColumn">
         <div class="row">
             <div class="col-6">
-                <mat-form-field class="default-form">
+                <mat-form-field>
                     <mat-label>Select secondary editor</mat-label>
                     <mat-select>
                     <mat-option *ngFor="let selectedEditor of this.editorsJSON" [value]="selectedEditor.id"
@@ -347,6 +347,38 @@
 
         <hr>
         
+        <!-- <div class="row">
+            <div class="col-md-9">
+                <div class="row">
+                    <div *ngFor="let arrayItem of this.playgroundArray" class="playground" cdkDrag>
+                        <b>Fragment {{arrayItem.fragmentName}}</b> &nbsp; <i>{{arrayItem.status}}</i>
+                        <div *ngFor="let item of arrayItem.content">           
+                            <div [innerHTML]="item.lineComplete"></div>
+                        </div> 
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="row">
+
+                    <div *ngFor="let note of this.noteArray" class="note" cdkDrag>
+                        {{note}}
+                    </div>
+
+                    <hr>
+                    
+                    <div *ngFor="let arrayItem of this.addedArray" class="playground" cdkDrag>
+                        <b>(Added) Fragment {{arrayItem.fragmentName}}</b> &nbsp; <i>{{arrayItem.status}}</i>
+                        <div *ngFor="let item of arrayItem.content">           
+                            <div [innerHTML]="item.lineComplete"></div>
+                        </div> 
+                    </div>
+
+
+            </div>
+          </div>
+        </div> -->
+
         <div class="row">
             <div *ngFor="let arrayItem of this.playgroundArray" class="playground" cdkDrag>
                 <b>Fragment {{arrayItem.fragmentName}}</b> &nbsp; <i>{{arrayItem.status}}</i>

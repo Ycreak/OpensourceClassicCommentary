@@ -48,6 +48,9 @@ export class FragmentsComponent implements OnInit {
   mainEditorsJSON : JSON; // JSON that contains all available main Editors and their data for a specific book.
   booksJSON; // JSON that contains all available Books and their data given a specific editor.
   bibJSON; // JSON that contains all available Bibliography data given a specific book.
+  T_Text;
+  T_TextCommentary
+  
   // Global Class Variables with text data corresponding to the front-end text fields.
   F_Fragments;
   F_Commentary;
@@ -79,6 +82,7 @@ export class FragmentsComponent implements OnInit {
   addedArray = []; // just trying something
   selectedEditor;
   selectedFragment;
+  selectedLine : number;
   fragmentNumberList;
   
   constructor(
@@ -115,7 +119,12 @@ export class FragmentsComponent implements OnInit {
         this.editorsJSON = data;
         // Select the fragments from the editor you want in the left column.
         this.mainEditorsJSON = this.utility.FilterArrayOnKey(data, 'mainEditor', 1);
-        this.currentEditor = this.mainEditorsJSON[0].id //FIXME:
+        try {
+          this.currentEditor = this.mainEditorsJSON[0].id //FIXME:
+        }
+        catch(e) {
+          console.log(e);
+        }
       }
     );
   }
@@ -269,6 +278,49 @@ public AddFragmentToArray(toAdd, array, fragment){
 
   return toAdd;
 }
+
+
+
+// _______        _   
+// |__   __|      | |  
+//    | | _____  _| |_ 
+//    | |/ _ \ \/ / __|
+//    | |  __/>  <| |_ 
+//    |_|\___/_/\_\\__|
+             
+  public RequestText(book: number){
+    this.api.GetText(book).subscribe(
+      data => {
+        this.T_Text = data;
+      }
+    );  
+  }
+
+  public RequestCommentary(lineNumber: number){
+    this.selectedLine = lineNumber;
+    
+    this.api.GetTextCommentary(this.currentBook, lineNumber).subscribe(
+      data => {
+        this.F_Commentary = data;
+      }
+    );  
+  }
+
+  public IsWithinScope(commentaarScope : number){
+    if (commentaarScope + 6 > this.selectedLine){
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public CheckEmptyBlock(block : JSON){
+    if(this.utility.IsEmpty(block)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
      ////////////////////////////
     // HTML RELATED FUNCTIONS //

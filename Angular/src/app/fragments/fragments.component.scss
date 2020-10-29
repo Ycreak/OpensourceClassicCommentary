@@ -1,228 +1,105 @@
-/* GENERAL CSS STYLING */
+@import url('../app.component.scss');
+ /* DISPLAYING OF FRAGMENTS */
+.fragment-list {
+  width: auto;
+  max-width: 100%;
+  min-height: auto;
+  display: block;
+  background: white;
+  border-radius: 4px;
+  overflow: hidden;
+  padding: 10px 5px 0px 5px;
+}
 
-body, h1, h2, h3, h4, h5 {
-    font-family: "Raleway", sans-serif;
-  }
-  
-  .h3-title {
-    color: white;
-  }
-  
-  div {
-    word-wrap: break-word;
-    
-  }
-  
-  .div-padding {
-    padding: 1em;
-  }
+.fragment-box {
+  padding: 10px 5px 0px 5px;
+  border-bottom: solid 1px #ccc;
+  color: rgba(0, 0, 0, 0.87);
+  display: block;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  cursor: move;
+  background: white;
+  font-size: 14px;
 
-  /* STYLE CSS */
-  /* This assumes only 5 buttons exist. */
-  .default-form {
-    width: 50%;
+  &:hover {
+    background: #eee;
+    cursor: pointer;
   }
-  
+}
 
-  .navbar {
-    background-color: #3F51B5;
-  }
-  
-  .checkbox{
-    background-color: #3F51B5;
-    color: #FFFFFC;
-    font-family: 'Arial';
-    font-size: 13px;
-  }
+/* CDK Drag 'n Drop CSS */
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
 
-  span {
-    display: inline-block;
-    width: 2em;
-  }
+.cdk-overlay-connected-position-bounding-box {
+  z-index: 99999 !important;
+}
 
-  .div-padding-sm {
-    padding: 1em;
-  }
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
 
-  .btn {
-    background-color: #3F51B5;
-    color: #FFFFFC;
-    font-family: 'Arial';
-    font-size: 13px;
-  
-    /* border: 2px solid rgb(0, 17, 255); */
-  
-    &:hover {
-      background-color: #5363BD;
-  
-      /* Green */
-      color: white;
-    }
-  }
+.fragment-box:last-child {
+  border: none;
+}
 
-  .right {
-    float: right;
-    background: cyan;
-  }
-  
-  /* CUSTOM COMMANDS */
-  
-  .overflowColumn {
-    height: 90vh;
-    overflow-y: scroll;
-  }
-  
-  .bibList {
-    height: auto;
-    width: 100%;
-  }
-  
-  /* MAT LIST CSS */
-  
-  .mat-list-item:hover {
-    background-color: #6495ED;
-  }
-  
-  .mat-form-field {
-    padding-left: 1em;
-    width: auto;
-    size: 100%;
-  }
-  
-  .mat-expansion-panel-header {
-    flex: 1 1 auto;
-  }
-  
-  /* DISPLAYING OF FRAGMENTS */
-  
-  .fragment-list {
-    width: auto;
-    max-width: 100%;
-  
-    /* border: solid 5px #ccc; */
-    min-height: auto;
-    display: block;
-    background: white;
-    border-radius: 4px;
-    overflow: hidden;
-    padding: 10px 5px 0px 5px;
-  }
-  
-  .fragment-box {
-    padding: 10px 5px 0px 5px;
-    border-bottom: solid 1px #ccc;
-    color: rgba(0, 0, 0, 0.87);
-    display: block;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    box-sizing: border-box;
-    cursor: move;
-    background: white;
-    font-size: 14px;
-  
-    &:hover {
-      background: #eee;
-      cursor: pointer;
-    }
-  }
-  
-  /* CDK Drag 'n Drop CSS */
-  
-  .cdk-drag-preview {
-    box-sizing: border-box;
-    border-radius: 4px;
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
-  }
-  
-  .cdk-overlay-connected-position-bounding-box {
-    z-index: 99999 !important;
-  }
-  
-  .cdk-drag-animating {
-    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-  }
-  
-  .fragment-box:last-child {
-    border: none;
-  }
-  
-  .fragment-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
-    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-  }
-  
-  /* MODAL CSS */
-  
-  ::ng-deep .modal-sizer .modal-dialog {
-    max-width: 100%;
-    width: auto;
-  }
+.fragment-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
 
-  .spacer {
-    flex: 1 1 auto;
-  }
-
-  .note {
-    // width: auto;
-    // height: auto;
-    border: solid 1px #ccc;
-    padding: .5em;
-    color: rgba(0, 0, 0, 0.87);
-    cursor: move;
-    display: inline-block;
-    justify-content: center;
-    // align-items: center;
-    text-align: center;
-    background: #fff;
-    border-radius: 4px;
-    position: relative;
-    z-index: 2;
-    transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
-    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
-                0 2px 2px 0 rgba(0, 0, 0, 0.14),
-                0 1px 5px 0 rgba(0, 0, 0, 0.12);
-  }
-  
-  .note:active {
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-                0 8px 10px 1px rgba(0, 0, 0, 0.14),
-                0 3px 14px 2px rgba(0, 0, 0, 0.12);
-  }
-
-  .playground {
-    // border: solid 1px #ccc;
-    color: rgba(0, 0, 0, 0.87);
-    cursor: move;
-    display: inline-block;
-    justify-content: center;
-    // align-items: center;
-    text-align: center;
-    // background: #fff;
-    border-radius: 4px;
-    position: relative;
-    z-index: 1;
-    // transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
-    // box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
-    //             0 2px 2px 0 rgba(0, 0, 0, 0.14),
-    //             0 1px 5px 0 rgba(0, 0, 0, 0.12);
-  }
-  
-  .playground:active {
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-                0 8px 10px 1px rgba(0, 0, 0, 0.14),
-                0 3px 14px 2px rgba(0, 0, 0, 0.12);
-  }
-  
-  .playground2{
-    display: inline-block;
-    background: #fff;
-
-  }
-
-
-
-#container {
-  width: 100px;
-  height: 100px;
+.note {
+  // width: auto;
+  // height: auto;
+  border: solid 1px #ccc;
+  padding: .5em;
+  color: rgba(0, 0, 0, 0.87);
+  cursor: move;
+  display: inline-block;
+  justify-content: center;
+  // align-items: center;
+  text-align: center;
+  background: #fff;
+  border-radius: 4px;
   position: relative;
+  z-index: 2;
+  transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
+              0 2px 2px 0 rgba(0, 0, 0, 0.14),
+              0 1px 5px 0 rgba(0, 0, 0, 0.12);
+}
+
+.note:active {
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+              0 8px 10px 1px rgba(0, 0, 0, 0.14),
+              0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.playground {
+  // border: solid 1px #ccc;
+  color: rgba(0, 0, 0, 0.87);
+  cursor: move;
+  display: inline-block;
+  justify-content: center;
+  // align-items: center;
+  text-align: center;
+  // background: #fff;
+  border-radius: 4px;
+  position: relative;
+  z-index: 1;
+  // transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
+  // box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
+  //             0 2px 2px 0 rgba(0, 0, 0, 0.14),
+  //             0 1px 5px 0 rgba(0, 0, 0, 0.12);
+}
+
+.playground:active {
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+              0 8px 10px 1px rgba(0, 0, 0, 0.14),
+              0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
