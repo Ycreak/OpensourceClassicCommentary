@@ -35,10 +35,10 @@ export class FragmentsComponent implements OnInit {
   bibWebsites: JSON;
   bibInCollection : JSON; //TODO: this one should be added.
   // Toggle switches
-  columnOneToggle: boolean = true;
+  columnOneToggle: boolean = false;
   columnTwoToggle: boolean = false; // Boolean to toggle between 2 and 3 column mode.
-  columnThreeToggle: boolean = true;
-  Playground: boolean = false;
+  columnThreeToggle: boolean = false;
+  Playground: boolean = true;
   
   spinner: boolean = true; // Boolean to toggle the spinner.
   noCommentary: boolean = false; // Shows banner if no commentary is available.
@@ -68,6 +68,10 @@ export class FragmentsComponent implements OnInit {
   // This array contains all the information from a specific book. Functions can use this data.
   selectedEditorArray = [];
   mainEditorArray = [];
+  // Work in progress
+  playgroundArray = [];
+  playgroundArray2 = [];
+  fragmentNumberList2;
 
   referencer : number = 0;
   note;
@@ -252,12 +256,18 @@ public GetFragmentNumbers(editor: number, array){
   return list.sort(this.utility.SortNumeric);    
 }
 
-public AddFragmentToArray(array, fragment){
+//FIXME: this is horrible
+public AddFragmentToArray(toAdd, array, fragment){
   console.log(array)
   let tempArray = array.filter(x => x.fragmentName == fragment);
-  console.log(tempArray)
-  this.addedArray.push(tempArray)
-  console.log('added',this.addedArray, this.selectedEditorArray)
+  // console.log('fil', tempArray)
+  toAdd = toAdd.concat(tempArray)
+  // console.log('added',this.addedArray, this.selectedEditorArray)
+
+  // console.log('add', toAdd)
+  // console.log('ply', this.playgroundArray)
+
+  return toAdd;
 }
 
      ////////////////////////////

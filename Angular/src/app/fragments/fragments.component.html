@@ -294,64 +294,87 @@
 
     </div>
 
-    <div class="row" *ngIf="Playground">
-
-        <div class="col-6">
-            <div mat-dialog-content>
-                <mat-form-field class="input-form">
-                    <input matInput placeholder="Add note" [(ngModel)]='note'>
-                    <mat-hint>Add note</mat-hint>
-                </mat-form-field>
-            </div>  
-            <button mat-button (click)="this.noteArray = PushToArray(note, this.noteArray)">Add Note</button>
-            <button mat-button (click)="this.noteArray = PopArray(this.noteArray)">Delete Note</button>
-        </div>
-
-        <mat-form-field class="select-form">
+    <div class="container-fluid" *ngIf="Playground">
+        <div class="row">
+            <mat-form-field class="select-form">
                 <mat-label>Editor</mat-label>
                 <mat-select [(ngModel)]="selectedEditor">
                 <mat-option *ngFor="let data of this.editorsJSON" [value]="data"
-                (click)="this.selectedEditorArray = CreateEditorArray(data.id, this.F_Fragments)"
-                (click)="this.fragmentNumberList = GetFragmentNumbers(data.id, this.selectedEditorArray)">
+                (click)="this.playgroundArray = CreateEditorArray(data.id, this.F_Fragments)"
+                (click)="this.fragmentNumberList = GetFragmentNumbers(data.id, this.playgroundArray)">
                     {{ data.name }}                       
                 </mat-option>
                 </mat-select>
-                <mat-hint>Select an editor</mat-hint>
+                <mat-hint>Select an editor to begin</mat-hint>
             </mat-form-field>
-                
+
+            <mat-form-field class="select-form">
+                <mat-label>Editor</mat-label>
+                <mat-select [(ngModel)]="toAddEditor">
+                <mat-option *ngFor="let data of this.editorsJSON" [value]="data"
+                (click)="this.playgroundArray2 = CreateEditorArray(data.id, this.F_Fragments)"
+                (click)="this.fragmentNumberList2 = GetFragmentNumbers(data.id, this.playgroundArray2)">
+                    {{ data.name }}                       
+                </mat-option>
+                </mat-select>
+                <mat-hint>Select an editor to add a fragment from</mat-hint>
+            </mat-form-field>
+
             <mat-form-field class="select-form">
                 <mat-label>Fragment</mat-label>
                 <mat-select [(ngModel)]="selectedFragment">
-                <mat-option *ngFor="let data of this.fragmentNumberList" [value]="data"
-                (click)="AddFragmentToArray(this.selectedEditorArray, data)">
+                <mat-option *ngFor="let data of this.fragmentNumberList2" [value]="data"
+                (click)="this.addedArray = AddFragmentToArray(this.addedArray, this.playgroundArray2, data)">
                     {{ data }} 
                 </mat-option>
                 </mat-select>
                 <mat-hint>Select a fragment</mat-hint>
             </mat-form-field> 
 
-
-        <div *ngFor="let arrayItem of this.selectedEditorArray" class="playground" cdkDrag>
-            <b>Fragment {{arrayItem.fragmentName}}</b> &nbsp; <i>{{arrayItem.status}}</i>
-            <div *ngFor="let item of arrayItem.content">           
-                <div [innerHTML]="item.lineComplete"></div>
-            </div> 
+            <div mat-dialog-content>
+                <mat-form-field class="input-form">
+                    <input matInput placeholder="Add note" [(ngModel)]='note'>
+                    <button type="button" mat-icon-button matSuffix (click)="this.noteArray = PopArray(this.noteArray)">
+                        <mat-icon>{{'navigate_before'}}</mat-icon>
+                      </button>
+                      <button type="button" mat-icon-button matSuffix (click)="this.noteArray = PushToArray(note, this.noteArray)">
+                        <mat-icon>{{'add'}}</mat-icon>
+                      </button>
+                    <mat-hint>Add note</mat-hint>
+                </mat-form-field>               
+            </div>  
         </div>
 
-        <div *ngFor="let arrayItem of this.addedArray" class="playground" cdkDrag>
-                <b>Fragment {{arrayItem}}</b> &nbsp; <i>{{arrayItem.status}}</i>
+        <hr>
+        
+        <div class="row">
+            <div *ngFor="let arrayItem of this.playgroundArray" class="playground" cdkDrag>
+                <b>Fragment {{arrayItem.fragmentName}}</b> &nbsp; <i>{{arrayItem.status}}</i>
                 <div *ngFor="let item of arrayItem.content">           
                     <div [innerHTML]="item.lineComplete"></div>
                 </div> 
             </div>
+        </div>
 
-        <div *ngFor="let note of this.noteArray" class="note" cdkDrag id="container">
+        <hr>
+        
+        <div class="row">
+            <div *ngFor="let arrayItem of this.addedArray" class="playground" cdkDrag>
+                <b>(Added) Fragment {{arrayItem.fragmentName}}</b> &nbsp; <i>{{arrayItem.status}}</i>
+                <div *ngFor="let item of arrayItem.content">           
+                    <div [innerHTML]="item.lineComplete"></div>
+                </div> 
+            </div>
+        </div>
+        
+        <hr>
+
+        <div class="row">
+            <div *ngFor="let note of this.noteArray" class="note" cdkDrag>
                 {{note}}
             </div>
-
+        </div>
     </div>
-
-
 </div>
     
     
