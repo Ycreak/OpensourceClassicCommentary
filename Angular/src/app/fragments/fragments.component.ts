@@ -110,7 +110,7 @@ export class FragmentsComponent implements OnInit {
         // Set the editorsJSON to contain the retrieved data.
         this.editorsJSON = data;
         // Select the fragments from the editor you want in the left column.
-        this.mainEditorsJSON = this.utility.FilterArrayOnKey(data, 'mainEditor');
+        this.mainEditorsJSON = this.utility.FilterArrayOnKey(data, 'mainEditor', 1);
         this.currentEditor = this.mainEditorsJSON[0].id //FIXME:
       }
     );

@@ -136,14 +136,28 @@ export class UtilityService {
     for(let element in array){
       array[element].content.sort(this.SortFragmentsArrayNumerically);
     }
-    // Show that everything went well
-    console.log('merged', array)
-    return array;
+    
+    // Put normal fragments first, then incerta and then adespota
+    let normal = this.FilterObjOnKey(array, 'status', '')
+    let incerta = this.FilterObjOnKey(array, 'status', 'Incertum')
+    let adesp = this.FilterObjOnKey(array, 'status', 'Adesp.')
+    // Concatenate in the order we want (i'm a hacker)
+    array = normal.concat(incerta).concat(adesp)
+
+    console.log('array', array)
+    return array
   }
 
+  public FilterObjOnKey(array, key, value){
+    var temp = array.filter(obj => {
+      return obj[key] === value;
+    })
+    return temp    
+  } 
+
   // Creates main editor array: the third field has the mainEditor key. Should be named properly.
-  public FilterArrayOnKey(array, key){
-    return array.filter(x => x[key] == 1);
+  public FilterArrayOnKey(array, key, value){
+    return array.filter(x => x[key] === value);
   }
 
 }

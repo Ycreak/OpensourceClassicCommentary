@@ -12,7 +12,7 @@ import { Context } from './models/Context';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'OpenSourceClassicCommentary';
+  title = 'OpenSourceClassicsCommentary';
 
   constructor(private api: ApiService) {
 
