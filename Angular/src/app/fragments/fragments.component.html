@@ -29,7 +29,7 @@
     <button (click)="OpenText()" mat-menu-item>Text Inside</button>
     <button (click)="Login()" mat-menu-item>Login</button>
     <button (click)="OpenAbout()" mat-menu-item>About</button>
-    <button mat-menu-item>V20.44.2</button>
+    <button mat-menu-item>V20.44.3</button>
 
 </mat-menu>
 
@@ -104,7 +104,7 @@
                 </div>  
                 <div class="col-6">
                 <mat-form-field>
-                    <mat-label>Select main editor</mat-label>
+                    <mat-label>Main editor</mat-label>
                     <mat-select>
                     <mat-option *ngFor="let mainEditor of this.mainEditorsJSON" [value]="mainEditor.Name"
                     (click)="this.mainEditorArray = CreateEditorArray(mainEditor.id, this.F_Fragments)"
@@ -112,6 +112,7 @@
                         {{ mainEditor.name }}                     
                     </mat-option>
                     </mat-select>
+                    <mat-hint>Select a main editor</mat-hint>
                 </mat-form-field>
             </div>
         </div>
@@ -132,27 +133,31 @@
         <!-- SELECTED EDITOR COLUMN -->
         <div *ngIf="columnTwoToggle" class="col-sm overflowColumn">
         <div class="row">
-            <div class="col-6">
-                <mat-form-field>
-                    <mat-label>Select secondary editor</mat-label>
+            <div class="col-md-6">
+                <mat-form-field class="input-form">
+                    <mat-label>Secondary editor</mat-label>
                     <mat-select>
                     <mat-option *ngFor="let selectedEditor of this.editorsJSON" [value]="selectedEditor.id"
                     (click)="this.selectedEditorArray = CreateEditorArray(selectedEditor.id, this.F_Fragments)">
                         {{ selectedEditor.name }} 
                     </mat-option>
                     </mat-select>
+                    <mat-hint>Select a secondary editor</mat-hint>
                 </mat-form-field>
             </div>
-
-            <div class="col-6">
+            <div class="col-md-6">
                 <div mat-dialog-content>
                     <mat-form-field class="input-form">
-                        <input matInput placeholder="Add note" [(ngModel)]='note'>
-                        <mat-hint>Add note</mat-hint>
-                    </mat-form-field>
-                </div>  
-                <button mat-button (click)="this.noteArray = PushToArray(note, this.noteArray)">Add Note</button>
-                <button mat-button (click)="this.noteArray = PopArray(this.noteArray)">Delete Note</button>
+                        <input matInput placeholder="Note" [(ngModel)]='note'>
+                        <button type="button" mat-icon-button matSuffix (click)="this.noteArray = PopArray(this.noteArray)">
+                            <mat-icon>{{'remove'}}</mat-icon>
+                            </button>
+                            <button type="button" mat-icon-button matSuffix (click)="this.noteArray = PushToArray(note, this.noteArray)">
+                            <mat-icon>{{'add'}}</mat-icon>
+                            </button>
+                        <mat-hint>Add a note</mat-hint>
+                    </mat-form-field>               
+                </div> 
             </div>
         </div>
     
@@ -335,7 +340,7 @@
                 <mat-form-field class="input-form">
                     <input matInput placeholder="Add note" [(ngModel)]='note'>
                     <button type="button" mat-icon-button matSuffix (click)="this.noteArray = PopArray(this.noteArray)">
-                        <mat-icon>{{'navigate_before'}}</mat-icon>
+                        <mat-icon>{{'remove'}}</mat-icon>
                       </button>
                       <button type="button" mat-icon-button matSuffix (click)="this.noteArray = PushToArray(note, this.noteArray)">
                         <mat-icon>{{'add'}}</mat-icon>

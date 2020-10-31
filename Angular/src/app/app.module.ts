@@ -57,7 +57,8 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatToolbarModule} from '@angular/material/toolbar'; 
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle'; 
-import {MatCheckboxModule} from '@angular/material/checkbox'; 
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatRadioModule} from '@angular/material/radio';  
 import {MatIconModule} from '@angular/material/icon'; 
 
 import {ClipboardModule} from '@angular/cdk/clipboard';
@@ -131,6 +132,7 @@ const appRoutes: Routes = [
     MatSlideToggleModule,
     MatCheckboxModule,
     MatIconModule,
+    MatRadioModule,
     // To allow the drag and drop
     DragDropModule,
     ClipboardModule,

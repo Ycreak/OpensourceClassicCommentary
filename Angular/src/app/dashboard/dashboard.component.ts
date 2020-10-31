@@ -116,6 +116,7 @@ export class DashboardComponent implements OnInit {
     url: [''],
     consultDate: [''],
   });
+  bibType;
 
   constructor(
     private api: ApiService,

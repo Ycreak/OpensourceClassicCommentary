@@ -287,143 +287,216 @@
               </mat-tab>
               
               <mat-tab label="Bibliography">
+
+                <mat-radio-group aria-label="Select an option" [(ngModel)]="bibType">
+                  <mat-radio-button value="edition">Edition</mat-radio-button>
+                  <mat-radio-button value="translation">Translation</mat-radio-button>
+                  <mat-radio-button value="commentary">Commentary</mat-radio-button>
+                  <!-- <hr> -->
+                  <mat-radio-button value="book">Book</mat-radio-button>
+                  <mat-radio-button value="article">Article</mat-radio-button>
+                  <mat-radio-button value="evolume">Edited Volume</mat-radio-button>
+                  <mat-radio-button value="website">Website</mat-radio-button> 
+                                   
+                </mat-radio-group>
+                              
                   <form [formGroup]="bibForm" (ngSubmit)="RequestReviseBib(bibForm.value)">
-                    <h4>Book</h4>
-                      <mat-form-field class="input-form-full-width">
-                        <mat-label>Author Name</mat-label>
-                        <input matInput type="text" formControlName="author">
-                        <mat-hint>Provide the author</mat-hint>                       
-                      </mat-form-field> 
-                      
-                      <mat-form-field class="input-form-full-width">
-                        <mat-label>Book Title</mat-label>
-                        <input matInput type="text" formControlName="book">
-                        <mat-hint>Provide the Book title</mat-hint>                       
-                      </mat-form-field>   
 
-                      <mat-form-field class="input-form-full-width">
-                        <mat-label>Year</mat-label>
-                        <input matInput type="text" formControlName="year">
-                        <mat-hint>Provide the year</mat-hint>                       
-                      </mat-form-field>   
+                    <div *ngIf="this.bibType == 'edition'">
+                      Placeholder
+                    </div>
+                    <div *ngIf="this.bibType == 'translation'">
+                      Placeholder
+                    </div>                      
+                    <div *ngIf="this.bibType == 'commentary'">
+                      Placeholder
+                    </div>                      
 
-                      <mat-form-field class="input-form-full-width">
-                        <mat-label>Place</mat-label>
-                        <input matInput type="text" formControlName="place">
-                        <mat-hint>Provide the place</mat-hint>                       
-                      </mat-form-field>   
 
-                      <div class="div-padding"></div>
-                      <button mat-button class="button" type="submit">Upload Bib Entry</button>
-                      <div class="div-padding"></div>
 
-                      <h4>Article</h4>
-                      <mat-form-field class="input-form-full-width">
-                        <mat-label>Author Name</mat-label>
-                        <input matInput type="text" formControlName="author">
-                        <mat-hint>Provide the author</mat-hint>                       
-                      </mat-form-field> 
+
+                    <div *ngIf="this.bibType == 'book'">
+                        <mat-form-field class="input-form-full-width">
+                          <mat-label>Author Name</mat-label>
+                          <input matInput type="text" formControlName="author">
+                          <mat-hint>Provide the author</mat-hint>                       
+                        </mat-form-field> 
                         
-                      <mat-form-field class="input-form-full-width">
-                        <mat-label>Article Title</mat-label>
-                        <input matInput type="text" formControlName="article">
-                        <mat-hint>Provide the Article title</mat-hint>                       
-                      </mat-form-field>   
+                        <mat-form-field class="input-form-full-width">
+                          <mat-label>Book Title</mat-label>
+                          <input matInput type="text" formControlName="book">
+                          <mat-hint>Provide the Book title</mat-hint>                       
+                        </mat-form-field>   
 
-                      <mat-form-field class="input-form-full-width">
-                        <mat-label>Journal Title</mat-label>
-                        <input matInput type="text" formControlName="journal">
-                        <mat-hint>Provide the Journal title</mat-hint>                       
-                      </mat-form-field>  
+                        <mat-form-field class="input-form-full-width">
+                          <mat-label>Year</mat-label>
+                          <input matInput type="text" formControlName="year">
+                          <mat-hint>Provide the year</mat-hint>                       
+                        </mat-form-field>   
 
-                      <mat-form-field class="input-form-full-width">
-                        <mat-label>Volume Title</mat-label>
-                        <input matInput type="text" formControlName="volume">
-                        <mat-hint>Provide the volume title</mat-hint>                       
-                      </mat-form-field>  
+                        <mat-form-field class="input-form-full-width">
+                          <mat-label>Place</mat-label>
+                          <input matInput type="text" formControlName="place">
+                          <mat-hint>Provide the place</mat-hint>                       
+                        </mat-form-field>   
 
-                      <mat-form-field class="input-form-full-width">
-                        <mat-label>Pages</mat-label>
-                        <input matInput type="text" formControlName="pages">
-                        <mat-hint>Provide the pages</mat-hint>                       
-                      </mat-form-field>  
+                      </div>
 
-                      <mat-form-field class="input-form-full-width">
-                        <mat-label>Year</mat-label>
-                        <input matInput type="text" formControlName="year">
-                        <mat-hint>Provide the year</mat-hint>                       
-                      </mat-form-field>   
+                      <div *ngIf="this.bibType == 'article'">
+                        <mat-form-field class="input-form-full-width">
+                          <mat-label>Author Name</mat-label>
+                          <input matInput type="text" formControlName="author">
+                          <mat-hint>Provide the author</mat-hint>                       
+                        </mat-form-field> 
+                          
+                        <mat-form-field class="input-form-full-width">
+                          <mat-label>Article Title</mat-label>
+                          <input matInput type="text" formControlName="article">
+                          <mat-hint>Provide the Article title</mat-hint>                       
+                        </mat-form-field>   
 
-                      <div class="div-padding"></div>
-                      <button mat-button class="button" type="submit">Upload Bib Entry</button>
-                      <div class="div-padding"></div>
+                        <mat-form-field class="input-form-full-width">
+                          <mat-label>Journal Title</mat-label>
+                          <input matInput type="text" formControlName="journal">
+                          <mat-hint>Provide the Journal title</mat-hint>                       
+                        </mat-form-field>  
 
-                      <h4>Edition</h4>
-                      <mat-form-field class="input-form-full-width">
-                        <mat-label>Editor Name</mat-label>
-                        <input matInput type="text" formControlName="editor">
-                        <mat-hint>Provide the editor</mat-hint>                       
-                      </mat-form-field> 
+                        <mat-form-field class="input-form-full-width">
+                          <mat-label>Volume</mat-label>
+                          <input matInput type="text" formControlName="volume">
+                          <mat-hint>Provide the volume number</mat-hint>                       
+                        </mat-form-field>  
 
-                      <mat-form-field class="input-form-full-width">
-                        <mat-label>Author Name</mat-label>
-                        <input matInput type="text" formControlName="author">
-                        <mat-hint>Provide the author</mat-hint>                       
-                      </mat-form-field> 
+                        <mat-form-field class="input-form-full-width">
+                          <mat-label>Pages</mat-label>
+                          <input matInput type="text" formControlName="pages">
+                          <mat-hint>Provide the pages</mat-hint>                       
+                        </mat-form-field>  
 
-                      <mat-form-field class="input-form-full-width">
-                        <mat-label>Book Title</mat-label>
-                        <input matInput type="text" formControlName="book">
-                        <mat-hint>Provide the Book title</mat-hint>                       
-                      </mat-form-field>   
+                        <mat-form-field class="input-form-full-width">
+                          <mat-label>Year</mat-label>
+                          <input matInput type="text" formControlName="year">
+                          <mat-hint>Provide the year</mat-hint>                       
+                        </mat-form-field>   
+                      </div>
 
-                      <mat-form-field class="input-form-full-width">
-                        <mat-label>Chapter</mat-label>
-                        <input matInput type="text" formControlName="chapterTitle">
-                        <mat-hint>Provide the chapter title</mat-hint>                       
-                      </mat-form-field>   
+                      <!-- <div *ngIf="this.bibType == 'evolume'">
+                        <mat-form-field class="input-form-full-width">
+                          <mat-label>Editor Name</mat-label>
+                          <input matInput type="text" formControlName="editor">
+                          <mat-hint>Provide the editor</mat-hint>                       
+                        </mat-form-field>  -->
 
-                      <mat-form-field class="input-form-full-width">
-                        <mat-label>Pages</mat-label>
-                        <input matInput type="text" formControlName="pages">
-                        <mat-hint>Provide the pages</mat-hint>                       
-                      </mat-form-field>  
+                        <!-- <mat-form-field class="input-form-full-width">
+                          <mat-label>Author Name</mat-label>
+                          <input matInput type="text" formControlName="author">
+                          <mat-hint>Provide the author</mat-hint>                       
+                        </mat-form-field> 
 
-                      <mat-form-field class="input-form-full-width">
-                        <mat-label>Year</mat-label>
-                        <input matInput type="text" formControlName="year">
-                        <mat-hint>Provide the year</mat-hint>                       
-                      </mat-form-field>   
+                        <mat-form-field class="input-form-full-width">
+                          <mat-label>Book Title</mat-label>
+                          <input matInput type="text" formControlName="book">
+                          <mat-hint>Title edited volume</mat-hint>                       
+                        </mat-form-field>   
 
-                      <div class="div-padding"></div>
-                      <button mat-button class="button" type="submit">Upload Bib Entry</button>
-                      <div class="div-padding"></div>
+                        <mat-form-field class="input-form-full-width">
+                          <mat-label>Chapter</mat-label>
+                          <input matInput type="text" formControlName="chapterTitle">
+                          <mat-hint>Title of the article</mat-hint>                       
+                        </mat-form-field>   
 
-                      <h4>Website</h4>
-                      <mat-form-field class="input-form-full-width">
-                        <mat-label>Website Title</mat-label>
-                        <input matInput type="text" formControlName="website">
-                        <mat-hint>Provide the website title</mat-hint>                       
-                      </mat-form-field>  
+                        <mat-form-field class="input-form-full-width">
+                          <mat-label>Pages</mat-label>
+                          <input matInput type="text" formControlName="pages">
+                          <mat-hint>Provide the pages</mat-hint>                       
+                        </mat-form-field>  
 
-                      <mat-form-field class="input-form-full-width">
-                        <mat-label>URL</mat-label>
-                        <input matInput type="text" formControlName="url">
-                        <mat-hint>Provide the website url</mat-hint>                       
-                      </mat-form-field>  
+                        <mat-form-field class="input-form-full-width">
+                          <mat-label>Year</mat-label>
+                          <input matInput type="text" formControlName="year">
+                          <mat-hint>Provide the year</mat-hint>                       
+                        </mat-form-field>   
 
-                      <mat-form-field class="input-form-full-width">
-                        <mat-label>Consult date</mat-label>
-                        <input matInput type="text" formControlName="consultDate">
-                        <mat-hint>Provide the consult date</mat-hint>                       
-                      </mat-form-field>   
-                      
+                        <mat-form-field class="input-form-full-width">
+                          <mat-label>Pages</mat-label>
+                          <input matInput type="text" formControlName="pages">
+                          <mat-hint>Provide the pages</mat-hint>                       
+                        </mat-form-field>   -->
+                      <!-- </div> -->
+
+                      <div *ngIf="this.bibType == 'evolume'">
+                        <!-- <mat-form-field class="input-form-full-width">
+                          <mat-label>Editor Name</mat-label>
+                          <input matInput type="text" formControlName="editor">
+                          <mat-hint>Provide the Editor</mat-hint>                       
+                        </mat-form-field>  -->
+
+                          <!-- <mat-form-field class="input-form-full-width">
+                            <mat-label>Editor Name</mat-label>
+                            <input matInput type="text" formControlName="editor2">
+                            <mat-hint>Provide the editor</mat-hint>                       
+                          </mat-form-field>  -->
+
+                        <mat-form-field class="input-form-full-width">
+                          <mat-label>Author Name</mat-label>
+                          <input matInput type="text" formControlName="author">
+                          <mat-hint>Provide the author</mat-hint>                       
+                        </mat-form-field> 
+
+                        <mat-form-field class="input-form-full-width">
+                          <mat-label>Book Title</mat-label>
+                          <input matInput type="text" formControlName="book">
+                          <mat-hint>Title edited volume</mat-hint>                       
+                        </mat-form-field>   
+
+                        <mat-form-field class="input-form-full-width">
+                          <mat-label>Chapter</mat-label>
+                          <input matInput type="text" formControlName="chapterTitle">
+                          <mat-hint>Title of the article</mat-hint>                       
+                        </mat-form-field>   
+
+                        <mat-form-field class="input-form-full-width">
+                          <mat-label>Pages</mat-label>
+                          <input matInput type="text" formControlName="pages">
+                          <mat-hint>Provide the pages</mat-hint>                       
+                        </mat-form-field>  
+
+                        <mat-form-field class="input-form-full-width">
+                          <mat-label>Year</mat-label>
+                          <input matInput type="text" formControlName="year">
+                          <mat-hint>Provide the year</mat-hint>                       
+                        </mat-form-field>   
+
+                        <mat-form-field class="input-form-full-width">
+                          <mat-label>Pages</mat-label>
+                          <input matInput type="text" formControlName="pages">
+                          <mat-hint>Provide the pages</mat-hint>                       
+                        </mat-form-field>
+                      </div>
+
+                      <div *ngIf="this.bibType == 'website'">
+                        <mat-form-field class="input-form-full-width">
+                          <mat-label>Website Title</mat-label>
+                          <input matInput type="text" formControlName="website">
+                          <mat-hint>Provide the website title</mat-hint>                       
+                        </mat-form-field>  
+
+                        <mat-form-field class="input-form-full-width">
+                          <mat-label>URL</mat-label>
+                          <input matInput type="text" formControlName="url">
+                          <mat-hint>Provide the website url</mat-hint>                       
+                        </mat-form-field>  
+
+                        <mat-form-field class="input-form-full-width">
+                          <mat-label>Consult date</mat-label>
+                          <input matInput type="text" formControlName="consultDate">
+                          <mat-hint>Provide the consult date</mat-hint>                       
+                        </mat-form-field>   
+                      </div>
                       <!-- Button is linked via the submit type! -->
                       <div class="div-padding"></div>
                       <button mat-button class="button" type="submit">Upload Bib Entry</button>
                     </form>
-                    <div class="div-padding"></div>    
-                    <!-- <button mat-button (click)="RequestCreateContext(contextForm.value)" [disabled]="!contextForm.valid">Create New Context</button> -->
         
               </mat-tab>
 
