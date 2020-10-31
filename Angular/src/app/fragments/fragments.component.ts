@@ -100,7 +100,8 @@ export class FragmentsComponent implements OnInit {
     this.RequestEditors(this.currentBook);
     this.RequestFragments(this.currentBook);
     // When init is done, turn off the loading bar (spinner)
-    this.spinner = false;    
+    this.spinner = false;  
+    
   }
 
   // Opens dialog for the dashboard
@@ -331,7 +332,9 @@ public AddFragmentToArray(toAdd, array, fragment){
   }
   // Opens dialog for the bibliography
   public OpenBibliography() {
-    let dialogRef = this.dialog.open(this.CallBibliography); 
+    // let dialogRef = this.dialog.open(this.CallBibliography); 
+    let dialogRef = this.dialog.open(ShowBibliographyDialog); 
+
   }
   // Opens dialog to select a new book
   public OpenBookSelect() {
@@ -355,4 +358,10 @@ public AddFragmentToArray(toAdd, array, fragment){
   templateUrl: './dialogs/about-dialog.html',
 })
 export class ShowAboutDialog {}
+
+@Component({
+  selector: 'bibliography-dialog',
+  templateUrl: './dialogs/bibliography-dialog.html',
+})
+export class ShowBibliographyDialog {}
 
