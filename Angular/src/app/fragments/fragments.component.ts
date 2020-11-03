@@ -64,7 +64,7 @@ export class FragmentsComponent implements OnInit {
   currentAuthor : number = 4;
   currentBook : number = 6;
   currentEditor : number = 1;
-  currentFragment : number;
+  currentFragment : string = '';
   currentAuthorName : string = "Ennius";
   currentBookName : string = "Thyestes";
   currentEditorName : string = "Manuwald";
@@ -118,6 +118,7 @@ export class FragmentsComponent implements OnInit {
       data => {
         // Set the editorsJSON to contain the retrieved data.
         this.editorsJSON = data;
+        console.log('json', this.editorsJSON)
         // Select the fragments from the editor you want in the left column.
         this.mainEditorsJSON = this.utility.FilterArrayOnKey(data, 'mainEditor', 1);
         try {
@@ -218,6 +219,7 @@ export class FragmentsComponent implements OnInit {
   */
  public RequestReferencerID(fragmentName: string, editor: number, book: number){
   console.log('You called! fragment, editor, book: ', fragmentName, editor, book)
+  this.currentFragment = fragmentName;
   // Turn on the spinner.
   this.spinner = true;
   // Retrieve the Referencer ID and wait before it is retrieved before proceeding with the rest.
