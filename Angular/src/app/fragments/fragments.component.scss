@@ -58,6 +58,10 @@
   width: 100%;
 }
 
+.input-form-wide{
+  width: 100%;
+}
+
 .note {
   // width: auto;
   // height: auto;
@@ -111,7 +115,7 @@
 
 
 .example-container {
-  width: 250px;
+  width: 30%;
   max-width: 100%;
   margin: 0 25px 25px 0;
   display: inline-block;
@@ -163,4 +167,8 @@
 
 .example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.row {
+  width: 100%;
 }

@@ -353,24 +353,26 @@ public AddFragmentToArray(toAdd, array, fragment){
   //   const dialogRef = this.dialog.open(DashboardComponent);
   // }
 
-  todo = [
-    'Get to work',
-    'Pick up groceries',
-    'Go home',
-    'Fall asleep'
-  ];
 
-  done = [
-    'Get up',
-    'Brush teeth',
-    'Take a shower',
-    'Check e-mail',
-    'Walk dog'
-  ];
+  public CreateOwnFragment(line, array){
 
-  myCommentary = [
-    'Get up',
-  ];
+    let contentArray = []
+
+    contentArray.push({
+      lineName: '0',
+      lineContent: line,
+      lineComplete: line,
+    })
+    // Push the created data to the array and empty the used arrays.
+    array.push({ fragmentName: '0', content: contentArray})
+    
+    return array
+  }
+
+
+  myCommentary = [];
+
+  ourCommentary = [];
 
   drop2(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {

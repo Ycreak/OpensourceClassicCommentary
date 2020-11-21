@@ -437,48 +437,102 @@
     </div>
 
     <div class="container-fluid" *ngIf="Multiplayer">
-        <!-- <div class="row"> -->
-        
+        <div class="row">
+            <mat-form-field class="select-form">
+                <mat-label>Editor</mat-label>
+                <mat-select [(ngModel)]="selectedEditor">
+                <mat-option *ngFor="let data of this.editorsJSON" [value]="data"
+                (click)="this.playgroundArray = CreateEditorArray(data.id, this.F_Fragments)"
+                (click)="this.fragmentNumberList = GetFragmentNumbers(data.id, this.playgroundArray)">
+                    {{ data.name }}                       
+                </mat-option>
+                </mat-select>
+                <mat-hint>Select an editor to use</mat-hint>
+            </mat-form-field>
+
             <div mat-dialog-content>
-                <mat-form-field class="input-form">
-                    <input matInput placeholder="Add commentary" [(ngModel)]='commentary'>
+                <mat-form-field class="input-form-wide">
+                    <textarea class="input-form-wide" matInput type="text" [(ngModel)]='commentary' [matKeyboard]="'OSCC'"></textarea>
+
                     <button type="button" mat-icon-button matSuffix (click)="this.myCommentary = PopArray(this.myCommentary)">
                         <mat-icon>{{'remove'}}</mat-icon>
                       </button>
-                      <button type="button" mat-icon-button matSuffix (click)="this.myCommentary = PushToArray(commentary, this.myCommentary)">
+                      <button type="button" mat-icon-button matSuffix (click)="this.myCommentary = CreateOwnFragment(commentary, this.myCommentary)">
                         <mat-icon>{{'add'}}</mat-icon>
                       </button>
-                    <mat-hint>Add note</mat-hint>
+                    <mat-hint>Add your own piece of commentary</mat-hint>
                 </mat-form-field>               
             </div> 
 
+            <!-- <button mat-button class="button" (click)="this.myCommentary = CopyObject(this.ourCommentary)">Copy Our Commentary to My Commentary</button>
+            <button mat-button class="button" (click)="this.ourCommentary = myCommentary">Copy My Commentary to Our Commentary</button> -->
+
+
+        </div>
+
+        <hr>        
+        
+        
+        
+        <!-- <div class="row"> -->
+        
+
+
 
             <div class="example-container">
-                <h2>Our Commentary</h2>
+                <h3>Our Commentary</h3>
               
                 <div
                   cdkDropList
                   #todoList="cdkDropList"
-                  [cdkDropListData]="todo"
+                  [cdkDropListData]="ourCommentary"
                   [cdkDropListConnectedTo]="[doneList, commentaryList]"
                   class="example-list"
                   (cdkDropListDropped)="drop2($event)">
-                  <div class="example-box" *ngFor="let item of todo" cdkDrag>{{item}}</div>
+                  <!-- <div class="example-box" *ngFor="let item of todo" cdkDrag>{{item}}</div> -->
+                  <div class="fragment-box" *ngFor="let arrayItem of this.ourCommentary" cdkDrag><div>
+                    <b>Frg {{arrayItem.fragmentName}}</b> &nbsp; <i>{{arrayItem.status}}</i>
+                </div>
+                <div *ngFor="let arrayItem2 of arrayItem.content">           
+                    <div [innerHTML]="arrayItem2.lineComplete"></div> 
+                </div>  
+                </div>  
                 </div>
               </div>
               
               <div class="example-container">
-                <h2>Move it pleb</h2>
+                <h3>My Commentary</h3>
+              
+                <div
+                  cdkDropList
+                  #commentaryList="cdkDropList"
+                  [cdkDropListData]="myCommentary"
+                  [cdkDropListConnectedTo]="[doneList, todoList]"
+                  class="example-list"
+                  (cdkDropListDropped)="drop2($event)">
+                  <!-- <div class="example-box" *ngFor="let item of myCommentary" cdkDrag>{{item}}</div> -->
+                  <div class="fragment-box" *ngFor="let arrayItem of this.myCommentary" cdkDrag><div>
+                      <b>Frg {{arrayItem.fragmentName}}</b> &nbsp; <i>{{arrayItem.status}}</i>
+                  </div>
+                  <div *ngFor="let arrayItem2 of arrayItem.content">           
+                      <div [innerHTML]="arrayItem2.lineComplete"></div> 
+                  </div>  
+                  </div>                                
+                </div>
+              </div>
+
+              <div class="example-container">
+                <h3>Selected Commentary</h3>
               
                 <div
                   cdkDropList
                   #doneList="cdkDropList"
-                  [cdkDropListData]="done"
+                  [cdkDropListData]="playgroundArray"
                   [cdkDropListConnectedTo]="[todoList, commentaryList]"
                   class="example-list"
                   (cdkDropListDropped)="drop2($event)">
                   <!-- <div class="example-box" *ngFor="let item of done" cdkDrag>{{item}}</div> -->
-                  <div class="fragment-box" *ngFor="let arrayItem of this.selectedEditorArray" cdkDrag><div>
+                  <div class="fragment-box" *ngFor="let arrayItem of this.playgroundArray" cdkDrag><div>
                     <b>Frg {{arrayItem.fragmentName}}</b> &nbsp; <i>{{arrayItem.status}}</i>
                 </div>
                 <div *ngFor="let arrayItem2 of arrayItem.content">           
@@ -487,27 +541,6 @@
                 </div>                 
                 
                 
-                </div>
-              </div>
-
-              <div class="example-container">
-                <h2>My Commentary</h2>
-              
-                <div
-                  cdkDropList
-                  #commentaryList="cdkDropList"
-                  [cdkDropListData]="selectedEditorArray"
-                  [cdkDropListConnectedTo]="[doneList, todoList]"
-                  class="example-list"
-                  (cdkDropListDropped)="drop2($event)">
-                  <!-- <div class="example-box" *ngFor="let item of myCommentary" cdkDrag>{{item}}</div> -->
-                  <div class="fragment-box" *ngFor="let arrayItem of this.selectedEditorArray" cdkDrag><div>
-                      <b>Frg {{arrayItem.fragmentName}}</b> &nbsp; <i>{{arrayItem.status}}</i>
-                  </div>
-                  <div *ngFor="let arrayItem2 of arrayItem.content">           
-                      <div [innerHTML]="arrayItem2.lineComplete"></div> 
-                  </div>  
-                  </div>                                
                 </div>
               </div>
 
