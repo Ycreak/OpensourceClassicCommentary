@@ -369,6 +369,13 @@ public AddFragmentToArray(toAdd, array, fragment){
     return array
   }
 
+  public RequestPushOurCommentary(){
+
+  }
+  
+  public RequestPullOurCommentary(){
+
+  }
 
   myCommentary = [];
 

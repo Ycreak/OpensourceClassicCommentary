@@ -467,18 +467,12 @@
             <!-- <button mat-button class="button" (click)="this.myCommentary = CopyObject(this.ourCommentary)">Copy Our Commentary to My Commentary</button>
             <button mat-button class="button" (click)="this.ourCommentary = myCommentary">Copy My Commentary to Our Commentary</button> -->
 
+            <button mat-button class="button" (click)="RequestPushOurCommentary">Push to server</button>
+            <button mat-button class="button" (click)="this.ourCommentary = RequestPushOurCommentary()">Pull from server</button>
 
         </div>
 
-        <hr>        
-        
-        
-        
-        <!-- <div class="row"> -->
-        
-
-
-
+        <hr>            
             <div class="example-container">
                 <h3>Our Commentary</h3>
               
