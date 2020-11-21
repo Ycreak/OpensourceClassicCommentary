@@ -8,7 +8,7 @@ import { UtilityService } from '../utility.service';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
 // Allows for drag and drop items in HTML
-import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 // Library used for interacting with the page
 // import {MatDialog} from '@angular/material/dialog';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
@@ -35,10 +35,11 @@ export class FragmentsComponent implements OnInit {
   bibWebsites: JSON;
   bibInCollection : JSON; //TODO: this one should be added.
   // Toggle switches
-  columnOneToggle: boolean = true;
+  columnOneToggle: boolean = false;
   columnTwoToggle: boolean = false; // Boolean to toggle between 2 and 3 column mode.
-  columnThreeToggle: boolean = true;
+  columnThreeToggle: boolean = false;
   Playground: boolean = false;
+  Multiplayer: boolean = true;
   
   spinner: boolean = true; // Boolean to toggle the spinner.
   noCommentary: boolean = false; // Shows banner if no commentary is available.
@@ -331,6 +332,7 @@ public AddFragmentToArray(toAdd, array, fragment){
   // Allows a fragment to be moved and dropped to create a custom ordering
   moveAndDrop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.selectedEditorArray, event.previousIndex, event.currentIndex);
+    console.log(this.selectedEditorArray)
   }
   // Opens dialog for the bibliography
   public OpenBibliography() {
@@ -350,6 +352,40 @@ public AddFragmentToArray(toAdd, array, fragment){
   // public openDashboard() {
   //   const dialogRef = this.dialog.open(DashboardComponent);
   // }
+
+  todo = [
+    'Get to work',
+    'Pick up groceries',
+    'Go home',
+    'Fall asleep'
+  ];
+
+  done = [
+    'Get up',
+    'Brush teeth',
+    'Take a shower',
+    'Check e-mail',
+    'Walk dog'
+  ];
+
+  myCommentary = [
+    'Get up',
+  ];
+
+  drop2(event: CdkDragDrop<string[]>) {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      transferArrayItem(event.previousContainer.data,
+                        event.container.data,
+                        event.previousIndex,
+                        event.currentIndex);
+    }
+  }
+
+
+
+
 }
 
 

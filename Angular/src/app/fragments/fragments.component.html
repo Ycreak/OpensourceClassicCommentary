@@ -19,6 +19,7 @@
     <mat-checkbox class="btn" [(ngModel)]="columnTwoToggle">COL2</mat-checkbox>
     <mat-checkbox class="btn" [(ngModel)]="columnThreeToggle">COL3</mat-checkbox>
     <mat-checkbox class="btn" [(ngModel)]="Playground">PLY</mat-checkbox>
+    <mat-checkbox class="btn" [(ngModel)]="Multiplayer">MUL</mat-checkbox>
 
     <!-- <mat-slide-toggle (click)="columnThreeToggle = !columnThreeToggle"></mat-slide-toggle> -->
     <button mat-button class="btn" [matMenuTriggerFor]="menu">MENU</button>
@@ -169,7 +170,7 @@
         <div cdkDropList class="fragment-list" (cdkDropListDropped)="moveAndDrop($event)">
             <div class="fragment-box" *ngFor="let arrayItem of this.selectedEditorArray" cdkDrag>
             <div>
-                <b>Fragment {{arrayItem.fragmentName}}</b> &nbsp; <i>{{arrayItem.status}}</i>
+                <b>Frg {{arrayItem.fragmentName}}. Ribbeck</b> &nbsp; <i>{{arrayItem.status}}</i>. (~ TRF 132)
             </div>
             <div *ngFor="let arrayItem2 of arrayItem.content">           
                 <div [innerHTML]="arrayItem2.lineComplete"></div> 
@@ -184,11 +185,33 @@
     
         <!-- COMMENTARY COLUMN -->
         <div *ngIf="columnThreeToggle" class="col-sm overflowColumn">
+
+            <h4>Ribbeck 1 Commentary</h4>
+            <div *ngFor="let item of this.F_Translation">
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <b>Fragment Translation</b>
+                    </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <!-- Commentary with HTML formatting. -->
+                    <div class="mat-expansion-panel-content">
+                    <div class="mat-expansion-panel-body">
+                        <div [innerHTML]="item.translation"></div>
+                    </div>
+                    </div>
+                </mat-expansion-panel>
+            </div>
+            <hr>
+
+
         <h4>Fragment {{this.currentFragment}}</h4> <hr>
         <!-- Show banner if no commentary available -->
         <div *ngIf="this.noCommentary" class="alert alert-info" role="alert">
             No commentary is available for this fragment.
         </div>
+
+
         <div *ngIf="this.noCommentary === false">
             <div *ngFor="let item of this.F_Translation">
                 <mat-expansion-panel>
@@ -412,6 +435,88 @@
             </div>
         </div>
     </div>
+
+    <div class="container-fluid" *ngIf="Multiplayer">
+        <!-- <div class="row"> -->
+        
+            <div mat-dialog-content>
+                <mat-form-field class="input-form">
+                    <input matInput placeholder="Add commentary" [(ngModel)]='commentary'>
+                    <button type="button" mat-icon-button matSuffix (click)="this.myCommentary = PopArray(this.myCommentary)">
+                        <mat-icon>{{'remove'}}</mat-icon>
+                      </button>
+                      <button type="button" mat-icon-button matSuffix (click)="this.myCommentary = PushToArray(commentary, this.myCommentary)">
+                        <mat-icon>{{'add'}}</mat-icon>
+                      </button>
+                    <mat-hint>Add note</mat-hint>
+                </mat-form-field>               
+            </div> 
+
+
+            <div class="example-container">
+                <h2>Our Commentary</h2>
+              
+                <div
+                  cdkDropList
+                  #todoList="cdkDropList"
+                  [cdkDropListData]="todo"
+                  [cdkDropListConnectedTo]="[doneList, commentaryList]"
+                  class="example-list"
+                  (cdkDropListDropped)="drop2($event)">
+                  <div class="example-box" *ngFor="let item of todo" cdkDrag>{{item}}</div>
+                </div>
+              </div>
+              
+              <div class="example-container">
+                <h2>Move it pleb</h2>
+              
+                <div
+                  cdkDropList
+                  #doneList="cdkDropList"
+                  [cdkDropListData]="done"
+                  [cdkDropListConnectedTo]="[todoList, commentaryList]"
+                  class="example-list"
+                  (cdkDropListDropped)="drop2($event)">
+                  <!-- <div class="example-box" *ngFor="let item of done" cdkDrag>{{item}}</div> -->
+                  <div class="fragment-box" *ngFor="let arrayItem of this.selectedEditorArray" cdkDrag><div>
+                    <b>Frg {{arrayItem.fragmentName}}</b> &nbsp; <i>{{arrayItem.status}}</i>
+                </div>
+                <div *ngFor="let arrayItem2 of arrayItem.content">           
+                    <div [innerHTML]="arrayItem2.lineComplete"></div> 
+                </div>  
+                </div>                 
+                
+                
+                </div>
+              </div>
+
+              <div class="example-container">
+                <h2>My Commentary</h2>
+              
+                <div
+                  cdkDropList
+                  #commentaryList="cdkDropList"
+                  [cdkDropListData]="selectedEditorArray"
+                  [cdkDropListConnectedTo]="[doneList, todoList]"
+                  class="example-list"
+                  (cdkDropListDropped)="drop2($event)">
+                  <!-- <div class="example-box" *ngFor="let item of myCommentary" cdkDrag>{{item}}</div> -->
+                  <div class="fragment-box" *ngFor="let arrayItem of this.selectedEditorArray" cdkDrag><div>
+                      <b>Frg {{arrayItem.fragmentName}}</b> &nbsp; <i>{{arrayItem.status}}</i>
+                  </div>
+                  <div *ngFor="let arrayItem2 of arrayItem.content">           
+                      <div [innerHTML]="arrayItem2.lineComplete"></div> 
+                  </div>  
+                  </div>                                
+                </div>
+              </div>
+
+                <!-- </div> -->
+        
+        <!-- </div> -->
+    </div>  
+
+
 </div>
     
     
