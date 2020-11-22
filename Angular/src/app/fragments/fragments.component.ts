@@ -353,6 +353,17 @@ public AddFragmentToArray(toAdd, array, fragment){
   //   const dialogRef = this.dialog.open(DashboardComponent);
   // }
 
+//   __  __       _ _   _       _                       
+//  |  \/  |     | | | (_)     | |                      
+//  | \  / |_   _| | |_ _ _ __ | | __ _ _   _  ___ _ __ 
+//  | |\/| | | | | | __| | '_ \| |/ _` | | | |/ _ \ '__|
+//  | |  | | |_| | | |_| | |_) | | (_| | |_| |  __/ |   
+//  |_|  |_|\__,_|_|\__|_| .__/|_|\__,_|\__, |\___|_|   
+//                       | |             __/ |          
+//                       |_|            |___/           
+  editorListData = [];
+  clientListData = [];
+  serverListData = [];
 
   public CreateOwnFragment(line, array){
 
@@ -377,11 +388,12 @@ public AddFragmentToArray(toAdd, array, fragment){
 
   }
 
-  myCommentary = [];
 
-  ourCommentary = [];
-
-  drop2(event: CdkDragDrop<string[]>) {
+  /**
+   * Function to allow dragging elements between multiple containers
+   * @param event 
+   */
+  MultipleColumnsDrag(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {

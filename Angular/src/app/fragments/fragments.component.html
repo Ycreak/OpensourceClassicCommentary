@@ -7,7 +7,7 @@
 <!-- Maybe we should get a local stylesheet? -->
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 
-<!-- Simple toolbar with all the different buttons and the title -->
+<!-- NAVBAR -->
 <mat-toolbar color="primary">
     <span><h3 class='h3-title'>Open Source Classics Commentary</h3></span>
     <span class="spacer"></span>
@@ -20,21 +20,16 @@
     <mat-checkbox class="btn" [(ngModel)]="columnThreeToggle">COL3</mat-checkbox>
     <mat-checkbox class="btn" [(ngModel)]="Playground">PLY</mat-checkbox>
     <mat-checkbox class="btn" [(ngModel)]="Multiplayer">MUL</mat-checkbox>
-
-    <!-- <mat-slide-toggle (click)="columnThreeToggle = !columnThreeToggle"></mat-slide-toggle> -->
     <button mat-button class="btn" [matMenuTriggerFor]="menu">MENU</button>
 </mat-toolbar>
-<!-- Small menu for the toolbar -->
+<!-- NAVBAR MENU -->
 <mat-menu #menu="matMenu">
     <button routerLink="/text" mat-menu-item>Text OSCC</button>
     <button (click)="OpenText()" mat-menu-item>Text Inside</button>
     <button (click)="Login()" mat-menu-item>Login</button>
     <button (click)="OpenAbout()" mat-menu-item>About</button>
     <button mat-menu-item>V20.44.3</button>
-
 </mat-menu>
-
-
 
 <!-- Author and Book select dialog -->
 <ng-template #CallBookSelect>   
@@ -97,8 +92,16 @@
 <!-- Container for the page: one row, two columns. Column Left has the text, Column Right the commentary. -->
 <div class="container-fluid">
     <div class="row">
-        <!-- FIRST COLUMN -->
+        <!-- 
+         ______ _          _      _____      _                       
+        |  ____(_)        | |    / ____|    | |                      
+        | |__   _ _ __ ___| |_  | |     ___ | |_   _ _ __ ___  _ __  
+        |  __| | | '__/ __| __| | |    / _ \| | | | | '_ ` _ \| '_ \ 
+        | |    | | |  \__ \ |_  | |___| (_) | | |_| | | | | | | | | |
+        |_|    |_|_|  |___/\__|  \_____\___/|_|\__,_|_| |_| |_|_| |_|
+                                                                      -->                                                         
         <div *ngIf="columnOneToggle" class="col-sm overflowColumn">
+            <!-- Information and Editor select -->
             <div class="row">
                 <div class="col-6">
                 <h4>{{this.currentAuthorName}}: {{this.currentBookName}}.</h4>
@@ -117,7 +120,7 @@
                 </mat-form-field>
             </div>
         </div>
-        <!-- Listing of the fragments -->
+        <!-- Fragments Loop -->
         <div class="fragment-list">
             <div class="fragment-box" *ngFor="let arrayItem of this.mainEditorArray" 
             (click)="this.Referencer = this.RequestReferencerID(arrayItem.fragmentName, this.currentEditor, this.currentBook)">
@@ -130,10 +133,18 @@
             </div> 
         </div> 
         </div>
-    
-        <!-- SELECTED EDITOR COLUMN -->
+
+        <!--
+         _____                          _    _____      _                       
+        / ____|                        | |  / ____|    | |                      
+       | (___   ___  ___ ___  _ __   __| | | |     ___ | |_   _ _ __ ___  _ __  
+        \___ \ / _ \/ __/ _ \| '_ \ / _` | | |    / _ \| | | | | '_ ` _ \| '_ \ 
+        ____) |  __/ (_| (_) | | | | (_| | | |___| (_) | | |_| | | | | | | | | |
+       |_____/ \___|\___\___/|_| |_|\__,_|  \_____\___/|_|\__,_|_| |_| |_|_| |_|
+        -->                                                                  
         <div *ngIf="columnTwoToggle" class="col-sm overflowColumn">
         <div class="row">
+            <!-- Editor selection -->
             <div class="col-md-6">
                 <mat-form-field class="input-form">
                     <mat-label>Secondary editor</mat-label>
@@ -146,6 +157,7 @@
                     <mat-hint>Select a secondary editor</mat-hint>
                 </mat-form-field>
             </div>
+            <!-- Adding note field -->
             <div class="col-md-6">
                 <div mat-dialog-content>
                     <mat-form-field class="input-form">
@@ -161,12 +173,12 @@
                 </div> 
             </div>
         </div>
-    
+        <!-- Printing of notes -->
         <div *ngFor="let note of this.noteArray" class="note" cdkDrag>
             {{note}}
         </div>
 
-        <!-- Movable array column -->
+        <!-- For loop for moveable fragments. Should be clickable. -->
         <div cdkDropList class="fragment-list" (cdkDropListDropped)="moveAndDrop($event)">
             <div class="fragment-box" *ngFor="let arrayItem of this.selectedEditorArray" cdkDrag>
             <div>
@@ -177,24 +189,28 @@
             </div>  
             </div>
         </div>
-
-
-          
-
         </div>
     
-        <!-- COMMENTARY COLUMN -->
-        <div *ngIf="columnThreeToggle" class="col-sm overflowColumn">
 
-            <h4>Ribbeck 1 Commentary</h4>
-            <div *ngFor="let item of this.F_Translation">
+        <!--
+         _____                                     _                      _____      _                       
+        / ____|                                   | |                    / ____|    | |                      
+       | |     ___  _ __ ___  _ __ ___   ___ _ __ | |_ __ _ _ __ _   _  | |     ___ | |_   _ _ __ ___  _ __  
+       | |    / _ \| '_ ` _ \| '_ ` _ \ / _ \ '_ \| __/ _` | '__| | | | | |    / _ \| | | | | '_ ` _ \| '_ \ 
+       | |___| (_) | | | | | | | | | | |  __/ | | | || (_| | |  | |_| | | |___| (_) | | |_| | | | | | | | | |
+        \_____\___/|_| |_| |_|_| |_| |_|\___|_| |_|\__\__,_|_|   \__, |  \_____\___/|_|\__,_|_| |_| |_|_| |_|
+                                                                  __/ |                                      
+                                                                 |___/                                       
+        -->
+        <div *ngIf="columnThreeToggle" class="col-sm overflowColumn">
+            <!-- <h4>Ribbeck 1 Commentary</h4> -->
+            <!-- <div *ngFor="let item of this.F_Translation">
                 <mat-expansion-panel>
                     <mat-expansion-panel-header>
                     <mat-panel-title>
                         <b>Fragment Translation</b>
                     </mat-panel-title>
                     </mat-expansion-panel-header>
-                    <!-- Commentary with HTML formatting. -->
                     <div class="mat-expansion-panel-content">
                     <div class="mat-expansion-panel-body">
                         <div [innerHTML]="item.translation"></div>
@@ -202,16 +218,15 @@
                     </div>
                 </mat-expansion-panel>
             </div>
-            <hr>
+            <hr> -->
 
-
+        <!-- Fragment information -->
         <h4>Fragment {{this.currentFragment}}</h4> <hr>
         <!-- Show banner if no commentary available -->
         <div *ngIf="this.noCommentary" class="alert alert-info" role="alert">
             No commentary is available for this fragment.
         </div>
-
-
+        <!-- Show all the commentary fields -->
         <div *ngIf="this.noCommentary === false">
             <div *ngFor="let item of this.F_Translation">
                 <mat-expansion-panel>
@@ -321,9 +336,19 @@
 
 
     </div>
-
+    <!--
+     _____  _                                             _ 
+    |  __ \| |                                           | |
+    | |__) | | __ _ _   _  __ _ _ __ ___  _   _ _ __   __| |
+    |  ___/| |/ _` | | | |/ _` | '__/ _ \| | | | '_ \ / _` |
+    | |    | | (_| | |_| | (_| | | | (_) | |_| | | | | (_| |
+    |_|    |_|\__,_|\__, |\__, |_|  \___/ \__,_|_| |_|\__,_|
+                     __/ | __/ |                            
+                    |___/ |___/                             
+    -->
     <div class="container-fluid" *ngIf="Playground">
         <div class="row">
+            <!-- Possiblity to select an editor to begin with -->
             <mat-form-field class="select-form">
                 <mat-label>Editor</mat-label>
                 <mat-select [(ngModel)]="selectedEditor">
@@ -335,7 +360,7 @@
                 </mat-select>
                 <mat-hint>Select an editor to begin</mat-hint>
             </mat-form-field>
-
+            <!-- Possiblity to select an editor to add a single fragment from  -->
             <mat-form-field class="select-form">
                 <mat-label>Editor</mat-label>
                 <mat-select [(ngModel)]="toAddEditor">
@@ -347,7 +372,7 @@
                 </mat-select>
                 <mat-hint>Select an editor to add a fragment from</mat-hint>
             </mat-form-field>
-
+            <!-- Possibility to select a fragment from given editor -->
             <mat-form-field class="select-form">
                 <mat-label>Fragment</mat-label>
                 <mat-select [(ngModel)]="selectedFragment">
@@ -358,7 +383,7 @@
                 </mat-select>
                 <mat-hint>Select a fragment</mat-hint>
             </mat-form-field> 
-
+            <!-- Possibility to add a little note -->
             <div mat-dialog-content>
                 <mat-form-field class="input-form">
                     <input matInput placeholder="Add note" [(ngModel)]='note'>
@@ -374,39 +399,7 @@
         </div>
 
         <hr>
-        
-        <!-- <div class="row">
-            <div class="col-md-9">
-                <div class="row">
-                    <div *ngFor="let arrayItem of this.playgroundArray" class="playground" cdkDrag>
-                        <b>Fragment {{arrayItem.fragmentName}}</b> &nbsp; <i>{{arrayItem.status}}</i>
-                        <div *ngFor="let item of arrayItem.content">           
-                            <div [innerHTML]="item.lineComplete"></div>
-                        </div> 
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="row">
-
-                    <div *ngFor="let note of this.noteArray" class="note" cdkDrag>
-                        {{note}}
-                    </div>
-
-                    <hr>
-                    
-                    <div *ngFor="let arrayItem of this.addedArray" class="playground" cdkDrag>
-                        <b>(Added) Fragment {{arrayItem.fragmentName}}</b> &nbsp; <i>{{arrayItem.status}}</i>
-                        <div *ngFor="let item of arrayItem.content">           
-                            <div [innerHTML]="item.lineComplete"></div>
-                        </div> 
-                    </div>
-
-
-            </div>
-          </div>
-        </div> -->
-
+        <!-- For loop to print all the base selected fragments -->
         <div class="row">
             <div *ngFor="let arrayItem of this.playgroundArray" class="playground" cdkDrag>
                 <b>Fragment {{arrayItem.fragmentName}}</b> &nbsp; <i>{{arrayItem.status}}</i>
@@ -417,7 +410,7 @@
         </div>
 
         <hr>
-        
+        <!-- For loop to print the added fragments -->
         <div class="row">
             <div *ngFor="let arrayItem of this.addedArray" class="playground" cdkDrag>
                 <b>(Added) Fragment {{arrayItem.fragmentName}}</b> &nbsp; <i>{{arrayItem.status}}</i>
@@ -428,36 +421,43 @@
         </div>
         
         <hr>
-
+        <!-- For loop to print the notes -->
         <div class="row">
             <div *ngFor="let note of this.noteArray" class="note" cdkDrag>
                 {{note}}
             </div>
         </div>
     </div>
-
+    <!--
+     __  __       _ _   _       _                       
+    |  \/  |     | | | (_)     | |                      
+    | \  / |_   _| | |_ _ _ __ | | __ _ _   _  ___ _ __ 
+    | |\/| | | | | | __| | '_ \| |/ _` | | | |/ _ \ '__|
+    | |  | | |_| | | |_| | |_) | | (_| | |_| |  __/ |   
+    |_|  |_|\__,_|_|\__|_| .__/|_|\__,_|\__, |\___|_|   
+                        | |             __/ |          
+                        |_|            |___/            -->
     <div class="container-fluid" *ngIf="Multiplayer">
         <div class="row">
+            <!-- Possibility to select an editor base text -->
             <mat-form-field class="select-form">
                 <mat-label>Editor</mat-label>
                 <mat-select [(ngModel)]="selectedEditor">
                 <mat-option *ngFor="let data of this.editorsJSON" [value]="data"
-                (click)="this.playgroundArray = CreateEditorArray(data.id, this.F_Fragments)"
-                (click)="this.fragmentNumberList = GetFragmentNumbers(data.id, this.playgroundArray)">
-                    {{ data.name }}                       
+                (click)="this.editorListData = CreateEditorArray(data.id, this.F_Fragments)">                 {{ data.name }}                       
                 </mat-option>
                 </mat-select>
                 <mat-hint>Select an editor to use</mat-hint>
             </mat-form-field>
-
+            <!-- Possibility to create one's own fragment -->
             <div mat-dialog-content>
                 <mat-form-field class="input-form-wide">
-                    <textarea class="input-form-wide" matInput type="text" [(ngModel)]='commentary' [matKeyboard]="'OSCC'"></textarea>
+                    <textarea class="input-form-wide" matInput type="text" [(ngModel)]='fragment' [matKeyboard]="'OSCC'"></textarea>
 
-                    <button type="button" mat-icon-button matSuffix (click)="this.myCommentary = PopArray(this.myCommentary)">
+                    <button type="button" mat-icon-button matSuffix (click)="this.clientListData = PopArray(this.clientListData)">
                         <mat-icon>{{'remove'}}</mat-icon>
                       </button>
-                      <button type="button" mat-icon-button matSuffix (click)="this.myCommentary = CreateOwnFragment(commentary, this.myCommentary)">
+                      <button type="button" mat-icon-button matSuffix (click)="this.clientListData = CreateOwnFragment(fragment, this.clientListData)">
                         <mat-icon>{{'add'}}</mat-icon>
                       </button>
                     <mat-hint>Add your own piece of commentary</mat-hint>
@@ -466,25 +466,26 @@
 
             <!-- <button mat-button class="button" (click)="this.myCommentary = CopyObject(this.ourCommentary)">Copy Our Commentary to My Commentary</button>
             <button mat-button class="button" (click)="this.ourCommentary = myCommentary">Copy My Commentary to Our Commentary</button> -->
-
+            <!-- Buttons for server communications -->
             <button mat-button class="button" (click)="RequestPushOurCommentary">Push to server</button>
             <button mat-button class="button" (click)="this.ourCommentary = RequestPushOurCommentary()">Pull from server</button>
 
         </div>
 
-        <hr>            
-            <div class="example-container">
+        <hr>      
+            <!-- List to show the multiplayer commentary -->
+            <div class="multiplayer-container">
                 <h3>Our Commentary</h3>
               
                 <div
                   cdkDropList
-                  #todoList="cdkDropList"
-                  [cdkDropListData]="ourCommentary"
-                  [cdkDropListConnectedTo]="[doneList, commentaryList]"
-                  class="example-list"
-                  (cdkDropListDropped)="drop2($event)">
+                  #serverList="cdkDropList"
+                  [cdkDropListData]="serverListData"
+                  [cdkDropListConnectedTo]="[clientList, editorList]"
+                  class="multiplayer-list"
+                  (cdkDropListDropped)="MultipleColumnsDrag($event)">
                   <!-- <div class="example-box" *ngFor="let item of todo" cdkDrag>{{item}}</div> -->
-                  <div class="fragment-box" *ngFor="let arrayItem of this.ourCommentary" cdkDrag><div>
+                  <div class="fragment-box" *ngFor="let arrayItem of this.serverListData" cdkDrag><div>
                     <b>Frg {{arrayItem.fragmentName}}</b> &nbsp; <i>{{arrayItem.status}}</i>
                 </div>
                 <div *ngFor="let arrayItem2 of arrayItem.content">           
@@ -493,19 +494,19 @@
                 </div>  
                 </div>
               </div>
-              
-              <div class="example-container">
+              <!-- List to show one's own commentary. Also placeholder list -->
+              <div class="multiplayer-container">
                 <h3>My Commentary</h3>
               
                 <div
                   cdkDropList
-                  #commentaryList="cdkDropList"
-                  [cdkDropListData]="myCommentary"
-                  [cdkDropListConnectedTo]="[doneList, todoList]"
-                  class="example-list"
-                  (cdkDropListDropped)="drop2($event)">
+                  #clientList="cdkDropList"
+                  [cdkDropListData]="clientListData"
+                  [cdkDropListConnectedTo]="[serverList, editorList]"
+                  class="multiplayer-list"
+                  (cdkDropListDropped)="MultipleColumnsDrag($event)">
                   <!-- <div class="example-box" *ngFor="let item of myCommentary" cdkDrag>{{item}}</div> -->
-                  <div class="fragment-box" *ngFor="let arrayItem of this.myCommentary" cdkDrag><div>
+                  <div class="fragment-box" *ngFor="let arrayItem of this.clientListData" cdkDrag><div>
                       <b>Frg {{arrayItem.fragmentName}}</b> &nbsp; <i>{{arrayItem.status}}</i>
                   </div>
                   <div *ngFor="let arrayItem2 of arrayItem.content">           
@@ -514,19 +515,18 @@
                   </div>                                
                 </div>
               </div>
-
-              <div class="example-container">
+              <!-- List to show an editor's base text -->
+              <div class="multiplayer-container">
                 <h3>Selected Commentary</h3>
               
                 <div
                   cdkDropList
-                  #doneList="cdkDropList"
-                  [cdkDropListData]="playgroundArray"
-                  [cdkDropListConnectedTo]="[todoList, commentaryList]"
-                  class="example-list"
-                  (cdkDropListDropped)="drop2($event)">
-                  <!-- <div class="example-box" *ngFor="let item of done" cdkDrag>{{item}}</div> -->
-                  <div class="fragment-box" *ngFor="let arrayItem of this.playgroundArray" cdkDrag><div>
+                  #editorList="cdkDropList"
+                  [cdkDropListData]="editorListData"
+                  [cdkDropListConnectedTo]="[serverList, clientList]"
+                  class="multiplayer-list"
+                  (cdkDropListDropped)="MultipleColumnsDrag($event)">
+                  <div class="fragment-box" *ngFor="let arrayItem of this.editorListData" cdkDrag><div>
                     <b>Frg {{arrayItem.fragmentName}}</b> &nbsp; <i>{{arrayItem.status}}</i>
                 </div>
                 <div *ngFor="let arrayItem2 of arrayItem.content">           
@@ -538,9 +538,6 @@
                 </div>
               </div>
 
-                <!-- </div> -->
-        
-        <!-- </div> -->
     </div>  
 
 
