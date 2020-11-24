@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "oscc-4c70c": {
+      "hosting": {
+        "OpenSourceClassicCommentary": [
+          "oscc-4c70c"
+        ]
+      }
+    }
+  }
+}

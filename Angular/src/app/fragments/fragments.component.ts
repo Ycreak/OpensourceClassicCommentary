@@ -18,6 +18,10 @@ import {Inject} from '@angular/core';
 import { TemplateRef, ViewChild } from '@angular/core';
 // Imports of different components to be shown within a dialog within the page
 
+// For Firebase communication
+import { AngularFirestore } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
+
 @Component({
   selector: 'app-fragments',
   templateUrl: './fragments.component.html',
@@ -90,7 +94,7 @@ export class FragmentsComponent implements OnInit {
     private api: ApiService,
     private utility: UtilityService,
     public authService: AuthService,
-    // private router: Router,
+    private firestore: AngularFirestore,
     private dialog: MatDialog, 
     ) { }
 
@@ -163,6 +167,19 @@ export class FragmentsComponent implements OnInit {
   public Test(thing){
     // console.log(this.authorsJSON)
     console.log('test', thing)
+
+    this.firestore.collection('users').add({
+      name: 'Mama',
+      age: 20
+    })
+    .then(res => {
+        console.log(res);
+        // this.form.reset();
+    })
+    .catch(e => {
+        console.log(e);
+    })
+
   }
 
   public PushToArray(note, array){

@@ -60,11 +60,14 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatRadioModule} from '@angular/material/radio';  
 import {MatIconModule} from '@angular/material/icon'; 
-
+// Allows copying to clipboard
 import {ClipboardModule} from '@angular/cdk/clipboard';
 import { TextComponent } from './text/text.component'; 
-
+// Allows a virtual keyboard
 import { IKeyboardLayouts, keyboardLayouts, MAT_KEYBOARD_LAYOUTS, MatKeyboardModule } from 'angular-onscreen-material-keyboard';
+// Allows communication with firebase
+import { AngularFireModule } from '@angular/fire';
+import { environment } from '../environments/environment';
 
 // Virtual Keyboard Layout
 const customLayouts: IKeyboardLayouts = {
@@ -144,6 +147,8 @@ const appRoutes: Routes = [
     DragDropModule,
     ClipboardModule,
     MatKeyboardModule,
+
+    AngularFireModule.initializeApp(environment.firebase),
   ],
   providers: [
     {
