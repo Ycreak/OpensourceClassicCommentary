@@ -14,7 +14,6 @@
     <button mat-button class="btn" (click)="OpenBookSelect()">CHANGE TEXT</button>
     <button mat-button class="btn" (click)="OpenBibliography()">BIBLIOGRAPHY</button>
     <button mat-button class="btn" routerLink="/dashboard" *ngIf="this.authService.isLoggedIn">DASHBOARD</button>
-    <button mat-button class="btn" (click)="ngOnInit()" *ngIf="this.authService.isLoggedIn">RELOAD DATA</button>
     <mat-checkbox class="btn" [(ngModel)]="columnOneToggle">COL1</mat-checkbox>
     <mat-checkbox class="btn" [(ngModel)]="columnTwoToggle">COL2</mat-checkbox>
     <mat-checkbox class="btn" [(ngModel)]="columnThreeToggle">COL3</mat-checkbox>
@@ -28,7 +27,9 @@
     <button (click)="OpenText()" mat-menu-item>Text Inside</button>
     <button (click)="Login()" mat-menu-item>Login</button>
     <button (click)="OpenAbout()" mat-menu-item>About</button>
-    <button mat-menu-item>V20.44.3</button>
+    <button (click)="ngOnInit()" *ngIf="this.authService.isLoggedIn">Reload Data</button>
+
+    <button mat-menu-item>V20.48.1</button>
 </mat-menu>
 
 <!-- Author and Book select dialog -->
@@ -181,8 +182,10 @@
         <!-- For loop for moveable fragments. Should be clickable. -->
         <div cdkDropList class="fragment-list" (cdkDropListDropped)="moveAndDrop($event)">
             <div class="fragment-box" *ngFor="let arrayItem of this.selectedEditorArray" cdkDrag>
-            <div>
-                <b>Frg {{arrayItem.fragmentName}}. Ribbeck</b> &nbsp; <i>{{arrayItem.status}}</i>. (~ TRF 132)
+            <div> 
+                <!-- TODO: Show editor name behind fragment. Also, show its relation to the TRF. When clicked,
+                load the commentaries for this fragment and that of the corresponding TRF fragment. -->
+                <b>Frg {{arrayItem.fragmentName}}.</b> &nbsp; <i>{{arrayItem.status}}</i>.
             </div>
             <div *ngFor="let arrayItem2 of arrayItem.content">           
                 <div [innerHTML]="arrayItem2.lineComplete"></div> 
@@ -203,6 +206,7 @@
                                                                  |___/                                       
         -->
         <div *ngIf="columnThreeToggle" class="col-sm overflowColumn">
+            <!-- Show here the commentary that is available for the COL2 clicked fragment -->
             <!-- <h4>Ribbeck 1 Commentary</h4> -->
             <!-- <div *ngFor="let item of this.F_Translation">
                 <mat-expansion-panel>
@@ -386,14 +390,17 @@
             <!-- Possibility to add a little note -->
             <div mat-dialog-content>
                 <mat-form-field class="input-form">
-                    <input matInput placeholder="Add note" [(ngModel)]='note'>
+                    <input matInput placeholder="Add fragment" [(ngModel)]='note'>
                     <button type="button" mat-icon-button matSuffix (click)="this.noteArray = PopArray(this.noteArray)">
                         <mat-icon>{{'remove'}}</mat-icon>
                       </button>
-                      <button type="button" mat-icon-button matSuffix (click)="this.noteArray = PushToArray(note, this.noteArray)">
+                      <!-- <button type="button" mat-icon-button matSuffix (click)="this.noteArray = PushToArray(note, this.noteArray)"> -->
+                      <button type="button" mat-icon-button matSuffix (click)="this.noteArray = CreateOwnFragment(note, this.noteArray)">
+
+                        
                         <mat-icon>{{'add'}}</mat-icon>
                       </button>
-                    <mat-hint>Add note</mat-hint>
+                    <mat-hint>Add own fragment</mat-hint>
                 </mat-form-field>               
             </div>  
         </div>
@@ -423,8 +430,11 @@
         <hr>
         <!-- For loop to print the notes -->
         <div class="row">
-            <div *ngFor="let note of this.noteArray" class="note" cdkDrag>
-                {{note}}
+            <div *ngFor="let arrayItem of this.noteArray" class="playground" cdkDrag>
+                <b>(Added) Fragment {{arrayItem.fragmentName}}</b> &nbsp; <i>{{arrayItem.status}}</i>
+                <div *ngFor="let item of arrayItem.content">           
+                    <div [innerHTML]="item.lineComplete"></div>
+                </div> 
             </div>
         </div>
     </div>
@@ -444,7 +454,8 @@
                 <mat-label>Editor</mat-label>
                 <mat-select [(ngModel)]="selectedEditor">
                 <mat-option *ngFor="let data of this.editorsJSON" [value]="data"
-                (click)="this.editorListData = CreateEditorArray(data.id, this.F_Fragments)">                 {{ data.name }}                       
+                (click)="this.editorListData = CreateEditorArray(data.id, this.F_Fragments)">                 
+                {{ data.name }}                       
                 </mat-option>
                 </mat-select>
                 <mat-hint>Select an editor to use</mat-hint>
