@@ -39,11 +39,11 @@ export class FragmentsComponent implements OnInit {
   bibWebsites: JSON;
   bibInCollection : JSON; //TODO: this one should be added.
   // Toggle switches
-  columnOneToggle: boolean = false;
+  columnOneToggle: boolean = true;
   columnTwoToggle: boolean = false; // Boolean to toggle between 2 and 3 column mode.
-  columnThreeToggle: boolean = false;
+  columnThreeToggle: boolean = true;
   Playground: boolean = false;
-  Multiplayer: boolean = true;
+  Multiplayer: boolean = false;
   
   spinner: boolean = true; // Boolean to toggle the spinner.
   noCommentary: boolean = false; // Shows banner if no commentary is available.
@@ -370,6 +370,17 @@ public AddFragmentToArray(toAdd, array, fragment){
   //   const dialogRef = this.dialog.open(DashboardComponent);
   // }
 
+//   __  __       _ _   _       _                       
+//  |  \/  |     | | | (_)     | |                      
+//  | \  / |_   _| | |_ _ _ __ | | __ _ _   _  ___ _ __ 
+//  | |\/| | | | | | __| | '_ \| |/ _` | | | |/ _ \ '__|
+//  | |  | | |_| | | |_| | |_) | | (_| | |_| |  __/ |   
+//  |_|  |_|\__,_|_|\__|_| .__/|_|\__,_|\__, |\___|_|   
+//                       | |             __/ |          
+//                       |_|            |___/           
+  editorListData = [];
+  clientListData = [];
+  serverListData = [];
 
   public CreateOwnFragment(line, array){
 
@@ -394,11 +405,12 @@ public AddFragmentToArray(toAdd, array, fragment){
 
   }
 
-  myCommentary = [];
 
-  ourCommentary = [];
-
-  drop2(event: CdkDragDrop<string[]>) {
+  /**
+   * Function to allow dragging elements between multiple containers
+   * @param event 
+   */
+  MultipleColumnsDrag(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
