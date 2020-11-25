@@ -476,13 +476,31 @@
                     <mat-hint>Add your own piece of commentary</mat-hint>
                 </mat-form-field>               
             </div> 
+            <div mat-dialog-content>
+                <mat-form-field class="input-form-wide">
+                    <input class="input-form-wide" matInput type="text" [(ngModel)]='fragment2' [matKeyboard]="'OSCC'">
 
+                    <button type="button" mat-icon-button matSuffix (click)="this.clientListData = PopArray(this.clientListData)">
+                        <mat-icon>{{'remove'}}</mat-icon>
+                      </button>
+                      <button type="button" mat-icon-button matSuffix (click)="CreateFirebaseEntry(fragment2)">
+                        <mat-icon>{{'add'}}</mat-icon>
+                      </button>
+                    <mat-hint>Add your own piece of multiplayer</mat-hint>
+                </mat-form-field>               
+            </div> 
+
+            
             <!-- <button mat-button class="button" (click)="this.myCommentary = CopyObject(this.ourCommentary)">Copy Our Commentary to My Commentary</button>
             <button mat-button class="button" (click)="this.ourCommentary = myCommentary">Copy My Commentary to Our Commentary</button> -->
             <!-- Buttons for server communications -->
-            <button mat-button class="button" (click)="RequestPushOurCommentary">Push to server</button>
+            <button mat-button class="button" (click)="RequestPushOurCommentary()">Push to server</button>
             <button mat-button class="button" (click)="this.ourCommentary = RequestPushOurCommentary()">Pull from server</button>
+            
+            <button mat-button class="button" (click)="DeleteFirebaseEntry()">Delete Firebase</button>
+            <button mat-button class="button" (click)="CreateFirebaseEntry()">Create Firebase</button>
 
+            
         </div>
 
         <hr>      
@@ -497,7 +515,6 @@
                   [cdkDropListConnectedTo]="[clientList, editorList]"
                   class="multiplayer-list"
                   (cdkDropListDropped)="MultipleColumnsDrag($event)">
-                  <!-- <div class="example-box" *ngFor="let item of todo" cdkDrag>{{item}}</div> -->
                   <div class="fragment-box" *ngFor="let arrayItem of this.serverListData" cdkDrag><div>
                     <b>Frg {{arrayItem.fragmentName}}</b> &nbsp; <i>{{arrayItem.status}}</i>
                 </div>
@@ -507,6 +524,8 @@
                 </div>  
                 </div>
               </div>
+          <!-- </div> -->
+
               <!-- List to show one's own commentary. Also placeholder list -->
               <div class="multiplayer-container">
                 <h3>My Commentary</h3>
@@ -549,7 +568,51 @@
                 
                 
                 </div>
+
+
+
+
               </div>
+
+              <hr>
+              <div class="multiplayer-container">
+                <h3>1 Commentary</h3>
+              <div
+              cdkDropList
+              #serverList3="cdkDropList"
+              [cdkDropListData]="this.myArray"
+              [cdkDropListConnectedTo]="[serverList2, editorList]"
+              class="multiplayer-list"
+              (cdkDropListDropped)="MultipleColumnsDrag2($event)">
+              <div class="fragment-box" *ngFor="let item of this.myArray" cdkDrag><div>
+                <div [innerHTML]="item.content"></div> 
+            </div>
+            <!-- <div *ngFor="let item2 of item.content">           
+            </div>   -->
+            </div>  
+            </div></div>
+            <div class="multiplayer-container">
+                <h3>2 Commentary</h3>
+            <div
+            cdkDropList
+            #serverList2="cdkDropList"
+            [cdkDropListData]="this.tempArray"
+            [cdkDropListConnectedTo]="[serverList3, editorList]"
+            class="multiplayer-list"
+            (cdkDropListDropped)="MultipleColumnsDrag2($event)">
+            <div class="fragment-box" *ngFor="let item of this.tempArray" cdkDrag><div>
+              <div [innerHTML]="item.content"></div> 
+          </div>
+          <!-- <div *ngFor="let item2 of item.content">           
+          </div>   -->
+          </div>  
+          </div></div>  
+
+              <ul>
+                <li class="text" *ngFor="let item of items | async">
+                  {{item.content}}
+                </li>
+              </ul>
 
     </div>  
 

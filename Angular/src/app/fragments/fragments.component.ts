@@ -39,11 +39,11 @@ export class FragmentsComponent implements OnInit {
   bibWebsites: JSON;
   bibInCollection : JSON; //TODO: this one should be added.
   // Toggle switches
-  columnOneToggle: boolean = true;
+  columnOneToggle: boolean = false;
   columnTwoToggle: boolean = false; // Boolean to toggle between 2 and 3 column mode.
-  columnThreeToggle: boolean = true;
+  columnThreeToggle: boolean = false;
   Playground: boolean = false;
-  Multiplayer: boolean = false;
+  Multiplayer: boolean = true;
   
   spinner: boolean = true; // Boolean to toggle the spinner.
   noCommentary: boolean = false; // Shows banner if no commentary is available.
@@ -90,6 +90,9 @@ export class FragmentsComponent implements OnInit {
   selectedLine : number;
   fragmentNumberList;
   
+  items: Observable<any[]>;
+
+
   constructor(
     private api: ApiService,
     private utility: UtilityService,
@@ -106,7 +109,32 @@ export class FragmentsComponent implements OnInit {
     this.RequestFragments(this.currentBook);
     // When init is done, turn off the loading bar (spinner)
     this.spinner = false;  
+
+    this.items = this.firestore.collection('fragments').valueChanges();
+
+    this.firestore
+    .collection("fragments")
+    .get()
+    .subscribe((ss) => {
+      ss.docs.forEach((doc) => {
+        this.myArray.push(doc.data());
+      });
+      console.log('myArray', this.myArray)
+      this.myArray = this.sort_by_key(this.myArray, 'place');
+      console.log('myArray2', this.myArray)
+
+    });
+
     
+  }
+
+  public sort_by_key(array, key)
+  {
+   return array.sort(function(a, b)
+   {
+    var x = a[key]; var y = b[key];
+    return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+   });
   }
 
   // Opens dialog for the dashboard
@@ -167,19 +195,6 @@ export class FragmentsComponent implements OnInit {
   public Test(thing){
     // console.log(this.authorsJSON)
     console.log('test', thing)
-
-    this.firestore.collection('users').add({
-      name: 'Mama',
-      age: 20
-    })
-    .then(res => {
-        console.log(res);
-        // this.form.reset();
-    })
-    .catch(e => {
-        console.log(e);
-    })
-
   }
 
   public PushToArray(note, array){
@@ -382,6 +397,48 @@ public AddFragmentToArray(toAdd, array, fragment){
   clientListData = [];
   serverListData = [];
 
+  myArray = []
+
+  public DeleteFirebaseEntry(){
+    this.firestore
+    .collection("users")
+    .doc('4y6HNZGTBMoNGCFDBcsF')
+    .delete();
+  }
+
+  public CreateFirebaseEntry(myFragment){
+    // let content = {
+    //   lineName: '0',
+    //   lineContent: 'ipse summis saxis fixus asperis, evisceratus,',
+    //   lineComplete: "<p>1: ipse summis saxis fixus asperis, evisceratus,</p>"
+    // }
+    
+    this.firestore.collection('fragments').add({
+      // fragmentName: '100',
+      content: myFragment,
+      // status: 'Adesp.'
+    })
+    .then(res => {
+        console.log(res);
+        // this.form.reset();
+    })
+    .catch(e => {
+        console.log(e);
+    })
+  
+    this.myArray = [];
+    this.firestore
+    .collection("fragments")
+    .get()
+    .subscribe((ss) => {
+      ss.docs.forEach((doc) => {
+        this.myArray.push(doc.data());
+      });
+      console.log(this.myArray)
+    });
+  
+  }
+
   public CreateOwnFragment(line, array){
 
     let contentArray = []
@@ -405,11 +462,8 @@ public AddFragmentToArray(toAdd, array, fragment){
 
   }
 
+  tempArray = [{content: 'hello'}, {content: 'there'}, {content: 'sunshine'}]
 
-  /**
-   * Function to allow dragging elements between multiple containers
-   * @param event 
-   */
   MultipleColumnsDrag(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
@@ -418,6 +472,41 @@ public AddFragmentToArray(toAdd, array, fragment){
                         event.container.data,
                         event.previousIndex,
                         event.currentIndex);
+    }
+  }
+
+  /**
+   * Function to allow dragging elements between multiple containers
+   * @param event 
+   */
+  MultipleColumnsDrag2(event: CdkDragDrop<string[]>) {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      console.log(event.container.data, event.previousIndex, event.currentIndex)
+    } else {
+      transferArrayItem(event.previousContainer.data,
+                        event.container.data,
+                        event.previousIndex,
+                        event.currentIndex);
+      console.log(event,
+        event.previousContainer.data[0].content,
+        event.previousContainer.data,
+        event.container.data[event.currentIndex].content,
+        event.previousIndex,
+        event.currentIndex);
+
+        this.firestore.collection('fragments').add({
+          // fragmentName: '100',
+          content: event.container.data[event.currentIndex].content,
+          // status: 'Adesp.'
+        })
+        .then(res => {
+            console.log(res);
+            // this.form.reset();
+        })
+        .catch(e => {
+            console.log(e);
+        })
     }
   }
 
