@@ -489,15 +489,15 @@ public AddFragmentToArray(toAdd, array, fragment){
                         event.previousIndex,
                         event.currentIndex);
       console.log(event,
-        event.previousContainer.data[0].content,
+        // event.previousContainer.data[0].content,
         event.previousContainer.data,
-        event.container.data[event.currentIndex].content,
+        // event.container.data[event.currentIndex].content,
         event.previousIndex,
         event.currentIndex);
 
         this.firestore.collection('fragments').add({
           // fragmentName: '100',
-          content: event.container.data[event.currentIndex].content,
+          // content: event.container.data[event.currentIndex].content,
           // status: 'Adesp.'
         })
         .then(res => {
