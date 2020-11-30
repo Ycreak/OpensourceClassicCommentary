@@ -410,7 +410,7 @@
         <hr>
         <!-- For loop to print all the base selected fragments -->
         <div class="row">
-            <div *ngFor="let arrayItem of this.playgroundArray" class="playground" cdkDrag>
+            <div *ngFor="let arrayItem of this.playgroundArray" class="playground" cdkDrag (cdkDragEnded)="OnDragEnded($event)">
                 <b>Fragment {{arrayItem.fragmentName}}</b> &nbsp; <i>{{arrayItem.status}}</i>
                 <div *ngFor="let item of arrayItem.content">           
                     <div [innerHTML]="item.lineComplete"></div>
@@ -498,7 +498,7 @@
             <button mat-button class="button" (click)="this.ourCommentary = RequestPushOurCommentary()">Pull from server</button>
             
             <button mat-button class="button" (click)="DeleteFirebaseEntry()">Delete Firebase</button>
-            <button mat-button class="button" (click)="CreateFirebaseEntry()">Create Firebase</button>
+            <button mat-button class="button" (click)="FirebaseTest()">Test</button>
 
             
         </div>

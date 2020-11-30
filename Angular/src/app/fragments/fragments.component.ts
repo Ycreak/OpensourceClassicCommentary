@@ -8,7 +8,7 @@ import { UtilityService } from '../utility.service';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
 // Allows for drag and drop items in HTML
-import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
+import {CdkDragDrop, moveItemInArray, transferArrayItem, CdkDragEnd} from '@angular/cdk/drag-drop';
 // Library used for interacting with the page
 // import {MatDialog} from '@angular/material/dialog';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
@@ -112,15 +112,22 @@ export class FragmentsComponent implements OnInit {
 
     this.items = this.firestore.collection('fragments').valueChanges();
 
+    // var docRef = this.firestore.collection("fragments").doc("RbvDedlGCF1pudELWXug");
+
+    // console.log(docRef)
+
     this.firestore
-    .collection("fragments")
+    .collection("fragments") //RbvDedlGCF1pudELWXug
     .get()
-    .subscribe((ss) => {
+    .subscribe((ss) => {      
       ss.docs.forEach((doc) => {
         this.myArray.push(doc.data());
       });
       console.log('myArray', this.myArray)
-      this.myArray = this.sort_by_key(this.myArray, 'place');
+      // this.myArray = this.sort_by_key(this.myArray, 'place');
+
+      this.myArray = this.myArray[0].content 
+
       console.log('myArray2', this.myArray)
 
     });
@@ -406,12 +413,11 @@ public AddFragmentToArray(toAdd, array, fragment){
     .delete();
   }
 
+  public FirebaseTest(){
+    // console.log('items', this.items.content)
+  }
+
   public CreateFirebaseEntry(myFragment){
-    // let content = {
-    //   lineName: '0',
-    //   lineContent: 'ipse summis saxis fixus asperis, evisceratus,',
-    //   lineComplete: "<p>1: ipse summis saxis fixus asperis, evisceratus,</p>"
-    // }
     
     this.firestore.collection('fragments').add({
       // fragmentName: '100',
@@ -427,15 +433,15 @@ public AddFragmentToArray(toAdd, array, fragment){
     })
   
     this.myArray = [];
-    this.firestore
-    .collection("fragments")
-    .get()
-    .subscribe((ss) => {
-      ss.docs.forEach((doc) => {
-        this.myArray.push(doc.data());
-      });
-      console.log(this.myArray)
-    });
+    // this.firestore
+    // .collection("fragments")
+    // .get()
+    // .subscribe((ss) => {
+    //   ss.docs.forEach((doc) => {
+    //     this.myArray.push(doc.data());
+    //   });
+    //   console.log(this.myArray)
+    // });
   
   }
 
@@ -454,7 +460,68 @@ public AddFragmentToArray(toAdd, array, fragment){
     return array
   }
 
-  public RequestPushOurCommentary(){
+  // public OnDragEnded(event: CdkDragEnd): void {
+  //   console.log(event.source.getFreeDragPosition()); // returns { x: 0, y: 0 }
+  //   console.log(event.source.getRootElement());
+  // }
+
+  public OnDragEnded(event) {
+    console.log('Moved in pixels', event.source.getFreeDragPosition()); // returns { x: 0, y: 0 }
+    let element = event.source.getRootElement();
+    let boundingClientRect = element.getBoundingClientRect();
+    let parentPosition = this.GetPosition(element);
+    console.log('Absolute Position', 'x: ' + (boundingClientRect.x - parentPosition.left), 'y: ' + (boundingClientRect.y - parentPosition.top));        
+    console.log(event.distance)
+
+    console.log(event)
+  }
+  
+  public GetPosition(el) {
+    let x = 0;
+    let y = 0;
+    while(el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
+      x += el.offsetLeft - el.scrollLeft;
+      y += el.offsetTop - el.scrollTop;
+      el = el.offsetParent;
+    }
+    return { top: y, left: x };
+  }
+
+
+  public SyncWithFirebase(array){
+    // Create temporary array    
+    let newArray = []
+    // Loop through the items and put them in firebase ready format
+    for(let item in array){
+      // We give position and content to the database
+      newArray.push({position: item, content: array[item].content})
+    }
+    // Push the data to the correct document
+    this.firestore
+    .collection('fragments')
+    .doc('/' + 'RbvDedlGCF1pudELWXug')
+    .update({content: newArray})
+    .then(() => {
+      console.log('done');
+    })
+    .catch(function(error) {
+     console.error('Error writing document: ', error);
+    });
+
+
+    // this.firestore.collection('fragments').add({
+    //   // fragmentName: '100',
+    //   content: newArray,
+    //   // status: 'Adesp.'
+    // })
+    // .then(res => {
+    //     console.log(res);
+    //     // this.form.reset();
+    // })
+    // .catch(e => {
+    //     console.log(e);
+    // })
+
 
   }
   
@@ -467,6 +534,7 @@ public AddFragmentToArray(toAdd, array, fragment){
   MultipleColumnsDrag(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      console.log(event.container.data)
     } else {
       transferArrayItem(event.previousContainer.data,
                         event.container.data,
@@ -483,6 +551,9 @@ public AddFragmentToArray(toAdd, array, fragment){
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       console.log(event.container.data, event.previousIndex, event.currentIndex)
+
+      this.SyncWithFirebase(event.container.data);
+
     } else {
       transferArrayItem(event.previousContainer.data,
                         event.container.data,
@@ -495,18 +566,7 @@ public AddFragmentToArray(toAdd, array, fragment){
         event.previousIndex,
         event.currentIndex);
 
-        this.firestore.collection('fragments').add({
-          // fragmentName: '100',
-          // content: event.container.data[event.currentIndex].content,
-          // status: 'Adesp.'
-        })
-        .then(res => {
-            console.log(res);
-            // this.form.reset();
-        })
-        .catch(e => {
-            console.log(e);
-        })
+
     }
   }
 
