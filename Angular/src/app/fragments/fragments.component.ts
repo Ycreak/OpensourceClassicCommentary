@@ -90,7 +90,7 @@ export class FragmentsComponent implements OnInit {
   selectedLine : number;
   fragmentNumberList;
   
-  items: Observable<any[]>;
+  items //: Observable<any[]>;
 
 
   constructor(
@@ -110,28 +110,32 @@ export class FragmentsComponent implements OnInit {
     // When init is done, turn off the loading bar (spinner)
     this.spinner = false;  
 
-    this.items = this.firestore.collection('fragments').valueChanges();
+    this.items = this.firestore.collection('fragments').valueChanges()
+      .subscribe(data=>{
+        console.log('changed!', data);
+
+        this.firestore
+        .collection("fragments") //RbvDedlGCF1pudELWXug
+        .get()
+        .subscribe((ss) => {      
+          this.myArray = [];
+          ss.docs.forEach((doc) => {
+            this.myArray.push(doc.data());
+          });
+          this.myArray = this.myArray[0].content 
+        });
+
+
+       });
 
     // var docRef = this.firestore.collection("fragments").doc("RbvDedlGCF1pudELWXug");
 
     // console.log(docRef)
 
-    this.firestore
-    .collection("fragments") //RbvDedlGCF1pudELWXug
-    .get()
-    .subscribe((ss) => {      
-      ss.docs.forEach((doc) => {
-        this.myArray.push(doc.data());
-      });
-      console.log('myArray', this.myArray)
-      // this.myArray = this.sort_by_key(this.myArray, 'place');
 
-      this.myArray = this.myArray[0].content 
 
-      console.log('myArray2', this.myArray)
-
-    });
-
+    // this.items = this.firestore.doc('fragments/RbvDedlGCF1pudELWXug').valueChanges()
+                    // .subscribe((data) => console.log('new data logic', data);
     
   }
 
@@ -206,7 +210,8 @@ export class FragmentsComponent implements OnInit {
 
   public PushToArray(note, array){
     array.push(note);
-    console.log('noteArray',this.noteArray);
+    // console.log(this.tempArray)
+    // console.log('noteArray',this.noteArray);
     return array;
   }
 
@@ -413,7 +418,8 @@ public AddFragmentToArray(toAdd, array, fragment){
     .delete();
   }
 
-  public FirebaseTest(){
+  public FirebaseTest(thing){
+    console.log(thing)
     // console.log('items', this.items.content)
   }
 
@@ -460,6 +466,90 @@ public AddFragmentToArray(toAdd, array, fragment){
     return array
   }
 
+  public CreateOwnFragmentTemp(line, array){
+    array.push({ content: line })
+    return array
+  }
+
+
+
+  public SyncWithFirebase(array){
+    // Create temporary array    
+    let newArray = []
+    // Loop through the items and put them in firebase ready format
+    for(let item in array){
+      // We give position and content to the database
+      newArray.push({position: item, content: array[item].content})
+    }
+    // Push the data to the correct document
+    this.firestore
+    .collection('fragments')
+    .doc('/' + 'RbvDedlGCF1pudELWXug')
+    .update({content: newArray})
+    .then(() => {
+      console.log('done');
+    })
+    .catch(function(error) {
+     console.error('Error writing document: ', error);
+    });   
+  }
+
+  tempArray = [{content: 'hello'}, {content: 'there'}, {content: 'sunshine'}]
+
+  // MultipleColumnsDrag(event: CdkDragDrop<string[]>) {
+  //   if (event.previousContainer === event.container) {
+  //     moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+  //     console.log(event.container.data)
+  //   } else {
+  //     transferArrayItem(event.previousContainer.data,
+  //                       event.container.data,
+  //                       event.previousIndex,
+  //                       event.currentIndex);
+  //   }
+  // }
+
+  /**
+   * Function to allow dragging elements between multiple containers
+   * @param event 
+   */
+  MultipleColumnsDrag2(event: CdkDragDrop<string[]>) {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      console.log(event.container.data, event.previousIndex, event.currentIndex, event.container.id)
+      // If movement in own column, sync.
+      if(event.container.id == "cdk-drop-list-0"){
+        this.SyncWithFirebase(event.container.data);
+      }
+    } else {
+      transferArrayItem(event.previousContainer.data,
+                        event.container.data,
+                        event.previousIndex,
+                        event.currentIndex);
+      console.log('from', event.previousContainer.id)  
+      console.log('to', event.container.id)  
+
+      // Write to 0. Update 0, thus event.previousContainer
+      if(event.container.id == "cdk-drop-list-0"){
+        this.SyncWithFirebase(event.container.data);
+      }
+      // Remove from 0. Update 0, thus event.container
+      if(event.previousContainer.id == "cdk-drop-list-0"){
+        this.SyncWithFirebase(event.previousContainer.data);
+      }
+
+
+      // console.log(event,
+      //   // event.previousContainer.data[0].content,
+      //   event.previousContainer.data,
+      //   // event.container.data[event.currentIndex].content,
+      //   event.previousIndex,
+      //   event.currentIndex);
+      // this.SyncWithFirebase(event.container.data);
+
+    }
+  }
+  
+  // PLAYGROUND IMPLEMENTATION
   // public OnDragEnded(event: CdkDragEnd): void {
   //   console.log(event.source.getFreeDragPosition()); // returns { x: 0, y: 0 }
   //   console.log(event.source.getRootElement());
@@ -487,88 +577,6 @@ public AddFragmentToArray(toAdd, array, fragment){
     return { top: y, left: x };
   }
 
-
-  public SyncWithFirebase(array){
-    // Create temporary array    
-    let newArray = []
-    // Loop through the items and put them in firebase ready format
-    for(let item in array){
-      // We give position and content to the database
-      newArray.push({position: item, content: array[item].content})
-    }
-    // Push the data to the correct document
-    this.firestore
-    .collection('fragments')
-    .doc('/' + 'RbvDedlGCF1pudELWXug')
-    .update({content: newArray})
-    .then(() => {
-      console.log('done');
-    })
-    .catch(function(error) {
-     console.error('Error writing document: ', error);
-    });
-
-
-    // this.firestore.collection('fragments').add({
-    //   // fragmentName: '100',
-    //   content: newArray,
-    //   // status: 'Adesp.'
-    // })
-    // .then(res => {
-    //     console.log(res);
-    //     // this.form.reset();
-    // })
-    // .catch(e => {
-    //     console.log(e);
-    // })
-
-
-  }
-  
-  public RequestPullOurCommentary(){
-
-  }
-
-  tempArray = [{content: 'hello'}, {content: 'there'}, {content: 'sunshine'}]
-
-  MultipleColumnsDrag(event: CdkDragDrop<string[]>) {
-    if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-      console.log(event.container.data)
-    } else {
-      transferArrayItem(event.previousContainer.data,
-                        event.container.data,
-                        event.previousIndex,
-                        event.currentIndex);
-    }
-  }
-
-  /**
-   * Function to allow dragging elements between multiple containers
-   * @param event 
-   */
-  MultipleColumnsDrag2(event: CdkDragDrop<string[]>) {
-    if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-      console.log(event.container.data, event.previousIndex, event.currentIndex)
-
-      this.SyncWithFirebase(event.container.data);
-
-    } else {
-      transferArrayItem(event.previousContainer.data,
-                        event.container.data,
-                        event.previousIndex,
-                        event.currentIndex);
-      console.log(event,
-        // event.previousContainer.data[0].content,
-        event.previousContainer.data,
-        // event.container.data[event.currentIndex].content,
-        event.previousIndex,
-        event.currentIndex);
-
-
-    }
-  }
 
 
 

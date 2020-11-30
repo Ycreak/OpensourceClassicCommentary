@@ -483,7 +483,7 @@
                     <button type="button" mat-icon-button matSuffix (click)="this.clientListData = PopArray(this.clientListData)">
                         <mat-icon>{{'remove'}}</mat-icon>
                       </button>
-                      <button type="button" mat-icon-button matSuffix (click)="CreateFirebaseEntry(fragment2)">
+                      <button type="button" mat-icon-button matSuffix (click)="this.tempArray = CreateOwnFragmentTemp(fragment2, this.tempArray)">
                         <mat-icon>{{'add'}}</mat-icon>
                       </button>
                     <mat-hint>Add your own piece of multiplayer</mat-hint>
@@ -498,14 +498,14 @@
             <button mat-button class="button" (click)="this.ourCommentary = RequestPushOurCommentary()">Pull from server</button>
             
             <button mat-button class="button" (click)="DeleteFirebaseEntry()">Delete Firebase</button>
-            <button mat-button class="button" (click)="FirebaseTest()">Test</button>
+            <button mat-button class="button" (click)="FirebaseTest(this.myArray)">Test</button>
 
             
         </div>
 
         <hr>      
             <!-- List to show the multiplayer commentary -->
-            <div class="multiplayer-container">
+            <!-- <div class="multiplayer-container">
                 <h3>Our Commentary</h3>
               
                 <div
@@ -523,11 +523,10 @@
                 </div>  
                 </div>  
                 </div>
-              </div>
-          <!-- </div> -->
+              </div> -->
 
               <!-- List to show one's own commentary. Also placeholder list -->
-              <div class="multiplayer-container">
+              <!-- <div class="multiplayer-container">
                 <h3>My Commentary</h3>
               
                 <div
@@ -537,7 +536,6 @@
                   [cdkDropListConnectedTo]="[serverList, editorList]"
                   class="multiplayer-list"
                   (cdkDropListDropped)="MultipleColumnsDrag($event)">
-                  <!-- <div class="example-box" *ngFor="let item of myCommentary" cdkDrag>{{item}}</div> -->
                   <div class="fragment-box" *ngFor="let arrayItem of this.clientListData" cdkDrag><div>
                       <b>Frg {{arrayItem.fragmentName}}</b> &nbsp; <i>{{arrayItem.status}}</i>
                   </div>
@@ -546,9 +544,9 @@
                   </div>  
                   </div>                                
                 </div>
-              </div>
-              <!-- List to show an editor's base text -->
-              <div class="multiplayer-container">
+              </div> -->
+
+              <!-- <div class="multiplayer-container">
                 <h3>Selected Commentary</h3>
               
                 <div
@@ -567,12 +565,8 @@
                 </div>                 
                 
                 
-                </div>
-
-
-
-
-              </div>
+            </div>
+              </div> -->
 
               <hr>
               <div class="multiplayer-container">
@@ -608,11 +602,11 @@
           </div>  
           </div></div>  
 
-              <ul>
+              <!-- <ul>
                 <li class="text" *ngFor="let item of items | async">
                   {{item.content}}
                 </li>
-              </ul>
+              </ul> -->
 
     </div>  
 
