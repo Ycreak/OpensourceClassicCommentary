@@ -39,11 +39,11 @@ export class FragmentsComponent implements OnInit {
   bibWebsites: JSON;
   bibInCollection : JSON; //TODO: this one should be added.
   // Toggle switches
-  columnOneToggle: boolean = false;
+  columnOneToggle: boolean = true;
   columnTwoToggle: boolean = false; // Boolean to toggle between 2 and 3 column mode.
-  columnThreeToggle: boolean = false;
+  columnThreeToggle: boolean = true;
   Playground: boolean = false;
-  Multiplayer: boolean = true;
+  Multiplayer: boolean = false;
   
   spinner: boolean = true; // Boolean to toggle the spinner.
   noCommentary: boolean = false; // Shows banner if no commentary is available.
@@ -90,9 +90,6 @@ export class FragmentsComponent implements OnInit {
   selectedLine : number;
   fragmentNumberList;
   
-  items //: Observable<any[]>;
-
-
   constructor(
     private api: ApiService,
     private utility: UtilityService,
@@ -109,43 +106,8 @@ export class FragmentsComponent implements OnInit {
     this.RequestFragments(this.currentBook);
     // When init is done, turn off the loading bar (spinner)
     this.spinner = false;  
-
-    this.items = this.firestore.collection('fragments').valueChanges()
-      .subscribe(data=>{
-        console.log('changed!', data);
-
-        this.firestore
-        .collection("fragments") //RbvDedlGCF1pudELWXug
-        .get()
-        .subscribe((ss) => {      
-          this.myArray = [];
-          ss.docs.forEach((doc) => {
-            this.myArray.push(doc.data());
-          });
-          this.myArray = this.myArray[0].content 
-        });
-
-
-       });
-
-    // var docRef = this.firestore.collection("fragments").doc("RbvDedlGCF1pudELWXug");
-
-    // console.log(docRef)
-
-
-
-    // this.items = this.firestore.doc('fragments/RbvDedlGCF1pudELWXug').valueChanges()
-                    // .subscribe((data) => console.log('new data logic', data);
-    
-  }
-
-  public sort_by_key(array, key)
-  {
-   return array.sort(function(a, b)
-   {
-    var x = a[key]; var y = b[key];
-    return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-   });
+    // Firestore implementation
+    this.InitiateFirestore(this.sessionCode);   
   }
 
   // Opens dialog for the dashboard
@@ -405,87 +367,112 @@ public AddFragmentToArray(toAdd, array, fragment){
 //  |_|  |_|\__,_|_|\__|_| .__/|_|\__,_|\__, |\___|_|   
 //                       | |             __/ |          
 //                       |_|            |___/           
-  editorListData = [];
-  clientListData = [];
-  serverListData = [];
+  list1Array = [];
+  list2Array = [];
+  list3Array = [];
+  list4Array = [];
 
-  myArray = []
+  items //: Observable<any[]>;
 
-  public DeleteFirebaseEntry(){
+  sessionCode : string = 'Cu1zr6lWQk5rwQfyxvZs';
+  sessionKey // Shown in HTML. Can be merged maybe?
+
+  public InitiateFirestore(session){   
+    
+    this.items = this.firestore.collection('fragments').valueChanges()
+    .subscribe(data => {
+      console.log('changed!', data);
+      let tempArray = [];
+
+      this.firestore
+      .collection("fragments") //RbvDedlGCF1pudELWXug
+      .get()
+      .subscribe((ss) => {      
+        ss.docs.forEach((doc) => {
+          if(doc.id == session){
+            tempArray.push(doc.data());
+            console.log('temp', tempArray)
+            this.list1Array = tempArray[0].fragments; // No idea why it puts it in an object
+            this.list2Array = tempArray[0].fragments2; 
+            console.log('list1', this.list1Array)
+          }
+        });
+      });
+     });
+  }
+
+  public CreateFirebaseSession(){
+    this.firestore.collection('fragments').add({
+      fragments: this.list3Array,
+      fragments2: [],
+    })
+    .then(res => {
+        console.log('res', res.id);
+        // Set Session code to the newly created document
+        this.sessionCode = res.id
+        // Retrieve Data and put it in the column
+        this.InitiateFirestore(this.sessionCode)
+        this.sessionKey = res.id
+    })
+    .catch(e => {
+        console.log(e);
+    })
+  }
+
+  public RestoreFirebaseSession(session){
+    this.sessionCode = session
+    // Retrieve Data and put it in the column
+    this.InitiateFirestore(session)
+  }
+
+  public DeleteFirebaseSession(session){
     this.firestore
-    .collection("users")
-    .doc('4y6HNZGTBMoNGCFDBcsF')
+    .collection("fragments")
+    .doc(session)
     .delete();
   }
 
   public FirebaseTest(thing){
     console.log(thing)
+    this.sessionKey = 'hello'
     // console.log('items', this.items.content)
   }
 
-  public CreateFirebaseEntry(myFragment){
-    
-    this.firestore.collection('fragments').add({
-      // fragmentName: '100',
-      content: myFragment,
-      // status: 'Adesp.'
-    })
-    .then(res => {
-        console.log(res);
-        // this.form.reset();
-    })
-    .catch(e => {
-        console.log(e);
-    })
-  
-    this.myArray = [];
-    // this.firestore
-    // .collection("fragments")
-    // .get()
-    // .subscribe((ss) => {
-    //   ss.docs.forEach((doc) => {
-    //     this.myArray.push(doc.data());
-    //   });
-    //   console.log(this.myArray)
-    // });
-  
-  }
-
-  public CreateOwnFragment(line, array){
+  public CreateOwnFragment(line, header, array){
+    // Set a value if a field has been left empty.
+    if (line == null){
+      line = ' '
+    }
+    if (header == null){
+      header == ' '
+    }
 
     let contentArray = []
 
     contentArray.push({
-      lineName: '0',
+      lineName: header,
       lineContent: line,
       lineComplete: line,
     })
     // Push the created data to the array and empty the used arrays.
-    array.push({ fragmentName: '0', content: contentArray})
+    array.push({ fragmentName: header, content: contentArray})
     
     return array
   }
 
-  public CreateOwnFragmentTemp(line, array){
-    array.push({ content: line })
-    return array
-  }
-
-
-
-  public SyncWithFirebase(array){
+  public SyncWithFirebase(){
     // Create temporary array    
     let newArray = []
-    // Loop through the items and put them in firebase ready format
-    for(let item in array){
-      // We give position and content to the database
-      newArray.push({position: item, content: array[item].content})
-    }
+
+    console.log('time to sync data to the database')
+
     // Push the data to the correct document
     this.firestore
     .collection('fragments')
-    .doc('/' + 'RbvDedlGCF1pudELWXug')
-    .update({content: newArray})
+    .doc('/' + this.sessionCode)
+    // .update({content: newArray})
+    .update({fragments: this.list1Array, fragments2: this.list2Array})
+
     .then(() => {
       console.log('done');
     })
@@ -494,31 +481,20 @@ public AddFragmentToArray(toAdd, array, fragment){
     });   
   }
 
-  tempArray = [{content: 'hello'}, {content: 'there'}, {content: 'sunshine'}]
-
-  // MultipleColumnsDrag(event: CdkDragDrop<string[]>) {
-  //   if (event.previousContainer === event.container) {
-  //     moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-  //     console.log(event.container.data)
-  //   } else {
-  //     transferArrayItem(event.previousContainer.data,
-  //                       event.container.data,
-  //                       event.previousIndex,
-  //                       event.currentIndex);
-  //   }
-  // }
-
   /**
    * Function to allow dragging elements between multiple containers
    * @param event 
    */
-  MultipleColumnsDrag2(event: CdkDragDrop<string[]>) {
+  MultipleColumnsDrag(event: CdkDragDrop<string[]>) {   
+   
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       console.log(event.container.data, event.previousIndex, event.currentIndex, event.container.id)
-      // If movement in own column, sync.
-      if(event.container.id == "cdk-drop-list-0"){
-        this.SyncWithFirebase(event.container.data);
+      // If something happens with the sync columns, update the firebase
+      if(event.container.id == "cdk-drop-list-0" || event.container.id == "cdk-drop-list-1"
+          || event.previousContainer.id == "cdk-drop-list-0" || event.previousContainer.id == "cdk-drop-list-1"){
+        // No parameters: just sync the two first columns.
+        this.SyncWithFirebase();
       }
     } else {
       transferArrayItem(event.previousContainer.data,
@@ -528,24 +504,12 @@ public AddFragmentToArray(toAdd, array, fragment){
       console.log('from', event.previousContainer.id)  
       console.log('to', event.container.id)  
 
-      // Write to 0. Update 0, thus event.previousContainer
-      if(event.container.id == "cdk-drop-list-0"){
-        this.SyncWithFirebase(event.container.data);
+      // If something happens with the sync columns, update the firebase
+      if(event.container.id == "cdk-drop-list-0" || event.container.id == "cdk-drop-list-1"
+          || event.previousContainer.id == "cdk-drop-list-0" || event.previousContainer.id == "cdk-drop-list-1"){
+        // No parameters: just sync the two first columns.
+        this.SyncWithFirebase();
       }
-      // Remove from 0. Update 0, thus event.container
-      if(event.previousContainer.id == "cdk-drop-list-0"){
-        this.SyncWithFirebase(event.previousContainer.data);
-      }
-
-
-      // console.log(event,
-      //   // event.previousContainer.data[0].content,
-      //   event.previousContainer.data,
-      //   // event.container.data[event.currentIndex].content,
-      //   event.previousIndex,
-      //   event.currentIndex);
-      // this.SyncWithFirebase(event.container.data);
-
     }
   }
   

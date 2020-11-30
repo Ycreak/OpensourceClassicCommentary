@@ -60,6 +60,7 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatRadioModule} from '@angular/material/radio';  
 import {MatIconModule} from '@angular/material/icon'; 
+import {MatTooltipModule} from '@angular/material/tooltip'; 
 // Allows copying to clipboard
 import {ClipboardModule} from '@angular/cdk/clipboard';
 import { TextComponent } from './text/text.component'; 
@@ -143,6 +144,7 @@ const appRoutes: Routes = [
     MatCheckboxModule,
     MatIconModule,
     MatRadioModule,
+    MatTooltipModule,
     // To allow the drag and drop
     DragDropModule,
     ClipboardModule,

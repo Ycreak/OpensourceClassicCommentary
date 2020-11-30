@@ -456,7 +456,7 @@
                 <mat-label>Editor</mat-label>
                 <mat-select [(ngModel)]="selectedEditor">
                 <mat-option *ngFor="let data of this.editorsJSON" [value]="data"
-                (click)="this.editorListData = CreateEditorArray(data.id, this.F_Fragments)">                 
+                (click)="this.list3Array = CreateEditorArray(data.id, this.F_Fragments)">                 
                 {{ data.name }}                       
                 </mat-option>
                 </mat-select>
@@ -465,152 +465,136 @@
             <!-- Possibility to create one's own fragment -->
             <div mat-dialog-content>
                 <mat-form-field class="input-form-wide">
-                    <textarea class="input-form-wide" matInput type="text" [(ngModel)]='fragment' [matKeyboard]="'OSCC'"></textarea>
-
-                    <button type="button" mat-icon-button matSuffix (click)="this.clientListData = PopArray(this.clientListData)">
-                        <mat-icon>{{'remove'}}</mat-icon>
-                      </button>
-                      <button type="button" mat-icon-button matSuffix (click)="this.clientListData = CreateOwnFragment(fragment, this.clientListData)">
-                        <mat-icon>{{'add'}}</mat-icon>
-                      </button>
-                    <mat-hint>Add your own piece of commentary</mat-hint>
+                    <input class="input-form-wide" matInput type="text" [(ngModel)]='fragment2Header' [matKeyboard]="'OSCC'">
+                    <mat-hint>Add custom header</mat-hint>
                 </mat-form-field>               
             </div> 
             <div mat-dialog-content>
                 <mat-form-field class="input-form-wide">
                     <input class="input-form-wide" matInput type="text" [(ngModel)]='fragment2' [matKeyboard]="'OSCC'">
-
-                    <button type="button" mat-icon-button matSuffix (click)="this.clientListData = PopArray(this.clientListData)">
-                        <mat-icon>{{'remove'}}</mat-icon>
-                      </button>
-                      <button type="button" mat-icon-button matSuffix (click)="this.tempArray = CreateOwnFragmentTemp(fragment2, this.tempArray)">
-                        <mat-icon>{{'add'}}</mat-icon>
-                      </button>
-                    <mat-hint>Add your own piece of multiplayer</mat-hint>
+                        <button type="button" mat-icon-button matSuffix (click)="this.list4Array = CreateOwnFragment(fragment2, fragment2Header, this.list4Array)">
+                            <mat-icon>{{'add'}}</mat-icon>
+                        </button>
+                    <mat-hint>Add custom body</mat-hint>
                 </mat-form-field>               
             </div> 
+            <!-- Possibility to restore and create sessions -->
+            <div mat-dialog-content>
+                <mat-form-field class="input-form-wide">
+                    <input class="input-form-wide" matInput type="text" [(ngModel)]='sessionKey' [matKeyboard]="'OSCC'">
+                    <button type="button" mat-icon-button matSuffix (click)="this.RestoreFirebaseSession(sessionKey)">
+                        <mat-icon>{{'restore'}}</mat-icon>
+                    </button>
+                    <button type="button" mat-icon-button matSuffix (click)="this.CreateFirebaseSession()">
+                        <mat-icon>{{'add'}}</mat-icon>
+                    </button>
+                    <button type="button" mat-icon-button matSuffix (click)="this.DeleteFirebaseSession(sessionKey)">
+                        <mat-icon>{{'remove'}}</mat-icon>
+                    </button>
+                    <mat-hint>Provide your session code</mat-hint>
+                </mat-form-field>               
+            </div> 
+            <!-- Buttons for server communications -->           
+            <!-- <button mat-button class="button" (click)="FirebaseTest(this.editorListData)">Test</button> -->
+            <button mat-button class="button" (click)="this.list4Array = []">Empty My Additions</button>
 
-            
-            <!-- <button mat-button class="button" (click)="this.myCommentary = CopyObject(this.ourCommentary)">Copy Our Commentary to My Commentary</button>
-            <button mat-button class="button" (click)="this.ourCommentary = myCommentary">Copy My Commentary to Our Commentary</button> -->
-            <!-- Buttons for server communications -->
-            <button mat-button class="button" (click)="RequestPushOurCommentary()">Push to server</button>
-            <button mat-button class="button" (click)="this.ourCommentary = RequestPushOurCommentary()">Pull from server</button>
-            
-            <button mat-button class="button" (click)="DeleteFirebaseEntry()">Delete Firebase</button>
-            <button mat-button class="button" (click)="FirebaseTest(this.myArray)">Test</button>
-
-            
         </div>
 
-        <hr>      
-            <!-- List to show the multiplayer commentary -->
-            <!-- <div class="multiplayer-container">
-                <h3>Our Commentary</h3>
-              
-                <div
-                  cdkDropList
-                  #serverList="cdkDropList"
-                  [cdkDropListData]="serverListData"
-                  [cdkDropListConnectedTo]="[clientList, editorList]"
-                  class="multiplayer-list"
-                  (cdkDropListDropped)="MultipleColumnsDrag($event)">
-                  <div class="fragment-box" *ngFor="let arrayItem of this.serverListData" cdkDrag><div>
-                    <b>Frg {{arrayItem.fragmentName}}</b> &nbsp; <i>{{arrayItem.status}}</i>
+        <hr>
+        <!-- Row to show the commentaries. List1 and List2 are synced with the server.
+        List3 shows the selected existing edition, List4 one's own comments. -->
+        <div class="row">
+            <div class="col-md-4">
+                <div class="multiplayer-container">
+                    <h3>Synced Commentary 1</h3>
+                    <div
+                        cdkDropList
+                        #list1="cdkDropList"
+                        [cdkDropListData]="this.list1Array"
+                        [cdkDropListConnectedTo]="[list2, list3, list4]"
+                        class="multiplayer-list"
+                        (cdkDropListDropped)="MultipleColumnsDrag($event)">
+                        <div class="fragment-box" *ngFor="let item of this.list1Array" cdkDrag>
+                            <div>
+                                <b>Frg {{item.fragmentName}}</b> &nbsp; <i>{{item.status}}</i>
+                            </div>
+                            <div *ngFor="let item2 of item.content">           
+                                <div [innerHTML]="item2.lineComplete"></div> 
+                            </div>  
+                        </div>  
+                    </div>
                 </div>
-                <div *ngFor="let arrayItem2 of arrayItem.content">           
-                    <div [innerHTML]="arrayItem2.lineComplete"></div> 
-                </div>  
-                </div>  
-                </div>
-              </div> -->
-
-              <!-- List to show one's own commentary. Also placeholder list -->
-              <!-- <div class="multiplayer-container">
-                <h3>My Commentary</h3>
-              
-                <div
-                  cdkDropList
-                  #clientList="cdkDropList"
-                  [cdkDropListData]="clientListData"
-                  [cdkDropListConnectedTo]="[serverList, editorList]"
-                  class="multiplayer-list"
-                  (cdkDropListDropped)="MultipleColumnsDrag($event)">
-                  <div class="fragment-box" *ngFor="let arrayItem of this.clientListData" cdkDrag><div>
-                      <b>Frg {{arrayItem.fragmentName}}</b> &nbsp; <i>{{arrayItem.status}}</i>
-                  </div>
-                  <div *ngFor="let arrayItem2 of arrayItem.content">           
-                      <div [innerHTML]="arrayItem2.lineComplete"></div> 
-                  </div>  
-                  </div>                                
-                </div>
-              </div> -->
-
-              <!-- <div class="multiplayer-container">
-                <h3>Selected Commentary</h3>
-              
-                <div
-                  cdkDropList
-                  #editorList="cdkDropList"
-                  [cdkDropListData]="editorListData"
-                  [cdkDropListConnectedTo]="[serverList, clientList]"
-                  class="multiplayer-list"
-                  (cdkDropListDropped)="MultipleColumnsDrag($event)">
-                  <div class="fragment-box" *ngFor="let arrayItem of this.editorListData" cdkDrag><div>
-                    <b>Frg {{arrayItem.fragmentName}}</b> &nbsp; <i>{{arrayItem.status}}</i>
-                </div>
-                <div *ngFor="let arrayItem2 of arrayItem.content">           
-                    <div [innerHTML]="arrayItem2.lineComplete"></div> 
-                </div>  
-                </div>                 
-                
-                
             </div>
-              </div> -->
-
-              <hr>
-              <div class="multiplayer-container">
-                <h3>1 Commentary</h3>
-              <div
-              cdkDropList
-              #serverList3="cdkDropList"
-              [cdkDropListData]="this.myArray"
-              [cdkDropListConnectedTo]="[serverList2, editorList]"
-              class="multiplayer-list"
-              (cdkDropListDropped)="MultipleColumnsDrag2($event)">
-              <div class="fragment-box" *ngFor="let item of this.myArray" cdkDrag><div>
-                <div [innerHTML]="item.content"></div> 
+           <!-- The second list to be synced -->
+            <div class="col-md-4">          
+                <div class="multiplayer-container">
+                    <h3> Synced Commentary 2</h3>
+                    <div
+                        cdkDropList
+                        #list2="cdkDropList"
+                        [cdkDropListData]="this.list2Array"
+                        [cdkDropListConnectedTo]="[list1, list3, list4]"
+                        class="multiplayer-list"
+                        (cdkDropListDropped)="MultipleColumnsDrag($event)">
+                        <div class="fragment-box" *ngFor="let item of this.list2Array" cdkDrag>
+                            <div>
+                                <b>Frg {{item.fragmentName}}</b> &nbsp; <i>{{item.status}}</i>
+                            </div>
+                            <div *ngFor="let item2 of item.content">           
+                                <div [innerHTML]="item2.lineComplete"></div> 
+                            </div>  
+                        </div>   
+                    </div>
+                </div> 
+            </div> 
+            <!-- The third column contains two rows: one for own fragments, one for existing editions -->
+            <div class="col-md-4">
+                <div class="row">
+                    <div class="multiplayer-container">
+                        <h3>My Additions</h3>
+                        <div
+                            cdkDropList
+                            #list4="cdkDropList"
+                            [cdkDropListData]="this.list4Array"
+                            [cdkDropListConnectedTo]="[list1, list2, list3]"
+                            class="multiplayer-list"
+                            (cdkDropListDropped)="MultipleColumnsDrag($event)">
+                            <div class="fragment-box" *ngFor="let item of this.list4Array" cdkDrag>
+                                <div>
+                                    <b>{{item.fragmentName}}</b>
+                                </div>
+                                <div *ngFor="let item2 of item.content">           
+                                    <div [innerHTML]="item2.lineComplete"></div> 
+                                </div>  
+                            </div>  
+                        </div>
+                    </div>
+                </div>
+                <!-- Last list that shows existing editions -->
+                <div class="row">
+                    <div class="multiplayer-container">
+                        <h3>Existing Edition</h3>
+                        <div
+                            cdkDropList
+                            #list3="cdkDropList"
+                            [cdkDropListData]="this.list3Array"
+                            [cdkDropListConnectedTo]="[list1, list2, list4]"
+                            class="multiplayer-list"
+                            (cdkDropListDropped)="MultipleColumnsDrag($event)">
+                            <div class="fragment-box" *ngFor="let item of this.list3Array" cdkDrag>
+                                <div>
+                                    <b>Frg {{item.fragmentName}}</b> &nbsp; <i>{{item.status}}</i>
+                                </div>
+                                <div *ngFor="let item2 of item.content">           
+                                    <div [innerHTML]="item2.lineComplete"></div> 
+                                </div>  
+                            </div>  
+                        </div>
+                    </div>
+                </div>
             </div>
-            <!-- <div *ngFor="let item2 of item.content">           
-            </div>   -->
-            </div>  
-            </div></div>
-            <div class="multiplayer-container">
-                <h3>2 Commentary</h3>
-            <div
-            cdkDropList
-            #serverList2="cdkDropList"
-            [cdkDropListData]="this.tempArray"
-            [cdkDropListConnectedTo]="[serverList3, editorList]"
-            class="multiplayer-list"
-            (cdkDropListDropped)="MultipleColumnsDrag2($event)">
-            <div class="fragment-box" *ngFor="let item of this.tempArray" cdkDrag><div>
-              <div [innerHTML]="item.content"></div> 
-          </div>
-          <!-- <div *ngFor="let item2 of item.content">           
-          </div>   -->
-          </div>  
-          </div></div>  
-
-              <!-- <ul>
-                <li class="text" *ngFor="let item of items | async">
-                  {{item.content}}
-                </li>
-              </ul> -->
-
-    </div>  
-
-
+        </div>
+    </div> 
 </div>
     
     
