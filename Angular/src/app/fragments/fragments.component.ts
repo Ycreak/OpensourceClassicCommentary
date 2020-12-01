@@ -73,7 +73,7 @@ export class FragmentsComponent implements OnInit {
   currentFragment : string = '';
   currentAuthorName : string = "Ennius";
   currentBookName : string = "Thyestes";
-  currentEditorName : string = "Manuwald";
+  currentEditorName : string = "TRF";
   // This array contains all the information from a specific book. Functions can use this data.
   selectedEditorArray = [];
   mainEditorArray = [];
@@ -143,8 +143,8 @@ export class FragmentsComponent implements OnInit {
     this.api.GetFragments(book).subscribe(
       data => {
         this.F_Fragments = data;
-        this.mainEditorArray = this.CreateEditorArray(1, this.F_Fragments);
-        this.selectedEditorArray = this.CreateEditorArray(2, this.F_Fragments); //FIXME: just a quick hack
+        this.mainEditorArray = this.CreateEditorArray({id:1}, this.F_Fragments);
+        this.selectedEditorArray = this.CreateEditorArray({id:2}, this.F_Fragments); //FIXME: just a quick hack
 
       }
     );  
@@ -209,14 +209,24 @@ export class FragmentsComponent implements OnInit {
   * @returns none
   * @author Ycreak
   */
-  private CreateEditorArray(editor: number, array){
+  private CreateEditorArray(editor, array){ 
+    console.log('editor', this.currentEditorName)
     // console.log('CreateEditorArray', editor)
     // Filter the given array on the given editor.
-    let tempArray = array.filter(x => x.editor == editor);
+    let tempArray = array.filter(x => x.editor == editor.id);
     // Sort the lines numerically.
     tempArray.sort(this.utility.SortArrayNumerically);
     // Merge the different lines into their corresponding fragments
-    return this.utility.MergeLinesIntoFragment(tempArray);
+    tempArray = this.utility.MergeLinesIntoFragment(tempArray);
+    // Add extra information to every fragment
+    for(let i in tempArray){
+      tempArray[i].author = this.currentAuthorName;
+      tempArray[i].editor = editor.name;
+      tempArray[i].text = this.currentBookName;
+    }
+    console.log('Output', tempArray)
+    // Return the fragment with all its fields
+    return tempArray;
   }
 
   /**
@@ -512,7 +522,7 @@ public AddFragmentToArray(toAdd, array, fragment){
       lineComplete: body, // This should have html formatting.
     })
     // Push the created data to the array and empty the used arrays.
-    array.push({ fragmentName: header, content: contentArray})
+    array.push({ fragmentName: header, content: contentArray, note: true})
     // Return this new array.
     return array
   }
