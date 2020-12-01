@@ -31,7 +31,7 @@
     <button (click)="OpenAbout()" mat-menu-item>About</button>
     <button (click)="ngOnInit()" *ngIf="this.authService.isLoggedIn">Reload Data</button>
 
-    <button mat-menu-item>V20.48.1</button>
+    <button mat-menu-item>V20.49.5</button>
 </mat-menu>
 
 <!-- Author and Book select dialog -->
@@ -499,8 +499,11 @@
             <div mat-dialog-content>
                 <mat-form-field class="input-form-wide">
                     <input class="input-form-wide" matInput type="text" [(ngModel)]='fragment2' [matKeyboard]="'OSCC'">
-                        <button type="button" mat-icon-button matSuffix (click)="this.list4Array = CreateOwnFragment(fragment2, fragment2Header, this.list4Array)">
-                            <mat-icon>{{'add'}}</mat-icon>
+                        <button type="button" mat-icon-button matSuffix (click)="this.list4Array = CreateOwnFragment(fragment2, fragment2Header, this.list4Array, false)">
+                            <mat-icon>{{'text_snippet'}}</mat-icon>
+                        </button>
+                        <button type="button" mat-icon-button matSuffix (click)="this.list4Array = CreateOwnFragment(fragment2, fragment2Header, this.list4Array, true)">
+                            <mat-icon>{{'note_add'}}</mat-icon>
                         </button>
                     <mat-hint>Add custom body</mat-hint>
                 </mat-form-field>               
@@ -515,7 +518,7 @@
                     <button type="button" mat-icon-button matSuffix (click)="this.CreateFirebaseSession(this.tableName)">
                         <mat-icon>{{'add'}}</mat-icon>
                     </button>
-                    <button type="button" mat-icon-button matSuffix (click)="this.DeleteFirebaseSession(sessionCode, this.tableName)">
+                    <button type="button" mat-icon-button matSuffix (click)="this.RequestDeleteSession(sessionCode)">
                         <mat-icon>{{'remove'}}</mat-icon>
                     </button>
                     <mat-hint>Provide your session code</mat-hint>
@@ -525,6 +528,7 @@
             <!-- Buttons for server communications -->           
             <!-- <button mat-button class="button" (click)="FirebaseTest(this.editorListData)">Test</button> -->
             <button mat-button class="button" (click)="this.list4Array = []">Empty My Additions</button>
+            <mat-checkbox [(ngModel)]="showFragmentname">Headers</mat-checkbox>
 
         </div>
 
@@ -534,7 +538,7 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="multiplayer-container">
-                    <h3>Synced Commentary 1</h3>
+                    <h3>Synced Column 1</h3>
                     <div
                         cdkDropList
                         #list1="cdkDropList"
@@ -546,7 +550,7 @@
                             <div class="divNote" *ngIf="item.note"> <!--If it is a note, don't show frg-->
                                 <b>{{item.fragmentName}}</b>
                             </div>
-                            <div *ngIf="item.note != true">
+                            <div *ngIf="item.note != true && showFragmentname">
                                 <b>Frg {{item.fragmentName}}</b> &nbsp; <sup>{{item.author}}, {{item.text}}, {{item.editor}}</sup> &nbsp; <i>{{item.status}}</i>
                             </div>
                             <div *ngFor="let item2 of item.content"> 
@@ -561,7 +565,7 @@
            <!-- The second list to be synced -->
             <div class="col-md-4">          
                 <div class="multiplayer-container">
-                    <h3> Synced Commentary 2</h3>
+                    <h3> Synced Column 2</h3>
                     <div
                         cdkDropList
                         #list2="cdkDropList"
@@ -573,8 +577,8 @@
                             <div class="divNote" *ngIf="item.note"> <!--If it is a note, don't show frg-->
                                 <b>{{item.fragmentName}}</b>
                             </div>
-                            <div *ngIf="item.note != true">
-                                <b>Frg {{item.fragmentName}}</b> <sup>{{item.author}}, {{item.text}}, {{item.editor}}</sup> &nbsp; <i>{{item.status}}</i>
+                            <div *ngIf="item.note != true && showFragmentname">
+                                <b>Frg {{item.fragmentName}}</b> &nbsp; <sup>{{item.author}}, {{item.text}}, {{item.editor}}</sup> &nbsp; <i>{{item.status}}</i>
                             </div>
                             <div *ngFor="let item2 of item.content"> 
                                 <!-- Keep in mind whether a note is printed or not. -->
@@ -601,8 +605,8 @@
                                 <div class="divNote" *ngIf="item.note"> <!--If it is a note, don't show frg-->
                                     <b>{{item.fragmentName}}</b>
                                 </div>
-                                <div *ngIf="item.note != true">
-                                    <b>Frg {{item.fragmentName}}</b> <sup>{{item.author}}, {{item.text}}, {{item.editor}}</sup> &nbsp; <i>{{item.status}}</i>
+                                <div *ngIf="item.note != true && showFragmentname">
+                                    <b>Frg {{item.fragmentName}}</b> &nbsp; <sup>{{item.author}}, {{item.text}}, {{item.editor}}</sup> &nbsp; <i>{{item.status}}</i>
                                 </div>
                                 <div *ngFor="let item2 of item.content"> 
                                     <!-- Keep in mind whether a note is printed or not. -->
@@ -628,8 +632,8 @@
                                 <div class="divNote" *ngIf="item.note"> <!--If it is a note, don't show frg-->
                                     <b>{{item.fragmentName}}</b>
                                 </div>
-                                <div *ngIf="item.note != true">
-                                    <b>Frg {{item.fragmentName}}</b> <sup>{{item.author}}, {{item.text}}, {{item.editor}}</sup> &nbsp; <i>{{item.status}}</i>
+                                <div *ngIf="item.note != true && showFragmentname">
+                                    <b>Frg {{item.fragmentName}}</b> &nbsp; <sup>{{item.author}}, {{item.text}}, {{item.editor}}</sup> &nbsp; <i>{{item.status}}</i>
                                 </div>
                                 <div *ngFor="let item2 of item.content"> 
                                     <!-- Keep in mind whether a note is printed or not. -->

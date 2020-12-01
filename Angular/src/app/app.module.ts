@@ -27,8 +27,8 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {DragDropModule} from '@angular/cdk/drag-drop';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 // Component Imports
 import { AppRoutingModule } from './app-routing.module';
@@ -39,6 +39,7 @@ import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './auth/auth.guard';
 
 import { ConfirmationDialog } from './dashboard/dashboard.component';
+import { ConfirmationDialog2 } from './fragments/fragments.component';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorInterceptor } from './api.service';
@@ -114,6 +115,7 @@ const appRoutes: Routes = [
     FragmentsComponent,
     DashboardComponent,
     ConfirmationDialog,
+    ConfirmationDialog2, //FIXME: Help me Philippe.
     LoginComponent,
     TextComponent,
   ],

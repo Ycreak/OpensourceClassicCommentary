@@ -10,8 +10,8 @@ import { Router } from '@angular/router';
 // Allows for drag and drop items in HTML
 import {CdkDragDrop, moveItemInArray, transferArrayItem, CdkDragEnd} from '@angular/cdk/drag-drop';
 // Library used for interacting with the page
-// import {MatDialog} from '@angular/material/dialog';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+
 import {Inject} from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 
@@ -40,11 +40,11 @@ export class FragmentsComponent implements OnInit {
   bibWebsites: JSON;
   bibInCollection : JSON; //TODO: this one should be added.
   // Toggle switches
-  columnOneToggle: boolean = false;
+  columnOneToggle: boolean = true;
   columnTwoToggle: boolean = false; // Boolean to toggle between 2 and 3 column mode.
-  columnThreeToggle: boolean = false;
+  columnThreeToggle: boolean = true;
   Playground: boolean = false;
-  Multiplayer: boolean = true;
+  Multiplayer: boolean = false;
   
   spinner: boolean = true; // Boolean to toggle the spinner.
   noCommentary: boolean = false; // Shows banner if no commentary is available.
@@ -395,7 +395,9 @@ public AddFragmentToArray(toAdd, array, fragment){
   multiplayer;
   // Session code. Will be changed when restoring or creating a session.
   // Is simply a document in the OSCC Firebase database. Also shown in HTML.
-  sessionCode : string = 'Cu1zr6lWQk5rwQfyxvZs'; // Default document.
+  sessionCode : string = 'uOm36WurKEgypunFkvgW'; // Default document.
+  // Boolean to allow showing of fragment data
+  showFragmentname : boolean = true;
   /**
    * Little test function to allow printing or doing things with buttons
    * @param thing template variable, could be used for anything.
@@ -440,6 +442,8 @@ public AddFragmentToArray(toAdd, array, fragment){
    * @param table name of the Firebase table used.
    */
   public CreateFirebaseSession(table){
+    // Unsubscribe from the previous watcher. InitiateFirestore creates a new watcher.
+    this.multiplayer.unsubscribe();
     // Empty synced lists
     this.list1Array = [];
     this.list2Array = [];    
@@ -451,8 +455,6 @@ public AddFragmentToArray(toAdd, array, fragment){
     .then(res => {
         // Set Session code to the newly created document
         this.sessionCode = res.id
-        // Unsubscribe from the previous watcher. InitiateFirestore creates a new watcher.
-        this.multiplayer.unsubscribe();
         // Retrieve Data and put it in the column
         this.InitiateFirestore(this.sessionCode, this.tableName)
     })
@@ -504,7 +506,7 @@ public AddFragmentToArray(toAdd, array, fragment){
    * @param array 
    * @return array in the correct format to be processed
    */
-  public CreateOwnFragment(body, header, array){
+  public CreateOwnFragment(body, header, array, noteStatus){
     // Set a value if a field has been left empty. Otherwise Firebase will be mad.
     if (body == null){
       body = ' '
@@ -522,7 +524,7 @@ public AddFragmentToArray(toAdd, array, fragment){
       lineComplete: body, // This should have html formatting.
     })
     // Push the created data to the array and empty the used arrays.
-    array.push({ fragmentName: header, content: contentArray, note: true})
+    array.push({ fragmentName: header, content: contentArray, note: noteStatus})
     // Return this new array.
     return array
   }
@@ -613,7 +615,7 @@ public AddFragmentToArray(toAdd, array, fragment){
    */
   public OpenSnackbar(message){
     this._snackBar.open(message, 'Close', {
-      duration: 5000,
+      // duration: 5000,
     });
   }
   /**
@@ -633,7 +635,29 @@ public AddFragmentToArray(toAdd, array, fragment){
     output = String(err.status) + ': ' + output + ' ' + err.statusText;
     this.OpenSnackbar(output); //FIXME: Spaghetti.
   } 
+  /**
+   * Opens a confirmation dialog with the provided message
+   * @param message shows text about what is happening
+   * @param item the item that is about to change
+   */
+  public OpenConfirmationDialog(message, item): Observable<boolean>{
+    const dialogRef = this.dialog.open(ConfirmationDialog2, {
+      width: 'auto',
+      data: {
+        message: message,
+        item: item,
+      }
+    });  
+    return dialogRef.afterClosed(); // Returns observable.
+  }
 
+  public RequestDeleteSession(session: string){
+    this.OpenConfirmationDialog('Are you sure you want to DELETE this session?', session).subscribe(result => {
+      if(result){
+        this.DeleteFirebaseSession(session, this.tableName);
+      }
+    });
+  }
 
 }
 
@@ -652,3 +676,19 @@ export class ShowAboutDialog {}
 })
 export class ShowBibliographyDialog {}
 
+/**
+ * Class to show a confirmation dialog when needed. 
+ * Shows whatever data is given
+ */
+@Component({
+  selector: 'confirmation-dialog',
+  templateUrl: './confirmation-dialog.html',
+})
+export class ConfirmationDialog2 {
+  constructor(
+    public dialogRef: MatDialogRef<ConfirmationDialog2>,
+    @Inject(MAT_DIALOG_DATA) public data) { }
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+}
