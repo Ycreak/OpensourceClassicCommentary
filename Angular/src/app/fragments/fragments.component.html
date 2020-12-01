@@ -451,6 +451,31 @@
                         |_|            |___/            -->
     <div class="container-fluid" *ngIf="Multiplayer">
         <div class="row">
+            <!-- Field to select the author. Beware! It changes the author of the entire program -->
+            <div mat-dialog-content>
+                <mat-form-field>
+                    <mat-label>Select author</mat-label>
+                    <mat-select>
+                    <mat-option *ngFor="let author of this.authorsJSON" [value]="author" 
+                        (click)="this.RequestBooks(author.id)" 
+                        (click)="this.SetCurrentAuthorData(author)">
+                        {{ author.name }} 
+                    </mat-option>
+                    </mat-select>  
+                </mat-form-field> 
+                <!-- Field to select the corresponding book -->
+                <mat-form-field>
+                    <mat-label>Select book</mat-label>
+                    <mat-select>
+                    <mat-option *ngFor="let book of this.booksJSON" [value]="book" 
+                        (click)="RequestEditors(book.id)"
+                        (click)="RequestFragments(book.id)"
+                        (click)="SetCurrentBookData(book)">
+                        {{ book.title }}                
+                    </mat-option>
+                    </mat-select>
+                </mat-form-field> 
+            </div>
             <!-- Possibility to select an editor base text -->
             <mat-form-field class="select-form">
                 <mat-label>Editor</mat-label>
@@ -481,19 +506,20 @@
             <!-- Possibility to restore and create sessions -->
             <div mat-dialog-content>
                 <mat-form-field class="input-form-wide">
-                    <input class="input-form-wide" matInput type="text" [(ngModel)]='sessionKey' [matKeyboard]="'OSCC'">
-                    <button type="button" mat-icon-button matSuffix (click)="this.RestoreFirebaseSession(sessionKey)">
+                    <input class="input-form-wide" matInput type="text" [(ngModel)]='sessionCode' [matKeyboard]="'OSCC'">
+                    <button type="button" mat-icon-button matSuffix (click)="this.RestoreFirebaseSession(sessionCode)">
                         <mat-icon>{{'restore'}}</mat-icon>
                     </button>
-                    <button type="button" mat-icon-button matSuffix (click)="this.CreateFirebaseSession()">
+                    <button type="button" mat-icon-button matSuffix (click)="this.CreateFirebaseSession(this.tableName)">
                         <mat-icon>{{'add'}}</mat-icon>
                     </button>
-                    <button type="button" mat-icon-button matSuffix (click)="this.DeleteFirebaseSession(sessionKey)">
+                    <button type="button" mat-icon-button matSuffix (click)="this.DeleteFirebaseSession(sessionCode, this.tableName)">
                         <mat-icon>{{'remove'}}</mat-icon>
                     </button>
                     <mat-hint>Provide your session code</mat-hint>
                 </mat-form-field>               
             </div> 
+
             <!-- Buttons for server communications -->           
             <!-- <button mat-button class="button" (click)="FirebaseTest(this.editorListData)">Test</button> -->
             <button mat-button class="button" (click)="this.list4Array = []">Empty My Additions</button>

@@ -13,6 +13,7 @@ import {CdkDragDrop, moveItemInArray, transferArrayItem, CdkDragEnd} from '@angu
 // import {MatDialog} from '@angular/material/dialog';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {Inject} from '@angular/core';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 // To allow dialog windows within the current window
 import { TemplateRef, ViewChild } from '@angular/core';
@@ -39,11 +40,11 @@ export class FragmentsComponent implements OnInit {
   bibWebsites: JSON;
   bibInCollection : JSON; //TODO: this one should be added.
   // Toggle switches
-  columnOneToggle: boolean = true;
+  columnOneToggle: boolean = false;
   columnTwoToggle: boolean = false; // Boolean to toggle between 2 and 3 column mode.
-  columnThreeToggle: boolean = true;
+  columnThreeToggle: boolean = false;
   Playground: boolean = false;
-  Multiplayer: boolean = false;
+  Multiplayer: boolean = true;
   
   spinner: boolean = true; // Boolean to toggle the spinner.
   noCommentary: boolean = false; // Shows banner if no commentary is available.
@@ -96,6 +97,7 @@ export class FragmentsComponent implements OnInit {
     public authService: AuthService,
     private firestore: AngularFirestore,
     private dialog: MatDialog, 
+    private _snackBar: MatSnackBar,
     ) { }
 
   ngOnInit(): void {
@@ -107,7 +109,7 @@ export class FragmentsComponent implements OnInit {
     // When init is done, turn off the loading bar (spinner)
     this.spinner = false;  
     // Firestore implementation
-    this.InitiateFirestore(this.sessionCode);   
+    this.InitiateFirestore(this.sessionCode, this.tableName);   
   }
 
   // Opens dialog for the dashboard
@@ -367,134 +369,187 @@ public AddFragmentToArray(toAdd, array, fragment){
 //  |_|  |_|\__,_|_|\__|_| .__/|_|\__,_|\__, |\___|_|   
 //                       | |             __/ |          
 //                       |_|            |___/           
-  list1Array = [];
-  list2Array = [];
-  list3Array = [];
-  list4Array = [];
+  // BUG REPORTS
+  // When changing sessions, the old session lingers somewhere. Moving
+  // fragments around will show the old session flashing in the synced column.
 
-  items //: Observable<any[]>;
-
-  sessionCode : string = 'Cu1zr6lWQk5rwQfyxvZs';
-  sessionKey // Shown in HTML. Can be merged maybe?
-
-  public InitiateFirestore(session){   
-    
-    this.items = this.firestore.collection('fragments').valueChanges()
+  // Array initialisations for the four used columns.
+  list1Array = [];  // First Synced Column
+  list2Array = [];  // Second Synced Column
+  list3Array = [];  // Standard Edition Column
+  list4Array = [];  // My Additions Column
+  // Table name in firestore
+  tableName : string = 'fragments';
+  // Variable that watches for change in the database. Can be subscribed to
+  // and returns data in the 'data' field.
+  multiplayer;
+  // Session code. Will be changed when restoring or creating a session.
+  // Is simply a document in the OSCC Firebase database. Also shown in HTML.
+  sessionCode : string = 'Cu1zr6lWQk5rwQfyxvZs'; // Default document.
+  /**
+   * Little test function to allow printing or doing things with buttons
+   * @param thing template variable, could be used for anything.
+   */
+  public FirebaseTest(thing){
+    console.log(thing)
+  }
+  /**
+   * This function is called onInit and creates a watcher called Multiplayer. It
+   * keeps watching for change in the database and on change, rebuilds the list arrays.
+   * TODO: Create a more elegant solution
+   * @param session stores the session key. Used to retrieve the correct document.
+   * @output refreshes the two synced lists. 
+   */
+  public InitiateFirestore(session, table){   
+    // Create watcher
+    this.multiplayer = this.firestore.collection(table).valueChanges()
     .subscribe(data => {
-      console.log('changed!', data);
-      let tempArray = [];
-
+      let tempArray = []; // Create temporary array filled with all data
+      // Create link to firestore to retrieve data
       this.firestore
-      .collection("fragments") //RbvDedlGCF1pudELWXug
+      .collection(table) 
       .get()
-      .subscribe((ss) => {      
+      .subscribe((ss) => { // Subscribe to all documents     
         ss.docs.forEach((doc) => {
-          if(doc.id == session){
-            tempArray.push(doc.data());
-            console.log('temp', tempArray)
-            this.list1Array = tempArray[0].fragments; // No idea why it puts it in an object
-            this.list2Array = tempArray[0].fragments2; 
-            console.log('list1', this.list1Array)
+          if(doc.id == session){ // Only select our session document
+            tempArray.push(doc.data()); // Push that document into our array
+            //FIXME: This function needs to be much simpler.
+            this.list1Array = tempArray[0].fragments; // The first entry is the first column
+            this.list2Array = tempArray[0].fragments2; // Second entry second column
           }
         });
       });
-     });
+    });
   }
-
-  public CreateFirebaseSession(){
-    this.firestore.collection('fragments').add({
-      fragments: this.list3Array,
-      fragments2: [],
+  /**
+   * Creates a firebase session. In other words, creates a document in the
+   * OSCC Firebase. Using the table parameter, it writes two arrays to the
+   * document: one always empty, the other one not empty if a base edition is
+   * selected. Checks if everything went okay. Returns error if not. If succes,
+   * sets the current session code to the newly created session.
+   * @param table name of the Firebase table used.
+   */
+  public CreateFirebaseSession(table){
+    // Empty synced lists
+    this.list1Array = [];
+    this.list2Array = [];    
+    // Create a new document in the given table.
+    this.firestore.collection(table).add({
+      fragments: this.list3Array, // Either empty or filled with standard edition
+      fragments2: [], // Always empty
     })
     .then(res => {
-        console.log('res', res.id);
         // Set Session code to the newly created document
         this.sessionCode = res.id
+        // Unsubscribe from the previous watcher. InitiateFirestore creates a new watcher.
+        this.multiplayer.unsubscribe();
         // Retrieve Data and put it in the column
-        this.InitiateFirestore(this.sessionCode)
-        this.sessionKey = res.id
+        this.InitiateFirestore(this.sessionCode, this.tableName)
     })
     .catch(e => {
-        console.log(e);
+        console.log(e); //TODO: should be done using the snackbar
     })
   }
-
+  /**
+   * Simple function to restore a previously created session. It simply takes
+   * a session code, sets the class session code and runs the InitiateFirestore
+   * function again with this new session code.
+   * @param session session code to be retrieved
+   */
   public RestoreFirebaseSession(session){
+    // Empty synced lists
+    this.list1Array = [];
+    this.list2Array = [];
+    // Set the new session code
     this.sessionCode = session
+    // Unsubscribe from the previous watcher. InitiateFirestore creates a new watcher.
+    this.multiplayer.unsubscribe();    
     // Retrieve Data and put it in the column
-    this.InitiateFirestore(session)
+    this.InitiateFirestore(session, this.tableName)
   }
-
-  public DeleteFirebaseSession(session){
+  /**
+   * Simple function to delete the given session. Takes a session code and
+   * deletes the corresponding document on disk. On delete, all lists are emptied.
+   * @param session session to be deleted
+   */
+  public DeleteFirebaseSession(session, table){
+    // Empty synced lists
+    this.list1Array = [];
+    this.list2Array = [];
+    // Delete the given entry
     this.firestore
-    .collection("fragments")
+    .collection(table)
     .doc(session)
     .delete();
+    // Unsubscribe from the previous watcher.
+    this.multiplayer.unsubscribe();      
+    // Show Snackbar with information. FIXME: it is underneath the keyboard xD
+    this.OpenSnackbar('Please create a new session before doing anything.')
   }
-
-  public FirebaseTest(thing){
-    console.log(thing)
-    this.sessionKey = 'hello'
-    // console.log('items', this.items.content)
-  }
-
-  public CreateOwnFragment(line, header, array){
-    // Set a value if a field has been left empty.
-    if (line == null){
-      line = ' '
+  /**
+   * Function to create a custom fragment. Can also be used to create
+   * little headers by leaving body or header empty.
+   * @param body 
+   * @param header 
+   * @param array 
+   * @return array in the correct format to be processed
+   */
+  public CreateOwnFragment(body, header, array){
+    // Set a value if a field has been left empty. Otherwise Firebase will be mad.
+    if (body == null){
+      body = ' '
     }
     if (header == null){
       header == ' '
     }
-
+    // Create a array for each content line. Here it only allows one.
     let contentArray = []
-
+    // Push the array with one entry to a content array. This is only done like
+    // this to allow easy processing with the CreateFragments function in Utilities.
     contentArray.push({
       lineName: header,
-      lineContent: line,
-      lineComplete: line,
+      lineContent: body,
+      lineComplete: body, // This should have html formatting.
     })
     // Push the created data to the array and empty the used arrays.
     array.push({ fragmentName: header, content: contentArray})
-    
+    // Return this new array.
     return array
   }
-
-  public SyncWithFirebase(){
-    // Create temporary array    
-    let newArray = []
-
-    console.log('time to sync data to the database')
-
+  /**
+   * This function is called whenever movement is detected in the synced
+   * columns. This means the fragments are changed and have to be updated in
+   * Firebase. It works by simply reuploading the two arrays to firebase.
+   * A bit dirty, but it works well.
+   */
+  public SyncWithFirebase(session, table){
     // Push the data to the correct document
     this.firestore
-    .collection('fragments')
-    .doc('/' + this.sessionCode)
-    // .update({content: newArray})
-    .update({fragments: this.list1Array, fragments2: this.list2Array})
-
-    .then(() => {
-      console.log('done');
-    })
-    .catch(function(error) {
-     console.error('Error writing document: ', error);
-    });   
+      .collection(table)
+      .doc('/' + session) // Pick the correct document to update
+      // Upload the two arrays to their corresponding locations.
+      .update({fragments: this.list1Array, fragments2: this.list2Array})
+      // On succes, log. TODO: we could just leave this out.
+      .then(() => {
+        console.log('Sync complete');
+      }) // On error, log error. TODO: this should be in a snackbar
+      .catch(function(error) {
+        // console.error('Error writing document: ', error);
+        this.HandleErrorMessage(error)
+      });   
   }
-
   /**
-   * Function to allow dragging elements between multiple containers
-   * @param event 
+   * Function to allow dragging elements between multiple containers. Code is
+   * from Angular Material, CdkDrag.
+   * @param event the movement on HTML. Contains all data necessary for moving.
    */
   MultipleColumnsDrag(event: CdkDragDrop<string[]>) {   
-   
+    // This part handles movement in the same containter
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-      console.log(event.container.data, event.previousIndex, event.currentIndex, event.container.id)
       // If something happens with the sync columns, update the firebase
-      if(event.container.id == "cdk-drop-list-0" || event.container.id == "cdk-drop-list-1"
-          || event.previousContainer.id == "cdk-drop-list-0" || event.previousContainer.id == "cdk-drop-list-1"){
-        // No parameters: just sync the two first columns.
-        this.SyncWithFirebase();
+      if(event.container.id == "cdk-drop-list-0" || event.container.id == "cdk-drop-list-1"){        // No parameters: just sync the two first columns.
+        this.SyncWithFirebase(this.sessionCode, this.tableName);
       }
     } else {
       transferArrayItem(event.previousContainer.data,
@@ -503,46 +558,71 @@ public AddFragmentToArray(toAdd, array, fragment){
                         event.currentIndex);
       console.log('from', event.previousContainer.id)  
       console.log('to', event.container.id)  
-
-      // If something happens with the sync columns, update the firebase
+      // If something happens with the sync columns, update the firebase. This is either
+      // column 1 being to or from, or column 0 being to or from. Therefore 4 comparisons.
       if(event.container.id == "cdk-drop-list-0" || event.container.id == "cdk-drop-list-1"
           || event.previousContainer.id == "cdk-drop-list-0" || event.previousContainer.id == "cdk-drop-list-1"){
-        // No parameters: just sync the two first columns.
-        this.SyncWithFirebase();
+        // Sync the two first columns.
+        this.SyncWithFirebase(this.sessionCode, this.tableName);
       }
     }
   }
   
-  // PLAYGROUND IMPLEMENTATION
+  // PLAYGROUND IMPLEMENTATION. For now not used.
   // public OnDragEnded(event: CdkDragEnd): void {
   //   console.log(event.source.getFreeDragPosition()); // returns { x: 0, y: 0 }
   //   console.log(event.source.getRootElement());
   // }
 
-  public OnDragEnded(event) {
-    console.log('Moved in pixels', event.source.getFreeDragPosition()); // returns { x: 0, y: 0 }
-    let element = event.source.getRootElement();
-    let boundingClientRect = element.getBoundingClientRect();
-    let parentPosition = this.GetPosition(element);
-    console.log('Absolute Position', 'x: ' + (boundingClientRect.x - parentPosition.left), 'y: ' + (boundingClientRect.y - parentPosition.top));        
-    console.log(event.distance)
+  // public OnDragEnded(event) {
+  //   console.log('Moved in pixels', event.source.getFreeDragPosition()); // returns { x: 0, y: 0 }
+  //   let element = event.source.getRootElement();
+  //   let boundingClientRect = element.getBoundingClientRect();
+  //   let parentPosition = this.GetPosition(element);
+  //   console.log('Absolute Position', 'x: ' + (boundingClientRect.x - parentPosition.left), 'y: ' + (boundingClientRect.y - parentPosition.top));        
+  //   console.log(event.distance)
 
-    console.log(event)
-  }
+  //   console.log(event)
+  // }
   
-  public GetPosition(el) {
-    let x = 0;
-    let y = 0;
-    while(el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
-      x += el.offsetLeft - el.scrollLeft;
-      y += el.offsetTop - el.scrollTop;
-      el = el.offsetParent;
-    }
-    return { top: y, left: x };
+  // public GetPosition(el) {
+  //   let x = 0;
+  //   let y = 0;
+  //   while(el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
+  //     x += el.offsetLeft - el.scrollLeft;
+  //     y += el.offsetTop - el.scrollTop;
+  //     el = el.offsetParent;
+  //   }
+  //   return { top: y, left: x };
+  // }
+
+  /**
+   * Opens Material popup window with the given message
+   * FIXME: Should be in Utilities or something, as duplicate in Dashboard.
+   * @param message information that is showed in the popup
+   */
+  public OpenSnackbar(message){
+    this._snackBar.open(message, 'Close', {
+      duration: 5000,
+    });
   }
-
-
-
+  /**
+   * Function to handle the error err. Calls Snackbar to show it on screen
+   * @param err the generated error
+   */
+  HandleErrorMessage(err) {
+    console.log(err)
+    let output = ''
+    //TODO: needs to be more sophisticated
+    if(err.statusText == 'OK'){
+      output = 'Operation succesful.' 
+    }
+    else{
+      output = 'Something went wrong.'
+    }
+    output = String(err.status) + ': ' + output + ' ' + err.statusText;
+    this.OpenSnackbar(output); //FIXME: Spaghetti.
+  } 
 
 
 }
