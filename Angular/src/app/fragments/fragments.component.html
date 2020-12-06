@@ -527,7 +527,7 @@
 
             <!-- Buttons for server communications -->           
             <!-- <button mat-button class="button" (click)="FirebaseTest(this.editorListData)">Test</button> -->
-            <button mat-button class="button" (click)="this.list4Array = []">Empty My Additions</button>
+            <!-- <button mat-button class="button" (click)="this.list4Array = []">Empty My Additions</button> -->
             <mat-checkbox [(ngModel)]="showFragmentname">Headers</mat-checkbox>
 
         </div>
@@ -543,7 +543,7 @@
                         cdkDropList
                         #list1="cdkDropList"
                         [cdkDropListData]="this.list1Array"
-                        [cdkDropListConnectedTo]="[list2, list3, list4]"
+                        [cdkDropListConnectedTo]="[list2, list3, list4, list5]"
                         class="multiplayer-list"
                         (cdkDropListDropped)="MultipleColumnsDrag($event)">
                         <div class="fragment-box" *ngFor="let item of this.list1Array" cdkDrag>                          
@@ -570,7 +570,7 @@
                         cdkDropList
                         #list2="cdkDropList"
                         [cdkDropListData]="this.list2Array"
-                        [cdkDropListConnectedTo]="[list1, list3, list4]"
+                        [cdkDropListConnectedTo]="[list1, list3, list4, list5]"
                         class="multiplayer-list"
                         (cdkDropListDropped)="MultipleColumnsDrag($event)">
                         <div class="fragment-box" *ngFor="let item of this.list2Array" cdkDrag>                          
@@ -593,12 +593,25 @@
             <div class="col-md-4">
                 <div class="row">
                     <div class="multiplayer-container">
-                        <h3>My Additions</h3>
+                        <h3>Recycle Bin</h3>
+                        <div
+                            cdkDropList
+                            #list5="cdkDropList"
+                            [cdkDropListData]="this.list5Array"
+                            [cdkDropListConnectedTo]="[list1, list2, list3, list4]"
+                            class="multiplayer-list"
+                            (cdkDropListDropped)="MultipleColumnsDrag($event)">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="multiplayer-container">
+                        <h3>My Notebook</h3>
                         <div
                             cdkDropList
                             #list4="cdkDropList"
                             [cdkDropListData]="this.list4Array"
-                            [cdkDropListConnectedTo]="[list1, list2, list3]"
+                            [cdkDropListConnectedTo]="[list1, list2, list3, list5]"
                             class="multiplayer-list"
                             (cdkDropListDropped)="MultipleColumnsDrag($event)">
                             <div class="fragment-box" *ngFor="let item of this.list4Array" cdkDrag>                          
@@ -625,7 +638,7 @@
                             cdkDropList
                             #list3="cdkDropList"
                             [cdkDropListData]="this.list3Array"
-                            [cdkDropListConnectedTo]="[list1, list2, list4]"
+                            [cdkDropListConnectedTo]="[list1, list2, list4, list5]"
                             class="multiplayer-list"
                             (cdkDropListDropped)="MultipleColumnsDrag($event)">
                             <div class="fragment-box" *ngFor="let item of this.list3Array" cdkDrag>                          

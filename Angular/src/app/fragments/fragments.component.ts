@@ -388,6 +388,7 @@ public AddFragmentToArray(toAdd, array, fragment){
   list2Array = [];  // Second Synced Column
   list3Array = [];  // Standard Edition Column
   list4Array = [];  // My Additions Column
+  list5Array = [];  // Recycle Bin Column
   // Table name in firestore
   tableName : string = 'fragments';
   // Variable that watches for change in the database. Can be subscribed to
@@ -529,6 +530,13 @@ public AddFragmentToArray(toAdd, array, fragment){
     return array
   }
   /**
+   * Simple function to empty the recycle bin.
+   */
+  public EmptyRecylceBin(){
+    // Empty the Recyle Bin List
+    this.list5Array = [];
+  }
+  /**
    * This function is called whenever movement is detected in the synced
    * columns. This means the fragments are changed and have to be updated in
    * Firebase. It works by simply reuploading the two arrays to firebase.
@@ -570,6 +578,11 @@ public AddFragmentToArray(toAdd, array, fragment){
                         event.currentIndex);
       console.log('from', event.previousContainer.id)  
       console.log('to', event.container.id)  
+      // If something is moved to the Recycle Bin, delete everything in it.
+      if(event.container.id == "cdk-drop-list-2"){
+        this.EmptyRecylceBin();
+      }
+      
       // If something happens with the sync columns, update the firebase. This is either
       // column 1 being to or from, or column 0 being to or from. Therefore 4 comparisons.
       if(event.container.id == "cdk-drop-list-0" || event.container.id == "cdk-drop-list-1"
