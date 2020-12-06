@@ -40,11 +40,11 @@ export class FragmentsComponent implements OnInit {
   bibWebsites: JSON;
   bibInCollection : JSON; //TODO: this one should be added.
   // Toggle switches
-  columnOneToggle: boolean = true;
+  columnOneToggle: boolean = false;
   columnTwoToggle: boolean = false; // Boolean to toggle between 2 and 3 column mode.
-  columnThreeToggle: boolean = true;
+  columnThreeToggle: boolean = false;
   Playground: boolean = false;
-  Multiplayer: boolean = false;
+  Multiplayer: boolean = true;
   
   spinner: boolean = true; // Boolean to toggle the spinner.
   noCommentary: boolean = false; // Shows banner if no commentary is available.
@@ -389,6 +389,7 @@ public AddFragmentToArray(toAdd, array, fragment){
   list3Array = [];  // Standard Edition Column
   list4Array = [];  // My Additions Column
   list5Array = [];  // Recycle Bin Column
+  list6Array = [];
   // Table name in firestore
   tableName : string = 'fragments';
   // Variable that watches for change in the database. Can be subscribed to
@@ -399,6 +400,11 @@ public AddFragmentToArray(toAdd, array, fragment){
   sessionCode : string = 'uOm36WurKEgypunFkvgW'; // Default document.
   // Boolean to allow showing of fragment data
   showFragmentname : boolean = true;
+  showNotebook : boolean = true;
+  showRecycleBin : boolean = true;
+  showSuggestions : boolean = true;
+
+  suggestionSpinner : boolean = false;
   /**
    * Little test function to allow printing or doing things with buttons
    * @param thing template variable, could be used for anything.
@@ -558,12 +564,67 @@ public AddFragmentToArray(toAdd, array, fragment){
         this.HandleErrorMessage(error)
       });   
   }
+
+  public async CreateSuggestionsMovedFragment(fragment){
+    this.spinner = true;
+
+    console.log('communicating with server')
+    let words = '';
+    let result = [];
+    let content = [];
+    console.log(fragment);
+    
+    // Retrieve all the words in a fragment and put them into one single string
+    for(const line in fragment.content){
+      console.log('line', fragment.content[line].lineContent)
+      words += fragment.content[line].lineContent + ' '
+    } 
+
+    console.log(words)
+    // Send the words to the server for analysis. It will return the stemms of
+    // the nouns and verbs in the sent string.
+    let temp = await this.api.GetInterestingWords(words);
+    // For every returned stem, check if it occurs in the fragments list which is
+    // currently loaded in memory. If it occurs, create a new fragment and put the
+    // subsequent fragment array in list6Array, which will occur in the suggestions list.
+    for(const item in temp){
+      // Check the fragment list
+      for(const object in this.F_Fragments){
+        // If a match is found, create a fragment
+        if(this.F_Fragments[object].lineContent.indexOf(temp[item]) != -1){
+          // Retrieve the editor name using its key.
+          let editorName = this.utility.FilterObjOnKey(this.editorsJSON, 'id', this.F_Fragments[object].editor)
+
+          console.log(this.F_Fragments[object].fragmentName, this.F_Fragments[object].editor, this.F_Fragments[object].book)
+          // Push the content to the content array
+          content.push({lineComplete: this.F_Fragments[object].lineContent})
+          // Push the rest of the necessary data to the array
+          result.push({fragmentName: this.F_Fragments[object].fragmentName, content: content,
+            author: this.currentAuthorName, text: this.currentBookName, editor: editorName[0].name, note: false, reason: temp[item]})
+          content = [];
+        }
+      }
+    }
+    // This should be done using a return, but as the function is async, it is solved temporary like this.
+    this.list6Array = result;
+
+    this.spinner = false;
+
+    console.log(result)
+
+  }
+
   /**
    * Function to allow dragging elements between multiple containers. Code is
    * from Angular Material, CdkDrag.
    * @param event the movement on HTML. Contains all data necessary for moving.
    */
   MultipleColumnsDrag(event: CdkDragDrop<string[]>) {   
+    console.log(event.previousContainer.id)
+    // Retrieve Suggestions for the fragment that was just moved inside the suggestion box
+    if(event.container.id == "cdk-drop-list-2"){
+      this.CreateSuggestionsMovedFragment(event.previousContainer.data[event.previousIndex])   
+    } 
     // This part handles movement in the same containter
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
@@ -579,7 +640,7 @@ public AddFragmentToArray(toAdd, array, fragment){
       console.log('from', event.previousContainer.id)  
       console.log('to', event.container.id)  
       // If something is moved to the Recycle Bin, delete everything in it.
-      if(event.container.id == "cdk-drop-list-2"){
+      if(event.container.id == "cdk-drop-list-3"){
         this.EmptyRecylceBin();
       }
       

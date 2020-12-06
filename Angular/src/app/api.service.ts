@@ -363,6 +363,23 @@ export class ApiService {
     return this.http.post<any>(this.ApiUrl + 'fragmentreferencer/setpublishflag', new Fragment(0, bookID, editorID, fragmentID, '', '', flag, ''), { observe: 'response' });
   }
 
+  // CREA 4
+  FlaskURL: String = 'http://localhost:5002/'; // For deployment (http! not https)                                 
+
+  // GetInterestingWords(words: string): Observable<any> {
+  //   return this.http.post<any>(this.FlaskURL + 'GetInterestingWords', words);
+  // }
+
+  public async GetInterestingWords(words: String){
+    const data = await this.http.get(
+      this.FlaskURL + 'GetInterestingWords',{
+        params: {
+          words: words.toString(),
+        }
+      })
+      .toPromise();
+      return data;  
+  }
 
 }
 
