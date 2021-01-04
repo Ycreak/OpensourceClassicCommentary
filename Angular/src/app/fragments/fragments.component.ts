@@ -43,6 +43,7 @@ export class FragmentsComponent implements OnInit {
   columnOneToggle: boolean = true;
   columnTwoToggle: boolean = false; // Boolean to toggle between 2 and 3 column mode.
   columnThreeToggle: boolean = true;
+  fourColumnMode: boolean = false;
   Playground: boolean = false;
   Multiplayer: boolean = false;
   
@@ -77,6 +78,10 @@ export class FragmentsComponent implements OnInit {
   // This array contains all the information from a specific book. Functions can use this data.
   selectedEditorArray = [];
   mainEditorArray = [];
+  editor1 = [];
+  editor2 = [];
+  editor3 = [];
+  editor4 = [];
   // Work in progress
   playgroundArray = [];
   playgroundArray2 = [];
@@ -348,9 +353,9 @@ public AddFragmentToArray(toAdd, array, fragment){
     // HTML RELATED FUNCTIONS //
    ////////////////////////////
   // Allows a fragment to be moved and dropped to create a custom ordering
-  moveAndDrop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.selectedEditorArray, event.previousIndex, event.currentIndex);
-    console.log(this.selectedEditorArray)
+  moveAndDrop(event: CdkDragDrop<string[]>, array) {
+    moveItemInArray(array, event.previousIndex, event.currentIndex);
+    // console.log(this.selectedEditorArray)
   }
   // Opens dialog for the bibliography
   public OpenBibliography() {

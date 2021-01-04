@@ -14,11 +14,13 @@
     <button mat-button class="btn" (click)="OpenBookSelect()">CHANGE TEXT</button>
     <button mat-button class="btn" (click)="OpenBibliography()">BIBLIOGRAPHY</button>
     <button mat-button class="btn" routerLink="/dashboard" *ngIf="this.authService.isLoggedIn">DASHBOARD</button>
-    <mat-checkbox class="btn" [(ngModel)]="columnOneToggle">COL1</mat-checkbox>
-    <mat-checkbox class="btn" [(ngModel)]="columnTwoToggle">COL2</mat-checkbox>
-    <mat-checkbox class="btn" [(ngModel)]="columnThreeToggle">COL3</mat-checkbox>
+    <mat-checkbox class="btn" [(ngModel)]="columnOneToggle">COM</mat-checkbox>
+    <mat-checkbox class="btn" [(ngModel)]="columnTwoToggle">SEC</mat-checkbox>
+    <!-- <mat-checkbox class="btn" [(ngModel)]="columnThreeToggle">COL3</mat-checkbox> -->
     <mat-checkbox class="btn" [(ngModel)]="Playground">PLY</mat-checkbox>
     <mat-checkbox class="btn" [(ngModel)]="Multiplayer">MUL</mat-checkbox>
+    <mat-checkbox class="btn" [(ngModel)]="fourColumnMode">4COL</mat-checkbox>
+
     <button mat-button class="btn" [matMenuTriggerFor]="menu">MENU</button>
 </mat-toolbar>
 <!-- NAVBAR MENU -->
@@ -31,12 +33,12 @@
     <button (click)="OpenAbout()" mat-menu-item>About</button>
     <button (click)="ngOnInit()" *ngIf="this.authService.isLoggedIn">Reload Data</button>
 
-    <button mat-menu-item>V20.49.5</button>
+    <button mat-menu-item>V21.1.1</button>
 </mat-menu>
 
 <!-- Author and Book select dialog -->
 <ng-template #CallBookSelect>   
-    <h3>Select an author and a book to display.</h3>
+    <h3>Select an author and a text to display.</h3>
     <hr>
     <mat-form-field>
         <mat-label>Select author</mat-label>
@@ -50,7 +52,7 @@
     </mat-form-field> 
     
     <mat-form-field>
-        <mat-label>Select book</mat-label>
+        <mat-label>Select text</mat-label>
         <mat-select>
         <mat-option *ngFor="let book of this.booksJSON" [value]="book" 
             (click)="RequestEditors(book.id)"
@@ -110,10 +112,10 @@
                 <h4>{{this.currentAuthorName}}: {{this.currentBookName}}.</h4>
                 </div>  
                 <div class="col-6">
-                <mat-form-field>
+                <mat-form-field class="input-form">
                     <mat-label>Edition of Reference</mat-label> <!-- Edition of reference-->
                     <mat-select>
-                    <mat-option *ngFor="let mainEditor of this.mainEditorsJSON" [value]="mainEditor.Name"
+                    <mat-option *ngFor="let mainEditor of this.mainEditorsJSON" [value]="mainEditor.id"
                     (click)="this.mainEditorArray = CreateEditorArray(mainEditor, this.F_Fragments)"
                     (click)="this.SetCurrentEditorData(mainEditor)">
                         {{ mainEditor.name }}                     
@@ -128,7 +130,7 @@
             <div class="fragment-box" *ngFor="let arrayItem of this.mainEditorArray" 
             (click)="this.Referencer = this.RequestReferencerID(arrayItem.fragmentName, this.currentEditor, this.currentBook)">
             <div>
-                <b>Fragment {{arrayItem.fragmentName}} </b> &nbsp; <i>{{arrayItem.status}}</i>
+                <b>Fragment {{arrayItem.fragmentName}} </b> &nbsp; <sup>{{arrayItem.author}}, {{arrayItem.text}}, {{arrayItem.editor}}</sup> &nbsp; <i>{{arrayItem.status}}</i>
             </div>
             <div *ngFor="let arrayItem2 of arrayItem.content">           
                 <div [innerHTML]="arrayItem2.lineComplete"></div>             
@@ -182,12 +184,12 @@
         </div>
 
         <!-- For loop for moveable fragments. Should be clickable. -->
-        <div cdkDropList class="fragment-list" (cdkDropListDropped)="moveAndDrop($event)">
+        <div cdkDropList class="fragment-list" (cdkDropListDropped)="moveAndDrop($event, this.selectedEditorArray)">
             <div class="fragment-box" *ngFor="let arrayItem of this.selectedEditorArray" cdkDrag>
             <div> 
                 <!-- TODO: Show editor name behind fragment. Also, show its relation to the TRF. When clicked,
                 load the commentaries for this fragment and that of the corresponding TRF fragment. -->
-                <b>Frg {{arrayItem.fragmentName}}.</b> &nbsp; <i>{{arrayItem.status}}</i>.
+                <b>Frg {{arrayItem.fragmentName}}</b> &nbsp; <sup>{{arrayItem.author}}, {{arrayItem.text}}, {{arrayItem.editor}}</sup> &nbsp; <i>{{arrayItem.status}}</i>
             </div>
             <div *ngFor="let arrayItem2 of arrayItem.content">           
                 <div [innerHTML]="arrayItem2.lineComplete"></div> 
@@ -207,7 +209,7 @@
                                                                   __/ |                                      
                                                                  |___/                                       
         -->
-        <div *ngIf="columnThreeToggle" class="col-sm overflowColumn">
+        <div *ngIf="columnOneToggle" class="col-sm overflowColumn">
             <!-- Show here the commentary that is available for the COL2 clicked fragment -->
             <!-- <h4>Ribbeck 1 Commentary</h4> -->
             <!-- <div *ngFor="let item of this.F_Translation">
@@ -440,6 +442,123 @@
             </div>
         </div>
     </div>
+
+    <!-- Four Column Mode. TODO: This has to be done with an Angular template -->
+    <div *ngIf="fourColumnMode" class="col-sm overflowColumn">
+        <div class="row">
+            <!-- Column 1 -->
+            <div class="col-md-3">
+                <mat-form-field class="input-form">
+                    <mat-label>Editor 1</mat-label>
+                    <mat-select>
+                    <mat-option *ngFor="let selectedEditor of this.editorsJSON" [value]="selectedEditor.id"
+                    (click)="this.editor1 = CreateEditorArray(selectedEditor, this.F_Fragments)">
+                        {{ selectedEditor.name }} 
+                    </mat-option>
+                    </mat-select>
+                    <mat-hint>Select the first editor</mat-hint>
+                </mat-form-field>
+                <!-- For loop for moveable fragments. Should be clickable. -->
+                <div cdkDropList class="fragment-list" (cdkDropListDropped)="moveAndDrop($event, this.editor1)">
+                    <div class="fragment-box" *ngFor="let arrayItem of this.editor1" cdkDrag>
+                    <div> 
+                        <!-- TODO: Show editor name behind fragment. Also, show its relation to the TRF. When clicked,
+                        load the commentaries for this fragment and that of the corresponding TRF fragment. -->
+                        <b>Frg {{arrayItem.fragmentName}}</b> &nbsp; <sup>{{arrayItem.author}}, {{arrayItem.text}}, {{arrayItem.editor}}</sup> &nbsp; <i>{{arrayItem.status}}</i>
+                    </div>
+                    <div *ngFor="let arrayItem2 of arrayItem.content">           
+                        <div [innerHTML]="arrayItem2.lineComplete"></div> 
+                    </div>  
+                    </div>
+                </div>
+            </div>
+            <!-- Column 2 -->
+            <div class="col-md-3">
+                <mat-form-field class="input-form">
+                    <mat-label>Editor 2</mat-label>
+                    <mat-select>
+                    <mat-option *ngFor="let selectedEditor of this.editorsJSON" [value]="selectedEditor.id"
+                    (click)="this.editor2 = CreateEditorArray(selectedEditor, this.F_Fragments)">
+                        {{ selectedEditor.name }} 
+                    </mat-option>
+                    </mat-select>
+                    <mat-hint>Select the second editor</mat-hint>
+                </mat-form-field>
+                <!-- For loop for moveable fragments. Should be clickable. -->
+                <div cdkDropList class="fragment-list" (cdkDropListDropped)="moveAndDrop($event, this.editor2)">
+                    <div class="fragment-box" *ngFor="let arrayItem of this.editor2" cdkDrag>
+                    <div> 
+                        <!-- TODO: Show editor name behind fragment. Also, show its relation to the TRF. When clicked,
+                        load the commentaries for this fragment and that of the corresponding TRF fragment. -->
+                        <b>Frg {{arrayItem.fragmentName}}</b> &nbsp; <sup>{{arrayItem.author}}, {{arrayItem.text}}, {{arrayItem.editor}}</sup> &nbsp; <i>{{arrayItem.status}}</i>
+                    </div>
+                    <div *ngFor="let arrayItem2 of arrayItem.content">           
+                        <div [innerHTML]="arrayItem2.lineComplete"></div> 
+                    </div>  
+                    </div>
+                </div>
+            </div>
+            <!-- Column 3 -->
+            <div class="col-md-3">
+                <mat-form-field class="input-form">
+                    <mat-label>Editor 3</mat-label>
+                    <mat-select>
+                    <mat-option *ngFor="let selectedEditor of this.editorsJSON" [value]="selectedEditor.id"
+                    (click)="this.editor3 = CreateEditorArray(selectedEditor, this.F_Fragments)">
+                        {{ selectedEditor.name }} 
+                    </mat-option>
+                    </mat-select>
+                    <mat-hint>Select the third editor</mat-hint>
+                </mat-form-field>
+                <!-- For loop for moveable fragments. Should be clickable. -->
+                <div cdkDropList class="fragment-list" (cdkDropListDropped)="moveAndDrop($event, this.editor3)">
+                    <div class="fragment-box" *ngFor="let arrayItem of this.editor3" cdkDrag>
+                    <div> 
+                        <!-- TODO: Show editor name behind fragment. Also, show its relation to the TRF. When clicked,
+                        load the commentaries for this fragment and that of the corresponding TRF fragment. -->
+                        <b>Frg {{arrayItem.fragmentName}}</b> &nbsp; <sup>{{arrayItem.author}}, {{arrayItem.text}}, {{arrayItem.editor}}</sup> &nbsp; <i>{{arrayItem.status}}</i>
+                    </div>
+                    <div *ngFor="let arrayItem2 of arrayItem.content">           
+                        <div [innerHTML]="arrayItem2.lineComplete"></div> 
+                    </div>  
+                    </div>
+                </div>
+            </div>
+            <!-- Column 4 -->            
+            <div class="col-md-3">
+                <mat-form-field class="input-form">
+                    <mat-label>Editor 4</mat-label>
+                    <mat-select>
+                    <mat-option *ngFor="let selectedEditor of this.editorsJSON" [value]="selectedEditor.id"
+                    (click)="this.editor4 = CreateEditorArray(selectedEditor, this.F_Fragments)">
+                        {{ selectedEditor.name }} 
+                    </mat-option>
+                    </mat-select>
+                    <mat-hint>Select the fourth editor</mat-hint>
+                </mat-form-field>
+                <!-- For loop for moveable fragments. Should be clickable. -->
+                <div cdkDropList class="fragment-list" (cdkDropListDropped)="moveAndDrop($event, this.editor4)">
+                    <div class="fragment-box" *ngFor="let arrayItem of this.editor4" cdkDrag>
+                    <div> 
+                        <!-- TODO: Show editor name behind fragment. Also, show its relation to the TRF. When clicked,
+                        load the commentaries for this fragment and that of the corresponding TRF fragment. -->
+                        <b>Frg {{arrayItem.fragmentName}}</b> &nbsp; <sup>{{arrayItem.author}}, {{arrayItem.text}}, {{arrayItem.editor}}</sup> &nbsp; <i>{{arrayItem.status}}</i>
+                    </div>
+                    <div *ngFor="let arrayItem2 of arrayItem.content">           
+                        <div [innerHTML]="arrayItem2.lineComplete"></div> 
+                    </div>  
+                    </div>
+                </div>
+            </div>            
+
+
+        </div>
+    </div>
+   
+   
+   
+   
+   
     <!--
      __  __       _ _   _       _                       
     |  \/  |     | | | (_)     | |                      
@@ -465,7 +584,7 @@
                 </mat-form-field> 
                 <!-- Field to select the corresponding book -->
                 <mat-form-field>
-                    <mat-label>Select book</mat-label>
+                    <mat-label>Select text</mat-label>
                     <mat-select>
                     <mat-option *ngFor="let book of this.booksJSON" [value]="book" 
                         (click)="RequestEditors(book.id)"
@@ -529,9 +648,9 @@
             <!-- <button mat-button class="button" (click)="FirebaseTest(this.editorListData)">Test</button> -->
             <!-- <button mat-button class="button" (click)="this.list4Array = []">Empty My Additions</button> -->
             <mat-checkbox [(ngModel)]="showFragmentname">Headers</mat-checkbox>
-            <mat-checkbox [(ngModel)]="showNotebook">Notebook</mat-checkbox>
-            <mat-checkbox [(ngModel)]="showRecycleBin">Recycle Bin</mat-checkbox>
-            <mat-checkbox [(ngModel)]="showSuggestions">Suggestions</mat-checkbox>
+            <!-- <mat-checkbox [(ngModel)]="showNotebook">Notebook</mat-checkbox> -->
+            <!-- <mat-checkbox [(ngModel)]="showRecycleBin">Recycle Bin</mat-checkbox> -->
+            <!-- <mat-checkbox [(ngModel)]="showSuggestions">Suggestions</mat-checkbox> -->
 
 
         </div>
@@ -540,7 +659,7 @@
         <!-- Row to show the commentaries. List1 and List2 are synced with the server.
         List3 shows the selected existing edition, List4 one's own comments. -->
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <div class="multiplayer-container">
                     <h3>Synced Column 1</h3>
                     <div
@@ -567,7 +686,7 @@
                 </div>
             </div>
            <!-- The second list to be synced -->
-            <div class="col-md-3">          
+            <div class="col-md-4">          
                 <div class="multiplayer-container">
                     <h3> Synced Column 2</h3>
                     <div
@@ -594,7 +713,7 @@
                 </div> 
             </div> 
            <!-- The second list to be synced -->
-            <div class="col-md-3">          
+            <!-- <div class="col-md-3">          
                 <div class="multiplayer-container">
                     <h3>Suggestion Column</h3>
                     <div
@@ -605,23 +724,22 @@
                         class="multiplayer-list"
                         (cdkDropListDropped)="MultipleColumnsDrag($event)">
                         <div class="fragment-box" *ngFor="let item of this.list6Array" cdkDrag>                          
-                            <div class="divNote" *ngIf="item.note"> <!--If it is a note, don't show frg-->
+                            <div class="divNote" *ngIf="item.note"> 
                                 <b>{{item.fragmentName}}</b>
                             </div>
                             <div *ngIf="item.note != true && showFragmentname">
                                 <b>Frg {{item.fragmentName}}</b> &nbsp; <b>{{item.reason}}</b> &nbsp; <sup>{{item.author}}, {{item.text}}, {{item.editor}}</sup> &nbsp; <i>{{item.status}}</i>
                             </div>
                             <div *ngFor="let item2 of item.content"> 
-                                <!-- Keep in mind whether a note is printed or not. -->
                                 <div class="divNote" *ngIf="item.note" [innerHTML]="item2.lineComplete"></div> 
                                 <div *ngIf="item.note != true" [innerHTML]="item2.lineComplete"></div> 
                             </div>  
                         </div>   
                     </div>
                 </div> 
-            </div> 
+            </div>  -->
             <!-- The third column contains two rows: one for own fragments, one for existing editions -->
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <div class="row">
                     <div class="multiplayer-container">
                         <h3>Recycle Bin</h3>
