@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 
 import {LoginComponent} from '../login/login.component'
 import {TextComponent} from '../text/text.component'
@@ -26,7 +26,8 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'app-fragments',
   templateUrl: './fragments.component.html',
-  styleUrls: ['./fragments.component.scss']
+  styleUrls: ['./fragments.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class FragmentsComponent implements OnInit {
 
@@ -96,6 +97,8 @@ export class FragmentsComponent implements OnInit {
   selectedLine : number;
   fragmentNumberList;
   
+  test = ['hello <span class=span1></span> mama', 'there <span style="color:blue;font-weight:bold">blue</span> daddy']
+
   constructor(
     private api: ApiService,
     private utility: UtilityService,

@@ -126,6 +126,17 @@
             </div>
         </div>
         <!-- Fragments Loop -->
+            <div *ngFor="let arrayItem of this.test" >
+                <div>
+                    <div [innerHTML]="arrayItem"></div>             
+                           
+                </div>
+            <!-- <div *ngFor="let arrayItem2 of arrayItem.content">           
+                <div [innerHTML]="arrayItem2.lineComplete"></div>             
+            </div>      -->
+            </div> 
+            <!-- <div>hello <span class="span1"></span> my momma!</div> -->
+
         <div class="fragment-list">
             <div class="fragment-box" *ngFor="let arrayItem of this.mainEditorArray" 
             (click)="this.Referencer = this.RequestReferencerID(arrayItem.fragmentName, this.currentEditor, this.currentBook)">
