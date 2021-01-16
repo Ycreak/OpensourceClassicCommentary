@@ -37,6 +37,8 @@ import { FragmentsComponent } from './fragments/fragments.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './auth/auth.guard';
+import { SafeHtmlPipe } from './pipes/safeHtml.pipe';
+// import { SafeHtmlPipe } from './fragments/fragments.component';
 
 import { ConfirmationDialog } from './dashboard/dashboard.component';
 import { ConfirmationDialog2 } from './fragments/fragments.component';
@@ -114,6 +116,7 @@ const appRoutes: Routes = [
   declarations: [
     AppComponent,
     FragmentsComponent,
+    SafeHtmlPipe,
     DashboardComponent,
     ConfirmationDialog,
     ConfirmationDialog2, //FIXME: Help me Philippe.
@@ -171,3 +174,4 @@ const appRoutes: Routes = [
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+export class PipesModule { }

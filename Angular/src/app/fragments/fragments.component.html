@@ -126,17 +126,6 @@
             </div>
         </div>
         <!-- Fragments Loop -->
-            <div *ngFor="let arrayItem of this.test" >
-                <div>
-                    <div [innerHTML]="arrayItem"></div>             
-                           
-                </div>
-            <!-- <div *ngFor="let arrayItem2 of arrayItem.content">           
-                <div [innerHTML]="arrayItem2.lineComplete"></div>             
-            </div>      -->
-            </div> 
-            <!-- <div>hello <span class="span1"></span> my momma!</div> -->
-
         <div class="fragment-list">
             <div class="fragment-box" *ngFor="let arrayItem of this.mainEditorArray" 
             (click)="this.Referencer = this.RequestReferencerID(arrayItem.fragmentName, this.currentEditor, this.currentBook)">
@@ -144,7 +133,7 @@
                 <b>Fragment {{arrayItem.fragmentName}} </b> &nbsp; <sup>{{arrayItem.author}}, {{arrayItem.text}}, {{arrayItem.editor}}</sup> &nbsp; <i>{{arrayItem.status}}</i>
             </div>
             <div *ngFor="let arrayItem2 of arrayItem.content">           
-                <div [innerHTML]="arrayItem2.lineComplete"></div>             
+                <div [innerHTML]="arrayItem2.lineComplete | safeHtml"></div>             
             </div>     
             </div> 
         </div> 
@@ -196,7 +185,8 @@
 
         <!-- For loop for moveable fragments. Should be clickable. -->
         <div cdkDropList class="fragment-list" (cdkDropListDropped)="moveAndDrop($event, this.selectedEditorArray)">
-            <div class="fragment-box" *ngFor="let arrayItem of this.selectedEditorArray" cdkDrag>
+            <div class="fragment-box" *ngFor="let arrayItem of this.selectedEditorArray" 
+            (click)="this.Test('hi')" cdkDrag>
             <div> 
                 <!-- TODO: Show editor name behind fragment. Also, show its relation to the TRF. When clicked,
                 load the commentaries for this fragment and that of the corresponding TRF fragment. -->

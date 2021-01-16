@@ -23,6 +23,7 @@ import { TemplateRef, ViewChild } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 
+
 @Component({
   selector: 'app-fragments',
   templateUrl: './fragments.component.html',
@@ -97,8 +98,6 @@ export class FragmentsComponent implements OnInit {
   selectedLine : number;
   fragmentNumberList;
   
-  test = ['hello <span class=span1></span> mama', 'there <span style="color:blue;font-weight:bold">blue</span> daddy']
-
   constructor(
     private api: ApiService,
     private utility: UtilityService,
@@ -178,6 +177,9 @@ export class FragmentsComponent implements OnInit {
   public Test(thing){
     // console.log(this.authorsJSON)
     console.log('test', thing)
+
+
+
   }
 
   public PushToArray(note, array){
@@ -387,9 +389,6 @@ public AddFragmentToArray(toAdd, array, fragment){
 //  |_|  |_|\__,_|_|\__|_| .__/|_|\__,_|\__, |\___|_|   
 //                       | |             __/ |          
 //                       |_|            |___/           
-  // BUG REPORTS
-  // When changing sessions, the old session lingers somewhere. Moving
-  // fragments around will show the old session flashing in the synced column.
 
   // Array initialisations for the four used columns.
   list1Array = [];  // First Synced Column

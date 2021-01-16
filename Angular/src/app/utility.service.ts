@@ -101,6 +101,24 @@ export class UtilityService {
     });
   }
 
+  /**
+   * Takes a string and looks for whitespace decoding. Converts it to html spans
+   * @param string 
+   */
+  public ConvertWhiteSpace(string: string){
+    // Find fish hooks with number in between.
+    const matches = string.match(/<(\d+)>/);
+    // If found, replace it with the correct whitespace number
+    if (matches) {
+        console.log(matches);
+        // Create a span with the number of indents we want. Character level.
+        // matches[0] contains including fish hooks, matches[1] only number
+        let replacement = '<span style="padding-left:' + matches[1] + 'ch;"></span>'
+        string = string.replace(matches[0], replacement);       
+    }  
+    return string
+  }
+
   // This function merges the multiple lines in a single fragment.
   // The structure looks as follows: Fragment 2, [[1, "hello"],[2,"hi"]]
   public MergeLinesIntoFragment(givenArray){
@@ -114,6 +132,8 @@ export class UtilityService {
       let lineName = givenArray[element].lineName
       let status = givenArray[element].status 
       let buildString = '<p>' + lineName + ': ' + lineContent + '</p>';
+      // Turn tabs into HTML tabs
+      buildString = this.ConvertWhiteSpace(buildString);
       // Find the element.fragmentName in the array and check whether it exists.
       let currentFragment = array.find(x => x.fragmentName === fragmentName)
       if(currentFragment){ // The current fragmentName is already in the array.
