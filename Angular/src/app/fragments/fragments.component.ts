@@ -14,6 +14,7 @@ import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog
 
 import {Inject} from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import { Overlay } from '@angular/cdk/overlay';
 
 // To allow dialog windows within the current window
 import { TemplateRef, ViewChild } from '@angular/core';
@@ -105,6 +106,7 @@ export class FragmentsComponent implements OnInit {
     private firestore: AngularFirestore,
     private dialog: MatDialog, 
     private _snackBar: MatSnackBar,
+    private overlay: Overlay,
     ) { }
 
   ngOnInit(): void {
@@ -373,8 +375,14 @@ public AddFragmentToArray(toAdd, array, fragment){
     let dialogRef = this.dialog.open(this.CallBookSelect); 
   }
   // Opens dialog for the about information
-  public OpenAbout() {
-    const dialogRef = this.dialog.open(ShowAboutDialog);
+  public OpenAbout(): void {
+    // const scrollStrategy = this.overlay.scrollStrategies.reposition();
+
+    const dialogRef = this.dialog.open(ShowAboutDialog, 
+      {
+      autoFocus: false, // To allow scrolling in the dialog
+      maxHeight: '90vh' //you can adjust the value as per your view
+      });
   }
   // Opens dialog for the dashboard
   // public openDashboard() {
