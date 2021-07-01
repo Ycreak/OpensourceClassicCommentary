@@ -1,70 +1,69 @@
 <!-- I think this can be removed. -->
 <script src="vendor/jquery/jquery.min.js"></script>
 <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
 
 <!-- Maybe we should get a local stylesheet? -->
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 
-<!-- NAVBAR -->
+<!-- Navigation bar -->
 <mat-toolbar color="primary">
     <span><h3 class='h3-title'>Open Source Classics Commentary</h3></span>
     <span class="spacer"></span>
     <button mat-button class="btn" (click)="OpenBookSelect()">CHANGE TEXT</button>
-    <button mat-button class="btn" (click)="OpenBibliography()">BIBLIOGRAPHY</button>
+    <!-- <button mat-button class="btn" (click)="OpenBibliography()">BIBLIOGRAPHY</button> -->
     <button mat-button class="btn" routerLink="/dashboard" *ngIf="this.authService.isLoggedIn">DASHBOARD</button>
     <mat-checkbox class="btn" [(ngModel)]="columnOneToggle">COM</mat-checkbox>
     <mat-checkbox class="btn" [(ngModel)]="columnTwoToggle">SEC</mat-checkbox>
-    <!-- <mat-checkbox class="btn" [(ngModel)]="columnThreeToggle">COL3</mat-checkbox> -->
     <mat-checkbox class="btn" [(ngModel)]="Playground">PLY</mat-checkbox>
     <mat-checkbox class="btn" [(ngModel)]="Multiplayer">MUL</mat-checkbox>
     <mat-checkbox class="btn" [(ngModel)]="fourColumnMode">4COL</mat-checkbox>
-
     <button mat-button class="btn" [matMenuTriggerFor]="menu">MENU</button>
 </mat-toolbar>
-<!-- NAVBAR MENU -->
+
+<!-- Navigation bar menu -->
 <mat-menu #menu="matMenu">
     <button routerLink="/text" mat-menu-item>Text OSCC</button>
-    <button (click)="OpenText()" mat-menu-item>Text Inside</button>
-    <button (click)="Test('thing')" mat-menu-item>Test</button>
-
+    <a href="http://www.google.com" target='_blank' mat-menu-item>Documentation</a>  
+    <!-- <button (click)="OpenText()" mat-menu-item>Text Inside</button> -->
+    <!-- <button (click)="Test('thing')" mat-menu-item>Test</button> -->
     <button (click)="Login()" mat-menu-item>Login</button>
     <button (click)="OpenAbout()" mat-menu-item>About</button>
-    <button (click)="ngOnInit()" *ngIf="this.authService.isLoggedIn">Reload Data</button>
-
-    <button mat-menu-item>V21.1.1</button>
+    <!-- <button (click)="ngOnInit()" *ngIf="this.authService.isLoggedIn">Reload Data</button> -->
+    <button mat-menu-item>V21.7.1</button>
 </mat-menu>
 
-<!-- Author and Book select dialog -->
+<!-- Change text dialog -->
 <ng-template #CallBookSelect>   
     <h3>Select an author and a text to display.</h3>
     <hr>
     <mat-form-field>
         <mat-label>Select author</mat-label>
         <mat-select>
-        <mat-option *ngFor="let author of this.authorsJSON" [value]="author" 
-            (click)="this.RequestBooks(author.id)" 
-            (click)="this.SetCurrentAuthorData(author)">
-            {{ author.name }} 
-        </mat-option>
+            <mat-option *ngFor="let author of this.authorsJSON" [value]="author" 
+                (click)="this.RequestBooks(author.id)" 
+                (click)="this.SetCurrentAuthorData(author)">
+                {{ author.name }} 
+            </mat-option>
         </mat-select>  
     </mat-form-field> 
     
     <mat-form-field>
         <mat-label>Select text</mat-label>
         <mat-select>
-        <mat-option *ngFor="let book of this.booksJSON" [value]="book" 
-            (click)="RequestEditors(book.id)"
-            (click)="RequestFragments(book.id)"
-            (click)="SetCurrentBookData(book)">
-            {{ book.title }}                
-        </mat-option>
+            <mat-option *ngFor="let book of this.booksJSON" [value]="book" 
+                (click)="RequestEditors(book.id)"
+                (click)="RequestFragments(book.id)"
+                (click)="SetCurrentBookData(book)">
+                {{ book.title }}                
+            </mat-option>
         </mat-select>
     </mat-form-field>    
 </ng-template>
 
-<!-- Bibliography dialog to show the used bibliography -->
+<!-- Bibliography dialog (TODO: should use bibtex)) -->
 <ng-template #CallBibliography>   
     <h3>Bibliography for {{this.currentAuthorName}}: {{this.currentBookName}}</h3>
     <hr>
@@ -94,301 +93,252 @@
 <mat-progress-bar mode="query" *ngIf="this.spinner"></mat-progress-bar>
 <br>
 
-<!-- Container for the page: one row, two columns. Column Left has the text, Column Right the commentary. -->
+<!-- Container for the page. One row per item (commentary, playground, multiplayer, etc.) -->
 <div class="container-fluid">
     <div class="row">
-        <!-- 
-         ______ _          _      _____      _                       
-        |  ____(_)        | |    / ____|    | |                      
-        | |__   _ _ __ ___| |_  | |     ___ | |_   _ _ __ ___  _ __  
-        |  __| | | '__/ __| __| | |    / _ \| | | | | '_ ` _ \| '_ \ 
-        | |    | | |  \__ \ |_  | |___| (_) | | |_| | | | | | | | | |
-        |_|    |_|_|  |___/\__|  \_____\___/|_|\__,_|_| |_| |_|_| |_|
-                                                                      -->                                                         
+        
+        <!-- First column, containing the fragments from the edition of reference -->
         <div *ngIf="columnOneToggle" class="col-sm overflowColumn">
-            <!-- Information and Editor select -->
+            <!-- Text information and edition of reference selection -->
             <div class="row">
                 <div class="col-6">
-                <h4>{{this.currentAuthorName}}: {{this.currentBookName}}.</h4>
+                    <h4>{{this.currentAuthorName}}: {{this.currentBookName}}.</h4>
                 </div>  
                 <div class="col-6">
-                <mat-form-field class="input-form">
-                    <mat-label>Edition of Reference</mat-label> <!-- Edition of reference-->
-                    <mat-select>
-                    <mat-option *ngFor="let mainEditor of this.mainEditorsJSON" [value]="mainEditor.id"
-                    (click)="this.mainEditorArray = CreateEditorArray(mainEditor, this.F_Fragments)"
-                    (click)="this.SetCurrentEditorData(mainEditor)">
-                        {{ mainEditor.name }}                     
-                    </mat-option>
-                    </mat-select>
-                    <mat-hint>Select an edition of reference</mat-hint>
-                </mat-form-field>
-            </div>
-        </div>
-        <!-- Fragments Loop -->
-        <div class="fragment-list">
-            <div class="fragment-box" *ngFor="let arrayItem of this.mainEditorArray" 
-            (click)="this.Referencer = this.RequestReferencerID(arrayItem.fragmentName, this.currentEditor, this.currentBook)">
-            <div>
-                <b>Fragment {{arrayItem.fragmentName}} </b> &nbsp; <sup>{{arrayItem.author}}, {{arrayItem.text}}, {{arrayItem.editor}}</sup> &nbsp; <i>{{arrayItem.status}}</i>
-            </div>
-            <div *ngFor="let arrayItem2 of arrayItem.content">           
-                <div [innerHTML]="arrayItem2.lineComplete | safeHtml"></div>             
-            </div>     
-            </div> 
-        </div> 
-        </div>
-
-        <!--
-         _____                          _    _____      _                       
-        / ____|                        | |  / ____|    | |                      
-       | (___   ___  ___ ___  _ __   __| | | |     ___ | |_   _ _ __ ___  _ __  
-        \___ \ / _ \/ __/ _ \| '_ \ / _` | | |    / _ \| | | | | '_ ` _ \| '_ \ 
-        ____) |  __/ (_| (_) | | | | (_| | | |___| (_) | | |_| | | | | | | | | |
-       |_____/ \___|\___\___/|_| |_|\__,_|  \_____\___/|_|\__,_|_| |_| |_|_| |_|
-        -->                                                                  
-        <div *ngIf="columnTwoToggle" class="col-sm overflowColumn">
-        <div class="row">
-            <!-- Editor selection -->
-            <div class="col-md-6">
-                <mat-form-field class="input-form">
-                    <mat-label>Secondary editor</mat-label>
-                    <mat-select>
-                    <mat-option *ngFor="let selectedEditor of this.editorsJSON" [value]="selectedEditor.id"
-                    (click)="this.selectedEditorArray = CreateEditorArray(selectedEditor, this.F_Fragments)">
-                        {{ selectedEditor.name }} 
-                    </mat-option>
-                    </mat-select>
-                    <mat-hint>Select a secondary editor</mat-hint>
-                </mat-form-field>
-            </div>
-            <!-- Adding note field -->
-            <div class="col-md-6">
-                <div mat-dialog-content>
                     <mat-form-field class="input-form">
-                        <input matInput placeholder="Note" [(ngModel)]='note'>
-                        <button type="button" mat-icon-button matSuffix (click)="this.noteArray = PopArray(this.noteArray)">
-                            <mat-icon>{{'remove'}}</mat-icon>
-                            </button>
-                            <button type="button" mat-icon-button matSuffix (click)="this.noteArray = PushToArray(note, this.noteArray)">
-                            <mat-icon>{{'add'}}</mat-icon>
-                            </button>
-                        <mat-hint>Add a note</mat-hint>
-                    </mat-form-field>               
+                        <mat-label>Edition of Reference</mat-label>
+                        <mat-select>
+                            <mat-option *ngFor="let mainEditor of this.mainEditorsJSON" [value]="mainEditor.id"
+                                (click)="this.mainEditorArray = CreateEditorArray(mainEditor, this.F_Fragments)"
+                                (click)="this.SetCurrentEditorData(mainEditor)">
+                                {{ mainEditor.name }}                     
+                            </mat-option>
+                        </mat-select>
+                        <mat-hint>Select an edition of reference</mat-hint>
+                    </mat-form-field>
+                </div>
+            </div>
+            <!-- Fragments loop to display all fragments of the chosen edition of reference -->
+            <div class="fragment-list">
+                <div class="fragment-box" *ngFor="let arrayItem of this.mainEditorArray" 
+                    (click)="this.Referencer = this.RequestReferencerID(arrayItem.fragmentName, this.currentEditor, this.currentBook)">
+                    <div>
+                        <b>Fragment {{arrayItem.fragmentName}} </b> &nbsp; <sup>{{arrayItem.author}}, {{arrayItem.text}}, {{arrayItem.editor}}</sup> &nbsp; <i>{{arrayItem.status}}</i>
+                    </div>
+                    <div *ngFor="let arrayItem2 of arrayItem.content">           
+                        <div [innerHTML]="arrayItem2.lineComplete | safeHtml"></div> <!-- safeHtml to allow whitespaces -->            
+                    </div>     
                 </div> 
-            </div>
-        </div>
-        <!-- Printing of notes -->
-        <div *ngFor="let note of this.noteArray" class="note" cdkDrag>
-            {{note}}
+            </div> 
         </div>
 
-        <!-- For loop for moveable fragments. Should be clickable. -->
-        <div cdkDropList class="fragment-list" (cdkDropListDropped)="moveAndDrop($event, this.selectedEditorArray)">
-            <div class="fragment-box" *ngFor="let arrayItem of this.selectedEditorArray" 
-            (click)="this.Test('hi')" cdkDrag>
-            <div> 
-                <!-- TODO: Show editor name behind fragment. Also, show its relation to the TRF. When clicked,
-                load the commentaries for this fragment and that of the corresponding TRF fragment. -->
-                <b>Frg {{arrayItem.fragmentName}}</b> &nbsp; <sup>{{arrayItem.author}}, {{arrayItem.text}}, {{arrayItem.editor}}</sup> &nbsp; <i>{{arrayItem.status}}</i>
+        <!-- Second column, containing the fragments from other editions (these are movable) -->                                
+        <div *ngIf="columnTwoToggle" class="col-sm overflowColumn">
+            <div class="row">
+                <!-- Editor selection -->
+                <div class="col-md-6">
+                    <mat-form-field class="input-form">
+                        <mat-label>Secondary editor</mat-label>
+                            <mat-select>
+                                <mat-option *ngFor="let selectedEditor of this.editorsJSON" [value]="selectedEditor.id"
+                                    (click)="this.selectedEditorArray = CreateEditorArray(selectedEditor, this.F_Fragments)">
+                                    {{ selectedEditor.name }} 
+                                </mat-option>
+                            </mat-select>
+                        <mat-hint>Select a secondary editor</mat-hint>
+                    </mat-form-field>
+                </div>
+                <!-- Possibility of adding notes -->
+                <div class="col-md-6">
+                    <div mat-dialog-content>
+                        <mat-form-field class="input-form">
+                            <input matInput placeholder="Note" [(ngModel)]='note'>
+                                <button type="button" mat-icon-button matSuffix (click)="this.noteArray = PopArray(this.noteArray)">
+                                    <mat-icon>{{'remove'}}</mat-icon>
+                                </button>
+                                <button type="button" mat-icon-button matSuffix (click)="this.noteArray = PushToArray(note, this.noteArray)">
+                                    <mat-icon>{{'add'}}</mat-icon>
+                                </button>
+                            <mat-hint>Add a note</mat-hint>
+                        </mat-form-field>               
+                    </div> 
+                </div>
             </div>
-            <div *ngFor="let arrayItem2 of arrayItem.content">           
-                <div [innerHTML]="arrayItem2.lineComplete"></div> 
-            </div>  
+            <!-- Printing of notes -->
+            <div *ngFor="let note of this.noteArray" class="note" cdkDrag>
+                {{note}}
             </div>
-        </div>
+
+            <!-- For loop for moveable fragments. (should be clickable for more information) -->
+            <div cdkDropList class="fragment-list" (cdkDropListDropped)="moveAndDrop($event, this.selectedEditorArray)">
+                <div class="fragment-box" *ngFor="let arrayItem of this.selectedEditorArray" 
+                    (click)="this.Test('hi')" cdkDrag>
+                    <div> 
+                        <!-- TODO: Show editor name behind fragment. Also, show its relation to the TRF. When clicked,
+                        load the commentaries for this fragment and that of the corresponding TRF fragment. -->
+                        <b>Frg {{arrayItem.fragmentName}}</b> &nbsp; <sup>{{arrayItem.author}}, {{arrayItem.text}}, {{arrayItem.editor}}</sup> &nbsp; <i>{{arrayItem.status}}</i>
+                    </div>
+                    <div *ngFor="let arrayItem2 of arrayItem.content">           
+                        <div [innerHTML]="arrayItem2.lineComplete"></div> 
+                    </div>  
+                </div>
+            </div>
         </div>
     
-
-        <!--
-         _____                                     _                      _____      _                       
-        / ____|                                   | |                    / ____|    | |                      
-       | |     ___  _ __ ___  _ __ ___   ___ _ __ | |_ __ _ _ __ _   _  | |     ___ | |_   _ _ __ ___  _ __  
-       | |    / _ \| '_ ` _ \| '_ ` _ \ / _ \ '_ \| __/ _` | '__| | | | | |    / _ \| | | | | '_ ` _ \| '_ \ 
-       | |___| (_) | | | | | | | | | | |  __/ | | | || (_| | |  | |_| | | |___| (_) | | |_| | | | | | | | | |
-        \_____\___/|_| |_| |_|_| |_| |_|\___|_| |_|\__\__,_|_|   \__, |  \_____\___/|_|\__,_|_| |_| |_|_| |_|
-                                                                  __/ |                                      
-                                                                 |___/                                       
-        -->
+        <!-- Column with commentary, shown if a fragment from the edition of reference is clicked -->
         <div *ngIf="columnOneToggle" class="col-sm overflowColumn">
-            <!-- Show here the commentary that is available for the COL2 clicked fragment -->
-            <!-- <h4>Ribbeck 1 Commentary</h4> -->
-            <!-- <div *ngFor="let item of this.F_Translation">
-                <mat-expansion-panel>
-                    <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        <b>Fragment Translation</b>
-                    </mat-panel-title>
-                    </mat-expansion-panel-header>
-                    <div class="mat-expansion-panel-content">
-                    <div class="mat-expansion-panel-body">
-                        <div [innerHTML]="item.translation"></div>
-                    </div>
-                    </div>
-                </mat-expansion-panel>
-            </div>
-            <hr> -->
+            <!-- TODO: Show here the commentary that is available for the COL2 clicked fragment -->
 
-        <!-- Fragment information -->
-        <h4>Fragment {{this.currentFragment}}</h4> <hr>
-        <!-- Show banner if no commentary available -->
-        <div *ngIf="this.noCommentary" class="alert alert-info" role="alert">
-            No commentary is available for this fragment.
-        </div>
-        <!-- Show all the commentary fields -->
-        <div *ngIf="this.noCommentary === false">
-            <div *ngFor="let item of this.F_Translation">
-                <mat-expansion-panel>
-                    <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        <b>Fragment Translation</b>
-                    </mat-panel-title>
-                    </mat-expansion-panel-header>
-                    <!-- Commentary with HTML formatting. -->
-                    <div class="mat-expansion-panel-content">
-                    <div class="mat-expansion-panel-body">
-                        <div [innerHTML]="item.translation"></div>
-                    </div>
-                    </div>
-                </mat-expansion-panel>
+            <!-- Fragment information -->
+            <h4>Fragment {{this.currentFragment}}</h4> <hr>
+            <!-- Show banner if no commentary available -->
+            <div *ngIf="this.noCommentary" class="alert alert-info" role="alert">
+                No commentary is available for this fragment.
             </div>
-    
-            <hr>
-    
-            <div *ngFor="let item of this.F_Apparatus">
-                <mat-expansion-panel>
-                    <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        <b>Apparatus Criticus</b>
-                    </mat-panel-title>
-                    </mat-expansion-panel-header>
-                    <div class="mat-expansion-panel-content">
-                    <div class="mat-expansion-panel-body">
-                        <div [innerHTML]=item.apparatus></div>
-                    </div>
-                    </div>
-                </mat-expansion-panel>
-            </div>
-    
-            <hr>
-    
-            <div *ngFor="let item of this.F_Differences">
-                <mat-expansion-panel>
-                    <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        <b>Editorial Differences</b> <!-- -->
-                    </mat-panel-title>
-                    </mat-expansion-panel-header>
-                    <div class="mat-expansion-panel-content">
-                    <div class="mat-expansion-panel-body">
-                        <div [innerHTML]="item.differences"></div>
-                    </div>
-                    </div>
-                </mat-expansion-panel>
-            </div>
-    
-            <hr>
-    
-            <div *ngFor="let item of this.F_Context">
-                <mat-expansion-panel>
-                    <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        <b>Citation Context</b> <!--Citation Context -->
-                    </mat-panel-title>
-                    <div [innerHTML]="item.contextAuthor"></div><div class="div-padding-sm"></div>
-                    </mat-expansion-panel-header>
-                    <div class="mat-expansion-panel-content">
-                    <div class="mat-expansion-panel-body">
-                        <div [innerHTML]="item.context"></div>
-                    </div>
-                    </div>
-                </mat-expansion-panel>
-            </div>
-            
-            <hr>
-    
-            <div *ngFor="let item of this.F_Commentary">
-                <mat-expansion-panel>
-                    <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        <b>Fragment Commentary</b>
-                    </mat-panel-title>
-                    </mat-expansion-panel-header>
-                    <div class="mat-expansion-panel-content">
-                    <div class="mat-expansion-panel-body">
-                        <div [innerHTML]="item.commentary"></div>
-                    </div>
-                    </div>
-                </mat-expansion-panel>
-            </div>
-    
-            <hr>
-    
-            <div *ngFor="let item of this.F_Reconstruction">
-                <mat-expansion-panel>
-                    <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        <b>Fragment Reconstruction</b>
-                    </mat-panel-title>
-                    </mat-expansion-panel-header>
-                    <div class="mat-expansion-panel-content">
-                    <div class="mat-expansion-panel-body">
-                        <div [innerHTML]="item.reconstruction"></div>
-                    </div>
-                    </div>
-                </mat-expansion-panel>
+            <!-- Show all the commentary fields -->
+            <div *ngIf="this.noCommentary === false">
+                <div *ngFor="let item of this.F_Translation">
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                <b>Fragment Translation</b>
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <!-- Commentary with HTML formatting. -->
+                        <div class="mat-expansion-panel-content">
+                            <div class="mat-expansion-panel-body">
+                                <div [innerHTML]="item.translation"></div>
+                            </div>
+                        </div>
+                    </mat-expansion-panel>
+                </div>
+        
+                <hr>
+        
+                <div *ngFor="let item of this.F_Apparatus">
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                <b>Apparatus Criticus</b>
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <div class="mat-expansion-panel-content">
+                            <div class="mat-expansion-panel-body">
+                                <div [innerHTML]=item.apparatus></div>
+                            </div>
+                        </div>
+                    </mat-expansion-panel>
+                </div>
+        
+                <hr>
+        
+                <div *ngFor="let item of this.F_Differences">
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                <b>Editorial Differences</b> <!-- -->
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <div class="mat-expansion-panel-content">
+                            <div class="mat-expansion-panel-body">
+                                <div [innerHTML]="item.differences"></div>
+                            </div>
+                        </div>
+                    </mat-expansion-panel>
+                </div>
+        
+                <hr>
+        
+                <div *ngFor="let item of this.F_Context">
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                <b>Citation Context</b> <!--Citation Context -->
+                            </mat-panel-title>
+                            <div [innerHTML]="item.contextAuthor"></div><div class="div-padding-sm"></div>
+                        </mat-expansion-panel-header>
+                        <div class="mat-expansion-panel-content">
+                            <div class="mat-expansion-panel-body">
+                                <div [innerHTML]="item.context"></div>
+                            </div>
+                        </div>
+                    </mat-expansion-panel>
+                </div>
+                
+                <hr>
+        
+                <div *ngFor="let item of this.F_Commentary">
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            <b>Fragment Commentary</b>
+                        </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <div class="mat-expansion-panel-content">
+                        <div class="mat-expansion-panel-body">
+                            <div [innerHTML]="item.commentary"></div>
+                        </div>
+                        </div>
+                    </mat-expansion-panel>
+                </div>
+        
+                <hr>
+        
+                <div *ngFor="let item of this.F_Reconstruction">
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                <b>Fragment Reconstruction</b>
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <div class="mat-expansion-panel-content">
+                            <div class="mat-expansion-panel-body">
+                                <div [innerHTML]="item.reconstruction"></div>
+                            </div>
+                        </div>
+                    </mat-expansion-panel>
+                </div>
             </div>
         </div>
-        </div>
+        <hr>
+    </div> <!-- This closes the first row. Other items will be put under this row -->
+    
 
-
-
-
-    </div>
-    <!--
-     _____  _                                             _ 
-    |  __ \| |                                           | |
-    | |__) | | __ _ _   _  __ _ _ __ ___  _   _ _ __   __| |
-    |  ___/| |/ _` | | | |/ _` | '__/ _ \| | | | '_ \ / _` |
-    | |    | | (_| | |_| | (_| | | | (_) | |_| | | | | (_| |
-    |_|    |_|\__,_|\__, |\__, |_|  \___/ \__,_|_| |_|\__,_|
-                     __/ | __/ |                            
-                    |___/ |___/                             
-    -->
+    <!-- Row to show the playground -->
     <div class="container-fluid" *ngIf="Playground">
         <div class="row">
             <!-- Possiblity to select an editor to begin with -->
             <mat-form-field class="select-form">
                 <mat-label>Editor</mat-label>
                 <mat-select [(ngModel)]="selectedEditor">
-                <mat-option *ngFor="let data of this.editorsJSON" [value]="data"
-                (click)="this.playgroundArray = CreateEditorArray(data, this.F_Fragments)"
-                (click)="this.fragmentNumberList = GetFragmentNumbers(data.id, this.playgroundArray)">
-                    {{ data.name }}                       
-                </mat-option>
+                    <mat-option *ngFor="let data of this.editorsJSON" [value]="data"
+                        (click)="this.playgroundArray = CreateEditorArray(data, this.F_Fragments)"
+                        (click)="this.fragmentNumberList = GetFragmentNumbers(data.id, this.playgroundArray)">
+                        {{ data.name }}                       
+                    </mat-option>
                 </mat-select>
                 <mat-hint>Select an editor to begin</mat-hint>
             </mat-form-field>
             <!-- Possiblity to select an editor to add a single fragment from  -->
             <mat-form-field class="select-form">
                 <mat-label>Editor</mat-label>
-                <mat-select [(ngModel)]="toAddEditor">
-                <mat-option *ngFor="let data of this.editorsJSON" [value]="data"
-                (click)="this.playgroundArray2 = CreateEditorArray(data, this.F_Fragments)"
-                (click)="this.fragmentNumberList2 = GetFragmentNumbers(data.id, this.playgroundArray2)">
-                    {{ data.name }}                       
-                </mat-option>
-                </mat-select>
+                    <mat-select [(ngModel)]="toAddEditor">
+                        <mat-option *ngFor="let data of this.editorsJSON" [value]="data"
+                            (click)="this.playgroundArray2 = CreateEditorArray(data, this.F_Fragments)"
+                            (click)="this.fragmentNumberList2 = GetFragmentNumbers(data.id, this.playgroundArray2)">
+                            {{ data.name }}                       
+                        </mat-option>
+                    </mat-select>
                 <mat-hint>Select an editor to add a fragment from</mat-hint>
             </mat-form-field>
             <!-- Possibility to select a fragment from given editor -->
             <mat-form-field class="select-form">
                 <mat-label>Fragment</mat-label>
                 <mat-select [(ngModel)]="selectedFragment">
-                <mat-option *ngFor="let data of this.fragmentNumberList2" [value]="data"
-                (click)="this.addedArray = AddFragmentToArray(this.addedArray, this.playgroundArray2, data)">
-                    {{ data }} 
-                </mat-option>
+                    <mat-option *ngFor="let data of this.fragmentNumberList2" [value]="data"
+                        (click)="this.addedArray = AddFragmentToArray(this.addedArray, this.playgroundArray2, data)">
+                        {{ data }} 
+                    </mat-option>
                 </mat-select>
                 <mat-hint>Select a fragment</mat-hint>
             </mat-form-field> 
@@ -398,13 +348,11 @@
                     <input matInput placeholder="Add fragment" [(ngModel)]='note'>
                     <button type="button" mat-icon-button matSuffix (click)="this.noteArray = PopArray(this.noteArray)">
                         <mat-icon>{{'remove'}}</mat-icon>
-                      </button>
-                      <!-- <button type="button" mat-icon-button matSuffix (click)="this.noteArray = PushToArray(note, this.noteArray)"> -->
-                      <button type="button" mat-icon-button matSuffix (click)="this.noteArray = CreateOwnFragment(note, this.noteArray)">
-
-                        
+                    </button>
+                    <!-- <button type="button" mat-icon-button matSuffix (click)="this.noteArray = PushToArray(note, this.noteArray)"> -->
+                    <button type="button" mat-icon-button matSuffix (click)="this.noteArray = CreateOwnFragment(note, this.noteArray)">
                         <mat-icon>{{'add'}}</mat-icon>
-                      </button>
+                    </button>
                     <mat-hint>Add own fragment</mat-hint>
                 </mat-form-field>               
             </div>  
@@ -442,9 +390,10 @@
                 </div> 
             </div>
         </div>
-    </div>
+        <hr>
+    </div> <!-- Closes the row -->
 
-    <!-- Four Column Mode. TODO: This has to be done with an Angular template -->
+    <!-- Four Column Mode. TODO: this would be better done with an Angular template -->
     <div *ngIf="fourColumnMode" class="col-sm overflowColumn">
         <div class="row">
             <!-- Column 1 -->
@@ -452,10 +401,10 @@
                 <mat-form-field class="input-form">
                     <mat-label>Editor 1</mat-label>
                     <mat-select>
-                    <mat-option *ngFor="let selectedEditor of this.editorsJSON" [value]="selectedEditor.id"
-                    (click)="this.editor1 = CreateEditorArray(selectedEditor, this.F_Fragments)">
-                        {{ selectedEditor.name }} 
-                    </mat-option>
+                        <mat-option *ngFor="let selectedEditor of this.editorsJSON" [value]="selectedEditor.id"
+                            (click)="this.editor1 = CreateEditorArray(selectedEditor, this.F_Fragments)">
+                            {{ selectedEditor.name }} 
+                        </mat-option>
                     </mat-select>
                     <mat-hint>Select the first editor</mat-hint>
                 </mat-form-field>
@@ -551,24 +500,10 @@
                     </div>
                 </div>
             </div>            
-
-
         </div>
     </div>
-   
-   
-   
-   
-   
-    <!--
-     __  __       _ _   _       _                       
-    |  \/  |     | | | (_)     | |                      
-    | \  / |_   _| | |_ _ _ __ | | __ _ _   _  ___ _ __ 
-    | |\/| | | | | | __| | '_ \| |/ _` | | | |/ _ \ '__|
-    | |  | | |_| | | |_| | |_) | | (_| | |_| |  __/ |   
-    |_|  |_|\__,_|_|\__|_| .__/|_|\__,_|\__, |\___|_|   
-                        | |             __/ |          
-                        |_|            |___/            -->
+
+    <!-- Section for the multiplayer (done using Google Firebase) -->
     <div class="container-fluid" *ngIf="Multiplayer">
         <div class="row">
             <!-- Field to select the author. Beware! It changes the author of the entire program -->
@@ -645,14 +580,7 @@
                 </mat-form-field>               
             </div> 
 
-            <!-- Buttons for server communications -->           
-            <!-- <button mat-button class="button" (click)="FirebaseTest(this.editorListData)">Test</button> -->
-            <!-- <button mat-button class="button" (click)="this.list4Array = []">Empty My Additions</button> -->
             <mat-checkbox [(ngModel)]="showFragmentname">Headers</mat-checkbox>
-            <!-- <mat-checkbox [(ngModel)]="showNotebook">Notebook</mat-checkbox> -->
-            <!-- <mat-checkbox [(ngModel)]="showRecycleBin">Recycle Bin</mat-checkbox> -->
-            <!-- <mat-checkbox [(ngModel)]="showSuggestions">Suggestions</mat-checkbox> -->
-
 
         </div>
 
@@ -713,32 +641,7 @@
                     </div>
                 </div> 
             </div> 
-           <!-- The second list to be synced -->
-            <!-- <div class="col-md-3">          
-                <div class="multiplayer-container">
-                    <h3>Suggestion Column</h3>
-                    <div
-                        cdkDropList
-                        #list6="cdkDropList"
-                        [cdkDropListData]="this.list6Array"
-                        [cdkDropListConnectedTo]="[list1, list2, list3, list4, list5]"
-                        class="multiplayer-list"
-                        (cdkDropListDropped)="MultipleColumnsDrag($event)">
-                        <div class="fragment-box" *ngFor="let item of this.list6Array" cdkDrag>                          
-                            <div class="divNote" *ngIf="item.note"> 
-                                <b>{{item.fragmentName}}</b>
-                            </div>
-                            <div *ngIf="item.note != true && showFragmentname">
-                                <b>Frg {{item.fragmentName}}</b> &nbsp; <b>{{item.reason}}</b> &nbsp; <sup>{{item.author}}, {{item.text}}, {{item.editor}}</sup> &nbsp; <i>{{item.status}}</i>
-                            </div>
-                            <div *ngFor="let item2 of item.content"> 
-                                <div class="divNote" *ngIf="item.note" [innerHTML]="item2.lineComplete"></div> 
-                                <div *ngIf="item.note != true" [innerHTML]="item2.lineComplete"></div> 
-                            </div>  
-                        </div>   
-                    </div>
-                </div> 
-            </div>  -->
+
             <!-- The third column contains two rows: one for own fragments, one for existing editions -->
             <div class="col-md-4">
                 <div class="row">

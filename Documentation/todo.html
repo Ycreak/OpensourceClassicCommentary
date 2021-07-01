@@ -56,22 +56,28 @@
                             <section id="flot4" class="doc-section">
                                 <h2 class="section-title">Bugs</h2>
                                 <div class="section-block">
+                                    <p>Critical: Can create book and editor without author selected</p>
+                                    <p>Allow for deletion of context author and context author piece</p>
+                                    <p>When changing a fragment number, the old one lingers</p>
                                 </div><!--//section-block-->
                             </section><!--//doc-section-->  
 
                             <section id="chartjs" class="doc-section">
                                 <h2 class="section-title">Must Have</h2>
                                 <div class="section-block">
-                                    <p>Outlining lines to the right</p>
+                                    <p>Allow deletion of individual pieces of content and context</p>
                                     <p>Block database when something is inserted TRANSACTION</p>
-                                    <p>Confirmation dialogs for the dashboard</p>
-																		<p>Better naming for database columns</p>
-                                    <p>(In Progress) Make the dashboard working</p>
+                                    <p>Allow deleting lines (not whole fragment) (note the referencer!)</p>
+                                    <p>(In Progress) Possiblity to rename books, authors, editors.</p>
                                     <p>(In Progress) Make bibliography visible</p>
                                     <p>(In Progress) Make bibliography inputable</p>
                                     <p>(In Progress) Show published fragments only</p>
                                     <p>(In Progress) Sanitize database input.</p>
                                     <p>(In Progress) Roles</p>
+                                    <p>(Done) Outlining lines to the right</p>
+                                    <p>(Done) Confirmation dialogs for the dashboard</p>
+									<p>(Done) Better naming for database columns</p>
+                                    <p>(Done) Make the dashboard working</p>
                                     <p>(Done) Allow for multiple primary editors.</p>
                                     <p>(Done) Show fragment number and line numbers.</p>
                                     <p>(Done) Convert to POST and HTTPS</p>
@@ -81,9 +87,16 @@
                             <section id="flot" class="doc-section">
                                 <h2 class="section-title">Should Have</h2>
                                 <div class="section-block">
-                                    <p>Adespota and Incerta below the other fragments</p>
+                                    <p>Rename Book to Title</p>
+                                    <p>Autoselect edition of reference</p>
+                                    <p>Show Author, Text and Editor behind every fragment</p>
+                                    <p>Show (on screen) relation of fragment to edition of reference</p>
+                                    <p>When clicking on secondary fragment, show its commentary and that of linked edition of reference fragment</p>
                                     <p>Lock a book to disallow change</p>
+                                    <p>Redesign 4 column mode (very not DRY now)</p>
+                                    <p>Better updating of dashboard after creation of fragment (need to reload edition now)</p>
                                     <p>(In Progress) Utility service to be used by both Dashboard and Fragments.</p>
+                                    <p>(Done) Adespota and Incerta below the other fragments</p>
                                     <p>(Done) Update current text and author in left column when changing text.</p>
                                     <p>(Done) Add key constraints to database to allow ON DELETE CASCADE</p>
                                     <p>(Done) Replace modals with dialogs</p>
@@ -93,25 +106,28 @@
                             <section id="flot2" class="doc-section">
                                 <h2 class="section-title">Could Have</h2>
                                 <div class="section-block">
+                                    <p>Cross reference texts using the PHI</p>
+                                    <p>On click on secondary fragment, scroll to corresponding main</p>
+                                    <p>Show unique title given per Editor to the work (Clutemestra for Ribbeck)</p>
                                     <p>Colour the fragments in gradients to show initial order.</p>
                                     <p>Possibility to save own vision of fragments</p>
                                     <p>Time out of spinner</p>
-																		<p>(In Progress) Sort authors, books, bibliography (etc) alphabetically.</p>
-																		<p>(In Progress) Better updating functionality in the dashboard</p>
-																		<p>(In Progress) Improve array naming to prevent author[0] etc</p>
-																		<p>(In Progress) Possiblity to rename books, authors, editors.</p>
+                                    <p>(In Progress) Sort authors, books, bibliography (etc) alphabetically.</p>
+                                    <p>(In Progress) Improve array naming to prevent author[0] etc</p>
+                                    <p>(Done) Better updating functionality in the dashboard</p>
                                 </div><!--//section-block-->
                             </section><!--//doc-section-->
 
                             <section id="flot3" class="doc-section">
                                 <h2 class="section-title">Would Have</h2>
                                 <div class="section-block">
-                                    <p>Allow the user to add notes to the fragments.</p>
+                                    
                                     <p>Author name should be unique in Database</p>
                                     <p>Press bib entry and google search author, title and year in new tab</p>
                                     <p>Change the way bib entries are shown in columns</p>
                                     <p>Find references in text and link them to bibliography (mouse over?)</p>
-                                    <p>(In Progress) Rename FragmentNo in FragmentReferencer</p>
+                                    <p>(Done) Allow the user to add notes to the fragments.</p>
+                                    <p>(Done) Rename FragmentNo in FragmentReferencer</p>
                                     <p>(Done) Tidy and improve CSS files and naming</p>
                                 </div><!--//section-block-->
                             </section><!--//doc-section-->                            
