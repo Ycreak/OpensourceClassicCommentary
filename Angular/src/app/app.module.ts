@@ -42,6 +42,7 @@ import { SafeHtmlPipe } from './pipes/safeHtml.pipe';
 
 import { ConfirmationDialog } from './dashboard/dashboard.component';
 import { ConfirmationDialog2 } from './fragments/fragments.component';
+import { Multiplayer } from './fragments/fragments.component';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorInterceptor } from './api.service';
@@ -127,12 +128,15 @@ const appRoutes: Routes = [
     LoginComponent,
     TextComponent,
     ScansionComponent,
+    // Multiplayer,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     RouterModule.forRoot(appRoutes),
+
+    // Multiplayer,
 
     FormsModule,
     BrowserAnimationsModule,

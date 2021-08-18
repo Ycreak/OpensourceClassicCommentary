@@ -18,7 +18,7 @@
     <mat-checkbox class="btn" [(ngModel)]="columnOneToggle">COM</mat-checkbox>
     <mat-checkbox class="btn" [(ngModel)]="columnTwoToggle">SEC</mat-checkbox>
     <mat-checkbox class="btn" [(ngModel)]="Playground">PLY</mat-checkbox>
-    <mat-checkbox class="btn" [(ngModel)]="Multiplayer">MUL</mat-checkbox>
+    <mat-checkbox class="btn" [(ngModel)]="Multiplayer_column">MUL</mat-checkbox>
     <mat-checkbox class="btn" [(ngModel)]="fourColumnMode">4COL</mat-checkbox>
     <button mat-button class="btn" [matMenuTriggerFor]="menu">MENU</button>
 </mat-toolbar>
@@ -506,7 +506,7 @@
     </div>
 
     <!-- Section for the multiplayer (done using Google Firebase) -->
-    <div class="container-fluid" *ngIf="Multiplayer">
+    <div class="container-fluid" *ngIf="Multiplayer_column">
         <div class="row">
             <!-- Field to select the author. Beware! It changes the author of the entire program -->
             <div mat-dialog-content>
@@ -539,8 +539,8 @@
                 <mat-select [(ngModel)]="selectedEditor">
                 <mat-option *ngFor="let data of this.editorsJSON" [value]="data"
                 (click)="this.SetCurrentEditorData(data.name)"
-                (click)="this.list3Array = CreateEditorArray(data, this.F_Fragments)"
-                (click)="this.FirebaseTest(data.name)">
+                (click)="this.multiplayer.list3Array = CreateEditorArray(data, this.F_Fragments)"
+                (click)="this.multiplayer.FirebaseTest(data.name)">
                     {{ data.name }}                       
                 </mat-option>
                 </mat-select>
@@ -556,10 +556,10 @@
             <div mat-dialog-content>
                 <mat-form-field class="input-form-wide">
                     <input class="input-form-wide" matInput type="text" [(ngModel)]='fragment2' [matKeyboard]="'OSCC'">
-                        <button type="button" mat-icon-button matSuffix (click)="this.list4Array = CreateOwnFragment(fragment2, fragment2Header, this.list4Array, false)">
+                        <button type="button" mat-icon-button matSuffix (click)="this.multiplayer.list4Array = this.multiplayer.CreateOwnFragment(fragment2, fragment2Header, this.multiplayer.list4Array, false)">
                             <mat-icon>{{'text_snippet'}}</mat-icon>
                         </button>
-                        <button type="button" mat-icon-button matSuffix (click)="this.list4Array = CreateOwnFragment(fragment2, fragment2Header, this.list4Array, true)">
+                        <button type="button" mat-icon-button matSuffix (click)="this.multiplayer.list4Array = this.multiplayer.CreateOwnFragment(fragment2, fragment2Header, this.multiplayer.list4Array, true)">
                             <mat-icon>{{'note_add'}}</mat-icon>
                         </button>
                     <mat-hint>Add custom body</mat-hint>
@@ -568,21 +568,21 @@
             <!-- Possibility to restore and create sessions -->
             <div mat-dialog-content>
                 <mat-form-field class="input-form-wide">
-                    <input class="input-form-wide" matInput type="text" [(ngModel)]='sessionCode' [matKeyboard]="'OSCC'">
-                    <button type="button" mat-icon-button matSuffix (click)="this.RestoreFirebaseSession(sessionCode)">
+                    <input class="input-form-wide" matInput type="text" [(ngModel)]='this.multiplayer.sessionCode' [matKeyboard]="'OSCC'">
+                    <button type="button" mat-icon-button matSuffix (click)="this.multiplayer.RestoreFirebaseSession(this.multiplayer.sessionCode)">
                         <mat-icon>{{'restore'}}</mat-icon>
                     </button>
-                    <button type="button" mat-icon-button matSuffix (click)="this.CreateFirebaseSession(this.tableName)">
+                    <button type="button" mat-icon-button matSuffix (click)="this.multiplayer.CreateFirebaseSession(this.multiplayer.tableName)">
                         <mat-icon>{{'add'}}</mat-icon>
                     </button>
-                    <button type="button" mat-icon-button matSuffix (click)="this.RequestDeleteSession(sessionCode)">
+                    <button type="button" mat-icon-button matSuffix (click)="this.multiplayer.RequestDeleteSession(this.multiplayer.sessionCode)">
                         <mat-icon>{{'remove'}}</mat-icon>
                     </button>
                     <mat-hint>Provide your session code</mat-hint>
                 </mat-form-field>               
             </div> 
 
-            <mat-checkbox [(ngModel)]="showFragmentname">Headers</mat-checkbox>
+            <mat-checkbox [(ngModel)]="this.multiplayer.showFragmentname">Headers</mat-checkbox>
 
         </div>
 
@@ -596,15 +596,15 @@
                     <div
                         cdkDropList
                         #list1="cdkDropList"
-                        [cdkDropListData]="this.list1Array"
+                        [cdkDropListData]="this.multiplayer.list1Array"
                         [cdkDropListConnectedTo]="[list2, list3, list4, list5, list6]"
                         class="multiplayer-list"
-                        (cdkDropListDropped)="MultipleColumnsDrag($event)">
-                        <div class="fragment-box" *ngFor="let item of this.list1Array" cdkDrag>                          
+                        (cdkDropListDropped)="this.multiplayer.MultipleColumnsDrag($event)">
+                        <div class="fragment-box" *ngFor="let item of this.multiplayer.list1Array" cdkDrag>                          
                             <div class="divNote" *ngIf="item.note"> <!--If it is a note, don't show frg-->
                                 <b>{{item.fragmentName}}</b>
                             </div>
-                            <div *ngIf="item.note != true && showFragmentname">
+                            <div *ngIf="item.note != true && this.multiplayer.showFragmentname">
                                 <b>Frg {{item.fragmentName}}</b> &nbsp; <sup>{{item.author}}, {{item.text}}, {{item.editor}}</sup> &nbsp; <i>{{item.status}}</i>
                             </div>
                             <div *ngFor="let item2 of item.content"> 
@@ -623,15 +623,15 @@
                     <div
                         cdkDropList
                         #list2="cdkDropList"
-                        [cdkDropListData]="this.list2Array"
+                        [cdkDropListData]="this.multiplayer.list2Array"
                         [cdkDropListConnectedTo]="[list1, list3, list4, list5, list6]"
                         class="multiplayer-list"
-                        (cdkDropListDropped)="MultipleColumnsDrag($event)">
-                        <div class="fragment-box" *ngFor="let item of this.list2Array" cdkDrag>                          
+                        (cdkDropListDropped)="this.multiplayer.MultipleColumnsDrag($event)">
+                        <div class="fragment-box" *ngFor="let item of this.multiplayer.list2Array" cdkDrag>                          
                             <div class="divNote" *ngIf="item.note"> <!--If it is a note, don't show frg-->
                                 <b>{{item.fragmentName}}</b>
                             </div>
-                            <div *ngIf="item.note != true && showFragmentname">
+                            <div *ngIf="item.note != true && this.multiplayer.showFragmentname">
                                 <b>Frg {{item.fragmentName}}</b> &nbsp; <sup>{{item.author}}, {{item.text}}, {{item.editor}}</sup> &nbsp; <i>{{item.status}}</i>
                             </div>
                             <div *ngFor="let item2 of item.content"> 
@@ -652,10 +652,10 @@
                         <div
                             cdkDropList
                             #list5="cdkDropList"
-                            [cdkDropListData]="this.list5Array"
+                            [cdkDropListData]="this.multiplayer.list5Array"
                             [cdkDropListConnectedTo]="[list1, list2, list3, list4, list6]"
                             class="multiplayer-list"
-                            (cdkDropListDropped)="MultipleColumnsDrag($event)">
+                            (cdkDropListDropped)="this.multiplayer.MultipleColumnsDrag($event)">
                         </div>
                     </div>
                 </div>
@@ -665,15 +665,15 @@
                         <div
                             cdkDropList
                             #list4="cdkDropList"
-                            [cdkDropListData]="this.list4Array"
+                            [cdkDropListData]="this.multiplayer.list4Array"
                             [cdkDropListConnectedTo]="[list1, list2, list3, list5, list6]"
                             class="multiplayer-list"
-                            (cdkDropListDropped)="MultipleColumnsDrag($event)">
-                            <div class="fragment-box" *ngFor="let item of this.list4Array" cdkDrag>                          
+                            (cdkDropListDropped)="this.multiplayer.MultipleColumnsDrag($event)">
+                            <div class="fragment-box" *ngFor="let item of this.multiplayer.list4Array" cdkDrag>                          
                                 <div class="divNote" *ngIf="item.note"> <!--If it is a note, don't show frg-->
                                     <b>{{item.fragmentName}}</b>
                                 </div>
-                                <div *ngIf="item.note != true && showFragmentname">
+                                <div *ngIf="item.note != true && this.multiplayer.showFragmentname">
                                     <b>Frg {{item.fragmentName}}</b> &nbsp; <sup>{{item.author}}, {{item.text}}, {{item.editor}}</sup> &nbsp; <i>{{item.status}}</i>
                                 </div>
                                 <div *ngFor="let item2 of item.content"> 
@@ -692,15 +692,15 @@
                         <div
                             cdkDropList
                             #list3="cdkDropList"
-                            [cdkDropListData]="this.list3Array"
+                            [cdkDropListData]="this.multiplayer.list3Array"
                             [cdkDropListConnectedTo]="[list1, list2, list4, list5, list6]"
                             class="multiplayer-list"
-                            (cdkDropListDropped)="MultipleColumnsDrag($event)">
-                            <div class="fragment-box" *ngFor="let item of this.list3Array" cdkDrag>                          
+                            (cdkDropListDropped)="this.multiplayer.MultipleColumnsDrag($event)">
+                            <div class="fragment-box" *ngFor="let item of this.multiplayer.list3Array" cdkDrag>                          
                                 <div class="divNote" *ngIf="item.note"> <!--If it is a note, don't show frg-->
                                     <b>{{item.fragmentName}}</b>
                                 </div>
-                                <div *ngIf="item.note != true && showFragmentname">
+                                <div *ngIf="item.note != true && this.multiplayer.showFragmentname">
                                     <b>Frg {{item.fragmentName}}</b> &nbsp; <sup>{{item.author}}, {{item.text}}, {{item.editor}}</sup> &nbsp; <i>{{item.status}}</i>
                                 </div>
                                 <div *ngFor="let item2 of item.content"> 
