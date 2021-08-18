@@ -363,8 +363,21 @@ export class ApiService {
     return this.http.post<any>(this.ApiUrl + 'fragmentreferencer/setpublishflag', new Fragment(0, bookID, editorID, fragmentID, '', '', flag, ''), { observe: 'response' });
   }
 
+  // Scansion Model
+  public async Get_neural_data(book_number: number, line_number: number){
+    const data = await this.http.get(
+      this.FlaskURL + 'Get_neural_data',{
+        params: {
+          book_number: book_number.toString(),
+          line_number: line_number.toString(),
+        }
+      })
+      .toPromise();
+      return data;  
+  }
+
   // CREA 4
-  FlaskURL: String = 'http://localhost:5002/'; // For deployment (http! not https)                                 
+  FlaskURL: String = 'http://nolden.biz:5002/'; // For deployment (http! not https)                                 
 
   // GetInterestingWords(words: string): Observable<any> {
   //   return this.http.post<any>(this.FlaskURL + 'GetInterestingWords', words);

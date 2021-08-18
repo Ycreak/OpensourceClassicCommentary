@@ -65,6 +65,8 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatRadioModule} from '@angular/material/radio';  
 import {MatIconModule} from '@angular/material/icon'; 
 import {MatTooltipModule} from '@angular/material/tooltip'; 
+import {MatTableModule} from '@angular/material/table'; 
+import {MatGridListModule} from '@angular/material/grid-list'; 
 // Allows copying to clipboard
 import {ClipboardModule} from '@angular/cdk/clipboard';
 import { TextComponent } from './text/text.component'; 
@@ -73,6 +75,7 @@ import { IKeyboardLayouts, keyboardLayouts, MAT_KEYBOARD_LAYOUTS, MatKeyboardMod
 // Allows communication with firebase
 import { AngularFireModule } from '@angular/fire';
 import { environment } from '../environments/environment';
+import { ScansionComponent } from './scansion/scansion.component';
 
 // Virtual Keyboard Layout
 const customLayouts: IKeyboardLayouts = {
@@ -108,6 +111,7 @@ const appRoutes: Routes = [
   {path: '', component: FragmentsComponent},
   {path: 'fragments', component: FragmentsComponent},
   {path: 'text', component: TextComponent},
+  {path: 'scansion', component: ScansionComponent},
   {path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
   {path: '**', redirectTo: ''}
 ]
@@ -122,6 +126,7 @@ const appRoutes: Routes = [
     ConfirmationDialog2, //FIXME: Help me Philippe.
     LoginComponent,
     TextComponent,
+    ScansionComponent,
   ],
   imports: [
     BrowserModule,
@@ -152,6 +157,8 @@ const appRoutes: Routes = [
     MatRadioModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
+    MatTableModule, // Not currently used
+    MatGridListModule,
     // To allow the drag and drop
     DragDropModule,
     ClipboardModule,

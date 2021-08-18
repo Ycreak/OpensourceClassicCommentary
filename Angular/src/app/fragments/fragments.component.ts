@@ -193,8 +193,7 @@ export class FragmentsComponent implements OnInit {
 
   public PopArray(array){
     console.log('ar', array)
-    array.pop();
-    return array;
+    return array.pop();
   }
 
   // Function used to set the current Author data given the selected Author array
