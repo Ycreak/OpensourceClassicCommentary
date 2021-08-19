@@ -8,7 +8,7 @@ import { UtilityService } from '../utility.service';
 import { AuthService } from '../auth/auth.service';
 import { Multiplayer } from './multiplayer.class';
 
-import { Router } from '@angular/router';
+// import { Router } from '@angular/router'; 
 // Allows for drag and drop items in HTML
 import {CdkDragDrop, moveItemInArray, transferArrayItem, CdkDragEnd} from '@angular/cdk/drag-drop';
 // Library used for interacting with the page
@@ -23,8 +23,6 @@ import { Overlay } from '@angular/cdk/overlay';
 import { TemplateRef, ViewChild } from '@angular/core';
 // Imports of different components to be shown within a dialog within the page
 
-// For Firebase communication
-import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 
 
@@ -61,10 +59,7 @@ export class FragmentsComponent implements OnInit {
   mainEditorsJSON : JSON; // JSON that contains all available main Editors and their data for a specific book.
   booksJSON; // JSON that contains all available Books and their data given a specific editor.
   bibJSON; // JSON that contains all available Bibliography data given a specific book.
-  
-  // T_Text;
-  // T_TextCommentary
-  
+    
   // Global Class Variables with text data corresponding to the front-end text fields.
   F_Fragments;
   F_Commentary;
@@ -108,8 +103,6 @@ export class FragmentsComponent implements OnInit {
     private utility: UtilityService,
     public authService: AuthService,
     private dialog: MatDialog, 
-    private _snackBar: MatSnackBar,
-    private overlay: Overlay,
     public multiplayer: Multiplayer
     ) { }
 
@@ -124,18 +117,12 @@ export class FragmentsComponent implements OnInit {
 
     //FIXME: this should be handled within the multiplayer class? It wont call the constructor
     this.multiplayer.InitiateFirestore(this.multiplayer.sessionCode, this.multiplayer.tableName); 
-
   }
 
-  // Opens dialog for the dashboard
-  public OpenText() {
-    const dialogRef = this.dialog.open(TextComponent);
-  }
 
-  public Login() {
-    const dialogRef = this.dialog.open(LoginComponent);
-  }
-
+  /**
+   * Data request fuctions. These will call the API, which will get the data from the server 
+   */
   public RequestEditors(book: number){
     this.api.GetEditors(book).subscribe(
       data => {
@@ -160,7 +147,6 @@ export class FragmentsComponent implements OnInit {
         this.F_Fragments = data;
         this.mainEditorArray = this.CreateEditorArray({id:1}, this.F_Fragments);
         this.selectedEditorArray = this.CreateEditorArray({id:2}, this.F_Fragments); //FIXME: just a quick hack
-
       }
     );  
   }
@@ -174,48 +160,67 @@ export class FragmentsComponent implements OnInit {
     );      
   }
 
-  // Request Newly Selected Text, called on Init and after selecting new text.
-  public RequestBibliography(book: number){  
-    // Retrieve the bibliography corresponding to the text. FIXME: I need the entire bib for a book here, not just an entry
-    // this.main.bibJSON = await this.server.requestBibliography(this.main.currentBook);
-    // Process the retrieved bibliography to appear formatted in the dialog.
-    // this.processBib(this.main.bibJSON);
+  /**
+  * Retrieves commentaries when a fragment is clicked.
+  * @param fragmentID which identifies which fragment is clicked
+  * @editorID ???
+  * @returns none
+  * @author Ycreak
+  */
+  public RequestReferencerID(fragmentName: string, editor: number, book: number){
+    console.log('You called! fragment, editor, book: ', fragmentName, editor, book)
+    this.currentFragment = fragmentName;
+    // Turn on the spinner.
+    this.spinner = true;
+    // Retrieve the Referencer ID and wait before it is retrieved before proceeding with the rest.
+    this.api.GetReferencerID(fragmentName, editor, book).subscribe(
+      data => {
+        data.sort(this.utility.SortNumeric); //FIXME: this must support naming schemes like Warmington.
+        let referencer = Math.min.apply(Math, data)
+        this.RequestCommentaries(referencer); // The lowest ID is used as a referencer
+        return referencer;
+      });
   }
 
-  public Test(thing){
-    // console.log(this.authorsJSON)
-    console.log('test', thing)
-
-
-
+  public RequestCommentaries(referencer: number){
+    // Set commentary available
+    this.noCommentary = false;
+    // Retrieves Fragment Commentary    
+    this.api.GetCommentary(referencer).subscribe(data => this.F_Commentary = data);
+    // Retrieves Fragment Differences
+    this.api.GetDifferences(referencer).subscribe(data => this.F_Differences = data);
+    // Retrieves Fragment Context
+    this.api.GetContext(referencer).subscribe(data => this.F_Context = data);
+    // Retrieves Fragment Translation
+    this.api.GetTranslation(referencer).subscribe(data => this.F_Translation = data);
+    // Retrieves Fragment App. Crit.
+    this.api.GetApparatus(referencer).subscribe(data => this.F_Apparatus = data);
+    // Retrieves Fragment Reconstruction
+    this.api.GetReconstruction(referencer).subscribe(data => this.F_Reconstruction = data);
+    
+    // TODO: check if F_Commentary is empty. If so, set the noCommentary flag to true.
+    
+    // Turn off spinner at the end
+    this.spinner = false;
   }
 
-  public PushToArray(note, array){
-    array.push(note);
-    // console.log(this.tempArray)
-    // console.log('noteArray',this.noteArray);
-    return array;
-  }
-
-  public PopArray(array){
-    console.log('ar', array)
-    return array.pop();
-  }
-
-  // Function used to set the current Author data given the selected Author array
+  /**
+   * These functions are used to set data and are called from HTML (mainly)
+   */
   public SetCurrentAuthorData(data){
+    // Function used to set the current Author data given the selected Author array
     this.currentAuthor = data.id
     this.currentAuthorName = data.name;
   }
 
-  // Function used to set the current Book data given the selected Book array
   public SetCurrentBookData(data){
+    // Function used to set the current Book data given the selected Book array
     this.currentBook = data.id;
     this.currentBookName = data.title;
   }
 
-  // Function used to set the current Book data given the selected Book array
   public SetCurrentEditorData(data){
+    // Function used to set the current Book data given the selected Book array
     this.currentEditor = data.id;
     this.currentEditorName = data.name;
   }
@@ -246,87 +251,51 @@ export class FragmentsComponent implements OnInit {
     return tempArray;
   }
 
-  /**
-  * Retrieves commentaries when a fragment is clicked.
-  * @param fragmentID which identifies which fragment is clicked
-  * @editorID ???
-  * @returns none
-  * @author Ycreak
-  */
- public RequestReferencerID(fragmentName: string, editor: number, book: number){
-  console.log('You called! fragment, editor, book: ', fragmentName, editor, book)
-  this.currentFragment = fragmentName;
-  // Turn on the spinner.
-  this.spinner = true;
-  // Retrieve the Referencer ID and wait before it is retrieved before proceeding with the rest.
-  this.api.GetReferencerID(fragmentName, editor, book).subscribe(
-    data => {
-      data.sort(this.utility.SortNumeric); //FIXME: this must support naming schemes like Warmington.
-      let referencer = Math.min.apply(Math, data)
-      this.RequestCommentaries(referencer); // The lowest ID is used as a referencer
-      return referencer;
-    });
- }
+  //FIXME: this is horrible
+  public AddFragmentToArray(toAdd, array, fragment){
+    console.log(array)
+    let tempArray = array.filter(x => x.fragmentName == fragment);
+    toAdd = toAdd.concat(tempArray)
 
-public RequestCommentaries(referencer: number){
-  // Set commentary available
-  this.noCommentary = false;
-  // Retrieves Fragment Commentary    
-  this.api.GetCommentary(referencer).subscribe(data => this.F_Commentary = data);
-  // Retrieves Fragment Differences
-  this.api.GetDifferences(referencer).subscribe(data => this.F_Differences = data);
-  // Retrieves Fragment Context
-  this.api.GetContext(referencer).subscribe(data => this.F_Context = data);
-  // Retrieves Fragment Translation
-  this.api.GetTranslation(referencer).subscribe(data => this.F_Translation = data);
-  // Retrieves Fragment App. Crit.
-  this.api.GetApparatus(referencer).subscribe(data => this.F_Apparatus = data);
-  // Retrieves Fragment Reconstruction
-  this.api.GetReconstruction(referencer).subscribe(data => this.F_Reconstruction = data);
-  
-  // TODO: check if F_Commentary is empty. If so, set the noCommentary flag to true.
-  
-  // Turn off spinner at the end
-  this.spinner = false;
-}
-
-// Quickly stolen from Dashboard. Utility maybe?
-public GetFragmentNumbers(editor: number, array){
-  // Initialise list
-  let list = [];
-  // Push all fragment numbers to a list
-  for(let key in array){      
-    list.push(array[key].fragmentName);
-  } 
-  // Only take the unique values from this list
-  list = this.utility.uniq(list);
-  // Sort list numerically
-  return list.sort(this.utility.SortNumeric);    
-}
-
-//FIXME: this is horrible
-public AddFragmentToArray(toAdd, array, fragment){
-  console.log(array)
-  let tempArray = array.filter(x => x.fragmentName == fragment);
-  // console.log('fil', tempArray)
-  toAdd = toAdd.concat(tempArray)
-  // console.log('added',this.addedArray, this.selectedEditorArray)
-
-  // console.log('add', toAdd)
-  // console.log('ply', this.playgroundArray)
-
-  return toAdd;
-}
+    return toAdd;
+  }
 
 
      ////////////////////////////
     // HTML RELATED FUNCTIONS //
    ////////////////////////////
   // Allows a fragment to be moved and dropped to create a custom ordering
-  moveAndDrop(event: CdkDragDrop<string[]>, array) {
+  public moveAndDrop(event: CdkDragDrop<string[]>, array) {
     moveItemInArray(array, event.previousIndex, event.currentIndex);
-    // console.log(this.selectedEditorArray)
   }
+
+  /**
+   * Opens a confirmation dialog with the provided message
+   * @param message shows text about what is happening
+   * @param item the item that is about to change
+   */
+  public OpenConfirmationDialog(message, item): Observable<boolean>{
+    const dialogRef = this.dialog.open(ConfirmationDialog2, {
+      width: 'auto',
+      data: {
+        message: message,
+        item: item,
+      }
+    });  
+    return dialogRef.afterClosed(); // Returns observable.
+  }
+
+  /**
+   * Dialog handlers
+   */ 
+  public OpenText() {
+    const dialogRef = this.dialog.open(TextComponent);
+  }
+
+  public Login() {
+    const dialogRef = this.dialog.open(LoginComponent);
+  }
+
   // Opens dialog for the bibliography
   public OpenBibliography() {
     // let dialogRef = this.dialog.open(this.CallBibliography); 
@@ -347,139 +316,8 @@ public AddFragmentToArray(toAdd, array, fragment){
       maxHeight: '90vh' //you can adjust the value as per your view
       });
   }
-  // Opens dialog for the dashboard
-  // public openDashboard() {
-  //   const dialogRef = this.dialog.open(DashboardComponent);
-  // }
-
-
-  
-  // PLAYGROUND IMPLEMENTATION. For now not used.
-  // public OnDragEnded(event: CdkDragEnd): void {
-  //   console.log(event.source.getFreeDragPosition()); // returns { x: 0, y: 0 }
-  //   console.log(event.source.getRootElement());
-  // }
-
-  // public OnDragEnded(event) {
-  //   console.log('Moved in pixels', event.source.getFreeDragPosition()); // returns { x: 0, y: 0 }
-  //   let element = event.source.getRootElement();
-  //   let boundingClientRect = element.getBoundingClientRect();
-  //   let parentPosition = this.GetPosition(element);
-  //   console.log('Absolute Position', 'x: ' + (boundingClientRect.x - parentPosition.left), 'y: ' + (boundingClientRect.y - parentPosition.top));        
-  //   console.log(event.distance)
-
-  //   console.log(event)
-  // }
-  
-  // public GetPosition(el) {
-  //   let x = 0;
-  //   let y = 0;
-  //   while(el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
-  //     x += el.offsetLeft - el.scrollLeft;
-  //     y += el.offsetTop - el.scrollTop;
-  //     el = el.offsetParent;
-  //   }
-  //   return { top: y, left: x };
-  // }
-
-  /**
-   * Opens Material popup window with the given message
-   * FIXME: Should be in Utilities or something, as duplicate in Dashboard.
-   * @param message information that is showed in the popup
-   */
-  public OpenSnackbar(message){
-    this._snackBar.open(message, 'Close', {
-      // duration: 5000,
-    });
-  }
-  /**
-   * Function to handle the error err. Calls Snackbar to show it on screen
-   * @param err the generated error
-   */
-  HandleErrorMessage(err) {
-    console.log(err)
-    let output = ''
-    //TODO: needs to be more sophisticated
-    if(err.statusText == 'OK'){
-      output = 'Operation succesful.' 
-    }
-    else{
-      output = 'Something went wrong.'
-    }
-    output = String(err.status) + ': ' + output + ' ' + err.statusText;
-    this.OpenSnackbar(output); //FIXME: Spaghetti.
-  } 
-  /**
-   * Opens a confirmation dialog with the provided message
-   * @param message shows text about what is happening
-   * @param item the item that is about to change
-   */
-  public OpenConfirmationDialog(message, item): Observable<boolean>{
-    const dialogRef = this.dialog.open(ConfirmationDialog2, {
-      width: 'auto',
-      data: {
-        message: message,
-        item: item,
-      }
-    });  
-    return dialogRef.afterClosed(); // Returns observable.
-  }
 
 }
-
-// // _______        _   
-// // |__   __|      | |  
-// //    | | _____  _| |_ 
-// //    | |/ _ \ \/ / __|
-// //    | |  __/>  <| |_ 
-// //    |_|\___/_/\_\\__|
-    
-// class Text{
-//   constructor(
-//     private api: ApiService,
-//     private utility: UtilityService,
-//   ){  }
-
-//     T_Text; // I think this should be a JSON
-
-//   public RequestText(book: number){
-//     this.api.GetText(book).subscribe(
-//       data => {
-//         this.T_Text = data;
-//       }
-//     );  
-//   }
-
-//   public RequestCommentary(lineNumber: number){
-//     this.selectedLine = lineNumber;
-    
-//     this.api.GetTextCommentary(this.currentBook, lineNumber).subscribe(
-//       data => {
-//         this.F_Commentary = data;
-//       }
-//     );  
-//   }
-
-//   public IsWithinScope(commentaarScope : number){
-//     if (commentaarScope + 6 > this.selectedLine){
-//       return true;
-//     } else {
-//       return false;
-//     }
-//   }
-
-//   public CheckEmptyBlock(block : JSON){
-//     if(this.utility.IsEmpty(block)) {
-//       return true;
-//     } else {
-//       return false;
-//     }
-//   }
-
-// }
-
-
-
 
 // Simple class to open the about information written in said html file.
 @Component({

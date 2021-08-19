@@ -58,7 +58,7 @@
             (click)="this.selectedFragment = this.selectedLine = ''"
             (click)="this.fragmentForm.reset(); this.contentForm.reset(); this.contextForm.reset()"
             (click)="this.selectedEditorArray = CreateEditorArray(editorData.id, this.F_Fragments)"
-            (click)="this.fragmentNumberList = GetFragmentNumbers(editorData.id, this.selectedEditorArray)">
+            (click)="this.fragmentNumberList = this.utility.GetFragmentNumbers(editorData.id, this.selectedEditorArray)">
                 {{ editorData.name }}                       
             </mat-option>
             </mat-select>

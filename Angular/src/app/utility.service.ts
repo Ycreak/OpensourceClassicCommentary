@@ -1,11 +1,87 @@
 import { Injectable } from '@angular/core';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UtilityService {
 
-  constructor() { }
+  constructor(
+    private snackBar: MatSnackBar,
+  ) { }
+
+
+    /**
+     * Shared Dashboard and Fragments functions
+     */
+
+  /**
+   * Returns a sorted list of all fragments numbers from a given editor
+   * @param editor editor who's fragment numbers have to be retrieved
+   * @param array array of all fragments. This is F_Fragments. //TODO: is this true?
+   */
+    public GetFragmentNumbers(editor: number, array){
+      // Initialise list
+      let list = [];
+      // Push all fragment numbers to a list
+      for(let key in array){      
+        list.push(array[key].fragmentName);
+      } 
+      // Only take the unique values from this list
+      list = this.uniq(list);
+      // Sort list numerically
+      return list.sort(this.SortNumeric);    
+    }
+
+    // This function merges the multiple lines in a single fragment.
+    // The structure looks as follows: Fragment 2, [[1, "hello"],[2,"hi"]]
+    public MergeLinesIntoFragment(givenArray){
+      let array = [];
+      let contentArray = [];
+      // For each element in the given array
+      for(let element in givenArray){
+        // Data needed for proper retrieval
+        let fragmentName = givenArray[element].fragmentName
+        let lineContent = givenArray[element].lineContent //FIXME: Should be lineContent
+        let lineName = givenArray[element].lineName
+        let status = givenArray[element].status 
+        let buildString = '<p>' + lineName + ': ' + lineContent + '</p>';
+        // Turn tabs into HTML tabs
+        buildString = this.ConvertWhiteSpace(buildString);
+        // Find the element.fragmentName in the array and check whether it exists.
+        let currentFragment = array.find(x => x.fragmentName === fragmentName)
+        if(currentFragment){ // The current fragmentName is already in the array.
+          // Save the content found in a temporary array
+          contentArray = currentFragment.content;
+          // Delete the entry (to allow it to be recreated after this if)
+          array.splice(array.findIndex((x => x.fragmentName === fragmentName)),1);   
+        }
+        // Push the content (either completely new or with the stored content included)      
+        contentArray.push({
+          lineName: lineName,
+          lineContent: lineContent,
+          lineComplete: buildString,
+        })
+        // Push the created data to the array and empty the used arrays.
+        array.push({ fragmentName: givenArray[element].fragmentName, content: contentArray, status: status})
+        contentArray = [];
+      }
+      // Sort the lines in array, needs to be own function
+      for(let element in array){
+        array[element].content.sort(this.SortFragmentsArrayNumerically);
+      }
+      
+      // Put normal fragments first, then incerta and then adespota. TODO: should be separate function
+      let normal = this.FilterObjOnKey(array, 'status', '')
+      let incerta = this.FilterObjOnKey(array, 'status', 'Incertum')
+      let adesp = this.FilterObjOnKey(array, 'status', 'Adesp.')
+      // Concatenate in the order we want (i'm a hacker)
+      array = normal.concat(incerta).concat(adesp)
+  
+      console.log('array', array)
+      return array
+    }
+
 
   /**
   * Sorts array numerically on fragment number
@@ -119,55 +195,6 @@ export class UtilityService {
     return string
   }
 
-  // This function merges the multiple lines in a single fragment.
-  // The structure looks as follows: Fragment 2, [[1, "hello"],[2,"hi"]]
-  public MergeLinesIntoFragment(givenArray){
-    let array = [];
-    let contentArray = [];
-    // For each element in the given array
-    for(let element in givenArray){
-      // Data needed for proper retrieval
-      let fragmentName = givenArray[element].fragmentName
-      let lineContent = givenArray[element].lineContent //FIXME: Should be lineContent
-      let lineName = givenArray[element].lineName
-      let status = givenArray[element].status 
-      let buildString = '<p>' + lineName + ': ' + lineContent + '</p>';
-      // Turn tabs into HTML tabs
-      buildString = this.ConvertWhiteSpace(buildString);
-      // Find the element.fragmentName in the array and check whether it exists.
-      let currentFragment = array.find(x => x.fragmentName === fragmentName)
-      if(currentFragment){ // The current fragmentName is already in the array.
-        // Save the content found in a temporary array
-        contentArray = currentFragment.content;
-        // Delete the entry (to allow it to be recreated after this if)
-        array.splice(array.findIndex((x => x.fragmentName === fragmentName)),1);   
-      }
-      // Push the content (either completely new or with the stored content included)      
-      contentArray.push({
-        lineName: lineName,
-        lineContent: lineContent,
-        lineComplete: buildString,
-      })
-      // Push the created data to the array and empty the used arrays.
-      array.push({ fragmentName: givenArray[element].fragmentName, content: contentArray, status: status})
-      contentArray = [];
-    }
-    // Sort the lines in array, needs to be own function
-    for(let element in array){
-      array[element].content.sort(this.SortFragmentsArrayNumerically);
-    }
-    
-    // Put normal fragments first, then incerta and then adespota
-    let normal = this.FilterObjOnKey(array, 'status', '')
-    let incerta = this.FilterObjOnKey(array, 'status', 'Incertum')
-    let adesp = this.FilterObjOnKey(array, 'status', 'Adesp.')
-    // Concatenate in the order we want (i'm a hacker)
-    array = normal.concat(incerta).concat(adesp)
-
-    console.log('array', array)
-    return array
-  }
-
   public FilterObjOnKey(array, key, value){
     var temp = array.filter(obj => {
       return obj[key] === value;
@@ -179,6 +206,49 @@ export class UtilityService {
   public FilterArrayOnKey(array, key, value){
     return array.filter(x => x[key] === value);
   }
+
+  public PushToArray(item, array){
+    // Simple function to push given item to given array
+    array.push(item);
+    return array;
+  }
+
+  public PopArray(array){
+    // Simple function to pop item from given array  
+    let _ = array.pop();
+    return array;
+  }
+
+  public Test(thing){
+    console.log('Test output:', thing)
+  }
+
+    /**
+   * Opens Material popup window with the given message
+   * @param message information that is showed in the popup
+   */
+  public OpenSnackbar(message){
+    this.snackBar.open(message, 'Close', {
+    });
+  }
+
+  /**
+   * Function to handle the error err. Calls Snackbar to show it on screen
+   * @param err the generated error
+   */
+  public HandleErrorMessage(err) {
+    console.log(err)
+    let output = ''
+    //TODO: needs to be more sophisticated
+    if(err.statusText == 'OK'){
+      output = 'Operation succesful.' 
+    }
+    else{
+      output = 'Something went wrong.'
+    }
+    output = String(err.status) + ': ' + output + ' ' + err.statusText;
+    this.OpenSnackbar(output); //FIXME: Spaghetti.
+  } 
 
 }
 

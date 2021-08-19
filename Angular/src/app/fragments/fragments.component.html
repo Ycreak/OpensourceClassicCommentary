@@ -155,10 +155,10 @@
                     <div mat-dialog-content>
                         <mat-form-field class="input-form">
                             <input matInput placeholder="Note" [(ngModel)]='note'>
-                                <button type="button" mat-icon-button matSuffix (click)="this.noteArray = PopArray(this.noteArray)">
+                                <button type="button" mat-icon-button matSuffix (click)="this.noteArray = this.utility.PopArray(this.noteArray)">
                                     <mat-icon>{{'remove'}}</mat-icon>
                                 </button>
-                                <button type="button" mat-icon-button matSuffix (click)="this.noteArray = PushToArray(note, this.noteArray)">
+                                <button type="button" mat-icon-button matSuffix (click)="this.noteArray = this.utility.PushToArray(note, this.noteArray)">
                                     <mat-icon>{{'add'}}</mat-icon>
                                 </button>
                             <mat-hint>Add a note</mat-hint>
@@ -174,7 +174,7 @@
             <!-- For loop for moveable fragments. (should be clickable for more information) -->
             <div cdkDropList class="fragment-list" (cdkDropListDropped)="moveAndDrop($event, this.selectedEditorArray)">
                 <div class="fragment-box" *ngFor="let arrayItem of this.selectedEditorArray" 
-                    (click)="this.Test('hi')" cdkDrag>
+                    (click)="this.utility.Test('hi')" cdkDrag>
                     <div> 
                         <!-- TODO: Show editor name behind fragment. Also, show its relation to the TRF. When clicked,
                         load the commentaries for this fragment and that of the corresponding TRF fragment. -->
@@ -315,7 +315,7 @@
                 <mat-select [(ngModel)]="selectedEditor">
                     <mat-option *ngFor="let data of this.editorsJSON" [value]="data"
                         (click)="this.playgroundArray = CreateEditorArray(data, this.F_Fragments)"
-                        (click)="this.fragmentNumberList = GetFragmentNumbers(data.id, this.playgroundArray)">
+                        (click)="this.fragmentNumberList = this.utility.GetFragmentNumbers(data.id, this.playgroundArray)">
                         {{ data.name }}                       
                     </mat-option>
                 </mat-select>
@@ -327,7 +327,7 @@
                     <mat-select [(ngModel)]="toAddEditor">
                         <mat-option *ngFor="let data of this.editorsJSON" [value]="data"
                             (click)="this.playgroundArray2 = CreateEditorArray(data, this.F_Fragments)"
-                            (click)="this.fragmentNumberList2 = GetFragmentNumbers(data.id, this.playgroundArray2)">
+                            (click)="this.fragmentNumberList2 = this.utility.GetFragmentNumbers(data.id, this.playgroundArray2)">
                             {{ data.name }}                       
                         </mat-option>
                     </mat-select>
@@ -348,7 +348,7 @@
             <div mat-dialog-content>
                 <mat-form-field class="input-form">
                     <input matInput placeholder="Add fragment" [(ngModel)]='note'>
-                    <button type="button" mat-icon-button matSuffix (click)="this.noteArray = PopArray(this.noteArray)">
+                    <button type="button" mat-icon-button matSuffix (click)="this.noteArray = this.utility.PopArray(this.noteArray)">
                         <mat-icon>{{'remove'}}</mat-icon>
                     </button>
                     <!-- <button type="button" mat-icon-button matSuffix (click)="this.noteArray = PushToArray(note, this.noteArray)"> -->
@@ -363,7 +363,7 @@
         <hr>
         <!-- For loop to print all the base selected fragments -->
         <div class="row">
-            <div *ngFor="let arrayItem of this.playgroundArray" class="playground" cdkDrag (cdkDragEnded)="OnDragEnded($event)">
+            <div *ngFor="let arrayItem of this.playgroundArray" class="playground" cdkDrag>
                 <b>Fragment {{arrayItem.fragmentName}}</b> &nbsp; <i>{{arrayItem.status}}</i>
                 <div *ngFor="let item of arrayItem.content">           
                     <div [innerHTML]="item.lineComplete"></div>

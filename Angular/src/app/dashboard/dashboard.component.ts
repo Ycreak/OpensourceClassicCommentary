@@ -164,23 +164,7 @@ export class DashboardComponent implements OnInit {
     return this.utility.MergeLinesIntoFragment(tempArray);
     // return tempArray;
   }
-  /**
-   * Returns a sorted list of all fragments numbers from a given editor
-   * @param editor editor who's fragment numbers have to be retrieved
-   * @param array array of all fragments. This is F_Fragments. //TODO: is this true?
-   */
-  public GetFragmentNumbers(editor: number, array){
-    // Initialise list
-    let list = [];
-    // Push all fragment numbers to a list
-    for(let key in array){      
-      list.push(array[key].fragmentName);
-    } 
-    // Only take the unique values from this list
-    list = this.utility.uniq(list);
-    // Sort list numerically
-    return list.sort(this.utility.SortNumeric);    
-  }
+
   /**
    * Returns a sorted list of line numbers from a given fragment 
    * @param fragment fragment who's line numbers have to be retrieved
@@ -307,7 +291,7 @@ export class DashboardComponent implements OnInit {
   public RequestAuthors(){
     this.api.GetAuthors().subscribe(
       data => this.authorsJSON = data,
-      err => this.HandleErrorMessage(err),
+      err => this.utility.HandleErrorMessage(err),
     );      
   }
   /**
@@ -317,7 +301,7 @@ export class DashboardComponent implements OnInit {
   public RequestBooks(author: number){
     this.api.GetBooks(author).subscribe(
       data => this.booksJSON = data,
-      err => this.HandleErrorMessage(err),
+      err => this.utility.HandleErrorMessage(err),
     );      
   }
   /**
@@ -327,7 +311,7 @@ export class DashboardComponent implements OnInit {
   public RequestEditors(book: number){
     this.api.GetEditors(book).subscribe(
       data => this.editorsJSON = data,
-      err => this.HandleErrorMessage(err),
+      err => this.utility.HandleErrorMessage(err),
     );
   }
   /**
@@ -337,7 +321,7 @@ export class DashboardComponent implements OnInit {
   public RequestFragments(book: number){
     this.api.GetFragments(book).subscribe(
       data => this.F_Fragments = data,
-      err => this.HandleErrorMessage(err),
+      err => this.utility.HandleErrorMessage(err),
     );  
   }
 
@@ -355,19 +339,19 @@ export class DashboardComponent implements OnInit {
   public RequestReviseContent(form){
     //FIXME: dont just push everything to the database.
     this.api.CreateTranslation(new Translation(0, this.referencer, form.translation)).subscribe(
-      res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err)); 
+      res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)); 
 
     this.api.CreateApparatus(new Apparatus(0, this.referencer, form.apparatus)).subscribe(
-      res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err)); 
+      res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)); 
 
     this.api.CreateDifferences(new Differences(0, this.referencer, form.differences)).subscribe(
-      res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err));
+      res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err));
 
     this.api.CreateCommentary(new Commentary(0, this.referencer, form.commentary)).subscribe(
-      res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err)); 
+      res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)); 
 
     this.api.CreateReconstruction(new Reconstruction(0, this.referencer, form.reconstruction)).subscribe(
-      res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err)); 
+      res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)); 
   }
   /**
    * Pushes the bibliography form to the database via the api
@@ -378,7 +362,7 @@ export class DashboardComponent implements OnInit {
       form.editors, form.author, form.book, form.article, form.journal,
       form.volume, form.chapterTitle, form.pages, form.place, form.year,
       form.website, form.url, form.consultDate)).subscribe(
-      res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err));
+      res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err));
   }
   /**
    * Pushes a new context form to the database via the api
@@ -386,7 +370,7 @@ export class DashboardComponent implements OnInit {
    */
   public RequestCreateContext(form){
     this.api.CreateContext(new Context(0, this.referencer, form.contextAuthor, form.context)).subscribe(
-      res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err));
+      res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err));
   }
   /**
    * Pushes a revised context form to the database via the api
@@ -396,7 +380,7 @@ export class DashboardComponent implements OnInit {
    */
   public RequestReviseContext(form){
     this.api.CreateContext(new Context(this.selectedContext, this.referencer, form.contextAuthor, form.context)).subscribe(
-      res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err));
+      res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err));
   }
   /**
    * Pushes the publish flag to the database for the given parameters
@@ -407,7 +391,7 @@ export class DashboardComponent implements OnInit {
    */
   public RequestPublishFlag(editorID: number, bookID: number, fragmentID: string, flag: number){
     this.api.SetPublishFlag(editorID, bookID, fragmentID, flag).subscribe(
-      res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err));
+      res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err));
   }
   /**
    * Creates the given author via the api
@@ -418,10 +402,10 @@ export class DashboardComponent implements OnInit {
       if(result){
         this.api.CreateAuthor(new Author(0, authorName)).subscribe(
           res => {
-            this.HandleErrorMessage(res),
+            this.utility.HandleErrorMessage(res),
             this.RequestAuthors()
            },
-          err => this.HandleErrorMessage(err),
+          err => this.utility.HandleErrorMessage(err),
         );
       }
     });
@@ -435,10 +419,10 @@ export class DashboardComponent implements OnInit {
       if(result){
         this.api.DeleteAuthor(author).subscribe(
           res => {
-            this.HandleErrorMessage(res),
+            this.utility.HandleErrorMessage(res),
             this.RequestAuthors()
            },
-          err => this.HandleErrorMessage(err),
+          err => this.utility.HandleErrorMessage(err),
         );  
       }
     });
@@ -452,7 +436,7 @@ export class DashboardComponent implements OnInit {
     this.OpenConfirmationDialog('Are you sure you want to CREATE this book?',bookName).subscribe(result => {
       if(result){
         this.api.CreateBook(new Book(0, author, bookName)).subscribe(//FIXME: dont pass ID. autoincrement
-          res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err)
+          res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
         );  
       }
     });    
@@ -466,7 +450,7 @@ export class DashboardComponent implements OnInit {
     this.OpenConfirmationDialog('Are you sure you want to DELETE this book?', this.selectedBook.name).subscribe(result => {
       if(result){
         this.api.DeleteBook(book, author).subscribe(
-          res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err)
+          res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
         );  
       }
     });  
@@ -481,7 +465,7 @@ export class DashboardComponent implements OnInit {
     this.OpenConfirmationDialog('Are you sure you want to CREATE this editor?', editorName).subscribe(result => {
       if(result){     // Create editor as not being a main editor.
         this.api.CreateEditor(new Editor(0, book, editorName, 0)).subscribe(//FIXME: dont pass ID. autoincrement
-          res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err)
+          res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
         );  
       }
     });  
@@ -496,7 +480,7 @@ export class DashboardComponent implements OnInit {
     this.OpenConfirmationDialog('Are you sure you want to DELETE this editor?', this.selectedEditor.name).subscribe(result => {
       if(result){
         this.api.DeleteEditor(editor).subscribe(
-          res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err)
+          res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
         );  
       }
     });  
@@ -509,7 +493,7 @@ export class DashboardComponent implements OnInit {
    */
   public RequestSetMainEditor(editor: number, book: number, author: number){
     this.api.SetMainEditorFlag(editor, 1).subscribe(
-      res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err)
+      res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
     );
   }
   /**
@@ -520,7 +504,7 @@ export class DashboardComponent implements OnInit {
    */
   public RequestDeleteMainEditor(editor: number, book: number, author: number){
     this.api.SetMainEditorFlag(editor, 0).subscribe(
-      res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err)
+      res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
     );
   }
   /**
@@ -531,7 +515,7 @@ export class DashboardComponent implements OnInit {
    */
   public RequestCreateFragment(form, editor: number, book: number){  
     this.api.CreateFragment(new Fragment(0, book, editor, form.fragmentNumber, form.lineNumber, form.lineContent, 0, '')).subscribe(
-      res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err)
+      res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
     );
   }
   /**
@@ -545,7 +529,7 @@ export class DashboardComponent implements OnInit {
     this.OpenConfirmationDialog('Are you sure you want to DELETE this fragment?', fragmentname).subscribe(result => {
       if(result){
         this.api.DeleteFragment(editor, book, fragmentname).subscribe(
-          res => this.HandleErrorMessage(res), err => this.HandleErrorMessage(err)
+          res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
         );  
       }
     });     
@@ -575,33 +559,8 @@ export class DashboardComponent implements OnInit {
     });  
     return dialogRef.afterClosed(); // Returns observable.
   }
-  /**
-   * Opens Material popup window with the given message
-   * @param message information that is showed in the popup
-   */
-  public OpenSnackbar(message){
-    this._snackBar.open(message, 'Close', {
-      duration: 5000,
-    });
-  }
 
-  /**
-   * Function to handle the error err. Calls Snackbar to show it on screen
-   * @param err the generated error
-   */
-  HandleErrorMessage(err) {
-    console.log(err)
-    let output = ''
-    //TODO: needs to be more sophisticated
-    if(err.statusText == 'OK'){
-      output = 'Operation succesful.' 
-    }
-    else{
-      output = 'Something went wrong.'
-    }
-    output = String(err.status) + ': ' + output + ' ' + err.statusText;
-    this.OpenSnackbar(output); //FIXME: Spaghetti.
-  } 
+
 }
 
   /**
