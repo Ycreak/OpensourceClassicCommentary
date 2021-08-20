@@ -1,6 +1,6 @@
-import { Injectable, Component } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import {CdkDragDrop, moveItemInArray, transferArrayItem, CdkDragEnd} from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
 //   __  __       _ _   _       _                       
 //  |  \/  |     | | | (_)     | |                      
@@ -13,9 +13,9 @@ import {CdkDragDrop, moveItemInArray, transferArrayItem, CdkDragEnd} from '@angu
 @Injectable({
     providedIn: 'root'
   })
-  @Component({
-    template: ''
-  })
+  // @Component({
+  //   template: ''
+  // })
   export class Multiplayer{
     constructor(
         private firestore: AngularFirestore,
@@ -154,36 +154,6 @@ import {CdkDragDrop, moveItemInArray, transferArrayItem, CdkDragEnd} from '@angu
       // this.OpenSnackbar('Please create a new session before doing anything.') TODO:
     }
     /**
-     * Function to create a custom fragment. Can also be used to create
-     * little headers by leaving body or header empty.
-     * @param body 
-     * @param header 
-     * @param array 
-     * @return array in the correct format to be processed
-     */
-    public CreateOwnFragment(body, header, array, noteStatus){
-      // Set a value if a field has been left empty. Otherwise Firebase will be mad.
-      if (body == null){
-        body = ' '
-      }
-      if (header == null){
-        header == ' '
-      }
-      // Create a array for each content line. Here it only allows one.
-      let contentArray = []
-      // Push the array with one entry to a content array. This is only done like
-      // this to allow easy processing with the CreateFragments function in Utilities.
-      contentArray.push({
-        lineName: header,
-        lineContent: body,
-        lineComplete: body, // This should have html formatting.
-      })
-      // Push the created data to the array and empty the used arrays.
-      array.push({ fragmentName: header, content: contentArray, note: noteStatus})
-      // Return this new array.
-      return array
-    }
-    /**
      * Simple function to empty the recycle bin.
      */
     public EmptyRecylceBin(){
@@ -213,7 +183,7 @@ import {CdkDragDrop, moveItemInArray, transferArrayItem, CdkDragEnd} from '@angu
         });   
     }
   
-    // TODO:
+    // TODO: need to be able to call confirmation dialogs from anywhere
     // public RequestDeleteSession(session: string){
     //   this.OpenConfirmationDialog('Are you sure you want to DELETE this session?', session).subscribe(result => {
     //     if(result){

@@ -7,17 +7,16 @@ import { ApiService } from '../api.service';
 import { UtilityService } from '../utility.service';
 import { AuthService } from '../auth/auth.service';
 import { Multiplayer } from './multiplayer.class';
+import { Playground } from './playground.class';
 
-// import { Router } from '@angular/router'; 
-// Allows for drag and drop items in HTML
-import {CdkDragDrop, moveItemInArray, transferArrayItem, CdkDragEnd} from '@angular/cdk/drag-drop';
+// FIXME: why do i need to export this class?
+export { Multiplayer } from './multiplayer.class';
+export { Playground } from './playground.class';
+
 // Library used for interacting with the page
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 import {Inject, Injectable} from '@angular/core';
-
-import {MatSnackBar} from '@angular/material/snack-bar';
-import { Overlay } from '@angular/cdk/overlay';
 
 // To allow dialog windows within the current window
 import { TemplateRef, ViewChild } from '@angular/core';
@@ -34,41 +33,36 @@ import { Observable } from 'rxjs';
 })
 export class FragmentsComponent implements OnInit {
 
-  @ViewChild('CallBibliography') CallBibliography: TemplateRef<any>;
+  // @ViewChild('CallBibliography') CallBibliography: TemplateRef<any>;
   @ViewChild('CallBookSelect') CallBookSelect: TemplateRef<any>;
   @ViewChild('CallAbout') CallAbout: TemplateRef<any>;
 
-  // Variables to split the bibliography in different sections.
-  bibBooks : JSON;
-  bibArticles: JSON;
-  bibWebsites: JSON;
-  bibInCollection : JSON; //TODO: this one should be added.
   // Toggle switches
   columnOneToggle: boolean = true;
   columnTwoToggle: boolean = false; // Boolean to toggle between 2 and 3 column mode.
   columnThreeToggle: boolean = true;
   fourColumnMode: boolean = false;
-  Playground: boolean = false;
-  Multiplayer_column: boolean = false;
+  playground_column: boolean = false;
+  multiplayer_column: boolean = false;
   
   spinner: boolean = true; // Boolean to toggle the spinner.
   noCommentary: boolean = false; // Shows banner if no commentary is available.
-  // FIXME: proper data types
-  authorsJSON; // JSON that contains all available Authors and their data.
-  editorsJSON; // JSON that contains all available Editors and their data for a specific book.
+
+  authorsJSON : object; // JSON that contains all available Authors and their data.
+  editorsJSON : object; // JSON that contains all available Editors and their data for a specific book.
   mainEditorsJSON : JSON; // JSON that contains all available main Editors and their data for a specific book.
-  booksJSON; // JSON that contains all available Books and their data given a specific editor.
-  bibJSON; // JSON that contains all available Bibliography data given a specific book.
+  booksJSON : object; // JSON that contains all available Books and their data given a specific editor.
+  bibJSON : object; // JSON that contains all available Bibliography data given a specific book.
     
   // Global Class Variables with text data corresponding to the front-end text fields.
-  F_Fragments;
-  F_Commentary;
-  F_Apparatus;
-  F_Translation;
-  F_Context;
-  F_Differences;
-  F_ReferencerID;
-  F_Reconstruction;
+  F_Fragments : object;
+  F_Commentary : object;
+  F_Apparatus : object;
+  F_Translation : object;
+  F_Context : object;
+  F_Differences : object;
+  F_ReferencerID : object;
+  F_Reconstruction : object;
   // Variables with currentAuthor, Book and Editor. Mostly placeholder data.
   currentAuthor : number = 4;
   currentBook : number = 6;
@@ -77,33 +71,35 @@ export class FragmentsComponent implements OnInit {
   currentAuthorName : string = "Ennius";
   currentBookName : string = "Thyestes";
   currentEditorName : string = "TRF";
+
+  selectedEditor : number;
+  selectedFragment : number;
+  selectedLine : number;
+
+  // Allows for notes to be added on screen
+  note : string = '';
+  noteArray : Array<string> = [];
+
   // This array contains all the information from a specific book. Functions can use this data.
   selectedEditorArray = [];
   mainEditorArray = [];
+  
+  // Four column mode variables
   editor1 = [];
   editor2 = [];
   editor3 = [];
   editor4 = [];
-  // Work in progress
-  playgroundArray = [];
-  playgroundArray2 = [];
-  fragmentNumberList2;
 
+  // Used as the identifier of a fragment
   referencer : number = 0;
-  note;
-  noteArray = [];
-  addedArray = []; // just trying something
-  selectedEditor;
-  selectedFragment;
-  selectedLine : number;
-  fragmentNumberList;
-  
+   
   constructor(
     private api: ApiService,
     private utility: UtilityService,
     public authService: AuthService,
     private dialog: MatDialog, 
-    public multiplayer: Multiplayer
+    public multiplayer: Multiplayer,
+    public playground: Playground,
     ) { }
 
   ngOnInit(): void {
@@ -118,7 +114,6 @@ export class FragmentsComponent implements OnInit {
     //FIXME: this should be handled within the multiplayer class? It wont call the constructor
     this.multiplayer.InitiateFirestore(this.multiplayer.sessionCode, this.multiplayer.tableName); 
   }
-
 
   /**
    * Data request fuctions. These will call the API, which will get the data from the server 
@@ -249,24 +244,6 @@ export class FragmentsComponent implements OnInit {
     console.log('Output', tempArray)
     // Return the fragment with all its fields
     return tempArray;
-  }
-
-  //FIXME: this is horrible
-  public AddFragmentToArray(toAdd, array, fragment){
-    console.log(array)
-    let tempArray = array.filter(x => x.fragmentName == fragment);
-    toAdd = toAdd.concat(tempArray)
-
-    return toAdd;
-  }
-
-
-     ////////////////////////////
-    // HTML RELATED FUNCTIONS //
-   ////////////////////////////
-  // Allows a fragment to be moved and dropped to create a custom ordering
-  public moveAndDrop(event: CdkDragDrop<string[]>, array) {
-    moveItemInArray(array, event.previousIndex, event.currentIndex);
   }
 
   /**

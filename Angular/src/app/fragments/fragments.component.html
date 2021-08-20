@@ -17,8 +17,8 @@
     <button mat-button class="btn" routerLink="/dashboard" *ngIf="this.authService.isLoggedIn">DASHBOARD</button>
     <mat-checkbox class="btn" [(ngModel)]="columnOneToggle">COM</mat-checkbox>
     <mat-checkbox class="btn" [(ngModel)]="columnTwoToggle">SEC</mat-checkbox>
-    <mat-checkbox class="btn" [(ngModel)]="Playground">PLY</mat-checkbox>
-    <mat-checkbox class="btn" [(ngModel)]="Multiplayer_column">MUL</mat-checkbox>
+    <mat-checkbox class="btn" [(ngModel)]="playground_column">PLY</mat-checkbox>
+    <mat-checkbox class="btn" [(ngModel)]="multiplayer_column">MUL</mat-checkbox>
     <mat-checkbox class="btn" [(ngModel)]="fourColumnMode">4COL</mat-checkbox>
     <button mat-button class="btn" [matMenuTriggerFor]="menu">MENU</button>
 </mat-toolbar>
@@ -63,32 +63,6 @@
             </mat-option>
         </mat-select>
     </mat-form-field>    
-</ng-template>
-
-<!-- Bibliography dialog (TODO: should use bibtex)) -->
-<ng-template #CallBibliography>   
-    <h3>Bibliography for {{this.currentAuthorName}}: {{this.currentBookName}}</h3>
-    <hr>
-    <h4>Books</h4>
-    <mat-nav-list class="bibList">
-        <mat-list-item *ngFor="let line of this.bibBooks">
-        <b>{{ line[1] }}</b> &nbsp; <i>{{ line[2] }}.</i> &nbsp; ({{ line[8] }}, {{ line[9] }}).
-        </mat-list-item>
-    </mat-nav-list>
-    <hr>
-    <h4>Articles</h4>
-    <mat-nav-list class="bibList">
-        <mat-list-item *ngFor="let line of this.bibArticles">
-        <b>{{ line[1] }}</b> &nbsp; "{{ line[3] }}". In: &nbsp; <i>{{ line[4] }}</i> &nbsp; {{ line[5] }}, &nbsp; ({{ line[8] }}, {{ line[9] }}), {{ line[7] }}.
-        </mat-list-item>
-    </mat-nav-list>
-    <hr>
-    <h4>Websites</h4>
-    <mat-nav-list class="bibList">
-        <mat-list-item *ngFor="let line of this.bibWebsites">
-        <b>{{ line[10] }}.</b> &nbsp; URL: {{ line[11] }} &nbsp; (visited on {{ line[12] }})
-        </mat-list-item>
-    </mat-nav-list>
 </ng-template>
 
 <!-- Show a spinner if query with database is in progress -->
@@ -172,7 +146,7 @@
             </div>
 
             <!-- For loop for moveable fragments. (should be clickable for more information) -->
-            <div cdkDropList class="fragment-list" (cdkDropListDropped)="moveAndDrop($event, this.selectedEditorArray)">
+            <div cdkDropList class="fragment-list" (cdkDropListDropped)="this.utility.moveAndDrop($event, this.selectedEditorArray)">
                 <div class="fragment-box" *ngFor="let arrayItem of this.selectedEditorArray" 
                     (click)="this.utility.Test('hi')" cdkDrag>
                     <div> 
@@ -307,15 +281,15 @@
     
 
     <!-- Row to show the playground -->
-    <div class="container-fluid" *ngIf="Playground">
+    <div class="container-fluid" *ngIf="playground_column">
         <div class="row">
             <!-- Possiblity to select an editor to begin with -->
             <mat-form-field class="select-form">
                 <mat-label>Editor</mat-label>
                 <mat-select [(ngModel)]="selectedEditor">
                     <mat-option *ngFor="let data of this.editorsJSON" [value]="data"
-                        (click)="this.playgroundArray = CreateEditorArray(data, this.F_Fragments)"
-                        (click)="this.fragmentNumberList = this.utility.GetFragmentNumbers(data.id, this.playgroundArray)">
+                        (click)="this.playground.playgroundArray = CreateEditorArray(data, this.F_Fragments)"
+                        (click)="this.playground.fragmentNumberList2 = this.utility.GetFragmentNumbers(data.id, this.playground.playgroundArray)">
                         {{ data.name }}                       
                     </mat-option>
                 </mat-select>
@@ -326,8 +300,8 @@
                 <mat-label>Editor</mat-label>
                     <mat-select [(ngModel)]="toAddEditor">
                         <mat-option *ngFor="let data of this.editorsJSON" [value]="data"
-                            (click)="this.playgroundArray2 = CreateEditorArray(data, this.F_Fragments)"
-                            (click)="this.fragmentNumberList2 = this.utility.GetFragmentNumbers(data.id, this.playgroundArray2)">
+                            (click)="this.playground.playgroundArray2 = CreateEditorArray(data, this.F_Fragments)"
+                            (click)="this.playground.fragmentNumberList22 = this.utility.GetFragmentNumbers(data.id, this.playground.playgroundArray2)">
                             {{ data.name }}                       
                         </mat-option>
                     </mat-select>
@@ -337,8 +311,8 @@
             <mat-form-field class="select-form">
                 <mat-label>Fragment</mat-label>
                 <mat-select [(ngModel)]="selectedFragment">
-                    <mat-option *ngFor="let data of this.fragmentNumberList2" [value]="data"
-                        (click)="this.addedArray = AddFragmentToArray(this.addedArray, this.playgroundArray2, data)">
+                    <mat-option *ngFor="let data of this.playground.fragmentNumberList22" [value]="data"
+                        (click)="this.playground.addedArray = this.playground.AddFragmentToArray(this.playground.addedArray, this.playground.playgroundArray2, data)">
                         {{ data }} 
                     </mat-option>
                 </mat-select>
@@ -351,8 +325,8 @@
                     <button type="button" mat-icon-button matSuffix (click)="this.noteArray = this.utility.PopArray(this.noteArray)">
                         <mat-icon>{{'remove'}}</mat-icon>
                     </button>
-                    <!-- <button type="button" mat-icon-button matSuffix (click)="this.noteArray = PushToArray(note, this.noteArray)"> -->
-                    <button type="button" mat-icon-button matSuffix (click)="this.noteArray = CreateOwnFragment(note, this.noteArray)">
+                    <!-- FIXME: this needs to be fixed. I swapped functions, but this doesnt work at all like this -->
+                    <button type="button" mat-icon-button matSuffix (click)="this.noteArray = this.utility.CreateOwnFragment(note, this.noteArray, [], '')">
                         <mat-icon>{{'add'}}</mat-icon>
                     </button>
                     <mat-hint>Add own fragment</mat-hint>
@@ -363,7 +337,7 @@
         <hr>
         <!-- For loop to print all the base selected fragments -->
         <div class="row">
-            <div *ngFor="let arrayItem of this.playgroundArray" class="playground" cdkDrag>
+            <div *ngFor="let arrayItem of this.playground.playgroundArray" class="playground" cdkDrag>
                 <b>Fragment {{arrayItem.fragmentName}}</b> &nbsp; <i>{{arrayItem.status}}</i>
                 <div *ngFor="let item of arrayItem.content">           
                     <div [innerHTML]="item.lineComplete"></div>
@@ -374,7 +348,7 @@
         <hr>
         <!-- For loop to print the added fragments -->
         <div class="row">
-            <div *ngFor="let arrayItem of this.addedArray" class="playground" cdkDrag>
+            <div *ngFor="let arrayItem of this.playground.addedArray" class="playground" cdkDrag>
                 <b>(Added) Fragment {{arrayItem.fragmentName}}</b> &nbsp; <i>{{arrayItem.status}}</i>
                 <div *ngFor="let item of arrayItem.content">           
                     <div [innerHTML]="item.lineComplete"></div>
@@ -411,7 +385,7 @@
                     <mat-hint>Select the first editor</mat-hint>
                 </mat-form-field>
                 <!-- For loop for moveable fragments. Should be clickable. -->
-                <div cdkDropList class="fragment-list" (cdkDropListDropped)="moveAndDrop($event, this.editor1)">
+                <div cdkDropList class="fragment-list" (cdkDropListDropped)="this.utility.moveAndDrop($event, this.editor1)">
                     <div class="fragment-box" *ngFor="let arrayItem of this.editor1" cdkDrag>
                     <div> 
                         <!-- TODO: Show editor name behind fragment. Also, show its relation to the TRF. When clicked,
@@ -437,7 +411,7 @@
                     <mat-hint>Select the second editor</mat-hint>
                 </mat-form-field>
                 <!-- For loop for moveable fragments. Should be clickable. -->
-                <div cdkDropList class="fragment-list" (cdkDropListDropped)="moveAndDrop($event, this.editor2)">
+                <div cdkDropList class="fragment-list" (cdkDropListDropped)="this.utility.moveAndDrop($event, this.editor2)">
                     <div class="fragment-box" *ngFor="let arrayItem of this.editor2" cdkDrag>
                     <div> 
                         <!-- TODO: Show editor name behind fragment. Also, show its relation to the TRF. When clicked,
@@ -463,7 +437,7 @@
                     <mat-hint>Select the third editor</mat-hint>
                 </mat-form-field>
                 <!-- For loop for moveable fragments. Should be clickable. -->
-                <div cdkDropList class="fragment-list" (cdkDropListDropped)="moveAndDrop($event, this.editor3)">
+                <div cdkDropList class="fragment-list" (cdkDropListDropped)="this.utility.moveAndDrop($event, this.editor3)">
                     <div class="fragment-box" *ngFor="let arrayItem of this.editor3" cdkDrag>
                     <div> 
                         <!-- TODO: Show editor name behind fragment. Also, show its relation to the TRF. When clicked,
@@ -489,7 +463,7 @@
                     <mat-hint>Select the fourth editor</mat-hint>
                 </mat-form-field>
                 <!-- For loop for moveable fragments. Should be clickable. -->
-                <div cdkDropList class="fragment-list" (cdkDropListDropped)="moveAndDrop($event, this.editor4)">
+                <div cdkDropList class="fragment-list" (cdkDropListDropped)="this.utility.moveAndDrop($event, this.editor4)">
                     <div class="fragment-box" *ngFor="let arrayItem of this.editor4" cdkDrag>
                     <div> 
                         <!-- TODO: Show editor name behind fragment. Also, show its relation to the TRF. When clicked,
@@ -506,7 +480,7 @@
     </div>
 
     <!-- Section for the multiplayer (done using Google Firebase) -->
-    <div class="container-fluid" *ngIf="Multiplayer_column">
+    <div class="container-fluid" *ngIf="multiplayer_column">
         <div class="row">
             <!-- Field to select the author. Beware! It changes the author of the entire program -->
             <div mat-dialog-content>
@@ -556,10 +530,10 @@
             <div mat-dialog-content>
                 <mat-form-field class="input-form-wide">
                     <input class="input-form-wide" matInput type="text" [(ngModel)]='fragment2' [matKeyboard]="'OSCC'">
-                        <button type="button" mat-icon-button matSuffix (click)="this.multiplayer.list4Array = this.multiplayer.CreateOwnFragment(fragment2, fragment2Header, this.multiplayer.list4Array, false)">
+                        <button type="button" mat-icon-button matSuffix (click)="this.multiplayer.list4Array = this.utility.CreateOwnFragment(fragment2, fragment2Header, this.multiplayer.list4Array, false)">
                             <mat-icon>{{'text_snippet'}}</mat-icon>
                         </button>
-                        <button type="button" mat-icon-button matSuffix (click)="this.multiplayer.list4Array = this.multiplayer.CreateOwnFragment(fragment2, fragment2Header, this.multiplayer.list4Array, true)">
+                        <button type="button" mat-icon-button matSuffix (click)="this.multiplayer.list4Array = this.utility.CreateOwnFragment(fragment2, fragment2Header, this.multiplayer.list4Array, true)">
                             <mat-icon>{{'note_add'}}</mat-icon>
                         </button>
                     <mat-hint>Add custom body</mat-hint>

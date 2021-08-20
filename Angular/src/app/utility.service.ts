@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {CdkDragDrop, moveItemInArray, transferArrayItem, CdkDragEnd} from '@angular/cdk/drag-drop';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,40 @@ export class UtilityService {
     /**
      * Shared Dashboard and Fragments functions
      */
+
+    /**
+     * Function to create a custom fragment. Can also be used to create
+     * little headers by leaving body or header empty.
+     * @param body 
+     * @param header 
+     * @param array 
+     * @return array in the correct format to be processed
+     */
+    public CreateOwnFragment(body, header, array, noteStatus){
+      // Set a value if a field has been left empty. Otherwise Firebase will be mad.
+      if (body == null){
+        body = ' '
+      }
+      if (header == null){
+        header == ' '
+      }
+      // Create a array for each content line. Here it only allows one.
+      let contentArray = []
+      // Push the array with one entry to a content array. This is only done like
+      // this to allow easy processing with the CreateFragments function in Utilities.
+      contentArray.push({
+        lineName: header,
+        lineContent: body,
+        lineComplete: body, // This should have html formatting.
+      })
+
+      console.log('hi', array)
+
+      // Push the created data to the array and empty the used arrays.
+      array.push({ fragmentName: header, content: contentArray, note: noteStatus})
+      // Return this new array.
+      return array
+    }
 
   /**
    * Returns a sorted list of all fragments numbers from a given editor
@@ -249,6 +284,11 @@ export class UtilityService {
     output = String(err.status) + ': ' + output + ' ' + err.statusText;
     this.OpenSnackbar(output); //FIXME: Spaghetti.
   } 
+
+  // Allows a fragment to be moved and dropped to create a custom ordering
+  public moveAndDrop(event: CdkDragDrop<string[]>, array) {
+    moveItemInArray(array, event.previousIndex, event.currentIndex);
+  }
 
 }
 

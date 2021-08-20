@@ -13,7 +13,6 @@ import { FormBuilder } from '@angular/forms';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators, FormArray } from '@angular/forms';
 
 // Mat imports
-import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 // Model imports to send to the API. 
@@ -121,7 +120,6 @@ export class DashboardComponent implements OnInit {
   constructor(
     private api: ApiService,
     private utility: UtilityService,
-    private _snackBar: MatSnackBar,
     public dialog: MatDialog,
     private formBuilder: FormBuilder,
     public authService: AuthService,
