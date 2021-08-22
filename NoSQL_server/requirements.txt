@@ -1,0 +1,4 @@
+cassandra-driver
+numpy
+astrapy
+simplejson
