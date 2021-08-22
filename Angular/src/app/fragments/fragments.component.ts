@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 
 import {LoginComponent} from '../login/login.component'
-import {TextComponent} from '../text/text.component'
 
 import { ApiService } from '../api.service';
+import { DialogService } from '../services/dialog.service';
 import { UtilityService } from '../utility.service';
 import { AuthService } from '../auth/auth.service';
 import { Multiplayer } from './multiplayer.class';
@@ -16,14 +16,9 @@ export { Playground } from './playground.class';
 // Library used for interacting with the page
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
-import {Inject, Injectable} from '@angular/core';
-
 // To allow dialog windows within the current window
 import { TemplateRef, ViewChild } from '@angular/core';
 // Imports of different components to be shown within a dialog within the page
-
-import { Observable } from 'rxjs';
-
 
 @Component({
   selector: 'app-fragments',
@@ -33,7 +28,6 @@ import { Observable } from 'rxjs';
 })
 export class FragmentsComponent implements OnInit {
 
-  // @ViewChild('CallBibliography') CallBibliography: TemplateRef<any>;
   @ViewChild('CallBookSelect') CallBookSelect: TemplateRef<any>;
   @ViewChild('CallAbout') CallAbout: TemplateRef<any>;
 
@@ -97,7 +91,8 @@ export class FragmentsComponent implements OnInit {
     private api: ApiService,
     private utility: UtilityService,
     public authService: AuthService,
-    private dialog: MatDialog, 
+    public dialog: DialogService,
+    private matdialog: MatDialog, 
     public multiplayer: Multiplayer,
     public playground: Playground,
     ) { }
@@ -246,82 +241,26 @@ export class FragmentsComponent implements OnInit {
     return tempArray;
   }
 
-  /**
-   * Opens a confirmation dialog with the provided message
-   * @param message shows text about what is happening
-   * @param item the item that is about to change
-   */
-  public OpenConfirmationDialog(message, item): Observable<boolean>{
-    const dialogRef = this.dialog.open(ConfirmationDialog2, {
-      width: 'auto',
-      data: {
-        message: message,
-        item: item,
-      }
-    });  
-    return dialogRef.afterClosed(); // Returns observable.
-  }
-
-  /**
-   * Dialog handlers
-   */ 
-  public OpenText() {
-    const dialogRef = this.dialog.open(TextComponent);
-  }
-
   public Login() {
-    const dialogRef = this.dialog.open(LoginComponent);
+    const dialogRef = this.matdialog.open(LoginComponent);
   }
 
-  // Opens dialog for the bibliography
-  public OpenBibliography() {
-    // let dialogRef = this.dialog.open(this.CallBibliography); 
-    let dialogRef = this.dialog.open(ShowBibliographyDialog); 
-
-  }
   // Opens dialog to select a new book
   public OpenBookSelect() {
-    let dialogRef = this.dialog.open(this.CallBookSelect); 
+    let dialogRef = this.matdialog.open(this.CallBookSelect); 
   }
-  // Opens dialog for the about information
-  public OpenAbout(): void {
-    // const scrollStrategy = this.overlay.scrollStrategies.reposition();
-
-    const dialogRef = this.dialog.open(ShowAboutDialog, 
-      {
-      autoFocus: false, // To allow scrolling in the dialog
-      maxHeight: '90vh' //you can adjust the value as per your view
-      });
-  }
-
 }
 
 // Simple class to open the about information written in said html file.
 @Component({
   selector: 'about-dialog',
-  templateUrl: './dialogs/about-dialog.html',
+  templateUrl: '../dialogs/about-dialog.html',
 })
 export class ShowAboutDialog {}
 
 @Component({
   selector: 'bibliography-dialog',
-  templateUrl: './dialogs/bibliography-dialog.html',
+  templateUrl: '../dialogs/bibliography-dialog.html',
 })
 export class ShowBibliographyDialog {}
 
-/**
- * Class to show a confirmation dialog when needed. 
- * Shows whatever data is given
- */
-@Component({
-  selector: 'confirmation-dialog',
-  templateUrl: './confirmation-dialog.html',
-})
-export class ConfirmationDialog2 {
-  constructor(
-    public dialogRef: MatDialogRef<ConfirmationDialog2>,
-    @Inject(MAT_DIALOG_DATA) public data) { }
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
-}

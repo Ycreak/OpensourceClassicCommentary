@@ -12,7 +12,7 @@
 <mat-toolbar color="primary">
     <span><h3 class='h3-title'>Open Source Classics Commentary</h3></span>
     <span class="spacer"></span>
-    <button mat-button class="btn" (click)="OpenBookSelect()">CHANGE TEXT</button>
+    <button mat-button class="btn" (click)="this.OpenBookSelect()">CHANGE TEXT</button>
     <!-- <button mat-button class="btn" (click)="OpenBibliography()">BIBLIOGRAPHY</button> -->
     <button mat-button class="btn" routerLink="/dashboard" *ngIf="this.authService.isLoggedIn">DASHBOARD</button>
     <mat-checkbox class="btn" [(ngModel)]="columnOneToggle">COM</mat-checkbox>
@@ -32,7 +32,7 @@
     <!-- <button (click)="OpenText()" mat-menu-item>Text Inside</button> -->
     <!-- <button (click)="Test('thing')" mat-menu-item>Test</button> -->
     <button (click)="Login()" mat-menu-item>Login</button>
-    <button (click)="OpenAbout()" mat-menu-item>About</button>
+    <button (click)="this.dialog.OpenAbout()" mat-menu-item>About</button>
     <!-- <button (click)="ngOnInit()" *ngIf="this.authService.isLoggedIn">Reload Data</button> -->
     <button mat-menu-item>V21.7.1</button>
 </mat-menu>

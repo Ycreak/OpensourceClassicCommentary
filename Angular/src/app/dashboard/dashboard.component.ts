@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { ApiService } from '../api.service';
 import { UtilityService } from '../utility.service';
 import { AuthService } from '../auth/auth.service';
+import { DialogService } from '../services/dialog.service';
 
 // To allow the use of forms
 import { FormBuilder } from '@angular/forms';
@@ -120,7 +121,7 @@ export class DashboardComponent implements OnInit {
   constructor(
     private api: ApiService,
     private utility: UtilityService,
-    public dialog: MatDialog,
+    public dialog: DialogService,
     private formBuilder: FormBuilder,
     public authService: AuthService,
     ) {}
@@ -396,7 +397,7 @@ export class DashboardComponent implements OnInit {
    * @param authorName name of author to be created
    */
   public RequestCreateAuthor(authorName: string){
-    this.OpenConfirmationDialog('Are you sure you want to CREATE this author?', authorName).subscribe(result => {
+    this.dialog.OpenConfirmationDialog('Are you sure you want to CREATE this author?', authorName).subscribe(result => {
       if(result){
         this.api.CreateAuthor(new Author(0, authorName)).subscribe(
           res => {
@@ -413,7 +414,7 @@ export class DashboardComponent implements OnInit {
    * @param author number of selected author
    */
   public RequestDeleteAuthor(author: number){
-    this.OpenConfirmationDialog('Are you sure you want to DELETE this author?', this.selectedAuthor.name).subscribe(result => {
+    this.dialog.OpenConfirmationDialog('Are you sure you want to DELETE this author?', this.selectedAuthor.name).subscribe(result => {
       if(result){
         this.api.DeleteAuthor(author).subscribe(
           res => {
@@ -431,7 +432,7 @@ export class DashboardComponent implements OnInit {
    * @param author number of the author of the book
    */
   public RequestCreateBook(bookName: string, author: number){
-    this.OpenConfirmationDialog('Are you sure you want to CREATE this book?',bookName).subscribe(result => {
+    this.dialog.OpenConfirmationDialog('Are you sure you want to CREATE this book?',bookName).subscribe(result => {
       if(result){
         this.api.CreateBook(new Book(0, author, bookName)).subscribe(//FIXME: dont pass ID. autoincrement
           res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
@@ -445,7 +446,7 @@ export class DashboardComponent implements OnInit {
    * @param author number of the author of the book
    */
   public RequestDeleteBook(book: number, author: number){
-    this.OpenConfirmationDialog('Are you sure you want to DELETE this book?', this.selectedBook.name).subscribe(result => {
+    this.dialog.OpenConfirmationDialog('Are you sure you want to DELETE this book?', this.selectedBook.name).subscribe(result => {
       if(result){
         this.api.DeleteBook(book, author).subscribe(
           res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
@@ -460,7 +461,7 @@ export class DashboardComponent implements OnInit {
    * @param author number of the author of the book
    */
   public RequestCreateEditor(editorName : string, book: number, author: number){
-    this.OpenConfirmationDialog('Are you sure you want to CREATE this editor?', editorName).subscribe(result => {
+    this.dialog.OpenConfirmationDialog('Are you sure you want to CREATE this editor?', editorName).subscribe(result => {
       if(result){     // Create editor as not being a main editor.
         this.api.CreateEditor(new Editor(0, book, editorName, 0)).subscribe(//FIXME: dont pass ID. autoincrement
           res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
@@ -475,7 +476,7 @@ export class DashboardComponent implements OnInit {
    * @param author number of the author of the book
    */
   public RequestDeleteEditor(editor: number, book: number, author: number){
-    this.OpenConfirmationDialog('Are you sure you want to DELETE this editor?', this.selectedEditor.name).subscribe(result => {
+    this.dialog.OpenConfirmationDialog('Are you sure you want to DELETE this editor?', this.selectedEditor.name).subscribe(result => {
       if(result){
         this.api.DeleteEditor(editor).subscribe(
           res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
@@ -524,7 +525,7 @@ export class DashboardComponent implements OnInit {
    */
   public RequestDeleteFragment(editor: number, book: number, fragmentname: string){
     console.log(editor, book, fragmentname)  
-    this.OpenConfirmationDialog('Are you sure you want to DELETE this fragment?', fragmentname).subscribe(result => {
+    this.dialog.OpenConfirmationDialog('Are you sure you want to DELETE this fragment?', fragmentname).subscribe(result => {
       if(result){
         this.api.DeleteFragment(editor, book, fragmentname).subscribe(
           res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
@@ -542,40 +543,40 @@ export class DashboardComponent implements OnInit {
 //  | |  | |  | |  | |  | | |____ 
 //  |_|  |_|  |_|  |_|  |_|______|
                                
-  /**
-   * Opens a confirmation dialog with the provided message
-   * @param message shows text about what is happening
-   * @param item the item that is about to change
-   */
-  public OpenConfirmationDialog(message, item): Observable<boolean>{
-    const dialogRef = this.dialog.open(ConfirmationDialog, {
-      width: 'auto',
-      data: {
-        message: message,
-        item: item,
-      }
-    });  
-    return dialogRef.afterClosed(); // Returns observable.
-  }
+  // /**
+  //  * Opens a confirmation dialog with the provided message
+  //  * @param message shows text about what is happening
+  //  * @param item the item that is about to change
+  //  */
+  // public OpenConfirmationDialog(message, item): Observable<boolean>{
+  //   const dialogRef = this.dialog.open(ConfirmationDialog, {
+  //     width: 'auto',
+  //     data: {
+  //       message: message,
+  //       item: item,
+  //     }
+  //   });  
+  //   return dialogRef.afterClosed(); // Returns observable.
+  // }
 
 
 }
 
-  /**
-   * Class to show a confirmation dialog when needed. 
-   * Shows whatever data is given
-   */
-  @Component({
-    selector: 'confirmation-dialog',
-    templateUrl: 'confirmation-dialog.html',
-  })
-  export class ConfirmationDialog {
-    constructor(
-      public dialogRef: MatDialogRef<ConfirmationDialog>,
-      @Inject(MAT_DIALOG_DATA) public data) { }
-    onNoClick(): void {
-      this.dialogRef.close();
-    }
-  }
+  // /**
+  //  * Class to show a confirmation dialog when needed. 
+  //  * Shows whatever data is given
+  //  */
+  // @Component({
+  //   selector: 'confirmation-dialog',
+  //   templateUrl: 'confirmation-dialog.html',
+  // })
+  // export class ConfirmationDialog {
+  //   constructor(
+  //     public dialogRef: MatDialogRef<ConfirmationDialog>,
+  //     @Inject(MAT_DIALOG_DATA) public data) { }
+  //   onNoClick(): void {
+  //     this.dialogRef.close();
+  //   }
+  // }
 
 

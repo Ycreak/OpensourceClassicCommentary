@@ -40,9 +40,8 @@ import { AuthGuard } from './auth/auth.guard';
 import { SafeHtmlPipe } from './pipes/safeHtml.pipe';
 // import { SafeHtmlPipe } from './fragments/fragments.component';
 
-import { ConfirmationDialog } from './dashboard/dashboard.component';
-import { ConfirmationDialog2 } from './fragments/fragments.component';
-import { Multiplayer } from './fragments/fragments.component';
+import { ConfirmationDialog } from './services/dialog.service';
+// import { Multiplayer } from './fragments/fragments.component';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorInterceptor } from './api.service';
@@ -124,11 +123,11 @@ const appRoutes: Routes = [
     SafeHtmlPipe,
     DashboardComponent,
     ConfirmationDialog,
-    ConfirmationDialog2, //FIXME: Help me Philippe.
     LoginComponent,
     TextComponent,
     ScansionComponent,
     // Multiplayer,
+    // DialogContentComponent,
   ],
   imports: [
     BrowserModule,
