@@ -50,14 +50,14 @@ export class ApiService {
                                     
   /**
   * ... ... ...
-  * @param fragmentID
+  * @param fragment_id
   * @param editorID
   * @param bookID
   * @returns
   * @author Ycreak, ppbors
   */
   GetReferencerID(fragmentName: string, editorID: number, bookID: number): Observable<string[]> {
-    return this.http.get<string[]>(this.ApiUrl + `fragments/hello?fragmentID=${fragmentName}&editorID=${editorID}&bookID=${bookID}`);
+    return this.http.get<string[]>(this.ApiUrl + `fragments/hello?fragment_id=${fragmentName}&editorID=${editorID}&bookID=${bookID}`);
   }
 
   /**
@@ -66,8 +66,8 @@ export class ApiService {
   * @returns
   * @author Ycreak, ppbors
   */
-  GetFragments(bookID: number): Observable<Fragment[]> {
-    return this.http.get<Fragment[]>(this.ApiUrl + `fragments?bookID=${bookID}`);
+  GetFragments(author: string, book: string, editor: string): Observable<Fragment[]> {
+    return this.http.get<Fragment[]>(this.FlaskURL + `fragments?author=${author}&book=${book}&editor=${editor}`);
   }
 
   /**
@@ -76,8 +76,18 @@ export class ApiService {
   * @author Ycreak, ppbors
   */
   GetAuthors(): Observable<Author[]> {
-    return this.http.get<Author[]>(this.ApiUrl + `authors`);
+    return this.http.get<Author[]>(this.FlaskURL + `authors`);
   }
+
+  /**
+  * ... ... ...
+  * @param authorID
+  * @returns
+  * @author Ycreak, ppbors
+  */
+ GetBooks(author: string): Observable<Book[]> {
+  return this.http.get<Book[]>(this.FlaskURL + `books?author=${author}`);
+}
 
   /**
   * ... ... ...
@@ -85,8 +95,8 @@ export class ApiService {
   * @returns
   * @author Ycreak, ppbors
   */
-  GetEditors(bookID: number): Observable<Editor[]> {
-    return this.http.get<Editor[]>(this.ApiUrl + `editors?bookID=${bookID}`);
+  GetEditors(author: string, book: string): Observable<Editor[]> {
+    return this.http.get<Editor[]>(this.FlaskURL + `editors?author=${author}&book=${book}`);
   }
 
   /**
@@ -96,78 +106,70 @@ export class ApiService {
   * @author Ycreak, ppbors
   */
   GetBibliography(title: string): Observable<Bibliography[]> {
-    return this.http.get<Bibliography[]>(this.ApiUrl + `bibliography?title=${title}`);
+    return this.http.get<Bibliography[]>(this.FlaskURL + `bibliography?title=${title}`);
   }
 
   /**
   * ... ... ...
-  * @param fragmentID
+  * @param fragment_id
   * @returns
   * @author Ycreak, ppbors
   */
-  GetCommentary(fragmentID: number): Observable<Commentary[]> {
-    return this.http.get<Commentary[]>(this.ApiUrl + `fcommentary?fragmentID=${fragmentID}`);
+  GetCommentary(fragment_id: string): Observable<Commentary[]> {
+    return this.http.get<Commentary[]>(this.FlaskURL + `fcommentary?fragment_id=${fragment_id}`);
   }
 
   /**
   * ... ... ...
-  * @param fragmentID
+  * @param fragment_id
   * @returns
   * @author Ycreak, ppbors
   */
-  GetDifferences(fragmentID: number): Observable<Differences[]> {
-    return this.http.get<Differences[]>(this.ApiUrl + `fdifferences?fragmentID=${fragmentID}`);
+  GetDifferences(fragment_id: string): Observable<Differences[]> {
+    return this.http.get<Differences[]>(this.FlaskURL + `fdifferences?fragment_id=${fragment_id}`);
   }
 
   /**
   * ... ... ...
-  * @param fragmentID
+  * @param fragment_id
   * @returns
   * @author Ycreak, ppbors
   */
-  GetContext(fragmentID: number): Observable<Context[]> {
-    return this.http.get<Context[]>(this.ApiUrl + `fcontext?fragmentID=${fragmentID}`);
+  GetContext(fragment_id: string): Observable<Context[]> {
+    return this.http.get<Context[]>(this.FlaskURL + `fcontext?fragment_id=${fragment_id}`);
   }
 
   /**
   * ... ... ...
-  * @param fragmentID
+  * @param fragment_id
   * @returns
   * @author Ycreak, ppbors
   */
-  GetTranslation(fragmentID: number): Observable<Translation[]> {
-    return this.http.get<Translation[]>(this.ApiUrl + `ftranslations?fragmentID=${fragmentID}`);
+  GetTranslation(fragment_id: string): Observable<Translation[]> {
+    return this.http.get<Translation[]>(this.FlaskURL + `ftranslation?fragment_id=${fragment_id}`);
   }
 
   /**
   * ... ... ...
-  * @param fragmentID
+  * @param fragment_id
   * @returns
   * @author Ycreak, ppbors
   */
-  GetApparatus(fragmentID: number): Observable<Apparatus[]> {
-    return this.http.get<Apparatus[]>(this.ApiUrl + `fapparatus?fragmentID=${fragmentID}`); // XD FAP CRIT
+  GetApparatus(fragment_id: string): Observable<Apparatus[]> {
+    return this.http.get<Apparatus[]>(this.FlaskURL + `fapparatus?fragment_id=${fragment_id}`); // XD FAP CRIT
   }
 
   /**
   * ... ... ...
-  * @param fragmentID
+  * @param fragment_id
   * @returns
   * @author Ycreak, ppbors
   */
-  GetReconstruction(fragmentID: number): Observable<Reconstruction[]> {
-    return this.http.get<Reconstruction[]>(this.ApiUrl + `freconstruction?fragmentID=${fragmentID}`);
+  GetReconstruction(fragment_id: string): Observable<Reconstruction[]> {
+    return this.http.get<Reconstruction[]>(this.FlaskURL + `freconstruction?fragment_id=${fragment_id}`);
   }
 
-  /**
-  * ... ... ...
-  * @param authorID
-  * @returns
-  * @author Ycreak, ppbors
-  */
-  GetBooks(authorID: number): Observable<Book[]> {
-    return this.http.get<Book[]>(this.ApiUrl + `books?authorID=${authorID}`);
-  }
+
 
   /**
   * ... ... ...
@@ -340,7 +342,7 @@ export class ApiService {
    * @author ppbors
    */
   CreateContext(context: Context): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `fcontext/create`, context, { observe: 'response' });
+    return this.http.post<any>(this.FlaskURL + `fcontext/create`, context, { observe: 'response' });
   }
 
   CreateBibliography(bibliography: Bibliography): Observable<any> {
@@ -354,13 +356,13 @@ export class ApiService {
    * ... ... ...
    * @param editorID
    * @param bookID
-   * @param fragmentID
+   * @param fragment_id
    * @param flag
    * @returns ... ... ...
    * @author ppbors
    */
-  SetPublishFlag(editorID: number, bookID: number, fragmentID: string, flag: number): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + 'fragmentreferencer/setpublishflag', new Fragment(0, bookID, editorID, fragmentID, '', '', flag, ''), { observe: 'response' });
+  SetPublishFlag(editorID: number, bookID: number, fragment_id: string, flag: number): Observable<any> {
+    return this.http.post<any>(this.ApiUrl + 'fragmentreferencer/setpublishflag', new Fragment(0, bookID, editorID, fragment_id, '', '', flag, ''), { observe: 'response' });
   }
 
   // Scansion Model
@@ -377,17 +379,17 @@ export class ApiService {
   }
 
   // CREA 4
-  FlaskURL: String = 'http://nolden.biz:5002/'; // For deployment (http! not https)                                 
+  FlaskURL: String = 'http://localhost:5002/'; // For deployment (http! not https)                                 
 
   // GetInterestingWords(words: string): Observable<any> {
   //   return this.http.post<any>(this.FlaskURL + 'GetInterestingWords', words);
   // }
 
-  public async GetInterestingWords(words: String){
+  public async Couch(){
     const data = await this.http.get(
-      this.FlaskURL + 'GetInterestingWords',{
+      this.FlaskURL + 'Get_started',{
         params: {
-          words: words.toString(),
+          // words: words.toString(),
         }
       })
       .toPromise();

@@ -13,7 +13,7 @@
     <span><h3 class='h3-title'>Open Source Classics Commentary</h3></span>
     <span class="spacer"></span>
     <button mat-button class="btn" (click)="this.OpenBookSelect()">CHANGE TEXT</button>
-    <!-- <button mat-button class="btn" (click)="OpenBibliography()">BIBLIOGRAPHY</button> -->
+    <button mat-button class="btn" (click)="Test()">TEST</button>
     <button mat-button class="btn" routerLink="/dashboard" *ngIf="this.authService.isLoggedIn">DASHBOARD</button>
     <mat-checkbox class="btn" [(ngModel)]="columnOneToggle">COM</mat-checkbox>
     <mat-checkbox class="btn" [(ngModel)]="columnTwoToggle">SEC</mat-checkbox>
@@ -34,7 +34,7 @@
     <button (click)="Login()" mat-menu-item>Login</button>
     <button (click)="this.dialog.OpenAbout()" mat-menu-item>About</button>
     <!-- <button (click)="ngOnInit()" *ngIf="this.authService.isLoggedIn">Reload Data</button> -->
-    <button mat-menu-item>V21.7.1</button>
+    <button mat-menu-item>V21.8.23</button>
 </mat-menu>
 
 <!-- Change text dialog -->
@@ -45,8 +45,8 @@
         <mat-label>Select author</mat-label>
         <mat-select>
             <mat-option *ngFor="let author of this.authorsJSON" [value]="author" 
-                (click)="this.RequestBooks(author.id)" 
-                (click)="this.SetCurrentAuthorData(author)">
+                (click)="this.current_author = author.name"
+                (click)="this.RequestBooks(author.name)">
                 {{ author.name }} 
             </mat-option>
         </mat-select>  
@@ -56,10 +56,9 @@
         <mat-label>Select text</mat-label>
         <mat-select>
             <mat-option *ngFor="let book of this.booksJSON" [value]="book" 
-                (click)="RequestEditors(book.id)"
-                (click)="RequestFragments(book.id)"
-                (click)="SetCurrentBookData(book)">
-                {{ book.title }}                
+                (click)="this.current_book = book.name"
+                (click)="RequestEditors(this.current_author, book.name)">
+                {{ book.name }}                
             </mat-option>
         </mat-select>
     </mat-form-field>    
@@ -78,16 +77,15 @@
             <!-- Text information and edition of reference selection -->
             <div class="row">
                 <div class="col-6">
-                    <h4>{{this.currentAuthorName}}: {{this.currentBookName}}.</h4>
+                    <h4>{{this.current_author}}: {{this.current_book}}.</h4>
                 </div>  
                 <div class="col-6">
                     <mat-form-field class="input-form">
                         <mat-label>Edition of Reference</mat-label>
                         <mat-select>
-                            <mat-option *ngFor="let mainEditor of this.mainEditorsJSON" [value]="mainEditor.id"
-                                (click)="this.mainEditorArray = CreateEditorArray(mainEditor, this.F_Fragments)"
-                                (click)="this.SetCurrentEditorData(mainEditor)">
-                                {{ mainEditor.name }}                     
+                            <mat-option *ngFor="let editor of this.current_editors" [value]="current_editor"
+                                (click)="Request_primary_column(this.current_author, this.current_book, editor.name)">
+                                {{ editor.name }}                     
                             </mat-option>
                         </mat-select>
                         <mat-hint>Select an edition of reference</mat-hint>
@@ -96,13 +94,15 @@
             </div>
             <!-- Fragments loop to display all fragments of the chosen edition of reference -->
             <div class="fragment-list">
-                <div class="fragment-box" *ngFor="let arrayItem of this.mainEditorArray" 
-                    (click)="this.Referencer = this.RequestReferencerID(arrayItem.fragmentName, this.currentEditor, this.currentBook)">
+                <div class="fragment-box" *ngFor="let fragment of this.primary_fragments" 
+                    (click)="this.pressed_fragment_name = fragment.fragment_name"
+                    (click)="this.pressed_fragment_editor = fragment.editor"
+                    (click)="this.RequestCommentaries(fragment.id)">
                     <div>
-                        <b>Fragment {{arrayItem.fragmentName}} </b> &nbsp; <sup>{{arrayItem.author}}, {{arrayItem.text}}, {{arrayItem.editor}}</sup> &nbsp; <i>{{arrayItem.status}}</i>
+                        <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
                     </div>
-                    <div *ngFor="let arrayItem2 of arrayItem.content">           
-                        <div [innerHTML]="arrayItem2.lineComplete | safeHtml"></div> <!-- safeHtml to allow whitespaces -->            
+                    <div *ngFor="let fragment_line of fragment.lines">           
+                        <div [innerHTML]="fragment_line.text | safeHtml"></div> <!-- safeHtml to allow whitespaces -->            
                     </div>     
                 </div> 
             </div> 
@@ -116,9 +116,10 @@
                     <mat-form-field class="input-form">
                         <mat-label>Secondary editor</mat-label>
                             <mat-select>
-                                <mat-option *ngFor="let selectedEditor of this.editorsJSON" [value]="selectedEditor.id"
-                                    (click)="this.selectedEditorArray = CreateEditorArray(selectedEditor, this.F_Fragments)">
-                                    {{ selectedEditor.name }} 
+                                <mat-option *ngFor="let editor of this.current_editors" [value]="editor.name"
+                                    (click)="this.current_editor = editor.name"
+                                    (click)="this.Request_secondary_column(this.current_author, this.current_book, editor.name)">
+                                    {{ editor.name }} 
                                 </mat-option>
                             </mat-select>
                         <mat-hint>Select a secondary editor</mat-hint>
@@ -146,18 +147,18 @@
             </div>
 
             <!-- For loop for moveable fragments. (should be clickable for more information) -->
-            <div cdkDropList class="fragment-list" (cdkDropListDropped)="this.utility.moveAndDrop($event, this.selectedEditorArray)">
-                <div class="fragment-box" *ngFor="let arrayItem of this.selectedEditorArray" 
-                    (click)="this.utility.Test('hi')" cdkDrag>
-                    <div> 
-                        <!-- TODO: Show editor name behind fragment. Also, show its relation to the TRF. When clicked,
-                        load the commentaries for this fragment and that of the corresponding TRF fragment. -->
-                        <b>Frg {{arrayItem.fragmentName}}</b> &nbsp; <sup>{{arrayItem.author}}, {{arrayItem.text}}, {{arrayItem.editor}}</sup> &nbsp; <i>{{arrayItem.status}}</i>
+            <div cdkDropList class="fragment-list" (cdkDropListDropped)="this.utility.moveAndDrop($event, this.secondary_editor_fragments)">
+                <div class="fragment-box" *ngFor="let fragment of this.secondary_fragments"
+                        (click)="this.pressed_fragment_name = fragment.fragment_name"
+                        (click)="this.pressed_fragment_editor = fragment.editor"                       
+                        (click)="this.RequestCommentaries(fragment.id)" cdkDrag>
+                    <div>
+                        <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
                     </div>
-                    <div *ngFor="let arrayItem2 of arrayItem.content">           
-                        <div [innerHTML]="arrayItem2.lineComplete"></div> 
-                    </div>  
-                </div>
+                    <div *ngFor="let fragment_line of fragment.lines">           
+                        <div [innerHTML]="fragment_line.text | safeHtml"></div> <!-- safeHtml to allow whitespaces -->            
+                    </div>     
+                </div> 
             </div>
         </div>
     
@@ -166,14 +167,14 @@
             <!-- TODO: Show here the commentary that is available for the COL2 clicked fragment -->
 
             <!-- Fragment information -->
-            <h4>Fragment {{this.currentFragment}}</h4> <hr>
+            <h4>Selected {{this.pressed_fragment_editor}}, fragment {{this.pressed_fragment_name}}</h4> <hr>
             <!-- Show banner if no commentary available -->
             <div *ngIf="this.noCommentary" class="alert alert-info" role="alert">
                 No commentary is available for this fragment.
             </div>
             <!-- Show all the commentary fields -->
             <div *ngIf="this.noCommentary === false">
-                <div *ngFor="let item of this.F_Translation">
+                <div *ngFor="let item of this.f_translation">
                     <mat-expansion-panel>
                         <mat-expansion-panel-header>
                             <mat-panel-title>
@@ -191,7 +192,7 @@
         
                 <hr>
         
-                <div *ngFor="let item of this.F_Apparatus">
+                <div *ngFor="let item of this.f_apparatus">
                     <mat-expansion-panel>
                         <mat-expansion-panel-header>
                             <mat-panel-title>
@@ -208,7 +209,7 @@
         
                 <hr>
         
-                <div *ngFor="let item of this.F_Differences">
+                <div *ngFor="let item of this.f_differences">
                     <mat-expansion-panel>
                         <mat-expansion-panel-header>
                             <mat-panel-title>
@@ -225,13 +226,13 @@
         
                 <hr>
         
-                <div *ngFor="let item of this.F_Context">
+                <div *ngFor="let item of this.f_context">
                     <mat-expansion-panel>
                         <mat-expansion-panel-header>
                             <mat-panel-title>
                                 <b>Citation Context</b> <!--Citation Context -->
                             </mat-panel-title>
-                            <div [innerHTML]="item.contextAuthor"></div><div class="div-padding-sm"></div>
+                            <div [innerHTML]="item.author"></div><div class="div-padding-sm"></div>
                         </mat-expansion-panel-header>
                         <div class="mat-expansion-panel-content">
                             <div class="mat-expansion-panel-body">
@@ -243,7 +244,7 @@
                 
                 <hr>
         
-                <div *ngFor="let item of this.F_Commentary">
+                <div *ngFor="let item of this.f_commentary">
                     <mat-expansion-panel>
                         <mat-expansion-panel-header>
                         <mat-panel-title>
@@ -260,7 +261,7 @@
         
                 <hr>
         
-                <div *ngFor="let item of this.F_Reconstruction">
+                <div *ngFor="let item of this.f_reconstruction">
                     <mat-expansion-panel>
                         <mat-expansion-panel-header>
                             <mat-panel-title>
@@ -287,10 +288,10 @@
             <mat-form-field class="select-form">
                 <mat-label>Editor</mat-label>
                 <mat-select [(ngModel)]="selectedEditor">
-                    <mat-option *ngFor="let data of this.editorsJSON" [value]="data"
+                    <mat-option *ngFor="let editor of this.current_editors" [value]="editor"
                         (click)="this.playground.playgroundArray = CreateEditorArray(data, this.F_Fragments)"
                         (click)="this.playground.fragmentNumberList2 = this.utility.GetFragmentNumbers(data.id, this.playground.playgroundArray)">
-                        {{ data.name }}                       
+                        {{ editor.name }}                       
                     </mat-option>
                 </mat-select>
                 <mat-hint>Select an editor to begin</mat-hint>
@@ -488,8 +489,7 @@
                     <mat-label>Select author</mat-label>
                     <mat-select>
                     <mat-option *ngFor="let author of this.authorsJSON" [value]="author" 
-                        (click)="this.RequestBooks(author.id)" 
-                        (click)="this.SetCurrentAuthorData(author)">
+                        (click)="this.RequestBooks(author.name)">
                         {{ author.name }} 
                     </mat-option>
                     </mat-select>  
@@ -499,9 +499,7 @@
                     <mat-label>Select text</mat-label>
                     <mat-select>
                     <mat-option *ngFor="let book of this.booksJSON" [value]="book" 
-                        (click)="RequestEditors(book.id)"
-                        (click)="RequestFragments(book.id)"
-                        (click)="SetCurrentBookData(book)">
+                        (click)="RequestEditors(book.title)">
                         {{ book.title }}                
                     </mat-option>
                     </mat-select>

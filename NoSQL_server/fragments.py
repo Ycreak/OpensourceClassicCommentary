@@ -9,9 +9,9 @@ fragment1 = {
     "commentary": "How are you",
     "reconstruction":"I am very fine!",
     "context":[
-        {"author":"Nonius","text":"I like this play"},
-        {"author":"Cicero","text":"I am the greatest"},
-        {"author":"Faustus","text":"Nobody knows me..."},
+        {"author":"Nonius", "location": 'De rerum', "text":"I like this play"},
+        {"author":"Cicero", "location": 'De mater', "text":"I am the greatest"},
+        {"author":"Faustus", "location": 'De pater', "text":"Nobody knows me..."},
     ],
     "lines":[
             {"line_number":"1","text":"arma virumque cano"},
@@ -22,6 +22,8 @@ fragment1 = {
             {"fragment_id":"Wx002"},
             {"fragment_id":"Jx11003"},
     ],
+    "status": "Adesp",
+
 }
 
 fragment2 = {
@@ -35,8 +37,8 @@ fragment2 = {
     "commentary": "Hogagagw are you",
     "reconstruction":"Iaghgagh am very fine!",
     "context":[
-        {"author":"Luukie","text":"I am the hippest"},
-        {"author":"Frankie","text":"Nobody does not like me..."},
+        {"author":"Luukie","location": 'De moi',"text":"I am the hippest"},
+        {"author":"Frankie","location": 'De hoi',"text":"Nobody does not like me..."},
     ],
     "lines":[
             {"line_number":"1","text":"menin aiede thea"},
@@ -47,6 +49,8 @@ fragment2 = {
             {"fragment_id":"Hx002"},
             {"fragment_id":"Xx103"},
     ],
+    "status": "",
+
 }
 
 fragment3 = {
@@ -60,8 +64,8 @@ fragment3 = {
     "commentary": "Hogagagw are you",
     "reconstruction":"Iaghgagh am very fine!",
     "context":[
-        {"author":"Luukie","text":"I am the hippest"},
-        {"author":"Frankie","text":"Nobody does not like me..."},
+        {"author":"Luukie","location": 'De rerum',"text":"I am the hippest"},
+        {"author":"Frankie","location": 'De gater',"text":"Nobody does not like me..."},
     ],
     "lines":[
             {"line_number":"1","text":"menin aiede thea"},
@@ -72,6 +76,8 @@ fragment3 = {
             {"fragment_id":"Hx002"},
             {"fragment_id":"Xx103"},
     ],
+    "status": "Adesp",
+
 }
 
 fragment4 = {
@@ -85,9 +91,9 @@ fragment4 = {
     "commentary": "How are you",
     "reconstruction":"I am very fine!",
     "context":[
-        {"author":"Nonius","text":"I like this play"},
-        {"author":"Cicero","text":"I am the greatest"},
-        {"author":"Faustus","text":"Nobody knows me..."},
+        {"author":"Nonius","location": 'De troaiae',"text":"I like this play"},
+        {"author":"Cicero","location": 'De afe',"text":"I am the greatest"},
+        {"author":"Faustus","location": 'De uio',"text":"Nobody knows me..."},
     ],
     "lines":[
             {"line_number":"1","text":"arma virumque cano"},
@@ -98,6 +104,7 @@ fragment4 = {
             {"fragment_id":"Wx002"},
             {"fragment_id":"Jx11003"},
     ],
+    "status": "Incertum",
 }
 
 fragment_empty = {
@@ -110,6 +117,7 @@ fragment_empty = {
     "apparatus": "",
     "commentary": "",
     "reconstruction":"",
+    "status": "",
     "context":[
         {}
     ],
