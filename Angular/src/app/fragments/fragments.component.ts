@@ -32,12 +32,13 @@ export class FragmentsComponent implements OnInit {
   @ViewChild('CallAbout') CallAbout: TemplateRef<any>;
 
   // Toggle switches
-  columnOneToggle: boolean = true;
-  columnTwoToggle: boolean = false; // Boolean to toggle between 2 and 3 column mode.
-  columnThreeToggle: boolean = true;
-  fourColumnMode: boolean = false;
-  playground_column: boolean = false;
-  multiplayer_column: boolean = false;
+  toggle_column_one: boolean = false;
+  toggle_column_two: boolean = false;
+  toggle_column_three: boolean = false;
+  toggle_column_four: boolean = false;
+  toggle_commentary: boolean = false;
+  toggle_playground: boolean = true;
+  toggle_multiplayer: boolean = false;
   
   spinner: boolean = true; // Boolean to toggle the spinner.
   noCommentary: boolean = false; // Shows banner if no commentary is available.
@@ -54,40 +55,58 @@ export class FragmentsComponent implements OnInit {
   f_differences : object;
   f_reconstruction : object;
   // Variables with currentAuthor, Book and Editor. Mostly placeholder data.
-  current_author : string = 'Ennius';
-  current_book : string = 'Thyestes';
-  current_editor : string = 'TRF';
-  current_editors : object;
-  current_fragment : string = '0';
-
+  retrieved_author : string = 'Ennius';
+  retrieved_book : string = 'Thyestes';
+  retrieved_editor : string = 'TRF';
+  retrieved_editors : object;
+  retrieved_fragments : object;
+  retrieved_fragment_numbers : object;
 
   pressed_fragment_name : string = '';
   pressed_fragment_editor : string = '';
 
-  primary_fragments : object;
-  secondary_fragments : object;
-
-  selectedEditor : number;
-  selectedFragment : number;
-  selectedLine : number;
-
+  column_data = {
+    column1 : {
+      author : 'Ennius',
+      book : 'Thyestes',
+      editor : 'TRF',
+      fragments : '',
+    },
+    column2 : {
+      author : 'Accius',
+      book : 'Antigone',
+      editor : 'Janssen',
+      fragments : '',
+    },
+    column3 : {
+      author : 'Accius',
+      book : 'Antigone',
+      editor : 'Janssen',
+      fragments : '',
+    },
+    column4 : {
+      author : 'Accius',
+      book : 'Antigone',
+      editor : 'Janssen',
+      fragments : '',
+    },
+    playground : {
+      author : 'Accius',
+      book : 'Antigone',
+      editor : 'Janssen',
+      fragments : '',
+    },
+    playground2 : {
+      author : 'Accius',
+      book : 'Antigone',
+      editor : 'Janssen',
+      fragments : '',
+    },     
+  }
   // Allows for notes to be added on screen
   note : string = '';
   noteArray : Array<string> = [];
-
-  // This array contains all the information from a specific book. Functions can use this data.
-  selectedEditorArray = [];
-  mainEditorArray = [];
   
-  // Four column mode variables
-  editor1 = [];
-  editor2 = [];
-  editor3 = [];
-  editor4 = [];
-
-  // Used as the identifier of a fragment
-  referencer : number = 0;
-   
   constructor(
     private api: ApiService,
     private utility: UtilityService,
@@ -102,8 +121,8 @@ export class FragmentsComponent implements OnInit {
     // Request a list of authors to select a different text    
     this.api.GetAuthors().subscribe(data => this.authorsJSON = data);
     // Retrieves everything surrounding the text. TODO. Needs fixing
-    this.RequestEditors(this.current_author, this.current_book);
-    this.Request_primary_column(this.current_author, this.current_book, this.current_editor);
+    this.RequestEditors(this.retrieved_author, this.retrieved_book);
+    this.Request_fragments(this.retrieved_author, this.retrieved_book, this.retrieved_editor, 'column1');
     // When init is done, turn off the loading bar (spinner)
     this.spinner = false;  
 
@@ -114,30 +133,38 @@ export class FragmentsComponent implements OnInit {
   /**
    * Data request fuctions. These will call the API, which will get the data from the server 
    */
-  public RequestEditors(author: string, book: string){
-    this.api.GetEditors(author, book).subscribe(
-      data => {
-        this.current_editors = data;
-      }
-    );
-  }
-
-  public Request_primary_column(author: string, book: string, editor: string){
-    this.api.GetFragments(author, book, editor).subscribe(
-      data => { this.primary_fragments = data; });  
-  }
-
-  public Request_secondary_column(author: string, book: string, editor: string){
-    this.api.GetFragments(author, book, editor).subscribe(
-      data => { this.secondary_fragments = data; });  
-  }
-
   public RequestBooks(author: string){
     this.api.GetBooks(author).subscribe(
       data => {
         this.booksJSON = data;
       }
     );      
+  }
+
+  public RequestEditors(author: string, book: string){
+    this.api.GetEditors(author, book).subscribe(
+      data => {
+        this.retrieved_editors = data;
+      }
+    );
+  }
+
+  public Request_fragments(author: string, book: string, editor: string, column: string){
+    this.api.GetFragments(author, book, editor).subscribe(
+      data => { 
+        this.column_data[column].fragments = this.Add_HTML_to_lines(data);
+        this.retrieved_fragment_numbers = this.Retrieve_fragment_numbers(data);
+        console.log(this.column_data[column])
+      });  
+  }
+
+  public Retrieve_fragment_numbers(fragments){    
+    let number_list = []
+
+    for(let fragment in fragments){
+      number_list.push(fragments[fragment].fragment_name)
+    }
+    return number_list
   }
 
   public RequestCommentaries(fragment_id: string){
@@ -155,6 +182,33 @@ export class FragmentsComponent implements OnInit {
     this.api.GetReconstruction(fragment_id).subscribe(data => this.f_reconstruction = data);
   }
 
+  public Handle_author_selection(column: string, author: string){
+    // Simple handler function to handle what should happen when an author is selected
+    this.column_data[column].author = author;
+    this.column_data[column].book = 'TBA';
+    this.column_data[column].editor = 'TBA';
+    this.RequestBooks(author);
+  }
+
+  public Handle_book_selection(column: string, book: string){
+    // Simple handler function to handle what should happen when a book is selected
+    this.column_data[column].book = book;
+    this.column_data[column].editor = 'TBA';
+    this.RequestEditors(this.column_data[column].author, book);
+  }
+
+  public Handle_editor_selection(column: string, editor: string){
+    // Simple handler function to handle what should happen when an editor is selected
+    this.column_data[column].editor = editor;
+    this.Request_fragments(this.column_data[column].author, this.column_data[column].book, editor, column)
+  }
+
+  public Handle_fragment_click(fragment){
+      this.pressed_fragment_name = fragment.fragment_name;
+      this.pressed_fragment_editor = fragment.editor
+      this.RequestCommentaries(fragment.id)
+  }
+
   public Login() {
     const dialogRef = this.matdialog.open(LoginComponent);
   }
@@ -165,10 +219,48 @@ export class FragmentsComponent implements OnInit {
   }
 
   public Test(){
-    console.log(this.f_context)
-    // let item = this.api.Couch()
+    console.log('TEST', this.column_data)
   }
 
+  public Add_HTML_to_lines(array){        
+    // For each element in the given array
+    for(let fragment in array){
+      // Loop through all fragments      
+      let current_fragment =  array[fragment]
+      for(let item in current_fragment.lines){
+        // Loop through all lines of current fragment
+        let line_number = current_fragment.lines[item].line_number;
+        let line_text = current_fragment.lines[item].text;
+        let line_complete = '<p>' + line_number + ': ' + line_text + '</p>';
+
+        let updated_lines = {
+          'line_number': line_number,
+          'text': line_text,
+          'line_complete': line_complete,
+        }
+        current_fragment.lines[item] = updated_lines;
+      }
+    }
+    return array
+  }
+
+  public Sort_fragments_numerically(fragments){
+    // // Sort the lines in array, needs to be own function
+    // for(let element in array){
+      //   array[element].content.sort(this.SortFragmentsArrayNumerically);
+      // }
+    return fragments
+  }
+    
+  public Sort_fragments_on_status(fragments){
+    // // Put normal fragments first, then incerta and then adespota. TODO: should be separate function
+    // let normal = this.FilterObjOnKey(array, 'status', '')
+    // let incerta = this.FilterObjOnKey(array, 'status', 'Incertum')
+    // let adesp = this.FilterObjOnKey(array, 'status', 'Adesp.')
+    // // Concatenate in the order we want (i'm a hacker)
+    // array = normal.concat(incerta).concat(adesp)
+    return fragments
+  }  
 }
 
 // Simple class to open the about information written in said html file.

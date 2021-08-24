@@ -38,7 +38,7 @@ export class TextComponent implements OnInit {
    * Requests a list of books using a given author
    * @param author whose books are to be returned
    */
-  public RequestBooks(author: number){
+  public RequestBooks(author: string){
     this.api.GetBooks(author).subscribe(
       data => {
         this.booksJSON = data;

@@ -62,6 +62,22 @@ export class DashboardComponent implements OnInit {
   fragmentNumberList = [];
   lineNumberList = [];
   // These variables hold the selected items //FIXME: Type
+
+  current_author : string = 'Ennius';
+  current_book : string = 'Thyestes';
+  current_editor : string = 'TRF';
+  current_editors : object;
+  current_fragment : JSON;
+
+  retrieved_author : string = 'Ennius';
+  retrieved_book : string = 'Thyestes';
+  retrieved_editor : string = 'TRF';
+  retrieved_editors : object;
+  retrieved_fragments : object;
+  retrieved_fragment_numbers : object;
+
+  requested_fragment : string = '';
+
   selectedBook;
   selectedAuthor;
   selectedEditor;
@@ -144,9 +160,65 @@ export class DashboardComponent implements OnInit {
    * Simple test function, can be used for whatever
    * @param thing item to be printed
    */
-  public Test(thing){
-    console.log('test', thing)
+  public Test(){
+    console.log('test', this.requested_fragment)
   }
+
+  public RequestBooks(author: string){
+    this.api.GetBooks(author).subscribe(
+      data => {
+        this.booksJSON = data;
+        console.log('book', data)
+      }
+    );      
+  }
+
+  public RequestEditors(author: string, book: string){
+    this.api.GetEditors(author, book).subscribe(
+      data => {
+        this.retrieved_editors = data;
+        console.log('edit', this.retrieved_editors)
+      }
+    );
+  }
+
+  public Request_fragments(author: string, book: string, editor: string){
+    this.api.GetFragments(author, book, editor).subscribe(
+      data => { 
+        this.retrieved_fragments = data;
+        this.retrieved_fragment_numbers = this.Retrieve_fragment_numbers(data);
+      });  
+  }
+
+  public Retrieve_fragment_numbers(fragments){    
+    let number_list = []
+
+    for(let fragment in fragments){
+      number_list.push(fragments[fragment].fragment_name)
+    }
+    return number_list
+  }
+
+  public Retrieve_requested_fragment(fragments, fragment_number){
+    
+    let fragment_id = ''
+
+    for(let fragment in fragments){
+      if(fragments[fragment].fragment_name == fragment_number){
+        let fragment_id = fragments[fragment].id
+      }
+    }
+
+    // Now, get this fragment from the server TODO:
+    return fragment_id
+  }
+
+
+
+
+
+
+
   /**
   * Creates fragments for the main editor and the selected editor
   * @param selectedEditor given from the middle column
@@ -232,34 +304,34 @@ export class DashboardComponent implements OnInit {
    * Fills the global content variables with the content of the selected fragment
    * @param referencerID referencer id used to identify the requested fragment
    */
-  public async RequestCommentaries(referencerID: number){
+  public async RequestCommentaries(fragment: string){
     // Retrieves Fragment Commentary: we have all identifiers, so just get the content.    
-    this.api.GetCommentary(referencerID).subscribe(data => {
+    this.api.GetCommentary(fragment).subscribe(data => {
       this.F_Commentary = data;
       this.UpdateForm('contentForm','commentary', this.RetrieveContentField(data, 'commentary'));
     });
     // Retrieves Fragment Differences
-    this.api.GetDifferences(referencerID).subscribe(data => {
+    this.api.GetDifferences(fragment).subscribe(data => {
       this.F_Differences = data;
       this.UpdateForm('contentForm','differences', this.RetrieveContentField(data, 'differences'));
     });
     // Retrieves Fragment Translation
-    this.api.GetTranslation(referencerID).subscribe(data => {
+    this.api.GetTranslation(fragment).subscribe(data => {
       this.F_Translation = data;
       this.UpdateForm('contentForm','translation', this.RetrieveContentField(data, 'translation'));
     });
     // Retrieves Fragment App. Crit.
-    this.api.GetApparatus(referencerID).subscribe(data => {
+    this.api.GetApparatus(fragment).subscribe(data => {
       this.F_Apparatus = data;
       this.UpdateForm('contentForm','apparatus', this.RetrieveContentField(data, 'apparatus'));
     });
     // Retrieves Fragment Reconstruction
-    this.api.GetReconstruction(referencerID).subscribe(data => {
+    this.api.GetReconstruction(fragment).subscribe(data => {
       this.F_Reconstruction = data;
       this.UpdateForm('contentForm','reconstruction', this.RetrieveContentField(data, 'reconstruction'));
     });    
     // Retrieves Fragment Context
-    this.api.GetContext(referencerID).subscribe(data => this.F_Context = data);
+    this.api.GetContext(fragment).subscribe(data => this.F_Context = data);
   }
   /**
    * The content is returned in an object of objects. Only one object exists here,
@@ -293,32 +365,32 @@ export class DashboardComponent implements OnInit {
       err => this.utility.HandleErrorMessage(err),
     );      
   }
-  /**
-   * Requests all books from a given author
-   * @param author number of author who's books are requested
-   */
-  public RequestBooks(author: number){
-    this.api.GetBooks(author).subscribe(
-      data => this.booksJSON = data,
-      err => this.utility.HandleErrorMessage(err),
-    );      
-  }
-  /**
-   * Requests all editors from a given book
-   * @param book number of book who's editors are requested
-   */
-  public RequestEditors(book: number){
-    this.api.GetEditors(book).subscribe(
-      data => this.editorsJSON = data,
-      err => this.utility.HandleErrorMessage(err),
-    );
-  }
+  // /**
+  //  * Requests all books from a given author
+  //  * @param author number of author who's books are requested
+  //  */
+  // public RequestBooks(author: string){
+  //   this.api.GetBooks(author).subscribe(
+  //     data => this.booksJSON = data,
+  //     err => this.utility.HandleErrorMessage(err),
+  //   );      
+  // }
+  // /**
+  //  * Requests all editors from a given book
+  //  * @param book number of book who's editors are requested
+  //  */
+  // public RequestEditors(book: string){
+  //   this.api.GetEditors(this.current_author, book).subscribe(
+  //     data => this.editorsJSON = data,
+  //     err => this.utility.HandleErrorMessage(err),
+  //   );
+  // }
   /**
    * Requests all fragments from a given book
    * @param book number of book who's fragments are requested
    */
-  public RequestFragments(book: number){
-    this.api.GetFragments(book).subscribe(
+  public RequestFragments(editor: string){
+    this.api.GetFragments(this.current_author, this.current_book, editor).subscribe(
       data => this.F_Fragments = data,
       err => this.utility.HandleErrorMessage(err),
     );  
@@ -534,49 +606,4 @@ export class DashboardComponent implements OnInit {
     });     
   }
 
-
-
-//   _    _ _______ __  __ _      
-//  | |  | |__   __|  \/  | |     
-//  | |__| |  | |  | \  / | |     
-//  |  __  |  | |  | |\/| | |     
-//  | |  | |  | |  | |  | | |____ 
-//  |_|  |_|  |_|  |_|  |_|______|
-                               
-  // /**
-  //  * Opens a confirmation dialog with the provided message
-  //  * @param message shows text about what is happening
-  //  * @param item the item that is about to change
-  //  */
-  // public OpenConfirmationDialog(message, item): Observable<boolean>{
-  //   const dialogRef = this.dialog.open(ConfirmationDialog, {
-  //     width: 'auto',
-  //     data: {
-  //       message: message,
-  //       item: item,
-  //     }
-  //   });  
-  //   return dialogRef.afterClosed(); // Returns observable.
-  // }
-
-
 }
-
-  // /**
-  //  * Class to show a confirmation dialog when needed. 
-  //  * Shows whatever data is given
-  //  */
-  // @Component({
-  //   selector: 'confirmation-dialog',
-  //   templateUrl: 'confirmation-dialog.html',
-  // })
-  // export class ConfirmationDialog {
-  //   constructor(
-  //     public dialogRef: MatDialogRef<ConfirmationDialog>,
-  //     @Inject(MAT_DIALOG_DATA) public data) { }
-  //   onNoClick(): void {
-  //     this.dialogRef.close();
-  //   }
-  // }
-
-

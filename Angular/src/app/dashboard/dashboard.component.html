@@ -11,9 +11,9 @@
 <mat-toolbar color="primary">
     <span><h3 class='h3-title'>Dashboard</h3></span>
     <span class="spacer"></span>
+    <button mat-button class="btn" (click)="Test()">TEST</button>
     <button mat-button class="btn" routerLink="/fragments">FRAGMENTS</button>
     <!-- <button mat-button class="btn" (click)="RequestAuthors()">RELOAD AUTHORS</button> -->
-    <!-- <button mat-button (click)="Test('hoi')">Test</button> -->
 </mat-toolbar>
 
 <!-- Show a spinner if query with database is in progress -->
@@ -24,7 +24,56 @@
 <div class="container-fluid">
     <div class="row">
         <!-- Need some space here please  -->     
-        <mat-form-field class="select-form">
+
+        <mat-form-field>
+            <mat-label>Select author</mat-label>
+            <mat-select>
+                <mat-option *ngFor="let author of this.authorsJSON" [value]="author"
+                  (click)="this.retrieved_author = author.name"  
+                  (click)="this.RequestBooks(author.name)">
+                    {{ author.name }} 
+                </mat-option>
+            </mat-select>  
+        </mat-form-field> 
+    
+        <mat-form-field>
+            <mat-label>Select text</mat-label>
+            <mat-select>
+                <mat-option *ngFor="let book of this.booksJSON" [value]="book" 
+                  (click)="this.retrieved_book = book.name"  
+                  (click)="this.RequestEditors(this.retrieved_author, book.name)">
+                    {{ book.name }}                
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    
+        <mat-form-field>
+            <mat-label>Select edition</mat-label>
+            <mat-select>
+                <mat-option *ngFor="let editor of this.retrieved_editors" [value]="editor"
+                    (click)="this.retrieved_editor = editor.name"  
+                    (click)="this.Request_fragments(this.retrieved_author, this.retrieved_book, editor.name)">
+                    {{ editor.name }}                     
+                </mat-option>
+            </mat-select>
+            <!-- <mat-hint>Select an edition</mat-hint> -->
+        </mat-form-field>
+    
+        <mat-form-field>
+            <mat-label>Fragment</mat-label>
+            <mat-select>
+                <mat-option *ngFor="let fragment_number of this.retrieved_fragment_numbers" [value]="fragment_number"
+                    (click)="this.Retrieve_requested_fragment(this.retrieved_fragments, fragment_number)">
+                    {{ fragment_number }} 
+                </mat-option>
+            </mat-select>
+            <!-- <mat-hint>Select a fragment</mat-hint> -->
+        </mat-form-field>
+
+
+
+
+        <!-- <mat-form-field class="select-form">
             <mat-label>Author</mat-label>
             <mat-select [(ngModel)]="selectedAuthor">
                 <mat-option *ngFor="let authorData of this.authorsJSON" [value]="authorData"
@@ -91,7 +140,7 @@
             </mat-option>
             </mat-select>
             <mat-hint>Select a line</mat-hint>
-        </mat-form-field>            
+        </mat-form-field>             -->
     </div>
 </div>
 
