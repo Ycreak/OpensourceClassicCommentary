@@ -32,12 +32,12 @@ export class FragmentsComponent implements OnInit {
   @ViewChild('CallAbout') CallAbout: TemplateRef<any>;
 
   // Toggle switches
-  toggle_column_one: boolean = false;
+  toggle_column_one: boolean = true;
   toggle_column_two: boolean = false;
   toggle_column_three: boolean = false;
   toggle_column_four: boolean = false;
-  toggle_commentary: boolean = false;
-  toggle_playground: boolean = true;
+  toggle_commentary: boolean = true;
+  toggle_playground: boolean = false;
   toggle_multiplayer: boolean = false;
   
   spinner: boolean = true; // Boolean to toggle the spinner.
@@ -152,9 +152,14 @@ export class FragmentsComponent implements OnInit {
   public Request_fragments(author: string, book: string, editor: string, column: string){
     this.api.GetFragments(author, book, editor).subscribe(
       data => { 
-        this.column_data[column].fragments = this.Add_HTML_to_lines(data);
+        data = this.Add_HTML_to_lines(data);
+        data = this.Sort_fragments_numerically(data);
+        console.log('data1', data)
+        data = this.Sort_fragments_on_status(data);
+        console.log('data2', data)
+
+        this.column_data[column].fragments = data;
         this.retrieved_fragment_numbers = this.Retrieve_fragment_numbers(data);
-        console.log(this.column_data[column])
       });  
   }
 
@@ -246,19 +251,29 @@ export class FragmentsComponent implements OnInit {
 
   public Sort_fragments_numerically(fragments){
     // // Sort the lines in array, needs to be own function
-    // for(let element in array){
-      //   array[element].content.sort(this.SortFragmentsArrayNumerically);
-      // }
+    // console.log('inc', fragments)
+    // fragments.sort((a,b) => a.fragment_name.localeCompare(b.fragment_name));
+    
+    fragments.sort(this.utility.SortFragmentsArrayNumerically);
+
+    console.log('sorted', fragments)
+    // for(let fragment in fragments){
+    //   console.log('fr', fragments[fragment] )
+    //   fragments[fragment].sort(this.utility.SortFragmentsArrayNumerically);
+    // }
     return fragments
   }
     
   public Sort_fragments_on_status(fragments){
     // // Put normal fragments first, then incerta and then adespota. TODO: should be separate function
-    // let normal = this.FilterObjOnKey(array, 'status', '')
-    // let incerta = this.FilterObjOnKey(array, 'status', 'Incertum')
-    // let adesp = this.FilterObjOnKey(array, 'status', 'Adesp.')
+    let normal = this.utility.FilterObjOnKey(fragments, 'status', null)
+    let incerta = this.utility.FilterObjOnKey(fragments, 'status', 'Incertum')
+    let adesp = this.utility.FilterObjOnKey(fragments, 'status', 'Adesp.')
+
+    console.log(normal, incerta, adesp)
     // // Concatenate in the order we want (i'm a hacker)
-    // array = normal.concat(incerta).concat(adesp)
+    fragments = normal.concat(incerta).concat(adesp)
+
     return fragments
   }  
 }

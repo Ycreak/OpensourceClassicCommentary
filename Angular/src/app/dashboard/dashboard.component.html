@@ -16,8 +16,6 @@
     <!-- <button mat-button class="btn" (click)="RequestAuthors()">RELOAD AUTHORS</button> -->
 </mat-toolbar>
 
-<!-- Show a spinner if query with database is in progress -->
-<mat-progress-bar mode="query" *ngIf="this.spinner"></mat-progress-bar>
 <br>
 
 <!-- SELECTING ROW -->
@@ -71,76 +69,6 @@
         </mat-form-field>
 
 
-
-
-        <!-- <mat-form-field class="select-form">
-            <mat-label>Author</mat-label>
-            <mat-select [(ngModel)]="selectedAuthor">
-                <mat-option *ngFor="let authorData of this.authorsJSON" [value]="authorData"
-                (click)="this.selectedBook = this.selectedEditor = this.selectedFragment = this.selectedLine = ''"
-                (click)="this.fragmentForm.reset(); this.contentForm.reset(); this.contextForm.reset()"
-                (click)="RequestBooks(authorData.id)">
-                {{ authorData.name }}                       
-                </mat-option>
-            </mat-select>
-            <mat-hint>Select an author</mat-hint>
-        </mat-form-field>
-    
-        <mat-form-field class="select-form">
-            <mat-label>Book</mat-label>
-            <mat-select [(ngModel)]="selectedBook">
-            <mat-option *ngFor="let bookData of this.booksJSON" [value]="bookData"
-            (click)="this.selectedEditor = this.selectedFragment = this.selectedLine = ''"
-            (click)="this.fragmentForm.reset(); this.contentForm.reset(); this.contextForm.reset()"
-            (click)="this.RequestEditors(bookData.id)"
-            (click)="this.RequestFragments(bookData.id)">
-                {{ bookData.title }}                       
-            </mat-option>
-            </mat-select>
-            <mat-hint>Select a book</mat-hint>
-        </mat-form-field>
-    
-        <mat-form-field class="select-form">
-            <mat-label>Editor</mat-label>
-            <mat-select [(ngModel)]="selectedEditor">
-            <mat-option *ngFor="let editorData of this.editorsJSON" [value]="editorData"
-            (click)="this.selectedFragment = this.selectedLine = ''"
-            (click)="this.fragmentForm.reset(); this.contentForm.reset(); this.contextForm.reset()"
-            (click)="this.selectedEditorArray = CreateEditorArray(editorData.id, this.F_Fragments)"
-            (click)="this.fragmentNumberList = this.utility.GetFragmentNumbers(editorData.id, this.selectedEditorArray)">
-                {{ editorData.name }}                       
-            </mat-option>
-            </mat-select>
-            <mat-hint>Select an editor</mat-hint>
-        </mat-form-field>
-            
-        <mat-form-field class="select-form">
-            <mat-label>Fragment</mat-label>
-            <mat-select [(ngModel)]="selectedFragment">
-            <mat-option *ngFor="let fragmentData of this.fragmentNumberList" [value]="fragmentData"
-            (click)="this.selectedLine = ''"
-            (click)="this.fragmentForm.reset(); this.contentForm.reset(); this.contextForm.reset()"
-            (click)="UpdateForm('fragmentForm', 'fragmentNumber',fragmentData)"
-            (click)="this.RequestReferencerID(this.selectedFragment, this.selectedEditor.id, this.selectedBook.id)"
-            (click)="this.lineNumberList = GetLineNumbers(fragmentData, this.selectedEditorArray)">
-                {{ fragmentData }} 
-            </mat-option>
-            </mat-select>
-            <mat-hint>Select a fragment</mat-hint>
-        </mat-form-field>      
-        
-        <mat-form-field class="select-form">
-            <mat-label>Line</mat-label>
-            <mat-select [(ngModel)]="selectedLine">
-            <mat-option *ngFor="let lineData of this.lineNumberList" [value]="lineData"
-            (click)="UpdateForm('fragmentForm', 'lineNumber',lineData)"
-            (click)="UpdateForm('fragmentForm', 'lineStatus',GetFragmentStatus(this.selectedFragment, this.selectedEditorArray))"
-            (click)="UpdateForm('fragmentForm', 'lineContent',GetFragmentLine(lineData, this.selectedFragment, this.selectedEditorArray))">            
-              {{ lineData }} 
-            </mat-option>
-            </mat-select>
-            <mat-hint>Select a line</mat-hint>
-        </mat-form-field>             -->
     </div>
 </div>
 
@@ -149,104 +77,67 @@
 <!-- TAB GROUPS TO ENTER DATA -->
 <div class="container-fluid">
     <div class="row">
+
+      <button mat-button (click)="Request_revise_fragment(this.fragmentForm.value)"  *ngIf="this.authService.isTeacher">Revise Fragment</button>
+      <button mat-button (click)="Request_create_fragment(this.fragmentForm.value)"  *ngIf="this.authService.isTeacher">Create Fragment</button>
+      <button mat-button (click)="Request_delete_fragment(this.fragmentForm.value)"  *ngIf="this.authService.isTeacher">Delete Fragment</button>
+      <button mat-button (click)="Reset_form()"  *ngIf="this.authService.isTeacher">Clear all fields</button>
+
+      <hr>
+    </div>
+    
+    <div class="row">
+
         <mat-tab-group>
-            <mat-tab label="Add/Remove Items" *ngIf="this.authService.isTeacher"><br>
-                <!-- Group to add/remove Authors, Books and Editors -->
-                <mat-tab-group>
-                  <!-- Tab to add/remove Authors -->
-                    <mat-tab label="Author"><br>
-                        <div mat-dialog-content>
-                        <mat-form-field class="input-form">
-                            <input matInput placeholder="Add author" [(ngModel)]='inputAuthor'>
-                            <mat-hint>Fill in the name of a new author</mat-hint>
-                        </mat-form-field>
-                        </div>  
-            
-                        <br>
-                        <button mat-button (click)="RequestCreateAuthor(inputAuthor)">Create added author</button>
-                        <button mat-button (click)="RequestDeleteAuthor(this.selectedAuthor.id)">Delete selected author</button>
-                    </mat-tab>
         
-                    <!-- Tab to add/remove Books -->
-                    <mat-tab label="Book"><br>
-            
-                        <div mat-dialog-content>
-                        <mat-form-field class="input-form">
-                            <input matInput placeholder="Add book" [(ngModel)]='inputBook'>
-                            <mat-hint>Select an author and fill in the name of his/her new book</mat-hint>
-                        </mat-form-field>
-                        </div>  
-            
-                        <br>
-                        <button mat-button (click)="RequestCreateBook(inputBook, this.selectedAuthor.id)">Create added book</button>
-                        <button mat-button (click)="RequestDeleteBook(this.selectedBook.id, this.selectedAuthor.id)">Delete selected book</button>
-                    </mat-tab>
-        
-                    <!-- Tab to add/remove Editors -->
-                    <mat-tab label="Editor"><br>         
-                        <div mat-dialog-content>
-                        <mat-form-field class="input-form">
-                            <input matInput placeholder="Add editor" [(ngModel)]='inputEditor'>
-                            <mat-hint>Select an author and book and fill in the name of its new editor</mat-hint>
-                        </mat-form-field>
-                        </div>  
-                        <br>
-                        <button mat-button (click)="RequestCreateEditor(inputEditor, this.selectedBook.id, this.selectedAuthor.id)">Create added editor</button>
-                        <button mat-button (click)="RequestDeleteEditor(this.selectedEditor.id, this.selectedBook.id, this.selectedAuthor.id)">Delete selected editor</button>
-                        <button mat-button (click)="RequestSetMainEditor(this.selectedEditor.id, this.selectedBook.id, this.selectedAuthor.id)">Set selected editor as main editor</button>
-                        <button mat-button (click)="RequestDeleteMainEditor(this.selectedEditor.id, this.selectedBook.id, this.selectedAuthor.id)">Remove selected editor as main editor</button>
-            
-                    </mat-tab>
-                </mat-tab-group>
-            </mat-tab>
-        
-            <mat-tab label="Create/Revise Fragment"><br> 
-              <form [formGroup]="fragmentForm" (ngSubmit)="RequestCreateFragment(fragmentForm.value, this.selectedEditor.id, this.selectedBook.id)">
+            <form [formGroup]="fragmentForm">
+              <mat-tab label="Create/Revise Fragment"><br> 
 
                 <mat-form-field class="input-form-full-width">
-                  <mat-label>Fragment number</mat-label>
-                  <input matInput type="text" formControlName="fragmentNumber" required>
+                  <mat-label>Fragment name</mat-label>
+                  <input matInput type="text" formControlName="fragment_name"> <!--required> -->
                   <mat-hint>Provide the name of the fragment</mat-hint>                       
                 </mat-form-field>
               
                 <div class="div-padding-sm"></div>
 
                 <mat-form-field class="input-form-full-width">
-                  <mat-label>Line number</mat-label>
-                  <input matInput type="text" formControlName="lineNumber" required>
-                  <mat-hint>Provide the name of the line</mat-hint>                       
+                  <mat-label>Author name</mat-label>
+                  <input matInput type="text" formControlName="author">
+                  <mat-hint>Provide the author of the fragment</mat-hint>                       
                 </mat-form-field>
               
                 <div class="div-padding-sm"></div>
 
                 <mat-form-field class="input-form-full-width">
-                  <mat-label>Line content</mat-label>
-                  <input matInput type="text" formControlName="lineContent" required id="LC" [matKeyboard]="'OSCC'">
-                  <mat-hint>Provide the content of the line</mat-hint>                       
+                  <mat-label>Title name</mat-label>
+                  <!-- <input matInput type="text" formControlName="lineContent" required id="LC" [matKeyboard]="'OSCC'"> -->
+                  <input matInput type="text" formControlName="title">
+                  <mat-hint>Provide the name of the book</mat-hint>                       
                 </mat-form-field>
 
                 <div class="div-padding-sm"></div>
 
                 <mat-form-field class="input-form-full-width">
+                  <mat-label>Editor name</mat-label>
+                  <!-- <input matInput type="text" formControlName="lineContent" required id="LC" [matKeyboard]="'OSCC'"> -->
+                  <input matInput type="text" formControlName="editor">
+                  <mat-hint>Provide the name of the editor</mat-hint>                       
+                </mat-form-field>
+
+                <mat-form-field class="input-form-full-width">
                   <mat-label>Line status</mat-label>
-                  <input matInput type="text" formControlName="lineStatus">
+                  <input matInput type="text" formControlName="status">
                   <mat-hint>Provide the status of the fragment</mat-hint>                       
-                </mat-form-field>       
+                </mat-form-field> 
+
                 <div class="div-padding"></div>
-                <button mat-button type="submit" [disabled]="!fragmentForm.valid">Upload</button>
-              </form>
-              <div class="div-padding"></div>
-              <button mat-button (click)="RequestDeleteFragment(this.selectedEditor.id, this.selectedBook.id, this.selectedFragment)"  *ngIf="this.authService.isTeacher">Delete selected Fragment</button>
+                <!-- <button mat-button type="submit" [disabled]="!fragmentForm.valid">Upload</button> -->
+                <div class="div-padding"></div>              
 
               </mat-tab>
 
-            <!-- Tab Group to change a fragment. -->
-
-            <mat-tab label="Create/Revise Content"><br>
-                <h4>Select one of the fragments to change its contents fields. Only changes will be saved.</h4>
-                <!-- Uses form group! On pressing upload, changes will be put in the form. -->
-                <form [formGroup]="contentForm" (ngSubmit)="RequestReviseContent(contentForm.value)">
-                                                                         
+              <mat-tab label="Create/Revise Content"><br>
                   <mat-form-field class="input-form-full-width">
                     <mat-label><b>Fragment translation</b></mat-label>
                     <textarea matInput type="text" formControlName="translation" id="FT" [matKeyboard]="'OSCC'"></textarea>
@@ -283,278 +174,47 @@
                     <mat-label><b>Fragment reconstruction</b></mat-label>
                     <textarea matInput type="text" formControlName="reconstruction" id="FR" [matKeyboard]="'OSCC'"></textarea>
                     <!-- <mat-hint>Provide the revised reconstruction of the selected fragment</mat-hint>                        -->
-                  </mat-form-field>                  
+                  </mat-form-field> 
 
-                  <!-- Button is linked via the submit type! -->
-                  <br><br>
-                  <button mat-button class="button" type="submit" [disabled]="!contentForm.valid">Upload</button>
-                </form>
+                </mat-tab>
 
-                <!-- <button [cdkCopyToClipboard]="value">Copy to clipboard</button> -->
+                <mat-tab label="Create/Revise Context"><br>
 
-
-              </mat-tab>
-                    
-              <!-- Tab to fix the context: select author and change its content. -->
-              <mat-tab label="Revise/Create Context"><br>
-                <h4>Select one of the fragments to change its context fields.</h4>
-                <mat-form-field class="input-form">
-                  <mat-label>Fragment context author</mat-label>
-                  <mat-select [(ngModel)]="selectedContext">
-                    <mat-option *ngFor="let item of this.F_Context" [value]="item.id"
-                    (click)="UpdateForm('contextForm','contextAuthor',item.contextAuthor)"
-                    (click)="UpdateForm('contextForm','context',item.context)">                  
-                      {{ item.contextAuthor }}                       
-                    </mat-option>
-                  </mat-select>
-                  <mat-hint>Select the author of the requested context for the selected fragment</mat-hint>
-                </mat-form-field>
-                <div class="div-padding-sm"></div>
-
-                <form [formGroup]="contextForm" (ngSubmit)="RequestReviseContext(contextForm.value)">
-
-                  <mat-form-field class="input-form-full-width">
-                    <mat-label>Context Author</mat-label>
-                    <input matInput type="text" formControlName="contextAuthor" required id="CA" [matKeyboard]="'OSCC'">
-                    <mat-hint>Provide the context author</mat-hint>                       
-                  </mat-form-field>                  
-
-
-                  <mat-form-field class="input-form-full-width">
-                    <mat-label>Context</mat-label>
-                    <textarea matInput type="text" formControlName="context" required id="CC" [matKeyboard]="'OSCC'"></textarea>
-                    <mat-hint>Provide the context</mat-hint>                       
-                  </mat-form-field>             
-                  
-                  <!-- Button is linked via the submit type! -->
-                  <div class="div-padding"></div>
-                  <button mat-button class="button" type="submit">Revise Selected Context</button>
-                </form>
-                <div class="div-padding"></div>    
-                <button mat-button (click)="RequestCreateContext(contextForm.value)" [disabled]="!contextForm.valid">Create New Context</button>
-    
-              </mat-tab>
-              
-              <mat-tab label="Bibliography">
-
-                <mat-radio-group aria-label="Select an option" [(ngModel)]="bibType">
-                  <mat-radio-button value="edition">Edition</mat-radio-button>
-                  <mat-radio-button value="translation">Translation</mat-radio-button>
-                  <mat-radio-button value="commentary">Commentary</mat-radio-button>
-                  <!-- <hr> -->
-                  <mat-radio-button value="book">Book</mat-radio-button>
-                  <mat-radio-button value="article">Article</mat-radio-button>
-                  <mat-radio-button value="evolume">Edited Volume</mat-radio-button>
-                  <mat-radio-button value="website">Website</mat-radio-button> 
-                                   
-                </mat-radio-group>
-                              
-                  <form [formGroup]="bibForm" (ngSubmit)="RequestReviseBib(bibForm.value)">
-
-                    <div *ngIf="this.bibType == 'edition'">
-                      Placeholder
+                  <form [formGroup]="fragmentForm">
+                    <div formArrayName="context"
+                      *ngFor="let item of fragmentForm.get('context')['controls']; let i = index;">
+                      <div [formGroupName]="i">
+                        <input formControlName="author" placeholder="Context author name">
+                        <input formControlName="location" placeholder="Context location">
+                        <input formControlName="text" placeholder="Context text">
+                        <button (click)="removeItem('context', i)">X</button>
+                      </div>
+                      <!-- Exposed item name: {{ fragmentForm.controls.context.controls[i].controls.name.value }} -->
                     </div>
-                    <div *ngIf="this.bibType == 'translation'">
-                      Placeholder
-                    </div>                      
-                    <div *ngIf="this.bibType == 'commentary'">
-                      Placeholder
-                    </div>                      
+                    <button type="button" (click)="addItem2('','', '')">Add Item</button>
+                  </form>
 
+                </mat-tab>
 
+                <mat-tab label="Create/Revise Lines"><br>
 
-
-                    <div *ngIf="this.bibType == 'book'">
-                        <mat-form-field class="input-form-full-width">
-                          <mat-label>Author Name</mat-label>
-                          <input matInput type="text" formControlName="author">
-                          <mat-hint>Provide the author</mat-hint>                       
-                        </mat-form-field> 
-                        
-                        <mat-form-field class="input-form-full-width">
-                          <mat-label>Book Title</mat-label>
-                          <input matInput type="text" formControlName="book">
-                          <mat-hint>Provide the Book title</mat-hint>                       
-                        </mat-form-field>   
-
-                        <mat-form-field class="input-form-full-width">
-                          <mat-label>Year</mat-label>
-                          <input matInput type="text" formControlName="year">
-                          <mat-hint>Provide the year</mat-hint>                       
-                        </mat-form-field>   
-
-                        <mat-form-field class="input-form-full-width">
-                          <mat-label>Place</mat-label>
-                          <input matInput type="text" formControlName="place">
-                          <mat-hint>Provide the place</mat-hint>                       
-                        </mat-form-field>   
-
+                  <form [formGroup]="fragmentForm">
+                    <div formArrayName="lines"
+                      *ngFor="let item of fragmentForm.get('lines')['controls']; let i = index;">
+                      <div [formGroupName]="i">
+                        <input formControlName="line_number" placeholder="Line name">
+                        <input formControlName="text" placeholder="Line text">
+                        <button (click)="removeItem('lines', i)">X</button>
                       </div>
+                      <!-- Exposed item name: {{ fragmentForm.controls.context.controls[i].controls.name.value }} -->
+                    </div>
+                    <button type="button" (click)="addItem('line_number', 'text', '','', 'lines')">Add Item</button>
+                  </form>
 
-                      <div *ngIf="this.bibType == 'article'">
-                        <mat-form-field class="input-form-full-width">
-                          <mat-label>Author Name</mat-label>
-                          <input matInput type="text" formControlName="author">
-                          <mat-hint>Provide the author</mat-hint>                       
-                        </mat-form-field> 
-                          
-                        <mat-form-field class="input-form-full-width">
-                          <mat-label>Article Title</mat-label>
-                          <input matInput type="text" formControlName="article">
-                          <mat-hint>Provide the Article title</mat-hint>                       
-                        </mat-form-field>   
+                </mat-tab>
 
-                        <mat-form-field class="input-form-full-width">
-                          <mat-label>Journal Title</mat-label>
-                          <input matInput type="text" formControlName="journal">
-                          <mat-hint>Provide the Journal title</mat-hint>                       
-                        </mat-form-field>  
 
-                        <mat-form-field class="input-form-full-width">
-                          <mat-label>Volume</mat-label>
-                          <input matInput type="text" formControlName="volume">
-                          <mat-hint>Provide the volume number</mat-hint>                       
-                        </mat-form-field>  
-
-                        <mat-form-field class="input-form-full-width">
-                          <mat-label>Pages</mat-label>
-                          <input matInput type="text" formControlName="pages">
-                          <mat-hint>Provide the pages</mat-hint>                       
-                        </mat-form-field>  
-
-                        <mat-form-field class="input-form-full-width">
-                          <mat-label>Year</mat-label>
-                          <input matInput type="text" formControlName="year">
-                          <mat-hint>Provide the year</mat-hint>                       
-                        </mat-form-field>   
-                      </div>
-
-                      <!-- <div *ngIf="this.bibType == 'evolume'">
-                        <mat-form-field class="input-form-full-width">
-                          <mat-label>Editor Name</mat-label>
-                          <input matInput type="text" formControlName="editor">
-                          <mat-hint>Provide the editor</mat-hint>                       
-                        </mat-form-field>  -->
-
-                        <!-- <mat-form-field class="input-form-full-width">
-                          <mat-label>Author Name</mat-label>
-                          <input matInput type="text" formControlName="author">
-                          <mat-hint>Provide the author</mat-hint>                       
-                        </mat-form-field> 
-
-                        <mat-form-field class="input-form-full-width">
-                          <mat-label>Book Title</mat-label>
-                          <input matInput type="text" formControlName="book">
-                          <mat-hint>Title edited volume</mat-hint>                       
-                        </mat-form-field>   
-
-                        <mat-form-field class="input-form-full-width">
-                          <mat-label>Chapter</mat-label>
-                          <input matInput type="text" formControlName="chapterTitle">
-                          <mat-hint>Title of the article</mat-hint>                       
-                        </mat-form-field>   
-
-                        <mat-form-field class="input-form-full-width">
-                          <mat-label>Pages</mat-label>
-                          <input matInput type="text" formControlName="pages">
-                          <mat-hint>Provide the pages</mat-hint>                       
-                        </mat-form-field>  
-
-                        <mat-form-field class="input-form-full-width">
-                          <mat-label>Year</mat-label>
-                          <input matInput type="text" formControlName="year">
-                          <mat-hint>Provide the year</mat-hint>                       
-                        </mat-form-field>   
-
-                        <mat-form-field class="input-form-full-width">
-                          <mat-label>Pages</mat-label>
-                          <input matInput type="text" formControlName="pages">
-                          <mat-hint>Provide the pages</mat-hint>                       
-                        </mat-form-field>   -->
-                      <!-- </div> -->
-
-                      <div *ngIf="this.bibType == 'evolume'">
-                        <!-- <mat-form-field class="input-form-full-width">
-                          <mat-label>Editor Name</mat-label>
-                          <input matInput type="text" formControlName="editor">
-                          <mat-hint>Provide the Editor</mat-hint>                       
-                        </mat-form-field>  -->
-
-                          <!-- <mat-form-field class="input-form-full-width">
-                            <mat-label>Editor Name</mat-label>
-                            <input matInput type="text" formControlName="editor2">
-                            <mat-hint>Provide the editor</mat-hint>                       
-                          </mat-form-field>  -->
-
-                        <mat-form-field class="input-form-full-width">
-                          <mat-label>Author Name</mat-label>
-                          <input matInput type="text" formControlName="author">
-                          <mat-hint>Provide the author</mat-hint>                       
-                        </mat-form-field> 
-
-                        <mat-form-field class="input-form-full-width">
-                          <mat-label>Book Title</mat-label>
-                          <input matInput type="text" formControlName="book">
-                          <mat-hint>Title edited volume</mat-hint>                       
-                        </mat-form-field>   
-
-                        <mat-form-field class="input-form-full-width">
-                          <mat-label>Chapter</mat-label>
-                          <input matInput type="text" formControlName="chapterTitle">
-                          <mat-hint>Title of the article</mat-hint>                       
-                        </mat-form-field>   
-
-                        <mat-form-field class="input-form-full-width">
-                          <mat-label>Pages</mat-label>
-                          <input matInput type="text" formControlName="pages">
-                          <mat-hint>Provide the pages</mat-hint>                       
-                        </mat-form-field>  
-
-                        <mat-form-field class="input-form-full-width">
-                          <mat-label>Year</mat-label>
-                          <input matInput type="text" formControlName="year">
-                          <mat-hint>Provide the year</mat-hint>                       
-                        </mat-form-field>   
-
-                        <mat-form-field class="input-form-full-width">
-                          <mat-label>Pages</mat-label>
-                          <input matInput type="text" formControlName="pages">
-                          <mat-hint>Provide the pages</mat-hint>                       
-                        </mat-form-field>
-                      </div>
-
-                      <div *ngIf="this.bibType == 'website'">
-                        <mat-form-field class="input-form-full-width">
-                          <mat-label>Website Title</mat-label>
-                          <input matInput type="text" formControlName="website">
-                          <mat-hint>Provide the website title</mat-hint>                       
-                        </mat-form-field>  
-
-                        <mat-form-field class="input-form-full-width">
-                          <mat-label>URL</mat-label>
-                          <input matInput type="text" formControlName="url">
-                          <mat-hint>Provide the website url</mat-hint>                       
-                        </mat-form-field>  
-
-                        <mat-form-field class="input-form-full-width">
-                          <mat-label>Consult date</mat-label>
-                          <input matInput type="text" formControlName="consultDate">
-                          <mat-hint>Provide the consult date</mat-hint>                       
-                        </mat-form-field>   
-                      </div>
-                      <!-- Button is linked via the submit type! -->
-                      <div class="div-padding"></div>
-                      <button mat-button class="button" type="submit">Upload Bib Entry</button>
-                    </form>
-        
-              </mat-tab>
-
-              <mat-tab label="Publish" *ngIf="this.authService.isTeacher"><br>
-                <button mat-button (click)="this.RequestPublishFlag(this.selectedEditor.id, this.selectedBook.id, this.selectedFragment, 1)">Publish selected fragment</button>
-                <button mat-button (click)="this.RequestPublishFlag(this.selectedEditor.id, this.selectedBook.id, this.selectedFragment, 0)">Unpublish selected fragment</button>
-            </mat-tab>
-
-            
+            </form>                        
 
         </mat-tab-group>
         

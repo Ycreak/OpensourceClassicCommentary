@@ -1,7 +1,7 @@
 # Latin Scansion Model 2021
 # This simple FLASK server interfaces with
 # the OSCC and the LSM
-from flask import Flask, request
+from flask import Flask, request, make_response
 from flask_cors import CORS, cross_origin
 from flask_restful import Resource, Api
 from flask_jsonpify import jsonify
@@ -98,6 +98,35 @@ def fdifferences():
 def freconstruction():
     result = couch.Retrieve_fragment_data(ReqArg('fragment_id'), 'reconstruction')
     return jsonify(Create_JSON_object([result], 'reconstruction')) #Note! I put the result in a list
+
+@app.route("/completefragment")
+def completefragment():
+    result = couch.Retrieve_complete_fragment(ReqArg('fragment_id'))
+    return jsonify(result)
+
+@app.route("/create_fragment", methods=['POST'])
+def create_fragment():
+    
+    received_json = request.get_json()
+    result = couch.Create_fragment(received_json)
+
+    return jsonify(result)
+
+@app.route("/revise_fragment", methods=['POST'])
+def revise_fragment():
+
+    received_json = request.get_json()
+    result = couch.Revise_fragment(received_json)
+
+    return jsonify(result)
+
+@app.route("/delete_fragment", methods=['POST'])
+def delete_fragment():
+
+    received_json = request.get_json()
+    result = couch.Delete_fragment(received_json)
+
+    return jsonify(result)
 
 # @app.route("/")
 # def ():

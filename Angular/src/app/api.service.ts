@@ -72,6 +72,16 @@ export class ApiService {
 
   /**
   * ... ... ...
+  * @param bookID
+  * @returns
+  * @author Ycreak, ppbors
+  */
+ Get_specific_fragment(fragment_id: string): Observable<Fragment[]> {
+  return this.http.get<Fragment[]>(this.FlaskURL + `completefragment?fragment_id=${fragment_id}`);
+}
+
+  /**
+  * ... ... ...
   * @returns
   * @author Ycreak, ppbors
   */
@@ -272,6 +282,19 @@ export class ApiService {
   CreateFragment(fragment: Fragment): Observable<any> {
     return this.http.post<any>(this.ApiUrl + `fragments`, fragment, { observe: 'response' });
   }
+
+  Create_fragment(fragment: object): Observable<any> {
+    return this.http.post<any>(this.FlaskURL + `create_fragment`, fragment, { observe: 'response' });
+  }
+  
+  Revise_fragment(fragment: object): Observable<any> {
+    return this.http.post<any>(this.FlaskURL + `revise_fragment`, fragment, { observe: 'response' });
+  }
+
+  Delete_fragment(fragment: object): Observable<any> {
+    return this.http.post<any>(this.FlaskURL + `delete_fragment`, fragment, { observe: 'response' });
+  }
+
 
   /**
    * ... ... ...

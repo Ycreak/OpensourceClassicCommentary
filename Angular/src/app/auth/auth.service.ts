@@ -6,9 +6,9 @@ import { tap } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class AuthService {
-  isLoggedIn = false;
+  isLoggedIn = true;
   isStudent = false;
-  isTeacher = false;
+  isTeacher = true;
   redirectUrl: string;
 
   //TODO: self evident.
