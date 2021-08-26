@@ -172,7 +172,7 @@ export class FragmentsComponent implements OnInit {
     return number_list
   }
 
-  public RequestCommentaries(fragment_id: string){
+  public RequestCommentaries(fragment_id: string){ //TODO: this can be done with a single request!
     // Retrieves Fragment Commentary    
     this.api.GetCommentary(fragment_id).subscribe(data => this.f_commentary = data);
     // Retrieves Fragment Differences
@@ -265,8 +265,8 @@ export class FragmentsComponent implements OnInit {
   }
     
   public Sort_fragments_on_status(fragments){
-    // // Put normal fragments first, then incerta and then adespota. TODO: should be separate function
-    let normal = this.utility.FilterObjOnKey(fragments, 'status', null)
+    // // Put normal fragments first, then incerta and then adespota.
+    let normal = this.utility.FilterObjOnKey(fragments, 'status', "")
     let incerta = this.utility.FilterObjOnKey(fragments, 'status', 'Incertum')
     let adesp = this.utility.FilterObjOnKey(fragments, 'status', 'Adesp.')
 

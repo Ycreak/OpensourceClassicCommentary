@@ -2,7 +2,7 @@
 from fragments import *
 import couchdb
 from uuid import uuid4
-
+import copy
 # couch = couchdb.Server()
 
 class CouchDB:
@@ -63,18 +63,19 @@ class CouchDB:
         
         # Check if fragment with this information does not already exist!
 
-        new_fragment = fragment_empty
+        # Create independent copy of the empty fragment JSON
+        new_fragment = copy.deepcopy(fragment_empty)
 
         new_fragment['author'] = created_fragment['author']
         new_fragment['title'] = created_fragment['title']
         new_fragment['editor'] = created_fragment['editor']
 
         new_fragment['fragment_name'] = created_fragment['fragment_name']
+        
+        # TODO: check if none maybe?
         new_fragment['status'] = created_fragment['status']
 
         new_fragment['_id'] = uuid4().hex #, 'type': 'person', 'name': 'John Doe'}
-
-        print('hello there')
 
         doc_id, doc_rev = self.db.save(new_fragment)
 

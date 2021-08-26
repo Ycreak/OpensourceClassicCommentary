@@ -119,12 +119,9 @@ fragment_empty = {
     "reconstruction":"",
     "status": "",
     "context":[
-        {}
     ],
     "lines":[
-        {}
     ],
     "linked_fragments":[
-        {}
     ],
 }
