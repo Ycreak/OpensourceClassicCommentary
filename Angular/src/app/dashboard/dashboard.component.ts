@@ -42,45 +42,20 @@ import { IKeyboardLayouts, keyboardLayouts, MAT_KEYBOARD_LAYOUTS, MatKeyboardMod
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-  // JSON that contain all retrieved data. Does what it says on the tin. //FIXME: Type
-  authorsJSON; 
-  editorsJSON; 
-  // mainEditorsJSON : JSON; 
-  booksJSON;
-  // bibJSON;
-  // Data variables holding the corresponding retrieved data. //FIXME: Type
-  // F_Fragments;
-  // F_Context;
-  // F_Commentary;
-  // F_Apparatus;
-  // F_Translation;
-  // F_Differences;
-  // F_ReferencerID;
-  // F_Reconstruction;
-  // // Lists to store temporary data
-  // selectedEditorArray = [];
-  // fragmentNumberList = [];
-  // lineNumberList = [];
-  // These variables hold the selected items //FIXME: Type
 
-  // current_author : string = 'Ennius';
-  // current_book : string = 'Thyestes';
-  // current_editor : string = 'TRF';
-  // current_editors : object;
-  // current_fragment : JSON;
+  selected_author : string = 'Ennius';
+  selected_book : string = 'Thyestes';
+  selected_editor : string = 'TRF';
 
-  retrieved_author : string = 'Ennius';
-  retrieved_book : string = 'Thyestes';
-  retrieved_editor : string = 'TRF';
+  retrieved_authors : object;
+  retrieved_books : object;
   retrieved_editors : object;
+
+  retrieved_fragment : object;
   retrieved_fragments : object;
   retrieved_fragment_numbers : object;
 
-  requested_fragment : string = '';
-  retrieved_fragment : object;
-
   fragmentForm: FormGroup;
-
 
   constructor(
     private api: ApiService,
@@ -93,15 +68,8 @@ export class DashboardComponent implements OnInit {
    * On Init, we just load the list of authors. From here, selection is started
    */
   ngOnInit(): void {
-    this.api.GetAuthors().subscribe(data => this.authorsJSON = data); //FIXME: should be requestAuthors?
-  
-    // this.api.Get_specific_fragment('f6b02690600d32acf283f1cb120134b5').subscribe(
-    //   data => { 
-    //     this.retrieved_fragment = data;
-    //     this.Update_content_form(this.retrieved_fragment)
-    //     // console.log('selected fragment', data)
-    //   }); 
-      
+    this.RequestAuthors()
+           
     this.fragmentForm = this.formBuilder.group({
       _id: '',
       fragment_name: '',
@@ -118,52 +86,15 @@ export class DashboardComponent implements OnInit {
       linked_fragments: '',
       status: '',
     });
-
   }
 
 
-
-  /**
-   * Updates a value of a key in the given form
-   * @param form what form is to be updated
-   * @param key what field is to be updated
-   * @param value what value is to be written
-   */
-  public UpdateForm(form, key, value) {
-    this[form].patchValue({[key]: value});
-  }
   /**
    * Simple test function, can be used for whatever
    * @param thing item to be printed
    */
   public Test(){
     console.log('test', this.fragmentForm.value.context)
-  }
-
-  public RequestBooks(author: string){
-    this.api.GetBooks(author).subscribe(
-      data => {
-        this.booksJSON = data;
-        console.log('book', data)
-      }
-    );      
-  }
-
-  public RequestEditors(author: string, book: string){
-    this.api.GetEditors(author, book).subscribe(
-      data => {
-        this.retrieved_editors = data;
-        console.log('edit', this.retrieved_editors)
-      }
-    );
-  }
-
-  public Request_fragments(author: string, book: string, editor: string){
-    this.api.GetFragments(author, book, editor).subscribe(
-      data => { 
-        this.retrieved_fragments = data;
-        this.retrieved_fragment_numbers = this.Retrieve_fragment_numbers(data);
-      });  
   }
 
   public Retrieve_fragment_numbers(fragments){    
@@ -186,12 +117,12 @@ export class DashboardComponent implements OnInit {
         fragment_id = fragments[fragment].id
       }
     }
-    // Now, get this fragment from the server TODO:
+    // Now, get this fragment from the server
     this.api.Get_specific_fragment(fragment_id).subscribe(
       data => { 
         this.retrieved_fragment = data;
         this.Update_content_form(this.retrieved_fragment)
-        console.log('selected fragment', data)
+        // console.log('selected fragment', data)
       });  
   }
 
@@ -208,8 +139,6 @@ export class DashboardComponent implements OnInit {
     this.UpdateForm('fragmentForm','commentary', fragment.commentary);
     this.UpdateForm('fragmentForm','apparatus', fragment.apparatus);
     this.UpdateForm('fragmentForm','reconstruction', fragment.reconstruction);
-    // this.UpdateForm('fragmentForm','context', fragment.context);
-    // this.UpdateForm('fragmentForm','lines', fragment.lines);
     this.UpdateForm('fragmentForm','linked_fragments', fragment.linked_fragments);
     this.UpdateForm('fragmentForm','status', fragment.status);
   
@@ -223,6 +152,16 @@ export class DashboardComponent implements OnInit {
 
   }
 
+  // FORM RELATED FUNCTIONS
+  /**
+   * Updates a value of a key in the given form
+   * @param form what form is to be updated
+   * @param key what field is to be updated
+   * @param value what value is to be written
+   */
+  public UpdateForm(form, key, value) {
+    this[form].patchValue({[key]: value});
+  }
 
   Reset_form(){
     this.fragmentForm.reset();
@@ -267,26 +206,6 @@ export class DashboardComponent implements OnInit {
     items.removeAt(index);
   }
 
-  public Request_revise_fragment(fragment){
-    this.api.Revise_fragment(fragment).subscribe(
-      res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
-    );   
-  }
-
-  public Request_create_fragment(fragment){
-    this.api.Create_fragment(fragment).subscribe(
-      res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
-    );
-  }
-
-  public Request_delete_fragment(fragment){
-    this.api.Delete_fragment({fragment_id:fragment._id}).subscribe(
-      res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
-    );
-  }
-
-
-
 //   _____  ______ ____  _    _ ______  _____ _______ _____ 
 //  |  __ \|  ____/ __ \| |  | |  ____|/ ____|__   __/ ____|
 //  | |__) | |__ | |  | | |  | | |__  | (___    | | | (___  
@@ -299,20 +218,71 @@ export class DashboardComponent implements OnInit {
    */
   public RequestAuthors(){
     this.api.GetAuthors().subscribe(
-      data => this.authorsJSON = data,
+      data => this.retrieved_authors = data,
       err => this.utility.HandleErrorMessage(err),
     );      
   }
 
-  // /**
-  //  * Requests all fragments from a given book
-  //  * @param book number of book who's fragments are requested
-  //  */
-  // public RequestFragments(editor: string){
-  //   this.api.GetFragments(this.current_author, this.current_book, editor).subscribe(
-  //     data => this.F_Fragments = data,
-  //     err => this.utility.HandleErrorMessage(err),
-  //   );  
-  // }
+  public RequestBooks(author: string){
+    this.api.GetBooks(author).subscribe(
+      data => {
+        this.retrieved_books = data;
+      }
+    );      
+  }
+
+  public RequestEditors(author: string, book: string){
+    this.api.GetEditors(author, book).subscribe(
+      data => {
+        this.retrieved_editors = data;
+      }
+    );
+  }
+
+  public Request_fragments(author: string, book: string, editor: string){
+    this.api.GetFragments(author, book, editor).subscribe(
+      data => { 
+        this.retrieved_fragments = data;
+        this.retrieved_fragment_numbers = this.Retrieve_fragment_numbers(data);
+      });  
+  }
+
+  public Request_revise_fragment(fragment){
+    let item_string = fragment.author + ', ' +  fragment.title + ', ' + fragment.editor + ': ' + fragment.fragment_name
+
+    this.dialog.OpenConfirmationDialog('Are you sure you want to REVISE this fragment?', item_string).subscribe(result => {
+      if(result){
+        this.api.Revise_fragment(fragment).subscribe(
+          res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
+        );
+      }
+    });
+  }
+
+  public Request_create_fragment(fragment){
+    let item_string = fragment.author + ', ' +  fragment.title + ', ' + fragment.editor + ': ' + fragment.fragment_name
+
+    this.dialog.OpenConfirmationDialog('Are you sure you want to CREATE this fragment?', item_string).subscribe(result => {
+      if(result){
+        this.api.Create_fragment(fragment).subscribe(
+          res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
+        );
+      }
+    });
+  }
+
+  public Request_delete_fragment(fragment){
+    let item_string = fragment.author + ', ' +  fragment.title + ', ' + fragment.editor + ': ' + fragment.fragment_name
+    
+    this.dialog.OpenConfirmationDialog('Are you sure you want to DELETE this fragment?', item_string).subscribe(result => {
+      if(result){
+        this.api.Delete_fragment({fragment_id:fragment._id}).subscribe(
+          res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
+        );
+      }
+    });
+  }
+
+
 
 }

@@ -73,33 +73,33 @@ export class FragmentsComponent implements OnInit {
       fragments : '',
     },
     column2 : {
-      author : 'Accius',
-      book : 'Antigone',
-      editor : 'Janssen',
+      author : '',
+      book : '',
+      editor : '',
       fragments : '',
     },
     column3 : {
-      author : 'Accius',
-      book : 'Antigone',
-      editor : 'Janssen',
+      author : '',
+      book : '',
+      editor : '',
       fragments : '',
     },
     column4 : {
-      author : 'Accius',
-      book : 'Antigone',
-      editor : 'Janssen',
+      author : '',
+      book : '',
+      editor : '',
       fragments : '',
     },
     playground : {
-      author : 'Accius',
-      book : 'Antigone',
-      editor : 'Janssen',
+      author : '',
+      book : '',
+      editor : '',
       fragments : '',
     },
     playground2 : {
-      author : 'Accius',
-      book : 'Antigone',
-      editor : 'Janssen',
+      author : '',
+      book : '',
+      editor : '',
       fragments : '',
     },     
   }
@@ -154,9 +154,7 @@ export class FragmentsComponent implements OnInit {
       data => { 
         data = this.Add_HTML_to_lines(data);
         data = this.Sort_fragments_numerically(data);
-        console.log('data1', data)
         data = this.Sort_fragments_on_status(data);
-        console.log('data2', data)
 
         this.column_data[column].fragments = data;
         this.retrieved_fragment_numbers = this.Retrieve_fragment_numbers(data);
@@ -210,7 +208,7 @@ export class FragmentsComponent implements OnInit {
 
   public Handle_fragment_click(fragment){
       this.pressed_fragment_name = fragment.fragment_name;
-      this.pressed_fragment_editor = fragment.editor
+      this.pressed_fragment_editor = fragment.editor;
       this.RequestCommentaries(fragment.id)
   }
 
@@ -250,17 +248,8 @@ export class FragmentsComponent implements OnInit {
   }
 
   public Sort_fragments_numerically(fragments){
-    // // Sort the lines in array, needs to be own function
-    // console.log('inc', fragments)
-    // fragments.sort((a,b) => a.fragment_name.localeCompare(b.fragment_name));
-    
-    fragments.sort(this.utility.SortFragmentsArrayNumerically);
 
-    console.log('sorted', fragments)
-    // for(let fragment in fragments){
-    //   console.log('fr', fragments[fragment] )
-    //   fragments[fragment].sort(this.utility.SortFragmentsArrayNumerically);
-    // }
+    fragments.sort(this.utility.SortFragmentsArrayNumerically);
     return fragments
   }
     
@@ -269,9 +258,7 @@ export class FragmentsComponent implements OnInit {
     let normal = this.utility.FilterObjOnKey(fragments, 'status', "")
     let incerta = this.utility.FilterObjOnKey(fragments, 'status', 'Incertum')
     let adesp = this.utility.FilterObjOnKey(fragments, 'status', 'Adesp.')
-
-    console.log(normal, incerta, adesp)
-    // // Concatenate in the order we want (i'm a hacker)
+    // Concatenate in the order we want (i'm a hacker)
     fragments = normal.concat(incerta).concat(adesp)
 
     return fragments

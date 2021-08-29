@@ -391,7 +391,7 @@ export class ApiService {
   // Scansion Model
   public async Get_neural_data(book_number: number, line_number: number){
     const data = await this.http.get(
-      this.FlaskURL + 'Get_neural_data',{
+      this.NeuralURL + 'Get_neural_data',{
         params: {
           book_number: book_number.toString(),
           line_number: line_number.toString(),
@@ -403,6 +403,8 @@ export class ApiService {
 
   // CREA 4
   FlaskURL: String = 'http://localhost:5002/'; // For deployment (http! not https)                                 
+  NeuralURL: String = 'http://nolden.biz:5002/'; // For deployment (http! not https)                                 
+
 
   // GetInterestingWords(words: string): Observable<any> {
   //   return this.http.post<any>(this.FlaskURL + 'GetInterestingWords', words);

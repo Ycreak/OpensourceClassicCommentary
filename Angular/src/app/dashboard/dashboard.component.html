@@ -11,7 +11,7 @@
 <mat-toolbar color="primary">
     <span><h3 class='h3-title'>Dashboard</h3></span>
     <span class="spacer"></span>
-    <button mat-button class="btn" (click)="Test()">TEST</button>
+    <!-- <button mat-button class="btn" (click)="Test()">TEST</button> -->
     <button mat-button class="btn" routerLink="/fragments">FRAGMENTS</button>
     <!-- <button mat-button class="btn" (click)="RequestAuthors()">RELOAD AUTHORS</button> -->
 </mat-toolbar>
@@ -26,8 +26,8 @@
         <mat-form-field>
             <mat-label>Select author</mat-label>
             <mat-select>
-                <mat-option *ngFor="let author of this.authorsJSON" [value]="author"
-                  (click)="this.retrieved_author = author.name"  
+                <mat-option *ngFor="let author of this.retrieved_authors" [value]="author"
+                  (click)="this.selected_author = author.name"  
                   (click)="this.RequestBooks(author.name)">
                     {{ author.name }} 
                 </mat-option>
@@ -37,9 +37,9 @@
         <mat-form-field>
             <mat-label>Select text</mat-label>
             <mat-select>
-                <mat-option *ngFor="let book of this.booksJSON" [value]="book" 
-                  (click)="this.retrieved_book = book.name"  
-                  (click)="this.RequestEditors(this.retrieved_author, book.name)">
+                <mat-option *ngFor="let book of this.retrieved_books" [value]="book" 
+                  (click)="this.selected_book = book.name"  
+                  (click)="this.RequestEditors(this.selected_author, book.name)">
                     {{ book.name }}                
                 </mat-option>
             </mat-select>
@@ -49,8 +49,8 @@
             <mat-label>Select edition</mat-label>
             <mat-select>
                 <mat-option *ngFor="let editor of this.retrieved_editors" [value]="editor"
-                    (click)="this.retrieved_editor = editor.name"  
-                    (click)="this.Request_fragments(this.retrieved_author, this.retrieved_book, editor.name)">
+                    (click)="this.selected_editor = editor.name"  
+                    (click)="this.Request_fragments(this.selected_author, this.selected_book, editor.name)">
                     {{ editor.name }}                     
                 </mat-option>
             </mat-select>
@@ -137,6 +137,23 @@
 
               </mat-tab>
 
+              <mat-tab label="Create/Revise Lines"><br>
+
+                <form [formGroup]="fragmentForm">
+                  <div formArrayName="lines"
+                    *ngFor="let item of fragmentForm.get('lines')['controls']; let i = index;">
+                    <div [formGroupName]="i">
+                      <input formControlName="line_number" placeholder="Line name">
+                      <input formControlName="text" placeholder="Line text">
+                      <button (click)="removeItem('lines', i)">X</button>
+                    </div>
+                    <!-- Exposed item name: {{ fragmentForm.controls.context.controls[i].controls.name.value }} -->
+                  </div>
+                  <button type="button" (click)="addItem('line_number', 'text', '','', 'lines')">Add Fragment Line</button>
+                </form>
+
+              </mat-tab>
+
               <mat-tab label="Create/Revise Content"><br>
                   <mat-form-field class="input-form-full-width">
                     <mat-label><b>Fragment translation</b></mat-label>
@@ -191,29 +208,10 @@
                       </div>
                       <!-- Exposed item name: {{ fragmentForm.controls.context.controls[i].controls.name.value }} -->
                     </div>
-                    <button type="button" (click)="addItem2('','', '')">Add Item</button>
+                    <button type="button" (click)="addItem2('','', '')">Add Fragment Context</button>
                   </form>
 
                 </mat-tab>
-
-                <mat-tab label="Create/Revise Lines"><br>
-
-                  <form [formGroup]="fragmentForm">
-                    <div formArrayName="lines"
-                      *ngFor="let item of fragmentForm.get('lines')['controls']; let i = index;">
-                      <div [formGroupName]="i">
-                        <input formControlName="line_number" placeholder="Line name">
-                        <input formControlName="text" placeholder="Line text">
-                        <button (click)="removeItem('lines', i)">X</button>
-                      </div>
-                      <!-- Exposed item name: {{ fragmentForm.controls.context.controls[i].controls.name.value }} -->
-                    </div>
-                    <button type="button" (click)="addItem('line_number', 'text', '','', 'lines')">Add Item</button>
-                  </form>
-
-                </mat-tab>
-
-
             </form>                        
 
         </mat-tab-group>
