@@ -62,8 +62,8 @@ export class FragmentsComponent implements OnInit {
   retrieved_fragments : object;
   retrieved_fragment_numbers : object;
 
-  pressed_fragment_name : string = '';
-  pressed_fragment_editor : string = '';
+  pressed_fragment_name : string = 'TBA';
+  pressed_fragment_editor : string = 'TBA';
 
   column_data = {
     column1 : {
@@ -152,6 +152,7 @@ export class FragmentsComponent implements OnInit {
   public Request_fragments(author: string, book: string, editor: string, column: string){
     this.api.GetFragments(author, book, editor).subscribe(
       data => { 
+        console.log(data)
         data = this.Add_HTML_to_lines(data);
         data = this.Sort_fragments_numerically(data);
         data = this.Sort_fragments_on_status(data);

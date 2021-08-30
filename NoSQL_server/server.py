@@ -106,7 +106,6 @@ def completefragment():
 
 @app.route("/create_fragment", methods=['POST'])
 def create_fragment():
-    
     received_json = request.get_json()
     result = couch.Create_fragment(received_json)
 

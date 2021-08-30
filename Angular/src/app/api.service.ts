@@ -39,6 +39,9 @@ export class ApiService {
 
   // ApiUrl: String = 'http://localhost:5000/';
   ApiUrl: String = 'http://oscc.nolden.biz:5000/'; // For deployment
+  // CREA 4
+  FlaskURL: String = 'http://localhost:5002/'; // For deployment (http! not https)                                 
+  NeuralURL: String = 'http://nolden.biz:5002/'; // For deployment (http! not https)                                 
 
 
 //   _____ ______ _______ 
@@ -48,18 +51,6 @@ export class ApiService {
 //  | |__| | |____   | |   
 //   \_____|______|  |_|   
                                     
-  /**
-  * ... ... ...
-  * @param fragment_id
-  * @param editorID
-  * @param bookID
-  * @returns
-  * @author Ycreak, ppbors
-  */
-  GetReferencerID(fragmentName: string, editorID: number, bookID: number): Observable<string[]> {
-    return this.http.get<string[]>(this.ApiUrl + `fragments/hello?fragment_id=${fragmentName}&editorID=${editorID}&bookID=${bookID}`);
-  }
-
   /**
   * ... ... ...
   * @param bookID
@@ -179,8 +170,6 @@ export class ApiService {
     return this.http.get<Reconstruction[]>(this.FlaskURL + `freconstruction?fragment_id=${fragment_id}`);
   }
 
-
-
   /**
   * ... ... ...
   * @param bookID
@@ -202,87 +191,6 @@ export class ApiService {
 //  | |    | |__| |____) |  | |   
 //  |_|     \____/|_____/   |_|   
 
-  /**
-   * ... ... ...
-   * @param author 
-   * @returns ... ... ...
-   * @author ppbors
-   */
-  CreateAuthor(author: Author): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `authors`, author, { observe: 'response' })
-  }
-
-  /**
-   * ... ... ...
-   * @param name
-   * @returns ... ... ...
-   * @author ppbors
-   */
-  DeleteAuthor(id: number): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `authors/delete`, new Author(id, ''), { observe: 'response' })
-  }
-
-  /**
-   * ... ... ...
-   * @param book
-   * @returns ... ... ...
-   * @author ppbors
-   */
-  CreateBook(book: Book): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `books`, book, { observe: 'response' });
-  }
-
-  /**
-   * ... ... ...
-   * @param title
-   * @returns ... ... ...
-   * @author ppbors
-   */
-  DeleteBook(id: number, author: number): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `books/delete`, new Book(id, author, ''), { observe: 'response' });
-  }
-
-  /**
-   * ... ... ...
-   * @param editor
-   * @returns ... ... ...
-   * @author ppbors
-   */
-  CreateEditor(editor: Editor): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `editors`, editor, { observe: 'response' });
-  }
-  
-  /**
-   * ... ... ...
-   * @param name
-   * @returns ... ... ...
-   * @author ppbors
-   */
-  DeleteEditor(id: number): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `editors/delete`, new Editor(id, 0, '', 0), { observe: 'response' });
-  }
-
-  /**
-   * ... ... ...
-   * @param editorID
-   * @param flag
-   * @returns ... ... ...
-   * @author ppbors
-   */
-  SetMainEditorFlag(editorID: number, flag: number): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `editors/setmainflag`, new Editor(editorID, 0, '', flag? 1 : null), { observe: 'response' });
-  }
-
-  /**
-   * ... ... ...
-   * @param fragment
-   * @returns ... ... ...
-   * @author ppbors
-   */
-  CreateFragment(fragment: Fragment): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `fragments`, fragment, { observe: 'response' });
-  }
-
   Create_fragment(fragment: object): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `create_fragment`, fragment, { observe: 'response' });
   }
@@ -295,69 +203,6 @@ export class ApiService {
     return this.http.post<any>(this.FlaskURL + `delete_fragment`, fragment, { observe: 'response' });
   }
 
-
-  /**
-   * ... ... ...
-   * @param name
-   * @param bookID
-   * @param editorID
-   * @returns ... ... ...
-   * @author ppbors
-   */
-  DeleteFragment(editorID: number, bookID: number, fragmentname: string): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `fragments/delete`, new Fragment(0, bookID, editorID, fragmentname, '', '', 0, ''), { observe: 'response' });
-  }
-
-  /**
-   * ... ... ...
-   * @param translation
-   * @returns ... ... ...
-   * @author ppbors
-   */
-  CreateTranslation(translation: Translation): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `ftranslations/create`, translation, { observe: 'response' });
-  }
-
-  /**
-   * ... ... ...
-   * @param apparatus
-   * @returns ... ... ...
-   * @author ppbors
-   */
-  CreateApparatus(apparatus: Apparatus): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `fapparatus/create`, apparatus, { observe: 'response' });
-  }
-
-  /**
-   * ... ... ...
-   * @param differences
-   * @returns ... ... ...
-   * @author ppbors
-   */
-  CreateDifferences(differences: Differences): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `fdifferences/create`, differences, { observe: 'response' });
-  }
-  
-  /**
-   * ... ... ...
-   * @param commentary
-   * @returns ... ... ...
-   * @author ppbors
-   */
-  CreateCommentary(commentary: Commentary): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `fcommentary/create`, commentary, { observe: 'response' });
-  }
-  
-  /**
-   * ... ... ...
-   * @param reconstruction
-   * @returns ... ... ...
-   * @author ppbors
-   */
-  CreateReconstruction(reconstruction: Reconstruction): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `freconstruction/create`, reconstruction, { observe: 'response' });
-  }  
-
    /**
    * ... ... ...
    * @param context
@@ -367,27 +212,7 @@ export class ApiService {
   CreateContext(context: Context): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `fcontext/create`, context, { observe: 'response' });
   }
-
-  CreateBibliography(bibliography: Bibliography): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + `bibliography/create`, bibliography, { observe: 'response' });
-  }
-
-
-
-  
-  /**
-   * ... ... ...
-   * @param editorID
-   * @param bookID
-   * @param fragment_id
-   * @param flag
-   * @returns ... ... ...
-   * @author ppbors
-   */
-  SetPublishFlag(editorID: number, bookID: number, fragment_id: string, flag: number): Observable<any> {
-    return this.http.post<any>(this.ApiUrl + 'fragmentreferencer/setpublishflag', new Fragment(0, bookID, editorID, fragment_id, '', '', flag, ''), { observe: 'response' });
-  }
-
+ 
   // Scansion Model
   public async Get_neural_data(book_number: number, line_number: number){
     const data = await this.http.get(
@@ -400,27 +225,6 @@ export class ApiService {
       .toPromise();
       return data;  
   }
-
-  // CREA 4
-  FlaskURL: String = 'http://localhost:5002/'; // For deployment (http! not https)                                 
-  NeuralURL: String = 'http://nolden.biz:5002/'; // For deployment (http! not https)                                 
-
-
-  // GetInterestingWords(words: string): Observable<any> {
-  //   return this.http.post<any>(this.FlaskURL + 'GetInterestingWords', words);
-  // }
-
-  public async Couch(){
-    const data = await this.http.get(
-      this.FlaskURL + 'Get_started',{
-        params: {
-          // words: words.toString(),
-        }
-      })
-      .toPromise();
-      return data;  
-  }
-
 }
 
 @Injectable()
@@ -428,22 +232,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
-        // if (error.error instanceof Error) {
-        //   // A client-side or network error occurred. Handle it accordingly.
-        //   console.error('An error occurred:', error.error.message);
-        // } else {
-        //   // The backend returned an unsuccessful response code.
-        //   // The response body may contain clues as to what went wrong,
-        //   // console.error(`Backend returned code ${error.status}, body was: ${error.error}`);
-        // }
-
-        // If you want to return a new response:
-        // return of(new HttpResponse({body: [{name: "Default value..."}]}));
-
-        // If you want to return the error on the upper level:
         return throwError(error);
-
-
       })
     );
   }

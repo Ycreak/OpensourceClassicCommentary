@@ -2,9 +2,9 @@ export class Reconstruction
 {
     constructor(id: number, fragmentID: number = null, reconstruction: string)
     {
-        this.id = id;
-        this.fragment = fragmentID;
-        this.reconstruction = reconstruction;
+        this.id = 1;
+        this.fragment = 2;
+        this.reconstruction = 'mama kiss me';
     }
 
     id: number;
