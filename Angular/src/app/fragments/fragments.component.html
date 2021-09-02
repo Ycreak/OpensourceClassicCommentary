@@ -408,7 +408,7 @@
                 <mat-form-field>
                     <mat-label>Select author</mat-label>
                     <mat-select>
-                    <mat-option *ngFor="let author of this.authorsJSON" [value]="author" 
+                    <mat-option *ngFor="let author of this.retrieved_authors" [value]="author" 
                         (click)="this.RequestBooks(author.name)">
                         {{ author.name }} 
                     </mat-option>
@@ -418,7 +418,7 @@
                 <mat-form-field>
                     <mat-label>Select text</mat-label>
                     <mat-select>
-                    <mat-option *ngFor="let book of this.booksJSON" [value]="book" 
+                    <mat-option *ngFor="let book of this.retrieved_books" [value]="book" 
                         (click)="RequestEditors(book.title)">
                         {{ book.title }}                
                     </mat-option>
@@ -429,7 +429,7 @@
             <mat-form-field class="select-form">
                 <mat-label>Editor</mat-label>
                 <mat-select [(ngModel)]="selectedEditor">
-                <mat-option *ngFor="let data of this.editorsJSON" [value]="data"
+                <mat-option *ngFor="let data of this.retrieved_editors" [value]="data"
                 (click)="this.SetCurrentEditorData(data.name)"
                 (click)="this.multiplayer.list3Array = CreateEditorArray(data, this.F_Fragments)"
                 (click)="this.multiplayer.FirebaseTest(data.name)">
@@ -613,7 +613,7 @@
     <mat-form-field>
         <mat-label>Select author</mat-label>
         <mat-select>
-            <mat-option *ngFor="let author of this.authorsJSON" [value]="author"
+            <mat-option *ngFor="let author of this.retrieved_authors" [value]="author"
                 (click)="this.Handle_author_selection(chosen_column, author.name)">
                 {{ author.name }} 
             </mat-option>
@@ -625,7 +625,7 @@
     <mat-form-field>
         <mat-label>Select text</mat-label>
         <mat-select>
-            <mat-option *ngFor="let book of this.booksJSON" [value]="book" 
+            <mat-option *ngFor="let book of this.retrieved_books" [value]="book" 
             (click)="this.Handle_book_selection(chosen_column, book.name)">
                 {{ book.name }}                
             </mat-option>
@@ -658,6 +658,7 @@
         <!-- <mat-hint>Select a fragment</mat-hint> -->
     </mat-form-field>
 </ng-template>
+
                 <!-- Possibility of adding notes -->
                 <!-- <div class="col-md-6">
                     <div mat-dialog-content>

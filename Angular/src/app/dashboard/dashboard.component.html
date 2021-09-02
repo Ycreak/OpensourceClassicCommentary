@@ -22,7 +22,6 @@
 <div class="container-fluid">
     <div class="row">
         <!-- Need some space here please  -->     
-
         <mat-form-field>
             <mat-label>Select author</mat-label>
             <mat-select>
@@ -67,8 +66,6 @@
             </mat-select>
             <!-- <mat-hint>Select a fragment</mat-hint> -->
         </mat-form-field>
-
-
     </div>
 </div>
 
@@ -78,10 +75,10 @@
 <div class="container-fluid">
     <div class="row">
 
-      <button mat-button (click)="Request_revise_fragment(this.fragmentForm.value)"  *ngIf="this.authService.isTeacher">Revise Fragment</button>
-      <button mat-button (click)="Request_create_fragment(this.fragmentForm.value)"  *ngIf="this.authService.isTeacher">Create Fragment</button>
-      <button mat-button (click)="Request_delete_fragment(this.fragmentForm.value)"  *ngIf="this.authService.isTeacher">Delete Fragment</button>
-      <button mat-button (click)="Reset_form()"  *ngIf="this.authService.isTeacher">Clear all fields</button>
+      <button mat-button (click)="Request_revise_fragment(this.fragmentForm.value)">Revise Fragment</button>
+      <button mat-button (click)="Request_create_fragment(this.fragmentForm.value)" *ngIf="this.authService.isTeacher">Create Fragment</button>
+      <button mat-button (click)="Request_delete_fragment(this.fragmentForm.value)" *ngIf="this.authService.isTeacher">Delete Fragment</button>
+      <button mat-button (click)="Reset_form()" *ngIf="this.authService.isTeacher">Clear all fields</button>
 
       <hr>
     </div>
@@ -91,7 +88,7 @@
         <mat-tab-group>
         
             <form [formGroup]="fragmentForm">
-              <mat-tab label="Create/Revise Fragment"><br> 
+              <mat-tab label="Create/Revise Data"><br> 
 
                 <mat-form-field class="input-form-full-width">
                   <mat-label>Fragment name</mat-label>
@@ -111,7 +108,6 @@
 
                 <mat-form-field class="input-form-full-width">
                   <mat-label>Title name</mat-label>
-                  <!-- <input matInput type="text" formControlName="lineContent" required id="LC" [matKeyboard]="'OSCC'"> -->
                   <input matInput type="text" formControlName="title">
                   <mat-hint>Provide the name of the book</mat-hint>                       
                 </mat-form-field>
@@ -120,7 +116,6 @@
 
                 <mat-form-field class="input-form-full-width">
                   <mat-label>Editor name</mat-label>
-                  <!-- <input matInput type="text" formControlName="lineContent" required id="LC" [matKeyboard]="'OSCC'"> -->
                   <input matInput type="text" formControlName="editor">
                   <mat-hint>Provide the name of the editor</mat-hint>                       
                 </mat-form-field>
@@ -144,10 +139,9 @@
                     *ngFor="let item of fragmentForm.get('lines')['controls']; let i = index;">
                     <div [formGroupName]="i">
                       <input formControlName="line_number" placeholder="Line name">
-                      <input formControlName="text" placeholder="Line text">
+                      <input formControlName="text" placeholder="Line text" [matKeyboard]="'OSCC'"> 
                       <button (click)="removeItem('lines', i)">X</button>
                     </div>
-                    <!-- Exposed item name: {{ fragmentForm.controls.context.controls[i].controls.name.value }} -->
                   </div>
                   <button type="button" (click)="addItem('line_number', 'text', '','', 'lines')">Add Fragment Line</button>
                 </form>
@@ -203,7 +197,7 @@
                       <div [formGroupName]="i">
                         <input formControlName="author" placeholder="Context author name">
                         <input formControlName="location" placeholder="Context location">
-                        <input formControlName="text" placeholder="Context text">
+                        <input formControlName="text" placeholder="Context text" [matKeyboard]="'OSCC'">
                         <button (click)="removeItem('context', i)">X</button>
                       </div>
                       <!-- Exposed item name: {{ fragmentForm.controls.context.controls[i].controls.name.value }} -->

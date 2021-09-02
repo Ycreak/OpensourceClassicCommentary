@@ -1,4 +1,4 @@
-//     ___           ___           ___           ___     
+//      ___           ___           ___           ___     
 //     /  /\         /  /\         /  /\         /  /\    
 //    /  /::\       /  /:/_       /  /:/        /  /:/    
 //   /  /:/\:\     /  /:/ /\     /  /:/        /  /:/     
@@ -9,13 +9,13 @@
 //   \  \:\/:/     \__\/ /:/     \  \:\/:/     \  \:\/:/  
 //    \  \::/        /__/:/       \  \::/       \  \::/   
 //     \__\/         \__\/         \__\/         \__\/    
-// _   _       _     _            
+//  _   _       _     _            
 // | \ | | ___ | | __| | ___ _ __  
 // |  \| |/ _ \| |/ _` |/ _ \ '_ \ 
 // | |\  | (_) | | (_| |  __/ | | |
 // |_| \_|\___/|_|\__,_|\___|_| |_|
 //                                
-// ____                 
+//  ____                 
 // | __ )  ___  _ __ ___ 
 // |  _ \ / _ \| '__/ __|
 // | |_) | (_) | |  \__ \
@@ -108,7 +108,7 @@ const customLayouts: IKeyboardLayouts = {
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
-  {path: '', component: FragmentsComponent},
+  {path: '', component: DashboardComponent},
   {path: 'fragments', component: FragmentsComponent},
   {path: 'text', component: TextComponent},
   {path: 'scansion', component: ScansionComponent},

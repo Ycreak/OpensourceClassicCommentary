@@ -69,7 +69,8 @@ export class DashboardComponent implements OnInit {
    */
   ngOnInit(): void {
     this.RequestAuthors()
-           
+    
+    // Initialise the fragment form. TODO: can we do this somewhere else?
     this.fragmentForm = this.formBuilder.group({
       _id: '',
       fragment_name: '',
@@ -87,7 +88,6 @@ export class DashboardComponent implements OnInit {
       status: '',
     });
   }
-
 
   /**
    * Simple test function, can be used for whatever
