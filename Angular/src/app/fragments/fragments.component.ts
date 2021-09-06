@@ -41,7 +41,8 @@ export class FragmentsComponent implements OnInit {
   toggle_multiplayer: boolean = false;
   // Booleans for HTML related items
   spinner: boolean = false; // Boolean to toggle the spinner.
-  noCommentary: boolean = false; // Shows banner if no commentary is available.
+  no_commentary: boolean = false; // Shows banner if no commentary is available.\
+  server_down: boolean = true; // to indicate server failure
   // Objects to store the retrieved authors, books and editors to control server data retrieval 
   retrieved_authors : object; // JSON that contains all available Authors and their data.
   retrieved_books : object; // JSON that contains all available Books and their data given a specific editor.
@@ -151,6 +152,7 @@ export class FragmentsComponent implements OnInit {
     this.api.GetEditors(author, book).subscribe(
       data => {
         this.retrieved_editors = data;
+        this.server_down = false; //FIXME: needs to be handled properly
       }
     );
   }
@@ -183,21 +185,42 @@ export class FragmentsComponent implements OnInit {
    * @param fragment_id 
    * @returns fills all content variables with data. e.g. data -> this.f_commentary 
    * @author Bors & Ycreak
-   * TODO: this can be done with a single request
+   * TODO: this can be done with a single request. Needs redesign with nice models to solve current problems.
    */
   public RequestCommentaries(fragment_id: string){
+    this.no_commentary = false;
     // Retrieves Fragment Commentary    
-    this.api.GetCommentary(fragment_id).subscribe(data => this.f_commentary = data);
+    this.api.GetCommentary(fragment_id).subscribe(data => {     
+      this.f_commentary = data
+      if(this.f_commentary[0].commentary == ""){
+        this.f_commentary = [];
+        this.no_commentary = true;
+      }
+    });
     // Retrieves Fragment Differences
-    this.api.GetDifferences(fragment_id).subscribe(data => this.f_differences = data);
+    this.api.GetDifferences(fragment_id).subscribe(data => {
+      this.f_differences = data
+      if(this.f_differences[0].differences == "") this.f_differences = [];
+    });
     // Retrieves Fragment Context
-    this.api.GetContext(fragment_id).subscribe(data => this.f_context = data);
+    this.api.GetContext(fragment_id).subscribe(data => {
+      this.f_context = data
+    });
     // Retrieves Fragment Translation
-    this.api.GetTranslation(fragment_id).subscribe(data => this.f_translation = data);
+    this.api.GetTranslation(fragment_id).subscribe(data => {
+      this.f_translation = data
+      if(this.f_translation[0].translation == "") this.f_translation = [];
+    });
     // Retrieves Fragment App. Crit.
-    this.api.GetApparatus(fragment_id).subscribe(data => this.f_apparatus = data);
+    this.api.GetApparatus(fragment_id).subscribe(data => {
+      this.f_apparatus = data
+      if(this.f_apparatus[0].apparatus == "") this.f_apparatus = [];
+    });
     // Retrieves Fragment Reconstruction
-    this.api.GetReconstruction(fragment_id).subscribe(data => this.f_reconstruction = data);
+    this.api.GetReconstruction(fragment_id).subscribe(data => {
+      this.f_reconstruction = data
+      if(this.f_reconstruction[0].reconstruction == "") this.f_reconstruction = [];
+    });
   }
 
   /**
@@ -260,6 +283,7 @@ export class FragmentsComponent implements OnInit {
   public Handle_fragment_click(fragment){
       this.pressed_fragment_name = fragment.fragment_name;
       this.pressed_fragment_editor = fragment.editor;
+      console.log(fragment)
       this.RequestCommentaries(fragment.id)
   }
 

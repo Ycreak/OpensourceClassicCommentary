@@ -21,7 +21,7 @@
     <mat-checkbox class="btn" [(ngModel)]="toggle_column_four">FOUR</mat-checkbox>
     <mat-checkbox class="btn" [(ngModel)]="toggle_commentary">COM</mat-checkbox>
     <mat-checkbox class="btn" [(ngModel)]="toggle_playground">PLY</mat-checkbox>
-    <mat-checkbox class="btn" [(ngModel)]="toggle_multiplayer">MUL</mat-checkbox>
+    <mat-checkbox class="btn" [(ngModel)]="toggle_multiplayer" *ngIf="this.authService.isLoggedIn">MUL</mat-checkbox>
     <button mat-button class="btn" [matMenuTriggerFor]="menu">MENU</button>
 </mat-toolbar>
 
@@ -30,13 +30,13 @@
     <button routerLink="/text" mat-menu-item>Text OSCC</button>
     <button routerLink="/scansion" mat-menu-item>Scansion</button>
 
-    <a href="http://oscc.nolden.biz/Documentation/" target='_blank' mat-menu-item>Documentation</a>  
+    <a href="http://oscc.nolden.biz/Documentation/" target='_blank' mat-menu-item *ngIf="this.authService.isLoggedIn">Documentation</a>  
     <!-- <button (click)="OpenText()" mat-menu-item>Text Inside</button> -->
     <!-- <button (click)="Test('thing')" mat-menu-item>Test</button> -->
     <button (click)="Login()" mat-menu-item>Login</button>
     <button (click)="this.dialog.OpenAbout()" mat-menu-item>About</button>
     <!-- <button (click)="ngOnInit()" *ngIf="this.authService.isLoggedIn">Reload Data</button> -->
-    <button mat-menu-item>V21.8.23</button>
+    <button mat-menu-item>V21.09.02</button>
 </mat-menu>
 
 <!-- Change text dialog -->
@@ -60,7 +60,13 @@
 <div class="container-fluid">
     <div class="row">
         <!-- First column, containing the fragments from the edition of reference -->
+        
+        
         <div *ngIf="toggle_column_one" class="col-sm overflowColumn">
+            <!-- Display for if server is down -->
+            <div *ngIf="this.server_down" class="alert alert-warning" role="alert">
+                The server is not responding. Please contact the administrator.
+            </div>
             <!-- Text information and edition of reference selection -->
             <div class="row">
                 <div class="col-4">
@@ -202,11 +208,11 @@
             <!-- Fragment information -->
             <h4>Selected {{this.pressed_fragment_editor}}, fragment {{this.pressed_fragment_name}}</h4> <hr>
             <!-- Show banner if no commentary available -->
-            <div *ngIf="this.noCommentary" class="alert alert-info" role="alert">
+            <div *ngIf="this.no_commentary" class="alert alert-info" role="alert">
                 No commentary is available for this fragment.
             </div>
             <!-- Show all the commentary fields -->
-            <div *ngIf="this.noCommentary === false">
+            <div *ngIf="this.no_commentary === false">
                 <div *ngFor="let item of this.f_translation">
                     <mat-expansion-panel>
                         <mat-expansion-panel-header>
@@ -363,7 +369,7 @@
                     <button type="button" mat-icon-button matSuffix (click)="this.playground.noteArray = this.utility.PushToArray(note, this.playground.noteArray)">
                         <mat-icon>{{'add'}}</mat-icon>
                     </button>
-                    <mat-hint>Add own fragment</mat-hint>
+                    <mat-hint>Add a note</mat-hint>
                 </mat-form-field>               
             </div>  
         </div>

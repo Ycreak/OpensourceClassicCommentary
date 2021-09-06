@@ -27,7 +27,7 @@ import { Apparatus } from '../models/Apparatus';
 import { Differences } from '../models/Differences';
 import { Commentary } from '../models/Commentary';
 import { Reconstruction } from '../models/Reconstruction';
-import { Bibliography } from '../models/Bibliography';
+// import { Bibliography } from '../models/Bibliography';
 
 // Third party imports
 // NPM Library. Hopefully not soon deprecated

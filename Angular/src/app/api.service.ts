@@ -40,7 +40,7 @@ export class ApiService {
   // ApiUrl: String = 'http://localhost:5000/';
   ApiUrl: String = 'http://oscc.nolden.biz:5000/'; // For deployment
   // CREA 4
-  FlaskURL: String = 'http://localhost:5002/'; // For deployment (http! not https)                                 
+  FlaskURL: String = 'http://oscc.nolden.biz:5003/'; // For deployment (http! not https)                                 
   NeuralURL: String = 'http://nolden.biz:5002/'; // For deployment (http! not https)                                 
 
 

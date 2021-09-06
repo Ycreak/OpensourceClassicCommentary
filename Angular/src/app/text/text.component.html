@@ -11,9 +11,9 @@
 <mat-toolbar color="primary">
     <span><h3 class='h3-title'>Open Source Classics Commentary</h3></span>
     <span class="spacer"></span>
-    <button mat-button class="btn" (click)="OpenBookSelect()">CHANGE TEXT</button>
+    <!-- <button mat-button class="btn" (click)="OpenBookSelect()">CHANGE TEXT</button> -->
     <button mat-button class="btn" routerLink="/fragments">FRAGMENTS</button>
-    <button mat-button class="btn" [matMenuTriggerFor]="menu">MENU</button>
+    <!-- <button mat-button class="btn" [matMenuTriggerFor]="menu">MENU</button> -->
 </mat-toolbar>
 <!-- Small menu for the toolbar -->
 <mat-menu #menu="matMenu">
@@ -49,7 +49,7 @@
 <!-- Container for the page: one row, two columns. Column Left has the text, Column Right the commentary. -->
   <div class="container-fluid">
     <div class="row">
-      <div class="col-sm anyClass">
+      <div class="col-sm overflowColumn">
           <mat-nav-list class="neat-lines">
             <h3>{{currentBookTitle}}</h3>
             <mat-list-item *ngFor="let line of this.T_Text">

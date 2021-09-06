@@ -26,7 +26,9 @@ couch = CouchDB()
 @app.route("/authors")
 def authors():
     result = couch.Retrieve_all_authors()
-    return jsonify(Create_JSON_object(result, 'name'))
+    response = jsonify(Create_JSON_object(result, 'name'))
+    # response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 @app.route("/books")
 def books():
@@ -127,6 +129,11 @@ def delete_fragment():
 
     return jsonify(result)
 
+# @app.route("/request_phi_context", methods=['POST'])
+# def request_phi_context():
+#     phi = Phi_handler(request.get_json())
+#     return jsonify(phi.result)
+
 # @app.route("/")
 # def ():
 
@@ -141,4 +148,4 @@ def ReqArg(arg):
 
 # MAIN
 if __name__ == '__main__':
-   app.run(host='0.0.0.0', port=5002)
+   app.run(host='0.0.0.0', port=5003)
