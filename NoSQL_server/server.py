@@ -15,7 +15,7 @@ from json import dumps
 # FLASK_APP=<filename>.py FLASK_ENV=development flask run --port 5002
 
 from db_handler import CouchDB
-
+from login_handler import Login
 app = Flask(__name__)
 api = Api(app)
 
@@ -111,7 +111,7 @@ def create_fragment():
     received_json = request.get_json()
     result = couch.Create_fragment(received_json)
 
-    return jsonify(result)
+    return result
 
 @app.route("/revise_fragment", methods=['POST'])
 def revise_fragment():
@@ -119,7 +119,7 @@ def revise_fragment():
     received_json = request.get_json()
     result = couch.Revise_fragment(received_json)
 
-    return jsonify(result)
+    return result
 
 @app.route("/delete_fragment", methods=['POST'])
 def delete_fragment():
@@ -127,16 +127,20 @@ def delete_fragment():
     received_json = request.get_json()
     result = couch.Delete_fragment(received_json)
 
-    return jsonify(result)
+    return result
 
 # @app.route("/request_phi_context", methods=['POST'])
 # def request_phi_context():
 #     phi = Phi_handler(request.get_json())
 #     return jsonify(phi.result)
 
+@app.route("/login_user", methods=['POST'])
+def login():
+    new_login = Login(request.get_json())
+    return new_login.Login_user()
+
 # @app.route("/")
 # def ():
-
 
 def Create_JSON_object(given_list, denominator):
     result_list = []

@@ -125,3 +125,9 @@ fragment_empty = {
     "linked_fragments":[
     ],
 }
+
+user_empty = {
+    "username": "",
+    "password": "",
+    "role": "",
+}

@@ -1,13 +1,16 @@
 # http://localhost:5984/_utils/
-from fragments import *
+from models import *
 import couchdb
 from uuid import uuid4
 import copy
 
+from flask import Response, make_response
+from flask_jsonpify import jsonify
+
 class CouchDB:
     def __init__(self):
 
-        couch = couchdb.Server('http://admin:mysecretpassword@localhost:5984/')
+        couch = couchdb.Server('http://admin:YcreakPasswd26!@localhost:5984/')
         # Load Database
         self.db = couch['fragments'] # existing       
 
@@ -65,10 +68,9 @@ class CouchDB:
 
         result = [x.id for x in found_fragment]
 
-        if result:
-            print('found')
-            print('will not create this fragment you bozo!')
-            return 418
+        if result:           
+            return make_response('Fragment already exists!', 403)
+            
         else:
             print('not found')
             # Create independent copy of the empty fragment JSON
@@ -86,7 +88,7 @@ class CouchDB:
 
             doc_id, doc_rev = self.db.save(new_fragment)
 
-            return 418
+            return make_response('Succesfully created fragment!', 201)
 
     def Revise_fragment(self, revised_fragment):
         fragment_id = revised_fragment['_id']
@@ -110,7 +112,7 @@ class CouchDB:
 
         self.db[doc.id] = doc
 
-        return 418
+        return make_response('Succesfully revised fragment!', 200)
 
     def Delete_fragment(self, fragment):
 
@@ -120,4 +122,4 @@ class CouchDB:
 
         self.db.delete(doc)
 
-        return 418
+        return make_response('Succesfully deleted fragment!', 200)

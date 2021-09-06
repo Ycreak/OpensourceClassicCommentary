@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -9,17 +7,26 @@ export class AuthService {
   isLoggedIn = false;
   isStudent = false;
   isTeacher = false;
+  isGuest = false;
   redirectUrl: string;
 
-  //TODO: self evident.
-  public login(passwd){
-    if(passwd == 'StackCanary'){
-      this.isLoggedIn = true;
-      this.isTeacher = true;
-    }
-    if(passwd == 'StudentCanary'){
-      this.isStudent = true;
-      this.isLoggedIn = true;
-    }    
+  public Login_user(res){
+    // Getting here means the server approved login
+    this.isLoggedIn = true;
+    // Now set the role the server returns to us
+    switch(res.body) { 
+      case 'teacher': { 
+        this.isTeacher = true; 
+        break; 
+      } 
+      case 'student': { 
+        this.isStudent = true; 
+        break; 
+      } 
+      default: { 
+        this.isGuest = true; 
+        break; 
+      } 
+   }
   }
 }

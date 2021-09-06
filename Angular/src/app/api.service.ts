@@ -40,7 +40,10 @@ export class ApiService {
   // ApiUrl: String = 'http://localhost:5000/';
   ApiUrl: String = 'http://oscc.nolden.biz:5000/'; // For deployment
   // CREA 4
-  FlaskURL: String = 'http://oscc.nolden.biz:5003/'; // For deployment (http! not https)                                 
+  // FlaskURL: String = 'http://oscc.nolden.biz:5003/'; // For deployment (http! not https)                                 
+  FlaskURL: String = 'http://localhost:5003/'; // For deployment (http! not https)                                 
+
+
   NeuralURL: String = 'http://nolden.biz:5002/'; // For deployment (http! not https)                                 
 
 
@@ -192,15 +195,19 @@ export class ApiService {
 //  |_|     \____/|_____/   |_|   
 
   Create_fragment(fragment: object): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + `create_fragment`, fragment, { observe: 'response' });
+    return this.http.post<any>(this.FlaskURL + `create_fragment`, fragment, { observe: 'response', responseType: 'text' as 'json' });
   }
   
   Revise_fragment(fragment: object): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + `revise_fragment`, fragment, { observe: 'response' });
+    return this.http.post<any>(this.FlaskURL + `revise_fragment`, fragment, { observe: 'response', responseType: 'text' as 'json'  });
   }
 
   Delete_fragment(fragment: object): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + `delete_fragment`, fragment, { observe: 'response' });
+    return this.http.post<any>(this.FlaskURL + `delete_fragment`, fragment, { observe: 'response', responseType: 'text' as 'json'  });
+  }
+
+  Login_user(login: object): Observable<any> {
+    return this.http.post<any>(this.FlaskURL + `login_user`, login, { observe: 'response', responseType: 'text' as 'json'  });
   }
 
    /**

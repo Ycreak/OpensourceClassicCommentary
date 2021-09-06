@@ -272,18 +272,21 @@ export class UtilityService {
    * @param err the generated error
    */
   public HandleErrorMessage(err) {
-    console.log(err)
-    let output = ''
-    //TODO: needs to be more sophisticated
-    if(err.statusText == 'OK'){
-      output = 'Operation succesful.' 
+
+    let output = '';
+    
+    if (err.ok){
+      output = err.status + ': ' + err.body;
     }
     else{
-      output = 'Something went wrong.'
-    }
-    output = String(err.status) + ': ' + output + ' ' + err.statusText;
-    this.OpenSnackbar(output); //FIXME: Spaghetti.
-  } 
+      output = err.status + ': ' + err.error;
+    }    
+    
+    console.log(err)
+    this.OpenSnackbar(output);
+  }
+  
+  
 
   // Allows a fragment to be moved and dropped to create a custom ordering
   public moveAndDrop(event: CdkDragDrop<string[]>, array) {
