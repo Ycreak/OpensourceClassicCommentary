@@ -22,6 +22,7 @@ api = Api(app)
 CORS(app)
 
 couch = CouchDB()
+new_login = Login()
 
 @app.route("/authors")
 def authors():
@@ -135,9 +136,32 @@ def delete_fragment():
 #     return jsonify(phi.result)
 
 @app.route("/login_user", methods=['POST'])
-def login():
-    new_login = Login(request.get_json())
-    return new_login.Login_user()
+def login_user():
+    post_data = request.get_json()
+    return new_login.Login_user(post_data['username'], post_data['password'])
+
+@app.route("/create_user", methods=['POST'])
+def create_user():
+    post_data = request.get_json()
+    return new_login.Create_user(post_data['username'], post_data['password'])
+
+@app.route("/delete_user", methods=['POST'])
+def delete_user():
+    post_data = request.get_json()
+    return new_login.Delete_user(post_data['username'])
+
+@app.route("/change_password", methods=['POST'])
+def change_password():
+    post_data = request.get_json()
+    return new_login.Change_password(post_data['username'], post_data['new_password'])
+
+@app.route("/change_role", methods=['POST'])
+def change_role():
+    post_data = request.get_json()
+    return new_login.Change_role(post_data['username'], post_data['new_role'])
+
+# @app.route("/")
+# def ():
 
 # @app.route("/")
 # def ():

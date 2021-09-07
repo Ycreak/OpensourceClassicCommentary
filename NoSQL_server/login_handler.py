@@ -2,68 +2,200 @@ import couchdb
 import copy
 from models import *
 from uuid import uuid4
-# from flask import Response, make_response
+from flask import Response, make_response
 
 class Login():
-    def __init__(self, login_json):
+    def __init__(self):
 
         # Load Database
-        couch = couchdb.Server('http://admin:YcreakPasswd26!@localhost:5984/')
-        
-        # RUN THIS ONCE
-        self.db = couch.create('users')
-        
+        couch = couchdb.Server('http://admin:password@localhost:5984/')
         self.db = couch['users']
-           
-        self.username = login_json['username']
-        self.password = login_json['password']
 
-        # print(username, password)
+    def Login_user(self, username, password) -> make_response:
+        """ Function to handle login of user. Checks if user exists and if its password is correct.
+        Handles errors accordingly.
 
-        # new_user = copy.deepcopy(user_empty)
+        Args:
+            username (string): of username
+            password (string): of password
 
+        Raises:
+            Exception: if result[0] cannot be retrieved
 
-        # result = make_response('Login authenticated!', 200)
-        # result = make_response('Login rejected', 403)
+        Returns:
+            response: flask response object
+        """      
+        assert isinstance(username, str)
+        assert isinstance(password, str) 
+        
+        found_user = self.Retrieve_data({'username': username}, [])
+        result = [x for x in found_user]
 
-    def Login_user(self):
-
-        found_user = self.Retrieve_data({'username': self.username}, [])
-        result = [x.id for x in found_user]
-
-        if result:     
-            # TODO: check whether the password is correct
+        if result:
+            try:
+                # Check if password is correct
+                user_password = result[0]['password']
+            except:
+                raise Exception("Somehow, a duplicate user exists.") 
             
-            # return make_response('User exists!', 202)
-            return make_response('teacher', 202)
-
+            if password == user_password:
+                found_user_role = result[0]['role']
+                # Return the role of the found user to Angular
+                return make_response(found_user_role, 200)
+            else:
+                return make_response('Invalid password', 403)  
         else:
-            return make_response('The user does not exist!', 403)
-    
-    def Create_user(self, username, password):
+            return make_response('This user does not exist!', 401)        
+
+    def Create_user(self, username, password) -> make_response:
+        """ Inserts the provided user and their password into the database iff the
+        username does not yet exist.
+
+        Args:
+            username (string): username to be created
+            password (string): password to be required
+
+        Returns:
+            response: flask response object
+        """
+        assert isinstance(username, str)
+        assert isinstance(password, str)                
+
+        # First, we check whether the username is already in the database
+        found_user = self.Retrieve_data({'username': username}, [])
+        result = [x for x in found_user]
+
+        if result:
+            return make_response('This username is already taken', 403)
+        else:        
+            # User does not exist, so create it
+            new_user = copy.deepcopy(user_empty)
+
+            new_user['username'] = username
+            new_user['password'] = password
+
+            new_user['_id'] = uuid4().hex
+
+            doc_id, doc_rev = self.db.save(new_user)        
+            
+            return make_response('User succesfully created', 201)
+
+
+    def Delete_user(self, username) -> make_response:
+        """ Function to delete the user of the provided username
+
+        Args:
+            username (string): user to delete
+
+        Raises:
+            Exception: if no user can be found to be deleted
+
+        Returns:
+            response: flask response object
+        """        
+        assert isinstance(username, str)
         
-        #TODO: check if user exists
+        found_user = self.Retrieve_data({'username': username}, [])
+        result = [x for x in found_user]
+
+        if result:
+            try:
+                doc = result[0]['_id']
+                self.db.delete(doc)
+                return make_response('User succesfully deleted', 200)
+            except:
+                raise Exception("Could not find a user to delete") 
+        else:  
+            return make_response('This user does not exist', 400)
+
+
+    def Change_password(self, username, new_password) -> make_response:
+        """Function to change the password of a user.
+
+        Args:
+            username (string): user whom's role is to be updated
+            new_password (string): new password to be assigned to the user
+
+        Returns:
+            response: flask response object
+        """
+        assert isinstance(username, str)
+        assert isinstance(new_password, str)  
+
+        try:
+            found_user = self.Retrieve_data({'username': username}, [])
+            result = [x for x in found_user]
+            found_user_doc = result[0]
+        except Exception:
+            raise Exception("Something went wrong") #TODO: Find way for Flask to handle exceptions and return a response accordingly
         
-        new_user = copy.deepcopy(user_empty)
+        found_user_doc['password'] = new_password
+        doc_id, doc_rev = self.db.save(found_user_doc)   
+        return make_response('Password succesfully updated', 200)
 
-        new_user['username'] = username
-        new_user['password'] = password
 
-        new_user['_id'] = uuid4().hex
+    def Change_role(self, username, new_role) -> make_response:
+        """Function to change the role of a user.
 
-        doc_id, doc_rev = self.db.save(new_user)        
+        Args:
+            username (string): user whom's role is to be updated
+            new_role (string): new role to be assigned to the user
         
+        Returns:
+            response: flask response object
+        """        
+        assert isinstance(username, str)
+        assert isinstance(new_role, str)  
+        
+        try:
 
-    def Delete_user(self):
-        pass
+            found_user = self.Retrieve_data({'username': username}, [])
+            result = [x for x in found_user]
+            found_user_doc = result[0]
 
-    def Revise_user(self):
-        pass
+        except:
+            return make_response('Could not find a user', 400)    
+
+        found_user_doc['role'] = new_role
+        doc_id, doc_rev = self.db.save(found_user_doc)   
+        return make_response('Role succesfully updated', 200)
 
     def Retrieve_data(self, selector, fields):
         return self.db.find({
                 'selector': selector,
                'fields': fields,
-            })
+        })
 
-new_login = Login({'username': 'Lucus', 'password': 'StackCanary'})
+    def Find_user(self, username):
+        """Finds the requested user in the database
+
+        Args:
+            username (string): of requested username
+
+        Raises:
+            Exception: If no user can be found
+
+        Returns:
+            json: nosql document of the found user
+        """        
+        found_user = self.Retrieve_data({'username': username}, [])
+        result = [x for x in found_user]
+        
+        try:
+            user = result[0]
+            return user
+        except:
+            raise Exception("Could not find a user")   
+            
+
+new_login = Login()
+
+# Unit Tests
+# response = new_login.Create_user('Lucus', 'StackCanary')
+# response = new_login.Login_user('Lucus', 'Kipje')
+# response = new_login.Delete_user('Karel')
+# response = new_login.Delete_user('Lucus', 'StackCanary')
+# response = new_login.Change_role('Kippig', 'student')
+# response = new_login.Change_password('Kareltje', 'kipje')
+
+# print(response)
