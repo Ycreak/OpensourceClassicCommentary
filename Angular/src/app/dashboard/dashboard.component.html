@@ -60,7 +60,8 @@
             <mat-label>Fragment</mat-label>
             <mat-select>
                 <mat-option *ngFor="let fragment_number of this.retrieved_fragment_numbers" [value]="fragment_number"
-                    (click)="this.Retrieve_requested_fragment(this.retrieved_fragments, fragment_number)">
+                  (click)="Reset_form()"    
+                  (click)="this.Retrieve_requested_fragment(this.retrieved_fragments, fragment_number)">
                     {{ fragment_number }} 
                 </mat-option>
             </mat-select>
@@ -120,11 +121,17 @@
                   <mat-hint>Provide the name of the editor</mat-hint>                       
                 </mat-form-field>
 
-                <mat-form-field class="input-form-full-width">
+                <div class="div-padding-sm"></div>
+                <div class="div-padding-sm"></div>
+
+                <mat-form-field appearance="fill">
+                  <mat-select required formControlName="status">
+                    <mat-option value="">Normal</mat-option>
+                    <mat-option value="Incertum">Incertum</mat-option>
+                    <mat-option value="Adesp.">Adespota</mat-option>
+                  </mat-select>
                   <mat-label>Line status</mat-label>
-                  <input matInput type="text" formControlName="status">
-                  <mat-hint>Provide the status of the fragment</mat-hint>                       
-                </mat-form-field> 
+                </mat-form-field>
 
                 <div class="div-padding"></div>
                 <!-- <button mat-button type="submit" [disabled]="!fragmentForm.valid">Upload</button> -->
@@ -138,9 +145,22 @@
                   <div formArrayName="lines"
                     *ngFor="let item of fragmentForm.get('lines')['controls']; let i = index;">
                     <div [formGroupName]="i">
-                      <input formControlName="line_number" placeholder="Line name">
-                      <input formControlName="text" placeholder="Line text" [matKeyboard]="'OSCC'"> 
-                      <button (click)="removeItem('lines', i)">X</button>
+
+
+                      <mat-form-field class="input-form">
+                        <mat-label>Fragment name</mat-label>
+                        <input matInput type="text" formControlName="line_number"> <!--required> -->
+                      </mat-form-field>
+
+                      <mat-form-field class="input-form">
+                        <mat-label>Fragment text</mat-label>
+                        <input matInput type="text" formControlName="text" [matKeyboard]="'OSCC'"> <!--required> -->
+                      </mat-form-field>
+
+                      <!-- <input formControlName="line_number" placeholder="Line name"> -->
+                      <!-- <input formControlName="text" placeholder="Line text" [matKeyboard]="'OSCC'">  -->
+                      <button mat-button (click)="removeItem('lines', i)">Delete</button>
+
                     </div>
                   </div>
                   <button type="button" (click)="addItem('line_number', 'text', '','', 'lines')">Add Fragment Line</button>

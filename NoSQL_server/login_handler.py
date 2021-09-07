@@ -2,13 +2,17 @@ import couchdb
 import copy
 from models import *
 from uuid import uuid4
-from flask import Response, make_response
+# from flask import Response, make_response
 
 class Login():
     def __init__(self, login_json):
 
         # Load Database
         couch = couchdb.Server('http://admin:YcreakPasswd26!@localhost:5984/')
+        
+        # RUN THIS ONCE
+        self.db = couch.create('users')
+        
         self.db = couch['users']
            
         self.username = login_json['username']
@@ -63,4 +67,3 @@ class Login():
             })
 
 new_login = Login({'username': 'Lucus', 'password': 'StackCanary'})
-# new_login.Create_user('Lucus', 'StackCanary')

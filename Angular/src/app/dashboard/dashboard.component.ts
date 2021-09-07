@@ -57,6 +57,8 @@ export class DashboardComponent implements OnInit {
 
   fragmentForm: FormGroup;
 
+  possible_status = ['normal', 'incertum', 'adesp.']
+
   constructor(
     private api: ApiService,
     private utility: UtilityService,
@@ -94,7 +96,7 @@ export class DashboardComponent implements OnInit {
    * @param thing item to be printed
    */
   public Test(){
-    console.log('test', this.fragmentForm.value.context)
+    console.log('test', this.fragmentForm.value.status)
   }
 
   public Retrieve_fragment_numbers(fragments){    
@@ -257,6 +259,7 @@ export class DashboardComponent implements OnInit {
         );
       }
     });
+    this.Reset_form();
   }
 
   public Request_create_fragment(fragment){
@@ -269,6 +272,9 @@ export class DashboardComponent implements OnInit {
         );
       }
     });
+    // Now reset form and request the fragments again
+    this.Reset_form();
+    this.Request_fragments(this.selected_author, this.selected_book, this.selected_editor);
   }
 
   public Request_delete_fragment(fragment){
@@ -281,6 +287,9 @@ export class DashboardComponent implements OnInit {
         );
       }
     });
+    // Now reset form and request the fragments again
+    this.Reset_form();
+    this.Request_fragments(this.selected_author, this.selected_book, this.selected_editor);
   }
 
 
