@@ -63,6 +63,7 @@ export class DashboardComponent implements OnInit {
   possible_status = ['normal', 'incertum', 'adesp.']
 
   // User dashboard
+  isChecked = false;
   temp = ''
   hide : boolean = true;
   change_password_form = this.formBuilder.group({
@@ -72,6 +73,7 @@ export class DashboardComponent implements OnInit {
 
   retrieved_users : object;
   selected_user : string = '';
+  user_selected : boolean = false; // controls user deletion button
   new_user : string = '';
 
   // Whether a fragment is selected
@@ -145,6 +147,17 @@ export class DashboardComponent implements OnInit {
         this.Update_content_form(this.retrieved_fragment)
         // console.log('selected fragment', data)
       });  
+  }
+
+  public Clean_fragment_content(){
+    // Clears context and lines
+    this.clear_fields()
+
+    this.UpdateForm('fragmentForm','translation', '');
+    this.UpdateForm('fragmentForm','differences', '');
+    this.UpdateForm('fragmentForm','commentary', '');
+    this.UpdateForm('fragmentForm','apparatus', '');
+    this.UpdateForm('fragmentForm','reconstruction', '');
   }
 
   public Update_content_form(fragment){
@@ -335,17 +348,23 @@ export class DashboardComponent implements OnInit {
   }
 
   public Request_create_user(new_user){
-    this.dialog.OpenConfirmationDialog('Are you sure you want to CREATE this user?', new_user).subscribe(result => {
-      if(result){
-        this.api.Create_user({'username':new_user,'password':'hello'}).subscribe(
-          res => {
-            this.utility.HandleErrorMessage(res),
-            this.Request_users();
-          },
-          err => this.utility.HandleErrorMessage(err)
-        );
-      }
-    });
+
+    if(new_user == ''){
+      this.utility.OpenSnackbar('Please provide a username');
+    }
+    else{
+      this.dialog.OpenConfirmationDialog('Are you sure you want to CREATE this user?', new_user).subscribe(result => {
+        if(result){
+          this.api.Create_user({'username':new_user,'password':'hello'}).subscribe(
+            res => {
+              this.utility.HandleErrorMessage(res),
+              this.Request_users();
+            },
+            err => this.utility.HandleErrorMessage(err)
+          );
+        }
+      });
+    }
   }
 
   public Request_change_role(user, role){
@@ -370,6 +389,7 @@ export class DashboardComponent implements OnInit {
           res => {
             this.utility.HandleErrorMessage(res),
             this.Request_users();
+            this.user_selected = false;
           },
           err => this.utility.HandleErrorMessage(err)
         );

@@ -141,6 +141,7 @@ const appRoutes: Routes = [
     BrowserAnimationsModule,
     ReactiveFormsModule,
     // All needed Material modules
+    MatButtonModule,
     MatDialogModule,
     MatFormFieldModule,
     MatSelectModule,
@@ -151,7 +152,6 @@ const appRoutes: Routes = [
     MatTabsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule,
     MatToolbarModule,
     MatSnackBarModule,
     MatSlideToggleModule,

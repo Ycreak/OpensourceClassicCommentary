@@ -1,4 +1,4 @@
-@import "~bootstrap/dist/css/bootstrap.css";
+// @import "~bootstrap/dist/css/bootstrap.css";
 @import url('../app.component.scss');
 
 // Dashboard specific
@@ -37,6 +37,10 @@
   //   // size: 80%;
   //   max-width: 100%;
   // }
+
+  mat-stroked-button {
+    padding: 2em;
+  }
 
   .mat-radio-button {
     // margin: 1em 1em 1em 1em;
@@ -121,4 +125,9 @@
     display: flex;
     justify-content: center;
     width: 120px;
+  }
+
+
+  .padding-left{
+    padding-left: 1em;
   }

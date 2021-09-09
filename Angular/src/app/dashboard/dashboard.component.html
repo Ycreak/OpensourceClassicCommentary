@@ -1,21 +1,18 @@
 <!-- I think this can be removed. -->
-<script src="vendor/jquery/jquery.min.js"></script>
-<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- <script src="vendor/jquery/jquery.min.js"></script> -->
+<!-- <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script> -->
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
-
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
 <!-- Maybe we should get a local stylesheet? -->
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<!-- <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> -->
 
 <!-- Simple toolbar with all the different buttons and the title -->
 <mat-toolbar color="primary">
-    <span><h3 class='h3-title'>Dashboard</h3></span>
+    <span><h3 class='h3-title'>OSCC Dashboard for user {{this.authService.logged_user}}</h3></span>
     <span class="spacer"></span>
     
-    <h4>{{this.authService.logged_user}}</h4>
-
     <button mat-button class="btn" (click)="this.RequestAuthors()">RELOAD AUTHORS</button>
-    <button mat-button class="btn" (click)="this.Request_users()">LOAD USERS</button>   
 
     <button mat-button class="btn" (click)="Test()">TEST</button>
     <button mat-button class="btn" routerLink="/fragments">FRAGMENTS</button>
@@ -48,7 +45,7 @@
               (click)="this.RequestBooks(author.name)"
               (click)="this.retrieved_books = []; this.retrieved_editors = []; this.retrieved_fragment_numbers = []"
               (click)="this.fragment_selected = false; this.allow_fragment_creation = false"
-              (click)="this.UpdateForm('fragmentForm', 'author', author.name)"
+              (click)="this.UpdateForm('fragmentForm', 'author', author.name); this.Clean_fragment_content()"
               (click)="this.UpdateForm('fragmentForm', 'title', ''); this.UpdateForm('fragmentForm', 'editor', ''); this.UpdateForm('fragmentForm', 'fragment_name', '')">
                 {{ author.name }} 
             </mat-option>
@@ -63,7 +60,7 @@
                 (click)="this.RequestEditors(this.selected_author, book.name)"
                 (click)="this.retrieved_editors = []; this.retrieved_fragment_numbers = []"
                 (click)="this.fragment_selected = false; this.allow_fragment_creation = false"
-                (click)="this.UpdateForm('fragmentForm', 'title', book.name)"
+                (click)="this.UpdateForm('fragmentForm', 'title', book.name); this.Clean_fragment_content()"
                 (click)="this.UpdateForm('fragmentForm', 'editor', ''); this.UpdateForm('fragmentForm', 'fragment_name', '')">
                   {{ book.name }}                
               </mat-option>
@@ -78,7 +75,7 @@
                   (click)="this.Request_fragments(this.selected_author, this.selected_book, editor.name)"
                   (click)="this.retrieved_fragment_numbers = []"
                   (click)="this.fragment_selected = false; this.allow_fragment_creation = true"
-                  (click)="this.UpdateForm('fragmentForm', 'editor', editor.name)"
+                  (click)="this.UpdateForm('fragmentForm', 'editor', editor.name); this.Clean_fragment_content()"
                   (click)="this.UpdateForm('fragmentForm', 'fragment_name', '')">
                   {{ editor.name }}                     
               </mat-option>
@@ -99,9 +96,9 @@
 
       <hr>
       <!-- Buttons to submit fragment data -->
-      <button mat-button [disabled]="!fragment_selected" (click)="Request_revise_fragment(this.fragmentForm.value)" *ngIf="this.authService.is_teacher || this.authService.is_student">Revise Fragment</button>
-      <button mat-button [disabled]="!fragmentForm.valid" (click)="Request_create_fragment(this.fragmentForm.value)" *ngIf="this.authService.is_teacher">Create Fragment</button>
-      <button mat-button [disabled]="!fragment_selected" (click)="Request_delete_fragment(this.fragmentForm.value)" *ngIf="this.authService.is_teacher">Delete Fragment</button>
+      <button mat-stroked-button color="primary" [disabled]="!fragment_selected" (click)="Request_revise_fragment(this.fragmentForm.value)" *ngIf="this.authService.is_teacher || this.authService.is_student">Revise Fragment</button>
+      <button mat-stroked-button color="primary" [disabled]="!fragmentForm.valid" (click)="Request_create_fragment(this.fragmentForm.value)" *ngIf="this.authService.is_teacher">Create Fragment</button>
+      <button mat-stroked-button color="warn" [disabled]="!fragment_selected" (click)="Request_delete_fragment(this.fragmentForm.value)" *ngIf="this.authService.is_teacher">Delete Fragment</button>
       <!-- <button mat-button (click)="Reset_form()" *ngIf="this.authService.is_teacher || this.authService.is_student">Clear all fields</button> -->
 
       <hr>
@@ -110,7 +107,7 @@
       <mat-tab-group>
   
         <form [formGroup]="fragmentForm">
-          <mat-tab label="Create/Revise Data"><br> 
+          <mat-tab label="Fragment Meta Data"><br> 
 
             <mat-form-field class="input-form-full-width">
               <mat-label>Fragment name</mat-label>
@@ -160,10 +157,10 @@
 
           </mat-tab>
 
-          <mat-tab label="Create/Revise Lines"><br>
+          <mat-tab label="Fragment Lines"><br>
 
             <form [formGroup]="fragmentForm">
-              <button mat-button (click)="addItem('line_number', 'text', '','', 'lines')">Add New Fragment Line</button>
+              <button mat-stroked-button color="primary" (click)="addItem('line_number', 'text', '','', 'lines')">Add New Fragment Line</button>
               
               <div class="div-padding-lg"></div>
 
@@ -192,7 +189,7 @@
 
           </mat-tab>
 
-          <mat-tab label="Create/Revise Content"><br>
+          <mat-tab label="Fragment Content"><br>
               <mat-form-field class="input-form-full-width">
                 <mat-label><b>Fragment translation</b></mat-label>
                 <textarea matInput type="text" formControlName="translation" id="FT" [matKeyboard]="'OSCC'"></textarea>
@@ -233,12 +230,12 @@
 
             </mat-tab>
 
-            <mat-tab label="Create/Revise Context"><br>
+            <mat-tab label="Fragment Context"><br>
 
               <form [formGroup]="fragmentForm">
 
 
-                <button mat-button (click)="addItem2('','', '')">Add Fragment Context</button>
+                <button mat-stroked-button color="primary" (click)="addItem2('','', '')">Add Fragment Context</button>
 
                 <div class="div-padding-lg"></div>
 
@@ -272,6 +269,16 @@
               </form>
 
             </mat-tab>
+
+            <mat-tab label="Fragment Access"><br>
+
+              <mat-checkbox class="padding-left" [(ngModel)]="is_locked">Click to lock the fragment</mat-checkbox>
+              <div class="div-padding-lg"></div>
+              <mat-checkbox class="padding-left" [(ngModel)]="is_published">Click to publish the fragment</mat-checkbox>
+
+            </mat-tab>
+
+
         </form>                        
 
     </mat-tab-group>
@@ -312,7 +319,8 @@
 
         <div class="div-padding-sm"></div>
 
-        <button mat-button type="submit" [disabled]="!change_password_form.valid">Change password</button>
+        <button mat-raised-button color="warn" type="submit" [disabled]="!change_password_form.valid">Change password</button>
+
       </form>
 
 
@@ -333,8 +341,8 @@
       <mat-form-field>
         <mat-label>Select user</mat-label>
         <mat-select>
-            <mat-option *ngFor="let user of this.retrieved_users" [value]="user"
-              (click)="this.selected_user = user">
+            <mat-option *ngFor="let user of this.retrieved_users" [value]="user.username"
+              (click)="this.selected_user = user; this.user_selected = true">
                 {{ user.username }} 
             </mat-option>
         </mat-select>  
@@ -342,24 +350,26 @@
 
       <mat-form-field appearance="fill">
         <mat-select required [(ngModel)]="this.selected_user.role"> <!-- This can be done better using an object typescript-->
-          <mat-option value="guest" (click)="Request_change_role(this.selected_user.username, this.selected_user.role)">Guest</mat-option>
-          <mat-option value="student" (click)="Request_change_role(this.selected_user.username, this.selected_user.role)">Student</mat-option>
-          <mat-option value="teacher" (click)="Request_change_role(this.selected_user.username, this.selected_user.role)">Teacher</mat-option>
+          <mat-option value="guest">Guest</mat-option>
+          <mat-option value="student">Student</mat-option>
+          <mat-option value="teacher">Teacher</mat-option>
         </mat-select>
         <mat-label>User role</mat-label>
       </mat-form-field>
-      
-      <button mat-button (click)="Request_delete_user(this.selected_user.username)">Delete user</button>
+      <br>
+      <button mat-stroked-button color="warn" [disabled]="!user_selected" (click)="Request_delete_user(this.selected_user.username)">Delete user</button>
+      <button mat-stroked-button color="primary" [disabled]="!user_selected" (click)="Request_change_role(this.selected_user.username, this.selected_user.role)">Change role</button>    
 
       <hr>
 
-      <mat-form-field class="input-form">
+      <mat-form-field class="input-form-half">
         <mat-label>New user</mat-label>
         <input matInput type="text" [(ngModel)]="this.new_user">
         <mat-hint>Provide the name of the new user</mat-hint>                       
       </mat-form-field>
-
-      <button mat-button (click)="Request_create_user(this.new_user); this.new_user = ''">Create user</button>
+      <br>
+      <div class="div-padding-lg"></div>
+      <button mat-stroked-button color='primary' (click)="Request_create_user(this.new_user); this.new_user = ''">Create user</button>
   
     </mat-expansion-panel>
   </mat-accordion>
