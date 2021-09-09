@@ -8,7 +8,7 @@ class Login():
     def __init__(self):
 
         # Load Database
-        couch = couchdb.Server('http://admin:password@localhost:5984/')
+        couch = couchdb.Server('http://admin:YcreakPasswd26!@localhost:5984/')
         self.db = couch['users']
 
     def Login_user(self, username, password) -> make_response:
@@ -100,7 +100,8 @@ class Login():
 
         if result:
             try:
-                doc = result[0]['_id']
+                id = result[0]['_id']
+                doc = self.db[id]
                 self.db.delete(doc)
                 return make_response('User succesfully deleted', 200)
             except:
@@ -187,8 +188,14 @@ class Login():
         except:
             raise Exception("Could not find a user")   
             
+    
+    def Retrieve_all_users(self):
+        user_list = []        
+        
+        for id in self.db:
+            user_list.append({'username':self.db[id]['username'],'role':self.db[id]['role']})
 
-new_login = Login()
+        return sorted(user_list, key=lambda k: k['username'])
 
 # Unit Tests
 # response = new_login.Create_user('Lucus', 'StackCanary')

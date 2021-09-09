@@ -13,6 +13,9 @@ import { DialogService } from '../services/dialog.service';
 import { FormBuilder } from '@angular/forms';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators, FormArray } from '@angular/forms';
 
+import {MatButtonModule} from '@angular/material/button';
+
+
 // Mat imports
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
@@ -59,6 +62,22 @@ export class DashboardComponent implements OnInit {
 
   possible_status = ['normal', 'incertum', 'adesp.']
 
+  // User dashboard
+  temp = ''
+  hide : boolean = true;
+  change_password_form = this.formBuilder.group({
+    password1: '',
+    password2: '',
+  });
+
+  retrieved_users : object;
+  selected_user : string = '';
+  new_user : string = '';
+
+  // Whether a fragment is selected
+  fragment_selected : boolean = false;
+  allow_fragment_creation = false;
+
   constructor(
     private api: ApiService,
     private utility: UtilityService,
@@ -71,11 +90,11 @@ export class DashboardComponent implements OnInit {
    */
   ngOnInit(): void {
     this.RequestAuthors()
-    
+    // this.Request_users()
     // Initialise the fragment form. TODO: can we do this somewhere else?
     this.fragmentForm = this.formBuilder.group({
       _id: '',
-      fragment_name: '',
+      fragment_name: '', //['', Validators.required],
       author: '',
       title: '',
       editor: '',
@@ -96,7 +115,7 @@ export class DashboardComponent implements OnInit {
    * @param thing item to be printed
    */
   public Test(){
-    console.log('test', this.fragmentForm.value.status)
+    console.log('test', this.selected_author)
   }
 
   public Retrieve_fragment_numbers(fragments){    
@@ -292,6 +311,71 @@ export class DashboardComponent implements OnInit {
     this.Request_fragments(this.selected_author, this.selected_book, this.selected_editor);
   }
 
+  // USER DASHBOARD
+  public Request_change_password(form){
+    if(form.password1 == form.password2){
+      this.dialog.OpenConfirmationDialog('Are you sure you want to CHANGE your password', this.authService.logged_user).subscribe(result => {
+        if(result){
+          this.api.User_change_password({'username':this.authService.logged_user,'new_password':form.password1}).subscribe(
+            res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
+          );
+        }
+      });
+    }
+    else{
+      this.utility.OpenSnackbar('Passwords do not match.');
+    }
+  }
+
+  public Request_users(){
+    this.api.Get_users().subscribe(
+      data => this.retrieved_users = data,
+      err => this.utility.HandleErrorMessage(err),
+    );      
+  }
+
+  public Request_create_user(new_user){
+    this.dialog.OpenConfirmationDialog('Are you sure you want to CREATE this user?', new_user).subscribe(result => {
+      if(result){
+        this.api.Create_user({'username':new_user,'password':'hello'}).subscribe(
+          res => {
+            this.utility.HandleErrorMessage(res),
+            this.Request_users();
+          },
+          err => this.utility.HandleErrorMessage(err)
+        );
+      }
+    });
+  }
+
+  public Request_change_role(user, role){
+    let item_string = user + ', ' + role;
+    this.dialog.OpenConfirmationDialog('Are you sure you want to CHANGE the role of this user?', item_string).subscribe(result => {
+      if(result){
+        this.api.User_change_role({'username':user,'new_role':role}).subscribe(
+          res => {
+            this.utility.HandleErrorMessage(res),
+            this.Request_users();
+          },
+          err => this.utility.HandleErrorMessage(err)
+        );
+      }
+    });
+  }
+
+  public Request_delete_user(username){
+    this.dialog.OpenConfirmationDialog('Are you sure you want to DELETE this user?', username).subscribe(result => {
+      if(result){
+        this.api.Delete_user({'username':username}).subscribe(
+          res => {
+            this.utility.HandleErrorMessage(res),
+            this.Request_users();
+          },
+          err => this.utility.HandleErrorMessage(err)
+        );
+      }
+    });
+  }
 
 
 }

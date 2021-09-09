@@ -160,6 +160,13 @@ def change_role():
     post_data = request.get_json()
     return new_login.Change_role(post_data['username'], post_data['new_role'])
 
+@app.route("/retrieve_users")
+def retrieve_users():
+    result = new_login.Retrieve_all_users()
+    # response = jsonify(Create_JSON_object(result, 'name'))
+    # response.headers.add('Access-Control-Allow-Origin', '*')
+    return jsonify(result)
+
 # @app.route("/")
 # def ():
 

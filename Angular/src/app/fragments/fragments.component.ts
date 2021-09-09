@@ -340,7 +340,7 @@ export class FragmentsComponent implements OnInit {
    * @author Ycreak
    */    
   public Sort_fragments_on_status(fragments){
-    let normal = this.utility.FilterObjOnKey(fragments, 'status', "")
+    let normal = this.utility.FilterObjOnKey(fragments, 'status', "Certum")
     let incerta = this.utility.FilterObjOnKey(fragments, 'status', 'Incertum')
     let adesp = this.utility.FilterObjOnKey(fragments, 'status', 'Adesp.')
     // Concatenate in the order we want (i'm a hacker)

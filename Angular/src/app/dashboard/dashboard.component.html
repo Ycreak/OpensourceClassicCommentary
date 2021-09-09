@@ -11,6 +11,12 @@
 <mat-toolbar color="primary">
     <span><h3 class='h3-title'>Dashboard</h3></span>
     <span class="spacer"></span>
+    
+    <h4>{{this.authService.logged_user}}</h4>
+
+    <button mat-button class="btn" (click)="this.RequestAuthors()">RELOAD AUTHORS</button>
+    <button mat-button class="btn" (click)="this.Request_users()">LOAD USERS</button>   
+
     <button mat-button class="btn" (click)="Test()">TEST</button>
     <button mat-button class="btn" routerLink="/fragments">FRAGMENTS</button>
     <!-- <button mat-button class="btn" (click)="RequestAuthors()">RELOAD AUTHORS</button> -->
@@ -18,218 +24,351 @@
 
 <br>
 
-<!-- SELECTING ROW -->
-<div class="container-fluid">
-    <div class="row">
-        <!-- Need some space here please  -->     
-        <mat-form-field>
-            <mat-label>Select author</mat-label>
-            <mat-select>
-                <mat-option *ngFor="let author of this.retrieved_authors" [value]="author"
-                  (click)="this.selected_author = author.name"  
-                  (click)="this.RequestBooks(author.name)">
-                    {{ author.name }} 
-                </mat-option>
-            </mat-select>  
-        </mat-form-field> 
-    
-        <mat-form-field>
-            <mat-label>Select text</mat-label>
-            <mat-select>
-                <mat-option *ngFor="let book of this.retrieved_books" [value]="book" 
-                  (click)="this.selected_book = book.name"  
-                  (click)="this.RequestEditors(this.selected_author, book.name)">
-                    {{ book.name }}                
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-    
-        <mat-form-field>
-            <mat-label>Select edition</mat-label>
-            <mat-select>
-                <mat-option *ngFor="let editor of this.retrieved_editors" [value]="editor"
-                    (click)="this.selected_editor = editor.name"  
-                    (click)="this.Request_fragments(this.selected_author, this.selected_book, editor.name)">
-                    {{ editor.name }}                     
-                </mat-option>
-            </mat-select>
-            <!-- <mat-hint>Select an edition</mat-hint> -->
-        </mat-form-field>
-    
-        <mat-form-field>
-            <mat-label>Fragment</mat-label>
-            <mat-select>
-                <mat-option *ngFor="let fragment_number of this.retrieved_fragment_numbers" [value]="fragment_number"
-                  (click)="Reset_form()"    
-                  (click)="this.Retrieve_requested_fragment(this.retrieved_fragments, fragment_number)">
-                    {{ fragment_number }} 
-                </mat-option>
-            </mat-select>
-            <!-- <mat-hint>Select a fragment</mat-hint> -->
-        </mat-form-field>
-    </div>
-</div>
-
-<hr>
-
 <!-- TAB GROUPS TO ENTER DATA -->
 <div class="container-fluid">
-    <div class="row">
+  <mat-accordion class="example-headers-align" multi>
+    <!-- Change fragment expansion panel -->
+    <mat-expansion-panel *ngIf="this.authService.is_logged_in" [expanded]="true" (click)="this.RequestAuthors()">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Change fragment data
+        </mat-panel-title>
+        <mat-panel-description>
+          Create, revise and delete fragments.
+          <mat-icon>text_snippet</mat-icon>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
 
-      <button mat-button (click)="Request_revise_fragment(this.fragmentForm.value)">Revise Fragment</button>
-      <button mat-button (click)="Request_create_fragment(this.fragmentForm.value)" *ngIf="this.authService.isTeacher">Create Fragment</button>
-      <button mat-button (click)="Request_delete_fragment(this.fragmentForm.value)" *ngIf="this.authService.isTeacher">Delete Fragment</button>
-      <button mat-button (click)="Reset_form()" *ngIf="this.authService.isTeacher">Clear all fields</button>
+      <!-- Selection of fragment -->
+      <mat-form-field>
+        <mat-label>Select author</mat-label>
+        <mat-select>
+            <mat-option *ngFor="let author of this.retrieved_authors" [value]="author.name"
+              (click)="this.selected_author = author.name"  
+              (click)="this.RequestBooks(author.name)"
+              (click)="this.retrieved_books = []; this.retrieved_editors = []; this.retrieved_fragment_numbers = []"
+              (click)="this.fragment_selected = false; this.allow_fragment_creation = false"
+              (click)="this.UpdateForm('fragmentForm', 'author', author.name)"
+              (click)="this.UpdateForm('fragmentForm', 'title', ''); this.UpdateForm('fragmentForm', 'editor', ''); this.UpdateForm('fragmentForm', 'fragment_name', '')">
+                {{ author.name }} 
+            </mat-option>
+        </mat-select>  
+      </mat-form-field> 
+
+      <mat-form-field>
+          <mat-label>Select text</mat-label>
+          <mat-select>
+              <mat-option *ngFor="let book of this.retrieved_books" [value]="book.name" 
+                (click)="this.selected_book = book.name"  
+                (click)="this.RequestEditors(this.selected_author, book.name)"
+                (click)="this.retrieved_editors = []; this.retrieved_fragment_numbers = []"
+                (click)="this.fragment_selected = false; this.allow_fragment_creation = false"
+                (click)="this.UpdateForm('fragmentForm', 'title', book.name)"
+                (click)="this.UpdateForm('fragmentForm', 'editor', ''); this.UpdateForm('fragmentForm', 'fragment_name', '')">
+                  {{ book.name }}                
+              </mat-option>
+          </mat-select>
+      </mat-form-field>
+  
+      <mat-form-field>
+          <mat-label>Select edition</mat-label>
+          <mat-select>
+              <mat-option *ngFor="let editor of this.retrieved_editors" [value]="editor.name"
+                  (click)="this.selected_editor = editor.name"  
+                  (click)="this.Request_fragments(this.selected_author, this.selected_book, editor.name)"
+                  (click)="this.retrieved_fragment_numbers = []"
+                  (click)="this.fragment_selected = false; this.allow_fragment_creation = true"
+                  (click)="this.UpdateForm('fragmentForm', 'editor', editor.name)"
+                  (click)="this.UpdateForm('fragmentForm', 'fragment_name', '')">
+                  {{ editor.name }}                     
+              </mat-option>
+          </mat-select>
+      </mat-form-field>
+  
+      <mat-form-field>
+          <mat-label>Fragment</mat-label>
+          <mat-select>
+              <mat-option *ngFor="let fragment_number of this.retrieved_fragment_numbers" [value]="fragment_number"
+                (click)="Reset_form()"    
+                (click)="this.Retrieve_requested_fragment(this.retrieved_fragments, fragment_number)"
+                (click)="this.fragment_selected = true">
+                  {{ fragment_number }} 
+              </mat-option>
+          </mat-select>
+      </mat-form-field>
 
       <hr>
-    </div>
-    
-    <div class="row">
+      <!-- Buttons to submit fragment data -->
+      <button mat-button [disabled]="!fragment_selected" (click)="Request_revise_fragment(this.fragmentForm.value)" *ngIf="this.authService.is_teacher || this.authService.is_student">Revise Fragment</button>
+      <button mat-button [disabled]="!fragmentForm.valid" (click)="Request_create_fragment(this.fragmentForm.value)" *ngIf="this.authService.is_teacher">Create Fragment</button>
+      <button mat-button [disabled]="!fragment_selected" (click)="Request_delete_fragment(this.fragmentForm.value)" *ngIf="this.authService.is_teacher">Delete Fragment</button>
+      <!-- <button mat-button (click)="Reset_form()" *ngIf="this.authService.is_teacher || this.authService.is_student">Clear all fields</button> -->
 
-        <mat-tab-group>
-        
-            <form [formGroup]="fragmentForm">
-              <mat-tab label="Create/Revise Data"><br> 
+      <hr>
 
-                <mat-form-field class="input-form-full-width">
-                  <mat-label>Fragment name</mat-label>
-                  <input matInput type="text" formControlName="fragment_name"> <!--required> -->
-                  <mat-hint>Provide the name of the fragment</mat-hint>                       
-                </mat-form-field>
-              
-                <div class="div-padding-sm"></div>
+      <!-- Data fields -->
+      <mat-tab-group>
+  
+        <form [formGroup]="fragmentForm">
+          <mat-tab label="Create/Revise Data"><br> 
 
-                <mat-form-field class="input-form-full-width">
-                  <mat-label>Author name</mat-label>
-                  <input matInput type="text" formControlName="author">
-                  <mat-hint>Provide the author of the fragment</mat-hint>                       
-                </mat-form-field>
-              
-                <div class="div-padding-sm"></div>
-
-                <mat-form-field class="input-form-full-width">
-                  <mat-label>Title name</mat-label>
-                  <input matInput type="text" formControlName="title">
-                  <mat-hint>Provide the name of the book</mat-hint>                       
-                </mat-form-field>
-
-                <div class="div-padding-sm"></div>
-
-                <mat-form-field class="input-form-full-width">
-                  <mat-label>Editor name</mat-label>
-                  <input matInput type="text" formControlName="editor">
-                  <mat-hint>Provide the name of the editor</mat-hint>                       
-                </mat-form-field>
-
-                <div class="div-padding-sm"></div>
-                <div class="div-padding-sm"></div>
-
-                <mat-form-field appearance="fill">
-                  <mat-select required formControlName="status">
-                    <mat-option value="">Normal</mat-option>
-                    <mat-option value="Incertum">Incertum</mat-option>
-                    <mat-option value="Adesp.">Adespota</mat-option>
-                  </mat-select>
-                  <mat-label>Line status</mat-label>
-                </mat-form-field>
-
-                <div class="div-padding"></div>
-                <!-- <button mat-button type="submit" [disabled]="!fragmentForm.valid">Upload</button> -->
-                <div class="div-padding"></div>              
-
-              </mat-tab>
-
-              <mat-tab label="Create/Revise Lines"><br>
-
-                <form [formGroup]="fragmentForm">
-                  <div formArrayName="lines"
-                    *ngFor="let item of fragmentForm.get('lines')['controls']; let i = index;">
-                    <div [formGroupName]="i">
-
-
-                      <mat-form-field class="input-form">
-                        <mat-label>Fragment name</mat-label>
-                        <input matInput type="text" formControlName="line_number"> <!--required> -->
-                      </mat-form-field>
-
-                      <mat-form-field class="input-form">
-                        <mat-label>Fragment text</mat-label>
-                        <input matInput type="text" formControlName="text" [matKeyboard]="'OSCC'"> <!--required> -->
-                      </mat-form-field>
-
-                      <!-- <input formControlName="line_number" placeholder="Line name"> -->
-                      <!-- <input formControlName="text" placeholder="Line text" [matKeyboard]="'OSCC'">  -->
-                      <button mat-button (click)="removeItem('lines', i)">Delete</button>
-
-                    </div>
-                  </div>
-                  <button type="button" (click)="addItem('line_number', 'text', '','', 'lines')">Add Fragment Line</button>
-                </form>
-
-              </mat-tab>
-
-              <mat-tab label="Create/Revise Content"><br>
-                  <mat-form-field class="input-form-full-width">
-                    <mat-label><b>Fragment translation</b></mat-label>
-                    <textarea matInput type="text" formControlName="translation" id="FT" [matKeyboard]="'OSCC'"></textarea>
-                    <!-- <mat-hint>Provide the revised translation of the selected fragment</mat-hint>  -->
-                  </mat-form-field>
-
-                  <div class="div-padding-sm"></div>
-
-                  <mat-form-field class="input-form-full-width">
-                    <mat-label><b>Fragment apparatus criticus</b></mat-label>
-                    <textarea matInput type="text" formControlName="apparatus" id="FA" [matKeyboard]="'OSCC'"></textarea>
-                    <!-- <mat-hint>Provide the revised apparatus criticus of the selected fragment</mat-hint>                        -->
-                  </mat-form-field>
-
-                  <div class="div-padding-sm"></div>
+            <mat-form-field class="input-form-full-width">
+              <mat-label>Fragment name</mat-label>
+              <input required matInput type="text" formControlName="fragment_name"> <!--required> -->
+              <mat-hint>Provide the name of the fragment</mat-hint>                       
+            </mat-form-field>
           
-                  <mat-form-field class="input-form-full-width">
-                    <mat-label><b>Fragment differences</b></mat-label>
-                    <textarea matInput type="text" formControlName="differences" id="FD" [matKeyboard]="'OSCC'"></textarea>
-                    <!-- <mat-hint>Provide the revised differences of the selected fragment</mat-hint>                        -->
+            <div class="div-padding-sm"></div>
+
+            <mat-form-field class="input-form-full-width">
+              <mat-label>Author name</mat-label>
+              <input required matInput type="text" formControlName="author">
+              <mat-hint>Provide the author of the fragment</mat-hint>                       
+            </mat-form-field>
+          
+            <div class="div-padding-sm"></div>
+
+            <mat-form-field class="input-form-full-width">
+              <mat-label>Title name</mat-label>
+              <input required matInput type="text" formControlName="title">
+              <mat-hint>Provide the name of the book</mat-hint>                       
+            </mat-form-field>
+
+            <div class="div-padding-sm"></div>
+
+            <mat-form-field class="input-form-full-width">
+              <mat-label>Editor name</mat-label>
+              <input required matInput type="text" formControlName="editor">
+              <mat-hint>Provide the name of the editor</mat-hint>                       
+            </mat-form-field>
+
+            <div class="div-padding-sm"></div>
+            <div class="div-padding-sm"></div>
+
+            <mat-form-field appearance="fill">
+              <mat-select required formControlName="status">
+                <mat-option value="Certum">Certum</mat-option>
+                <mat-option value="Incertum">Incertum</mat-option>
+                <mat-option value="Adesp.">Adespota</mat-option>
+              </mat-select>
+              <mat-label>Line status</mat-label>
+            </mat-form-field>
+
+            <div class="div-padding"></div>
+            <!-- <button mat-button type="submit" [disabled]="!fragmentForm.valid">Upload</button> -->
+            <div class="div-padding"></div>              
+
+          </mat-tab>
+
+          <mat-tab label="Create/Revise Lines"><br>
+
+            <form [formGroup]="fragmentForm">
+              <button mat-button (click)="addItem('line_number', 'text', '','', 'lines')">Add New Fragment Line</button>
+              
+              <div class="div-padding-lg"></div>
+
+              <div formArrayName="lines"
+                *ngFor="let item of fragmentForm.get('lines')['controls']; let i = index;">
+                <div [formGroupName]="i">
+
+
+                  <mat-form-field class="input-form-small">
+                    <mat-label>Line name</mat-label>
+                    <input matInput type="text" formControlName="line_number"> <!--required> -->
                   </mat-form-field>
 
-                  <div class="div-padding-sm"></div>
-
-                  <mat-form-field class="input-form-full-width">
-                    <mat-label><b>Fragment commentary</b></mat-label>
-                    <textarea matInput type="text" formControlName="commentary" id="FC" [matKeyboard]="'OSCC'"></textarea>
-                    <!-- <mat-hint>Provide the revised commentary of the selected fragment</mat-hint>                        -->
+                  <mat-form-field class="input-form-half">
+                    <mat-label>Line text</mat-label>
+                    <input matInput type="text" formControlName="text" [matKeyboard]="'OSCC'"> <!--required> -->
                   </mat-form-field>
-                  
-                  <div class="div-padding-sm"></div>
 
-                  <mat-form-field class="input-form-full-width">
-                    <mat-label><b>Fragment reconstruction</b></mat-label>
-                    <textarea matInput type="text" formControlName="reconstruction" id="FR" [matKeyboard]="'OSCC'"></textarea>
-                    <!-- <mat-hint>Provide the revised reconstruction of the selected fragment</mat-hint>                        -->
-                  </mat-form-field> 
+                  <!-- <input formControlName="line_number" placeholder="Line name"> -->
+                  <!-- <input formControlName="text" placeholder="Line text" [matKeyboard]="'OSCC'">  -->
+                  <button mat-button (click)="removeItem('lines', i)">Delete this line</button>
 
-                </mat-tab>
+                </div>
+              </div>
+            </form>
 
-                <mat-tab label="Create/Revise Context"><br>
+          </mat-tab>
 
-                  <form [formGroup]="fragmentForm">
-                    <div formArrayName="context"
-                      *ngFor="let item of fragmentForm.get('context')['controls']; let i = index;">
-                      <div [formGroupName]="i">
-                        <input formControlName="author" placeholder="Context author name">
-                        <input formControlName="location" placeholder="Context location">
-                        <input formControlName="text" placeholder="Context text" [matKeyboard]="'OSCC'">
-                        <button (click)="removeItem('context', i)">X</button>
-                      </div>
-                      <!-- Exposed item name: {{ fragmentForm.controls.context.controls[i].controls.name.value }} -->
-                    </div>
-                    <button type="button" (click)="addItem2('','', '')">Add Fragment Context</button>
-                  </form>
+          <mat-tab label="Create/Revise Content"><br>
+              <mat-form-field class="input-form-full-width">
+                <mat-label><b>Fragment translation</b></mat-label>
+                <textarea matInput type="text" formControlName="translation" id="FT" [matKeyboard]="'OSCC'"></textarea>
+                <!-- <mat-hint>Provide the revised translation of the selected fragment</mat-hint>  -->
+              </mat-form-field>
 
-                </mat-tab>
-            </form>                        
+              <div class="div-padding-sm"></div>
 
-        </mat-tab-group>
-        
+              <mat-form-field class="input-form-full-width">
+                <mat-label><b>Fragment apparatus criticus</b></mat-label>
+                <textarea matInput type="text" formControlName="apparatus" id="FA" [matKeyboard]="'OSCC'"></textarea>
+                <!-- <mat-hint>Provide the revised apparatus criticus of the selected fragment</mat-hint>                        -->
+              </mat-form-field>
 
-    </div>
+              <div class="div-padding-sm"></div>
+      
+              <mat-form-field class="input-form-full-width">
+                <mat-label><b>Fragment differences</b></mat-label>
+                <textarea matInput type="text" formControlName="differences" id="FD" [matKeyboard]="'OSCC'"></textarea>
+                <!-- <mat-hint>Provide the revised differences of the selected fragment</mat-hint>                        -->
+              </mat-form-field>
+
+              <div class="div-padding-sm"></div>
+
+              <mat-form-field class="input-form-full-width">
+                <mat-label><b>Fragment commentary</b></mat-label>
+                <textarea matInput type="text" formControlName="commentary" id="FC" [matKeyboard]="'OSCC'"></textarea>
+                <!-- <mat-hint>Provide the revised commentary of the selected fragment</mat-hint>                        -->
+              </mat-form-field>
+              
+              <div class="div-padding-sm"></div>
+
+              <mat-form-field class="input-form-full-width">
+                <mat-label><b>Fragment reconstruction</b></mat-label>
+                <textarea matInput type="text" formControlName="reconstruction" id="FR" [matKeyboard]="'OSCC'"></textarea>
+                <!-- <mat-hint>Provide the revised reconstruction of the selected fragment</mat-hint>                        -->
+              </mat-form-field> 
+
+            </mat-tab>
+
+            <mat-tab label="Create/Revise Context"><br>
+
+              <form [formGroup]="fragmentForm">
+
+
+                <button mat-button (click)="addItem2('','', '')">Add Fragment Context</button>
+
+                <div class="div-padding-lg"></div>
+
+                <div formArrayName="context"
+                  *ngFor="let item of fragmentForm.get('context')['controls']; let i = index;">
+                  <div [formGroupName]="i">
+
+                    <mat-form-field class="input-form-small">
+                      <mat-label>Context author name</mat-label>
+                      <input matInput type="text" formControlName="author"> <!--required> -->
+                    </mat-form-field>
+  
+                    <mat-form-field class="input-form-small">
+                      <mat-label>Context location</mat-label>
+                      <input matInput type="text" formControlName="location" [matKeyboard]="'OSCC'"> <!--required> -->
+                    </mat-form-field>
+
+                    <mat-form-field class="input-form-half">
+                      <mat-label>Context text</mat-label>
+                      <input matInput type="text" formControlName="text" [matKeyboard]="'OSCC'"> <!--required> -->
+                    </mat-form-field>
+
+                    <!-- <input formControlName="author" placeholder="Context author name">
+                    <input formControlName="location" placeholder="Context location">
+                    <input formControlName="text" placeholder="Context text" [matKeyboard]="'OSCC'"> -->
+                    <!-- <button mat-button (click)="removeItem('lines', i)">Delete this line</button> -->
+                    <button mat-button (click)="removeItem('context', i)">Delete this context</button>
+                  </div>
+                  <!-- Exposed item name: {{ fragmentForm.controls.context.controls[i].controls.name.value }} -->
+                </div>
+              </form>
+
+            </mat-tab>
+        </form>                        
+
+    </mat-tab-group>
+
+
+    </mat-expansion-panel>
+
+    <hr>
+
+    <!-- Change password panel -->
+    <mat-expansion-panel *ngIf="this.authService.is_logged_in">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Change user password
+        </mat-panel-title>
+        <mat-panel-description>
+          Allows you to change your password.
+          <mat-icon>password</mat-icon>
+        </mat-panel-description>
+      </mat-expansion-panel-header>          
+    
+      <form [formGroup]="change_password_form" (ngSubmit)="Request_change_password(change_password_form.value)">
+        <mat-form-field class="input-form-half" appearance="fill">
+          <mat-label>Enter your password</mat-label>
+          <input matInput required [type]="hide ? 'password' : 'text'" formControlName="password1">
+          <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+          <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <mat-form-field class="input-form-half" appearance="fill">
+          <mat-label>Enter your password again</mat-label>
+          <input matInput required [type]="hide ? 'password' : 'text'" formControlName="password2">
+          <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+          <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <div class="div-padding-sm"></div>
+
+        <button mat-button type="submit" [disabled]="!change_password_form.valid">Change password</button>
+      </form>
+
+
+    </mat-expansion-panel>
+
+    <!-- User data panel -->
+    <mat-expansion-panel *ngIf="this.authService.is_teacher" (click)="this.Request_users()">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Change user data
+        </mat-panel-title>
+        <mat-panel-description>
+          Create and delete users, change roles.
+          <mat-icon>manage_accounts</mat-icon>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+  
+      <mat-form-field>
+        <mat-label>Select user</mat-label>
+        <mat-select>
+            <mat-option *ngFor="let user of this.retrieved_users" [value]="user"
+              (click)="this.selected_user = user">
+                {{ user.username }} 
+            </mat-option>
+        </mat-select>  
+      </mat-form-field> 
+
+      <mat-form-field appearance="fill">
+        <mat-select required [(ngModel)]="this.selected_user.role"> <!-- This can be done better using an object typescript-->
+          <mat-option value="guest" (click)="Request_change_role(this.selected_user.username, this.selected_user.role)">Guest</mat-option>
+          <mat-option value="student" (click)="Request_change_role(this.selected_user.username, this.selected_user.role)">Student</mat-option>
+          <mat-option value="teacher" (click)="Request_change_role(this.selected_user.username, this.selected_user.role)">Teacher</mat-option>
+        </mat-select>
+        <mat-label>User role</mat-label>
+      </mat-form-field>
+      
+      <button mat-button (click)="Request_delete_user(this.selected_user.username)">Delete user</button>
+
+      <hr>
+
+      <mat-form-field class="input-form">
+        <mat-label>New user</mat-label>
+        <input matInput type="text" [(ngModel)]="this.new_user">
+        <mat-hint>Provide the name of the new user</mat-hint>                       
+      </mat-form-field>
+
+      <button mat-button (click)="Request_create_user(this.new_user); this.new_user = ''">Create user</button>
+  
+    </mat-expansion-panel>
+  </mat-accordion>
+
+
+
+
 </div>
+
+
+
+

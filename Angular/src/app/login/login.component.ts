@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit {
     // Process checkout data here
     console.log('Your login information', this.login_form.value);
     this.api.Login_user(this.login_form.value).subscribe(
-      res => this.authService.Login_user(res), err => this.utility.HandleErrorMessage(err)
+      res => this.authService.Login_user(res, this.login_form.value.username), err => this.utility.HandleErrorMessage(err)
     );
   }
 

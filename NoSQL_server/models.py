@@ -129,5 +129,5 @@ fragment_empty = {
 user_empty = {
     "username": "",
     "password": "",
-    "role": "",
+    "role": "guest",
 }

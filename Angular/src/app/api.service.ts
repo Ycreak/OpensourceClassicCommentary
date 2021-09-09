@@ -173,6 +173,10 @@ export class ApiService {
     return this.http.get<Reconstruction[]>(this.FlaskURL + `freconstruction?fragment_id=${fragment_id}`);
   }
 
+  Get_users(): Observable<any> {
+    return this.http.get<any>(this.FlaskURL + `retrieve_users`);
+  }
+
   /**
   * ... ... ...
   * @param bookID
@@ -209,6 +213,18 @@ export class ApiService {
   Login_user(login: object): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `login_user`, login, { observe: 'response', responseType: 'text' as 'json'  });
   }
+  Create_user(data: object): Observable<any> {
+    return this.http.post<any>(this.FlaskURL + `create_user`, data, { observe: 'response', responseType: 'text' as 'json'  });
+  }
+  Delete_user(data: object): Observable<any> {
+    return this.http.post<any>(this.FlaskURL + `delete_user`, data, { observe: 'response', responseType: 'text' as 'json'  });
+  }
+  User_change_password(data: object): Observable<any> {
+    return this.http.post<any>(this.FlaskURL + `change_password`, data, { observe: 'response', responseType: 'text' as 'json'  });
+  }
+  User_change_role(data: object): Observable<any> {
+    return this.http.post<any>(this.FlaskURL + `change_role`, data, { observe: 'response', responseType: 'text' as 'json'  });
+  }  
 
    /**
    * ... ... ...

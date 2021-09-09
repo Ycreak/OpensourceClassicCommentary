@@ -8,6 +8,18 @@
   /* width: 100%; */
 }
 
+.input-form-small {
+  min-width: 20%;
+  max-width: 20%;
+  /* width: 100%; */
+}
+
+.input-form-half {
+  min-width: 40%;
+  max-width: 100%;
+  // width: auto;
+}
+
 .input-form-full-width { 
   width: 90%; // I like the irony
 }
@@ -60,3 +72,53 @@
   // .example-margin {
   //   margin: 0 10px;
   // }
+
+  .example-action-buttons {
+    padding-bottom: 20px;
+  }
+  
+  .example-headers-align .mat-expansion-panel-header-title,
+  .example-headers-align .mat-expansion-panel-header-description {
+    flex-basis: 0;
+  }
+  
+  .example-headers-align .mat-expansion-panel-header-description {
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .example-headers-align .mat-form-field + .mat-form-field {
+    margin-left: 8px;
+  }
+
+  section {
+    display: table;
+  }
+  
+  .example-label {
+    display: table-cell;
+    font-size: 14px;
+    margin-left: 8px;
+    min-width: 120px;
+  }
+  
+  .example-button-row {
+    display: table-cell;
+    width: 490px;
+  }
+  
+  .example-button-row .mat-button-base {
+    margin: 8px 8px 8px 0;
+  }
+  
+  .example-flex-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  
+  .example-button-container {
+    display: flex;
+    justify-content: center;
+    width: 120px;
+  }

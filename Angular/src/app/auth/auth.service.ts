@@ -4,23 +4,26 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class AuthService {
-  isLoggedIn = true;
-  isStudent = false;
-  isTeacher = true;
+  is_logged_in = true;
+  is_student = false;
+  is_teacher = true;
   isGuest = false;
   redirectUrl: string;
 
-  public Login_user(res){
+  logged_user = 'Antje'
+
+  public Login_user(res, username){
     // Getting here means the server approved login
-    this.isLoggedIn = true;
+    this.is_logged_in = true;
+    this.logged_user = username;
     // Now set the role the server returns to us
     switch(res.body) { 
       case 'teacher': { 
-        this.isTeacher = true; 
+        this.is_teacher = true; 
         break; 
       } 
       case 'student': { 
-        this.isStudent = true; 
+        this.is_student = true; 
         break; 
       } 
       default: { 
