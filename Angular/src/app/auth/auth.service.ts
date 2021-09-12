@@ -10,7 +10,8 @@ export class AuthService {
   isGuest = false;
   redirectUrl: string;
 
-  logged_user = 'Antje'
+  logged_user = 'Antje';
+  magic_phrase : string = 'StackCanary';
 
   public Login_user(res, username){
     // Getting here means the server approved login

@@ -264,6 +264,7 @@ export class UtilityService {
    */
   public OpenSnackbar(message){
     this.snackBar.open(message, 'Close', {
+      duration: 5000
     });
   }
 
