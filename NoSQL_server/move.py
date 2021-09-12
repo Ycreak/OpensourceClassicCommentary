@@ -11,41 +11,61 @@ db = couch['fragments'] # existing
 
 # print(new_fragment)
 
-for id in db:
-
-    doc = db[id]
-
-    print(doc['status'])
-
-    if doc['status'] == '':
-        doc['status'] = 'Certum'
-
-    doc_id, doc_rev = db.save(doc)
 
 
-    # new_fragment = {}
-    # new_fragment = fragment_empty[:]
 
+def Change_field_fragments(field, replacement):
+    for id in db:
 
-# CODE TO MIGRATE FRAGMENTS
-    # new_fragment = copy.deepcopy(fragment_empty)
+        doc = db[id]
 
-    # new_fragment['fragment_name'] = item['fragmentName']
-    # new_fragment['author'] = item['author']
-    # new_fragment['editor'] = item['editor']
-    # new_fragment['title'] = item['text']
-    # new_fragment['status'] = item['status']
+        print(doc[field])
 
-    # for line in item['content']:
-    #     # print(line)
-    #     new_line = {'line_number': line['lineName'], 'text': line['lineContent']}
-    #     new_fragment['lines'].append(new_line)
+        if doc[field] == '':
+            doc[field] = replacement
 
-    # new_fragment['_id'] = uuid4().hex
+        doc_id, doc_rev = db.save(doc)
 
-    # doc_id, doc_rev = db.save(new_fragment)
-    # print('############')
-    # print(new_fragment)
+def Print_all_documents():
+    for id in db:
+        doc = db[id]
+        print(doc)    
 
-    # exit(0)
+def Add_field_to_fragments(field, data):
+    for id in db:
 
+        doc = db[id]
+
+        doc[field] = 0
+
+        doc_id, doc_rev = db.save(doc)
+
+        print(doc)
+
+def Migrate_fragments(item):
+    new_fragment = copy.deepcopy(fragment_empty)
+
+    new_fragment['fragment_name'] = item['fragmentName']
+    new_fragment['author'] = item['author']
+    new_fragment['editor'] = item['editor']
+    new_fragment['title'] = item['text']
+    new_fragment['status'] = item['status']
+
+    for line in item['content']:
+        # print(line)
+        new_line = {'line_number': line['lineName'], 'text': line['lineContent']}
+        new_fragment['lines'].append(new_line)
+
+    new_fragment['_id'] = uuid4().hex
+
+    doc_id, doc_rev = db.save(new_fragment)
+    print('############')
+    print(new_fragment)
+
+    exit(0)
+
+########
+# MAIN #
+########
+# Add_field_to_fragments('lock', 0)
+Print_all_documents()

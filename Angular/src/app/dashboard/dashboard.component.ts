@@ -75,6 +75,7 @@ export class DashboardComponent implements OnInit {
   selected_user : string = '';
   user_selected : boolean = false; // controls user deletion button
   new_user : string = '';
+  new_user_password : string = '';
 
   // Whether a fragment is selected
   fragment_selected : boolean = false;
@@ -109,6 +110,7 @@ export class DashboardComponent implements OnInit {
       lines: this.formBuilder.array([ ]),
       linked_fragments: '',
       status: '',
+      lock: 0,
     });
   }
 
@@ -117,7 +119,9 @@ export class DashboardComponent implements OnInit {
    * @param thing item to be printed
    */
   public Test(){
-    console.log('test', this.selected_author)
+    console.log('test')
+    
+    this.utility.OpenSnackbar('The text we are about to display may be too long to propely show on the screen and that is sad.')
   }
 
   public Retrieve_fragment_numbers(fragments){    
@@ -175,7 +179,8 @@ export class DashboardComponent implements OnInit {
     this.UpdateForm('fragmentForm','reconstruction', fragment.reconstruction);
     this.UpdateForm('fragmentForm','linked_fragments', fragment.linked_fragments);
     this.UpdateForm('fragmentForm','status', fragment.status);
-  
+    this.UpdateForm('fragmentForm','lock', fragment.lock);
+
     for (let item in fragment.context){
       this.addItem2(fragment.context[item].author, fragment.context[item].location, fragment.context[item].text)
     }
@@ -282,16 +287,22 @@ export class DashboardComponent implements OnInit {
   }
 
   public Request_revise_fragment(fragment){
-    let item_string = fragment.author + ', ' +  fragment.title + ', ' + fragment.editor + ': ' + fragment.fragment_name
+    // If the fragment is locked and the user is not a teacher, we will not allow this operation.
+    if(fragment.lock && !this.authService.is_teacher){
+      this.utility.OpenSnackbar('This fragment is locked.')
+    }
+    else{
+      let item_string = fragment.author + ', ' +  fragment.title + ', ' + fragment.editor + ': ' + fragment.fragment_name
 
-    this.dialog.OpenConfirmationDialog('Are you sure you want to REVISE this fragment?', item_string).subscribe(result => {
-      if(result){
-        this.api.Revise_fragment(fragment).subscribe(
-          res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
-        );
-      }
-    });
-    this.Reset_form();
+      this.dialog.OpenConfirmationDialog('Are you sure you want to REVISE this fragment?', item_string).subscribe(result => {
+        if(result){
+          this.api.Revise_fragment(fragment).subscribe(
+            res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
+          );
+        }
+      });
+      this.Reset_form();
+    }
   }
 
   public Request_create_fragment(fragment){
@@ -347,15 +358,15 @@ export class DashboardComponent implements OnInit {
     );      
   }
 
-  public Request_create_user(new_user){
+  public Request_create_user(new_user, new_password){
 
-    if(new_user == ''){
-      this.utility.OpenSnackbar('Please provide a username');
+    if(new_user == '' || new_password == ''){
+      this.utility.OpenSnackbar('Please provide proper details');
     }
     else{
       this.dialog.OpenConfirmationDialog('Are you sure you want to CREATE this user?', new_user).subscribe(result => {
         if(result){
-          this.api.Create_user({'username':new_user,'password':'hello'}).subscribe(
+          this.api.Create_user({'username':new_user,'password':new_password}).subscribe(
             res => {
               this.utility.HandleErrorMessage(res),
               this.Request_users();

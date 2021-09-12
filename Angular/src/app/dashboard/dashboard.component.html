@@ -96,10 +96,12 @@
 
       <hr>
       <!-- Buttons to submit fragment data -->
-      <button mat-stroked-button color="primary" [disabled]="!fragment_selected" (click)="Request_revise_fragment(this.fragmentForm.value)" *ngIf="this.authService.is_teacher || this.authService.is_student">Revise Fragment</button>
-      <button mat-stroked-button color="primary" [disabled]="!fragmentForm.valid" (click)="Request_create_fragment(this.fragmentForm.value)" *ngIf="this.authService.is_teacher">Create Fragment</button>
-      <button mat-stroked-button color="warn" [disabled]="!fragment_selected" (click)="Request_delete_fragment(this.fragmentForm.value)" *ngIf="this.authService.is_teacher">Delete Fragment</button>
-      <!-- <button mat-button (click)="Reset_form()" *ngIf="this.authService.is_teacher || this.authService.is_student">Clear all fields</button> -->
+      <button mat-stroked-button color="primary" [disabled]="!fragment_selected" (click)="Request_revise_fragment(this.fragmentForm.value)" 
+        *ngIf="this.authService.is_teacher || this.authService.is_student">Revise Fragment</button>
+      <button mat-stroked-button color="primary" [disabled]="!fragmentForm.valid" (click)="Request_create_fragment(this.fragmentForm.value)" 
+          *ngIf="this.authService.is_teacher">Create Fragment</button>
+      <button mat-stroked-button color="warn" [disabled]="!fragment_selected" (click)="Request_delete_fragment(this.fragmentForm.value)" 
+          *ngIf="this.authService.is_teacher">Delete Fragment</button>
 
       <hr>
 
@@ -272,9 +274,10 @@
 
             <mat-tab label="Fragment Access"><br>
 
-              <mat-checkbox class="padding-left" [(ngModel)]="is_locked">Click to lock the fragment</mat-checkbox>
+              placeholder
+              <!-- <mat-checkbox class="padding-left" [(ngModel)]="is_locked">Click to lock the fragment</mat-checkbox>
               <div class="div-padding-lg"></div>
-              <mat-checkbox class="padding-left" [(ngModel)]="is_published">Click to publish the fragment</mat-checkbox>
+              <mat-checkbox class="padding-left" [(ngModel)]="is_published">Click to publish the fragment</mat-checkbox> -->
 
             </mat-tab>
 
@@ -367,9 +370,19 @@
         <input matInput type="text" [(ngModel)]="this.new_user">
         <mat-hint>Provide the name of the new user</mat-hint>                       
       </mat-form-field>
+
+      <mat-form-field class="input-form-half" appearance="fill">
+        <mat-label>Enter their new password</mat-label>
+        <input matInput required [type]="hide ? 'password' : 'text'" [(ngModel)]="this.new_user_password">
+        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+        <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+      </mat-form-field>
+
+
       <br>
       <div class="div-padding-lg"></div>
-      <button mat-stroked-button color='primary' (click)="Request_create_user(this.new_user); this.new_user = ''">Create user</button>
+      <button mat-stroked-button color='primary' (click)="Request_create_user(this.new_user, this.new_user_password); this.new_user = ''; this.new_user_password = ''">Create user</button>
   
     </mat-expansion-panel>
   </mat-accordion>
