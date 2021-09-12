@@ -20,7 +20,7 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
     constructor(
         private firestore: AngularFirestore,
       ){
-        console.log("Constructor called"); //FIXME: why is this not called upon class creation?
+        // console.log("Constructor called"); //FIXME: why is this not called upon class creation? (it is now)
       }
   
     // Array initialisations for the four used columns.
