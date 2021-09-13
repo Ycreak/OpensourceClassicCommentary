@@ -14,7 +14,7 @@
     
     <button mat-button class="btn" (click)="this.RequestAuthors()">RELOAD AUTHORS</button>
 
-    <button mat-button class="btn" (click)="Test()">TEST</button>
+    <button mat-button class="btn" (click)="Test('Navbar')">TEST</button>
     <button mat-button class="btn" routerLink="/fragments">FRAGMENTS</button>
     <!-- <button mat-button class="btn" (click)="RequestAuthors()">RELOAD AUTHORS</button> -->
 </mat-toolbar>
@@ -25,7 +25,7 @@
 <div class="container-fluid">
   <mat-accordion class="example-headers-align" multi>
     <!-- Change fragment expansion panel -->
-    <mat-expansion-panel *ngIf="this.authService.is_logged_in" [expanded]="true" (click)="this.RequestAuthors()">
+    <mat-expansion-panel *ngIf="this.authService.is_logged_in" [expanded]="true">
       <mat-expansion-panel-header>
         <mat-panel-title>
           Change fragment data
@@ -330,7 +330,7 @@
     </mat-expansion-panel>
 
     <!-- User data panel -->
-    <mat-expansion-panel *ngIf="this.authService.is_teacher" (click)="this.Request_users()">
+    <mat-expansion-panel *ngIf="this.authService.is_teacher" (opened)="this.Request_users()">
       <mat-expansion-panel-header>
         <mat-panel-title>
           Change user data

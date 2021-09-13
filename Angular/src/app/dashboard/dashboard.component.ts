@@ -118,10 +118,8 @@ export class DashboardComponent implements OnInit {
    * Simple test function, can be used for whatever
    * @param thing item to be printed
    */
-  public Test(){
-    console.log('test')
-    
-    this.utility.OpenSnackbar('The text we are about to display may be too long to propely show on the screen and that is sad.')
+  public Test(thing){
+    console.log(thing)
   }
 
   public Retrieve_fragment_numbers(fragments){    
