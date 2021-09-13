@@ -99,7 +99,7 @@
       <button mat-stroked-button color="primary" [disabled]="!fragment_selected" (click)="Request_revise_fragment(this.fragmentForm.value)" 
         *ngIf="this.authService.is_teacher || this.authService.is_student">Revise Fragment</button>
       <button mat-stroked-button color="primary" [disabled]="!fragmentForm.valid" (click)="Request_create_fragment(this.fragmentForm.value)" 
-          *ngIf="this.authService.is_teacher">Create Fragment</button>
+          *ngIf="this.authService.is_teacher || this.authService.is_student">Create Fragment</button>
       <button mat-stroked-button color="warn" [disabled]="!fragment_selected" (click)="Request_delete_fragment(this.fragmentForm.value)" 
           *ngIf="this.authService.is_teacher">Delete Fragment</button>
 
@@ -272,9 +272,9 @@
 
             </mat-tab>
 
-            <mat-tab label="Fragment Access"><br>
+            <mat-tab label="Fragment Access" *ngIf="this.authService.is_teacher"><br>
 
-              <mat-checkbox class="padding-left" formControlName="lock">Click to lock the fragment</mat-checkbox>
+              <mat-checkbox class="padding-left" formControlName="lock">If ticked, the fragment is locked</mat-checkbox>
               <div class="div-padding-lg"></div>
               <!-- <mat-checkbox class="padding-left" [(ngModel)]="is_published">Click to publish the fragment</mat-checkbox> -->
               <button mat-stroked-button color="primary" (click)="Request_fragment_lock(this.fragmentForm.value)">Update lock</button>
