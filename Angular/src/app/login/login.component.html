@@ -3,13 +3,12 @@
 
 <div class="div-padding-sm"></div>
 
-<div class="center" *ngIf="this.authService.is_logged_in">Welcome! You are logged in!</div>
-<div class="center" *ngIf="this.authService.is_logged_in">Click anywhere outside this dialog to begin.</div>
+<div class="alert alert-primary center" role="alert" *ngIf="this.authService.is_logged_in">Welcome! You are logged in! <br> Click anywhere outside this dialog to begin.</div>
 
 <div class="div-padding-lg"></div>
 
 <mat-accordion class="example-headers-align" multi>
-  <mat-expansion-panel [expanded]="true">
+  <mat-expansion-panel [expanded]="login_expanded">
     <mat-expansion-panel-header>
       <mat-panel-title>
         Login
@@ -33,9 +32,9 @@
       <mat-form-field appearance="fill">
         <mat-label>Enter your password</mat-label>
         <input matInput required [type]="hide ? 'password' : 'text'" formControlName="password">
-        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+        <!-- <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
         <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-        </button>
+        </button> -->
       </mat-form-field>
     
       <div class="div-padding-sm"></div>
@@ -46,7 +45,7 @@
 
   </mat-expansion-panel>
 
-  <mat-expansion-panel [expanded]="true">
+  <mat-expansion-panel [expanded]="create_expanded">
     <mat-expansion-panel-header>
       <mat-panel-title>
         Create
@@ -98,9 +97,3 @@
 
   </mat-expansion-panel>
 </mat-accordion>
-
-
-
-
-<!-- <ng-template #elseBlock>Please enter the password.</ng-template> -->
-<!--  -->

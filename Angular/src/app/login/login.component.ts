@@ -17,7 +17,8 @@ export class LoginComponent implements OnInit {
 
   // Password hiding in dialog
   hide = true;
-  toggle : boolean = true; // to toggle create and login
+  login_expanded : boolean = true; // to toggle create and login
+  create_expanded : boolean = false;
 
   // Login form
   login_form = this.formBuilder.group({
@@ -49,7 +50,11 @@ export class LoginComponent implements OnInit {
   public submit_login(form): void {
     // Process checkout data here
     this.api.Login_user(form).subscribe(
-      res => this.authService.Login_user(res, form.username), err => this.utility.HandleErrorMessage(err)
+      res => {
+        this.authService.Login_user(res, form.username)
+        this.login_expanded = false;
+        this.create_expanded = false;
+      }, err => this.utility.HandleErrorMessage(err)
     );
   }
 
@@ -71,7 +76,11 @@ export class LoginComponent implements OnInit {
       this.dialog.OpenConfirmationDialog('Are you sure you want to CREATE this user?', form.username).subscribe(result => {
         if(result){
           this.api.Create_user({'username':form.username,'password':form.password1}).subscribe(
-            res => this.utility.HandleErrorMessage(res),
+            res => {
+              this.utility.HandleErrorMessage(res),
+              this.login_expanded = false;
+              this.create_expanded = false;
+            },
             err => this.utility.HandleErrorMessage(err)
           );
         }

@@ -4,13 +4,13 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class AuthService {
-  is_logged_in = true;
+  is_logged_in = false;
   is_student = false;
-  is_teacher = true;
+  is_teacher = false;
   isGuest = false;
   redirectUrl: string;
 
-  logged_user = '';
+  logged_user : string;
   magic_phrase : string = 'StackCanary';
 
   public Login_user(res, username){
