@@ -32,12 +32,12 @@ export class FragmentsComponent implements OnInit {
   @ViewChild('CallAbout') CallAbout: TemplateRef<any>;
 
   // Toggle switches for the HTML columns/modes
-  toggle_column_one: boolean = true;
+  toggle_column_one: boolean = false;
   toggle_column_two: boolean = false;
   toggle_column_three: boolean = false;
   toggle_column_four: boolean = false;
-  toggle_commentary: boolean = true;
-  toggle_playground: boolean = false;
+  toggle_commentary: boolean = false;
+  toggle_playground: boolean = true;
   toggle_multiplayer: boolean = false;
   // Booleans for HTML related items
   spinner: boolean = false; // Boolean to toggle the spinner.

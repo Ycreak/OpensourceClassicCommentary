@@ -53,8 +53,8 @@
 </ng-template>
 
 <!-- Show a spinner if query with database is in progress -->
-<mat-progress-bar mode="query" *ngIf="this.spinner"></mat-progress-bar>
-<br>
+<!-- <mat-progress-bar mode="query" *ngIf="this.spinner"></mat-progress-bar>
+<br> -->
 
 <!-- Container for the page. One row per item (commentary, playground, multiplayer, etc.) -->
 <div class="container-fluid">
@@ -321,47 +321,49 @@
     
 
     <!-- Row to show the playground -->
+    <hr>
+    <div class="div-padding-lg"></div>
     <div class="container-fluid" *ngIf="toggle_playground">
         <!-- <b>Currently selected: {{this.column_data.playground}}, {{this.current_book}}, {{this.current_editor}}.</b> -->
                 
         <div class="row">
             <!-- Possiblity to select an editor to begin with -->
             <ng-container 
-                *ngTemplateOutlet="select_author;context:{column: 'playground'}">
+                *ngTemplateOutlet="select_author;context:{column: 'playground', hint:'For your base edition'}">
             </ng-container>
             <ng-container 
-                *ngTemplateOutlet="select_title;context:{column: 'playground'}">
+                *ngTemplateOutlet="select_title;context:{column: 'playground', hint:'For your base edition'}">
             </ng-container>               
             <ng-container 
-                *ngTemplateOutlet="select_editor;context:{column: 'playground'}">
+                *ngTemplateOutlet="select_editor;context:{column: 'playground', hint:'For your base edition'}">
             </ng-container>
 
             <ng-container 
-                *ngTemplateOutlet="select_author;context:{column: 'playground2'}">
+                *ngTemplateOutlet="select_author;context:{column: 'playground2', hint:'To add a single fragment'}">
             </ng-container>
             <ng-container 
-                *ngTemplateOutlet="select_title;context:{column: 'playground2'}">
+                *ngTemplateOutlet="select_title;context:{column: 'playground2', hint:'To add a single fragment'}">
             </ng-container>    
             <ng-container 
-                *ngTemplateOutlet="select_editor;context:{column: 'playground2'}">
+                *ngTemplateOutlet="select_editor;context:{column: 'playground2', hint:'To add a single fragment'}">
             </ng-container>   
 
             <!-- Possibility to select a fragment from given editor -->
             <mat-form-field class="select-form">
-                <mat-label>Fragment</mat-label>
+                <mat-label>Select fragment</mat-label>
                 <mat-select [(ngModel)]="fragment_number">
                     <mat-option *ngFor="let fragment_number of this.retrieved_fragment_numbers" [value]="fragment_number"
                         (click)="this.playground.add_fragment_array = this.playground.AddFragmentToArray(this.playground.add_fragment_array, fragment_number, this.column_data.playground2.fragments)">
                         {{ fragment_number }} 
                     </mat-option>
                 </mat-select>
-                <mat-hint>Select a fragment</mat-hint>
+                <mat-hint>To add a single fragment</mat-hint>
             </mat-form-field>  <!-- TODO: allow targeted deletion from this.playground.add_fragment_array -->
 
             <!-- Possibility to add a little note -->
             <div mat-dialog-content>
                 <mat-form-field class="input-form">
-                    <input matInput placeholder="Add fragment" [(ngModel)]='note'>
+                    <input matInput placeholder="Add a note" [(ngModel)]='note'>
                     <button type="button" mat-icon-button matSuffix (click)="this.playground.noteArray = this.utility.PopArray(this.playground.noteArray)">
                         <mat-icon>{{'remove'}}</mat-icon>
                     </button>
@@ -369,15 +371,20 @@
                     <button type="button" mat-icon-button matSuffix (click)="this.playground.noteArray = this.utility.PushToArray(note, this.playground.noteArray)">
                         <mat-icon>{{'add'}}</mat-icon>
                     </button>
-                    <mat-hint>Add a note</mat-hint>
+                    <mat-hint>To organise your edition</mat-hint>
                 </mat-form-field>               
             </div>  
         </div>
 
         <hr>
         <!-- For loop to print all the base selected fragments -->
-        <div class="row">
-            <div *ngFor="let fragment of this.column_data.playground.fragments" class="playground" cdkDrag>
+        <!-- <div class="row"> -->
+
+            <div *ngFor="let note of this.playground.noteArray" class="note zlayer3" cdkDrag>
+                {{note}}
+            </div>
+
+            <div *ngFor="let fragment of this.column_data.playground.fragments" class="playground zlayer2" cdkDrag>
                 
                 <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
                 
@@ -385,24 +392,23 @@
                     <div [innerHTML]="line.line_complete"></div>
                 </div> 
             </div>
-        </div>
+        <!-- </div> -->
 
         <!-- <hr> -->
         <!-- For loop to print the added fragments -->
-        <div class="row">
-            <div *ngFor="let fragment of this.playground.add_fragment_array" class="playground" cdkDrag>
-                <b>(Added) Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
+        <!-- <div class="row"> -->
+            <div *ngFor="let fragment of this.playground.add_fragment_array" class="playground zlayer2" cdkDrag>
+                <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
                 <div *ngFor="let line of fragment.lines">           
                     <div [innerHTML]="line.line_complete"></div>
                 </div> 
             </div>
-        </div>
+        <!-- </div> -->
         
         <!-- <hr> -->
         <!-- For loop to print the notes -->
-        <div *ngFor="let note of this.playground.noteArray" class="note" cdkDrag>
-            {{note}}
-        </div>
+
+        <!-- </div> -->
         <!-- <hr> -->
     </div> <!-- Closes the row -->
 
@@ -615,7 +621,7 @@
     </div> 
 </div>
 
-<ng-template #select_author let-chosen_column="column">  
+<ng-template #select_author let-chosen_column="column" let-hint="hint">  
     <mat-form-field>
         <mat-label>Select author</mat-label>
         <mat-select>
@@ -623,11 +629,12 @@
                 (click)="this.Handle_author_selection(chosen_column, author.name)">
                 {{ author.name }} 
             </mat-option>
-        </mat-select>  
+        </mat-select>
+        <mat-hint>{{hint}}</mat-hint>
     </mat-form-field> 
 </ng-template>
 
-<ng-template #select_title let-chosen_column="column">   
+<ng-template #select_title let-chosen_column="column" let-hint="hint">   
     <mat-form-field>
         <mat-label>Select text</mat-label>
         <mat-select>
@@ -636,10 +643,11 @@
                 {{ book.name }}                
             </mat-option>
         </mat-select>
+        <mat-hint>{{hint}}</mat-hint>
     </mat-form-field>
 </ng-template>
 
-<ng-template #select_editor let-chosen_column="column">   
+<ng-template #select_editor let-chosen_column="column" let-hint="hint">   
     <mat-form-field>
         <mat-label>Select edition</mat-label>
         <mat-select>
@@ -648,11 +656,11 @@
                 {{ editor.name }}                     
             </mat-option>
         </mat-select>
-        <!-- <mat-hint>Select an edition</mat-hint> -->
+        <mat-hint>{{hint}}</mat-hint>
     </mat-form-field>
 </ng-template>
 
-<ng-template #select_fragment let-chosen_column="column">   
+<ng-template #select_fragment let-chosen_column="column" let-hint="hint">   
     <mat-form-field>
         <mat-label>Fragment</mat-label>
         <mat-select>
@@ -661,7 +669,7 @@
                 {{ fragment_number }} 
             </mat-option>
         </mat-select>
-        <!-- <mat-hint>Select a fragment</mat-hint> -->
+        <mat-hint>{{hint}}</mat-hint>
     </mat-form-field>
 </ng-template>
 
