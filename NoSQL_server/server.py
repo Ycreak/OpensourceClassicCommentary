@@ -107,6 +107,13 @@ def completefragment():
     result = couch.Retrieve_complete_fragment(ReqArg('fragment_id'))
     return jsonify(result)
 
+@app.route("/retrieve_users")
+def retrieve_users():
+    result = new_login.Retrieve_all_users()
+    # response = jsonify(Create_JSON_object(result, 'name'))
+    # response.headers.add('Access-Control-Allow-Origin', '*')
+    return jsonify(result)
+
 @app.route("/create_fragment", methods=['POST'])
 def create_fragment():
     received_json = request.get_json()
@@ -160,12 +167,15 @@ def change_role():
     post_data = request.get_json()
     return new_login.Change_role(post_data['username'], post_data['new_role'])
 
-@app.route("/retrieve_users")
-def retrieve_users():
-    result = new_login.Retrieve_all_users()
-    # response = jsonify(Create_JSON_object(result, 'name'))
-    # response.headers.add('Access-Control-Allow-Origin', '*')
-    return jsonify(result)
+@app.route("/set_fragment_lock",  methods=['POST'])
+def set_fragment_lock():
+    print('hello')
+    
+    post_data = request.get_json()
+
+    print(post_data['fragment_id'], post_data['lock_status'])
+
+    return couch.Set_fragment_lock(post_data['fragment_id'], post_data['lock_status'])
 
 # @app.route("/")
 # def ():
@@ -179,7 +189,7 @@ def Create_JSON_object(given_list, denominator):
     return result_list
 
 def ReqArg(arg):
-    return request.args.get(arg, '')
+    return request.args.get(arg, '')   
 
 # MAIN
 if __name__ == '__main__':

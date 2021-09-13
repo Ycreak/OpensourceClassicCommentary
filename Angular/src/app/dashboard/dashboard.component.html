@@ -274,10 +274,10 @@
 
             <mat-tab label="Fragment Access"><br>
 
-              placeholder
-              <!-- <mat-checkbox class="padding-left" [(ngModel)]="is_locked">Click to lock the fragment</mat-checkbox>
+              <mat-checkbox class="padding-left" formControlName="lock">Click to lock the fragment</mat-checkbox>
               <div class="div-padding-lg"></div>
-              <mat-checkbox class="padding-left" [(ngModel)]="is_published">Click to publish the fragment</mat-checkbox> -->
+              <!-- <mat-checkbox class="padding-left" [(ngModel)]="is_published">Click to publish the fragment</mat-checkbox> -->
+              <button mat-stroked-button color="primary" (click)="Request_fragment_lock(this.fragmentForm.value)">Update lock</button>
 
             </mat-tab>
 

@@ -124,6 +124,7 @@ fragment_empty = {
     ],
     "linked_fragments":[
     ],
+    "lock": 0,
 }
 
 user_empty = {

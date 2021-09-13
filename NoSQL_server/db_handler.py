@@ -10,7 +10,7 @@ from flask_jsonpify import jsonify
 class CouchDB:
     def __init__(self):
 
-        couch = couchdb.Server('http://admin:YcreakPasswd26!@localhost:5984/')
+        couch = couchdb.Server('http://admin:password@localhost:5984/')
         # Load Database
         self.db = couch['fragments'] # existing       
 
@@ -115,7 +115,14 @@ class CouchDB:
         return make_response('Succesfully revised fragment!', 200)
 
     def Delete_fragment(self, fragment):
+        """Deletes the given fragment using its id
 
+        Args:
+            fragment (str): _id of the fragment
+
+        Returns:
+            flask response: with information about the status
+        """        
         fragment_id = fragment['fragment_id']
 
         doc = self.db[fragment_id]
@@ -123,3 +130,22 @@ class CouchDB:
         self.db.delete(doc)
 
         return make_response('Succesfully deleted fragment!', 200)
+
+    def Set_fragment_lock(self, fragment_id, lock_status):
+        """Locks the fragment so that it cannot be edited
+
+        Args:
+            fragment_id (str): _id of the fragment
+            lock_status (int): 0 = unlocked, 1 = locked
+
+        Returns:
+            flask response: confirmation of lock status change
+        """        
+        assert isinstance(fragment_id, str)
+        assert isinstance(lock_status, int)
+
+        doc = self.db[fragment_id]
+        doc['lock'] = lock_status
+        doc_id, doc_rev = self.db.save(doc)
+
+        return make_response('Fragment lock status set', 200)

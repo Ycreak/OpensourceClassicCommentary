@@ -3,12 +3,13 @@ import copy
 from models import *
 from uuid import uuid4
 from flask import Response, make_response
-
+# For hashing passwords
+import hashlib, binascii, os
 class Login():
     def __init__(self):
 
         # Load Database
-        couch = couchdb.Server('http://admin:YcreakPasswd26!@localhost:5984/')
+        couch = couchdb.Server('http://admin:password@localhost:5984/')
         self.db = couch['users']
 
     def Login_user(self, username, password) -> make_response:
@@ -38,7 +39,7 @@ class Login():
             except:
                 raise Exception("Somehow, a duplicate user exists.") 
             
-            if password == user_password:
+            if self.Verify_password(user_password, password):
                 found_user_role = result[0]['role']
                 # Return the role of the found user to Angular
                 return make_response(found_user_role, 200)
@@ -60,6 +61,8 @@ class Login():
         """
         assert isinstance(username, str)
         assert isinstance(password, str)                
+
+        password = self.Hash_password(password)  # Password obfuscation using hashing
 
         # First, we check whether the username is already in the database
         found_user = self.Retrieve_data({'username': username}, [])
@@ -122,6 +125,8 @@ class Login():
         """
         assert isinstance(username, str)
         assert isinstance(new_password, str)  
+
+        password = self.Hash_password(password)  # Password obfuscation using hashing
 
         try:
             found_user = self.Retrieve_data({'username': username}, [])
@@ -196,6 +201,25 @@ class Login():
             user_list.append({'username':self.db[id]['username'],'role':self.db[id]['role']})
 
         return sorted(user_list, key=lambda k: k['username'])
+
+    def Hash_password(self, password):
+        """Hash a password for storing."""
+        salt = hashlib.sha256(os.urandom(60)).hexdigest().encode('ascii')
+        pwdhash = hashlib.pbkdf2_hmac('sha512', password.encode('utf-8'), 
+                                    salt, 100000)
+        pwdhash = binascii.hexlify(pwdhash)
+        return (salt + pwdhash).decode('ascii')
+
+    def Verify_password(self, stored_password, provided_password):
+        """Verify a stored password against one provided by user"""
+        salt = stored_password[:64]
+        stored_password = stored_password[64:]
+        pwdhash = hashlib.pbkdf2_hmac('sha512', 
+                                    provided_password.encode('utf-8'), 
+                                    salt.encode('ascii'), 
+                                    100000)
+        pwdhash = binascii.hexlify(pwdhash).decode('ascii')
+        return pwdhash == stored_password
 
 # Unit Tests
 # response = new_login.Create_user('Lucus', 'StackCanary')

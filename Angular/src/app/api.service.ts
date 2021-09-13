@@ -225,7 +225,11 @@ export class ApiService {
   User_change_role(data: object): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `change_role`, data, { observe: 'response', responseType: 'text' as 'json'  });
   }  
+  Update_fragment_lock(data: object): Observable<any> {
+    return this.http.post<any>(this.FlaskURL + `set_fragment_lock`, data, { observe: 'response', responseType: 'text' as 'json'  });
+  }
 
+  
    /**
    * ... ... ...
    * @param context

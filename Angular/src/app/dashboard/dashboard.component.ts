@@ -120,6 +120,7 @@ export class DashboardComponent implements OnInit {
    */
   public Test(thing){
     console.log(thing)
+    console.log(this.fragmentForm.value.lock)
   }
 
   public Retrieve_fragment_numbers(fragments){    
@@ -243,6 +244,15 @@ export class DashboardComponent implements OnInit {
     items.removeAt(index);
   }
 
+  public Request_fragment_lock(form){
+    
+    let lock_status = (form.lock ? 1 : 0);
+        
+    this.api.Update_fragment_lock({'fragment_id': form._id, 'lock_status': lock_status}).subscribe(
+      res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
+    );  
+  }
+
 //   _____  ______ ____  _    _ ______  _____ _______ _____ 
 //  |  __ \|  ____/ __ \| |  | |  ____|/ ____|__   __/ ____|
 //  | |__) | |__ | |  | | |  | | |__  | (___    | | | (___  
@@ -323,7 +333,7 @@ export class DashboardComponent implements OnInit {
     
     this.dialog.OpenConfirmationDialog('Are you sure you want to DELETE this fragment?', item_string).subscribe(result => {
       if(result){
-        this.api.Delete_fragment({fragment_id:fragment._id}).subscribe(
+        this.api.Delete_fragment({'fragment_id':fragment._id}).subscribe(
           res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
         );
       }

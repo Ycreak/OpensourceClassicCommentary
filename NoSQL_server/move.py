@@ -4,7 +4,7 @@ import couchdb
 from uuid import uuid4
 import copy
 
-couch = couchdb.Server('http://admin:YcreakPasswd26!@localhost:5984/')
+couch = couchdb.Server('http://admin:password@localhost:5984/')
 db = couch['fragments'] # existing       
 
 # new_fragment = fragment_empty
@@ -67,5 +67,5 @@ def Migrate_fragments(item):
 ########
 # MAIN #
 ########
-# Add_field_to_fragments('lock', 0)
-Print_all_documents()
+Add_field_to_fragments('lock', 0)
+# Print_all_documents()
