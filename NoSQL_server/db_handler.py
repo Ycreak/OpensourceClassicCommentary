@@ -10,7 +10,7 @@ from flask_jsonpify import jsonify
 class CouchDB:
     def __init__(self):
 
-        couch = couchdb.Server('http://admin:password@localhost:5984/')
+        couch = couchdb.Server('http://admin:YcreakPasswd26!@localhost:5984/')
         # Load Database
         self.db = couch['fragments'] # existing       
 

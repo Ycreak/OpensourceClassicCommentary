@@ -193,4 +193,5 @@ def ReqArg(arg):
 
 # MAIN
 if __name__ == '__main__':
-   app.run(host='0.0.0.0', port=5003)
+    context = ('/etc/letsencrypt/live/oscc.nolden.biz/cert.pem', '/etc/letsencrypt/live/oscc.nolden.biz/privkey.pem')
+    app.run(host='0.0.0.0', port=5003, ssl_context = context)

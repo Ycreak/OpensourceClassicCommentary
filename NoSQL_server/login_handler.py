@@ -9,7 +9,7 @@ class Login():
     def __init__(self):
 
         # Load Database
-        couch = couchdb.Server('http://admin:password@localhost:5984/')
+        couch = couchdb.Server('http://admin:YcreakPasswd26!@localhost:5984/')
         self.db = couch['users']
 
     def Login_user(self, username, password) -> make_response:
