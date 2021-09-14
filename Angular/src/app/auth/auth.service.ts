@@ -4,9 +4,9 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class AuthService {
-  is_logged_in = false;
+  is_logged_in = true;
   is_student = false;
-  is_teacher = false;
+  is_teacher = true;
   isGuest = false;
   redirectUrl: string;
 

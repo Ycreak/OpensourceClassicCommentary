@@ -1,5 +1,5 @@
-# http://localhost:5984/_utils/
 from models import *
+
 import couchdb
 from uuid import uuid4
 import copy
@@ -7,53 +7,64 @@ import copy
 from flask import Response, make_response
 from flask_jsonpify import jsonify
 
-class CouchDB:
-    def __init__(self):
+from server_credentials import Credentials
+from utilities import *
 
-        couch = couchdb.Server('http://admin:YcreakPasswd26!@localhost:5984/')
-        # Load Database
-        self.db = couch['fragments'] # existing       
+class Fragment_handler:
+    def __init__(self):
+        # Connect to the server using the stored credentials
+        server_address = Credentials().generate_server_url()
+        database = couchdb.Server(server_address)
+
+        # Select the database we need
+        self.frag_db = database['fragments']
 
     # GET FUNCTIONS
     def Retrieve_all_x(self, x):
 
         all_list = []
 
-        for id in self.db:
-            all_list.append(self.db[id][x])
+        for id in self.frag_db:
+            all_list.append(self.frag_db[id][x])
 
         return all_list
 
-    def Retrieve_data(self, selector, fields):
-        return self.db.find({
-                'selector': selector,
-               'fields': fields,
-            })
+    # def Retrieve_data(self, selector, fields):
+    #     return self.frag_db.find({
+    #             'selector': selector,
+    #            'fields': fields,
+    #         })
 
     def Retrieve_all_authors(self):
 
         author_list = self.Retrieve_all_x('author') # FIXME: cant use Retrieve_data here... only returns 20 results
+        
+        data = Retrieve_data_from_db(self.frag_db, {}, [])
+        
+        method1 = sorted(set([x['author'] for x in data]))
+        method2 = sorted(set(author_list))
+
         return sorted(set(author_list))
 
     def Retrieve_all_titles(self, author):
         #TODO: this should be in a view maybe?
-        data = self.Retrieve_data({'author': author}, ['title'])
+        data = Retrieve_data_from_db(self.frag_db, {'author': author}, ['title'])
         return sorted(set([x['title'] for x in data]))
 
     def Retrieve_all_editors(self, author, title):
 
-        data = self.Retrieve_data({'author': author, 'title': title}, ['editor'])
+        data = Retrieve_data_from_db(self.frag_db, {'author': author, 'title': title}, ['editor'])
         return sorted(set([x['editor'] for x in data]))
 
     def Retrieve_all_fragments(self, author, title, editor):
 
-        return self.Retrieve_data({'author': author, 'title': title, 'editor': editor}, [])
+        return Retrieve_data_from_db(self.frag_db, {'author': author, 'title': title, 'editor': editor}, [])
 
     def Retrieve_fragment_data(self, fragment, field):
-        return self.db[fragment][field]   
+        return self.frag_db[fragment][field]   
 
     def Retrieve_complete_fragment(self, fragment_id):
-        return self.db[fragment_id]
+        return self.frag_db[fragment_id]
 
     # POST FUNCTIONS
     def Create_fragment(self, created_fragment):
@@ -64,7 +75,7 @@ class CouchDB:
         editor = created_fragment['editor']
         fragment_name = created_fragment['fragment_name']
 
-        found_fragment = self.Retrieve_data({'author': author, 'title': title, 'editor': editor, 'fragment_name': fragment_name}, [])
+        found_fragment = Retrieve_data_from_db(self.frag_db, {'author': author, 'title': title, 'editor': editor, 'fragment_name': fragment_name}, [])
 
         result = [x.id for x in found_fragment]
 
@@ -86,7 +97,7 @@ class CouchDB:
 
             new_fragment['_id'] = uuid4().hex #, 'type': 'person', 'name': 'John Doe'}
 
-            doc_id, doc_rev = self.db.save(new_fragment)
+            doc_id, doc_rev = self.frag_db.save(new_fragment)
 
             return make_response('Succesfully created fragment!', 201)
 
@@ -94,7 +105,7 @@ class CouchDB:
         fragment_id = revised_fragment['_id']
         revised_fragment.pop('_id')
 
-        doc = self.db[fragment_id]
+        doc = self.frag_db[fragment_id]
 
         doc['fragment_name'] = revised_fragment['fragment_name']
         doc['author'] = revised_fragment['author']
@@ -110,7 +121,7 @@ class CouchDB:
         doc['linked_fragments'] = revised_fragment['linked_fragments']
         doc['status'] = revised_fragment['status']
 
-        self.db[doc.id] = doc
+        self.frag_db[doc.id] = doc
 
         return make_response('Succesfully revised fragment!', 200)
 
@@ -125,9 +136,9 @@ class CouchDB:
         """        
         fragment_id = fragment['fragment_id']
 
-        doc = self.db[fragment_id]
+        doc = self.frag_db[fragment_id]
 
-        self.db.delete(doc)
+        self.frag_db.delete(doc)
 
         return make_response('Succesfully deleted fragment!', 200)
 
@@ -144,8 +155,11 @@ class CouchDB:
         assert isinstance(fragment_id, str)
         assert isinstance(lock_status, int)
 
-        doc = self.db[fragment_id]
+        doc = self.frag_db[fragment_id]
         doc['lock'] = lock_status
-        doc_id, doc_rev = self.db.save(doc)
+        doc_id, doc_rev = self.frag_db.save(doc)
 
         return make_response('Fragment lock status set', 200)
+
+temp = Fragment_handler()
+temp.Retrieve_all_authors()
