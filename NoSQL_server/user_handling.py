@@ -19,14 +19,11 @@ class User_handler():
         # Select the database we need
         self.user_db = database['users']
 
-    def Find_user(self, username) -> tuple[bool, {}]:
+    def Find_user(self, username) -> tuple[bool, dict]:
         """Finds the requested user in the database
 
         Args:
             username (string): of requested username
-
-        Raises:
-            Exception: If no user can be found
 
         Returns:
             bool: boolean indicating if user was found or not
@@ -38,7 +35,7 @@ class User_handler():
         try:
             user = result[0]
             return True, user
-        except:
+        except KeyError:
             return False, {}
 
     def Login_user(self, username, password) -> make_response:

@@ -110,7 +110,6 @@ def completefragment():
     result = frag_db.Retrieve_complete_fragment(ReqArg('fragment_id'))
     return jsonify(result)
 
-
 @app.route("/create_fragment", methods=['POST'])
 def create_fragment():
     received_json = request.get_json()
