@@ -14,6 +14,7 @@ from flask_jsonpify import jsonify
 
 from fragment_handling import Fragment_handler
 from user_handling import User_handler
+from Models.fragment import Fragment
 
 app = Flask(__name__)
 api = Api(app)
@@ -112,10 +113,9 @@ def completefragment():
 
 @app.route("/create_fragment", methods=['POST'])
 def create_fragment():
-    received_json = request.get_json()
-    result = frag_db.Create_fragment(received_json)
-
-    return result
+    received_fragment = Fragment(request.get_json())
+    response = frag_db.Create_fragment(received_fragment)
+    return response
 
 @app.route("/revise_fragment", methods=['POST'])
 def revise_fragment():

@@ -199,16 +199,16 @@ export class ApiService {
 
   Create_fragment(fragment: object): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `create_fragment`, fragment, { observe: 'response', responseType: 'text' as 'json' });
-  }
-  
+  } 
   Revise_fragment(fragment: object): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `revise_fragment`, fragment, { observe: 'response', responseType: 'text' as 'json'  });
   }
-
   Delete_fragment(fragment: object): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `delete_fragment`, fragment, { observe: 'response', responseType: 'text' as 'json'  });
   }
-
+  Update_fragment_lock(data: object): Observable<any> {
+    return this.http.post<any>(this.FlaskURL + `set_fragment_lock`, data, { observe: 'response', responseType: 'text' as 'json'  });
+  }
   Login_user(login: object): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `login_user`, login, { observe: 'response', responseType: 'text' as 'json'  });
   }
@@ -224,10 +224,6 @@ export class ApiService {
   User_change_role(data: object): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `change_role`, data, { observe: 'response', responseType: 'text' as 'json'  });
   }  
-  Update_fragment_lock(data: object): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + `set_fragment_lock`, data, { observe: 'response', responseType: 'text' as 'json'  });
-  }
-
   
    /**
    * ... ... ...

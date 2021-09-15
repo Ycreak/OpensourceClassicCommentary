@@ -10,6 +10,8 @@ from flask_jsonpify import jsonify
 from server_credentials import Credentials
 from utilities import *
 
+from Models.fragment import Fragment
+
 class Fragment_handler:
     def __init__(self):
         # Connect to the server using the stored credentials
@@ -77,62 +79,52 @@ class Fragment_handler:
 
         Returns:
             couch document: with all data of the requested fragment
-        """        
+        """                
         return self.frag_db[fragment_id]
 
-    def Find_fragment(self, author, title, editor, fragment_name) -> tuple[bool, dict]:
+    def Find_fragment(self, fragment) -> tuple[bool, dict]:
         """Finds the requested fragment in the database
 
         Args:
-            author (string): of requested fragment
-            title (string): of requested fragment
-            editor (string): of requested fragment
-            fragment_name (string): of requested fragment
+            fragment (object): of a fragment
 
         Returns:
             bool: boolean indicating if user was found or not
             json: nosql document of the found fragment
         """                   
-        found_fragment = Retrieve_data_from_db(self.frag_db, {'author': author,
-                                                              'title': title,
-                                                              'editor': editor,
-                                                              'fragment_name': fragment_name}, [])
+        found_fragment = Retrieve_data_from_db(self.frag_db, {'author': fragment.author,
+                                                              'title': fragment.title,
+                                                              'editor': fragment.editor,
+                                                              'fragment_name': fragment.fragment_name}, [])
         
         result = [x for x in found_fragment]
-        
+
         try:
-            fragment = result[0]
-            return True, fragment
-        except KeyError:
+            fragment_doc = result[0]
+            return True, fragment_doc
+        except: #TODO: it was not a key error 11
             return False, {}    
 
     # POST FUNCTIONS
-    def Create_fragment(self, created_fragment) -> make_response:
+    def Create_fragment(self, fragment) -> make_response:
         """ Creates a fragment from the provided data
 
         Args:
-            created_fragment (json): meta data provided to create a fragment
+            fragment (json): meta data provided to create a fragment
 
         Returns:
             flask response: confirmation of (un)successful execution
         """
-        # Check if fragment with this information does not already exist!
-        author = created_fragment['author']
-        title = created_fragment['title']
-        editor = created_fragment['editor']
-        fragment_name = created_fragment['fragment_name']
-
         # Check if the fragment already exists in the database
-        fragment_exist, fragment = self.Find_fragment(author, title, editor, fragment_name)
+        fragment_exist, _ = self.Find_fragment(fragment)
 
         if fragment_exist:           
             return make_response('Fragment already exists!', 403)
         else:
-            # Create independent copy of the empty fragment JSON
             new_fragment = copy.deepcopy(fragment_empty)
 
             for db_entry in ['author', 'title', 'editor', 'fragment_name', 'status']:
-                new_fragment[db_entry] = created_fragment[db_entry]
+                new_fragment[db_entry] = getattr(fragment, db_entry)
             # Give the fragment a unique id
             new_fragment['_id'] = uuid4().hex
 
