@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 
-import { Fragment } from './models/Fragment2';
+import { Fragment } from './models/Fragment';
 import { Author } from './models/Author';
 import { Editor } from './models/Editor';
 import { Bibliography } from './models/Bibliography';
@@ -64,8 +64,15 @@ export class ApiService {
   }
 
   public Get_fragment_content(fragment_id: string): Observable<any> {
-    return this.http.get<any>(this.FlaskURL + `fcontent?fragment_id=${fragment_id}`);
+    return this.http.get<any>(this.FlaskURL + `fragment_content?fragment_id=${fragment_id}`);
   }
+
+  // Create_fragment(fragment: object): Observable<any> {
+  //   return this.http.post<any>(this.FlaskURL + `create_fragment`, fragment, { observe: 'response', responseType: 'text' as 'json' });
+  // } 
+
+
+
   /**
   * ... ... ...
   * @param bookID
@@ -73,7 +80,7 @@ export class ApiService {
   * @author Ycreak, ppbors
   */
  Get_specific_fragment(fragment_id: string): Observable<Fragment[]> {
-  return this.http.get<Fragment[]>(this.FlaskURL + `completefragment?fragment_id=${fragment_id}`);
+  return this.http.get<Fragment[]>(this.FlaskURL + `complete_fragment?fragment_id=${fragment_id}`);
 }
 
   /**
@@ -103,76 +110,6 @@ export class ApiService {
   */
   GetEditors(author: string, book: string): Observable<Editor[]> {
     return this.http.get<Editor[]>(this.FlaskURL + `editors?author=${author}&book=${book}`);
-  }
-
-  /**
-  * ... ... ...
-  * @param title
-  * @returns
-  * @author Ycreak, ppbors
-  */
-  GetBibliography(title: string): Observable<Bibliography[]> {
-    return this.http.get<Bibliography[]>(this.FlaskURL + `bibliography?title=${title}`);
-  }
-
-  /**
-  * ... ... ...
-  * @param fragment_id
-  * @returns
-  * @author Ycreak, ppbors
-  */
-  GetCommentary(fragment_id: string): Observable<Commentary[]> {
-    return this.http.get<Commentary[]>(this.FlaskURL + `fcommentary?fragment_id=${fragment_id}`);
-  }
-
-  /**
-  * ... ... ...
-  * @param fragment_id
-  * @returns
-  * @author Ycreak, ppbors
-  */
-  GetDifferences(fragment_id: string): Observable<Differences[]> {
-    return this.http.get<Differences[]>(this.FlaskURL + `fdifferences?fragment_id=${fragment_id}`);
-  }
-
-  /**
-  * ... ... ...
-  * @param fragment_id
-  * @returns
-  * @author Ycreak, ppbors
-  */
-  GetContext(fragment_id: string): Observable<Context[]> {
-    return this.http.get<Context[]>(this.FlaskURL + `fcontext?fragment_id=${fragment_id}`);
-  }
-
-  /**
-  * ... ... ...
-  * @param fragment_id
-  * @returns
-  * @author Ycreak, ppbors
-  */
-  GetTranslation(fragment_id: string): Observable<Translation[]> {
-    return this.http.get<Translation[]>(this.FlaskURL + `ftranslation?fragment_id=${fragment_id}`);
-  }
-
-  /**
-  * ... ... ...
-  * @param fragment_id
-  * @returns
-  * @author Ycreak, ppbors
-  */
-  GetApparatus(fragment_id: string): Observable<Apparatus[]> {
-    return this.http.get<Apparatus[]>(this.FlaskURL + `fapparatus?fragment_id=${fragment_id}`); // XD FAP CRIT
-  }
-
-  /**
-  * ... ... ...
-  * @param fragment_id
-  * @returns
-  * @author Ycreak, ppbors
-  */
-  GetReconstruction(fragment_id: string): Observable<Reconstruction[]> {
-    return this.http.get<Reconstruction[]>(this.FlaskURL + `freconstruction?fragment_id=${fragment_id}`);
   }
 
   Get_users(): Observable<any> {

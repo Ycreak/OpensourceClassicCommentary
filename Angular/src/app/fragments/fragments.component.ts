@@ -9,6 +9,8 @@ import { AuthService } from '../auth/auth.service';
 import { Multiplayer } from './multiplayer.class';
 import { Playground } from './playground.class';
 
+import { Fragment } from '../models/Fragment';
+
 // FIXME: why do i need to export this class?
 export { Multiplayer } from './multiplayer.class';
 export { Playground } from './playground.class';
@@ -41,24 +43,16 @@ export class FragmentsComponent implements OnInit {
   toggle_multiplayer: boolean = false;
   // Booleans for HTML related items
   spinner: boolean = false; // Boolean to toggle the spinner.
-  no_commentary: boolean = false; // Shows banner if no commentary is available.\
   server_down: boolean = true; // to indicate server failure
   // Objects to store the retrieved authors, books and editors to control server data retrieval 
   retrieved_authors : object; // JSON that contains all available Authors and their data.
   retrieved_books : object; // JSON that contains all available Books and their data given a specific editor.
   retrieved_editors : object; // JSON that contains all available Editors and their data for a specific book.
   // Global Class Variables with text data corresponding to the front-end text fields.
-  f_commentary : object;
-  f_apparatus : object;
-  f_translation : object;
-  f_context : object;
-  f_differences : object;
-  f_reconstruction : object;
+  current_fragment : Fragment;
+  fragment_clicked : boolean = false;
   // Variable to store the fragment numbers from a given Author, Book and Editor
   retrieved_fragment_numbers : object;
-  // Data regarding the currently pressed fragment. TODO: Should be done in a nice object.
-  pressed_fragment_name : string = 'TBA';
-  pressed_fragment_editor : string = 'TBA';
   // Object to store all column data. TODO: should be rethought.
   column_data : object = {
     column1 : {
@@ -113,6 +107,8 @@ export class FragmentsComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
+    // Create an empty current fragment to be filled by clicking
+    this.current_fragment = new Fragment({});
     // Request a list of authors to select a different text    
     this.api.GetAuthors().subscribe(data => this.retrieved_authors = data);
     // Retrieves everything surrounding the text.
@@ -187,43 +183,10 @@ export class FragmentsComponent implements OnInit {
    * @author Bors & Ycreak
    * TODO: this can be done with a single request. Needs redesign with nice models to solve current problems.
    */
-  public RequestCommentaries(fragment_id: string){
+  public Request_fragment_content(fragment_id: string){
     this.api.Get_fragment_content(fragment_id).subscribe(data => {     
-      console.log('content', data)
-    });
-    
-    this.no_commentary = false;
-    // Retrieves Fragment Commentary    
-    this.api.GetCommentary(fragment_id).subscribe(data => {     
-      this.f_commentary = data
-      if(this.f_commentary[0].commentary == ""){
-        this.f_commentary = [];
-        this.no_commentary = true;
-      }
-    });
-    // Retrieves Fragment Differences
-    this.api.GetDifferences(fragment_id).subscribe(data => {
-      this.f_differences = data
-      if(this.f_differences[0].differences == "") this.f_differences = [];
-    });
-    // Retrieves Fragment Context
-    this.api.GetContext(fragment_id).subscribe(data => {
-      this.f_context = data
-    });
-    // Retrieves Fragment Translation
-    this.api.GetTranslation(fragment_id).subscribe(data => {
-      this.f_translation = data
-      if(this.f_translation[0].translation == "") this.f_translation = [];
-    });
-    // Retrieves Fragment App. Crit.
-    this.api.GetApparatus(fragment_id).subscribe(data => {
-      this.f_apparatus = data
-      if(this.f_apparatus[0].apparatus == "") this.f_apparatus = [];
-    });
-    // Retrieves Fragment Reconstruction
-    this.api.GetReconstruction(fragment_id).subscribe(data => {
-      this.f_reconstruction = data
-      if(this.f_reconstruction[0].reconstruction == "") this.f_reconstruction = [];
+      this.current_fragment.add_content(data);
+      this.fragment_clicked = true;
     });
   }
 
@@ -285,10 +248,8 @@ export class FragmentsComponent implements OnInit {
    * TODO: pressed fragment should be an object initialised at startup
    */
   public Handle_fragment_click(fragment){
-      this.pressed_fragment_name = fragment.fragment_name;
-      this.pressed_fragment_editor = fragment.editor;
-      console.log(fragment)
-      this.RequestCommentaries(fragment.id)
+      this.current_fragment = new Fragment(fragment)
+      this.Request_fragment_content(fragment.id)
   }
 
   /**

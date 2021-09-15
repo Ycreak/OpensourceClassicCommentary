@@ -9,8 +9,6 @@ import { UtilityService } from '../utility.service';
 import { AuthService } from '../auth/auth.service';
 import { DialogService } from '../services/dialog.service';
 
-import { Fragment } from './models/Fragment2';
-
 // To allow the use of forms
 import { FormBuilder } from '@angular/forms';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators, FormArray } from '@angular/forms';
@@ -250,7 +248,7 @@ export class DashboardComponent implements OnInit {
     
     let lock_status = (form.lock ? 1 : 0);
         
-    this.api.Update_fragment_lock({'fragment_id': form._id, 'lock_status': lock_status}).subscribe(
+    this.api.Update_fragment_lock({'_id': form._id, 'lock': lock_status}).subscribe(
       res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
     );  
   }
@@ -335,7 +333,7 @@ export class DashboardComponent implements OnInit {
     
     this.dialog.OpenConfirmationDialog('Are you sure you want to DELETE this fragment?', item_string).subscribe(result => {
       if(result){
-        this.api.Delete_fragment({'fragment_id':fragment._id}).subscribe(
+        this.api.Delete_fragment({'_id':fragment._id}).subscribe(
           res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
         );
       }

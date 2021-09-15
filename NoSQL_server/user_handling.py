@@ -2,7 +2,7 @@ import couchdb
 import copy
 from models import *
 from uuid import uuid4
-from flask import Response, make_response
+from flask import make_response
 
 # For hashing passwords
 import hashlib, binascii, os

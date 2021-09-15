@@ -61,7 +61,8 @@ class Fragment_handler:
         return sorted(set([x['editor'] for x in data]))
 
     def Retrieve_all_fragments(self, author, title, editor) -> list:
-        """Retrieves all fragments available given an author, title and editor
+        """Retrieves all fragments available given an author, title and editor.
+        NB: only retrieves the fields needed to show an edition!
 
         Args:
             author (str): name of author
@@ -71,10 +72,31 @@ class Fragment_handler:
         Returns:
             list: of all fragments given the parameters
         """        
-        return Retrieve_data_from_db(self.frag_db, {'author': author, 'title': title, 'editor': editor}, [])
+        fragments = Retrieve_data_from_db(self.frag_db, {'author': author, 'title': title, 'editor': editor}, [])
 
-    def Retrieve_fragment_data(self, fragment, field):  #TODO: retrieve fragment content in one line
-        return self.frag_db[fragment][field]   
+        fragment_list = []
+
+        for fragment in fragments:
+            fragment_entry = {
+                'id' : fragment.id,
+                'author' : fragment['author'],
+                'book' : fragment['title'],
+                'editor' : fragment['editor'],
+                'fragment_name' : fragment['fragment_name'],
+                'lines' : fragment['lines'],
+                'status' : fragment['status'],
+            }
+            fragment_list.append(fragment_entry) 
+
+        return fragment_list
+
+    def Retrieve_fragment_content(self, fragment):
+        doc = self.frag_db[fragment._id]
+        
+        for content in ['translation', 'apparatus', 'differences', 'context', 'commentary', 'reconstruction']:
+            setattr(fragment, content, doc[content])
+        
+        return fragment
 
     def Retrieve_complete_fragment(self, fragment_id) -> dict:
         """Returns all the data from the given fragment
@@ -131,16 +153,8 @@ class Fragment_handler:
             for fragment_entry in ['author', 'title', 'editor', 'fragment_name', 'status']:
                 new_fragment[fragment_entry] = getattr(fragment, fragment_entry)
 
-            # for fragment_entry in ['author', 'title', 'editor', 'fragment_name', 'status'
-            #             'fragment_name', 'author', 'title', 'editor', 'translation', 
-            #              'differences', 'apparatus', 'commentary', 'reconstruction',
-            #              'context', 'lines', 'linked_fragments', 'status', 'lock']:
-
-
             # Give the fragment a unique id
             new_fragment['_id'] = uuid4().hex
-
-            print('create fragment', new_fragment)
 
             doc_id, doc_rev = self.frag_db.save(new_fragment)
             return make_response('Succesfully created fragment!', 201)
@@ -174,10 +188,7 @@ class Fragment_handler:
         Returns:
             flask response: with information about the status
         """      
-        doc = self.frag_db[fragment.id]
-
-        print(doc)
-
+        doc = self.frag_db[fragment._id]
         self.frag_db.delete(doc)
 
         return make_response('Succesfully deleted fragment!', 200)
@@ -192,7 +203,7 @@ class Fragment_handler:
             flask response: confirmation of lock status change
         """
         doc = self.frag_db[fragment._id]
-        doc['lock'] = fragment.lock_status
+        doc['lock'] = fragment.lock
         doc_id, doc_rev = self.frag_db.save(doc)
 
         return make_response('Fragment lock status set', 200)
