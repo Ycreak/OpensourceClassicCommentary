@@ -26,3 +26,9 @@ class User:
     password = ''
     new_password = ''
     role = ''
+
+    user_empty = {
+        "username": "",
+        "password": "",
+        "role": "guest",
+    }

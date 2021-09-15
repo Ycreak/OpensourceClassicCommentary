@@ -148,7 +148,7 @@ class Fragment_handler:
         if fragment_exist:          
             return make_response('Fragment already exists!', 403)
         else:
-            new_fragment = copy.deepcopy(fragment_empty)
+            new_fragment = copy.deepcopy(fragment.fragment_empty)
 
             for fragment_entry in ['author', 'title', 'editor', 'fragment_name', 'status']:
                 new_fragment[fragment_entry] = getattr(fragment, fragment_entry)

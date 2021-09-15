@@ -88,7 +88,7 @@ class User_handler():
         if user_exist:
             return make_response('This username is already taken', 403)
         else:
-            new_user = copy.deepcopy(user_empty)
+            new_user = copy.deepcopy(user.user_empty)
 
             new_user['username'] = username
             new_user['password'] = password
