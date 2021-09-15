@@ -9,6 +9,8 @@ import { UtilityService } from '../utility.service';
 import { AuthService } from '../auth/auth.service';
 import { DialogService } from '../services/dialog.service';
 
+import { Fragment } from './models/Fragment2';
+
 // To allow the use of forms
 import { FormBuilder } from '@angular/forms';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators, FormArray } from '@angular/forms';
@@ -96,7 +98,7 @@ export class DashboardComponent implements OnInit {
     // this.Request_users()
     // Initialise the fragment form. TODO: can we do this somewhere else?
     this.fragmentForm = this.formBuilder.group({
-      _id: '',
+      _id: 'hellothere',
       fragment_name: '', //['', Validators.required],
       author: '',
       title: '',
@@ -108,7 +110,7 @@ export class DashboardComponent implements OnInit {
       reconstruction: '',
       context: this.formBuilder.array([ ]),
       lines: this.formBuilder.array([ ]),
-      linked_fragments: '',
+      linked_fragments: this.formBuilder.array([ ]),
       status: '',
       lock: 0,
     });
@@ -120,7 +122,7 @@ export class DashboardComponent implements OnInit {
    */
   public Test(thing){
     console.log(thing)
-    console.log(this.fragmentForm.value.lock)
+    console.log(this.fragmentForm.value)
   }
 
   public Retrieve_fragment_numbers(fragments){    

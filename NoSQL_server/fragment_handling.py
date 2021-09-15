@@ -27,8 +27,13 @@ class Fragment_handler:
         Returns:
             list: of all unique authors in the database
         """        
-        author_list = Retrieve_data_from_db(self.frag_db, {}, [])
-        return sorted(set([x['author'] for x in author_list]))
+        # author_list = Retrieve_data_from_db(self.frag_db, {}, []) TODO: why does this not work?
+        # return sorted(set([x['author'] for x in author_list]))
+        author_list = []
+        for id in self.frag_db:
+            author_list.append(self.frag_db[id]['author'])
+        return sorted(set([x for x in author_list]))
+
 
     def Retrieve_all_titles(self, author) -> list:
         """Retrieves all available titles per given author
@@ -110,7 +115,7 @@ class Fragment_handler:
         """ Creates a fragment from the provided data
 
         Args:
-            fragment (json): meta data provided to create a fragment
+            fragment (object): fragment model containing all fragment data
 
         Returns:
             flask response: confirmation of (un)successful execution
@@ -118,74 +123,76 @@ class Fragment_handler:
         # Check if the fragment already exists in the database
         fragment_exist, _ = self.Find_fragment(fragment)
 
-        if fragment_exist:           
+        if fragment_exist:          
             return make_response('Fragment already exists!', 403)
         else:
             new_fragment = copy.deepcopy(fragment_empty)
 
-            for db_entry in ['author', 'title', 'editor', 'fragment_name', 'status']:
-                new_fragment[db_entry] = getattr(fragment, db_entry)
+            for fragment_entry in ['author', 'title', 'editor', 'fragment_name', 'status']:
+                new_fragment[fragment_entry] = getattr(fragment, fragment_entry)
+
+            # for fragment_entry in ['author', 'title', 'editor', 'fragment_name', 'status'
+            #             'fragment_name', 'author', 'title', 'editor', 'translation', 
+            #              'differences', 'apparatus', 'commentary', 'reconstruction',
+            #              'context', 'lines', 'linked_fragments', 'status', 'lock']:
+
+
             # Give the fragment a unique id
             new_fragment['_id'] = uuid4().hex
+
+            print('create fragment', new_fragment)
 
             doc_id, doc_rev = self.frag_db.save(new_fragment)
             return make_response('Succesfully created fragment!', 201)
 
-    def Revise_fragment(self, revised_fragment) -> make_response:
+    def Revise_fragment(self, fragment) -> make_response:
         """Revises the provided fragment with the provided data
 
         Args:
-            revised_fragment (json): object containing the revised fragment
+            fragment (object): fragment model containing all revised fragment data
 
         Returns:
             flask response: response on successful execution
         """        
-        fragment_id = revised_fragment['_id']
-        revised_fragment.pop('_id')
+        doc = self.frag_db[fragment._id]
 
-        doc = self.frag_db[fragment_id]
-
-        for db_entry in ['fragment_name', 'author', 'title', 'editor', 'translation', 
+        for fragment_entry in ['fragment_name', 'author', 'title', 'editor', 'translation', 
                          'differences', 'apparatus', 'commentary', 'reconstruction',
                          'context', 'lines', 'linked_fragments', 'status']:
-            doc[db_entry] = revised_fragment[db_entry]
-
-        self.frag_db[doc.id] = doc
-
+            doc[fragment_entry] = getattr(fragment, fragment_entry)
+        
+        doc_id, doc_rev = self.frag_db.save(doc)
+        
         return make_response('Succesfully revised fragment!', 200)
 
     def Delete_fragment(self, fragment) -> make_response:
         """Deletes the given fragment using its id
 
         Args:
-            fragment (str): _id of the fragment
+            fragment (object): fragment object containing the id of the fragment to be deleted
 
         Returns:
             flask response: with information about the status
-        """        
-        fragment_id = fragment['fragment_id']
+        """      
+        doc = self.frag_db[fragment.id]
 
-        doc = self.frag_db[fragment_id]
+        print(doc)
 
         self.frag_db.delete(doc)
 
         return make_response('Succesfully deleted fragment!', 200)
 
-    def Set_fragment_lock(self, fragment_id, lock_status) -> make_response:
+    def Set_fragment_lock(self, fragment) -> make_response:
         """Locks the fragment so that it cannot be edited
 
         Args:
-            fragment_id (str): _id of the fragment
-            lock_status (int): 0 = unlocked, 1 = locked
+            fragment (object): fragment object with the id and lock status to be changed
 
         Returns:
             flask response: confirmation of lock status change
-        """        
-        assert isinstance(fragment_id, str)
-        assert isinstance(lock_status, int)
-
-        doc = self.frag_db[fragment_id]
-        doc['lock'] = lock_status
+        """
+        doc = self.frag_db[fragment._id]
+        doc['lock'] = fragment.lock_status
         doc_id, doc_rev = self.frag_db.save(doc)
 
         return make_response('Fragment lock status set', 200)

@@ -4,3 +4,4 @@ flask_cors
 flask_restful
 flask_jsonpify
 couchdb
+jsonpickle

@@ -188,6 +188,10 @@ export class FragmentsComponent implements OnInit {
    * TODO: this can be done with a single request. Needs redesign with nice models to solve current problems.
    */
   public RequestCommentaries(fragment_id: string){
+    this.api.Get_fragment_content(fragment_id).subscribe(data => {     
+      console.log('content', data)
+    });
+    
     this.no_commentary = false;
     // Retrieves Fragment Commentary    
     this.api.GetCommentary(fragment_id).subscribe(data => {     

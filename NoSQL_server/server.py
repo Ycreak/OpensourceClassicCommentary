@@ -4,6 +4,8 @@ from flask_cors import CORS, cross_origin
 from flask_restful import Resource, Api
 from flask_jsonpify import jsonify
 
+import jsonpickle
+
 # from json import dumps
 
 # INSTALL INSTRUCTIONS
@@ -81,30 +83,45 @@ def fcontext():
     
     return jsonify(result_list)
 
-@app.route("/ftranslation")
-def ftranslation():
-    result = frag_db.Retrieve_fragment_data(ReqArg('fragment_id'), 'translation')
-    return jsonify(Create_JSON_object([result], 'translation')) #Note! I put the result in a list
+@app.route("/fcontent")
+def fcontent():
+    fields = ['translation', 'apparatus', 'differences', 'context', 'commentary', 'reconstruction', 'linked_fragments']
+    results = {}
+    for field in fields:
+        results[field] = frag_db.Retrieve_fragment_data(ReqArg('fragment_id'), field)
+    
+    frag_obj = Fragment(results)
+    
+    frozen = jsonpickle.encode(frag_obj)
 
-@app.route("/fcommentary")
-def fcommentary():
-    result = frag_db.Retrieve_fragment_data(ReqArg('fragment_id'), 'commentary')
-    return jsonify(Create_JSON_object([result], 'commentary')) #Note! I put the result in a list
+    print(frozen)
 
-@app.route("/fapparatus")
-def fapparatus():    
-    result = frag_db.Retrieve_fragment_data(ReqArg('fragment_id'), 'apparatus')
-    return jsonify(Create_JSON_object([result], 'apparatus')) #Note! I put the result in a list
+    return frozen
 
-@app.route("/fdifferences")
-def fdifferences():
-    result = frag_db.Retrieve_fragment_data(ReqArg('fragment_id'), 'differences')
-    return jsonify(Create_JSON_object([result], 'differences')) #Note! I put the result in a list
+# @app.route("/ftranslation")
+# def ftranslation():
+#     result = frag_db.Retrieve_fragment_data(ReqArg('fragment_id'), 'translation')
+#     return jsonify(Create_JSON_object([result], 'translation')) #Note! I put the result in a list
 
-@app.route("/freconstruction")
-def freconstruction():
-    result = frag_db.Retrieve_fragment_data(ReqArg('fragment_id'), 'reconstruction')
-    return jsonify(Create_JSON_object([result], 'reconstruction')) #Note! I put the result in a list
+# @app.route("/fcommentary")
+# def fcommentary():
+#     result = frag_db.Retrieve_fragment_data(ReqArg('fragment_id'), 'commentary')
+#     return jsonify(Create_JSON_object([result], 'commentary')) #Note! I put the result in a list
+
+# @app.route("/fapparatus")
+# def fapparatus():    
+#     result = frag_db.Retrieve_fragment_data(ReqArg('fragment_id'), 'apparatus')
+#     return jsonify(Create_JSON_object([result], 'apparatus')) #Note! I put the result in a list
+
+# @app.route("/fdifferences")
+# def fdifferences():
+#     result = frag_db.Retrieve_fragment_data(ReqArg('fragment_id'), 'differences')
+#     return jsonify(Create_JSON_object([result], 'differences')) #Note! I put the result in a list
+
+# @app.route("/freconstruction")
+# def freconstruction():
+#     result = frag_db.Retrieve_fragment_data(ReqArg('fragment_id'), 'reconstruction')
+#     return jsonify(Create_JSON_object([result], 'reconstruction')) #Note! I put the result in a list
 
 @app.route("/completefragment")
 def completefragment():
@@ -119,19 +136,21 @@ def create_fragment():
 
 @app.route("/revise_fragment", methods=['POST'])
 def revise_fragment():
-
-    received_json = request.get_json()
-    result = frag_db.Revise_fragment(received_json)
-
-    return result
+    received_fragment = Fragment(request.get_json())
+    response = frag_db.Revise_fragment(received_fragment)
+    return response
 
 @app.route("/delete_fragment", methods=['POST'])
 def delete_fragment():
-
-    received_json = request.get_json()
-    result = frag_db.Delete_fragment(received_json)
-
+    received_fragment = Fragment(request.get_json())
+    result = frag_db.Delete_fragment(received_fragment)
     return result
+
+@app.route("/set_fragment_lock",  methods=['POST'])
+def set_fragment_lock():   
+    received_fragment = Fragment(request.get_json())
+    response = frag_db.Set_fragment_lock(recieved_fragment)
+    return response
 
 '''
 User interface
@@ -167,16 +186,6 @@ def change_password():
 def change_role():
     post_data = request.get_json()
     return user_db.Change_role(post_data['username'], post_data['new_role'])
-
-@app.route("/set_fragment_lock",  methods=['POST'])
-def set_fragment_lock():
-    print('hello')
-    
-    post_data = request.get_json()
-
-    print(post_data['fragment_id'], post_data['lock_status'])
-
-    return frag_db.Set_fragment_lock(post_data['fragment_id'], post_data['lock_status'])
 
 # @app.route("/")
 # def ():

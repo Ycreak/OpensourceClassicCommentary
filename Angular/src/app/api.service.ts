@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 
-import { Fragment } from './models/Fragment';
+import { Fragment } from './models/Fragment2';
 import { Author } from './models/Author';
 import { Editor } from './models/Editor';
 import { Bibliography } from './models/Bibliography';
@@ -63,6 +63,9 @@ export class ApiService {
     return this.http.get<Fragment[]>(this.FlaskURL + `fragments?author=${author}&book=${book}&editor=${editor}`);
   }
 
+  public Get_fragment_content(fragment_id: string): Observable<any> {
+    return this.http.get<any>(this.FlaskURL + `fcontent?fragment_id=${fragment_id}`);
+  }
   /**
   * ... ... ...
   * @param bookID
