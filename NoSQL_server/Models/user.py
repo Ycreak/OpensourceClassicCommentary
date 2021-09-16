@@ -20,12 +20,17 @@ class User:
         if "role" in received_user: 
             assert isinstance(received_user['role'], str)
             self.role = received_user['role']
-            
+
+        if "new_role" in received_user: 
+            assert isinstance(received_user['new_role'], str)
+            self.new_role = received_user['new_role']
+
     # Default fragment fields
     username = ''
     password = ''
     new_password = ''
     role = ''
+    new_role = ''
 
     user_empty = {
         "username": "",

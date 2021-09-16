@@ -1,5 +1,3 @@
-from models import *
-
 import couchdb
 from uuid import uuid4
 import copy
@@ -33,7 +31,6 @@ class Fragment_handler:
         for id in self.frag_db:
             author_list.append(self.frag_db[id]['author'])
         return sorted(set([x for x in author_list]))
-
 
     def Retrieve_all_titles(self, author) -> list:
         """Retrieves all available titles per given author
