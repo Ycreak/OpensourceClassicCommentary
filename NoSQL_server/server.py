@@ -114,6 +114,16 @@ def change_role():
     received_user = User(request.get_json())
     return user_db.Change_role(received_user)
 
+# @app.route("/revise_fragment_pointer", methods=['POST'])
+# def revise_fragment_pointer(fragment_source_id, fragment_destination_id):
+#     assert isinstance(fragment_source_id, dict)
+#     assert isinstance(fragment_fragment_destination_id, dict)
+
+#     fragment_source = Fragment(fragment_source_id)
+#     fragment_destination = Fragment(fragment_destination_id)
+
+#     return frag_db.Revise_fragment_pointer(fragment_source, fragment_destination)
+
 # @app.route("/")
 # def ():
 

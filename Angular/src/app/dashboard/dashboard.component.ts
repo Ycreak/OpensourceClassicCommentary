@@ -46,9 +46,10 @@ import { IKeyboardLayouts, keyboardLayouts, MAT_KEYBOARD_LAYOUTS, MatKeyboardMod
 })
 export class DashboardComponent implements OnInit {
 
-  selected_author : string = 'Ennius';
-  selected_book : string = 'Thyestes';
-  selected_editor : string = 'TRF';
+  selected_author : string = '';
+  selected_book : string = '';
+  selected_editor : string = '';
+  selected_fragment : string;
 
   retrieved_authors : object;
   retrieved_books : object;
@@ -61,6 +62,8 @@ export class DashboardComponent implements OnInit {
   fragmentForm: FormGroup;
 
   possible_status = ['normal', 'incertum', 'adesp.']
+
+  pointer_editor : string;
 
   // User dashboard
   isChecked = false;
@@ -96,7 +99,7 @@ export class DashboardComponent implements OnInit {
     // this.Request_users()
     // Initialise the fragment form. TODO: can we do this somewhere else?
     this.fragmentForm = this.formBuilder.group({
-      _id: 'hellothere',
+      _id: '',
       fragment_name: '', //['', Validators.required],
       author: '',
       title: '',
@@ -120,7 +123,7 @@ export class DashboardComponent implements OnInit {
    */
   public Test(thing){
     console.log(thing)
-    console.log(this.fragmentForm.value)
+    console.log(this.retrieved_fragment)
   }
 
   public Retrieve_fragment_numbers(fragments){    
@@ -135,8 +138,10 @@ export class DashboardComponent implements OnInit {
     return number_list
   }
 
-  public Retrieve_requested_fragment(fragments, fragment_number){
+  public Retrieve_requested_fragment(fragments, fragment_number, update_content_form){
     let fragment_id = ''
+
+    console.log(update_content_form)
 
     for(let fragment in fragments){
       if(fragments[fragment].fragment_name == fragment_number){
@@ -147,14 +152,21 @@ export class DashboardComponent implements OnInit {
     this.api.Get_specific_fragment(fragment_id).subscribe(
       data => { 
         this.retrieved_fragment = data;
-        this.Update_content_form(this.retrieved_fragment)
-        // console.log('selected fragment', data)
-      });  
+        
+        if(update_content_form){
+          this.Update_content_form(this.retrieved_fragment); // Dirty hack, need proper design
+          this.selected_fragment = fragment_number;
+        }
+        else {
+          // We are doing references (this is so bad) (because of the overlapping selection fields)
+          this.Push_fragment_link(data['author'], data['title'], data['editor'], data['fragment_name'], data['_id'])
+        }  
+    });
   }
 
   public Clean_fragment_content(){
     // Clears context and lines
-    this.clear_fields()
+    this.Clear_fields()
 
     this.UpdateForm('fragmentForm','translation', '');
     this.UpdateForm('fragmentForm','differences', '');
@@ -164,7 +176,7 @@ export class DashboardComponent implements OnInit {
   }
 
   public Update_content_form(fragment){
-  
+    // This functions updates the fragmentForm with the provided fragment
     // FIXME: This should be done using a for loop
     this.UpdateForm('fragmentForm','_id', fragment._id);
     this.UpdateForm('fragmentForm','fragment_name', fragment.fragment_name);
@@ -176,20 +188,78 @@ export class DashboardComponent implements OnInit {
     this.UpdateForm('fragmentForm','commentary', fragment.commentary);
     this.UpdateForm('fragmentForm','apparatus', fragment.apparatus);
     this.UpdateForm('fragmentForm','reconstruction', fragment.reconstruction);
-    this.UpdateForm('fragmentForm','linked_fragments', fragment.linked_fragments);
     this.UpdateForm('fragmentForm','status', fragment.status);
     this.UpdateForm('fragmentForm','lock', fragment.lock);
 
+    // Fill the fragment context array
     for (let item in fragment.context){
-      this.addItem2(fragment.context[item].author, fragment.context[item].location, fragment.context[item].text)
+      let items = this.fragmentForm.get('context') as FormArray;
+      items.push(
+        this.formBuilder.group({
+          author: fragment.context[item].author,
+          location: fragment.context[item].location,
+          text: fragment.context[item].text,
+        })
+      );
     }
-
+    // Fill the fragment lines array
     for (let item in fragment.lines){
-      this.addItem('line_number', 'text', fragment.lines[item].line_number, fragment.lines[item].text, 'lines')
+      let items = this.fragmentForm.get('lines') as FormArray;
+      items.push(
+        this.formBuilder.group({
+          'line_number': fragment.lines[item].line_number,
+          'text': fragment.lines[item].text,
+        })
+      );
     }
-
+    // Fill the linked fragment array
+    for (let item in fragment.linked_fragments){
+      let items = this.fragmentForm.get('linked_fragments') as FormArray;
+      items.push(
+        this.formBuilder.group({
+          author: fragment.linked_fragments[item].author,
+          title: fragment.linked_fragments[item].title,
+          editor: fragment.linked_fragments[item].editor,
+          fragment_name: fragment.linked_fragments[item].fragment_name,
+          fragment_id: fragment.linked_fragments[item].fragment_id,
+        })
+      );
+    }
   }
 
+  public Push_fragment_line(line_number, text){
+    let fragment_lines = this.fragmentForm.get('lines') as FormArray;
+    fragment_lines.push(
+      this.formBuilder.group({
+        line_number: line_number,
+        text: text,
+      })
+    );
+  }
+
+  public Push_fragment_context(author, location, text){
+    let fragment_context = this.fragmentForm.get('context') as FormArray;
+    fragment_context.push(
+      this.formBuilder.group({
+        author: author,
+        location: location,
+        text: text,
+      })
+    );
+  }
+
+  public Push_fragment_link(author, title, editor ,fragment_name, fragment_id){
+    let fragment_link = this.fragmentForm.get('linked_fragments') as FormArray;
+    fragment_link.push(
+      this.formBuilder.group({
+        author: author,
+        title: title,
+        editor: editor,
+        fragment_name: fragment_name,
+        fragment_id: fragment_id,
+      })
+    );    
+  }  
   // FORM RELATED FUNCTIONS
   /**
    * Updates a value of a key in the given form
@@ -201,45 +271,23 @@ export class DashboardComponent implements OnInit {
     this[form].patchValue({[key]: value});
   }
 
-  Reset_form(){
+  public Reset_form(){
     this.fragmentForm.reset();
-    this.clear_fields();
+    this.Clear_fields();
   }
 
-  clear_fields(){
+  public Clear_fields(){
     let context = this.fragmentForm.get('context') as FormArray
     let lines = this.fragmentForm.get('lines') as FormArray
+    let linked_fragments = this.fragmentForm.get('linked_fragments') as FormArray
 
     context.clear()
     lines.clear()
+    linked_fragments.clear()
   }
 
-  addItem(field1, field2, content1, content2, target): void {
-    let items = this.fragmentForm.get(target) as FormArray;
-    items.push(
-      
-      this.formBuilder.group({
-        [field1]: content1,
-        [field2]: content2,
-      })
-      
-    );
-  }
 
-  addItem2(content1, content2, content3): void {
-    let items = this.fragmentForm.get('context') as FormArray;
-    items.push(
-      
-      this.formBuilder.group({
-        author: content1,
-        location: content2,
-        text: content3,
-      })
-      
-    );
-  }
-
-  removeItem(target: string, index: number) {
+  public Remove_form_item(target: string, index: number) {
     let items = this.fragmentForm.get(target) as FormArray;
     items.removeAt(index);
   }
@@ -296,6 +344,7 @@ export class DashboardComponent implements OnInit {
 
   public Request_revise_fragment(fragment){
     // If the fragment is locked and the user is not a teacher, we will not allow this operation.
+        
     if(fragment.lock && !this.authService.is_teacher){
       this.utility.OpenSnackbar('This fragment is locked.')
     }
@@ -313,20 +362,24 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  public Request_create_fragment(fragment){
-    let item_string = fragment.author + ', ' +  fragment.title + ', ' + fragment.editor + ': ' + fragment.fragment_name
+  // public Request_revise_fragment_pointer(fragment){
 
-    this.dialog.OpenConfirmationDialog('Are you sure you want to CREATE this fragment?', item_string).subscribe(result => {
-      if(result){
-        this.api.Create_fragment(fragment).subscribe(
-          res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
-        );
-      }
-    });
-    // Now reset form and request the fragments again
-    this.Reset_form();
-    this.Request_fragments(this.selected_author, this.selected_book, this.selected_editor);
-  }
+  // }
+  // @deprecated
+  // public Request_create_fragment(fragment){
+  //   let item_string = fragment.author + ', ' +  fragment.title + ', ' + fragment.editor + ': ' + fragment.fragment_name
+
+  //   this.dialog.OpenConfirmationDialog('Are you sure you want to CREATE this fragment?', item_string).subscribe(result => {
+  //     if(result){
+  //       this.api.Create_fragment(fragment).subscribe(
+  //         res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
+  //       );
+  //     }
+  //   });
+  //   // Now reset form and request the fragments again
+  //   this.Reset_form();
+  //   this.Request_fragments(this.selected_author, this.selected_book, this.selected_editor);
+  // }
 
   public Request_delete_fragment(fragment){
     let item_string = fragment.author + ', ' +  fragment.title + ', ' + fragment.editor + ': ' + fragment.fragment_name

@@ -21,7 +21,7 @@
     <mat-checkbox class="btn" [(ngModel)]="toggle_column_four">FOUR</mat-checkbox>
     <mat-checkbox class="btn" [(ngModel)]="toggle_commentary">COM</mat-checkbox>
     <mat-checkbox class="btn" [(ngModel)]="toggle_playground">PLY</mat-checkbox>
-    <mat-checkbox class="btn" [(ngModel)]="toggle_multiplayer" *ngIf="this.authService.is_logged_in">MUL</mat-checkbox>
+    <mat-checkbox class="btn" [(ngModel)]="toggle_multiplayer" *ngIf="this.authService.is_teacher">MUL</mat-checkbox>
     <button mat-button class="btn" [matMenuTriggerFor]="menu">MENU</button>
 </mat-toolbar>
 
@@ -30,13 +30,13 @@
     <button routerLink="/text" mat-menu-item>Text OSCC</button>
     <button routerLink="/scansion" mat-menu-item>Scansion</button>
 
-    <a href="http://oscc.nolden.biz/Documentation/" target='_blank' mat-menu-item *ngIf="this.authService.is_logged_in">Documentation</a>  
+    <a href="http://oscc.nolden.biz/Documentation/" target='_blank' mat-menu-item *ngIf="this.authService.is_teacher">Documentation</a>  
     <!-- <button (click)="OpenText()" mat-menu-item>Text Inside</button> -->
     <!-- <button (click)="Test('thing')" mat-menu-item>Test</button> -->
     <button (click)="Login()" mat-menu-item>Login</button>
     <button (click)="this.dialog.OpenAbout()" mat-menu-item>About</button>
     <!-- <button (click)="ngOnInit()" *ngIf="this.authService.is_logged_in">Reload Data</button> -->
-    <button mat-menu-item>V21.09.13</button>
+    <button mat-menu-item>V21.09.26</button>
 </mat-menu>
 
 <!-- Change text dialog -->
@@ -214,7 +214,7 @@
 
             <!-- Show banner if no commentary available -->
             <div *ngIf="this.current_fragment.no_content" class="alert alert-info" role="alert">
-                No content is available for this fragment.
+                No content is available yet for this fragment.
             </div>
             <!-- Show all the commentary fields -->
             <mat-expansion-panel *ngIf="this.current_fragment.translation">

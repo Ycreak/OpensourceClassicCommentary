@@ -18,7 +18,7 @@ class User_handler():
         # Select the database we need
         self.user_db = database['users']
 
-    def Find_user(self, user) -> tuple[bool, dict]:
+    def Find_user(self, user): #-> tuple[bool, dict]: #FIXME: does not work on Pi
         """Finds the requested user in the database
 
         Args:
@@ -59,7 +59,7 @@ class User_handler():
 
         if user_exist:
             if self.Verify_password(found_user['password'], user.password):
-                found_user_role = user['role']
+                found_user_role = found_user['role']
                 # Return the role of the found user to Angular
                 return make_response(found_user_role, 200)
             else:

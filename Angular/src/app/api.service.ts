@@ -40,8 +40,8 @@ export class ApiService {
   // ApiUrl: String = 'http://localhost:5000/';
   ApiUrl: String = 'http://oscc.nolden.biz:5000/'; // For deployment
   // CREA 4
-  // FlaskURL: String = 'https://oscc.nolden.biz:5003/'; // For production (http! not https)                                 
-  FlaskURL: String = 'http://localhost:5003/'; // For deployment (http! not https)                                 
+  FlaskURL: String = 'https://oscc.nolden.biz:5003/'; // For production (http! not https)                                 
+  // FlaskURL: String = 'http://localhost:5003/'; // For deployment (http! not https)                                 
 
   NeuralURL: String = 'https://oscc.nolden.biz:5002/'; // For deployment (http! not https)                                 
 
@@ -137,9 +137,10 @@ export class ApiService {
 //  | |    | |__| |____) |  | |   
 //  |_|     \____/|_____/   |_|   
 
-  Create_fragment(fragment: object): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + `create_fragment`, fragment, { observe: 'response', responseType: 'text' as 'json' });
-  } 
+  // @deprecated
+  // Create_fragment(fragment: object): Observable<any> {
+  //   return this.http.post<any>(this.FlaskURL + `create_fragment`, fragment, { observe: 'response', responseType: 'text' as 'json' });
+  // } 
   Revise_fragment(fragment: object): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `revise_fragment`, fragment, { observe: 'response', responseType: 'text' as 'json'  });
   }
@@ -148,6 +149,9 @@ export class ApiService {
   }
   Update_fragment_lock(data: object): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `set_fragment_lock`, data, { observe: 'response', responseType: 'text' as 'json'  });
+  }
+  Revise_fragment_pointer(fragment: object): Observable<any> {
+    return this.http.post<any>(this.FlaskURL + `revise_fragment_pointer`, fragment, { observe: 'response', responseType: 'text' as 'json'  });
   }
   Login_user(login: object): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `login_user`, login, { observe: 'response', responseType: 'text' as 'json'  });
