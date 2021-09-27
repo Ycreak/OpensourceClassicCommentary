@@ -13,6 +13,11 @@ body, h1, h2, h3, h4, h5 {
     overflow-y: scroll;
 }
 
+/* HTML Elements */
+.overflow_scroll {
+    overflow-y: scroll;
+}
+
 div {
     word-wrap: break-word;
 }
@@ -99,3 +104,6 @@ button {
     font-size: 1.5rem !important;
   }
 
+.input-form-full-width { 
+    width: 60%;
+}

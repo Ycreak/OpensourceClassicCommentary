@@ -257,7 +257,10 @@ export class FragmentsComponent implements OnInit {
    * @author Ycreak
    */
   public Login() {
-    const dialogRef = this.matdialog.open(LoginComponent);
+    const dialogRef = this.matdialog.open(LoginComponent, {
+      height: '60vh',
+      width: '40vw',
+    });
   }
 
   /**
