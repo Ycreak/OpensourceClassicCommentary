@@ -82,6 +82,7 @@ class Fragment_handler:
                 'fragment_name' : fragment['fragment_name'],
                 'lines' : fragment['lines'],
                 'status' : fragment['status'],
+                'linked_fragments' : fragment['linked_fragments']
             }
             fragment_list.append(fragment_entry) 
 
@@ -130,35 +131,6 @@ class Fragment_handler:
             return False, {}    
 
     # POST FUNCTIONS
-    # DEPRECATED
-    def Create_fragment(self, fragment) -> make_response:
-        """ Creates a fragment from the provided data
-
-        Args:
-            fragment (object): fragment model containing all fragment data
-
-        Returns:
-            flask response: confirmation of (un)successful execution
-        """
-        # Check if the fragment already exists in the database
-        return make_response('Function deprecated. Please update your client.', 410)
-
-        # fragment_exist, _ = self.Find_fragment(fragment)
-
-        # if fragment_exist:          
-        #     return make_response('Fragment already exists!', 403)
-        # else:
-        #     new_fragment = copy.deepcopy(fragment.fragment_empty)
-
-        #     for fragment_entry in ['author', 'title', 'editor', 'fragment_name', 'status']:
-        #         new_fragment[fragment_entry] = getattr(fragment, fragment_entry)
-
-        #     # Give the fragment a unique id
-        #     new_fragment['_id'] = uuid4().hex
-
-        #     doc_id, doc_rev = self.frag_db.save(new_fragment)
-        #     return make_response('Succesfully created fragment!', 201)
-
     def Revise_fragment(self, fragment) -> make_response:
         """Revises the provided fragment with the provided data. Creates a new one
         if none exists yet.
@@ -223,21 +195,3 @@ class Fragment_handler:
         doc_id, doc_rev = self.frag_db.save(doc)
 
         return make_response('Fragment lock status set', 200)
-
-    # def Revise_fragment_pointer(fragment_source, fragment_destination):
-    #     """Locks the fragment so that it cannot be edited
-
-    #     Args:
-    #         fragment_source (object): fragment object with id of fragment to be referred
-    #         fragment_destination (object): fragment object with if of fragment to be referred to
-
-    #     Returns:
-    #         flask response: confirmation of fragment linkage
-    #     """
-    #     doc = self.frag_db[fragment_source._id]
-    #     for pointer in doc['linked_fragments']:
-    #         if pointer == fragment_destination._id:
-    #             return make_response('Fragment is already referred to', 403)
-        
-    #     doc['linked_fragments'].append(fragment_destination._id)
-    #     return make_response('Fragment referred', 200)

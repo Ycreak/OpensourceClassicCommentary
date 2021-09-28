@@ -40,8 +40,8 @@ export class ApiService {
   // ApiUrl: String = 'http://localhost:5000/';
   ApiUrl: String = 'http://oscc.nolden.biz:5000/'; // For deployment
   // CREA 4
-  FlaskURL: String = 'https://oscc.nolden.biz:5003/'; // For production (http! not https)                                 
-  // FlaskURL: String = 'http://localhost:5003/'; // For deployment (http! not https)                                 
+  // FlaskURL: String = 'https://oscc.nolden.biz:5003/'; // For production (http! not https)                                 
+  FlaskURL: String = 'http://localhost:5003/'; // For deployment (http! not https)                                 
 
   NeuralURL: String = 'https://oscc.nolden.biz:5002/'; // For deployment (http! not https)                                 
 
@@ -59,8 +59,8 @@ export class ApiService {
   * @returns
   * @author Ycreak, ppbors
   */
-  GetFragments(author: string, book: string, editor: string): Observable<Fragment[]> {
-    return this.http.get<Fragment[]>(this.FlaskURL + `fragments?author=${author}&book=${book}&editor=${editor}`);
+  GetFragments(author: string, book: string, editor: string): Observable<JSON> {
+    return this.http.get<JSON>(this.FlaskURL + `fragments?author=${author}&book=${book}&editor=${editor}`);
   }
 
   public Get_fragment_content(fragment_id: string): Observable<any> {

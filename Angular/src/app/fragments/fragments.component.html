@@ -36,7 +36,7 @@
     <button (click)="Login()" mat-menu-item>Login</button>
     <button (click)="this.dialog.OpenAbout()" mat-menu-item>About</button>
     <!-- <button (click)="ngOnInit()" *ngIf="this.authService.is_logged_in">Reload Data</button> -->
-    <button mat-menu-item>V21.09.27</button>
+    <button mat-menu-item>V21.09.27a</button>
 </mat-menu>
 
 <!-- Change text dialog -->
@@ -65,7 +65,7 @@
         <div *ngIf="toggle_column_one" class="col-sm overflowColumn">
             <!-- Display for if server is down -->
             <div *ngIf="this.server_down" class="alert alert-warning" role="alert">
-                The server is not responding. Please contact the administrator.
+                Your client cannot connect to the server. Please check if you have the latest version of your browser installed. Furthermore, secured networks like DUWO and Leiden University are known to cause problems. Also, please click <u><a href="https://oscc.lucdh.nl">the following URL</a></u> for the best results. Please contact the administrators if problems are still occuring.
             </div>
             <!-- Text information and edition of reference selection -->
             <div class="row">
@@ -89,9 +89,19 @@
             <div cdkDropList class="fragment-list" (cdkDropListDropped)="this.utility.moveAndDrop($event, this.column_data.column1.fragments)">
                 <div class="fragment-box" *ngFor="let fragment of this.column_data.column1.fragments" 
                     (click)="Handle_fragment_click(fragment)" cdkDrag>
-                    <div>
-                        <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
-                    </div>
+                    
+                    <div *ngIf="fragment.fragment_link_found; then linked_fragment_css else default_fragment_css"></div>    
+                    <ng-template #linked_fragment_css>
+                        <div class="red">
+                            <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
+                        </div>
+                    </ng-template>
+
+                    <ng-template #default_fragment_css>
+                        <div>
+                            <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
+                        </div>
+                    </ng-template>
                     
                     <div *ngFor="let fragment_line of fragment.lines">      
                         <div [innerHTML]="fragment_line.line_complete | safeHtml"></div>  <!--safeHtml to allow whitespaces             -->
@@ -124,9 +134,18 @@
             <div cdkDropList class="fragment-list" (cdkDropListDropped)="this.utility.moveAndDrop($event, this.column_data.column2.fragments)">
                 <div class="fragment-box" *ngFor="let fragment of this.column_data.column2.fragments" 
                     (click)="Handle_fragment_click(fragment)" cdkDrag>
-                    <div>
-                        <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
-                    </div>
+                    <div *ngIf="fragment.fragment_link_found; then linked_fragment_css else default_fragment_css"></div>    
+                    <ng-template #linked_fragment_css>
+                        <div class="red">
+                            <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
+                        </div>
+                    </ng-template>
+
+                    <ng-template #default_fragment_css>
+                        <div>
+                            <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
+                        </div>
+                    </ng-template>
                     <div *ngFor="let fragment_line of fragment.lines">      
                         <div [innerHTML]="fragment_line.line_complete | safeHtml"></div>  <!--safeHtml to allow whitespaces             -->
                     </div>     
@@ -158,9 +177,18 @@
             <div cdkDropList class="fragment-list" (cdkDropListDropped)="this.utility.moveAndDrop($event, this.column_data.column3.fragments)">
                 <div class="fragment-box" *ngFor="let fragment of this.column_data.column3.fragments" 
                     (click)="Handle_fragment_click(fragment)" cdkDrag>
-                    <div>
-                        <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
-                    </div>
+                    <div *ngIf="fragment.fragment_link_found; then linked_fragment_css else default_fragment_css"></div>    
+                    <ng-template #linked_fragment_css>
+                        <div class="red">
+                            <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
+                        </div>
+                    </ng-template>
+
+                    <ng-template #default_fragment_css>
+                        <div>
+                            <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
+                        </div>
+                    </ng-template>
                     <div *ngFor="let fragment_line of fragment.lines">      
                         <div [innerHTML]="fragment_line.line_complete | safeHtml"></div>  <!--safeHtml to allow whitespaces             -->
                     </div>     
@@ -192,9 +220,18 @@
             <div cdkDropList class="fragment-list" (cdkDropListDropped)="this.utility.moveAndDrop($event, this.column_data.column4.fragments)">
                 <div class="fragment-box" *ngFor="let fragment of this.column_data.column4.fragments" 
                     (click)="Handle_fragment_click(fragment)" cdkDrag>
-                    <div>
-                        <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
-                    </div>
+                    <div *ngIf="fragment.fragment_link_found; then linked_fragment_css else default_fragment_css"></div>    
+                    <ng-template #linked_fragment_css>
+                        <div class="red">
+                            <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
+                        </div>
+                    </ng-template>
+
+                    <ng-template #default_fragment_css>
+                        <div>
+                            <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
+                        </div>
+                    </ng-template>
                     <div *ngFor="let fragment_line of fragment.lines">      
                         <div [innerHTML]="fragment_line.line_complete | safeHtml"></div>  <!--safeHtml to allow whitespaces             -->
                     </div>     

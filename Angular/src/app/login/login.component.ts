@@ -44,7 +44,6 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.authService.magic_phrase)
   }
 
   public submit_login(form): void {
@@ -59,13 +58,13 @@ export class LoginComponent implements OnInit {
   }
 
   public submit_create(form): void {
-    console.log(form.magic_word, this.authService.magic_phrase)
-
 
     if(form.username.length < 5 || form.password1.length < 5){
       this.utility.OpenSnackbar('Please provide proper details');
       return
     }
+
+    console.log('Provided magic word:', form.magic_word)
 
     if(form.magic_word != this.authService.magic_phrase){
       this.utility.OpenSnackbar('That is not the magic word');

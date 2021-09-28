@@ -35,10 +35,10 @@ export class FragmentsComponent implements OnInit {
 
   // Toggle switches for the HTML columns/modes
   toggle_column_one: boolean = true;
-  toggle_column_two: boolean = false;
+  toggle_column_two: boolean = true;
   toggle_column_three: boolean = false;
   toggle_column_four: boolean = false;
-  toggle_commentary: boolean = true;
+  toggle_commentary: boolean = false;
   toggle_playground: boolean = false;
   toggle_multiplayer: boolean = false;
   // Booleans for HTML related items
@@ -59,25 +59,25 @@ export class FragmentsComponent implements OnInit {
       author : 'Ennius',
       book : 'Thyestes',
       editor : 'TRF',
-      fragments : '',
+      fragments : [new Fragment({})],
     },
     column2 : {
-      author : '',
-      book : '',
-      editor : '',
-      fragments : '',
+      author : 'Ennius',
+      book : 'Thyestes',
+      editor : 'Ribbeck',
+      fragments : [new Fragment({})],
     },
     column3 : {
       author : '',
       book : '',
       editor : '',
-      fragments : '',
+      fragments : [new Fragment({})],
     },
     column4 : {
       author : '',
       book : '',
       editor : '',
-      fragments : '',
+      fragments : [new Fragment({})],
     },
     playground : {
       author : '',
@@ -114,6 +114,7 @@ export class FragmentsComponent implements OnInit {
     // Retrieves everything surrounding the text.
     this.RequestEditors('Ennius', 'Thyestes'); // Retrieve at default the Ennius' Thyestes text.
     this.Request_fragments('Ennius', 'Thyestes', 'TRF', 'column1');
+    this.Request_fragments('Ennius', 'Thyestes', 'Ribbeck', 'column2');
     //FIXME: this should be handled within the multiplayer class? It wont call the constructor
     this.multiplayer.InitiateFirestore(this.multiplayer.sessionCode, this.multiplayer.tableName); 
   }
@@ -165,15 +166,31 @@ export class FragmentsComponent implements OnInit {
   public Request_fragments(author: string, book: string, editor: string, column: string){
     this.api.GetFragments(author, book, editor).subscribe(
       data => { 
+        // Create a list of Fragment objects
+        let fragment_list = this.create_fragment_list(data);
         // Format the data just how we want it
-        data = this.Add_HTML_to_lines(data);
-        data = data.sort(this.utility.SortFragmentsArrayNumerically);
-        data = this.Sort_fragments_on_status(data);
+        fragment_list = this.Add_HTML_to_lines(fragment_list);
+        fragment_list = fragment_list.sort(this.utility.SortFragmentsArrayNumerically);
+        fragment_list = this.Sort_fragments_on_status(fragment_list);
         // Store it at the correct place
-        this.column_data[column].fragments = data;
+        this.column_data[column].fragments = fragment_list;
         // While we are at it, save the fragment numbers
-        this.retrieved_fragment_numbers = this.Retrieve_fragment_numbers(data);
-      });  
+        this.retrieved_fragment_numbers = this.Retrieve_fragment_numbers(fragment_list);
+      }
+    );  
+  }
+
+  /**
+   * Creates a list of typescript fragment objects using the json received from the server
+   * @param fragment_json which is received from the server
+   * @returns list of Fragment objects
+   */
+  public create_fragment_list(fragment_json: JSON){
+    let fragment_list = [];
+    for(let index in fragment_json){
+      fragment_list.push(new Fragment(fragment_json[index]))
+    }
+    return fragment_list
   }
 
   /** 
@@ -248,8 +265,40 @@ export class FragmentsComponent implements OnInit {
    * TODO: pressed fragment should be an object initialised at startup
    */
   public Handle_fragment_click(fragment){
-      this.current_fragment = new Fragment(fragment)
-      this.Request_fragment_content(fragment.id)
+      this.current_fragment = fragment
+      this.Request_fragment_content(fragment.fragment_id)
+
+      // Reset fragment linking for all fragments
+      for(let index in this.column_data){
+        let fragment_array = this.column_data[index].fragments
+        for(let fragment in fragment_array){
+          fragment_array[fragment].fragment_link_found = false;
+        }
+      }
+      
+      // Colour the clicked fragment
+      fragment.fragment_link_found = true;
+
+      // And the corresponding ones in the other columns
+      for(let index in fragment.linked_fragments){
+        let linked_fragment_id = fragment.linked_fragments[index].fragment_id
+
+        let corresponding_fragment = this.column_data['column1'].fragments.find(i => i.fragment_id === linked_fragment_id);
+        if(corresponding_fragment) corresponding_fragment.fragment_link_found = true
+
+        corresponding_fragment = this.column_data['column2'].fragments.find(i => i.fragment_id === linked_fragment_id);
+        if(corresponding_fragment) corresponding_fragment.fragment_link_found = true
+        
+        corresponding_fragment = this.column_data['column3'].fragments.find(i => i.fragment_id === linked_fragment_id);
+        if(corresponding_fragment) corresponding_fragment.fragment_link_found = true
+
+        corresponding_fragment = this.column_data['column4'].fragments.find(i => i.fragment_id === linked_fragment_id);
+        if(corresponding_fragment) corresponding_fragment.fragment_link_found = true
+
+      }
+
+      //FIXME:
+      // console.log(this.column_data['column1'].fragments)
   }
 
   /**

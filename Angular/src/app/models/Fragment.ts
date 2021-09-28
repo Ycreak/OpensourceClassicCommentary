@@ -2,6 +2,8 @@ export class Fragment
 {
     constructor(fragment)
     {
+        if(fragment['id']) this.fragment_id = fragment['id']
+
         if(fragment['fragment_name']) this.fragment_name = fragment['fragment_name']
         if(fragment['author']) this.author = fragment['author']
         if(fragment['book']) this.book = fragment['book']
@@ -30,6 +32,7 @@ export class Fragment
         this.no_content = temp_no_content;
     }
 
+    fragment_id : string;
     fragment_name : string = 'TBA';
     author : string = 'TBA';
     book : string = 'TBA';
@@ -45,5 +48,6 @@ export class Fragment
     linked_fragments : object;
 
     no_content : boolean = false;
+    fragment_link_found : boolean = false; 
 }
 

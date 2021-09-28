@@ -22,7 +22,7 @@
   justify-content: space-between;
   box-sizing: border-box;
   cursor: move;
-  background: white;
+  // background: white;
   font-size: 14px;
 
   &:hover {
@@ -192,4 +192,8 @@
 
 .mat-checkbox-label {
   width: fit-content;
+}
+
+.red{
+  color: red;
 }
