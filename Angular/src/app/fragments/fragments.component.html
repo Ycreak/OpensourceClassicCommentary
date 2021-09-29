@@ -86,28 +86,10 @@
                 </div>
             </div>
             <!-- Fragments loop to display all fragments of the chosen edition of reference -->
-            <div cdkDropList class="fragment-list" (cdkDropListDropped)="this.utility.moveAndDrop($event, this.column_data.column1.fragments)">
-                <div class="fragment-box" *ngFor="let fragment of this.column_data.column1.fragments" 
-                    (click)="Handle_fragment_click(fragment)" cdkDrag>
-                    
-                    <div *ngIf="fragment.fragment_link_found; then linked_fragment_css else default_fragment_css"></div>    
-                    <ng-template #linked_fragment_css>
-                        <div class="red">
-                            <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
-                        </div>
-                    </ng-template>
-
-                    <ng-template #default_fragment_css>
-                        <div>
-                            <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
-                        </div>
-                    </ng-template>
-                    
-                    <div *ngFor="let fragment_line of fragment.lines">      
-                        <div [innerHTML]="fragment_line.line_complete | safeHtml"></div>  <!--safeHtml to allow whitespaces             -->
-                    </div>     
-                </div> 
-            </div> 
+            <!-- Handle the column using the template -->
+            <ng-container 
+                *ngTemplateOutlet="fragment_column;context:{column: 'column1'}">
+            </ng-container>
         </div>
 
         <!-- Second column, containing the fragments from other editions (these are movable) -->                                
@@ -130,27 +112,10 @@
                     </ng-container>
                 </div>
             </div>
-            <!-- Fragments loop to display all fragments of the chosen edition of reference -->
-            <div cdkDropList class="fragment-list" (cdkDropListDropped)="this.utility.moveAndDrop($event, this.column_data.column2.fragments)">
-                <div class="fragment-box" *ngFor="let fragment of this.column_data.column2.fragments" 
-                    (click)="Handle_fragment_click(fragment)" cdkDrag>
-                    <div *ngIf="fragment.fragment_link_found; then linked_fragment_css else default_fragment_css"></div>    
-                    <ng-template #linked_fragment_css>
-                        <div class="red">
-                            <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
-                        </div>
-                    </ng-template>
-
-                    <ng-template #default_fragment_css>
-                        <div>
-                            <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
-                        </div>
-                    </ng-template>
-                    <div *ngFor="let fragment_line of fragment.lines">      
-                        <div [innerHTML]="fragment_line.line_complete | safeHtml"></div>  <!--safeHtml to allow whitespaces             -->
-                    </div>     
-                </div> 
-            </div> 
+            <!-- Handle the column using the template -->
+            <ng-container 
+                *ngTemplateOutlet="fragment_column;context:{column: 'column2'}">
+            </ng-container>
         </div>
     
         <!-- Third column, containing the fragments from other editions (these are movable) -->                                
@@ -173,27 +138,10 @@
                     </ng-container>
                 </div>
             </div>
-            <!-- Fragments loop to display all fragments of the chosen edition of reference -->
-            <div cdkDropList class="fragment-list" (cdkDropListDropped)="this.utility.moveAndDrop($event, this.column_data.column3.fragments)">
-                <div class="fragment-box" *ngFor="let fragment of this.column_data.column3.fragments" 
-                    (click)="Handle_fragment_click(fragment)" cdkDrag>
-                    <div *ngIf="fragment.fragment_link_found; then linked_fragment_css else default_fragment_css"></div>    
-                    <ng-template #linked_fragment_css>
-                        <div class="red">
-                            <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
-                        </div>
-                    </ng-template>
-
-                    <ng-template #default_fragment_css>
-                        <div>
-                            <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
-                        </div>
-                    </ng-template>
-                    <div *ngFor="let fragment_line of fragment.lines">      
-                        <div [innerHTML]="fragment_line.line_complete | safeHtml"></div>  <!--safeHtml to allow whitespaces             -->
-                    </div>     
-                </div> 
-            </div> 
+            <!-- Handle the column using the template -->
+            <ng-container 
+                *ngTemplateOutlet="fragment_column;context:{column: 'column3'}">
+            </ng-container>
         </div>
 
         <!-- Second column, containing the fragments from other editions (these are movable) -->                                
@@ -216,27 +164,10 @@
                     </ng-container>
                 </div>
             </div>
-            <!-- Fragments loop to display all fragments of the chosen edition of reference -->
-            <div cdkDropList class="fragment-list" (cdkDropListDropped)="this.utility.moveAndDrop($event, this.column_data.column4.fragments)">
-                <div class="fragment-box" *ngFor="let fragment of this.column_data.column4.fragments" 
-                    (click)="Handle_fragment_click(fragment)" cdkDrag>
-                    <div *ngIf="fragment.fragment_link_found; then linked_fragment_css else default_fragment_css"></div>    
-                    <ng-template #linked_fragment_css>
-                        <div class="red">
-                            <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
-                        </div>
-                    </ng-template>
-
-                    <ng-template #default_fragment_css>
-                        <div>
-                            <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
-                        </div>
-                    </ng-template>
-                    <div *ngFor="let fragment_line of fragment.lines">      
-                        <div [innerHTML]="fragment_line.line_complete | safeHtml"></div>  <!--safeHtml to allow whitespaces             -->
-                    </div>     
-                </div> 
-            </div> 
+            <!-- Handle the column using the template -->
+            <ng-container 
+                *ngTemplateOutlet="fragment_column;context:{column: 'column4'}">
+            </ng-container>
         </div>        
 
         <!-- Column with commentary, shown if a fragment from the edition of reference is clicked -->
@@ -702,6 +633,33 @@
     </mat-form-field>
 </ng-template>
 
+<ng-container 
+    *ngTemplateOutlet="fragment_column;context:{column: 'column2'}">
+</ng-container>
+
+<ng-template #fragment_column let-column="column">
+    <!-- Fragments loop to display all fragments of the chosen edition of reference -->
+    <div cdkDropList class="fragment-list" (cdkDropListDropped)="this.utility.moveAndDrop($event, this.column_data[column].fragments)">
+        <div class="fragment-box" *ngFor="let fragment of this.column_data[column].fragments" 
+            (click)="Handle_fragment_click(fragment)" cdkDrag>
+            <div *ngIf="fragment.fragment_link_found; then linked_fragment_css else default_fragment_css"></div>    
+            <ng-template #linked_fragment_css>
+                <div class="red">
+                    <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
+                </div>
+            </ng-template>
+
+            <ng-template #default_fragment_css>
+                <div>
+                    <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
+                </div>
+            </ng-template>
+            <div *ngFor="let fragment_line of fragment.lines">      
+                <div [innerHTML]="fragment_line.line_complete | safeHtml"></div>  <!--safeHtml to allow whitespaces             -->
+            </div>     
+        </div> 
+    </div> 
+</ng-template>
                 <!-- Possibility of adding notes -->
                 <!-- <div class="col-md-6">
                     <div mat-dialog-content>

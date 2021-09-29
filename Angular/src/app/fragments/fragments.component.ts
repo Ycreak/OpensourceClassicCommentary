@@ -36,8 +36,8 @@ export class FragmentsComponent implements OnInit {
   // Toggle switches for the HTML columns/modes
   toggle_column_one: boolean = true;
   toggle_column_two: boolean = true;
-  toggle_column_three: boolean = false;
-  toggle_column_four: boolean = false;
+  toggle_column_three: boolean = true;
+  toggle_column_four: boolean = true;
   toggle_commentary: boolean = false;
   toggle_playground: boolean = false;
   toggle_multiplayer: boolean = false;
@@ -58,13 +58,13 @@ export class FragmentsComponent implements OnInit {
     column1 : {
       author : 'Ennius',
       book : 'Thyestes',
-      editor : 'TRF',
+      editor : '',
       fragments : [new Fragment({})],
     },
     column2 : {
-      author : 'Ennius',
-      book : 'Thyestes',
-      editor : 'Ribbeck',
+      author : '',
+      book : '',
+      editor : '',
       fragments : [new Fragment({})],
     },
     column3 : {
@@ -115,8 +115,13 @@ export class FragmentsComponent implements OnInit {
     this.RequestEditors('Ennius', 'Thyestes'); // Retrieve at default the Ennius' Thyestes text.
     this.Request_fragments('Ennius', 'Thyestes', 'TRF', 'column1');
     this.Request_fragments('Ennius', 'Thyestes', 'Ribbeck', 'column2');
+    this.Request_fragments('Ennius', 'Thyestes', 'Jocelyn', 'column3');
+    this.Request_fragments('Ennius', 'Thyestes', 'Vahlen', 'column4');
+
+
+
     //FIXME: this should be handled within the multiplayer class? It wont call the constructor
-    this.multiplayer.InitiateFirestore(this.multiplayer.sessionCode, this.multiplayer.tableName); 
+    // this.multiplayer.InitiateFirestore(this.multiplayer.sessionCode, this.multiplayer.tableName); 
   }
 
   //   _____  ______ ____  _    _ ______  _____ _______ _____ 
@@ -166,6 +171,7 @@ export class FragmentsComponent implements OnInit {
   public Request_fragments(author: string, book: string, editor: string, column: string){
     this.api.GetFragments(author, book, editor).subscribe(
       data => { 
+        // console.log('data', data)
         // Create a list of Fragment objects
         let fragment_list = this.create_fragment_list(data);
         // Format the data just how we want it
@@ -266,7 +272,12 @@ export class FragmentsComponent implements OnInit {
    */
   public Handle_fragment_click(fragment){
       this.current_fragment = fragment
+
+      // Request content from this fragment
       this.Request_fragment_content(fragment.fragment_id)
+
+      // Request content from its linked fragments
+      //TODO:
 
       // Reset fragment linking for all fragments
       for(let index in this.column_data){
