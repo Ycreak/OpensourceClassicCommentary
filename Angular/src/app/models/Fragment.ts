@@ -47,6 +47,8 @@ export class Fragment
     lines : object;
     linked_fragments : object;
 
+    colour : string = 'black';
+
     no_content : boolean = false;
     fragment_link_found : boolean = false; 
 }

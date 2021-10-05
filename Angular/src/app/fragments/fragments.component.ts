@@ -35,10 +35,10 @@ export class FragmentsComponent implements OnInit {
 
   // Toggle switches for the HTML columns/modes
   toggle_column_one: boolean = true;
-  toggle_column_two: boolean = true;
-  toggle_column_three: boolean = true;
-  toggle_column_four: boolean = true;
-  toggle_commentary: boolean = false;
+  toggle_column_two: boolean = false;
+  toggle_column_three: boolean = false;
+  toggle_column_four: boolean = false;
+  toggle_commentary: boolean = true;
   toggle_playground: boolean = false;
   toggle_multiplayer: boolean = false;
   // Booleans for HTML related items
@@ -59,37 +59,37 @@ export class FragmentsComponent implements OnInit {
       author : 'Ennius',
       book : 'Thyestes',
       editor : '',
-      fragments : [new Fragment({})],
+      fragments : [],
     },
     column2 : {
       author : '',
       book : '',
       editor : '',
-      fragments : [new Fragment({})],
+      fragments : [],
     },
     column3 : {
       author : '',
       book : '',
       editor : '',
-      fragments : [new Fragment({})],
+      fragments : [],
     },
     column4 : {
       author : '',
       book : '',
       editor : '',
-      fragments : [new Fragment({})],
+      fragments : [],
     },
     playground : {
       author : '',
       book : '',
       editor : '',
-      fragments : '',
+      fragments : [],
     },
     playground2 : {
       author : '',
       book : '',
       editor : '',
-      fragments : '',
+      fragments : [],
     },     
   }
   // Allows for notes to be added on screen
@@ -114,9 +114,9 @@ export class FragmentsComponent implements OnInit {
     // Retrieves everything surrounding the text.
     this.RequestEditors('Ennius', 'Thyestes'); // Retrieve at default the Ennius' Thyestes text.
     this.Request_fragments('Ennius', 'Thyestes', 'TRF', 'column1');
-    this.Request_fragments('Ennius', 'Thyestes', 'Ribbeck', 'column2');
-    this.Request_fragments('Ennius', 'Thyestes', 'Jocelyn', 'column3');
-    this.Request_fragments('Ennius', 'Thyestes', 'Vahlen', 'column4');
+    // this.Request_fragments('Ennius', 'Thyestes', 'Ribbeck', 'column2');
+    // this.Request_fragments('Ennius', 'Thyestes', 'Jocelyn', 'column3');
+    // this.Request_fragments('Ennius', 'Thyestes', 'Vahlen', 'column4');
 
 
 
@@ -283,28 +283,29 @@ export class FragmentsComponent implements OnInit {
       for(let index in this.column_data){
         let fragment_array = this.column_data[index].fragments
         for(let fragment in fragment_array){
-          fragment_array[fragment].fragment_link_found = false;
+          fragment_array[fragment].colour = 'black';
         }
       }
       
       // Colour the clicked fragment
-      fragment.fragment_link_found = true;
+      fragment.colour = '#3F51B5';
 
       // And the corresponding ones in the other columns
       for(let index in fragment.linked_fragments){
         let linked_fragment_id = fragment.linked_fragments[index].fragment_id
 
         let corresponding_fragment = this.column_data['column1'].fragments.find(i => i.fragment_id === linked_fragment_id);
-        if(corresponding_fragment) corresponding_fragment.fragment_link_found = true
+        // if(corresponding_fragment) corresponding_fragment.fragment_link_found = true
+        if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
 
         corresponding_fragment = this.column_data['column2'].fragments.find(i => i.fragment_id === linked_fragment_id);
-        if(corresponding_fragment) corresponding_fragment.fragment_link_found = true
+        if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
         
         corresponding_fragment = this.column_data['column3'].fragments.find(i => i.fragment_id === linked_fragment_id);
-        if(corresponding_fragment) corresponding_fragment.fragment_link_found = true
+        if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
 
         corresponding_fragment = this.column_data['column4'].fragments.find(i => i.fragment_id === linked_fragment_id);
-        if(corresponding_fragment) corresponding_fragment.fragment_link_found = true
+        if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
 
       }
 

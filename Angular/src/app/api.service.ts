@@ -44,6 +44,7 @@ export class ApiService {
   // FlaskURL: String = 'http://localhost:5003/'; // For deployment (http! not https)                                 
 
   NeuralURL: String = 'https://oscc.nolden.biz:5002/'; // For deployment (http! not https)                                 
+  // NeuralURL: String = 'http://localhost:5002/'; // For deployment (http! not https)                                 
 
 
 //   _____ ______ _______ 

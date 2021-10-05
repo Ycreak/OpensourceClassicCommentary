@@ -36,7 +36,7 @@
     <button (click)="Login()" mat-menu-item>Login</button>
     <button (click)="this.dialog.OpenAbout()" mat-menu-item>About</button>
     <!-- <button (click)="ngOnInit()" *ngIf="this.authService.is_logged_in">Reload Data</button> -->
-    <button mat-menu-item>V21.09.27a</button>
+    <button mat-menu-item>V21.10.05a</button>
 </mat-menu>
 
 <!-- Change text dialog -->
@@ -283,7 +283,7 @@
     <!-- Row to show the playground -->
     <hr>
     <div class="div-padding-lg"></div>
-    <div class="container-fluid" *ngIf="toggle_playground">
+    <div class="container-fluid height-padding" *ngIf="toggle_playground">
         <!-- <b>Currently selected: {{this.column_data.playground}}, {{this.current_book}}, {{this.current_editor}}.</b> -->
                 
         <div class="row">
@@ -637,28 +637,24 @@
     *ngTemplateOutlet="fragment_column;context:{column: 'column2'}">
 </ng-container>
 
+<!-- class="fragment-box" -->
+
 <ng-template #fragment_column let-column="column">
     <!-- Fragments loop to display all fragments of the chosen edition of reference -->
-    <div cdkDropList class="fragment-list" (cdkDropListDropped)="this.utility.moveAndDrop($event, this.column_data[column].fragments)">
-        <div class="fragment-box" *ngFor="let fragment of this.column_data[column].fragments" 
-            (click)="Handle_fragment_click(fragment)" cdkDrag>
-            <div *ngIf="fragment.fragment_link_found; then linked_fragment_css else default_fragment_css"></div>    
-            <ng-template #linked_fragment_css>
-                <div class="red">
-                    <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
-                </div>
-            </ng-template>
+    <div cdkDropList (cdkDropListDropped)="this.utility.moveAndDrop($event, this.column_data[column].fragments)">
+        <div *ngFor="let fragment of this.column_data[column].fragments"> 
+                       
+            <div class="fragment-box" (click)="Handle_fragment_click(fragment)" cdkDrag>
+                <b [style.color]="fragment.colour">Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
+                <div *ngFor="let fragment_line of fragment.lines">      
+                    <div [innerHTML]="fragment_line.line_complete | safeHtml"></div>  <!--safeHtml to allow whitespaces             -->
+                </div>  
+            </div>
 
-            <ng-template #default_fragment_css>
-                <div>
-                    <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
-                </div>
-            </ng-template>
-            <div *ngFor="let fragment_line of fragment.lines">      
-                <div [innerHTML]="fragment_line.line_complete | safeHtml"></div>  <!--safeHtml to allow whitespaces             -->
-            </div>     
-        </div> 
+            <!-- <hr> -->
+        </div>
     </div> 
+    <!-- </div>  -->
 </ng-template>
                 <!-- Possibility of adding notes -->
                 <!-- <div class="col-md-6">
