@@ -1,133 +1,152 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<div>
+  <b>Scansion tool super cool! Expected -> Predicted</b>
+  <br><br>
+  <div class="container">
+      <div class="row">
+          <div class="col-sm">
 
-<b>Scansion tool super cool! Expected -> Predicted</b>
-<br><br>
-<div class="container">
-    <div class="row">
-        <div class="col-sm">
-
-            <div mat-dialog-content>
-                <mat-form-field class="input-form">
-                    <input matInput placeholder="Select Aeneid Book" [(ngModel)]='book_number'>
-                </mat-form-field>               
-            </div>
-        </div>
-        <div class="col-sm">
-            <div mat-dialog-content>
-                <mat-form-field class="input-form">
-                    <input matInput placeholder="Select Aeneid Line" [(ngModel)]='line_number'>
-                </mat-form-field>               
-            </div>
-        </div>
-        <div class="col-sm">
-            <button type="button" (click)="Request_neural_data(book_number, line_number)">
-                start
-            </button>
-        </div>
+              <div mat-dialog-content>
+                  <mat-form-field class="input-form">
+                      <input matInput placeholder="Select Aeneid Book" [(ngModel)]='book_number'>
+                  </mat-form-field>               
+              </div>
+          </div>
+          <div class="col-sm">
+              <div mat-dialog-content>
+                  <mat-form-field class="input-form">
+                      <input matInput placeholder="Select Aeneid Line" [(ngModel)]='line_number'>
+                  </mat-form-field>               
+              </div>
+          </div>
+          <div class="col-sm">
+              <button type="button" (click)="Request_neural_data(book_number, line_number)">
+                  start
+              </button>
+          </div>
+      </div>
     </div>
-  </div>
 
-<br>
-
-<mat-grid-list cols="20" rowHeight="1em">
-  <mat-grid-tile
-      *ngFor="let syllable of this.syllables"
-      
-      [colspan]="1"
-      [rowspan]="2"
-      [style.background]="'#DDDDDD'">
-    <b>{{syllable}}</b>
-    
-  </mat-grid-tile>
-</mat-grid-list>  
-
-<mat-grid-list cols="20" rowHeight="1em">
-    <mat-grid-tile
-        *ngFor="let label of this.labels_expected; let i=index"
-        
-        [colspan]="1"
-        [rowspan]="2"
-        [style.background]="'lightgreen'">
-      {{label}}      
-    </mat-grid-tile>
-  </mat-grid-list>
+  <br>
 
   <mat-grid-list cols="20" rowHeight="1em">
     <mat-grid-tile
-        *ngFor="let label of this.labels_predicted; let i=index"
+        *ngFor="let syllable of this.syllables"
         
         [colspan]="1"
         [rowspan]="2"
-        [style.background]="this.correct_list[i]">
-      {{label}}      
-    </mat-grid-tile>
-  </mat-grid-list>
-
-<br>
-
-  <mat-grid-list cols="20" rowHeight="1em">
-    <mat-grid-tile
-        *ngFor="let expectation of this.expected; let i=index"
-        
-        [colspan]="1"
-        [rowspan]="2"
-        [style.background]="'lightgreen'">
-      {{expectation}}
+        [style.background]="'#DDDDDD'">
+      <b>{{syllable}}</b>
       
     </mat-grid-tile>
   </mat-grid-list>  
 
   <mat-grid-list cols="20" rowHeight="1em">
-    <mat-grid-tile
-        *ngFor="let prediction of this.predicted; let i=index"
-        
-        [colspan]="1"
-        [rowspan]="2"
-        [style.background]="this.correct_list[i]">
-      {{prediction}}      
-    </mat-grid-tile>
-  </mat-grid-list>
+      <mat-grid-tile
+          *ngFor="let label of this.expected; let i=index"
+          
+          [colspan]="1"
+          [rowspan]="2"
+          [style.background]="'lightgreen'">
+        {{label}}      
+      </mat-grid-tile>
+    </mat-grid-list>
+
+    <mat-grid-list cols="20" rowHeight="1em">
+      <mat-grid-tile
+          *ngFor="let label of this.neural_data.nn_predicted; let i=index"
+          
+          [colspan]="1"
+          [rowspan]="2"
+          [style.background]="this.neural_data.correct_list_nn[i]">
+        {{label}}      
+      </mat-grid-tile>
+    </mat-grid-list>
+
+    <mat-grid-list cols="20" rowHeight="1em">
+      <mat-grid-tile
+          *ngFor="let label of this.neural_data.seqlab_predicted; let i=index"
+          
+          [colspan]="1"
+          [rowspan]="2"
+          [style.background]="this.neural_data.correct_list_seqlab[i]">
+        {{label}}      
+      </mat-grid-tile>
+    </mat-grid-list>
+    
+    <mat-grid-list cols="20" rowHeight="1em">
+      <mat-grid-tile
+          *ngFor="let label of this.neural_data.hmm_predicted; let i=index"
+          
+          [colspan]="1"
+          [rowspan]="2"
+          [style.background]="this.neural_data.correct_list_hmm[i]">
+        {{label}}      
+      </mat-grid-tile>
+    </mat-grid-list>
 
   <br>
-  <mat-grid-list cols="20" rowHeight="1em">
-    <mat-grid-tile
-        *ngFor="let confidence of this.confidence; let i=index"
+
+    <!-- <mat-grid-list cols="20" rowHeight="1em">
+      <mat-grid-tile
+          *ngFor="let expectation of this.expected; let i=index"
+          
+          [colspan]="1"
+          [rowspan]="2"
+          [style.background]="'lightgreen'">
+        {{expectation}}
         
-        [colspan]="1"
-        [rowspan]="2"
-        [style.background]="this.correct_list[i]">
-      {{confidence/100}}      
-    </mat-grid-tile>
-  </mat-grid-list>
+      </mat-grid-tile>
+    </mat-grid-list>  
+
+    <mat-grid-list cols="20" rowHeight="1em">
+      <mat-grid-tile
+          *ngFor="let prediction of this.predicted; let i=index"
+          
+          [colspan]="1"
+          [rowspan]="2"
+          [style.background]="this.correct_list[i]">
+        {{prediction}}      
+      </mat-grid-tile>
+    </mat-grid-list>
+
+    <br>
+    <mat-grid-list cols="20" rowHeight="1em">
+      <mat-grid-tile
+          *ngFor="let confidence of this.confidence; let i=index"
+          
+          [colspan]="1"
+          [rowspan]="2"
+          [style.background]="this.correct_list[i]">
+        {{confidence/100}}      
+      </mat-grid-tile>
+    </mat-grid-list> -->
 
 
+
+    <br>
+  <!-- <div><b>Similarity score: {{this.neural_data.similarity}}</b></div> -->
 
   <br>
-<div><b>Similarity score: {{this.neural_data.similarity}}</b></div>
 
-<br>
+  <p>First syllables are shown, then expected scansion and predicted scansion from the different models.</p>
 
-<p>First syllables are shown, then expected scansion and predicted scansion. Third and fourth is unlabeled expected and predicted scansion. The fifth line shows the confidence towards either 0 or 1.</p>
-
-<table>
-    <tr>
-      <th>Integer</th>
-      <th>Scansion</th>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>LONG</td>
-    </tr>
-    <tr>
-      <td>0</td>
-      <td>SHORT</td>
-    </tr>
-    <tr>
-        <td>-1</td>
-        <td>ELISION</td>
-    </tr>
-    <tr>
-        <td>-100</td>
-        <td>PADDING</td>
+  <table>
+      <tr>
+        <th>Abbr.</th>
+        <th>Model</th>
       </tr>
-</table> 
+      <tr>
+        <td>NN</td>
+        <td>Sequential Neural Network</td>
+      </tr>
+      <tr>
+        <td>SeqLab</td>
+        <td>Sequence Labeling Network</td>
+      </tr>
+      <tr>
+          <td>HMM</td>
+          <td>Hidden Markov Chain</td>
+      </tr>
+  </table> 
+</div>

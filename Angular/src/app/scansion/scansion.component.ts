@@ -45,14 +45,14 @@ export class ScansionComponent implements OnInit {
     // Should be fixed
     this.neural_data = await this.api.Get_neural_data(this.book_number, this.line_number);
     
-    this.expected = this.neural_data.expected;
-    this.predicted = this.neural_data.predicted;
-    this.similarity = this.neural_data.similarity;
     this.syllables = this.neural_data.syllables;
-    this.correct_list = this.neural_data.correct_list;
-    this.confidence = this.neural_data.confidence;
-    this.labels_predicted = this.neural_data.labels_predicted;
-    this.labels_expected = this.neural_data.labels_expected;
+    this.expected = this.neural_data.expected;
+    // this.predicted = this.neural_data.predicted;
+    // this.similarity = this.neural_data.similarity;
+    // this.correct_list = this.neural_data.correct_list;
+    // this.confidence = this.neural_data.confidence;
+    // this.labels_predicted = this.neural_data.labels_predicted;
+    // this.labels_expected = this.neural_data.labels_expected;
 
     // console.log(data);
     // return data
