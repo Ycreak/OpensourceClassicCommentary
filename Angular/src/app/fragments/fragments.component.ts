@@ -348,6 +348,7 @@ export class FragmentsComponent implements OnInit {
         // Loop through all lines of current fragment
         let line_number = current_fragment.lines[item].line_number;
         let line_text = current_fragment.lines[item].text;
+        line_text = this.utility.convert_whitespace_encoding(line_text)
         let line_complete = '<p>' + line_number + ': ' + line_text + '</p>';
         // Now push the updated lines to the correct place
         let updated_lines = {

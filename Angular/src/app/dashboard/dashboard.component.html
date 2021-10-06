@@ -275,7 +275,7 @@
             <mat-tab label="Fragment References"><br>
 
               <div class="alert alert-warning" role="alert">
-                This functionality is in alpha status. After adding pointers and revising the fragment, please reselect the text, editor and fragment.
+                This functionality is in alpha status. After adding pointers and revising the fragment, please reselect the editor and fragment.
               </div>
 
               <p>The currently selected fragment points to the fragments listed below. This means that whenever the currently selected fragment is clicked, the commentaries of the fragments below are retrieved.</p>
@@ -308,7 +308,7 @@
 
 
               <form [formGroup]="fragmentForm">
-                <button mat-stroked-button color="primary" (click)="Push_fragment_link('','','','','')">Add New Fragment Pointer</button>
+                <!-- <button mat-stroked-button color="primary" (click)="Push_fragment_link('','','','','')">Add New Fragment Pointer</button> -->
                 
                 <div class="div-padding-lg"></div>
   
@@ -350,7 +350,7 @@
   
                     <!-- <input formControlName="line_number" placeholder="Line name"> -->
                     <!-- <input formControlName="text" placeholder="Line text" [matKeyboard]="'OSCC'">  -->
-                    <button mat-button (click)="Remove_form_item('linked_fragments', i)">Delete this line</button>
+                    <button mat-button (click)="Remove_form_item('linked_fragments', i)">Delete this pointer</button>
   
                   </div>
                 </div>

@@ -82,7 +82,7 @@ export class UtilityService {
         let status = givenArray[element].status 
         let buildString = '<p>' + lineName + ': ' + lineContent + '</p>';
         // Turn tabs into HTML tabs
-        buildString = this.ConvertWhiteSpace(buildString);
+        buildString = this.convert_whitespace_encoding(buildString);
         // Find the element.fragmentName in the array and check whether it exists.
         let currentFragment = array.find(x => x.fragmentName === fragmentName)
         if(currentFragment){ // The current fragmentName is already in the array.
@@ -216,7 +216,7 @@ export class UtilityService {
    * Takes a string and looks for whitespace decoding. Converts it to html spans
    * @param string 
    */
-  public ConvertWhiteSpace(string: string){
+  public convert_whitespace_encoding(string: string){
     // Find fish hooks with number in between.
     const matches = string.match(/<(\d+)>/);
     // If found, replace it with the correct whitespace number
