@@ -1,14 +1,18 @@
+# Library Imports
 import couchdb
-from uuid import uuid4
 import copy
+from uuid import uuid4
 
 from flask import Response, make_response
 from flask_jsonpify import jsonify
 
+# Class Imports
 from server_credentials import Credentials
+from Models.fragment import Fragment
 from utilities import *
 
-from Models.fragment import Fragment
+# TODO:
+# The fragment data should be sanatised
 
 class Fragment_handler:
     def __init__(self):
@@ -158,7 +162,9 @@ class Fragment_handler:
         else:
             new_fragment = copy.deepcopy(fragment.fragment_empty)
 
-            for fragment_entry in ['author', 'title', 'editor', 'fragment_name', 'status']:
+            for fragment_entry in ['fragment_name', 'author', 'title', 'editor', 'translation', 
+                            'differences', 'apparatus', 'commentary', 'reconstruction',
+                            'context', 'lines', 'linked_fragments', 'status']:
                 new_fragment[fragment_entry] = getattr(fragment, fragment_entry)
 
             # Give the fragment a unique id

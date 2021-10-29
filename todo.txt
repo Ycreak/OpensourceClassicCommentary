@@ -1,0 +1,5 @@
+Student name linked to fragment
+Create dummy fragments for new texts
+Duplicate fragments created? :O
+Nonius Stylesheet?
+We should work with Fragment_doc_id instead of Author, Text, Edition, Fragment

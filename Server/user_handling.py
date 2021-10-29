@@ -1,3 +1,4 @@
+# Library Imports
 import couchdb
 import copy
 from uuid import uuid4
@@ -6,6 +7,7 @@ from flask import make_response
 # For hashing passwords
 import hashlib, binascii, os
 
+# Class Imports
 from server_credentials import Credentials
 from utilities import *
 

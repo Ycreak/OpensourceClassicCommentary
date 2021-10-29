@@ -20,16 +20,16 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 // Model imports to send to the API. 
-import { Author } from '../models/Author';
-import { Book } from '../models/Book';
-import { Editor } from '../models/Editor';
+//import { Author } from '../models/Author';
+//import { Editor } from '../models/Editor';
+//import { Book } from '../models/Book';
 import { Fragment } from '../models/Fragment';
-import { Context } from '../models/Context';
-import { Translation } from '../models/Translation';
-import { Apparatus } from '../models/Apparatus';
-import { Differences } from '../models/Differences';
-import { Commentary } from '../models/Commentary';
-import { Reconstruction } from '../models/Reconstruction';
+//import { Context } from '../models/Context';
+//import { Translation } from '../models/Translation';
+//import { Apparatus } from '../models/Apparatus';
+//import { Differences } from '../models/Differences';
+//import { Commentary } from '../models/Commentary';
+//import { Reconstruction } from '../models/Reconstruction';
 // import { Bibliography } from '../models/Bibliography';
 
 // Third party imports

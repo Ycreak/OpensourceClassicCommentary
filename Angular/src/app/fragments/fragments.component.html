@@ -39,19 +39,6 @@
     <button mat-menu-item>V21.10.06</button>
 </mat-menu>
 
-<!-- Change text dialog -->
-<ng-template #CallBookSelect>   
-    <h3>Select an author and a text to display.</h3>
-    <hr>
-    <ng-container 
-        *ngTemplateOutlet="select_author; context:ctx">
-    </ng-container>
- 
-    <ng-container 
-        *ngTemplateOutlet="select_title; context:ctx">
-    </ng-container>   
-</ng-template>
-
 <!-- Show a spinner if query with database is in progress -->
 <!-- <mat-progress-bar mode="query" *ngIf="this.spinner"></mat-progress-bar>
 <br> -->

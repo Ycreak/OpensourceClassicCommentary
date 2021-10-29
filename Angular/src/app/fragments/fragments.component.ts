@@ -1,7 +1,10 @@
+// Library imports
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog'; // Library used for interacting with the page
+import { TemplateRef, ViewChild } from '@angular/core'; // To allow dialog windows within the current window
 
+// Imports of components, models and services
 import {LoginComponent} from '../login/login.component'
-
 import { ApiService } from '../api.service';
 import { DialogService } from '../services/dialog.service';
 import { UtilityService } from '../utility.service';
@@ -14,13 +17,6 @@ import { Fragment } from '../models/Fragment';
 // FIXME: why do i need to export this class?
 export { Multiplayer } from './multiplayer.class';
 export { Playground } from './playground.class';
-
-// Library used for interacting with the page
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
-
-// To allow dialog windows within the current window
-import { TemplateRef, ViewChild } from '@angular/core';
-// Imports of different components to be shown within a dialog within the page
 
 @Component({
   selector: 'app-fragments',
@@ -35,7 +31,7 @@ export class FragmentsComponent implements OnInit {
 
   // Toggle switches for the HTML columns/modes
   toggle_column_one: boolean = true;
-  toggle_column_two: boolean = false;
+  toggle_column_two: boolean = true;
   toggle_column_three: boolean = false;
   toggle_column_four: boolean = false;
   toggle_commentary: boolean = true;
@@ -56,8 +52,8 @@ export class FragmentsComponent implements OnInit {
   // Object to store all column data. TODO: should be rethought.
   column_data : object = {
     column1 : {
-      author : 'Ennius',
-      book : 'Thyestes',
+      author : '',
+      book : '',
       editor : '',
       fragments : [],
     },
@@ -118,8 +114,6 @@ export class FragmentsComponent implements OnInit {
     // this.Request_fragments('Ennius', 'Thyestes', 'Jocelyn', 'column3');
     // this.Request_fragments('Ennius', 'Thyestes', 'Vahlen', 'column4');
 
-
-
     //FIXME: this should be handled within the multiplayer class? It wont call the constructor
     // this.multiplayer.InitiateFirestore(this.multiplayer.sessionCode, this.multiplayer.tableName); 
   }
@@ -171,8 +165,6 @@ export class FragmentsComponent implements OnInit {
   public Request_fragments(author: string, book: string, editor: string, column: string){
     this.api.GetFragments(author, book, editor).subscribe(
       data => { 
-        // console.log('data', data)
-        // Create a list of Fragment objects
         let fragment_list = this.create_fragment_list(data);
         // Format the data just how we want it
         fragment_list = this.Add_HTML_to_lines(fragment_list);
@@ -294,8 +286,9 @@ export class FragmentsComponent implements OnInit {
       for(let index in fragment.linked_fragments){
         let linked_fragment_id = fragment.linked_fragments[index].fragment_id
 
+
+				//FIXME: fragment referencing needs to be modeled first!
         let corresponding_fragment = this.column_data['column1'].fragments.find(i => i.fragment_id === linked_fragment_id);
-        // if(corresponding_fragment) corresponding_fragment.fragment_link_found = true
         if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
 
         corresponding_fragment = this.column_data['column2'].fragments.find(i => i.fragment_id === linked_fragment_id);
@@ -308,9 +301,6 @@ export class FragmentsComponent implements OnInit {
         if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
 
       }
-
-      //FIXME:
-      // console.log(this.column_data['column1'].fragments)
   }
 
   /**
@@ -385,4 +375,25 @@ export class FragmentsComponent implements OnInit {
   templateUrl: '../dialogs/about-dialog.html',
 })
 export class ShowAboutDialog {}
+
+
+export class Fragment_column {
+	constructor(){}
+
+	author : '',
+	book : '',
+	editor : '',
+	fragments : [],
+
+	public AddFragmentToArray(array, fragment_name, fragments){
+		for(let fragment in fragments){
+			if(fragments[fragment].fragment_name == fragment_name){
+				array.push(fragments[fragment])
+			}
+		}
+		return array
+	}
+
+}
+
 
