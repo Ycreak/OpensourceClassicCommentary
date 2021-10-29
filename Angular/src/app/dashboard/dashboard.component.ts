@@ -362,24 +362,20 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  // public Request_revise_fragment_pointer(fragment){
+  public Request_create_fragment(fragment){
+    let item_string = fragment.author + ', ' +  fragment.title + ', ' + fragment.editor + ': ' + fragment.fragment_name
 
-  // }
-  // @deprecated
-  // public Request_create_fragment(fragment){
-  //   let item_string = fragment.author + ', ' +  fragment.title + ', ' + fragment.editor + ': ' + fragment.fragment_name
-
-  //   this.dialog.OpenConfirmationDialog('Are you sure you want to CREATE this fragment?', item_string).subscribe(result => {
-  //     if(result){
-  //       this.api.Create_fragment(fragment).subscribe(
-  //         res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
-  //       );
-  //     }
-  //   });
-  //   // Now reset form and request the fragments again
-  //   this.Reset_form();
-  //   this.Request_fragments(this.selected_author, this.selected_book, this.selected_editor);
-  // }
+    this.dialog.OpenConfirmationDialog('Are you sure you want to CREATE this fragment?', item_string).subscribe(result => {
+      if(result){
+        this.api.Create_fragment(fragment).subscribe(
+          res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
+        );
+      }
+    });
+    // Now reset form and request the fragments again
+    this.Reset_form();
+    this.Request_fragments(this.selected_author, this.selected_book, this.selected_editor);
+  }
 
   public Request_delete_fragment(fragment){
     let item_string = fragment.author + ', ' +  fragment.title + ', ' + fragment.editor + ': ' + fragment.fragment_name

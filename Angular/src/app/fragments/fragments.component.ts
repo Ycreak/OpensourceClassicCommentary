@@ -31,7 +31,7 @@ export class FragmentsComponent implements OnInit {
 
   // Toggle switches for the HTML columns/modes
   toggle_column_one: boolean = true;
-  toggle_column_two: boolean = true;
+  toggle_column_two: boolean = false;
   toggle_column_three: boolean = false;
   toggle_column_four: boolean = false;
   toggle_commentary: boolean = true;
@@ -377,23 +377,23 @@ export class FragmentsComponent implements OnInit {
 export class ShowAboutDialog {}
 
 
-export class Fragment_column {
-	constructor(){}
+// export class Fragment_column {
+// 	constructor(){}
 
-	author : '',
-	book : '',
-	editor : '',
-	fragments : [],
+// 	author : '',
+// 	book : '',
+// 	editor : '',
+// 	fragments : [],
 
-	public AddFragmentToArray(array, fragment_name, fragments){
-		for(let fragment in fragments){
-			if(fragments[fragment].fragment_name == fragment_name){
-				array.push(fragments[fragment])
-			}
-		}
-		return array
-	}
+// 	public AddFragmentToArray(array, fragment_name, fragments){
+// 		for(let fragment in fragments){
+// 			if(fragments[fragment].fragment_name == fragment_name){
+// 				array.push(fragments[fragment])
+// 			}
+// 		}
+// 		return array
+// 	}
 
-}
+// }
 
 

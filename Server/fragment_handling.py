@@ -135,9 +135,34 @@ class Fragment_handler:
             return False, {}    
 
     # POST FUNCTIONS
+    def Create_fragment(self, fragment) -> make_response:
+        """ Creates a fragment from the provided data
+
+        Args:
+            fragment (object): fragment model containing all fragment data
+
+        Returns:
+            flask response: confirmation of (un)successful execution
+        """
+        # Check if the fragment already exists in the database
+        fragment_exist, _ = self.Find_fragment(fragment)
+
+        if fragment_exist:          
+            return make_response('Fragment already exists!', 403)
+        else:
+            new_fragment = copy.deepcopy(fragment.fragment_empty)
+
+            for fragment_entry in ['author', 'title', 'editor', 'fragment_name', 'status']:
+                new_fragment[fragment_entry] = getattr(fragment, fragment_entry)
+
+            # Give the fragment a unique id
+            new_fragment['_id'] = uuid4().hex
+
+            doc_id, doc_rev = self.frag_db.save(new_fragment)
+            return make_response('Succesfully created fragment!', 201)
+
     def Revise_fragment(self, fragment) -> make_response:
-        """Revises the provided fragment with the provided data. Creates a new one
-        if none exists yet.
+        """Revises the provided fragment with the provided data
 
         Args:
             fragment (object): fragment model containing all revised fragment data
@@ -145,33 +170,56 @@ class Fragment_handler:
         Returns:
             flask response: response on successful execution
         """        
-        # Check if the fragment already exists in the database
-        fragment_exist, _ = self.Find_fragment(fragment)
+        doc = self.frag_db[fragment._id]
 
-        if fragment_exist:          
-            doc = self.frag_db[fragment._id]
+        for fragment_entry in ['fragment_name', 'author', 'title', 'editor', 'translation', 
+                         'differences', 'apparatus', 'commentary', 'reconstruction',
+                         'context', 'lines', 'linked_fragments', 'status']:
+            doc[fragment_entry] = getattr(fragment, fragment_entry)
+        
+        doc_id, doc_rev = self.frag_db.save(doc)
+        
+        return make_response('Succesfully revised fragment!', 200)
 
-            for fragment_entry in ['fragment_name', 'author', 'title', 'editor', 'translation', 
-                            'differences', 'apparatus', 'commentary', 'reconstruction',
-                            'context', 'lines', 'linked_fragments', 'status']:
-                doc[fragment_entry] = getattr(fragment, fragment_entry)
+
+    # DEPRECATED: this used to be the Create/Revise button. Separated again.
+    # def Revise_fragment(self, fragment) -> make_response:
+    #     """Revises the provided fragment with the provided data. Creates a new one
+    #     if none exists yet.
+
+    #     Args:
+    #         fragment (object): fragment model containing all revised fragment data
+
+    #     Returns:
+    #         flask response: response on successful execution
+    #     """        
+    #     # Check if the fragment already exists in the database
+    #     fragment_exist, _ = self.Find_fragment(fragment)
+
+    #     if fragment_exist:          
+    #         doc = self.frag_db[fragment._id]
+
+    #         for fragment_entry in ['fragment_name', 'author', 'title', 'editor', 'translation', 
+    #                         'differences', 'apparatus', 'commentary', 'reconstruction',
+    #                         'context', 'lines', 'linked_fragments', 'status']:
+    #             doc[fragment_entry] = getattr(fragment, fragment_entry)
             
-            doc_id, doc_rev = self.frag_db.save(doc)
-            return make_response('Succesfully revised fragment!', 200)
+    #         doc_id, doc_rev = self.frag_db.save(doc)
+    #         return make_response('Succesfully revised fragment!', 200)
 
-        else:
-            new_fragment = copy.deepcopy(fragment.fragment_empty)
+    #     else:
+    #         new_fragment = copy.deepcopy(fragment.fragment_empty)
 
-            for fragment_entry in ['fragment_name', 'author', 'title', 'editor', 'translation', 
-                            'differences', 'apparatus', 'commentary', 'reconstruction',
-                            'context', 'lines', 'linked_fragments', 'status']:
-                new_fragment[fragment_entry] = getattr(fragment, fragment_entry)
+    #         for fragment_entry in ['fragment_name', 'author', 'title', 'editor', 'translation', 
+    #                         'differences', 'apparatus', 'commentary', 'reconstruction',
+    #                         'context', 'lines', 'linked_fragments', 'status']:
+    #             new_fragment[fragment_entry] = getattr(fragment, fragment_entry)
 
-            # Give the fragment a unique id
-            new_fragment['_id'] = uuid4().hex
+    #         # Give the fragment a unique id
+    #         new_fragment['_id'] = uuid4().hex
 
-            doc_id, doc_rev = self.frag_db.save(new_fragment)
-            return make_response('Succesfully created fragment!', 201)            
+    #         doc_id, doc_rev = self.frag_db.save(new_fragment)
+    #         return make_response('Succesfully created fragment!', 201)            
 
     def Delete_fragment(self, fragment) -> make_response:
         """Deletes the given fragment using its id

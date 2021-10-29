@@ -69,9 +69,16 @@ def complete_fragment():
     return jsonify(result)
 
 # The following routes are POST methods
+@app.route("/create_fragment", methods=['POST'])
+def create_fragment():
+    # Route to allow for the creation of the given fragment
+    received_fragment = Fragment(request.get_json())
+    response = frag_db.Create_fragment(received_fragment)
+    return response
+
 @app.route("/revise_fragment", methods=['POST'])
 def revise_fragment():
-    # Route to allow for the creation and revision of the given fragment
+    # Route to allow for the revision of the given fragment
     received_fragment = Fragment(request.get_json())
     response = frag_db.Revise_fragment(received_fragment)
     return response
@@ -143,4 +150,4 @@ def ReqArg(arg):
 # MAIN
 if __name__ == '__main__':
     context = ('/etc/letsencrypt/live/oscc.nolden.biz/cert.pem', '/etc/letsencrypt/live/oscc.nolden.biz/privkey.pem')
-    app.run(host='0.0.0.0', port=5003) #, ssl_context = context)
+    app.run(host='0.0.0.0', port=5003, ssl_context = context)

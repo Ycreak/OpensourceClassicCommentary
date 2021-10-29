@@ -96,10 +96,10 @@
 
       <hr>
       <!-- Buttons to submit fragment data -->
+      <button mat-stroked-button color="primary" [disabled]="!fragmentForm.valid" (click)="Request_create_fragment(this.fragmentForm.value)" 
+      *ngIf="this.authService.is_teacher || this.authService.is_student">Create Fragment</button>
       <button mat-stroked-button color="primary" [disabled]="!fragmentForm.valid" (click)="Request_revise_fragment(this.fragmentForm.value)" 
-        *ngIf="this.authService.is_teacher || this.authService.is_student">Create/Revise Fragment</button>
-      <!-- <button mat-stroked-button color="primary" [disabled]="!fragmentForm.valid" (click)="Request_create_fragment(this.fragmentForm.value)" 
-          *ngIf="this.authService.is_teacher || this.authService.is_student">Create Fragment</button> -->
+        *ngIf="this.authService.is_teacher || this.authService.is_student">Revise Fragment</button>
       <button mat-stroked-button color="warn" [disabled]="!fragment_selected" (click)="Request_delete_fragment(this.fragmentForm.value)" 
           *ngIf="this.authService.is_teacher">Delete Fragment</button>
 
@@ -110,6 +110,10 @@
   
         <form [formGroup]="fragmentForm">
           <mat-tab label="Fragment Meta Data"><br> 
+
+            <div class="alert alert-info" role="alert">
+              To create a new fragment, please provide all meta data and press the <b>Create Fragment</b> button. To then add content or make changes to your fragment, select yours using the drop down menus at the top and use the <b>Revise Fragment</b> button. After each revision, please reselect your fragment.
+            </div>
 
             <mat-form-field class="input-form-full-width">
               <mat-label>Fragment name</mat-label>
@@ -161,6 +165,14 @@
 
           <mat-tab label="Fragment Lines"><br>
 
+            <div class="alert alert-info" role="alert">
+              Press the <b>Add New Fragment Line</b> button for every single line of the fragment. For example, if your fragment has three lines, press the button thrice and add your lines in plain text to the three fields that have appeared. Do not add HTML for a paragraph here!
+            </div>
+
+            <div class="alert alert-info" role="alert">
+              You can press <b>Shift</b> for the popup keyboard to reveal more metre and HTML possibilities.
+            </div>
+
             <form [formGroup]="fragmentForm">
               <button mat-stroked-button color="primary" (click)="Push_fragment_line('','')">Add New Fragment Line</button>
               
@@ -192,6 +204,11 @@
           </mat-tab>
 
           <mat-tab label="Fragment Content"><br>
+
+              <div class="alert alert-info" role="alert">
+                You can press <b>Shift</b> for the popup keyboard to reveal more metre and HTML possibilities. Furthermore, text fields can be enlarged if needs be.
+              </div>
+
               <mat-form-field class="input-form-full-width">
                 <mat-label><b>Fragment translation</b></mat-label>
                 <textarea matInput type="text" formControlName="translation" id="FT" [matKeyboard]="'OSCC'"></textarea>
@@ -233,6 +250,10 @@
             </mat-tab>
 
             <mat-tab label="Fragment Context"><br>
+
+              <div class="alert alert-info" role="alert">
+                Press the <b>Add Fragment Context</b> for each context author. Entries from the same work may be separated or added to the same field.
+              </div>
 
               <form [formGroup]="fragmentForm">
 

@@ -138,10 +138,9 @@ export class ApiService {
 //  | |    | |__| |____) |  | |   
 //  |_|     \____/|_____/   |_|   
 
-  // @deprecated
-  // Create_fragment(fragment: object): Observable<any> {
-  //   return this.http.post<any>(this.FlaskURL + `create_fragment`, fragment, { observe: 'response', responseType: 'text' as 'json' });
-  // } 
+  Create_fragment(fragment: object): Observable<any> {
+    return this.http.post<any>(this.FlaskURL + `create_fragment`, fragment, { observe: 'response', responseType: 'text' as 'json' });
+  } 
   Revise_fragment(fragment: object): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `revise_fragment`, fragment, { observe: 'response', responseType: 'text' as 'json'  });
   }
