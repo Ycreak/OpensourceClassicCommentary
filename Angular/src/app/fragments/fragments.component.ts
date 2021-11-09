@@ -31,10 +31,10 @@ export class FragmentsComponent implements OnInit {
 
   // Toggle switches for the HTML columns/modes
   toggle_column_one: boolean = true;
-  toggle_column_two: boolean = false;
-  toggle_column_three: boolean = false;
+  toggle_column_two: boolean = true;
+  toggle_column_three: boolean = true;
   toggle_column_four: boolean = false;
-  toggle_commentary: boolean = true;
+  toggle_commentary: boolean = false;
   toggle_playground: boolean = false;
   toggle_multiplayer: boolean = false;
   // Booleans for HTML related items
@@ -109,11 +109,13 @@ export class FragmentsComponent implements OnInit {
     this.api.GetAuthors().subscribe(data => this.retrieved_authors = data);
     // Retrieves everything surrounding the text.
     this.RequestEditors('Ennius', 'Thyestes'); // Retrieve at default the Ennius' Thyestes text.
-    this.Request_fragments('Ennius', 'Thyestes', 'TRF', 'column1');
+    // this.Request_fragments('Ennius', 'Thyestes', 'TRF', 'column1');
     // this.Request_fragments('Ennius', 'Thyestes', 'Ribbeck', 'column2');
     // this.Request_fragments('Ennius', 'Thyestes', 'Jocelyn', 'column3');
     // this.Request_fragments('Ennius', 'Thyestes', 'Vahlen', 'column4');
-
+    this.Request_fragments('Accius', 'Aegisthus', 'Dangel', 'column1');
+    this.Request_fragments('Accius', 'Aegisthus', 'Ribbeck', 'column2');
+    this.Request_fragments('Accius', 'Aegisthus', 'Warmington', 'column3');
     //FIXME: this should be handled within the multiplayer class? It wont call the constructor
     // this.multiplayer.InitiateFirestore(this.multiplayer.sessionCode, this.multiplayer.tableName); 
   }
@@ -265,6 +267,7 @@ export class FragmentsComponent implements OnInit {
   public Handle_fragment_click(fragment){
       this.current_fragment = fragment
 
+      // console.log(fragment)
       // Request content from this fragment
       this.Request_fragment_content(fragment.fragment_id)
 
@@ -282,10 +285,11 @@ export class FragmentsComponent implements OnInit {
       // Colour the clicked fragment
       fragment.colour = '#3F51B5';
 
+
       // And the corresponding ones in the other columns
       for(let index in fragment.linked_fragments){
-        let linked_fragment_id = fragment.linked_fragments[index].fragment_id
-
+        let linked_fragment_id = fragment.linked_fragments[index] //.fragment_id //# new referencer format
+        console.log(linked_fragment_id)
 
 				//FIXME: fragment referencing needs to be modeled first!
         let corresponding_fragment = this.column_data['column1'].fragments.find(i => i.fragment_id === linked_fragment_id);

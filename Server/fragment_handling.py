@@ -4,7 +4,11 @@ import copy
 from uuid import uuid4
 
 from flask import Response, make_response
-from flask_jsonpify import jsonify
+from flask_jsonpify import jsonify # TODO: convert jsonify to json_pickle
+
+# For string similarity comparison
+from difflib import SequenceMatcher
+import string
 
 # Class Imports
 from server_credentials import Credentials
@@ -12,7 +16,7 @@ from Models.fragment import Fragment
 from utilities import *
 
 # TODO:
-# The fragment data should be sanatised
+# The fragment data should be sanitized
 
 class Fragment_handler:
     def __init__(self):
@@ -249,3 +253,87 @@ class Fragment_handler:
         doc_id, doc_rev = self.frag_db.save(doc)
 
         return make_response('Fragment lock status set', 200)
+
+    def Reference_all_fragments(self, given_fragment):
+        '''
+        Finds fragments containing similar lines and links the fragments together.
+        This function is very very very expensive. You should be Richie Rich rich.
+        About halfway between Bruce Wayne and Scrooge McDuck.
+
+        Args:
+            given_fragment (obj): fragment object with all data needed
+
+        Returns:
+            flask response: confirmation of number of lines linked
+        '''
+        n = 0 # Counter for number of lines linked
+
+        EQUALITY_RATIO = 0.95
+
+        author = 'Accius' #fragment.author
+        title = 'Aegisthus' #fragment.title
+        
+        # First, make a list of all fragments from the given author and title
+        fragment_list = []
+        for id in self.frag_db:
+            doc = self.frag_db[id]
+            if doc['author'] == author and doc['title'] == title:
+                fragment_list.append(doc)
+                       
+        # Check every fragment for linking with other fragments. Use pop to save some work       
+        while(fragment_list):
+            current_fragment = fragment_list.pop()
+            
+            for current_fragment_line in current_fragment['lines']:
+
+                # Check this line against all lines of those fragments residing in fragment_list
+                for other_fragment in fragment_list:
+                    for other_fragment_line in other_fragment['lines']:
+                        # check if given line is similar to found line
+                        if self.similar(current_fragment_line.get('text'), other_fragment_line.get('text')) >= EQUALITY_RATIO:
+
+                            # Link both fragments together
+                            doc = self.frag_db[current_fragment['_id']]                           
+                            doc['linked_fragments'].append(other_fragment['_id'])  # -> link the found fragment to the given fragment
+                            doc['linked_fragments'] = list(set(doc['linked_fragments']))
+                            doc_id, doc_rev = self.frag_db.save(doc)
+
+                            doc = self.frag_db[other_fragment['_id']]
+                            doc['linked_fragments'].append(current_fragment['_id'])  # -> link the found fragment to the given fragment
+                            doc['linked_fragments'] = list(set(doc['linked_fragments']))                            
+                            doc_id, doc_rev = self.frag_db.save(doc)
+
+                            n+=1
+        print(f'Found and linked {n} matching lines.')
+        # return make_response(f'Found and linked {n} matching lines.', 200)  
+
+    def similar(self, a, b):   # TODO Replace with FuzzyWuzzy module
+        """ Returns the ratio of similarity between the two given strings
+
+        Args:
+            a (str): first string to be compared
+            b (str): second string to be compared
+
+        Returns:
+            float: of ratio of similarity between to arguments
+        """              
+        # remove punctuation and capitalisation
+        a = a.translate(str.maketrans('', '', string.punctuation)).lower()
+        b = b.translate(str.maketrans('', '', string.punctuation)).lower()
+        return SequenceMatcher(None, a, b).ratio()
+
+    def migrate_linked_fragments_layout(self):
+        """ Simple function to migrate the linked fragment layout
+        """        
+        for id in self.frag_db:
+            doc = self.frag_db[id]
+            doc['linked_fragments'] = []
+            doc_id, doc_rev = self.frag_db.save(doc)
+
+# Developer functions
+
+# fh = Fragment_handler()
+
+# # fh.migrate_linked_fragments_layout()
+
+# fh.Reference_all_fragments([])

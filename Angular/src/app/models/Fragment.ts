@@ -45,7 +45,7 @@ export class Fragment
     status : string;
     context : object;
     lines : object;
-    linked_fragments : object;
+    linked_fragments; // this is a list
 
     colour : string = 'black';
 

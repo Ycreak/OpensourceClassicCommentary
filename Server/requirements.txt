@@ -5,3 +5,4 @@ flask_restful
 flask_jsonpify
 couchdb
 jsonpickle
+difflib
