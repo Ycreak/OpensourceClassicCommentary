@@ -15,7 +15,6 @@ import { ReactiveFormsModule, FormControl, FormGroup, Validators, FormArray } fr
 
 import {MatButtonModule} from '@angular/material/button';
 
-
 // Mat imports
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
@@ -30,7 +29,7 @@ import { Fragment } from '../models/Fragment';
 //import { Differences } from '../models/Differences';
 //import { Commentary } from '../models/Commentary';
 //import { Reconstruction } from '../models/Reconstruction';
-// import { Bibliography } from '../models/Bibliography';
+//import { Bibliography } from '../models/Bibliography';
 
 // Third party imports
 // NPM Library. Hopefully not soon deprecated
@@ -64,6 +63,8 @@ export class DashboardComponent implements OnInit {
   possible_status = ['normal', 'incertum', 'adesp.']
 
   pointer_editor : string;
+
+  spinner_active : boolean = false;
 
   // User dashboard
   isChecked = false;
@@ -123,7 +124,18 @@ export class DashboardComponent implements OnInit {
    */
   public Test(thing){
     console.log(thing)
-    console.log(this.retrieved_fragment)
+    // console.log(this.retrieved_fragment)
+    
+    // let current_fragment = new Fragment({});
+
+    // current_fragment.author = 'Ennius'
+    // current_fragment.title = 'Thyestes'
+
+    // console.log(current_fragment)
+
+    // this.Request_automatic_fragment_linker(current_fragment)
+
+
   }
 
   public Retrieve_fragment_numbers(fragments){    
@@ -390,6 +402,31 @@ export class DashboardComponent implements OnInit {
     // Now reset form and request the fragments again
     this.Reset_form();
     this.Request_fragments(this.selected_author, this.selected_book, this.selected_editor);
+  }
+
+  public Request_automatic_fragment_linker(author, title){
+    
+    let item_string = author + ', ' +  title;
+    
+    let fragment = new Fragment({});
+    fragment.author = author;
+    fragment.title = title;
+
+    this.dialog.OpenConfirmationDialog('Are you sure you want to LINK fragments from this text?', item_string).subscribe(result => {
+      if(result){
+        this.spinner_active = true;
+        this.api.Automatic_fragment_linker(fragment).subscribe(
+          res => {
+            this.utility.HandleErrorMessage(res),
+            this.spinner_active = false;
+          }, 
+          err => {
+            this.utility.HandleErrorMessage(err),
+            this.spinner_active = false;
+          },
+        );
+      }
+    });
   }
 
   // USER DASHBOARD

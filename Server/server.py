@@ -76,6 +76,13 @@ def create_fragment():
     response = frag_db.Create_fragment(received_fragment)
     return response
 
+@app.route("/automatic_fragment_linker", methods=['POST'])
+def automatic_fragment_linker():
+    # Route to allow for the creation of the given fragment
+    received_fragment = Fragment(request.get_json())
+    response = frag_db.Automatic_fragment_linker(received_fragment)
+    return response  
+
 @app.route("/revise_fragment", methods=['POST'])
 def revise_fragment():
     # Route to allow for the revision of the given fragment

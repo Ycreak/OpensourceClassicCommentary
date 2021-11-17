@@ -150,8 +150,8 @@ export class ApiService {
   Update_fragment_lock(data: object): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `set_fragment_lock`, data, { observe: 'response', responseType: 'text' as 'json'  });
   }
-  Revise_fragment_pointer(fragment: object): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + `revise_fragment_pointer`, fragment, { observe: 'response', responseType: 'text' as 'json'  });
+  Automatic_fragment_linker(fragment: object): Observable<any> {
+    return this.http.post<any>(this.FlaskURL + `automatic_fragment_linker`, fragment, { observe: 'response', responseType: 'text' as 'json'  });
   }
   Login_user(login: object): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `login_user`, login, { observe: 'response', responseType: 'text' as 'json'  });

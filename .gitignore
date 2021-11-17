@@ -7,6 +7,9 @@ Angular/dist
 # Only exists if Bazel was run
 /bazel-out
 
+# Python
+Server/env
+
 # dependencies
 Angular/node_modules
 NoSQL_server/__pycache__

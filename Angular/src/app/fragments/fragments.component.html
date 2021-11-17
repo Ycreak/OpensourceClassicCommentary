@@ -162,7 +162,7 @@
             <!-- Show either fragment data or the fact that no fragment has been selected yet. -->
             <div *ngIf="this.fragment_clicked;else no_fragment_clicked">
                 <!-- Fragment information -->
-                <h4>Selected {{this.current_fragment.author}}, {{this.current_fragment.book}}, 
+                <h4>Selected {{this.current_fragment.author}}, {{this.current_fragment.title}}, 
                     {{this.current_fragment.editor}}, fragment {{this.current_fragment.fragment_name}}</h4> <hr>
             </div>
             <ng-template #no_fragment_clicked><h4>Click a fragment to show its content.</h4></ng-template>
@@ -333,7 +333,7 @@
 
             <div *ngFor="let fragment of this.column_data.playground.fragments" class="playground zlayer2" cdkDrag>
                 
-                <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
+                <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.title}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
                 
                 <div *ngFor="let line of fragment.lines">           
                     <div [innerHTML]="line.line_complete"></div>
@@ -345,7 +345,7 @@
         <!-- For loop to print the added fragments -->
         <!-- <div class="row"> -->
             <div *ngFor="let fragment of this.playground.add_fragment_array" class="playground zlayer2" cdkDrag>
-                <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
+                <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.title}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
                 <div *ngFor="let line of fragment.lines">           
                     <div [innerHTML]="line.line_complete"></div>
                 </div> 
@@ -632,7 +632,7 @@
         <div *ngFor="let fragment of this.column_data[column].fragments"> 
                        
             <div class="fragment-box" (click)="Handle_fragment_click(fragment)" cdkDrag>
-                <b [style.color]="fragment.colour">Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.book}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
+                <b [style.color]="fragment.colour">Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.title}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
                 <div *ngFor="let fragment_line of fragment.lines">      
                     <div [innerHTML]="fragment_line.line_complete | safeHtml"></div>  <!--safeHtml to allow whitespaces             -->
                 </div>  

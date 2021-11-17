@@ -6,7 +6,7 @@ export class Fragment
 
         if(fragment['fragment_name']) this.fragment_name = fragment['fragment_name']
         if(fragment['author']) this.author = fragment['author']
-        if(fragment['book']) this.book = fragment['book']
+        if(fragment['title']) this.title = fragment['title']
         if(fragment['editor']) this.editor = fragment['editor']
 
         if(fragment['translation']) this.translation = fragment['translation']
@@ -35,7 +35,7 @@ export class Fragment
     fragment_id : string;
     fragment_name : string = 'TBA';
     author : string = 'TBA';
-    book : string = 'TBA';
+    title : string = 'TBA';
     editor : string = 'TBA';
     translation : string;
     differences : string;

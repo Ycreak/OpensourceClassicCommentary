@@ -170,7 +170,7 @@
             </div>
 
             <div class="alert alert-info" role="alert">
-              You can press <b>Shift</b> for the popup keyboard to reveal more metre and HTML possibilities.
+              You can press <b>SHIFT</b> for the popup keyboard to reveal more metre and HTML possibilities.
             </div>
 
             <form [formGroup]="fragmentForm">
@@ -291,6 +291,8 @@
                 </div>
               </form>
 
+              
+
             </mat-tab>
 
             <mat-tab label="Fragment References"><br>
@@ -377,8 +379,58 @@
                 </div>
               </form>
   
-            </mat-tab>
+              <hr>
 
+              <!-- POSSIBILITY TO LINK FRAGMENTS AUTOMATICALLY BASED ON THEIR FUZZYWUZZY CLOSENESS -->
+              <div class="alert alert-info" role="alert">
+                  OSCC can also automatically link similar fragments from different editors together. 
+                  To do so, select the author and title you wish to link fragments for and click <b>Automatically link fragments</b>.
+                  The program will attempt to link all similar enbough fragments together. However, some fragments might be missed.
+                  It is recommended that the user checks the linked fragments and edits them manually if needed.
+              </div>
+              
+            
+              <div class="container">
+                <div class="row">
+                  <div class="col-10">
+                    <mat-form-field>
+                      <mat-label>Select author</mat-label>
+                      <mat-select>
+                          <mat-option *ngFor="let author of this.retrieved_authors" [value]="author.name"
+                            (click)="this.selected_author = author.name"  
+                            (click)="this.RequestBooks(author.name)">
+                              {{ author.name }} 
+                          </mat-option>
+                      </mat-select>  
+                    </mat-form-field> 
+              
+                    <mat-form-field>
+                        <mat-label>Select text</mat-label>
+                        <mat-select>
+                            <mat-option *ngFor="let book of this.retrieved_books" [value]="book.name" 
+                              (click)="this.selected_book = book.name">
+                                {{ book.name }}                
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+  
+                    <div>
+                      <button mat-stroked-button color="primary" (click)="Request_automatic_fragment_linker(this.selected_author, this.selected_book)" 
+                      *ngIf="this.authService.is_teacher">Automatically link fragments</button>
+                    </div>
+                  </div>
+
+                  <div class="col-2">
+                    <mat-spinner *ngIf="this.spinner_active" [diameter]="70"></mat-spinner>
+                  </div>
+                </div>
+              </div>
+            
+
+
+
+            </mat-tab>
+              
             <mat-tab label="Fragment Access" *ngIf="this.authService.is_teacher"><br>
 
               <mat-checkbox class="padding-left" formControlName="lock">If ticked, the fragment is locked</mat-checkbox>
@@ -388,8 +440,10 @@
 
             </mat-tab>
 
+          </form>
 
-        </form>                        
+
+                          
 
     </mat-tab-group>
 

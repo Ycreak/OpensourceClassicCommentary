@@ -7,8 +7,8 @@ from flask import Response, make_response
 from flask_jsonpify import jsonify # TODO: convert jsonify to json_pickle
 
 # For string similarity comparison
-from difflib import SequenceMatcher
 import string
+from fuzzywuzzy import fuzz
 
 # Class Imports
 from server_credentials import Credentials
@@ -85,7 +85,7 @@ class Fragment_handler:
             fragment_entry = {
                 'id' : fragment.id,
                 'author' : fragment['author'],
-                'book' : fragment['title'],
+                'title' : fragment['title'],
                 'editor' : fragment['editor'],
                 'fragment_name' : fragment['fragment_name'],
                 'lines' : fragment['lines'],
@@ -254,7 +254,7 @@ class Fragment_handler:
 
         return make_response('Fragment lock status set', 200)
 
-    def Reference_all_fragments(self, given_fragment):
+    def Automatic_fragment_linker(self, given_fragment):
         '''
         Finds fragments containing similar lines and links the fragments together.
         This function is very very very expensive. You should be Richie Rich rich.
@@ -266,12 +266,13 @@ class Fragment_handler:
         Returns:
             flask response: confirmation of number of lines linked
         '''
-        n = 0 # Counter for number of lines linked
-
-        EQUALITY_RATIO = 0.95
-
-        author = 'Accius' #fragment.author
-        title = 'Aegisthus' #fragment.title
+                
+        link_counter = 0 # Counter for number of lines linked
+        # the amount of similarity between fragments needed to be linked
+        EQUALITY_RATIO = 90 
+        # extract the data we need
+        author = given_fragment.author
+        title = given_fragment.title
         
         # First, make a list of all fragments from the given author and title
         fragment_list = []
@@ -290,7 +291,7 @@ class Fragment_handler:
                 for other_fragment in fragment_list:
                     for other_fragment_line in other_fragment['lines']:
                         # check if given line is similar to found line
-                        if self.similar(current_fragment_line.get('text'), other_fragment_line.get('text')) >= EQUALITY_RATIO:
+                        if self.Get_line_similarity(current_fragment_line.get('text'), other_fragment_line.get('text')) >= EQUALITY_RATIO:
 
                             # Link both fragments together
                             doc = self.frag_db[current_fragment['_id']]                           
@@ -303,11 +304,11 @@ class Fragment_handler:
                             doc['linked_fragments'] = list(set(doc['linked_fragments']))                            
                             doc_id, doc_rev = self.frag_db.save(doc)
 
-                            n+=1
-        print(f'Found and linked {n} matching lines.')
-        # return make_response(f'Found and linked {n} matching lines.', 200)  
+                            link_counter+=1
+        # print(f'Found and linked {link_counter} matching lines.')
+        return make_response(f'Found and linked {link_counter} matching lines.', 200)  
 
-    def similar(self, a, b):   # TODO Replace with FuzzyWuzzy module
+    def Get_line_similarity(self, a, b):
         """ Returns the ratio of similarity between the two given strings
 
         Args:
@@ -315,12 +316,12 @@ class Fragment_handler:
             b (str): second string to be compared
 
         Returns:
-            float: of ratio of similarity between to arguments
-        """              
+            integer: of ratio of similarity between to arguments (value between 0 and 100)
+        """     
         # remove punctuation and capitalisation
         a = a.translate(str.maketrans('', '', string.punctuation)).lower()
         b = b.translate(str.maketrans('', '', string.punctuation)).lower()
-        return SequenceMatcher(None, a, b).ratio()
+        return fuzz.token_sort_ratio(a,b)      
 
     def migrate_linked_fragments_layout(self):
         """ Simple function to migrate the linked fragment layout
@@ -331,9 +332,9 @@ class Fragment_handler:
             doc_id, doc_rev = self.frag_db.save(doc)
 
 # Developer functions
+if __name__ == "__main__":
+    fh = Fragment_handler()
 
-# fh = Fragment_handler()
+    # fh.migrate_linked_fragments_layout()
 
-# # fh.migrate_linked_fragments_layout()
-
-# fh.Reference_all_fragments([])
+    fh.Automatic_fragment_linker([])

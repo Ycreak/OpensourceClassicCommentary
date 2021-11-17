@@ -33,7 +33,7 @@ export class FragmentsComponent implements OnInit {
   toggle_column_one: boolean = true;
   toggle_column_two: boolean = true;
   toggle_column_three: boolean = true;
-  toggle_column_four: boolean = false;
+  toggle_column_four: boolean = true;
   toggle_commentary: boolean = false;
   toggle_playground: boolean = false;
   toggle_multiplayer: boolean = false;
@@ -53,37 +53,37 @@ export class FragmentsComponent implements OnInit {
   column_data : object = {
     column1 : {
       author : '',
-      book : '',
+      title : '',
       editor : '',
       fragments : [],
     },
     column2 : {
       author : '',
-      book : '',
+      title : '',
       editor : '',
       fragments : [],
     },
     column3 : {
       author : '',
-      book : '',
+      title : '',
       editor : '',
       fragments : [],
     },
     column4 : {
       author : '',
-      book : '',
+      title : '',
       editor : '',
       fragments : [],
     },
     playground : {
       author : '',
-      book : '',
+      title : '',
       editor : '',
       fragments : [],
     },
     playground2 : {
       author : '',
-      book : '',
+      title : '',
       editor : '',
       fragments : [],
     },     
@@ -109,13 +109,13 @@ export class FragmentsComponent implements OnInit {
     this.api.GetAuthors().subscribe(data => this.retrieved_authors = data);
     // Retrieves everything surrounding the text.
     this.RequestEditors('Ennius', 'Thyestes'); // Retrieve at default the Ennius' Thyestes text.
-    // this.Request_fragments('Ennius', 'Thyestes', 'TRF', 'column1');
-    // this.Request_fragments('Ennius', 'Thyestes', 'Ribbeck', 'column2');
-    // this.Request_fragments('Ennius', 'Thyestes', 'Jocelyn', 'column3');
-    // this.Request_fragments('Ennius', 'Thyestes', 'Vahlen', 'column4');
-    this.Request_fragments('Accius', 'Aegisthus', 'Dangel', 'column1');
-    this.Request_fragments('Accius', 'Aegisthus', 'Ribbeck', 'column2');
-    this.Request_fragments('Accius', 'Aegisthus', 'Warmington', 'column3');
+    this.Request_fragments('Ennius', 'Thyestes', 'TRF', 'column1');
+    this.Request_fragments('Ennius', 'Thyestes', 'Ribbeck', 'column2');
+    this.Request_fragments('Ennius', 'Thyestes', 'Jocelyn', 'column3');
+    this.Request_fragments('Ennius', 'Thyestes', 'Vahlen', 'column4');
+    // this.Request_fragments('Livius Andronicus', 'Aegisthus', 'TRF', 'column1');
+    // this.Request_fragments('Livius Andronicus', 'Aegisthus', 'Ribbeck', 'column2');
+    // this.Request_fragments('Livius Andronicus', 'Aegisthus', 'Warmington', 'column3');
     //FIXME: this should be handled within the multiplayer class? It wont call the constructor
     // this.multiplayer.InitiateFirestore(this.multiplayer.sessionCode, this.multiplayer.tableName); 
   }
@@ -229,7 +229,7 @@ export class FragmentsComponent implements OnInit {
    */
   public Handle_author_selection(column: string, author: string){
     this.column_data[column].author = author;
-    this.column_data[column].book = 'TBA';
+    this.column_data[column].title = 'TBA';
     this.column_data[column].editor = 'TBA';
     this.RequestBooks(author);
   }
@@ -241,7 +241,7 @@ export class FragmentsComponent implements OnInit {
    * @author Ycreak
    */
   public Handle_book_selection(column: string, book: string){
-    this.column_data[column].book = book;
+    this.column_data[column].title = book;
     this.column_data[column].editor = 'TBA';
     this.RequestEditors(this.column_data[column].author, book);
   }
@@ -254,7 +254,7 @@ export class FragmentsComponent implements OnInit {
    */
   public Handle_editor_selection(column: string, editor: string){
     this.column_data[column].editor = editor;
-    this.Request_fragments(this.column_data[column].author, this.column_data[column].book, editor, column)
+    this.Request_fragments(this.column_data[column].author, this.column_data[column].title, editor, column)
   }
 
   /**
