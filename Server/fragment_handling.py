@@ -8,7 +8,7 @@ from flask_jsonpify import jsonify # TODO: convert jsonify to json_pickle
 
 # For string similarity comparison
 import string
-from fuzzywuzzy import fuzz
+# from fuzzywuzzy import fuzz
 
 # Class Imports
 from server_credentials import Credentials
@@ -33,12 +33,8 @@ class Fragment_handler:
         Returns:
             list: of all unique authors in the database
         """        
-        # author_list = Retrieve_data_from_db(self.frag_db, {}, []) TODO: why does this not work?
-        # return sorted(set([x['author'] for x in author_list]))
-        author_list = []
-        for id in self.frag_db:
-            author_list.append(self.frag_db[id]['author'])
-        return sorted(set([x for x in author_list]))
+        data = Retrieve_data_from_db(self.frag_db, {}, ['author'])
+        return sorted(set([x['author'] for x in data]))
 
     def Retrieve_all_titles(self, author) -> list:
         """Retrieves all available titles per given author
@@ -51,7 +47,7 @@ class Fragment_handler:
         """        
         data = Retrieve_data_from_db(self.frag_db, {'author': author}, ['title'])
         return sorted(set([x['title'] for x in data]))
-
+        
     def Retrieve_all_editors(self, author, title) -> list:
         """Retrieves all editors available given an author and a title
 
@@ -64,7 +60,7 @@ class Fragment_handler:
         """        
         data = Retrieve_data_from_db(self.frag_db, {'author': author, 'title': title}, ['editor'])
         return sorted(set([x['editor'] for x in data]))
-
+        
     def Retrieve_all_fragments(self, author, title, editor) -> list:
         """Retrieves all fragments available given an author, title and editor.
         NB: only retrieves the fields needed to show an edition!
@@ -76,7 +72,7 @@ class Fragment_handler:
 
         Returns:
             list: of all fragments given the parameters
-        """        
+        """                
         fragments = Retrieve_data_from_db(self.frag_db, {'author': author, 'title': title, 'editor': editor}, [])
 
         fragment_list = []
@@ -335,6 +331,13 @@ class Fragment_handler:
 if __name__ == "__main__":
     fh = Fragment_handler()
 
+    mylist = fh.Retrieve_all_fragments('Pacuvius', 'Dulorestes', 'Schierl')
+    # mylist = fh.Retrieve_all_fragments('Naevius', 'Lycurgus', 'TrRF')
+    # mylist = fh.Retrieve_all_fragments('Ennius', 'Thyestes', 'TRF')
+
+    # mylist = fh.Retrieve_all_editors('Ennius', 'Thyestes')
+    print(len(mylist))
+    print(mylist)
     # fh.migrate_linked_fragments_layout()
 
-    fh.Automatic_fragment_linker([])
+    # fh.Automatic_fragment_linker([])

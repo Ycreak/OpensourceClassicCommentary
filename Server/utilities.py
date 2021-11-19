@@ -14,4 +14,5 @@ def Retrieve_data_from_db(db, selector, fields):
     return db.find({
             'selector': selector,
             'fields': fields,
+            'limit': 1000
     })
