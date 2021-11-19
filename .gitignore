@@ -9,6 +9,9 @@ Angular/dist
 
 # Python
 Server/env
+Server/__pycache__
+
+*.pyc
 
 # dependencies
 Angular/node_modules
@@ -49,3 +52,6 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+
+Server/Models/__pycache__/

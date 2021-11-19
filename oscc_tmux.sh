@@ -10,8 +10,8 @@ then
 	tmux new-window -n Flask
 	tmux new-window -n Running
 	# start the vim sessions
-	tmux send-keys -t oscc_session:1 'cd Angular/src/app; vim .' C-m
-	tmux send-keys -t oscc_session:2 'cd Server; vim server.py' C-m
+	tmux send-keys -t oscc_session:1 'cd Angular/src/app; vim .' #C-m
+	tmux send-keys -t oscc_session:2 'cd Server; vim server.py' #C-m
 	# split the third pane and start the angular and flask service
 	tmux split-window -h -t oscc_session:3
 	tmux send-keys -t oscc_session:3.0 'cd Server; FLASK_APP=server.py FLASK_ENV=development flask run --port 5002' C-m

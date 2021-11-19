@@ -118,7 +118,7 @@
             <mat-form-field class="input-form-full-width">
               <mat-label>Fragment name</mat-label>
               <input required matInput type="text" formControlName="fragment_name"> <!--required> -->
-              <mat-hint>Provide the name of the fragment</mat-hint>                       
+              <mat-hint><b>Only</b> provide the number of the fragment</mat-hint>                       
             </mat-form-field>
           
             <div class="div-padding-sm"></div>
@@ -295,7 +295,7 @@
 
             </mat-tab>
 
-            <mat-tab label="Fragment References"><br>
+            <mat-tab *ngIf="this.authService.is_teacher" label="Fragment References"><br>
 
               <div class="alert alert-warning" role="alert">
                 This functionality is in alpha status. After adding pointers and revising the fragment, please reselect the editor and fragment.
@@ -385,7 +385,7 @@
               <div class="alert alert-info" role="alert">
                   OSCC can also automatically link similar fragments from different editors together. 
                   To do so, select the author and title you wish to link fragments for and click <b>Automatically link fragments</b>.
-                  The program will attempt to link all similar enbough fragments together. However, some fragments might be missed.
+                  The program will attempt to link all similar enough fragments together. However, some fragments might be missed.
                   It is recommended that the user checks the linked fragments and edits them manually if needed.
               </div>
               

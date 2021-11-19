@@ -31,10 +31,10 @@ export class FragmentsComponent implements OnInit {
 
   // Toggle switches for the HTML columns/modes
   toggle_column_one: boolean = true;
-  toggle_column_two: boolean = true;
-  toggle_column_three: boolean = true;
-  toggle_column_four: boolean = true;
-  toggle_commentary: boolean = false;
+  toggle_column_two: boolean = false;
+  toggle_column_three: boolean = false;
+  toggle_column_four: boolean = false;
+  toggle_commentary: boolean = true;
   toggle_playground: boolean = false;
   toggle_multiplayer: boolean = false;
   // Booleans for HTML related items
@@ -109,13 +109,13 @@ export class FragmentsComponent implements OnInit {
     this.api.GetAuthors().subscribe(data => this.retrieved_authors = data);
     // Retrieves everything surrounding the text.
     this.RequestEditors('Ennius', 'Thyestes'); // Retrieve at default the Ennius' Thyestes text.
-    this.Request_fragments('Ennius', 'Thyestes', 'TRF', 'column1');
-    this.Request_fragments('Ennius', 'Thyestes', 'Ribbeck', 'column2');
-    this.Request_fragments('Ennius', 'Thyestes', 'Jocelyn', 'column3');
-    this.Request_fragments('Ennius', 'Thyestes', 'Vahlen', 'column4');
-    // this.Request_fragments('Livius Andronicus', 'Aegisthus', 'TRF', 'column1');
-    // this.Request_fragments('Livius Andronicus', 'Aegisthus', 'Ribbeck', 'column2');
-    // this.Request_fragments('Livius Andronicus', 'Aegisthus', 'Warmington', 'column3');
+		this.Request_fragments('Ennius', 'Thyestes', 'TRF', 'column1');
+		 //this.Request_fragments('Ennius', 'Thyestes', 'Ribbeck', 'column2');
+		 //this.Request_fragments('Ennius', 'Thyestes', 'Jocelyn', 'column3');
+    // this.Request_fragments('Ennius', 'Thyestes', 'Vahlen', 'column4');
+		//  this.Request_fragments('Accius', 'Aegisthus', 'Dangel', 'column1');
+		//  this.Request_fragments('Accius', 'Aegisthus', 'Ribbeck', 'column2');
+		//  this.Request_fragments('Accius', 'Aegisthus', 'Warmington', 'column3');
     //FIXME: this should be handled within the multiplayer class? It wont call the constructor
     // this.multiplayer.InitiateFirestore(this.multiplayer.sessionCode, this.multiplayer.tableName); 
   }
