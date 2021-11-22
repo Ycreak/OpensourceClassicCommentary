@@ -150,10 +150,8 @@ export class DashboardComponent implements OnInit {
     return number_list
   }
 
-  public Retrieve_requested_fragment(fragments, fragment_number, update_content_form){
+  public Retrieve_requested_fragment(fragments, fragment_number){
     let fragment_id = ''
-
-    console.log(update_content_form)
 
     for(let fragment in fragments){
       if(fragments[fragment].fragment_name == fragment_number){
@@ -165,14 +163,14 @@ export class DashboardComponent implements OnInit {
       data => { 
         this.retrieved_fragment = data;
         
-        if(update_content_form){
-          this.Update_content_form(this.retrieved_fragment); // Dirty hack, need proper design
+        // if(update_content_form){
           this.selected_fragment = fragment_number;
-        }
-        else {
-          // We are doing references (this is so bad) (because of the overlapping selection fields)
-          this.Push_fragment_link(data['author'], data['title'], data['editor'], data['fragment_name'], data['_id'])
-        }  
+          this.Update_content_form(this.retrieved_fragment); // Dirty hack, need proper design
+        // }
+        // else {
+        //   // We are doing references (this is so bad) (because of the overlapping selection fields)
+        //   this.Push_fragment_link(data['author'], data['title'], data['editor'], data['fragment_name'], data['_id'])
+        // }  
     });
   }
 
@@ -202,6 +200,11 @@ export class DashboardComponent implements OnInit {
     this.UpdateForm('fragmentForm','reconstruction', fragment.reconstruction);
     this.UpdateForm('fragmentForm','status', fragment.status);
     this.UpdateForm('fragmentForm','lock', fragment.lock);
+    this.UpdateForm('fragmentForm','linked_fragments', fragment.linked_fragments);
+
+    // let temp = this.fragmentForm.get('linked_fragments') as Array<string>
+    // console.log(temp)
+    
 
     // Fill the fragment context array
     for (let item in fragment.context){
@@ -224,16 +227,12 @@ export class DashboardComponent implements OnInit {
         })
       );
     }
-    // Fill the linked fragment array
+    // Fill the linked fragment array DEPRECATED
     for (let item in fragment.linked_fragments){
       let items = this.fragmentForm.get('linked_fragments') as FormArray;
       items.push(
         this.formBuilder.group({
-          author: fragment.linked_fragments[item].author,
-          title: fragment.linked_fragments[item].title,
-          editor: fragment.linked_fragments[item].editor,
-          fragment_name: fragment.linked_fragments[item].fragment_name,
-          fragment_id: fragment.linked_fragments[item].fragment_id,
+          fragment_id: fragment.linked_fragments[item],
         })
       );
     }
@@ -260,18 +259,19 @@ export class DashboardComponent implements OnInit {
     );
   }
 
-  public Push_fragment_link(author, title, editor ,fragment_name, fragment_id){
-    let fragment_link = this.fragmentForm.get('linked_fragments') as FormArray;
-    fragment_link.push(
-      this.formBuilder.group({
-        author: author,
-        title: title,
-        editor: editor,
-        fragment_name: fragment_name,
-        fragment_id: fragment_id,
-      })
-    );    
-  }  
+  // DEPRECATED
+  // public Push_fragment_link(author, title, editor ,fragment_name, fragment_id){
+  //   let fragment_link = this.fragmentForm.get('linked_fragments') as FormArray;
+  //   fragment_link.push(
+  //     this.formBuilder.group({
+  //       author: author,
+  //       title: title,
+  //       editor: editor,
+  //       fragment_name: fragment_name,
+  //       fragment_id: fragment_id,
+  //     })
+  //   );    
+  // }  
   // FORM RELATED FUNCTIONS
   /**
    * Updates a value of a key in the given form

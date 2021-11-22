@@ -108,7 +108,7 @@ const customLayouts: IKeyboardLayouts = {
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
-  {path: '', component: FragmentsComponent},
+  {path: '', component: DashboardComponent},
   {path: 'fragments', component: FragmentsComponent},
   {path: 'text', component: TextComponent},
   {path: 'scansion', component: ScansionComponent},

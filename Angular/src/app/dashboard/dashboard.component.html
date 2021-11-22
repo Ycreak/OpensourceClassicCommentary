@@ -87,7 +87,7 @@
           <mat-select>
               <mat-option *ngFor="let fragment_number of this.retrieved_fragment_numbers" [value]="fragment_number"
                 (click)="Reset_form()"    
-                (click)="this.Retrieve_requested_fragment(this.retrieved_fragments, fragment_number, true)"
+                (click)="this.Retrieve_requested_fragment(this.retrieved_fragments, fragment_number)"
                 (click)="this.fragment_selected = true">
                   {{ fragment_number }} 
               </mat-option>
@@ -297,8 +297,8 @@
 
             <mat-tab *ngIf="this.authService.is_teacher" label="Fragment References"><br>
 
-              <div class="alert alert-warning" role="alert">
-                This functionality is in alpha status. After adding pointers and revising the fragment, please reselect the editor and fragment.
+              <div class="alert alert-danger" role="alert">
+                This functionality is currently broken. Do not use.
               </div>
 
               <p>The currently selected fragment points to the fragments listed below. This means that whenever the currently selected fragment is clicked, the commentaries of the fragments below are retrieved.</p>
@@ -321,59 +321,31 @@
                   <mat-label>Fragment</mat-label>
                   <mat-select>
                       <mat-option *ngFor="let fragment_number of this.retrieved_fragment_numbers" [value]="fragment_number"
-                        (click)="this.Retrieve_requested_fragment(this.retrieved_fragments, fragment_number, false)">
+                        (click)="this.Retrieve_requested_fragment(this.retrieved_fragments, fragment_number)">
                       
                           {{ fragment_number }} 
                       </mat-option>
                   </mat-select>
               </mat-form-field>              
 
-
-
               <form [formGroup]="fragmentForm">
                 <!-- <button mat-stroked-button color="primary" (click)="Push_fragment_link('','','','','')">Add New Fragment Pointer</button> -->
                 
                 <div class="div-padding-lg"></div>
-  
+                 
+
+
                 <div formArrayName="linked_fragments"
                   *ngFor="let item of fragmentForm.get('linked_fragments')['controls']; let i = index;">
+                  
                   <div [formGroupName]="i">
-    
-                    <!-- {{item.author}}, {{title}}, {{editor}}, {{fragment_name}} -->
-                    
-                    <mat-form-field class="input-form-small">
-                      <mat-label>Author</mat-label>
-                      <input matInput disabled type="text" formControlName="author"> <!--required> -->
-                    </mat-form-field>
 
-                    <mat-form-field class="input-form-small">
-                      <mat-label>Title</mat-label>
-                      <input matInput disabled type="text" formControlName="title"> <!--required> -->
-                    </mat-form-field>
-
-                    <mat-form-field class="input-form-small">
-                      <mat-label>Editor</mat-label>
-                      <input matInput disabled type="text" formControlName="editor"> <!--required> -->
-                    </mat-form-field>
-                    
-                    <mat-form-field class="input-form-small">
-                      <mat-label>Fragment</mat-label>
-                      <input matInput disabled type="text" formControlName="fragment_name"> <!--required> -->
-                    </mat-form-field>                     
-
-                    <!-- <mat-form-field class="input-form-small">
-                      <mat-label>Line name</mat-label>
-                      <input matInput type="text" formControlName="line_number">
-                    </mat-form-field>
-  
                     <mat-form-field class="input-form-half">
-                      <mat-label>Line text</mat-label>
-                      <input matInput type="text" formControlName="text" [matKeyboard]="'OSCC'">
-                    </mat-form-field> -->
-  
-                    <!-- <input formControlName="line_number" placeholder="Line name"> -->
-                    <!-- <input formControlName="text" placeholder="Line text" [matKeyboard]="'OSCC'">  -->
-                    <button mat-button (click)="Remove_form_item('linked_fragments', i)">Delete this pointer</button>
+                      <mat-label>Linked fragment</mat-label>
+                      <input matInput type="text" formControlName="fragment_id"> <!--required> -->
+                    </mat-form-field>
+
+                    <button mat-button (click)="Remove_form_item('linked_fragments', i)">Delete this reference</button>
   
                   </div>
                 </div>

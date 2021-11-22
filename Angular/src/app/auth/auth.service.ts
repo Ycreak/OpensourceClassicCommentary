@@ -5,9 +5,9 @@ import { Injectable } from '@angular/core';
 })
 export class AuthService {
   // Login level should be an integer. 0 for guest, 1 for student, 2 for teacher en 3 for admin.
-  is_logged_in = false;
+  is_logged_in = true;
   is_student = false;
-  is_teacher = false;
+  is_teacher = true;
   isGuest = false;
 
   role: string;
