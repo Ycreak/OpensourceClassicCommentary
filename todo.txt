@@ -3,3 +3,74 @@ Create dummy fragments for new texts
 Duplicate fragments created? :O
 Nonius Stylesheet?
 We should work with Fragment_doc_id instead of Author, Text, Edition, Fragment
+
+BIBLIOGRAPHY
+
+bibtex entries opslaan in de database
+    -> student can input book, article, incollection, website
+    -> each must be shown on screen, in proper APA/Leiden format.
+    -> each fragment has sources/references/book
+    -> each text has a BIBLIOGRAPHY
+
+    -> student may select an existing source
+
+
+    -> one bibtex reference may have multiple fragments
+
+    -> bib_entries are listed in a fragment!
+
+    -> saving bib entries -> document in db bibliography
+
+    Hoe ziet dit eruit?
+
+    bib_entry = {
+
+        "bib_entry_type" = ""
+
+        <bib specific>
+
+    }
+
+@book{Ribbeck1852,
+  author = {Ribbeck, O.},
+  title     = {Scaenicae Romanorum poesis fragmenta},
+  date      = {1852},
+  series    = {Tragicorum Romanorum fragmenta},
+  number = {1},
+  location  = {Leipzig},
+  edition   = {1},
+}
+
+@article{Parker1940,
+    author = {Parker, P.},
+    title = {A Proto-Lucan basis for the Gospel according to the Hebrews},
+    journal = {Journal of Biblical Literature},
+    volume = {59},
+    pages = {471-478},
+    year = {1940}
+    }
+
+OSCC request nu fragment 2.
+    Compile dus BIBLIOGRAPHY
+
+
+fragment_empty = {
+    "fragment_name": "2", 
+    "author": "",
+    "title": "",
+    "editor": "",
+    "translation": "",
+    "differences": "",
+    "apparatus": "",
+    "commentary": "",
+    "reconstruction":"",
+    "status": "",
+    "context":[
+    ],
+    "lines":[
+    ],
+    "linked_fragments":[
+    ],
+    "lock": 0,
+    "bib_entries": {Ribbeck1852, Warmington1992}            PRO: easy bibliography showing per fragment
+}

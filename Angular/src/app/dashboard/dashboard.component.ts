@@ -60,6 +60,20 @@ export class DashboardComponent implements OnInit {
 
   fragmentForm: FormGroup;
 
+  bibliography_form : FormGroup = this.formBuilder.group({
+    _id: '',
+    author: '',
+    title: '',
+    year: '',
+    series: '',
+    number: '',
+    location: '',
+    edition: '',
+    journal: '',
+    volume: '',
+    pages: '',
+  });
+
   possible_status = ['normal', 'incertum', 'adesp.']
 
   pointer_editor : string;
