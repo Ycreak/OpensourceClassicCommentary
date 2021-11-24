@@ -25,7 +25,7 @@
 <div class="container-fluid">
   <mat-accordion class="example-headers-align" multi>
     <!-- Change fragment expansion panel -->
-    <mat-expansion-panel *ngIf="this.authService.is_teacher || this.authService.is_student" [expanded]="true">
+    <mat-expansion-panel *ngIf="this.authService.is_teacher || this.authService.is_student" [expanded]="false">
       <mat-expansion-panel-header>
         <mat-panel-title>
           Change fragment data
@@ -425,7 +425,7 @@
     <hr>
     
     <!-- BIBLIOGRAPHY PANEL -->
-    <mat-expansion-panel *ngIf="this.authService.is_logged_in">
+    <mat-expansion-panel *ngIf="this.authService.is_logged_in" [expanded]="true">
       <mat-expansion-panel-header>
         <mat-panel-title>
           Change bibliography data
@@ -437,58 +437,84 @@
       </mat-expansion-panel-header>          
     
       <!-- Buttons to submit fragment data -->
-      <button mat-stroked-button color="primary" [disabled]="!bibliography_form.valid" (click)="Request_create_fragment(this.fragmentForm.value)" 
+      <button mat-stroked-button color="primary" [disabled]="!bibliography_form.valid" (click)="request_create_bibliography_entry(this.bibliography_form.value)" 
       *ngIf="this.authService.is_teacher || this.authService.is_student">Create bibliography entry</button>
-      <button mat-stroked-button color="primary" [disabled]="!bibliography_form.valid" (click)="Request_revise_fragment(this.fragmentForm.value)" 
+      <button mat-stroked-button color="primary" [disabled]="!bibliography_form.valid" (click)="request_revise_bibliography_entry(this.bibliography_form.value)" 
         *ngIf="this.authService.is_teacher || this.authService.is_student">Revise bibliography entry</button>
-      <button mat-stroked-button color="warn" [disabled]="!fragment_selected" (click)="Request_delete_fragment(this.fragmentForm.value)" 
+      <button mat-stroked-button color="warn" [disabled]="!fragment_selected" (click)="request_delete_bibliography_entry(this.bibliography_form.value)" 
           *ngIf="this.authService.is_teacher">Delete bibliography entry</button>
       <hr>
       
+      <!-- Find the name of your author -->
+      <form class="example-form">
+        <mat-form-field class="example-full-width" appearance="fill">
+          <mat-label>Author</mat-label>
+          <input type="text"
+                 placeholder="Type author name"
+                 aria-label="Author"
+                 matInput
+                 [formControl]="bibliography_author_selection_form"
+                 [matAutocomplete]="auto">
+          <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+            <mat-option *ngFor="let option of bibliography_author_selection_form_filtered_options | async" [value]="option"
+            (click)="this.request_bibliography_from_author(option)">
+              {{option}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </form>
+    
+      <mat-selection-list [multiple]="false">
+        <mat-list-option *ngFor="let bib_entry of retrieved_author_bibliography" [value]="bib_entry" (click)="this.handle_bib_entry_selection(bib_entry)">
+          {{bib_entry.author}}, {{bib_entry.title}}, {{bib_entry.year}}
+        </mat-list-option>
+      </mat-selection-list>
+
+      <hr>
       
-      <mat-tab-group>
+      <mat-tab-group (selectedTabChange)="on_bibliography_tab_change($event)">
         <form [formGroup]="bibliography_form">
           <mat-tab label="Book"><br>
 
             <mat-form-field class="input-form-half">
               <mat-label>Author</mat-label>
-              <input required matInput type="text" formControlName="author"> <!--required> -->
+              <input matInput type="text" formControlName="author"> <!--required> -->
               <mat-hint>U adds book, u gib name =3 uwu</mat-hint>                       
             </mat-form-field>
           
             <mat-form-field class="input-form-half">
               <mat-label>Title</mat-label>
-              <input required matInput type="text" formControlName="title"> <!--required> -->
+              <input matInput type="text" formControlName="title"> <!--required> -->
               <mat-hint>pwease give me a titwe awnd i wiww give uwu evewything</mat-hint>                       
             </mat-form-field>
             
             <mat-form-field class="input-form-half">
               <mat-label>Year</mat-label>
-              <input required matInput type="text" formControlName="year"> <!--required> -->
+              <input matInput type="text" formControlName="year"> <!--required> -->
               <mat-hint>U adds book, u gib name =3 uwu</mat-hint>                       
             </mat-form-field>
             
             <mat-form-field class="input-form-half">
               <mat-label>Series</mat-label>
-              <input required matInput type="text" formControlName="series"> <!--required> -->
+              <input matInput type="text" formControlName="series"> <!--required> -->
               <mat-hint>U adds book, u gib name =3 uwu</mat-hint>                       
             </mat-form-field>
 
             <mat-form-field class="input-form-half">
               <mat-label>Number</mat-label>
-              <input required matInput type="text" formControlName="number"> <!--required> -->
+              <input matInput type="text" formControlName="number"> <!--required> -->
               <mat-hint>U adds book, u gib name =3 uwu</mat-hint>                       
             </mat-form-field>        
 
             <mat-form-field class="input-form-half">
               <mat-label>Location</mat-label>
-              <input required matInput type="text" formControlName="location"> <!--required> -->
+              <input matInput type="text" formControlName="location"> <!--required> -->
               <mat-hint>U adds book, u gib name =3 uwu</mat-hint>                       
             </mat-form-field>
             
             <mat-form-field class="input-form-half">
               <mat-label>Edition</mat-label>
-              <input required matInput type="text" formControlName="edition"> <!--required> -->
+              <input matInput type="text" formControlName="edition"> <!--required> -->
               <mat-hint>U adds book, u gib name =3 uwu</mat-hint>                       
             </mat-form-field>          
           
@@ -497,37 +523,37 @@
           <mat-tab label="Article"><br>
             <mat-form-field class="input-form-half">
               <mat-label>Author</mat-label>
-              <input required matInput type="text" formControlName="author"> <!--required> -->
+              <input matInput type="text" formControlName="author"> <!--required> -->
               <mat-hint>U adds book, u gib name =3 uwu</mat-hint>                       
             </mat-form-field>
           
             <mat-form-field class="input-form-half">
               <mat-label>Title</mat-label>
-              <input required matInput type="text" formControlName="title"> <!--required> -->
+              <input matInput type="text" formControlName="title"> <!--required> -->
               <mat-hint>U adds book, u gib name =3 uwu</mat-hint>                       
             </mat-form-field>
             
             <mat-form-field class="input-form-half">
               <mat-label>Year</mat-label>
-              <input required matInput type="text" formControlName="year"> <!--required> -->
+              <input matInput type="text" formControlName="year"> <!--required> -->
               <mat-hint>U adds book, u gib name =3 uwu</mat-hint>                       
             </mat-form-field>
             
             <mat-form-field class="input-form-half">
               <mat-label>Journal</mat-label>
-              <input required matInput type="text" formControlName="journal"> <!--required> -->
+              <input matInput type="text" formControlName="journal"> <!--required> -->
               <mat-hint>U adds book, u gib name =3 uwu</mat-hint>                       
             </mat-form-field>
 
             <mat-form-field class="input-form-half">
               <mat-label>Volume</mat-label>
-              <input required matInput type="text" formControlName="volume"> <!--required> -->
+              <input matInput type="text" formControlName="volume"> <!--required> -->
               <mat-hint>U adds book, u gib name =3 uwu</mat-hint>                       
             </mat-form-field>        
 
             <mat-form-field class="input-form-half">
               <mat-label>Pages</mat-label>
-              <input required matInput type="text" formControlName="pages"> <!--required> -->
+              <input matInput type="text" formControlName="pages"> <!--required> -->
               <mat-hint>U adds book, u gib name =3 uwu</mat-hint>                       
             </mat-form-field>            
           </mat-tab>      

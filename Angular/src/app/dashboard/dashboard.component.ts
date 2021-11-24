@@ -1,7 +1,5 @@
 // Core system components
 import { Component, OnInit} from '@angular/core';
-import {Inject} from '@angular/core';
-import { Observable } from 'rxjs';
 
 // Service and utility imports
 import { ApiService } from '../api.service';
@@ -12,24 +10,13 @@ import { DialogService } from '../services/dialog.service';
 // To allow the use of forms
 import { FormBuilder } from '@angular/forms';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators, FormArray } from '@angular/forms';
-
-import {MatButtonModule} from '@angular/material/button';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 
 // Mat imports
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 // Model imports to send to the API. 
-//import { Author } from '../models/Author';
-//import { Editor } from '../models/Editor';
-//import { Book } from '../models/Book';
 import { Fragment } from '../models/Fragment';
-//import { Context } from '../models/Context';
-//import { Translation } from '../models/Translation';
-//import { Apparatus } from '../models/Apparatus';
-//import { Differences } from '../models/Differences';
-//import { Commentary } from '../models/Commentary';
-//import { Reconstruction } from '../models/Reconstruction';
-//import { Bibliography } from '../models/Bibliography';
 
 // Third party imports
 // NPM Library. Hopefully not soon deprecated
@@ -37,6 +24,9 @@ import insertTextAtCursor from 'insert-text-at-cursor';
 
 // npm i angular-onscreen-material-keyboard
 import { IKeyboardLayouts, keyboardLayouts, MAT_KEYBOARD_LAYOUTS, MatKeyboardModule } from 'angular-onscreen-material-keyboard';
+
+import {Observable} from 'rxjs';
+import {map, startWith} from 'rxjs/operators';
 
 @Component({
   selector: 'app-dashboard',
@@ -58,10 +48,31 @@ export class DashboardComponent implements OnInit {
   retrieved_fragments : object;
   retrieved_fragment_numbers : object;
 
-  fragmentForm: FormGroup;
+  retrieved_bibliography_authors : object;
+  retrieved_author_bibliography : object;
+
+  // Forms
+  fragmentForm: FormGroup = this.formBuilder.group({
+    _id: '',
+    fragment_name: '', //['', Validators.required],
+    author: '',
+    title: '',
+    editor: '',
+    translation: '',
+    differences: '',
+    commentary: '',
+    apparatus: '',
+    reconstruction: '',
+    context: this.formBuilder.array([ ]),
+    lines: this.formBuilder.array([ ]),
+    linked_fragments: this.formBuilder.array([ ]),
+    status: '',
+    lock: 0,
+  });
 
   bibliography_form : FormGroup = this.formBuilder.group({
     _id: '',
+    bib_entry_type: 'book', // Book is default on page load
     author: '',
     title: '',
     year: '',
@@ -99,6 +110,11 @@ export class DashboardComponent implements OnInit {
   fragment_selected : boolean = false;
   allow_fragment_creation = false;
 
+  // Bibliography author selection
+  bibliography_author_selection_form = new FormControl();
+  bibliography_author_selection_form_options: string[] = [];
+  bibliography_author_selection_form_filtered_options: Observable<string[]>;
+
   constructor(
     private api: ApiService,
     private utility: UtilityService,
@@ -111,26 +127,15 @@ export class DashboardComponent implements OnInit {
    */
   ngOnInit(): void {
     this.RequestAuthors()
-    // this.Request_users()
-    // Initialise the fragment form. TODO: can we do this somewhere else?
-    this.fragmentForm = this.formBuilder.group({
-      _id: '',
-      fragment_name: '', //['', Validators.required],
-      author: '',
-      title: '',
-      editor: '',
-      translation: '',
-      differences: '',
-      commentary: '',
-      apparatus: '',
-      reconstruction: '',
-      context: this.formBuilder.array([ ]),
-      lines: this.formBuilder.array([ ]),
-      linked_fragments: this.formBuilder.array([ ]),
-      status: '',
-      lock: 0,
-    });
+    this.request_bibliography_authors()
+
+    this.bibliography_author_selection_form_filtered_options = this.bibliography_author_selection_form.valueChanges.pipe(
+      startWith(''),
+      map(value => this.filter_autocomplete_options(value)),
+    );
+
   }
+
 
   /**
    * Simple test function, can be used for whatever
@@ -138,6 +143,7 @@ export class DashboardComponent implements OnInit {
    */
   public Test(thing){
     console.log(thing)
+    console.log(this.retrieved_bibliography_authors)
     // console.log(this.retrieved_fragment)
     
     // let current_fragment = new Fragment({});
@@ -176,15 +182,9 @@ export class DashboardComponent implements OnInit {
     this.api.Get_specific_fragment(fragment_id).subscribe(
       data => { 
         this.retrieved_fragment = data;
-        
-        // if(update_content_form){
-          this.selected_fragment = fragment_number;
-          this.Update_content_form(this.retrieved_fragment); // Dirty hack, need proper design
-        // }
-        // else {
-        //   // We are doing references (this is so bad) (because of the overlapping selection fields)
-        //   this.Push_fragment_link(data['author'], data['title'], data['editor'], data['fragment_name'], data['_id'])
-        // }  
+        this.selected_fragment = fragment_number;
+        this.Update_content_form(this.retrieved_fragment);
+
     });
   }
 
@@ -299,6 +299,7 @@ export class DashboardComponent implements OnInit {
 
   public Reset_form(){
     this.fragmentForm.reset();
+    this.bibliography_form.reset();
     this.Clear_fields();
   }
 
@@ -443,7 +444,136 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  // USER DASHBOARD
+    //////////////////////////////////////////////
+   // BIBLIOGRAPHY RELATED DASHBOARD FUNCTIONS //
+  //////////////////////////////////////////////
+  /** 
+   * Filters the list of authors based on the user's search input
+   * @param value user input
+   * @return bibliography authors that match the user's input
+   * @author Ycreak CptVickers
+   */
+     private filter_autocomplete_options(value: string): string[] {
+      const filterValue = value.toLowerCase();
+      return this.bibliography_author_selection_form_options.filter(option => option.toLowerCase().includes(filterValue));
+    }
+  
+  /**
+   * When changing the entry type for bibliographies, this function makes sure the type
+   * is communicated with the bibliography form.
+   * @author Ycreak, CptVickers
+   * @param tab_change_event angular event that gives the bibliography type to be changed to.
+   */  
+  public on_bibliography_tab_change(tab_change_event: MatTabChangeEvent): void {
+    this.UpdateForm('bibliography_form', 'bib_entry_type', tab_change_event.tab.textLabel.toLowerCase())
+  }
+  
+  public handle_bib_entry_selection(bib_entry){
+
+    this.UpdateForm('bibliography_form','author', bib_entry.author);
+    this.UpdateForm('bibliography_form','title', bib_entry.title);
+    this.UpdateForm('bibliography_form','year', bib_entry.year);
+    this.UpdateForm('bibliography_form','series', bib_entry.series);
+    this.UpdateForm('bibliography_form','number', bib_entry.number);
+    this.UpdateForm('bibliography_form','loction', bib_entry.location);
+    this.UpdateForm('bibliography_form','editon', bib_entry.edition);
+    this.UpdateForm('bibliography_form','journal', bib_entry.journal);
+    this.UpdateForm('bibliography_form','volume', bib_entry.volume);
+    this.UpdateForm('bibliography_form','pages', bib_entry.pages);
+    // year: '',
+    // series: '',
+    // number: '',
+    // location: '',
+    // edition: '',
+    // journal: '',
+    // volume: '',
+    // pages: '',
+
+    // now put this option into the form for easy editing
+  }
+
+  /**
+   * Converts JSON into a angular list
+   * @param authors_json json object from the server
+   * @returns angular list with bibliography author names
+   * @authors Ycreak
+   */
+  public push_bibliography_authors_in_list(authors_json){
+    let author_list: string[] = [];
+    
+    for(let author in authors_json){
+      author_list.push(authors_json[author].name);
+    }
+    return author_list
+  }
+  
+  /**
+   * Requests a list of authors from the bibliography database. Puts it in bibliography_author_selection_form_options for
+   * use in the autocomplete module
+   * @author Ycreak
+   */
+  public request_bibliography_authors(){
+    this.api.get_bibliography_authors().subscribe(
+      data => {       
+        this.bibliography_author_selection_form_options = this.push_bibliography_authors_in_list(data); //TODO: this need to be handled with a model
+      },
+      err => this.utility.HandleErrorMessage(err),
+    );      
+  }
+
+  public request_bibliography_from_author(author){
+    this.api.get_bibliography_from_author(author).subscribe(
+      data => {
+        this.retrieved_author_bibliography = data;
+      });  
+  }
+  
+  public request_revise_bibliography_entry(bibliography){       
+        
+    let item_string = bibliography.author + ', ' +  bibliography.title
+
+    this.dialog.OpenConfirmationDialog('Are you sure you want to REVISE this bibliography entry?', item_string).subscribe(result => {
+      if(result){
+        this.api.revise_bibliography_entry(bibliography).subscribe(
+          res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
+        );
+      }
+    });
+    // this.Reset_form();
+  }
+
+  public request_create_bibliography_entry(bibliography){
+
+    console.log(bibliography)
+
+    let item_string = bibliography.author + ', ' +  bibliography.title
+
+    this.dialog.OpenConfirmationDialog('Are you sure you want to CREATE this bibliography entry?', item_string).subscribe(result => {
+      if(result){
+        this.api.create_bibliography_entry(bibliography).subscribe(
+          res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
+        );
+      }
+    });
+    // this.Reset_form();
+  }
+
+  public request_delete_bibliography_entry(bibliography){
+    let item_string = bibliography.author + ', ' +  bibliography.title
+    
+    this.dialog.OpenConfirmationDialog('Are you sure you want to DELETE this bibliography entry?', item_string).subscribe(result => {
+      if(result){
+        this.api.delete_bibliography_entry({'_id':bibliography._id}).subscribe(
+          res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
+        );
+      }
+    });
+    // this.Reset_form();
+  }
+
+    //////////////////////////////////////
+   // USER RELATED DASHBOARD FUNCTIONS //
+  //////////////////////////////////////
   public Request_change_password(form){
     if(form.password1 == form.password2){
       this.dialog.OpenConfirmationDialog('Are you sure you want to CHANGE your password', this.authService.logged_user).subscribe(result => {

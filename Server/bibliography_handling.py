@@ -48,6 +48,7 @@ class Bibliography_handler:
 
                 if fuzz.ratio(bib_entry['author'], author) > EQUALITY_RATIO and fuzz.ratio(bib_entry['title'], title) > EQUALITY_RATIO:
                     return make_response(f'Similar bibliography entry already exists: {author}, {title}', 403)
+
         # depending on the entry type, create a template. 
         if bib_entry.bib_entry_type == 'book': new_entry = copy.deepcopy(bib_entry.book_empty)
         elif bib_entry.bib_entry_type == 'article': new_entry = copy.deepcopy(bib_entry.article_empty)
@@ -100,10 +101,54 @@ class Bibliography_handler:
 
         return make_response('Succesfully deleted fragment!', 200)
 
+    def retrieve_all_authors(self):
+        """Retrieves the names of all editors in the database
+
+        Returns:
+            list: of all authors in the database
+        """
+        data = Retrieve_data_from_db(self.bib_db, {}, ['author'])
+        return sorted(set([x['author'] for x in data]))
+
+    def retrieve_bibliography_from_author(self, author):
+        """Retrieves the complete bibliography for a given author
+
+        Arguments:
+            author(str): name of the author to find the bibliography for
+
+        Returns:
+            bib_list(list): list of bibliography objects linked to the given author
+        """
+        bibliographies = Retrieve_data_from_db(self.bib_db, {'author': author}, [])
+
+        bib_list = []
+
+        for bibliography in bibliographies:
+            
+            bib_object = Bib_entry(bibliography)
+            bib_entry = {'id' : bib_object._id, 'bib_entry_type': bib_object.bib_entry_type}
+            
+            if hasattr(bib_object, 'author'): bib_entry['author'] = bib_object.author
+            if hasattr(bib_object, 'title'): bib_entry['title'] = bib_object.title
+            if hasattr(bib_object, 'year'): bib_entry['year'] = bib_object.year
+            if hasattr(bib_object, 'series'): bib_entry['series'] = bib_object.series
+            if hasattr(bib_object, 'number'): bib_entry['number'] = bib_object.number
+            if hasattr(bib_object, 'location'): bib_entry['location'] = bib_object.location
+            if hasattr(bib_object, 'edition'): bib_entry['edition'] = bib_object.edition
+            if hasattr(bib_object, 'journal'): bib_entry['journal'] = bib_object.journal
+            if hasattr(bib_object, 'volume'): bib_entry['volume'] = bib_object.volume
+            if hasattr(bib_object, 'pages'): bib_entry['pages'] = bib_object.pages
+
+            bib_list.append(bib_entry) 
+
+        return bib_list
 
 if __name__ == "__main__":
     bib_handler = Bibliography_handler()
     
+    bib_handler.retrieve_bibliography_from_author('Ribbeck')
+    exit(0)
+
     bib_json = { 
         "bib_entry_type" : "book",
         "author" : "Ribbeck, O.",

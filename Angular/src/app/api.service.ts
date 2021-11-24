@@ -40,8 +40,8 @@ export class ApiService {
   // ApiUrl: String = 'http://localhost:5000/';
   ApiUrl: String = 'http://oscc.nolden.biz:5000/'; // For deployment
   // CREA 4
-  FlaskURL: String = 'https://oscc.nolden.biz:5003/'; // For production (http! not https)                                 
-  // FlaskURL: String = 'http://localhost:5003/'; // For deployment (http! not https)                                 
+  // FlaskURL: String = 'https://oscc.nolden.biz:5003/'; // For production (http! not https)                                 
+  FlaskURL: String = 'http://localhost:5003/'; // For deployment (http! not https)                                 
 
   NeuralURL: String = 'https://oscc.nolden.biz:5002/'; // For deployment (http! not https)                                 
   // NeuralURL: String = 'http://localhost:5002/'; // For deployment (http! not https)                                 
@@ -93,6 +93,22 @@ export class ApiService {
     return this.http.get<Author[]>(this.FlaskURL + `authors`);
   }
 
+  /**
+  * @returns list of authors found in the bibliography database
+  * @author Ycreak
+  */
+  get_bibliography_authors(): Observable<JSON> {
+    return this.http.get<JSON>(this.FlaskURL + `get_bibliography_authors`);
+  }
+
+  /**
+  * @returns gets all bibliography documents from the given author
+  * @author Ycreak
+  */
+  get_bibliography_from_author(author): Observable<JSON> {
+    return this.http.get<JSON>(this.FlaskURL + `get_bibliography_from_author?author=${author}`);
+  }
+  
   /**
   * ... ... ...
   * @param authorID
@@ -152,6 +168,15 @@ export class ApiService {
   }
   Automatic_fragment_linker(fragment: object): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `automatic_fragment_linker`, fragment, { observe: 'response', responseType: 'text' as 'json'  });
+  }
+  create_bibliography_entry(fragment: object): Observable<any> {
+    return this.http.post<any>(this.FlaskURL + `create_bibliography_entry`, fragment, { observe: 'response', responseType: 'text' as 'json' });
+  } 
+  revise_bibliography_entry(fragment: object): Observable<any> {
+    return this.http.post<any>(this.FlaskURL + `revise_bibliography_entry`, fragment, { observe: 'response', responseType: 'text' as 'json'  });
+  }
+  delete_bibliography_entry(fragment: object): Observable<any> {
+    return this.http.post<any>(this.FlaskURL + `delete_bibliography_entry`, fragment, { observe: 'response', responseType: 'text' as 'json'  });
   }
   Login_user(login: object): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `login_user`, login, { observe: 'response', responseType: 'text' as 'json'  });

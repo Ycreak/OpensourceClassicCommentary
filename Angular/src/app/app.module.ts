@@ -67,6 +67,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatTooltipModule} from '@angular/material/tooltip'; 
 import {MatTableModule} from '@angular/material/table'; 
 import {MatGridListModule} from '@angular/material/grid-list'; 
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 // Allows copying to clipboard
 import {ClipboardModule} from '@angular/cdk/clipboard';
 import { TextComponent } from './text/text.component'; 
@@ -162,6 +163,7 @@ const appRoutes: Routes = [
     MatProgressSpinnerModule,
     MatTableModule, // Not currently used
     MatGridListModule,
+    MatAutocompleteModule,
     // To allow the drag and drop
     DragDropModule,
     ClipboardModule,
