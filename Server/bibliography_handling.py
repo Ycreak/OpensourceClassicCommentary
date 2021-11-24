@@ -74,8 +74,9 @@ class Bibliography_handler:
 
         Returns:
             flask response: response on successful execution
-        """                
+        """                  
         doc = self.bib_db[bib_entry._id]
+
         # Take the document and replace its fields with the new data received
         for field in doc:
             if hasattr(bib_entry, field):
@@ -126,7 +127,7 @@ class Bibliography_handler:
         for bibliography in bibliographies:
             
             bib_object = Bib_entry(bibliography)
-            bib_entry = {'id' : bib_object._id, 'bib_entry_type': bib_object.bib_entry_type}
+            bib_entry = {'_id' : bib_object._id, 'bib_entry_type': bib_object.bib_entry_type}
             
             if hasattr(bib_object, 'author'): bib_entry['author'] = bib_object.author
             if hasattr(bib_object, 'title'): bib_entry['title'] = bib_object.title

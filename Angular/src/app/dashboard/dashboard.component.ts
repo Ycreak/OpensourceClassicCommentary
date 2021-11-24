@@ -114,6 +114,8 @@ export class DashboardComponent implements OnInit {
   bibliography_author_selection_form = new FormControl();
   bibliography_author_selection_form_options: string[] = [];
   bibliography_author_selection_form_filtered_options: Observable<string[]>;
+  bibliography_form_selected_type = new FormControl(0);
+  bib_entry_selected : boolean = false;
 
   constructor(
     private api: ApiService,
@@ -416,6 +418,7 @@ export class DashboardComponent implements OnInit {
     });
     // Now reset form and request the fragments again
     this.Reset_form();
+    this.fragment_selected = false;
     this.Request_fragments(this.selected_author, this.selected_book, this.selected_editor);
   }
 
@@ -444,6 +447,10 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  public add_bibliography_entry_to_fragment(bib_entry){
+    console.log(bib_entry)
+  }
+
     //////////////////////////////////////////////
    // BIBLIOGRAPHY RELATED DASHBOARD FUNCTIONS //
   //////////////////////////////////////////////
@@ -468,8 +475,19 @@ export class DashboardComponent implements OnInit {
     this.UpdateForm('bibliography_form', 'bib_entry_type', tab_change_event.tab.textLabel.toLowerCase())
   }
   
+  /**
+   * When a bibliography entry is selected by the user, put all relevant data in the fields for easy
+   * revision.
+   * @param bib_entry with data for the selected entry
+   * @author Ycreak, CptVickers
+   */
   public handle_bib_entry_selection(bib_entry){
 
+    // Jump automatically to the correct tab
+    if (bib_entry.bib_entry_type == 'book') this.bibliography_form_selected_type.setValue(0);
+    if (bib_entry.bib_entry_type == 'article') this.bibliography_form_selected_type.setValue(1);
+
+    this.UpdateForm('bibliography_form','_id', bib_entry._id);
     this.UpdateForm('bibliography_form','author', bib_entry.author);
     this.UpdateForm('bibliography_form','title', bib_entry.title);
     this.UpdateForm('bibliography_form','year', bib_entry.year);
@@ -480,16 +498,8 @@ export class DashboardComponent implements OnInit {
     this.UpdateForm('bibliography_form','journal', bib_entry.journal);
     this.UpdateForm('bibliography_form','volume', bib_entry.volume);
     this.UpdateForm('bibliography_form','pages', bib_entry.pages);
-    // year: '',
-    // series: '',
-    // number: '',
-    // location: '',
-    // edition: '',
-    // journal: '',
-    // volume: '',
-    // pages: '',
 
-    // now put this option into the form for easy editing
+
   }
 
   /**
@@ -539,7 +549,7 @@ export class DashboardComponent implements OnInit {
         );
       }
     });
-    // this.Reset_form();
+    this.Reset_form();
   }
 
   public request_create_bibliography_entry(bibliography){
@@ -555,7 +565,7 @@ export class DashboardComponent implements OnInit {
         );
       }
     });
-    // this.Reset_form();
+    this.Reset_form();
   }
 
   public request_delete_bibliography_entry(bibliography){
@@ -568,7 +578,8 @@ export class DashboardComponent implements OnInit {
         );
       }
     });
-    // this.Reset_form();
+    this.Reset_form();
+    this.bib_entry_selected = false;
   }
 
     //////////////////////////////////////

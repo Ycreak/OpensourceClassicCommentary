@@ -25,7 +25,7 @@
 <div class="container-fluid">
   <mat-accordion class="example-headers-align" multi>
     <!-- Change fragment expansion panel -->
-    <mat-expansion-panel *ngIf="this.authService.is_teacher || this.authService.is_student" [expanded]="false">
+    <mat-expansion-panel *ngIf="this.authService.is_teacher || this.authService.is_student" [expanded]="true">
       <mat-expansion-panel-header>
         <mat-panel-title>
           Change fragment data
@@ -295,6 +295,39 @@
 
             </mat-tab>
 
+            <mat-tab label="Fragment Bibliography"><br>
+
+              <!-- Find the name of your author -->
+              <form class="example-form">
+                <mat-form-field class="example-full-width" appearance="fill">
+                  <mat-label>Author</mat-label>
+                  <input type="text"
+                        placeholder="Type author name"
+                        aria-label="Author"
+                        matInput
+                        [formControl]="bibliography_author_selection_form"
+                        [matAutocomplete]="auto">
+                  <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                    <mat-option *ngFor="let option of bibliography_author_selection_form_filtered_options | async" [value]="option"
+                    (click)="this.request_bibliography_from_author(option)">
+                      {{option}}
+                    </mat-option>
+                  </mat-autocomplete>
+                </mat-form-field>
+              </form>
+            
+              <mat-selection-list [multiple]="false">
+                <mat-list-option *ngFor="let bib_entry of retrieved_author_bibliography" [value]="bib_entry" 
+                  (click)="this.add_bibliography_entry_to_fragment(bib_entry)"
+                  (click)="this.bib_entry_selected = true">
+                  {{bib_entry.author}}, {{bib_entry.title}}, {{bib_entry.year}}
+                </mat-list-option>
+              </mat-selection-list>
+
+
+            </mat-tab>
+
+
             <mat-tab *ngIf="this.authService.is_teacher" label="Fragment References"><br>
 
               <div class="alert alert-danger" role="alert">
@@ -441,7 +474,7 @@
       *ngIf="this.authService.is_teacher || this.authService.is_student">Create bibliography entry</button>
       <button mat-stroked-button color="primary" [disabled]="!bibliography_form.valid" (click)="request_revise_bibliography_entry(this.bibliography_form.value)" 
         *ngIf="this.authService.is_teacher || this.authService.is_student">Revise bibliography entry</button>
-      <button mat-stroked-button color="warn" [disabled]="!fragment_selected" (click)="request_delete_bibliography_entry(this.bibliography_form.value)" 
+      <button mat-stroked-button color="warn" [disabled]="!bib_entry_selected" (click)="request_delete_bibliography_entry(this.bibliography_form.value)" 
           *ngIf="this.authService.is_teacher">Delete bibliography entry</button>
       <hr>
       
@@ -465,14 +498,16 @@
       </form>
     
       <mat-selection-list [multiple]="false">
-        <mat-list-option *ngFor="let bib_entry of retrieved_author_bibliography" [value]="bib_entry" (click)="this.handle_bib_entry_selection(bib_entry)">
+        <mat-list-option *ngFor="let bib_entry of retrieved_author_bibliography" [value]="bib_entry" 
+          (click)="this.handle_bib_entry_selection(bib_entry)"
+          (click)="this.bib_entry_selected = true">
           {{bib_entry.author}}, {{bib_entry.title}}, {{bib_entry.year}}
         </mat-list-option>
       </mat-selection-list>
 
       <hr>
       
-      <mat-tab-group (selectedTabChange)="on_bibliography_tab_change($event)">
+      <mat-tab-group [selectedIndex]="bibliography_form_selected_type.value" (selectedTabChange)="on_bibliography_tab_change($event)">
         <form [formGroup]="bibliography_form">
           <mat-tab label="Book"><br>
 

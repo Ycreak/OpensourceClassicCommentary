@@ -129,7 +129,7 @@ def create_bibliography_entry():
     response = bib_db.add_entry(received_bibliography)
     return response
 
-@app.route("/revise_bibliography entry",  methods=['POST'])
+@app.route("/revise_bibliography_entry",  methods=['POST'])
 def revise_bibliography_entry():
     # Route to allow the user to revise a specific bibliography item
     received_bibliography = Bib_entry(request.get_json())
