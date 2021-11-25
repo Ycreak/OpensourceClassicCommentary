@@ -318,12 +318,43 @@
             
               <mat-selection-list [multiple]="false">
                 <mat-list-option *ngFor="let bib_entry of retrieved_author_bibliography" [value]="bib_entry" 
-                  (click)="this.add_bibliography_entry_to_fragment(bib_entry)"
+                  (click)="this.push_bibliography_reference(bib_entry)"
                   (click)="this.bib_entry_selected = true">
                   {{bib_entry.author}}, {{bib_entry.title}}, {{bib_entry.year}}
                 </mat-list-option>
               </mat-selection-list>
 
+              <div class="div-padding-lg"></div>
+
+              <div formArrayName="linked_bib_entries"
+              *ngFor="let item of fragmentForm.get('linked_bib_entries')['controls']; let i = index;">
+              
+              <div [formGroupName]="i">
+                
+                <!-- <mat-form-field class="input-form-small">
+                  <mat-label>Linked bibliography entry</mat-label>
+                  <input matInput type="text" formControlName="bib_id" readonly>
+                </mat-form-field> -->
+
+                <mat-form-field class="input-form-small">
+                  <mat-label>Author</mat-label>
+                  <input matInput formControlName="author" readonly>
+                </mat-form-field>
+
+                <mat-form-field class="input-form-small">
+                  <mat-label>Title</mat-label>
+                  <input matInput type="text" formControlName="title" readonly>
+                </mat-form-field>
+                
+                <mat-form-field class="input-form-small">
+                  <mat-label>Year</mat-label>
+                  <input matInput type="text" formControlName="year" readonly>
+                </mat-form-field>                
+
+                <button mat-button (click)="Remove_form_item('linked_bib_entries', i)">Delete this source</button>
+
+              </div>
+            </div>
 
             </mat-tab>
 
@@ -366,8 +397,6 @@
                 
                 <div class="div-padding-lg"></div>
                  
-
-
                 <div formArrayName="linked_fragments"
                   *ngFor="let item of fragmentForm.get('linked_fragments')['controls']; let i = index;">
                   

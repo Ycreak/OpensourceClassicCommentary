@@ -122,6 +122,13 @@ def get_bibliography_from_author():
     result = bib_db.retrieve_bibliography_from_author(request.args.get('author', ''))
     return jsonpickle.encode(result)
 
+@app.route("/get_bibliography_from_id")
+def get_bibliography_from_id():
+    # Route to retrieve the complete bibliography for a given id
+    result = bib_db.retrieve_bibliography_from_id(request.args.get('_id', ''))
+    return jsonpickle.encode(result)
+    
+
 @app.route("/create_bibliography_entry",  methods=['POST'])
 def create_bibliography_entry():
     # Route to allow the user to create a specific bibliography item

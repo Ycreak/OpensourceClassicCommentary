@@ -19,6 +19,9 @@ export class Fragment
         if(fragment['context']) this.context = fragment['context']
         if(fragment['lines']) this.lines = fragment['lines']
         if(fragment['linked_fragments']) this.linked_fragments = fragment['linked_fragments']
+
+        if(fragment['bibliography']) this.bibliography = fragment['bib_entries']
+
     }
 
     public add_content(fragment){
@@ -29,6 +32,8 @@ export class Fragment
         if(fragment['commentary'] != ''){ this.commentary = fragment['commentary']; temp_no_content = false; }
         if(fragment['reconstruction'] != ''){ this.reconstruction = fragment['reconstruction']; temp_no_content = false; }
         if(fragment['context'] != ''){ this.context = fragment['context']; temp_no_content = false; }
+        if(fragment['bibliography'] != ''){ this.bibliography = fragment['bib_entries']; temp_no_content = false; }
+
         this.no_content = temp_no_content;
     }
 
@@ -46,6 +51,7 @@ export class Fragment
     context : object;
     lines : object;
     linked_fragments; // this is a list
+    bibliography : Array<string> = [];
 
     colour : string = 'black';
 

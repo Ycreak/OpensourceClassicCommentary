@@ -109,11 +109,11 @@ export class FragmentsComponent implements OnInit {
     this.api.GetAuthors().subscribe(data => this.retrieved_authors = data);
     // Retrieves everything surrounding the text.
     this.RequestEditors('Ennius', 'Thyestes'); // Retrieve at default the Ennius' Thyestes text.
-		this.Request_fragments('Ennius', 'Thyestes', 'TRF', 'column1');
+		// this.Request_fragments('Ennius', 'Thyestes', 'TRF', 'column1');
 		 //this.Request_fragments('Ennius', 'Thyestes', 'Ribbeck', 'column2');
 		 //this.Request_fragments('Ennius', 'Thyestes', 'Jocelyn', 'column3');
     // this.Request_fragments('Ennius', 'Thyestes', 'Vahlen', 'column4');
-		//  this.Request_fragments('Accius', 'Aegisthus', 'Dangel', 'column1');
+		 this.Request_fragments('Accius', 'Aegisthus', 'Dangel', 'column1');
 		//  this.Request_fragments('Accius', 'Aegisthus', 'Ribbeck', 'column2');
 		//  this.Request_fragments('Accius', 'Aegisthus', 'Warmington', 'column3');
     //FIXME: this should be handled within the multiplayer class? It wont call the constructor
@@ -202,8 +202,11 @@ export class FragmentsComponent implements OnInit {
    */
   public Request_fragment_content(fragment_id: string){
     this.api.Get_fragment_content(fragment_id).subscribe(data => {     
+      
+      console.log('data', data)
       this.current_fragment.add_content(data);
       this.fragment_clicked = true;
+      console.log(this.current_fragment)
     });
   }
 

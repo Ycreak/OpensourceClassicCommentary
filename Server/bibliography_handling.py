@@ -122,6 +122,8 @@ class Bibliography_handler:
         """
         bibliographies = Retrieve_data_from_db(self.bib_db, {'author': author}, [])
 
+        print(type(bibliographies))
+
         bib_list = []
 
         for bibliography in bibliographies:
@@ -143,6 +145,36 @@ class Bibliography_handler:
             bib_list.append(bib_entry) 
 
         return bib_list
+
+    def retrieve_bibliography_from_id(self, _id):
+        """Retrieves the complete bibliography for a given id
+
+        Arguments:
+            _id(str): name of the id to find the bibliography for
+
+        Returns:
+            bib_list(list): list of bibliography objects linked to the given id
+        """
+        bibliographies = Retrieve_data_from_db(self.bib_db, {'_id': _id}, [])
+  
+        for bibliography in bibliographies:   # This needs to be a loop for some reason     
+            bib_object = Bib_entry(bibliography)  
+            bib_entry = {'_id' : bib_object._id, 'bib_entry_type': bib_object.bib_entry_type}
+            
+            if hasattr(bib_object, 'author'): bib_entry['author'] = bib_object.author
+            if hasattr(bib_object, 'title'): bib_entry['title'] = bib_object.title
+            if hasattr(bib_object, 'year'): bib_entry['year'] = bib_object.year
+            if hasattr(bib_object, 'series'): bib_entry['series'] = bib_object.series
+            if hasattr(bib_object, 'number'): bib_entry['number'] = bib_object.number
+            if hasattr(bib_object, 'location'): bib_entry['location'] = bib_object.location
+            if hasattr(bib_object, 'edition'): bib_entry['edition'] = bib_object.edition
+            if hasattr(bib_object, 'journal'): bib_entry['journal'] = bib_object.journal
+            if hasattr(bib_object, 'volume'): bib_entry['volume'] = bib_object.volume
+            if hasattr(bib_object, 'pages'): bib_entry['pages'] = bib_object.pages
+
+            return bib_entry # there can be only one
+
+
 
 if __name__ == "__main__":
     bib_handler = Bibliography_handler()

@@ -65,7 +65,21 @@ class Fragment:
         # Fragment linking information
         if "linked_fragments" in received_fragment: 
             assert isinstance(received_fragment['linked_fragments'], list)
-            self.linked_fragments = received_fragment['linked_fragments']
+            # From Angular, we receive an JSON object (from the formbuilder)
+            # We must turn this into a set list again.
+            linked_fragment_list = []
+            for linked_fragment in received_fragment['linked_fragments']:
+                linked_fragment_list.append(linked_fragment['fragment_id'])
+            self.linked_fragments = list(set(linked_fragment_list)) # Angular needs a tissue for its issue
+
+        if "linked_bib_entries" in received_fragment: 
+            assert isinstance(received_fragment['linked_bib_entries'], list)
+            # From Angular, we receive an JSON object (from the formbuilder)
+            # We must turn this into a set list again.
+            linked_bib_entries_list = []
+            for linked_bib_entry in received_fragment['linked_bib_entries']:
+                linked_bib_entries_list.append(linked_bib_entry['bib_id'])
+            self.linked_bib_entries = list(set(linked_bib_entries_list)) 
 
     # Default fragment fields
     _id = ''
@@ -83,6 +97,7 @@ class Fragment:
     context = [] 
     lines = []
     linked_fragments = []
+    linked_bib_entries = []
 
     fragment_empty = {
         "fragment_name": "", 
@@ -100,6 +115,8 @@ class Fragment:
         "lines":[
         ],
         "linked_fragments":[
+        ],
+        "linked_bib_entries":[
         ],
         "lock": 0,
     }

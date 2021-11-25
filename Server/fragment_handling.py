@@ -12,6 +12,7 @@ import string
 
 # Class Imports
 from server_credentials import Credentials
+from bibliography_handling import Bibliography_handler
 from Models.fragment import Fragment
 from utilities import *
 
@@ -26,6 +27,8 @@ class Fragment_handler:
 
         # Select the database we need
         self.frag_db = database['fragments']
+        # Instantiate bibliography handler for when we need it
+        self.bib_handler = Bibliography_handler()
 
     def Retrieve_all_authors(self) -> list:
         """Retrieves all the authors that exist in all documents in the database
@@ -93,15 +96,36 @@ class Fragment_handler:
         return fragment_list
 
     def Retrieve_fragment_content(self, fragment):
+                
         doc = self.frag_db[fragment._id]
-        
+
         for content in ['translation', 'apparatus', 'differences', 'context', 'commentary', 'reconstruction']:
             setattr(fragment, content, doc[content])
         
+        # Also add linked bib entries separately as list
+        bib_entry_list = []
+        if 'linked_bib_entries' in doc:        
+            for bib_entry_id in doc['linked_bib_entries']:
+                # retrieve the bib entry given the id and put it in the list
+                bibliography = self.bib_handler.retrieve_bibliography_from_id(bib_entry_id)
+                
+                # book
+                if bibliography['bib_entry_type'] == "book": # TODO vraag welk format men wil
+                    string = f"<p>{bibliography['author']}, ({bibliography['year']}), <i>{bibliography['title']}</i></p>"
+                elif bibliography['bib_entry_type'] == 'article':
+                    string = f"<p>{bibliography['author']}, ({bibliography['year']}), <i>{bibliography['title']}</i></p>"
+                else: raise KeyError("Bibliography has no valid type")
+
+                bib_entry_list.append(string)
+
+        # bib_entry_list
+        print(bib_entry_list)
+        setattr(fragment, 'bib_entries', sorted(bib_entry_list))
+
         return fragment
 
     def Retrieve_complete_fragment(self, fragment_id) -> dict:
-        """Returns all the data from the given fragment
+        """Returns all the data from the given fragment. Called in the dashboard
 
         Args:
             fragment_id (str): identifier of the fragment document
@@ -172,11 +196,10 @@ class Fragment_handler:
         """        
         doc = self.frag_db[fragment._id]
 
-        for fragment_entry in ['fragment_name', 'author', 'title', 'editor', 'translation', 
-                         'differences', 'apparatus', 'commentary', 'reconstruction',
-                         'context', 'lines', 'linked_fragments', 'status']:
-            doc[fragment_entry] = getattr(fragment, fragment_entry)
-        
+        for field in doc:
+            if hasattr(fragment, field):
+                doc[field] = getattr(fragment, field)
+
         doc_id, doc_rev = self.frag_db.save(doc)
         
         return make_response('Succesfully revised fragment!', 200)
@@ -327,17 +350,31 @@ class Fragment_handler:
             doc['linked_fragments'] = []
             doc_id, doc_rev = self.frag_db.save(doc)
 
+    def create_additional_field(self, field, format):
+        """This function allows you to add a new field to all documents in the database.
+
+        Args:
+            field (string): name of the field to be added
+            format (various): data type of the value
+        """        
+        for id in self.frag_db:
+            doc = self.frag_db[id]
+
+            doc[field] = format
+            doc_id, doc_rev = self.frag_db.save(doc)
+
 # Developer functions
 if __name__ == "__main__":
     fh = Fragment_handler()
 
-    mylist = fh.Retrieve_all_fragments('Pacuvius', 'Dulorestes', 'Schierl')
+    # fh.create_additional_field('linked_bib_entries', [])
+    # mylist = fh.Retrieve_all_fragments('Pacuvius', 'Dulorestes', 'Schierl')
     # mylist = fh.Retrieve_all_fragments('Naevius', 'Lycurgus', 'TrRF')
     # mylist = fh.Retrieve_all_fragments('Ennius', 'Thyestes', 'TRF')
 
     # mylist = fh.Retrieve_all_editors('Ennius', 'Thyestes')
-    print(len(mylist))
-    print(mylist)
+    # print(len(mylist))
+    # print(mylist)
     # fh.migrate_linked_fragments_layout()
 
     # fh.Automatic_fragment_linker([])

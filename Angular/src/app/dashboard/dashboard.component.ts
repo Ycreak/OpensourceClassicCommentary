@@ -66,6 +66,7 @@ export class DashboardComponent implements OnInit {
     context: this.formBuilder.array([ ]),
     lines: this.formBuilder.array([ ]),
     linked_fragments: this.formBuilder.array([ ]),
+    linked_bib_entries: this.formBuilder.array([ ]),
     status: '',
     lock: 0,
   });
@@ -135,7 +136,6 @@ export class DashboardComponent implements OnInit {
       startWith(''),
       map(value => this.filter_autocomplete_options(value)),
     );
-
   }
 
 
@@ -145,7 +145,7 @@ export class DashboardComponent implements OnInit {
    */
   public Test(thing){
     console.log(thing)
-    console.log(this.retrieved_bibliography_authors)
+    console.log(this.bibliography_author_selection_form_options)
     // console.log(this.retrieved_fragment)
     
     // let current_fragment = new Fragment({});
@@ -216,11 +216,8 @@ export class DashboardComponent implements OnInit {
     this.UpdateForm('fragmentForm','reconstruction', fragment.reconstruction);
     this.UpdateForm('fragmentForm','status', fragment.status);
     this.UpdateForm('fragmentForm','lock', fragment.lock);
-    this.UpdateForm('fragmentForm','linked_fragments', fragment.linked_fragments);
 
-    // let temp = this.fragmentForm.get('linked_fragments') as Array<string>
-    // console.log(temp)
-    
+  
 
     // Fill the fragment context array
     for (let item in fragment.context){
@@ -252,7 +249,25 @@ export class DashboardComponent implements OnInit {
         })
       );
     }
+
+    for (let item in fragment.linked_bib_entries){
+
+      // Request additional data from this item
+      this.request_bibliography_from_id(fragment.linked_bib_entries[item])
+
+      let items = this.fragmentForm.get('linked_bib_entries') as FormArray;
+      items.push(
+        this.formBuilder.group({
+          bib_id: fragment.linked_bib_entries[item],
+          author: '',
+          title: '',
+          year: '',
+        })
+      );
+    }
   }
+
+////////////////////////////////////////////////////////////////////////////
 
   public Push_fragment_line(line_number, text){
     let fragment_lines = this.fragmentForm.get('lines') as FormArray;
@@ -271,6 +286,18 @@ export class DashboardComponent implements OnInit {
         author: author,
         location: location,
         text: text,
+      })
+    );
+  }
+
+  public push_bibliography_reference(bib_entry){
+    let bibliography_references = this.fragmentForm.get('linked_bib_entries') as FormArray;
+    bibliography_references.push(
+      this.formBuilder.group({
+        bib_id: bib_entry._id,
+        author: bib_entry.author,
+        title: bib_entry.title,
+        year: bib_entry.year,
       })
     );
   }
@@ -309,10 +336,12 @@ export class DashboardComponent implements OnInit {
     let context = this.fragmentForm.get('context') as FormArray
     let lines = this.fragmentForm.get('lines') as FormArray
     let linked_fragments = this.fragmentForm.get('linked_fragments') as FormArray
+    let linked_bib_entries = this.fragmentForm.get('linked_bib_entries') as FormArray
 
     context.clear()
     lines.clear()
     linked_fragments.clear()
+    linked_bib_entries.clear()
   }
 
 
@@ -383,7 +412,10 @@ export class DashboardComponent implements OnInit {
       this.dialog.OpenConfirmationDialog('Are you sure you want to REVISE this fragment?', item_string).subscribe(result => {
         if(result){
           this.api.Revise_fragment(fragment).subscribe(
-            res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
+            res => {
+              this.utility.HandleErrorMessage(res);
+            }, 
+            err => this.utility.HandleErrorMessage(err)
           );
         }
       });
@@ -447,8 +479,12 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  public add_bibliography_entry_to_fragment(bib_entry){
-    console.log(bib_entry)
+  public add_bibliography_entry_to_fragment(bib_entry, fragment){
+    console.log('bib', bib_entry._id)
+    console.log('frg', fragment._id)
+
+    console.log(this.fragmentForm.value)
+
   }
 
     //////////////////////////////////////////////
@@ -524,7 +560,7 @@ export class DashboardComponent implements OnInit {
    */
   public request_bibliography_authors(){
     this.api.get_bibliography_authors().subscribe(
-      data => {       
+      data => {
         this.bibliography_author_selection_form_options = this.push_bibliography_authors_in_list(data); //TODO: this need to be handled with a model
       },
       err => this.utility.HandleErrorMessage(err),
@@ -538,6 +574,27 @@ export class DashboardComponent implements OnInit {
       });  
   }
   
+  /**
+   * This function request bibliography entries given its id. It then updates the fields
+   * corresponding to this id for the Fragment Bibliography tab to use.
+   * @param id identifier of the bibliography document
+   * @author Ycreak, CptVickers
+   */
+  public request_bibliography_from_id(id){
+    this.api.get_bibliography_from_id(id).subscribe(
+      data => {
+        let temp; // simple object to access Python JSON (TODO: needs to be Angular model)
+        temp = data;       
+        let linked_bib_entries = this.fragmentForm.get('linked_bib_entries') as FormArray;
+        // Find the entry with our id
+        let index = linked_bib_entries.value.findIndex(x => x.bib_id === id);
+        // Add the data retrieved to the corresponding fields
+        linked_bib_entries.at(index).get('author').setValue(temp.author);
+        linked_bib_entries.at(index).get('title').setValue(temp.title);
+        linked_bib_entries.at(index).get('year').setValue(temp.year);
+      });  
+  }
+
   public request_revise_bibliography_entry(bibliography){       
         
     let item_string = bibliography.author + ', ' +  bibliography.title
@@ -545,7 +602,10 @@ export class DashboardComponent implements OnInit {
     this.dialog.OpenConfirmationDialog('Are you sure you want to REVISE this bibliography entry?', item_string).subscribe(result => {
       if(result){
         this.api.revise_bibliography_entry(bibliography).subscribe(
-          res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
+          res => {
+            this.utility.HandleErrorMessage(res),
+            this.request_bibliography_authors();  // After a succesful response, retrieve the authors again.
+          }, err => this.utility.HandleErrorMessage(err)
         );
       }
     });
@@ -554,14 +614,15 @@ export class DashboardComponent implements OnInit {
 
   public request_create_bibliography_entry(bibliography){
 
-    console.log(bibliography)
-
     let item_string = bibliography.author + ', ' +  bibliography.title
 
     this.dialog.OpenConfirmationDialog('Are you sure you want to CREATE this bibliography entry?', item_string).subscribe(result => {
       if(result){
         this.api.create_bibliography_entry(bibliography).subscribe(
-          res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
+          res => {
+            this.utility.HandleErrorMessage(res),
+            this.request_bibliography_authors();  // After a succesful response, retrieve the authors again.
+          }, err => this.utility.HandleErrorMessage(err)
         );
       }
     });
@@ -574,8 +635,10 @@ export class DashboardComponent implements OnInit {
     this.dialog.OpenConfirmationDialog('Are you sure you want to DELETE this bibliography entry?', item_string).subscribe(result => {
       if(result){
         this.api.delete_bibliography_entry({'_id':bibliography._id}).subscribe(
-          res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
-        );
+          res => {
+            this.utility.HandleErrorMessage(res),
+            this.request_bibliography_authors();  // After a succesful response, retrieve the authors again.
+          }, err => this.utility.HandleErrorMessage(err)        );
       }
     });
     this.Reset_form();

@@ -108,7 +108,16 @@ export class ApiService {
   get_bibliography_from_author(author): Observable<JSON> {
     return this.http.get<JSON>(this.FlaskURL + `get_bibliography_from_author?author=${author}`);
   }
+
+  /**
+  * @returns gets all bibliography documents from the given bib id
+  * @author Ycreak
+  */
+   get_bibliography_from_id(_id): Observable<JSON> {
+    return this.http.get<JSON>(this.FlaskURL + `get_bibliography_from_id?_id=${_id}`);
+  }
   
+
   /**
   * ... ... ...
   * @param authorID
