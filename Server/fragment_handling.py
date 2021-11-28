@@ -363,10 +363,17 @@ class Fragment_handler:
             doc[field] = format
             doc_id, doc_rev = self.frag_db.save(doc)
 
+    def create_complete_backup(self):
+        for id in self.frag_db:
+            doc = self.frag_db[id]
+
+            print(doc, '\n')
+
 # Developer functions
 if __name__ == "__main__":
     fh = Fragment_handler()
 
+    # fh.create_complete_backup()
     # fh.create_additional_field('linked_bib_entries', [])
     # mylist = fh.Retrieve_all_fragments('Pacuvius', 'Dulorestes', 'Schierl')
     # mylist = fh.Retrieve_all_fragments('Naevius', 'Lycurgus', 'TrRF')
