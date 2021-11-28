@@ -240,7 +240,7 @@ export class DashboardComponent implements OnInit {
         })
       );
     }
-    // Fill the linked fragment array DEPRECATED
+    // Fill the linked fragment array
     for (let item in fragment.linked_fragments){
       let items = this.fragmentForm.get('linked_fragments') as FormArray;
       items.push(
@@ -519,7 +519,8 @@ export class DashboardComponent implements OnInit {
    */
   public handle_bib_entry_selection(bib_entry){
 
-    // Jump automatically to the correct tab
+    console.log(bib_entry.bib_entry_type)
+    // Jump automatically to the correct tab. FIXME: this works buggy
     if (bib_entry.bib_entry_type == 'book') this.bibliography_form_selected_type.setValue(0);
     if (bib_entry.bib_entry_type == 'article') this.bibliography_form_selected_type.setValue(1);
 
