@@ -43,8 +43,8 @@ export class ApiService {
   // FlaskURL: String = 'https://oscc.nolden.biz:5003/'; // For production (http! not https)                                 
   FlaskURL: String = 'http://localhost:5003/'; // For deployment (http! not https)                                 
 
-  NeuralURL: String = 'https://oscc.nolden.biz:5002/'; // For deployment (http! not https)                                 
-  // NeuralURL: String = 'http://localhost:5002/'; // For deployment (http! not https)                                 
+  // NeuralURL: String = 'https://oscc.nolden.biz:5002/'; // For deployment (http! not https)                                 
+  NeuralURL: String = 'http://localhost:5002/'; // For deployment (http! not https)                                 
 
 
 //   _____ ______ _______ 
@@ -225,6 +225,20 @@ export class ApiService {
       .toPromise();
       return data;  
   }
+
+  public async scan_given_lines(given_lines: string){
+    const data = await this.http.get(
+      this.NeuralURL + 'scan_given_lines',{
+        params: {
+          given_lines: given_lines.toString(),
+        }
+      })
+      .toPromise();
+      return data;  
+  }
+
+  
+
 }
 
 @Injectable()

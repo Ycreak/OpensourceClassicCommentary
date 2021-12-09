@@ -1,8 +1,83 @@
+<!-- I think this can be removed. -->
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<div>
-  <b>Scansion tool super cool! Expected -> Predicted</b>
-  <br><br>
-  <div class="container">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+
+<!-- Maybe we should get a local stylesheet? -->
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+<!-- Simple toolbar with all the different buttons and the title -->
+<mat-toolbar color="primary">
+    <span><h3 class='h3-title'>Neural Networks 4 Latin Metre</h3></span>
+    <!-- <span class="spacer"></span> -->
+    <!-- <button mat-button class="btn" routerLink="/fragments">OSCC</button> -->
+</mat-toolbar>
+<mat-progress-bar *ngIf="this.spinner" mode="indeterminate"></mat-progress-bar>
+
+<br>
+<div class="center"><p><b>Input your lines below, separated by a cariage return (enter).</b></p></div>
+
+<form [formGroup]="line_form" class="lines-form">
+
+  <mat-form-field class="full-width raleway" appearance="fill">
+    <!-- <mat-label>Leave a comment</mat-label> -->
+    <textarea matInput formControlName="lines" placeholder="e.g. Arma virumque cano" class='center'></textarea>
+  </mat-form-field>
+</form>
+
+<button mat-raised-button color="primary" class='lines-form' (click)="scan_lines(line_form.value.lines)">Scan</button>
+
+<hr>
+
+<div class="center"><p><b>The confidence of the network for the given label is denoted by the float in the last row (score between 0 and 1).</b></p></div>
+<div class="center"><p><b>After syllabifying your lines, the neural network scanned them as follows:</b></p></div>
+
+<div class='div-padding-left-right'>
+  <mat-grid-list cols="{{this.neural_data.length}}" rowHeight="1em">
+    <mat-grid-tile
+        *ngFor="let syllable of this.syllables"
+        
+        [colspan]="1"
+        [rowspan]="2"
+        [style.background]="'#DDDDDD'">
+      <b>{{syllable}}</b>
+      
+    </mat-grid-tile>
+  </mat-grid-list>  
+
+  <mat-grid-list cols="{{this.neural_data.length}}" rowHeight="1em">
+    <mat-grid-tile
+        *ngFor="let prediction of this.predicted"
+        
+        [colspan]="1"
+        [rowspan]="2"
+        [style.background]="'lightgreen'">
+      <b>{{prediction}}</b>
+      
+    </mat-grid-tile>
+  </mat-grid-list>  
+
+  <mat-grid-list cols="{{this.neural_data.length}}" rowHeight="1em">
+    <mat-grid-tile
+        *ngFor="let score of this.scores"
+        
+        [colspan]="1"
+        [rowspan]="2"
+        [style.background]="'orange'">
+      <b>{{score}}</b>
+      
+    </mat-grid-tile>
+  </mat-grid-list>  
+
+</div>
+ 
+<br>
+
+
+<!-- <div> -->
+  <!-- <div class="container">
       <div class="row">
           <div class="col-sm">
 
@@ -25,11 +100,11 @@
               </button>
           </div>
       </div>
-    </div>
+    </div> -->
 
-  <br>
+  <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
-  <mat-grid-list cols="20" rowHeight="1em">
+  <!-- <mat-grid-list cols="20" rowHeight="1em">
     <mat-grid-tile
         *ngFor="let syllable of this.syllables"
         
@@ -83,9 +158,9 @@
           [style.background]="this.neural_data.correct_list_hmm[i]">
         {{label}}      
       </mat-grid-tile>
-    </mat-grid-list>
+    </mat-grid-list> -->
 
-  <br>
+  <!-- <br> -->
 
     <!-- <mat-grid-list cols="20" rowHeight="1em">
       <mat-grid-tile
@@ -124,8 +199,7 @@
 
 
 
-    <br>
-  <!-- <div><b>Similarity score: {{this.neural_data.similarity}}</b></div> -->
+    <!-- <br>
 
   <br>
 
@@ -148,5 +222,5 @@
           <td>HMM</td>
           <td>Hidden Markov Chain</td>
       </tr>
-  </table> 
-</div>
+  </table>  -->
+<!-- </div> -->
