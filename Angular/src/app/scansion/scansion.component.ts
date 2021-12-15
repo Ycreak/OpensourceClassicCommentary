@@ -22,20 +22,22 @@ export class ScansionComponent implements OnInit {
 
   spinner : boolean = false;
 
-  neural_data : any = {}; // object
+  neural_data : object; // object
+  syllabified : boolean = false;
+  // expected = [];
+  // predicted = [];
+  // scores = [];
+  // syllables = [];
+  // correct_list = [];
+  // confidence = [];
+  // labels_expected = [];
+  // labels_predicted = [];
 
-  expected = [];
-  predicted = [];
-  scores = [];
-  syllables = [];
-  correct_list = [];
-  confidence = [];
-  labels_expected = [];
-  labels_predicted = [];
+  // num_cols = 15;
 
-  num_cols = 15;
+  network_type: string = 'FLAIR';
 
-  similarity : number = 0;
+  // similarity : number = 0;
 
   constructor(
     private api: ApiService,
@@ -57,9 +59,9 @@ export class ScansionComponent implements OnInit {
     this.spinner = true;
     this.neural_data = await this.api.scan_given_lines(given_lines);
     this.spinner= false;
-    this.syllables = this.neural_data.syllables;
-    this.scores = this.neural_data.score;
-    this.predicted = this.neural_data.predicted;
+    // this.syllables = this.neural_data.syllables;
+    // this.scores = this.neural_data.score;
+    // this.predicted = this.neural_data.predicted;
 
     // this.num_cols = this.neural_data.length;
 
@@ -71,8 +73,8 @@ export class ScansionComponent implements OnInit {
     // Should be fixed
     this.neural_data = await this.api.Get_neural_data(this.book_number, this.line_number);
     
-    this.syllables = this.neural_data.syllables;
-    this.expected = this.neural_data.expected;
+    // this.syllables = this.neural_data.syllables;
+    // this.expected = this.neural_data.expected;
     // this.predicted = this.neural_data.predicted;
     // this.similarity = this.neural_data.similarity;
     // this.correct_list = this.neural_data.correct_list;

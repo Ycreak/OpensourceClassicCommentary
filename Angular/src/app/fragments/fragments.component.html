@@ -15,6 +15,7 @@
     <!-- <button mat-button class="btn" (click)="this.OpenBookSelect()">CHANGE TEXT</button> -->
     <!-- <button mat-button class="btn" (click)="Test()">TEST</button> -->
     <button mat-button class="btn" routerLink="/dashboard" *ngIf="this.authService.is_logged_in">DASHBOARD</button>
+    <button mat-button class="btn" (click)="Test('thing')" *ngIf="this.authService.is_teacher"> TEST</button>
     <mat-checkbox class="btn" [(ngModel)]="toggle_column_one">ONE</mat-checkbox>
     <mat-checkbox class="btn" [(ngModel)]="toggle_column_two">TWO</mat-checkbox>
     <mat-checkbox class="btn" [(ngModel)]="toggle_column_three">THREE</mat-checkbox>
@@ -32,7 +33,6 @@
 
     <a href="http://oscc.nolden.biz/Documentation/" target='_blank' mat-menu-item *ngIf="this.authService.is_teacher">Documentation</a>  
     <!-- <button (click)="OpenText()" mat-menu-item>Text Inside</button> -->
-    <!-- <button (click)="Test('thing')" mat-menu-item>Test</button> -->
     <button (click)="Login()" mat-menu-item>Login</button>
     <button (click)="this.dialog.OpenAbout()" mat-menu-item>About</button>
     <!-- <button (click)="ngOnInit()" *ngIf="this.authService.is_logged_in">Reload Data</button> -->
@@ -43,119 +43,58 @@
 <!-- <mat-progress-bar mode="query" *ngIf="this.spinner"></mat-progress-bar>
 <br> -->
 <div class="div-padding-sm"></div>
+
+<!-- Display for if server is down -->
+<div *ngIf="this.server_down" class="alert alert-warning" role="alert">
+    Your client cannot connect to the server. Please check if you have the latest version of your browser installed. Furthermore, secured networks like DUWO and Leiden University are known to cause problems. Also, please click <u><a href="https://oscc.lucdh.nl">the following URL</a></u> for the best results. Please contact the administrators if problems are still occuring.
+</div>
+
 <!-- Container for the page. One row per item (commentary, playground, multiplayer, etc.) -->
 <div class="container-fluid">
     <div class="row">
         <!-- First column, containing the fragments from the edition of reference -->
-        
-        
         <div *ngIf="toggle_column_one" class="col-sm overflowColumn">
-            <!-- Display for if server is down -->
-            <div *ngIf="this.server_down" class="alert alert-warning" role="alert">
-                Your client cannot connect to the server. Please check if you have the latest version of your browser installed. Furthermore, secured networks like DUWO and Leiden University are known to cause problems. Also, please click <u><a href="https://oscc.lucdh.nl">the following URL</a></u> for the best results. Please contact the administrators if problems are still occuring.
+            <div class="row"> <!-- Text information and edition of reference selection -->
+                <div class="col-4"> <ng-container *ngTemplateOutlet="select_author;context:{column: 'ONE'}"></ng-container> </div>
+                <div class="col-4"> <ng-container *ngTemplateOutlet="select_title;context:{column: 'ONE'}"></ng-container> </div>
+                <div class="col-4"> <ng-container *ngTemplateOutlet="select_editor;context:{column: 'ONE'}"></ng-container> </div>
             </div>
-            <!-- Text information and edition of reference selection -->
-            <div class="row">
-                <div class="col-4">
-                    <ng-container 
-                        *ngTemplateOutlet="select_author;context:{column: 'column1'}">
-                    </ng-container>
-                </div>
-                <div class="col-4">
-                    <ng-container 
-                        *ngTemplateOutlet="select_title;context:{column: 'column1'}">
-                    </ng-container>               
-                </div>
-                <div class="col-4">
-                    <ng-container 
-                        *ngTemplateOutlet="select_editor;context:{column: 'column1'}">
-                    </ng-container>
-                </div>
-            </div>
-            <!-- Fragments loop to display all fragments of the chosen edition of reference -->
-            <!-- Handle the column using the template -->
-            <ng-container 
-                *ngTemplateOutlet="fragment_column;context:{column: 'column1'}">
-            </ng-container>
+            <!-- Fragments loop to display all fragments of the chosen edition of reference --> <!-- Handle the column using the template -->
+            <ng-container [ngTemplateOutlet]='fragment_column' [ngTemplateOutletContext]="{column:'ONE'}"></ng-container>
         </div>
 
         <!-- Second column, containing the fragments from other editions (these are movable) -->                                
         <div *ngIf="toggle_column_two" class="col-sm overflowColumn">
-            <!-- Text information and edition of reference selection -->
-            <div class="row">
-                <div class="col-4">
-                    <ng-container 
-                        *ngTemplateOutlet="select_author;context:{column: 'column2'}">
-                    </ng-container>
-                </div>
-                <div class="col-4">
-                    <ng-container 
-                        *ngTemplateOutlet="select_title;context:{column: 'column2'}">
-                    </ng-container>               
-                </div>
-                <div class="col-4">
-                    <ng-container 
-                        *ngTemplateOutlet="select_editor;context:{column: 'column2'}">
-                    </ng-container>
-                </div>
+            <div class="row"> <!-- Text information and edition of reference selection -->
+                <div class="col-4"> <ng-container *ngTemplateOutlet="select_author;context:{column: 'TWO'}"></ng-container> </div>
+                <div class="col-4"> <ng-container *ngTemplateOutlet="select_title;context:{column: 'TWO'}"></ng-container> </div>
+                <div class="col-4"> <ng-container *ngTemplateOutlet="select_editor;context:{column: 'TWO'}"></ng-container> </div>
             </div>
-            <!-- Handle the column using the template -->
-            <ng-container 
-                *ngTemplateOutlet="fragment_column;context:{column: 'column2'}">
-            </ng-container>
+            <!-- Fragments loop to display all fragments of the chosen edition of reference --> <!-- Handle the column using the template -->
+            <ng-container [ngTemplateOutlet]='fragment_column' [ngTemplateOutletContext]="{column:'TWO'}"></ng-container>
         </div>
     
         <!-- Third column, containing the fragments from other editions (these are movable) -->                                
         <div *ngIf="toggle_column_three" class="col-sm overflowColumn">
-            <!-- Text information and edition of reference selection -->
-            <div class="row">
-                <div class="col-4">
-                    <ng-container 
-                        *ngTemplateOutlet="select_author;context:{column: 'column3'}">
-                    </ng-container>
-                </div>
-                <div class="col-4">
-                    <ng-container 
-                        *ngTemplateOutlet="select_title;context:{column: 'column3'}">
-                    </ng-container>               
-                </div>
-                <div class="col-4">
-                    <ng-container 
-                        *ngTemplateOutlet="select_editor;context:{column: 'column3'}">
-                    </ng-container>
-                </div>
+            <div class="row"> <!-- Text information and edition of reference selection -->
+                <div class="col-4"> <ng-container *ngTemplateOutlet="select_author;context:{column: 'THREE'}"></ng-container> </div>
+                <div class="col-4"> <ng-container *ngTemplateOutlet="select_title;context:{column: 'THREE'}"></ng-container> </div>
+                <div class="col-4"> <ng-container *ngTemplateOutlet="select_editor;context:{column: 'THREE'}"></ng-container> </div>
             </div>
-            <!-- Handle the column using the template -->
-            <ng-container 
-                *ngTemplateOutlet="fragment_column;context:{column: 'column3'}">
-            </ng-container>
+            <!-- Fragments loop to display all fragments of the chosen edition of reference --> <!-- Handle the column using the template -->
+            <ng-container [ngTemplateOutlet]='fragment_column' [ngTemplateOutletContext]="{column:'THREE'}"></ng-container>
         </div>
 
-        <!-- Second column, containing the fragments from other editions (these are movable) -->                                
+        <!-- Fourth column, containing the fragments from other editions (these are movable) -->                                
         <div *ngIf="toggle_column_four" class="col-sm overflowColumn">
-            <!-- Text information and edition of reference selection -->
-            <div class="row">
-                <div class="col-4">
-                    <ng-container 
-                        *ngTemplateOutlet="select_author;context:{column: 'column4'}">
-                    </ng-container>
-                </div>
-                <div class="col-4">
-                    <ng-container 
-                        *ngTemplateOutlet="select_title;context:{column: 'column4'}">
-                    </ng-container>               
-                </div>
-                <div class="col-4">
-                    <ng-container 
-                        *ngTemplateOutlet="select_editor;context:{column: 'column4'}">
-                    </ng-container>
-                </div>
+            <div class="row"> <!-- Text information and edition of reference selection -->
+                <div class="col-4"> <ng-container *ngTemplateOutlet="select_author;context:{column: 'FOUR'}"></ng-container> </div>
+                <div class="col-4"> <ng-container *ngTemplateOutlet="select_title;context:{column: 'FOUR'}"></ng-container> </div>
+                <div class="col-4"> <ng-container *ngTemplateOutlet="select_editor;context:{column: 'FOUR'}"></ng-container> </div>
             </div>
-            <!-- Handle the column using the template -->
-            <ng-container 
-                *ngTemplateOutlet="fragment_column;context:{column: 'column4'}">
-            </ng-container>
-        </div>        
+            <!-- Fragments loop to display all fragments of the chosen edition of reference --> <!-- Handle the column using the template -->
+            <ng-container [ngTemplateOutlet]='fragment_column' [ngTemplateOutletContext]="{column:'FOUR'}"></ng-container>
+        </div>      
 
         <!-- Column with commentary, shown if a fragment from the edition of reference is clicked -->
         <div *ngIf="toggle_commentary" class="col-sm overflowColumn">
@@ -171,6 +110,7 @@
             <div *ngIf="this.current_fragment.no_content" class="alert alert-info" role="alert">
                 No content is available yet for this fragment.
             </div>
+            
             <!-- Show all the commentary fields -->
             <mat-expansion-panel *ngIf="this.current_fragment.translation">
                 <mat-expansion-panel-header>
@@ -581,12 +521,12 @@
     </div> 
 </div>
 
-<ng-template #select_author let-chosen_column="column" let-hint="hint">  
+<ng-template #select_author let-column="column" let-hint="hint">  
     <mat-form-field>
         <mat-label>Select author</mat-label>
         <mat-select>
-            <mat-option *ngFor="let author of this.retrieved_authors" [value]="author"
-                (click)="this.Handle_author_selection(chosen_column, author.name)">
+            <mat-option *ngFor="let author of get_column_from_columns(column).retrieved_authors" [value]="author"
+                (click)="this.handle_author_selection(get_column_from_columns(column), author.name)">
                 {{ author.name }} 
             </mat-option>
         </mat-select>
@@ -594,12 +534,12 @@
     </mat-form-field> 
 </ng-template>
 
-<ng-template #select_title let-chosen_column="column" let-hint="hint">   
+<ng-template #select_title let-column="column" let-hint="hint">   
     <mat-form-field>
         <mat-label>Select text</mat-label>
         <mat-select>
-            <mat-option *ngFor="let book of this.retrieved_books" [value]="book" 
-            (click)="this.Handle_book_selection(chosen_column, book.name)">
+            <mat-option *ngFor="let book of get_column_from_columns(column).retrieved_titles" [value]="book" 
+            (click)="this.handle_book_selection(get_column_from_columns(column), book.name)">
                 {{ book.name }}                
             </mat-option>
         </mat-select>
@@ -607,12 +547,12 @@
     </mat-form-field>
 </ng-template>
 
-<ng-template #select_editor let-chosen_column="column" let-hint="hint">   
+<ng-template #select_editor let-column="column" let-hint="hint">   
     <mat-form-field>
         <mat-label>Select edition</mat-label>
         <mat-select>
-            <mat-option *ngFor="let editor of this.retrieved_editors" [value]="editor"
-                (click)="this.Handle_editor_selection(chosen_column, editor.name)">
+            <mat-option *ngFor="let editor of get_column_from_columns(column).retrieved_editors" [value]="editor"
+                (click)="this.handle_editor_selection(get_column_from_columns(column), editor.name)">
                 {{ editor.name }}                     
             </mat-option>
         </mat-select>
@@ -633,30 +573,21 @@
     </mat-form-field>
 </ng-template>
 
-<!-- <ng-container 
-    *ngTemplateOutlet="fragment_column;context:{column: 'column2'}">
-</ng-container> -->
-
-<!-- class="fragment-box" -->
-
 <ng-template #fragment_column let-column="column">
     <!-- Fragments loop to display all fragments of the chosen edition of reference -->
-    <div cdkDropList (cdkDropListDropped)="this.utility.moveAndDrop($event, this.column_data[column].fragments)">
-        <div *ngFor="let fragment of this.column_data[column].fragments"> 
-                       
-            <div class="fragment-box" (click)="Handle_fragment_click(fragment)" cdkDrag>
+    <div cdkDropList (cdkDropListDropped)="this.utility.moveAndDrop($event, get_column_from_columns(column).fragments)">
+        <div *ngFor="let fragment of get_column_from_columns(column).fragments"> 
+            <div class="fragment-box" (click)="handle_fragment_click(fragment)" cdkDrag>
                 <b [style.color]="fragment.colour">Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.title}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
                 <div *ngFor="let fragment_line of fragment.lines">      
                     <div [innerHTML]="fragment_line.line_complete | safeHtml"></div>  <!--safeHtml to allow whitespaces             -->
                 </div>  
             </div>
-
-            <!-- <hr> -->
         </div>
     </div> 
-    <!-- </div>  -->
 </ng-template>
-                <!-- Possibility of adding notes -->
+               
+<!-- Possibility of adding notes -->
                 <!-- <div class="col-md-6">
                     <div mat-dialog-content>
                         <mat-form-field class="input-form">

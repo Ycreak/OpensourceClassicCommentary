@@ -68,6 +68,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTableModule} from '@angular/material/table'; 
 import {MatGridListModule} from '@angular/material/grid-list'; 
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {MatButtonToggleModule} from '@angular/material/button-toggle'; 
 // Allows copying to clipboard
 import {ClipboardModule} from '@angular/cdk/clipboard';
 import { TextComponent } from './text/text.component'; 
@@ -164,6 +165,7 @@ const appRoutes: Routes = [
     MatTableModule, // Not currently used
     MatGridListModule,
     MatAutocompleteModule,
+    MatButtonToggleModule,
     // To allow the drag and drop
     DragDropModule,
     ClipboardModule,

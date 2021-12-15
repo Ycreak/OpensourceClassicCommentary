@@ -13,6 +13,7 @@ import { Multiplayer } from './multiplayer.class';
 import { Playground } from './playground.class';
 
 import { Fragment } from '../models/Fragment';
+import { Fragment_column } from '../models/Fragment_column';
 
 // FIXME: why do i need to export this class?
 export { Multiplayer } from './multiplayer.class';
@@ -50,6 +51,9 @@ export class FragmentsComponent implements OnInit {
   // Variable to store the fragment numbers from a given Author, Book and Editor
   retrieved_fragment_numbers : object;
   // Object to store all column data. TODO: should be rethought.
+   
+  columns : Array<Fragment_column> = [];
+
   column_data : object = {
     column1 : {
       author : '',
@@ -105,17 +109,24 @@ export class FragmentsComponent implements OnInit {
   ngOnInit(): void {
     // Create an empty current fragment to be filled by clicking
     this.current_fragment = new Fragment({});
-    // Request a list of authors to select a different text    
-    this.api.GetAuthors().subscribe(data => this.retrieved_authors = data);
-    // Retrieves everything surrounding the text.
-    this.RequestEditors('Ennius', 'Thyestes'); // Retrieve at default the Ennius' Thyestes text.
-		// this.Request_fragments('Ennius', 'Thyestes', 'TRF', 'column1');
-		 //this.Request_fragments('Ennius', 'Thyestes', 'Ribbeck', 'column2');
-		 //this.Request_fragments('Ennius', 'Thyestes', 'Jocelyn', 'column3');
-    // this.Request_fragments('Ennius', 'Thyestes', 'Vahlen', 'column4');
-		 this.Request_fragments('Accius', 'Aegisthus', 'Dangel', 'column1');
-		//  this.Request_fragments('Accius', 'Aegisthus', 'Ribbeck', 'column2');
-		//  this.Request_fragments('Accius', 'Aegisthus', 'Warmington', 'column3');
+    // Create templates for the possible fragment columns
+    let column1 = new Fragment_column('ONE', 'Ennius', 'Thyestes', 'TRF');
+    let column2 = new Fragment_column('TWO', 'TBA', 'TBA', 'TBA');
+    let column3 = new Fragment_column('THREE', 'TBA', 'TBA', 'TBA');
+    let column4 = new Fragment_column('FOUR', 'TBA', 'TBA', 'TBA');
+    // Push these to the columns array
+    this.columns.push(column1)
+    this.columns.push(column2)
+    this.columns.push(column3)
+    this.columns.push(column4)
+    // Request authors for each columns (TODO: this could be nicer)
+    this.request_authors(column1)
+    this.request_authors(column2)
+    this.request_authors(column3)
+    this.request_authors(column4)
+    // Request the fragments for the first column
+    this.request_fragments(column1);
+
     //FIXME: this should be handled within the multiplayer class? It wont call the constructor
     // this.multiplayer.InitiateFirestore(this.multiplayer.sessionCode, this.multiplayer.tableName); 
   }
@@ -127,15 +138,30 @@ export class FragmentsComponent implements OnInit {
   //  | | \ \| |___| |__| | |__| | |____ ____) |  | |  ____) |
   //  |_|  \_\______\___\_\\____/|______|_____/   |_| |_____/  
   /**
-   * Requests the API function for books given the author.
+   * Requests the API function for authors
+   * @param author 
+   * @returns data -> this.retrieved_books 
+   * @author Ycreak
+   */
+   public request_authors(column){
+    this.api.GetAuthors().subscribe(data => {
+      this.server_down = false; //FIXME: needs to be handled properly
+      // Enter this retrieved data in the correct column
+      this.columns.find(i => i.name === column.name).retrieved_authors = data; 
+      this.retrieved_authors = data //FIXME: getting deprecated
+    });
+  }
+
+  /** Requests the API function for books given the author.
    * @param author 
    * @returns data -> this.retrieved_books 
    * @author Bors & Ycreak
    */
-  public RequestBooks(author: string){
-    this.api.GetBooks(author).subscribe(
+  public request_books(column: Fragment_column){
+    this.api.GetBooks(column.author).subscribe(
       data => {
         this.retrieved_books = data;
+        this.columns.find(i => i.name === column.name).retrieved_titles = data; 
       }
     );      
   }
@@ -146,11 +172,11 @@ export class FragmentsComponent implements OnInit {
    * @returns data -> this.retrieved_editors 
    * @author Bors & Ycreak
    */
-  public RequestEditors(author: string, book: string){
-    this.api.GetEditors(author, book).subscribe(
+  public request_editors(column: Fragment_column){
+    this.api.GetEditors(column.author, column.title).subscribe(
       data => {
         this.retrieved_editors = data;
-        this.server_down = false; //FIXME: needs to be handled properly
+        this.columns.find(i => i.name === column.name).retrieved_editors = data; 
       }
     );
   }
@@ -164,8 +190,8 @@ export class FragmentsComponent implements OnInit {
    *          adds an HTML formatted string to the object for easy printing.
    * @author Bors & Ycreak
    */
-  public Request_fragments(author: string, book: string, editor: string, column: string){
-    this.api.GetFragments(author, book, editor).subscribe(
+  public request_fragments(column){
+    this.api.GetFragments(column.author, column.title, column.editor).subscribe(
       data => { 
         let fragment_list = this.create_fragment_list(data);
         // Format the data just how we want it
@@ -173,9 +199,16 @@ export class FragmentsComponent implements OnInit {
         fragment_list = fragment_list.sort(this.utility.SortFragmentsArrayNumerically);
         fragment_list = this.Sort_fragments_on_status(fragment_list);
         // Store it at the correct place
-        this.column_data[column].fragments = fragment_list;
-        // While we are at it, save the fragment numbers
+        column.fragments = fragment_list;
+        column.fragment_numbers = this.Retrieve_fragment_numbers(fragment_list); // While we are at it, save the fragment numbers
+        
         this.retrieved_fragment_numbers = this.Retrieve_fragment_numbers(fragment_list);
+        // Now check if the column already exists. If so, delete it, so we can push a brand new object       
+        if(this.columns.length > 0){
+          this.columns.splice(this.columns.findIndex(i => i.name === column.name), 1)
+        }
+        // And now push the     
+        this.columns.push(column)
       }
     );  
   }
@@ -184,6 +217,7 @@ export class FragmentsComponent implements OnInit {
    * Creates a list of typescript fragment objects using the json received from the server
    * @param fragment_json which is received from the server
    * @returns list of Fragment objects
+   * @author Ycreak
    */
   public create_fragment_list(fragment_json: JSON){
     let fragment_list = [];
@@ -203,10 +237,10 @@ export class FragmentsComponent implements OnInit {
   public Request_fragment_content(fragment_id: string){
     this.api.Get_fragment_content(fragment_id).subscribe(data => {     
       
-      console.log('data', data)
+      // console.log('data', data)
       this.current_fragment.add_content(data);
       this.fragment_clicked = true;
-      console.log(this.current_fragment)
+      // console.log(this.current_fragment)
     });
   }
 
@@ -230,11 +264,10 @@ export class FragmentsComponent implements OnInit {
    * @param author selected by the user
    * @author Ycreak
    */
-  public Handle_author_selection(column: string, author: string){
-    this.column_data[column].author = author;
-    this.column_data[column].title = 'TBA';
-    this.column_data[column].editor = 'TBA';
-    this.RequestBooks(author);
+  public handle_author_selection(column: Fragment_column, author: string){
+    // Set the author for the given column
+    this.columns.find(i => i.name === column.name).author = author; 
+    this.request_books(column);
   }
 
   /**
@@ -243,10 +276,12 @@ export class FragmentsComponent implements OnInit {
    * @param book selected by the user
    * @author Ycreak
    */
-  public Handle_book_selection(column: string, book: string){
-    this.column_data[column].title = book;
-    this.column_data[column].editor = 'TBA';
-    this.RequestEditors(this.column_data[column].author, book);
+  public handle_book_selection(column: Fragment_column, title: string){
+    this.columns.find(i => i.name === column.name).title = title; 
+    this.request_editors(column);
+    // this.column_data[column].title = book;
+    // this.column_data[column].editor = 'TBA';
+    // this.RequestEditors(this.column_data[column].author, book);
   }
 
   /**
@@ -255,9 +290,10 @@ export class FragmentsComponent implements OnInit {
    * @param editor selected by the user
    * @author Ycreak
    */
-  public Handle_editor_selection(column: string, editor: string){
-    this.column_data[column].editor = editor;
-    this.Request_fragments(this.column_data[column].author, this.column_data[column].title, editor, column)
+  public handle_editor_selection(column: Fragment_column, editor: string){
+    // this.column_data[column].editor = editor;
+    this.columns.find(i => i.name === column.name).editor = editor; 
+    this.request_fragments(this.columns.find(i => i.name === column.name))
   }
 
   /**
@@ -267,46 +303,38 @@ export class FragmentsComponent implements OnInit {
    * @author Ycreak
    * TODO: pressed fragment should be an object initialised at startup
    */
-  public Handle_fragment_click(fragment){
+  public handle_fragment_click(fragment){
       this.current_fragment = fragment
-
-      // console.log(fragment)
       // Request content from this fragment
       this.Request_fragment_content(fragment.fragment_id)
-
       // Request content from its linked fragments
       //TODO:
-
-      // Reset fragment linking for all fragments
-      for(let index in this.column_data){
-        let fragment_array = this.column_data[index].fragments
+      
+      // The next part handles the colouring of clicked and referenced fragments.
+      // First, restore all fragments to their original black colour when a new fragment is clicked
+      for(let index in this.columns){
+        let fragment_array = this.columns[index].fragments
         for(let fragment in fragment_array){
           fragment_array[fragment].colour = 'black';
-        }
+        }       
       }
-      
-      // Colour the clicked fragment
+      // Second, colour the clicked fragment
       fragment.colour = '#3F51B5';
-
-
-      // And the corresponding ones in the other columns
+      // Third, colour the corresponding ones in the other columns
       for(let index in fragment.linked_fragments){
-        let linked_fragment_id = fragment.linked_fragments[index] //.fragment_id //# new referencer format
-        console.log(linked_fragment_id)
-
+        let linked_fragment_id = fragment.linked_fragments[index] // Loop through all fragments
 				//FIXME: fragment referencing needs to be modeled first!
-        let corresponding_fragment = this.column_data['column1'].fragments.find(i => i.fragment_id === linked_fragment_id);
+        let corresponding_fragment = this.columns.find(i => i.name === 'ONE').fragments.find(i => i.fragment_id === linked_fragment_id);
         if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
 
-        corresponding_fragment = this.column_data['column2'].fragments.find(i => i.fragment_id === linked_fragment_id);
+        corresponding_fragment = this.columns.find(i => i.name === 'TWO').fragments.find(i => i.fragment_id === linked_fragment_id);
         if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
         
-        corresponding_fragment = this.column_data['column3'].fragments.find(i => i.fragment_id === linked_fragment_id);
+        corresponding_fragment = this.columns.find(i => i.name === 'THREE').fragments.find(i => i.fragment_id === linked_fragment_id);
         if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
 
-        corresponding_fragment = this.column_data['column4'].fragments.find(i => i.fragment_id === linked_fragment_id);
+        corresponding_fragment = this.columns.find(i => i.name === 'FOUR').fragments.find(i => i.fragment_id === linked_fragment_id);
         if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
-
       }
   }
 
@@ -326,7 +354,14 @@ export class FragmentsComponent implements OnInit {
    * @author Ycreak
    */  
   public Test(){
-    console.log('TEST', this.column_data)
+    console.log('############ TESTING ############')
+    
+    console.log(this.columns)
+    // console.log(this.columns.find(i => i.name === 'ONE'));
+    // console.log(this.columns.find(i => i.name === 'TWO'));
+
+    console.log('############ ####### ############')
+
   }
 
   /**
@@ -373,7 +408,14 @@ export class FragmentsComponent implements OnInit {
     // Concatenate in the order we want (i'm a hacker)
     fragments = normal.concat(incerta).concat(adesp)
     return fragments
-  }  
+  }
+  
+  public get_column_from_columns(name: string) {
+    return (this.columns.find(i => i.name === name) || []);
+  }
+
+
+
 }
 
 // Simple class to open the about information written in said html file.
@@ -382,25 +424,4 @@ export class FragmentsComponent implements OnInit {
   templateUrl: '../dialogs/about-dialog.html',
 })
 export class ShowAboutDialog {}
-
-
-// export class Fragment_column {
-// 	constructor(){}
-
-// 	author : '',
-// 	book : '',
-// 	editor : '',
-// 	fragments : [],
-
-// 	public AddFragmentToArray(array, fragment_name, fragments){
-// 		for(let fragment in fragments){
-// 			if(fragments[fragment].fragment_name == fragment_name){
-// 				array.push(fragments[fragment])
-// 			}
-// 		}
-// 		return array
-// 	}
-
-// }
-
 

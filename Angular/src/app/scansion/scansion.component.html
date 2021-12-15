@@ -10,34 +10,47 @@
 
 <!-- Simple toolbar with all the different buttons and the title -->
 <mat-toolbar color="primary">
-    <span><h3 class='h3-title'>Neural Networks 4 Latin Metre</h3></span>
-    <!-- <span class="spacer"></span> -->
+    <h3 class='h3-title'>Neural Networks 4 Latin Metre</h3>
+    <span class="example-spacer"></span>
     <!-- <button mat-button class="btn" routerLink="/fragments">OSCC</button> -->
+
+  <mat-checkbox class="btn" [(ngModel)]="syllabified">SYLLABIFIED</mat-checkbox>
+
+  <mat-radio-group [(ngModel)]="network_type">
+    <mat-radio-button value="FLAIR">FLAIR</mat-radio-button>
+    <mat-radio-button value="LSTM">LSTM</mat-radio-button>
+    <mat-radio-button value="CRF">CRF</mat-radio-button>
+  </mat-radio-group>
+    
+
 </mat-toolbar>
 <mat-progress-bar *ngIf="this.spinner" mode="indeterminate"></mat-progress-bar>
 
 <br>
+
+
+
 <div class="center"><p><b>Input your lines below, separated by a cariage return (enter).</b></p></div>
 
 <form [formGroup]="line_form" class="lines-form">
 
   <mat-form-field class="full-width raleway" appearance="fill">
-    <!-- <mat-label>Leave a comment</mat-label> -->
     <textarea matInput formControlName="lines" placeholder="e.g. Arma virumque cano" class='center'></textarea>
   </mat-form-field>
 </form>
 
-<button mat-raised-button color="primary" class='lines-form' (click)="scan_lines(line_form.value.lines)">Scan</button>
+<button mat-raised-button color="primary" class='lines-form' (click)="scan_lines(line_form.value.lines)">Scan with {{network_type}} network</button>
 
 <hr>
 
 <div class="center"><p><b>The confidence of the network for the given label is denoted by the float in the last row (score between 0 and 1).</b></p></div>
 <div class="center"><p><b>After syllabifying your lines, the neural network scanned them as follows:</b></p></div>
 
-<div class='div-padding-left-right'>
-  <mat-grid-list cols="{{this.neural_data.length}}" rowHeight="1em">
+<div class='div-padding-left-right' *ngFor="let sentence of this.neural_data">
+  <hr>
+  <mat-grid-list cols="{{sentence.length}}" rowHeight="1em">
     <mat-grid-tile
-        *ngFor="let syllable of this.syllables"
+        *ngFor="let syllable of sentence.syllables"
         
         [colspan]="1"
         [rowspan]="2"
@@ -47,9 +60,9 @@
     </mat-grid-tile>
   </mat-grid-list>  
 
-  <mat-grid-list cols="{{this.neural_data.length}}" rowHeight="1em">
+  <mat-grid-list cols="{{sentence.length}}" rowHeight="1em">
     <mat-grid-tile
-        *ngFor="let prediction of this.predicted"
+        *ngFor="let prediction of sentence.predicted"
         
         [colspan]="1"
         [rowspan]="2"
@@ -59,9 +72,9 @@
     </mat-grid-tile>
   </mat-grid-list>  
 
-  <mat-grid-list cols="{{this.neural_data.length}}" rowHeight="1em">
+  <mat-grid-list cols="{{sentence.length}}" rowHeight="1em">
     <mat-grid-tile
-        *ngFor="let score of this.scores"
+        *ngFor="let score of sentence.score"
         
         [colspan]="1"
         [rowspan]="2"
@@ -70,7 +83,6 @@
       
     </mat-grid-tile>
   </mat-grid-list>  
-
 </div>
  
 <br>
