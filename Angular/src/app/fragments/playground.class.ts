@@ -16,7 +16,7 @@ import { Injectable } from '@angular/core';
     noteArray = [];
     add_fragment_array = [];
 
-    public AddFragmentToArray(array, fragment_name, fragments){
+    public add_fragment_to_array(array, fragment_name, fragments){
 
       for(let fragment in fragments){
         if(fragments[fragment].fragment_name == fragment_name){

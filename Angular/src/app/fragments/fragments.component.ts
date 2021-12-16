@@ -10,14 +10,14 @@ import { DialogService } from '../services/dialog.service';
 import { UtilityService } from '../utility.service';
 import { AuthService } from '../auth/auth.service';
 import { Multiplayer } from './multiplayer.class';
-import { Playground } from './playground.class';
+// import { Playground } from './playground.class';
 
 import { Fragment } from '../models/Fragment';
 import { Fragment_column } from '../models/Fragment_column';
 
 // FIXME: why do i need to export this class?
 export { Multiplayer } from './multiplayer.class';
-export { Playground } from './playground.class';
+// export { Playground } from './playground.class';
 
 @Component({
   selector: 'app-fragments',
@@ -42,59 +42,59 @@ export class FragmentsComponent implements OnInit {
   spinner: boolean = false; // Boolean to toggle the spinner.
   server_down: boolean = true; // to indicate server failure
   // Objects to store the retrieved authors, books and editors to control server data retrieval 
-  retrieved_authors : object; // JSON that contains all available Authors and their data.
-  retrieved_books : object; // JSON that contains all available Books and their data given a specific editor.
-  retrieved_editors : object; // JSON that contains all available Editors and their data for a specific book.
+  // retrieved_authors : object; // JSON that contains all available Authors and their data.
+  // retrieved_books : object; // JSON that contains all available Books and their data given a specific editor.
+  // retrieved_editors : object; // JSON that contains all available Editors and their data for a specific book.
   // Global Class Variables with text data corresponding to the front-end text fields.
   current_fragment : Fragment;
   fragment_clicked : boolean = false;
   // Variable to store the fragment numbers from a given Author, Book and Editor
-  retrieved_fragment_numbers : object;
+  // retrieved_fragment_numbers : object;
   // Object to store all column data. TODO: should be rethought.
    
   columns : Array<Fragment_column> = [];
 
-  column_data : object = {
-    column1 : {
-      author : '',
-      title : '',
-      editor : '',
-      fragments : [],
-    },
-    column2 : {
-      author : '',
-      title : '',
-      editor : '',
-      fragments : [],
-    },
-    column3 : {
-      author : '',
-      title : '',
-      editor : '',
-      fragments : [],
-    },
-    column4 : {
-      author : '',
-      title : '',
-      editor : '',
-      fragments : [],
-    },
-    playground : {
-      author : '',
-      title : '',
-      editor : '',
-      fragments : [],
-    },
-    playground2 : {
-      author : '',
-      title : '',
-      editor : '',
-      fragments : [],
-    },     
-  }
+  // column_data : object = {
+  //   column1 : {
+  //     author : '',
+  //     title : '',
+  //     editor : '',
+  //     fragments : [],
+  //   },
+  //   column2 : {
+  //     author : '',
+  //     title : '',
+  //     editor : '',
+  //     fragments : [],
+  //   },
+  //   column3 : {
+  //     author : '',
+  //     title : '',
+  //     editor : '',
+  //     fragments : [],
+  //   },
+  //   column4 : {
+  //     author : '',
+  //     title : '',
+  //     editor : '',
+  //     fragments : [],
+  //   },
+  //   playground : {
+  //     author : '',
+  //     title : '',
+  //     editor : '',
+  //     fragments : [],
+  //   },
+  //   playground2 : {
+  //     author : '',
+  //     title : '',
+  //     editor : '',
+  //     fragments : [],
+  //   },     
+  // }
   // Allows for notes to be added on screen
-  note : string = '';
-  noteArray : Array<string> = [];
+  // note : string = '';
+  // noteArray : Array<string> = [];
   
   constructor(
     private api: ApiService,
@@ -103,7 +103,7 @@ export class FragmentsComponent implements OnInit {
     public dialog: DialogService,
     private matdialog: MatDialog, 
     public multiplayer: Multiplayer,
-    public playground: Playground,
+    // public playground: Playground,
     ) { }
 
   ngOnInit(): void {
@@ -114,16 +114,22 @@ export class FragmentsComponent implements OnInit {
     let column2 = new Fragment_column('TWO', 'TBA', 'TBA', 'TBA');
     let column3 = new Fragment_column('THREE', 'TBA', 'TBA', 'TBA');
     let column4 = new Fragment_column('FOUR', 'TBA', 'TBA', 'TBA');
+
+    let playground1 = new Fragment_column('PLAY1', 'TBA', 'TBA', 'TBA');
+    let playground2 = new Fragment_column('PLAY2', 'TBA', 'TBA', 'TBA');
+
     // Push these to the columns array
-    this.columns.push(column1)
-    this.columns.push(column2)
-    this.columns.push(column3)
-    this.columns.push(column4)
+    this.columns.push(column1, column2, column3, column4, playground1, playground2)
+
     // Request authors for each columns (TODO: this could be nicer)
     this.request_authors(column1)
     this.request_authors(column2)
     this.request_authors(column3)
     this.request_authors(column4)
+    this.request_authors(playground1)
+    this.request_authors(playground2)
+
+
     // Request the fragments for the first column
     this.request_fragments(column1);
 
@@ -148,7 +154,7 @@ export class FragmentsComponent implements OnInit {
       this.server_down = false; //FIXME: needs to be handled properly
       // Enter this retrieved data in the correct column
       this.columns.find(i => i.name === column.name).retrieved_authors = data; 
-      this.retrieved_authors = data //FIXME: getting deprecated
+      // this.retrieved_authors = data //FIXME: getting deprecated
     });
   }
 
@@ -160,7 +166,7 @@ export class FragmentsComponent implements OnInit {
   public request_books(column: Fragment_column){
     this.api.GetBooks(column.author).subscribe(
       data => {
-        this.retrieved_books = data;
+        // this.retrieved_books = data;
         this.columns.find(i => i.name === column.name).retrieved_titles = data; 
       }
     );      
@@ -175,7 +181,7 @@ export class FragmentsComponent implements OnInit {
   public request_editors(column: Fragment_column){
     this.api.GetEditors(column.author, column.title).subscribe(
       data => {
-        this.retrieved_editors = data;
+        // this.retrieved_editors = data;
         this.columns.find(i => i.name === column.name).retrieved_editors = data; 
       }
     );
@@ -202,7 +208,7 @@ export class FragmentsComponent implements OnInit {
         column.fragments = fragment_list;
         column.fragment_numbers = this.Retrieve_fragment_numbers(fragment_list); // While we are at it, save the fragment numbers
         
-        this.retrieved_fragment_numbers = this.Retrieve_fragment_numbers(fragment_list);
+        // this.retrieved_fragment_numbers = this.Retrieve_fragment_numbers(fragment_list);
         // Now check if the column already exists. If so, delete it, so we can push a brand new object       
         if(this.columns.length > 0){
           this.columns.splice(this.columns.findIndex(i => i.name === column.name), 1)
@@ -414,7 +420,14 @@ export class FragmentsComponent implements OnInit {
     return (this.columns.find(i => i.name === name) || []);
   }
 
-
+  public add_fragment_to_array(array, fragment_name, source){
+    for(let fragment in source){
+      if(source[fragment].fragment_name == fragment_name){
+        array.push(source[fragment])
+      }
+    }
+    return array
+  }
 
 }
 

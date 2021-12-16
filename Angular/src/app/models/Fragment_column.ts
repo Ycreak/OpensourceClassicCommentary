@@ -25,9 +25,13 @@ export class Fragment_column
     fragments : Array<Fragment> = [];
     fragment_numbers : Array<string> = [];
 
+    secondary_fragments : Array<Fragment> = []; // Used for the playground. needs better design
+
     // Should be a nice object, not a dirty json
     retrieved_authors : object;
     retrieved_titles : object;
     retrieved_editors : object;
+
+    note_array : Array<string> = [];
 }
 
