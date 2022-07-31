@@ -1,7 +1,6 @@
 <!-- I think this can be removed. -->
 <script src="vendor/jquery/jquery.min.js"></script>
 <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
 
@@ -30,18 +29,12 @@
 <mat-menu #menu="matMenu">
     <button routerLink="/text" mat-menu-item>Text OSCC</button>
     <button routerLink="/scansion" mat-menu-item>Scansion</button>
-
     <a href="http://oscc.nolden.biz/Documentation/" target='_blank' mat-menu-item *ngIf="this.authService.is_teacher">Documentation</a>  
-    <!-- <button (click)="OpenText()" mat-menu-item>Text Inside</button> -->
     <button (click)="Login()" mat-menu-item>Login</button>
     <button (click)="this.dialog.OpenAbout()" mat-menu-item>About</button>
-    <!-- <button (click)="ngOnInit()" *ngIf="this.authService.is_logged_in">Reload Data</button> -->
-    <button mat-menu-item>V21.12.16</button>
+    <button mat-menu-item>V22.07.31</button>
 </mat-menu>
 
-<!-- Show a spinner if query with database is in progress -->
-<!-- <mat-progress-bar mode="query" *ngIf="this.spinner"></mat-progress-bar>
-<br> -->
 <div class="div-padding-sm"></div>
 
 <!-- Display for if server is down -->
@@ -111,63 +104,39 @@
                 No content is available yet for this fragment.
             </div>
             
-            <!-- Show all the commentary fields -->
-            <mat-expansion-panel *ngIf="this.current_fragment.translation">
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        <b>Fragment Translation</b>
-                    </mat-panel-title>
-                </mat-expansion-panel-header>
-                <div class="mat-expansion-panel-content">
-                    <div class="mat-expansion-panel-body">
-                        <div [innerHTML]="this.current_fragment.translation"></div>
-                    </div>
-                </div>
-            </mat-expansion-panel>
+            <!-- Show the translation of the fragment -->
+            <ng-container 
+                *ngTemplateOutlet="show_fragment_content;context:{current_fragment_content: this.current_fragment.translation, title:'Fragment Translation'}">
+            </ng-container>            
+            
+            <hr>
+            
+            <!-- Show the apparatus criticus of the fragment -->
+            <ng-container 
+                *ngTemplateOutlet="show_fragment_content;context:{current_fragment_content: this.current_fragment.apparatus, title:'Apparatus Criticus'}">
+            </ng-container>
     
             <hr>
     
-            <mat-expansion-panel *ngIf="this.current_fragment.apparatus">
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        <b>Apparatus Criticus</b>
-                    </mat-panel-title>
-                </mat-expansion-panel-header>
-                <div class="mat-expansion-panel-content">
-                    <div class="mat-expansion-panel-body">
-                        <div [innerHTML]=this.current_fragment.apparatus></div>
-                    </div>
-                </div>
-            </mat-expansion-panel>
+            <!-- Show the fragment differences -->
+            <ng-container 
+                *ngTemplateOutlet="show_fragment_content;context:{current_fragment_content: this.current_fragment.differences, title:'Fragment Differences'}">
+            </ng-container>
     
             <hr>
     
-            <mat-expansion-panel *ngIf="this.current_fragment.differences">
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        <b>Editorial Differences</b>
-                    </mat-panel-title>
-                </mat-expansion-panel-header>
-                <div class="mat-expansion-panel-content">
-                    <div class="mat-expansion-panel-body">
-                        <div [innerHTML]="this.current_fragment.differences"></div>
-                    </div>
-                </div>
-            </mat-expansion-panel>
-    
-            <hr>
-    
-            <div *ngFor="let item of this.current_fragment.context">
+            <!-- Show all context items for the selected fragment -->
+            <div *ngFor="let current_context of this.current_fragment.context">
                 <mat-expansion-panel>
                     <mat-expansion-panel-header>
                         <mat-panel-title>
                             <b>Citation Context</b>
                         </mat-panel-title>
-                        <div>{{item.author}} <i>{{item.location}}</i></div><div class="div-padding-sm"></div>
+                        <div>{{current_context.author}} <i>{{current_context.location}}</i></div><div class="div-padding-sm"></div>
                     </mat-expansion-panel-header>
                     <div class="mat-expansion-panel-content">
                         <div class="mat-expansion-panel-body">
-                            <div [innerHTML]="item.text"></div>
+                            <div [innerHTML]="current_context.text"></div>
                         </div>
                     </div>
                 </mat-expansion-panel>
@@ -175,34 +144,21 @@
             
             <hr>
     
-            <mat-expansion-panel *ngIf="this.current_fragment.commentary">
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        <b>Fragment Commentary</b>
-                    </mat-panel-title>
-                </mat-expansion-panel-header>
-                <div class="mat-expansion-panel-content">
-                    <div class="mat-expansion-panel-body">
-                        <div [innerHTML]="this.current_fragment.commentary"></div>
-                    </div>
-                </div>
-            </mat-expansion-panel>
+            <!-- Show the fragment commentary -->
+            <ng-container 
+                *ngTemplateOutlet="show_fragment_content;context:{current_fragment_content: this.current_fragment.commentary, title:'Fragment Commentary'}">
+            </ng-container>
     
             <hr>
     
-            <mat-expansion-panel *ngIf="this.current_fragment.reconstruction">
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        <b>Fragment Reconstruction</b>
-                    </mat-panel-title>
-                </mat-expansion-panel-header>
-                <div class="mat-expansion-panel-content">
-                    <div class="mat-expansion-panel-body">
-                        <div [innerHTML]="this.current_fragment.reconstruction"></div>
-                    </div>
-                </div>
-            </mat-expansion-panel>
+            <!-- Show the fragment reconstruction -->
+            <ng-container 
+                *ngTemplateOutlet="show_fragment_content;context:{current_fragment_content: this.current_fragment.reconstruction, title:'Fragment Reconstruction'}">
+            </ng-container>
 
+            <hr>
+
+            <!-- Show the bibliography attached to the fragment -->
             <mat-expansion-panel *ngIf="this.current_fragment.bibliography.length > 0">
                 <mat-expansion-panel-header>
                     <mat-panel-title>
@@ -213,7 +169,6 @@
                         <div [innerHTML]="item"></div>
                     </div>
             </mat-expansion-panel>
-
 
         </div>
         <hr>
@@ -296,214 +251,6 @@
             </div> 
         </div>
     </div> <!-- Closes the row -->
-
-    <!-- Section for the multiplayer (done using Google Firebase) -->
-    <div class="container-fluid" *ngIf="toggle_multiplayer">
-        <div class="row">
-            <!-- Field to select the author. Beware! It changes the author of the entire program -->
-            <div mat-dialog-content>
-                <mat-form-field>
-                    <mat-label>Select author</mat-label>
-                    <mat-select>
-                    <mat-option *ngFor="let author of this.retrieved_authors" [value]="author" 
-                        (click)="this.RequestBooks(author.name)">
-                        {{ author.name }} 
-                    </mat-option>
-                    </mat-select>  
-                </mat-form-field> 
-                <!-- Field to select the corresponding book -->
-                <mat-form-field>
-                    <mat-label>Select text</mat-label>
-                    <mat-select>
-                    <mat-option *ngFor="let book of this.retrieved_books" [value]="book" 
-                        (click)="RequestEditors(book.title)">
-                        {{ book.title }}                
-                    </mat-option>
-                    </mat-select>
-                </mat-form-field> 
-            </div>
-            <!-- Possibility to select an editor base text -->
-            <mat-form-field class="select-form">
-                <mat-label>Editor</mat-label>
-                <mat-select [(ngModel)]="selectedEditor">
-                <mat-option *ngFor="let data of this.retrieved_editors" [value]="data"
-                (click)="this.SetCurrentEditorData(data.name)"
-                (click)="this.multiplayer.list3Array = CreateEditorArray(data, this.F_Fragments)"
-                (click)="this.multiplayer.FirebaseTest(data.name)">
-                    {{ data.name }}                       
-                </mat-option>
-                </mat-select>
-                <mat-hint>Select an editor to use</mat-hint>
-            </mat-form-field>
-            <!-- Possibility to create one's own fragment -->
-            <div mat-dialog-content>
-                <mat-form-field class="input-form-wide">
-                    <input class="input-form-wide" matInput type="text" [(ngModel)]='fragment2Header' [matKeyboard]="'OSCC'">
-                    <mat-hint>Add custom header</mat-hint>
-                </mat-form-field>               
-            </div> 
-            <div mat-dialog-content>
-                <mat-form-field class="input-form-wide">
-                    <input class="input-form-wide" matInput type="text" [(ngModel)]='fragment2' [matKeyboard]="'OSCC'">
-                        <button type="button" mat-icon-button matSuffix (click)="this.multiplayer.list4Array = this.utility.CreateOwnFragment(fragment2, fragment2Header, this.multiplayer.list4Array, false)">
-                            <mat-icon>{{'text_snippet'}}</mat-icon>
-                        </button>
-                        <button type="button" mat-icon-button matSuffix (click)="this.multiplayer.list4Array = this.utility.CreateOwnFragment(fragment2, fragment2Header, this.multiplayer.list4Array, true)">
-                            <mat-icon>{{'note_add'}}</mat-icon>
-                        </button>
-                    <mat-hint>Add custom body</mat-hint>
-                </mat-form-field>               
-            </div> 
-            <!-- Possibility to restore and create sessions -->
-            <div mat-dialog-content>
-                <mat-form-field class="input-form-wide">
-                    <input class="input-form-wide" matInput type="text" [(ngModel)]='this.multiplayer.sessionCode' [matKeyboard]="'OSCC'">
-                    <button type="button" mat-icon-button matSuffix (click)="this.multiplayer.RestoreFirebaseSession(this.multiplayer.sessionCode)">
-                        <mat-icon>{{'restore'}}</mat-icon>
-                    </button>
-                    <button type="button" mat-icon-button matSuffix (click)="this.multiplayer.CreateFirebaseSession(this.multiplayer.tableName)">
-                        <mat-icon>{{'add'}}</mat-icon>
-                    </button>
-                    <button type="button" mat-icon-button matSuffix (click)="this.multiplayer.RequestDeleteSession(this.multiplayer.sessionCode)">
-                        <mat-icon>{{'remove'}}</mat-icon>
-                    </button>
-                    <mat-hint>Provide your session code</mat-hint>
-                </mat-form-field>               
-            </div> 
-
-            <mat-checkbox [(ngModel)]="this.multiplayer.showFragmentname">Headers</mat-checkbox>
-
-        </div>
-
-        <hr>
-        <!-- Row to show the commentaries. List1 and List2 are synced with the server.
-        List3 shows the selected existing edition, List4 one's own comments. -->
-        <div class="row">
-            <div class="col-md-4">
-                <div class="multiplayer-container">
-                    <h3>Synced Column 1</h3>
-                    <div
-                        cdkDropList
-                        #list1="cdkDropList"
-                        [cdkDropListData]="this.multiplayer.list1Array"
-                        [cdkDropListConnectedTo]="[list2, list3, list4, list5, list6]"
-                        class="multiplayer-list"
-                        (cdkDropListDropped)="this.multiplayer.MultipleColumnsDrag($event)">
-                        <div class="fragment-box" *ngFor="let item of this.multiplayer.list1Array" cdkDrag>                          
-                            <div class="divNote" *ngIf="item.note"> <!--If it is a note, don't show frg-->
-                                <b>{{item.fragmentName}}</b>
-                            </div>
-                            <div *ngIf="item.note != true && this.multiplayer.showFragmentname">
-                                <b>Frg {{item.fragmentName}}</b> &nbsp; <sup>{{item.author}}, {{item.text}}, {{item.editor}}</sup> &nbsp; <i>{{item.status}}</i>
-                            </div>
-                            <div *ngFor="let item2 of item.content"> 
-                                <!-- Keep in mind whether a note is printed or not. -->
-                                <div class="divNote" *ngIf="item.note" [innerHTML]="item2.lineComplete"></div> 
-                                <div *ngIf="item.note != true" [innerHTML]="item2.lineComplete"></div> 
-                            </div>  
-                        </div>  
-                    </div>
-                </div>
-            </div>
-           <!-- The second list to be synced -->
-            <div class="col-md-4">          
-                <div class="multiplayer-container">
-                    <h3> Synced Column 2</h3>
-                    <div
-                        cdkDropList
-                        #list2="cdkDropList"
-                        [cdkDropListData]="this.multiplayer.list2Array"
-                        [cdkDropListConnectedTo]="[list1, list3, list4, list5, list6]"
-                        class="multiplayer-list"
-                        (cdkDropListDropped)="this.multiplayer.MultipleColumnsDrag($event)">
-                        <div class="fragment-box" *ngFor="let item of this.multiplayer.list2Array" cdkDrag>                          
-                            <div class="divNote" *ngIf="item.note"> <!--If it is a note, don't show frg-->
-                                <b>{{item.fragmentName}}</b>
-                            </div>
-                            <div *ngIf="item.note != true && this.multiplayer.showFragmentname">
-                                <b>Frg {{item.fragmentName}}</b> &nbsp; <sup>{{item.author}}, {{item.text}}, {{item.editor}}</sup> &nbsp; <i>{{item.status}}</i>
-                            </div>
-                            <div *ngFor="let item2 of item.content"> 
-                                <!-- Keep in mind whether a note is printed or not. -->
-                                <div class="divNote" *ngIf="item.note" [innerHTML]="item2.lineComplete"></div> 
-                                <div *ngIf="item.note != true" [innerHTML]="item2.lineComplete"></div> 
-                            </div>  
-                        </div>   
-                    </div>
-                </div> 
-            </div> 
-
-            <!-- The third column contains two rows: one for own fragments, one for existing editions -->
-            <div class="col-md-4">
-                <div class="row">
-                    <div class="multiplayer-container">
-                        <h3>Recycle Bin</h3>
-                        <div
-                            cdkDropList
-                            #list5="cdkDropList"
-                            [cdkDropListData]="this.multiplayer.list5Array"
-                            [cdkDropListConnectedTo]="[list1, list2, list3, list4, list6]"
-                            class="multiplayer-list"
-                            (cdkDropListDropped)="this.multiplayer.MultipleColumnsDrag($event)">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="multiplayer-container">
-                        <h3>My Notebook</h3>
-                        <div
-                            cdkDropList
-                            #list4="cdkDropList"
-                            [cdkDropListData]="this.multiplayer.list4Array"
-                            [cdkDropListConnectedTo]="[list1, list2, list3, list5, list6]"
-                            class="multiplayer-list"
-                            (cdkDropListDropped)="this.multiplayer.MultipleColumnsDrag($event)">
-                            <div class="fragment-box" *ngFor="let item of this.multiplayer.list4Array" cdkDrag>                          
-                                <div class="divNote" *ngIf="item.note"> <!--If it is a note, don't show frg-->
-                                    <b>{{item.fragmentName}}</b>
-                                </div>
-                                <div *ngIf="item.note != true && this.multiplayer.showFragmentname">
-                                    <b>Frg {{item.fragmentName}}</b> &nbsp; <sup>{{item.author}}, {{item.text}}, {{item.editor}}</sup> &nbsp; <i>{{item.status}}</i>
-                                </div>
-                                <div *ngFor="let item2 of item.content"> 
-                                    <!-- Keep in mind whether a note is printed or not. -->
-                                    <div class="divNote" *ngIf="item.note" [innerHTML]="item2.lineComplete"></div> 
-                                    <div *ngIf="item.note != true" [innerHTML]="item2.lineComplete"></div> 
-                                </div>  
-                            </div>  
-                        </div>
-                    </div>
-                </div>
-                <!-- Last list that shows existing editions -->
-                <div class="row">
-                    <div class="multiplayer-container">
-                        <h3>Existing Edition</h3>
-                        <div
-                            cdkDropList
-                            #list3="cdkDropList"
-                            [cdkDropListData]="this.multiplayer.list3Array"
-                            [cdkDropListConnectedTo]="[list1, list2, list4, list5, list6]"
-                            class="multiplayer-list"
-                            (cdkDropListDropped)="this.multiplayer.MultipleColumnsDrag($event)">
-                            <div class="fragment-box" *ngFor="let item of this.multiplayer.list3Array" cdkDrag>                          
-                                <div class="divNote" *ngIf="item.note"> <!--If it is a note, don't show frg-->
-                                    <b>{{item.fragmentName}}</b>
-                                </div>
-                                <div *ngIf="item.note != true && this.multiplayer.showFragmentname">
-                                    <b>Frg {{item.fragmentName}}</b> &nbsp; <sup>{{item.author}}, {{item.text}}, {{item.editor}}</sup> &nbsp; <i>{{item.status}}</i>
-                                </div>
-                                <div *ngFor="let item2 of item.content"> 
-                                    <!-- Keep in mind whether a note is printed or not. -->
-                                    <div class="divNote" *ngIf="item.note" [innerHTML]="item2.lineComplete"></div> 
-                                    <div *ngIf="item.note != true" [innerHTML]="item2.lineComplete"></div> 
-                                </div>  
-                            </div> 
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> 
 </div>
 
 <!-- TEMPLATES -->
@@ -572,7 +319,23 @@
         </div>
     </div> 
 </ng-template>
-               
+       
+<ng-template #show_fragment_content let-current_fragment_content="current_fragment_content" let-title="title">   
+    <mat-expansion-panel *ngIf="current_fragment_content">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                <b>{{title}}</b>
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="mat-expansion-panel-content">
+            <div class="mat-expansion-panel-body">
+                <div [innerHTML]="current_fragment_content"></div>
+            </div>
+        </div>
+    </mat-expansion-panel>
+</ng-template>
+
+
 <!-- Possibility of adding notes -->
                 <!-- <div class="col-md-6">
                     <div mat-dialog-content>

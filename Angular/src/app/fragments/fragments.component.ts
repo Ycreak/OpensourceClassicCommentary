@@ -41,47 +41,12 @@ export class FragmentsComponent implements OnInit {
   // Booleans for HTML related items
   spinner: boolean = false; // Boolean to toggle the spinner.
   server_down: boolean = true; // to indicate server failure
-  // Objects to store the retrieved authors, books and editors to control server data retrieval 
-  // retrieved_authors : object; // JSON that contains all available Authors and their data.
-  // retrieved_books : object; // JSON that contains all available Books and their data given a specific editor.
-  // retrieved_editors : object; // JSON that contains all available Editors and their data for a specific book.
   // Global Class Variables with text data corresponding to the front-end text fields.
   current_fragment : Fragment;
   fragment_clicked : boolean = false;
-  // Variable to store the fragment numbers from a given Author, Book and Editor
-  // retrieved_fragment_numbers : object;
-  // Object to store all column data. TODO: should be rethought.
-   
+  
+  // Object to store all column data. TODO: should be rethought. 
   columns : Array<Fragment_column> = [];
-
-  //   column3 : {
-  //     author : '',
-  //     title : '',
-  //     editor : '',
-  //     fragments : [],
-  //   },
-  //   column4 : {
-  //     author : '',
-  //     title : '',
-  //     editor : '',
-  //     fragments : [],
-  //   },
-  //   playground : {
-  //     author : '',
-  //     title : '',
-  //     editor : '',
-  //     fragments : [],
-  //   },
-  //   playground2 : {
-  //     author : '',
-  //     title : '',
-  //     editor : '',
-  //     fragments : [],
-  //   },     
-  // }
-  // Allows for notes to be added on screen
-  // note : string = '';
-  // noteArray : Array<string> = [];
   
   constructor(
     private api: ApiService,
