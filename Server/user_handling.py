@@ -159,7 +159,7 @@ class User_handler():
         else:
             return make_response('Could not find a user', 400)    
 
-    def Retrieve_all_users(self):
+    def Retrieve_all_users(self) -> list:
         """Retrieves all available users from the database and returns them in a list
 
         Returns:

@@ -54,19 +54,6 @@ export class FragmentsComponent implements OnInit {
    
   columns : Array<Fragment_column> = [];
 
-  // column_data : object = {
-  //   column1 : {
-  //     author : '',
-  //     title : '',
-  //     editor : '',
-  //     fragments : [],
-  //   },
-  //   column2 : {
-  //     author : '',
-  //     title : '',
-  //     editor : '',
-  //     fragments : [],
-  //   },
   //   column3 : {
   //     author : '',
   //     title : '',

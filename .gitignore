@@ -15,9 +15,9 @@ Server/__pycache__
 
 # dependencies
 Angular/node_modules
-NoSQL_server/__pycache__
-NoSQL_server/server_credentials.py
-NoSQL_server/Models/__pycache__
+Server/__pycache__
+Server/server_credentials.py
+Server/Models/__pycache__
 # profiling files
 chrome-profiler-events*.json
 speed-measure-plugin*.json
@@ -52,6 +52,3 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
-
-
-Server/Models/__pycache__/

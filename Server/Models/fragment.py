@@ -82,24 +82,24 @@ class Fragment:
             self.linked_bib_entries = list(set(linked_bib_entries_list)) 
 
     # Default fragment fields
-    _id = ''
-    fragment_name = ''
-    author = ''
-    title = '' 
-    editor = '' 
-    translation = '' 
-    differences = '' 
-    apparatus = ''
-    commentary = '' 
-    reconstruction = '' 
-    status = ''
-    lock = 0
-    context = [] 
-    lines = []
-    linked_fragments = []
-    linked_bib_entries = []
+    _id: str = ''
+    fragment_name: str = ''
+    author: str = ''
+    title: str = '' 
+    editor: str = '' 
+    translation: str = '' 
+    differences: str = '' 
+    apparatus: str = ''
+    commentary: str = '' 
+    reconstruction: str = '' 
+    status: str = ''
+    lock: int = 0
+    context: list = [] 
+    lines: list = []
+    linked_fragments: list = []
+    linked_bib_entries: list = []
 
-    fragment_empty = {
+    fragment_empty: dict = {
         "fragment_name": "", 
         "author": "",
         "title": "",
