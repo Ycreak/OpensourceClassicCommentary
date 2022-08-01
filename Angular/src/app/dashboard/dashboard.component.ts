@@ -1,32 +1,25 @@
-// Core system components
+// Library imports
 import { Component, OnInit} from '@angular/core';
+import {Observable} from 'rxjs';
+import {map, startWith} from 'rxjs/operators';
+import { FormBuilder } from '@angular/forms';
+import { ReactiveFormsModule, FormControl, FormGroup, Validators, FormArray } from '@angular/forms';
+import { MatTabChangeEvent } from '@angular/material/tabs';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
-// Service and utility imports
+// Component imports
 import { ApiService } from '../api.service';
 import { UtilityService } from '../utility.service';
 import { AuthService } from '../auth/auth.service';
 import { DialogService } from '../services/dialog.service';
 
-// To allow the use of forms
-import { FormBuilder } from '@angular/forms';
-import { ReactiveFormsModule, FormControl, FormGroup, Validators, FormArray } from '@angular/forms';
-import { MatTabChangeEvent } from '@angular/material/tabs';
-
-// Mat imports
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
-
-// Model imports to send to the API. 
+// Model imports 
 import { Fragment } from '../models/Fragment';
 
 // Third party imports
-// NPM Library. Hopefully not soon deprecated
 import insertTextAtCursor from 'insert-text-at-cursor';
-
-// npm i angular-onscreen-material-keyboard
 import { IKeyboardLayouts, keyboardLayouts, MAT_KEYBOARD_LAYOUTS, MatKeyboardModule } from 'angular-onscreen-material-keyboard';
-
-import {Observable} from 'rxjs';
-import {map, startWith} from 'rxjs/operators';
+// To install the onscreen keyboard: $ npm i angular-onscreen-material-keyboard
 
 @Component({
   selector: 'app-dashboard',
@@ -35,21 +28,21 @@ import {map, startWith} from 'rxjs/operators';
 })
 export class DashboardComponent implements OnInit {
 
-  selected_author : string = '';
-  selected_book : string = '';
-  selected_editor : string = '';
+  selected_author: string = '';
+  selected_book: string = '';
+  selected_editor: string = '';
   selected_fragment : string;
 
-  retrieved_authors : object;
-  retrieved_books : object;
-  retrieved_editors : object;
+  retrieved_authors: object;
+  retrieved_books: object;
+  retrieved_editors: object;
 
-  retrieved_fragment : object;
-  retrieved_fragments : object;
-  retrieved_fragment_numbers : object;
+  retrieved_fragment: object;
+  retrieved_fragments: object;
+  retrieved_fragment_numbers: object;
 
-  retrieved_bibliography_authors : object;
-  retrieved_author_bibliography : object;
+  retrieved_bibliography_authors: object;
+  retrieved_author_bibliography: object;
 
   // Forms
   fragmentForm: FormGroup = this.formBuilder.group({
@@ -181,7 +174,7 @@ export class DashboardComponent implements OnInit {
       }
     }
     // Now, get this fragment from the server
-    this.api.Get_specific_fragment(fragment_id).subscribe(
+    this.api.get_specific_fragment(fragment_id).subscribe(
       data => { 
         this.retrieved_fragment = data;
         this.selected_fragment = fragment_number;
@@ -354,8 +347,8 @@ export class DashboardComponent implements OnInit {
     
     let lock_status = (form.lock ? 1 : 0);
         
-    this.api.Update_fragment_lock({'_id': form._id, 'lock': lock_status}).subscribe(
-      res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
+    this.api.update_fragment_lock({'_id': form._id, 'lock': lock_status}).subscribe(
+      res => this.utility.handle_error_message(res), err => this.utility.handle_error_message(err)
     );  
   }
 
@@ -372,7 +365,7 @@ export class DashboardComponent implements OnInit {
   public RequestAuthors(){
     this.api.GetAuthors().subscribe(
       data => this.retrieved_authors = data,
-      err => this.utility.HandleErrorMessage(err),
+      err => this.utility.handle_error_message(err),
     );      
   }
 
@@ -404,18 +397,18 @@ export class DashboardComponent implements OnInit {
     // If the fragment is locked and the user is not a teacher, we will not allow this operation.
         
     if(fragment.lock && !this.authService.is_teacher){
-      this.utility.OpenSnackbar('This fragment is locked.')
+      this.utility.open_snackbar('This fragment is locked.')
     }
     else{
       let item_string = fragment.author + ', ' +  fragment.title + ', ' + fragment.editor + ': ' + fragment.fragment_name
 
-      this.dialog.OpenConfirmationDialog('Are you sure you want to REVISE this fragment?', item_string).subscribe(result => {
+      this.dialog.open_confirmation_dialog('Are you sure you want to REVISE this fragment?', item_string).subscribe(result => {
         if(result){
-          this.api.Revise_fragment(fragment).subscribe(
+          this.api.revise_fragment(fragment).subscribe(
             res => {
-              this.utility.HandleErrorMessage(res);
+              this.utility.handle_error_message(res);
             }, 
-            err => this.utility.HandleErrorMessage(err)
+            err => this.utility.handle_error_message(err)
           );
         }
       });
@@ -426,10 +419,10 @@ export class DashboardComponent implements OnInit {
   public Request_create_fragment(fragment){
     let item_string = fragment.author + ', ' +  fragment.title + ', ' + fragment.editor + ': ' + fragment.fragment_name
 
-    this.dialog.OpenConfirmationDialog('Are you sure you want to CREATE this fragment?', item_string).subscribe(result => {
+    this.dialog.open_confirmation_dialog('Are you sure you want to CREATE this fragment?', item_string).subscribe(result => {
       if(result){
-        this.api.Create_fragment(fragment).subscribe(
-          res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
+        this.api.create_fragment(fragment).subscribe(
+          res => this.utility.handle_error_message(res), err => this.utility.handle_error_message(err)
         );
       }
     });
@@ -441,10 +434,10 @@ export class DashboardComponent implements OnInit {
   public Request_delete_fragment(fragment){
     let item_string = fragment.author + ', ' +  fragment.title + ', ' + fragment.editor + ': ' + fragment.fragment_name
     
-    this.dialog.OpenConfirmationDialog('Are you sure you want to DELETE this fragment?', item_string).subscribe(result => {
+    this.dialog.open_confirmation_dialog('Are you sure you want to DELETE this fragment?', item_string).subscribe(result => {
       if(result){
-        this.api.Delete_fragment({'_id':fragment._id}).subscribe(
-          res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
+        this.api.delete_fragment({'_id':fragment._id}).subscribe(
+          res => this.utility.handle_error_message(res), err => this.utility.handle_error_message(err)
         );
       }
     });
@@ -462,16 +455,16 @@ export class DashboardComponent implements OnInit {
     fragment.author = author;
     fragment.title = title;
 
-    this.dialog.OpenConfirmationDialog('Are you sure you want to LINK fragments from this text?', item_string).subscribe(result => {
+    this.dialog.open_confirmation_dialog('Are you sure you want to LINK fragments from this text?', item_string).subscribe(result => {
       if(result){
         this.spinner_active = true;
-        this.api.Automatic_fragment_linker(fragment).subscribe(
+        this.api.automatic_fragment_linker(fragment).subscribe(
           res => {
-            this.utility.HandleErrorMessage(res),
+            this.utility.handle_error_message(res),
             this.spinner_active = false;
           }, 
           err => {
-            this.utility.HandleErrorMessage(err),
+            this.utility.handle_error_message(err),
             this.spinner_active = false;
           },
         );
@@ -543,7 +536,7 @@ export class DashboardComponent implements OnInit {
    * Converts JSON into a angular list
    * @param authors_json json object from the server
    * @returns angular list with bibliography author names
-   * @authors Ycreak
+   * @author Ycreak
    */
   public push_bibliography_authors_in_list(authors_json){
     let author_list: string[] = [];
@@ -564,7 +557,7 @@ export class DashboardComponent implements OnInit {
       data => {
         this.bibliography_author_selection_form_options = this.push_bibliography_authors_in_list(data); //TODO: this need to be handled with a model
       },
-      err => this.utility.HandleErrorMessage(err),
+      err => this.utility.handle_error_message(err),
     );      
   }
 
@@ -600,13 +593,13 @@ export class DashboardComponent implements OnInit {
         
     let item_string = bibliography.author + ', ' +  bibliography.title
 
-    this.dialog.OpenConfirmationDialog('Are you sure you want to REVISE this bibliography entry?', item_string).subscribe(result => {
+    this.dialog.open_confirmation_dialog('Are you sure you want to REVISE this bibliography entry?', item_string).subscribe(result => {
       if(result){
         this.api.revise_bibliography_entry(bibliography).subscribe(
           res => {
-            this.utility.HandleErrorMessage(res),
+            this.utility.handle_error_message(res),
             this.request_bibliography_authors();  // After a succesful response, retrieve the authors again.
-          }, err => this.utility.HandleErrorMessage(err)
+          }, err => this.utility.handle_error_message(err)
         );
       }
     });
@@ -617,13 +610,13 @@ export class DashboardComponent implements OnInit {
 
     let item_string = bibliography.author + ', ' +  bibliography.title
 
-    this.dialog.OpenConfirmationDialog('Are you sure you want to CREATE this bibliography entry?', item_string).subscribe(result => {
+    this.dialog.open_confirmation_dialog('Are you sure you want to CREATE this bibliography entry?', item_string).subscribe(result => {
       if(result){
         this.api.create_bibliography_entry(bibliography).subscribe(
           res => {
-            this.utility.HandleErrorMessage(res),
+            this.utility.handle_error_message(res),
             this.request_bibliography_authors();  // After a succesful response, retrieve the authors again.
-          }, err => this.utility.HandleErrorMessage(err)
+          }, err => this.utility.handle_error_message(err)
         );
       }
     });
@@ -633,13 +626,13 @@ export class DashboardComponent implements OnInit {
   public request_delete_bibliography_entry(bibliography){
     let item_string = bibliography.author + ', ' +  bibliography.title
     
-    this.dialog.OpenConfirmationDialog('Are you sure you want to DELETE this bibliography entry?', item_string).subscribe(result => {
+    this.dialog.open_confirmation_dialog('Are you sure you want to DELETE this bibliography entry?', item_string).subscribe(result => {
       if(result){
         this.api.delete_bibliography_entry({'_id':bibliography._id}).subscribe(
           res => {
-            this.utility.HandleErrorMessage(res),
+            this.utility.handle_error_message(res),
             this.request_bibliography_authors();  // After a succesful response, retrieve the authors again.
-          }, err => this.utility.HandleErrorMessage(err)        );
+          }, err => this.utility.handle_error_message(err)        );
       }
     });
     this.Reset_form();
@@ -651,40 +644,40 @@ export class DashboardComponent implements OnInit {
   //////////////////////////////////////
   public Request_change_password(form){
     if(form.password1 == form.password2){
-      this.dialog.OpenConfirmationDialog('Are you sure you want to CHANGE your password', this.authService.logged_user).subscribe(result => {
+      this.dialog.open_confirmation_dialog('Are you sure you want to CHANGE your password', this.authService.logged_user).subscribe(result => {
         if(result){
-          this.api.User_change_password({'username':this.authService.logged_user,'new_password':form.password1}).subscribe(
-            res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
+          this.api.user_change_password({'username':this.authService.logged_user,'new_password':form.password1}).subscribe(
+            res => this.utility.handle_error_message(res), err => this.utility.handle_error_message(err)
           );
         }
       });
     }
     else{
-      this.utility.OpenSnackbar('Passwords do not match.');
+      this.utility.open_snackbar('Passwords do not match.');
     }
   }
 
   public Request_users(){
-    this.api.Get_users().subscribe(
+    this.api.get_users().subscribe(
       data => this.retrieved_users = data,
-      err => this.utility.HandleErrorMessage(err),
+      err => this.utility.handle_error_message(err),
     );      
   }
 
   public Request_create_user(new_user, new_password){
 
     if(new_user == '' || new_password == ''){
-      this.utility.OpenSnackbar('Please provide proper details');
+      this.utility.open_snackbar('Please provide proper details');
     }
     else{
-      this.dialog.OpenConfirmationDialog('Are you sure you want to CREATE this user?', new_user).subscribe(result => {
+      this.dialog.open_confirmation_dialog('Are you sure you want to CREATE this user?', new_user).subscribe(result => {
         if(result){
-          this.api.Create_user({'username':new_user,'password':new_password}).subscribe(
+          this.api.create_user({'username':new_user,'password':new_password}).subscribe(
             res => {
-              this.utility.HandleErrorMessage(res),
+              this.utility.handle_error_message(res),
               this.Request_users();
             },
-            err => this.utility.HandleErrorMessage(err)
+            err => this.utility.handle_error_message(err)
           );
         }
       });
@@ -693,29 +686,29 @@ export class DashboardComponent implements OnInit {
 
   public Request_change_role(user, role){
     let item_string = user + ', ' + role;
-    this.dialog.OpenConfirmationDialog('Are you sure you want to CHANGE the role of this user?', item_string).subscribe(result => {
+    this.dialog.open_confirmation_dialog('Are you sure you want to CHANGE the role of this user?', item_string).subscribe(result => {
       if(result){
-        this.api.User_change_role({'username':user,'new_role':role}).subscribe(
+        this.api.user_change_role({'username':user,'new_role':role}).subscribe(
           res => {
-            this.utility.HandleErrorMessage(res),
+            this.utility.handle_error_message(res),
             this.Request_users();
           },
-          err => this.utility.HandleErrorMessage(err)
+          err => this.utility.handle_error_message(err)
         );
       }
     });
   }
 
   public Request_delete_user(username){
-    this.dialog.OpenConfirmationDialog('Are you sure you want to DELETE this user?', username).subscribe(result => {
+    this.dialog.open_confirmation_dialog('Are you sure you want to DELETE this user?', username).subscribe(result => {
       if(result){
-        this.api.Delete_user({'username':username}).subscribe(
+        this.api.delete_user({'username':username}).subscribe(
           res => {
-            this.utility.HandleErrorMessage(res),
+            this.utility.handle_error_message(res),
             this.Request_users();
             this.user_selected = false;
           },
-          err => this.utility.HandleErrorMessage(err)
+          err => this.utility.handle_error_message(err)
         );
       }
     });
