@@ -70,52 +70,52 @@ export class UtilityService {
 
     // This function merges the multiple lines in a single fragment.
     // The structure looks as follows: Fragment 2, [[1, "hello"],[2,"hi"]]
-    public MergeLinesIntoFragment(givenArray){
-      let array = [];
-      let contentArray = [];
-      // For each element in the given array
-      for(let element in givenArray){
-        // Data needed for proper retrieval
-        let fragmentName = givenArray[element].fragmentName
-        let lineContent = givenArray[element].lineContent //FIXME: Should be lineContent
-        let lineName = givenArray[element].lineName
-        let status = givenArray[element].status 
-        let buildString = '<p>' + lineName + ': ' + lineContent + '</p>';
-        // Turn tabs into HTML tabs
-        buildString = this.convert_whitespace_encoding(buildString);
-        // Find the element.fragmentName in the array and check whether it exists.
-        let currentFragment = array.find(x => x.fragmentName === fragmentName)
-        if(currentFragment){ // The current fragmentName is already in the array.
-          // Save the content found in a temporary array
-          contentArray = currentFragment.content;
-          // Delete the entry (to allow it to be recreated after this if)
-          array.splice(array.findIndex((x => x.fragmentName === fragmentName)),1);   
-        }
-        // Push the content (either completely new or with the stored content included)      
-        contentArray.push({
-          lineName: lineName,
-          lineContent: lineContent,
-          lineComplete: buildString,
-        })
-        // Push the created data to the array and empty the used arrays.
-        array.push({ fragmentName: givenArray[element].fragmentName, content: contentArray, status: status})
-        contentArray = [];
-      }
-      // Sort the lines in array, needs to be own function
-      for(let element in array){
-        array[element].content.sort(this.SortFragmentsArrayNumerically);
-      }
+    // public MergeLinesIntoFragment(givenArray){
+    //   let array = [];
+    //   let contentArray = [];
+    //   // For each element in the given array
+    //   for(let element in givenArray){
+    //     // Data needed for proper retrieval
+    //     let fragmentName = givenArray[element].fragmentName
+    //     let lineContent = givenArray[element].lineContent //FIXME: Should be lineContent
+    //     let lineName = givenArray[element].lineName
+    //     let status = givenArray[element].status 
+    //     let buildString = '<p>' + lineName + ': ' + lineContent + '</p>';
+    //     // Turn tabs into HTML tabs
+    //     buildString = this.convert_whitespace_encoding(buildString);
+    //     // Find the element.fragmentName in the array and check whether it exists.
+    //     let currentFragment = array.find(x => x.fragmentName === fragmentName)
+    //     if(currentFragment){ // The current fragmentName is already in the array.
+    //       // Save the content found in a temporary array
+    //       contentArray = currentFragment.content;
+    //       // Delete the entry (to allow it to be recreated after this if)
+    //       array.splice(array.findIndex((x => x.fragmentName === fragmentName)),1);   
+    //     }
+    //     // Push the content (either completely new or with the stored content included)      
+    //     contentArray.push({
+    //       lineName: lineName,
+    //       lineContent: lineContent,
+    //       lineComplete: buildString,
+    //     })
+    //     // Push the created data to the array and empty the used arrays.
+    //     array.push({ fragmentName: givenArray[element].fragmentName, content: contentArray, status: status})
+    //     contentArray = [];
+    //   }
+    //   // Sort the lines in array, needs to be own function
+    //   for(let element in array){
+    //     array[element].content.sort(this.SortFragmentsArrayNumerically);
+    //   }
       
-      // Put normal fragments first, then incerta and then adespota. TODO: should be separate function
-      let normal = this.FilterObjOnKey(array, 'status', '')
-      let incerta = this.FilterObjOnKey(array, 'status', 'Incertum')
-      let adesp = this.FilterObjOnKey(array, 'status', 'Adesp.')
-      // Concatenate in the order we want (i'm a hacker)
-      array = normal.concat(incerta).concat(adesp)
+    //   // Put normal fragments first, then incerta and then adespota. TODO: should be separate function
+    //   let normal = this.FilterObjOnKey(array, 'status', '')
+    //   let incerta = this.FilterObjOnKey(array, 'status', 'Incertum')
+    //   let adesp = this.FilterObjOnKey(array, 'status', 'Adesp.')
+    //   // Concatenate in the order we want (i'm a hacker)
+    //   array = normal.concat(incerta).concat(adesp)
   
-      console.log('array', array)
-      return array
-    }
+    //   console.log('array', array)
+    //   return array
+    // }
 
 
   /**
@@ -161,13 +161,13 @@ export class UtilityService {
     return comparison;
   }
 
-    /** A PARAMETER SHOULD BE GIVEN BUT I AM A WORTHLESS PROGRAMMER xD lineNumber vs fragNumber
-  * Sorts array numerically on fragment number
+  /** Sorts array numerically on fragment number
   * @param boolean called from array
+  * @param field on which to perform the comparison TODO:
   * @returns sorted array.
   * @author Ycreak
-  */ // TODO: Should put Adesp and Incert. on the bottom. 
-  public SortFragmentsArrayNumerically(a, b) {
+  */ 
+  public sort_fragment_array_numerically(a, b) {
     // Sort array via the number element given.
     // To allow fragments like '350-356' to be ordered.
     const A = Number(a.fragment_name.split("-", 1));
@@ -230,7 +230,7 @@ export class UtilityService {
     return string
   }
 
-  public FilterObjOnKey(array, key, value){
+  public filter_object_on_key(array, key, value){
     var temp = array.filter(obj => {
       return obj[key] === value;
     })

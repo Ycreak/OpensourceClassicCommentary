@@ -11,17 +11,14 @@
 <mat-toolbar color="primary">
     <span><h3 class='h3-title'>Open Source Classics Commentary</h3></span>
     <span class="spacer"></span>
-    <!-- <button mat-button class="btn" (click)="this.OpenBookSelect()">CHANGE TEXT</button> -->
-    <!-- <button mat-button class="btn" (click)="Test()">TEST</button> -->
     <button mat-button class="btn" routerLink="/dashboard" *ngIf="this.authService.is_logged_in">DASHBOARD</button>
-    <button mat-button class="btn" (click)="Test('thing')" *ngIf="this.authService.is_teacher"> TEST</button>
+    <button mat-button class="btn" (click)="test('thing')" *ngIf="this.authService.is_teacher"> TEST</button>
     <mat-checkbox class="btn" [(ngModel)]="toggle_column_one">ONE</mat-checkbox>
     <mat-checkbox class="btn" [(ngModel)]="toggle_column_two">TWO</mat-checkbox>
     <mat-checkbox class="btn" [(ngModel)]="toggle_column_three">THREE</mat-checkbox>
     <mat-checkbox class="btn" [(ngModel)]="toggle_column_four">FOUR</mat-checkbox>
     <mat-checkbox class="btn" [(ngModel)]="toggle_commentary">COM</mat-checkbox>
     <mat-checkbox class="btn" [(ngModel)]="toggle_playground">PLAY</mat-checkbox>
-    <mat-checkbox class="btn" [(ngModel)]="toggle_multiplayer" *ngIf="this.authService.is_teacher">MUL</mat-checkbox>
     <button mat-button class="btn" [matMenuTriggerFor]="menu">MENU</button>
 </mat-toolbar>
 
@@ -30,7 +27,7 @@
     <button routerLink="/text" mat-menu-item>Text OSCC</button>
     <button routerLink="/scansion" mat-menu-item>Scansion</button>
     <a href="http://oscc.nolden.biz/Documentation/" target='_blank' mat-menu-item *ngIf="this.authService.is_teacher">Documentation</a>  
-    <button (click)="Login()" mat-menu-item>Login</button>
+    <button (click)="login()" mat-menu-item>Login</button>
     <button (click)="this.dialog.OpenAbout()" mat-menu-item>About</button>
     <button mat-menu-item>V22.07.31</button>
 </mat-menu>
@@ -45,7 +42,7 @@
 <!-- Container for the page. One row per item (commentary, playground, multiplayer, etc.) -->
 <div class="container-fluid">
     <div class="row">
-        <!-- First column, containing the fragments from the edition of reference -->
+        <!-- First column, containing the fragments from the selected edition (these are movable) -->                                
         <div *ngIf="toggle_column_one" class="col-sm overflowColumn">
             <div class="row"> <!-- Text information and edition of reference selection -->
                 <div class="col-4"> <ng-container *ngTemplateOutlet="select_author;context:{column: 'ONE'}"></ng-container> </div>
@@ -92,7 +89,7 @@
         <!-- Column with commentary, shown if a fragment from the edition of reference is clicked -->
         <div *ngIf="toggle_commentary" class="col-sm overflowColumn">
             <!-- Show either fragment data or the fact that no fragment has been selected yet. -->
-            <div *ngIf="this.fragment_clicked;else no_fragment_clicked">
+            <div *ngIf="this.fragment_clicked; else no_fragment_clicked">
                 <!-- Fragment information -->
                 <h4>Selected {{this.current_fragment.author}}, {{this.current_fragment.title}}, 
                     {{this.current_fragment.editor}}, fragment {{this.current_fragment.fragment_name}}</h4> <hr>
@@ -169,7 +166,6 @@
                         <div [innerHTML]="item"></div>
                     </div>
             </mat-expansion-panel>
-
         </div>
         <hr>
     </div> <!-- This closes the first row. Other items will be put under this row -->
@@ -254,6 +250,7 @@
 </div>
 
 <!-- TEMPLATES -->
+<!-- Template for the select authors mat-option field -->
 <ng-template #select_author let-column="column" let-hint="hint">  
     <mat-form-field>
         <mat-label>Select author</mat-label>
@@ -267,12 +264,13 @@
     </mat-form-field> 
 </ng-template>
 
+<!-- Template for the select text title mat-option field -->
 <ng-template #select_title let-column="column" let-hint="hint">   
     <mat-form-field>
         <mat-label>Select text</mat-label>
         <mat-select>
             <mat-option *ngFor="let book of get_column_from_columns(column).retrieved_titles" [value]="book" 
-            (click)="this.handle_book_selection(get_column_from_columns(column), book.name)">
+            (click)="this.handle_title_selection(get_column_from_columns(column), book.name)">
                 {{ book.name }}                
             </mat-option>
         </mat-select>
@@ -280,6 +278,7 @@
     </mat-form-field>
 </ng-template>
 
+<!-- Template for the select editor mat-option field -->
 <ng-template #select_editor let-column="column" let-hint="hint">   
     <mat-form-field>
         <mat-label>Select edition</mat-label>
@@ -293,21 +292,8 @@
     </mat-form-field>
 </ng-template>
 
-<ng-template #select_fragment let-chosen_column="column" let-hint="hint">   
-    <mat-form-field>
-        <mat-label>Fragment</mat-label>
-        <mat-select>
-            <mat-option *ngFor="let fragment_number of get_column_from_columns(column).retrieved_fragment_numbers" [value]="fragment_number"
-                (click)="this.handle_fragment_selection(get_column_from_columns(column), fragment_number)">
-                {{ fragment_number }} 
-            </mat-option>
-        </mat-select>
-        <mat-hint>{{hint}}</mat-hint>
-    </mat-form-field>
-</ng-template>
-
+<!-- Fragments loop to display all fragments of the chosen edition of reference -->
 <ng-template #fragment_column let-column="column">
-    <!-- Fragments loop to display all fragments of the chosen edition of reference -->
     <div cdkDropList (cdkDropListDropped)="this.utility.moveAndDrop($event, get_column_from_columns(column).fragments)">
         <div *ngFor="let fragment of get_column_from_columns(column).fragments"> 
             <div class="fragment-box" (click)="handle_fragment_click(fragment)" cdkDrag>
@@ -320,6 +306,7 @@
     </div> 
 </ng-template>
        
+<!-- Template to show fragment content from the given fragment in a mat expansion panel -->
 <ng-template #show_fragment_content let-current_fragment_content="current_fragment_content" let-title="title">   
     <mat-expansion-panel *ngIf="current_fragment_content">
         <mat-expansion-panel-header>
@@ -334,24 +321,3 @@
         </div>
     </mat-expansion-panel>
 </ng-template>
-
-
-<!-- Possibility of adding notes -->
-                <!-- <div class="col-md-6">
-                    <div mat-dialog-content>
-                        <mat-form-field class="input-form">
-                            <input matInput placeholder="Note" [(ngModel)]='note'>
-                                <button type="button" mat-icon-button matSuffix (click)="this.noteArray = this.utility.PopArray(this.noteArray)">
-                                    <mat-icon>{{'remove'}}</mat-icon>
-                                </button>
-                                <button type="button" mat-icon-button matSuffix (click)="this.noteArray = this.utility.PushToArray(note, this.noteArray)">
-                                    <mat-icon>{{'add'}}</mat-icon>
-                                </button>
-                            <mat-hint>Add a note</mat-hint>
-                        </mat-form-field>               
-                    </div> 
-                </div>
-            </div>
-            <div *ngFor="let note of this.noteArray" class="note" cdkDrag>
-                {{note}}
-            </div> -->

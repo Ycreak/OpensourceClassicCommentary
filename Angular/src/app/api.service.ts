@@ -28,7 +28,7 @@ import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpResponse,
 // import 'rxjs/add/observable/empty';
 // import 'rxjs/add/operator/retry'; // don't forget the imports
 
-import { EMPTY, of } from 'rxjs';
+// import { EMPTY, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -60,7 +60,7 @@ export class ApiService {
   * @returns
   * @author Ycreak, ppbors
   */
-  GetFragments(author: string, book: string, editor: string): Observable<JSON> {
+  get_fragments(author: string, book: string, editor: string): Observable<JSON> {
     return this.http.get<JSON>(this.FlaskURL + `fragments?author=${author}&book=${book}&editor=${editor}`);
   }
 
@@ -89,7 +89,7 @@ export class ApiService {
   * @returns
   * @author Ycreak, ppbors
   */
-  GetAuthors(): Observable<Author[]> {
+  get_authors(): Observable<Author[]> {
     return this.http.get<Author[]>(this.FlaskURL + `authors`);
   }
 
@@ -124,7 +124,7 @@ export class ApiService {
   * @returns
   * @author Ycreak, ppbors
   */
- GetBooks(author: string): Observable<Book[]> {
+ get_titles(author: string): Observable<Book[]> {
   return this.http.get<Book[]>(this.FlaskURL + `books?author=${author}`);
 }
 
@@ -134,11 +134,11 @@ export class ApiService {
   * @returns
   * @author Ycreak, ppbors
   */
-  GetEditors(author: string, book: string): Observable<Editor[]> {
+  get_editors(author: string, book: string): Observable<Editor[]> {
     return this.http.get<Editor[]>(this.FlaskURL + `editors?author=${author}&book=${book}`);
   }
 
-  Get_users(): Observable<any> {
+  get_users(): Observable<any> {
     return this.http.get<any>(this.FlaskURL + `retrieve_users`);
   }
 
@@ -148,11 +148,11 @@ export class ApiService {
   * @returns
   * @author Ycreak, ppbors
   */
-  GetText(bookID: number): Observable<Text[]> {
+  get_text(bookID: number): Observable<Text[]> {
     return this.http.get<Text[]>(this.ApiUrl + `tlines?textID=${bookID}`);
   }
 
-  GetTextCommentary(textID: number, lineNumber: number): Observable<TextCommentary[]> {
+  get_text_commentary(textID: number, lineNumber: number): Observable<TextCommentary[]> {
     return this.http.get<TextCommentary[]>(this.ApiUrl + `tcommentary?textID=${textID}&lineNumber=${lineNumber}`); //FIXME: needs to be TCommentary
   }
 
