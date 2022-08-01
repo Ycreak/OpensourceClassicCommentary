@@ -1,11 +1,15 @@
+// Library imports
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
+import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpResponse } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
 import { throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 
+
+// Model imports
 import { Fragment } from './models/Fragment';
 import { Author } from './models/Author';
 import { Editor } from './models/Editor';
@@ -20,16 +24,6 @@ import { Commentary } from './models/Commentary';
 import { Text } from './models/Text';
 import { TextCommentary } from './models/TextCommentary';
 
-
-import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpResponse,
-        } from '@angular/common/http';
-// import 'rxjs/add/operator/catch';
-// import 'rxjs/add/observable/of';
-// import 'rxjs/add/observable/empty';
-// import 'rxjs/add/operator/retry'; // don't forget the imports
-
-// import { EMPTY, of } from 'rxjs';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -37,123 +31,50 @@ export class ApiService {
 
   constructor(private http: HttpClient) { }
 
-  // ApiUrl: String = 'http://localhost:5000/';
-  ApiUrl: String = 'http://oscc.nolden.biz:5000/'; // For deployment
-  // CREA 4
   // FlaskURL: String = 'https://oscc.nolden.biz:5003/'; // For production (http! not https)                                 
   FlaskURL: String = 'http://localhost:5003/'; // For deployment (http! not https)                                 
 
-  // NeuralURL: String = 'https://oscc.nolden.biz:5002/'; // For deployment (http! not https)                                 
-  NeuralURL: String = 'http://localhost:5002/'; // For deployment (http! not https)                                 
-
-
-//   _____ ______ _______ 
+//    _____ ______ _______ 
 //   / ____|  ____|__   __|
 //  | |  __| |__     | |   
 //  | | |_ |  __|    | |   
 //  | |__| | |____   | |   
-//   \_____|______|  |_|   
-                                    
-  /**
-  * ... ... ...
-  * @param bookID
-  * @returns
-  * @author Ycreak, ppbors
-  */
-  get_fragments(author: string, book: string, editor: string): Observable<JSON> {
+//   \_____|______|  |_|                  
+  public get_fragments(author: string, book: string, editor: string): Observable<JSON> {
     return this.http.get<JSON>(this.FlaskURL + `fragments?author=${author}&book=${book}&editor=${editor}`);
   }
-
-  public Get_fragment_content(fragment_id: string): Observable<any> {
+  public get_fragment_content(fragment_id: string): Observable<any> {
     return this.http.get<any>(this.FlaskURL + `fragment_content?fragment_id=${fragment_id}`);
   }
-
-  // Create_fragment(fragment: object): Observable<any> {
-  //   return this.http.post<any>(this.FlaskURL + `create_fragment`, fragment, { observe: 'response', responseType: 'text' as 'json' });
-  // } 
-
-
-
-  /**
-  * ... ... ...
-  * @param bookID
-  * @returns
-  * @author Ycreak, ppbors
-  */
- Get_specific_fragment(fragment_id: string): Observable<Fragment[]> {
-  return this.http.get<Fragment[]>(this.FlaskURL + `complete_fragment?fragment_id=${fragment_id}`);
-}
-
-  /**
-  * ... ... ...
-  * @returns
-  * @author Ycreak, ppbors
-  */
-  get_authors(): Observable<Author[]> {
+  public get_specific_fragment(fragment_id: string): Observable<Fragment[]> {
+    return this.http.get<Fragment[]>(this.FlaskURL + `complete_fragment?fragment_id=${fragment_id}`);
+  }
+  public get_authors(): Observable<Author[]> {
     return this.http.get<Author[]>(this.FlaskURL + `authors`);
   }
-
-  /**
-  * @returns list of authors found in the bibliography database
-  * @author Ycreak
-  */
-  get_bibliography_authors(): Observable<JSON> {
+  public get_bibliography_authors(): Observable<JSON> {
     return this.http.get<JSON>(this.FlaskURL + `get_bibliography_authors`);
   }
-
-  /**
-  * @returns gets all bibliography documents from the given author
-  * @author Ycreak
-  */
-  get_bibliography_from_author(author): Observable<JSON> {
+  public get_bibliography_from_author(author): Observable<JSON> {
     return this.http.get<JSON>(this.FlaskURL + `get_bibliography_from_author?author=${author}`);
   }
-
-  /**
-  * @returns gets all bibliography documents from the given bib id
-  * @author Ycreak
-  */
-   get_bibliography_from_id(_id): Observable<JSON> {
+  public  get_bibliography_from_id(_id): Observable<JSON> {
     return this.http.get<JSON>(this.FlaskURL + `get_bibliography_from_id?_id=${_id}`);
   }
-  
-
-  /**
-  * ... ... ...
-  * @param authorID
-  * @returns
-  * @author Ycreak, ppbors
-  */
- get_titles(author: string): Observable<Book[]> {
-  return this.http.get<Book[]>(this.FlaskURL + `books?author=${author}`);
-}
-
-  /**
-  * ... ... ...
-  * @param bookID
-  * @returns
-  * @author Ycreak, ppbors
-  */
-  get_editors(author: string, book: string): Observable<Editor[]> {
+  public get_titles(author: string): Observable<Book[]> {
+    return this.http.get<Book[]>(this.FlaskURL + `books?author=${author}`);
+  }
+  public get_editors(author: string, book: string): Observable<Editor[]> {
     return this.http.get<Editor[]>(this.FlaskURL + `editors?author=${author}&book=${book}`);
   }
-
-  get_users(): Observable<any> {
+  public get_users(): Observable<any> {
     return this.http.get<any>(this.FlaskURL + `retrieve_users`);
   }
-
-  /**
-  * ... ... ...
-  * @param bookID
-  * @returns
-  * @author Ycreak, ppbors
-  */
-  get_text(bookID: number): Observable<Text[]> {
-    return this.http.get<Text[]>(this.ApiUrl + `tlines?textID=${bookID}`);
+  public get_text(bookID: number): Observable<Text[]> {
+    return this.http.get<Text[]>(this.FlaskURL + `tlines?textID=${bookID}`);
   }
-
-  get_text_commentary(textID: number, lineNumber: number): Observable<TextCommentary[]> {
-    return this.http.get<TextCommentary[]>(this.ApiUrl + `tcommentary?textID=${textID}&lineNumber=${lineNumber}`); //FIXME: needs to be TCommentary
+  public get_text_commentary(textID: number, lineNumber: number): Observable<TextCommentary[]> {
+    return this.http.get<TextCommentary[]>(this.FlaskURL + `tcommentary?textID=${textID}&lineNumber=${lineNumber}`); //FIXME: needs to be TCommentary
   }
 
 //   _____   ____   _____ _______ 
@@ -162,85 +83,48 @@ export class ApiService {
 //  |  ___/| |  | |\___ \   | |   
 //  | |    | |__| |____) |  | |   
 //  |_|     \____/|_____/   |_|   
-
-  Create_fragment(fragment: object): Observable<any> {
+  public create_fragment(fragment: object): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `create_fragment`, fragment, { observe: 'response', responseType: 'text' as 'json' });
   } 
-  Revise_fragment(fragment: object): Observable<any> {
+  public revise_fragment(fragment: object): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `revise_fragment`, fragment, { observe: 'response', responseType: 'text' as 'json'  });
   }
-  Delete_fragment(fragment: object): Observable<any> {
+  public delete_fragment(fragment: object): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `delete_fragment`, fragment, { observe: 'response', responseType: 'text' as 'json'  });
   }
-  Update_fragment_lock(data: object): Observable<any> {
+  public update_fragment_lock(data: object): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `set_fragment_lock`, data, { observe: 'response', responseType: 'text' as 'json'  });
   }
-  Automatic_fragment_linker(fragment: object): Observable<any> {
+  public automatic_fragment_linker(fragment: object): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `automatic_fragment_linker`, fragment, { observe: 'response', responseType: 'text' as 'json'  });
   }
-  create_bibliography_entry(fragment: object): Observable<any> {
+  public create_bibliography_entry(fragment: object): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `create_bibliography_entry`, fragment, { observe: 'response', responseType: 'text' as 'json' });
   } 
-  revise_bibliography_entry(fragment: object): Observable<any> {
+  public revise_bibliography_entry(fragment: object): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `revise_bibliography_entry`, fragment, { observe: 'response', responseType: 'text' as 'json'  });
   }
-  delete_bibliography_entry(fragment: object): Observable<any> {
+  public delete_bibliography_entry(fragment: object): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `delete_bibliography_entry`, fragment, { observe: 'response', responseType: 'text' as 'json'  });
   }
-  Login_user(login: object): Observable<any> {
+  public login_user(login: object): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `login_user`, login, { observe: 'response', responseType: 'text' as 'json'  });
   }
-  Create_user(data: object): Observable<any> {
+  public create_user(data: object): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `create_user`, data, { observe: 'response', responseType: 'text' as 'json'  });
   }
-  Delete_user(data: object): Observable<any> {
+  public delete_user(data: object): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `delete_user`, data, { observe: 'response', responseType: 'text' as 'json'  });
   }
-  User_change_password(data: object): Observable<any> {
+  public user_change_password(data: object): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `change_password`, data, { observe: 'response', responseType: 'text' as 'json'  });
   }
-  User_change_role(data: object): Observable<any> {
+  public user_change_role(data: object): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `change_role`, data, { observe: 'response', responseType: 'text' as 'json'  });
   }  
-  
-   /**
-   * ... ... ...
-   * @param context
-   * @returns ... ... ...
-   * @author ppbors
-   */
-  CreateContext(context: Context): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + `fcontext/create`, context, { observe: 'response' });
-  }
- 
-  // Scansion Model
-  public async Get_neural_data(book_number: number, line_number: number){
-    const data = await this.http.get(
-      this.NeuralURL + 'Get_neural_data',{
-        params: {
-          book_number: book_number.toString(),
-          line_number: line_number.toString(),
-        }
-      })
-      .toPromise();
-      return data;  
-  }
-
-  public async scan_given_lines(given_lines: string){
-    const data = await this.http.get(
-      this.NeuralURL + 'scan_given_lines',{
-        params: {
-          given_lines: given_lines.toString(),
-        }
-      })
-      .toPromise();
-      return data;  
-  }
-
-  
-
 }
 
+// Interceptor for HTTP errors
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor { 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
