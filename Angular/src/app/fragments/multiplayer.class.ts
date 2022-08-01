@@ -151,7 +151,7 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
       // Unsubscribe from the previous watcher.
       this.firestore_session.unsubscribe();      
       // Show Snackbar with information. FIXME: it is underneath the keyboard xD
-      // this.OpenSnackbar('Please create a new session before doing anything.') TODO:
+      // this.open_snackbar('Please create a new session before doing anything.') TODO:
     }
     /**
      * Simple function to empty the recycle bin.
@@ -179,13 +179,13 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
         }) // On error, log error. TODO: this should be in a snackbar
         .catch(function(error) {
           // console.error('Error writing document: ', error);
-          this.HandleErrorMessage(error)
+          this.handle_error_message(error)
         });   
     }
   
     // TODO: need to be able to call confirmation dialogs from anywhere
     // public RequestDeleteSession(session: string){
-    //   this.OpenConfirmationDialog('Are you sure you want to DELETE this session?', session).subscribe(result => {
+    //   this.open_confirmation_dialog('Are you sure you want to DELETE this session?', session).subscribe(result => {
     //     if(result){
     //       this.DeleteFirebaseSession(session, this.tableName);
     //     }

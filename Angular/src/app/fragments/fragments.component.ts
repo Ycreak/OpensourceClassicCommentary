@@ -47,7 +47,7 @@ export class FragmentsComponent implements OnInit {
   constructor(
     private api: ApiService,
     private utility: UtilityService,
-    public authService: AuthService,
+    public auth_service: AuthService,
     public dialog: DialogService,
     private matdialog: MatDialog, 
     ) { }
@@ -90,7 +90,7 @@ export class FragmentsComponent implements OnInit {
    * @returns data -> column.retrieved_authors
    * @author Ycreak
    */
-   private request_authors(column: Fragment_column){
+   private request_authors(column: Fragment_column): void{
     this.api.get_authors().subscribe(data => {
       this.server_down = false; //FIXME: needs to be handled properly
       // Enter this retrieved data in the correct column
@@ -103,7 +103,7 @@ export class FragmentsComponent implements OnInit {
    * @returns data -> column.retrieved_authors
    * @author Bors & Ycreak
    */
-  private request_titles(column: Fragment_column){
+  private request_titles(column: Fragment_column): void{
     this.api.get_titles(column.author).subscribe(
       data => {
         this.columns.find(i => i.name === column.name).retrieved_titles = data; 
@@ -116,7 +116,7 @@ export class FragmentsComponent implements OnInit {
    * @returns data -> column.retrieved_editors 
    * @author Bors & Ycreak
    */
-  private request_editors(column: Fragment_column){
+  private request_editors(column: Fragment_column): void{
     this.api.get_editors(column.author, column.title).subscribe(
       data => {
         this.columns.find(i => i.name === column.name).retrieved_editors = data; 
@@ -132,7 +132,7 @@ export class FragmentsComponent implements OnInit {
    *          new data is added to the corresponding field in the provided parameter
    * @author Bors & Ycreak
    */
-  private request_fragments(column: Fragment_column){
+  private request_fragments(column: Fragment_column): void{
     this.api.get_fragments(column.author, column.title, column.editor).subscribe(
       data => { 
         let fragment_list: Fragment[] = this.create_fragment_list(data);
@@ -160,7 +160,7 @@ export class FragmentsComponent implements OnInit {
    * @returns list of Fragment objects
    * @author Ycreak
    */
-  private create_fragment_list(fragment_json: JSON){
+  private create_fragment_list(fragment_json: JSON): Fragment[]{
     let fragment_list: Fragment[] = [];
     for(let index in fragment_json){
       fragment_list.push(new Fragment(fragment_json[index]))
@@ -176,8 +176,8 @@ export class FragmentsComponent implements OnInit {
    * @returns fills all content variables with data. e.g. data -> this.f_commentary 
    * @author Bors & Ycreak
    */
-  private request_fragment_content(fragment_id: string){
-    this.api.Get_fragment_content(fragment_id).subscribe(data => {     
+  private request_fragment_content(fragment_id: string): void{
+    this.api.get_fragment_content(fragment_id).subscribe(data => {     
       this.fragment_clicked = true;
       this.current_fragment.add_content(data);
     });
@@ -189,7 +189,7 @@ export class FragmentsComponent implements OnInit {
    * @returns list of all fragment names 
    * @author Ycreak
    */
-  private retrieve_fragment_numbers(fragments){    
+  private retrieve_fragment_numbers(fragments): string[]{    
     let number_list: string[] = []
     for(let fragment in fragments){
       number_list.push(fragments[fragment].fragment_name)
@@ -204,7 +204,7 @@ export class FragmentsComponent implements OnInit {
    * @param author selected by the user
    * @author Ycreak
    */
-  private handle_author_selection(column: Fragment_column, author: string){
+  private handle_author_selection(column: Fragment_column, author: string): void{
     // Set the author for the given column
     this.columns.find(i => i.name === column.name).author = author; 
     this.request_titles(column);
@@ -217,7 +217,7 @@ export class FragmentsComponent implements OnInit {
    * @param title selected by the user
    * @author Ycreak
    */
-  private handle_title_selection(column: Fragment_column, title: string){
+  private handle_title_selection(column: Fragment_column, title: string): void{
     // Set the title for the given column
     this.columns.find(i => i.name === column.name).title = title; 
     this.request_editors(column);
@@ -230,7 +230,7 @@ export class FragmentsComponent implements OnInit {
    * @param editor selected by the user
    * @author Ycreak
    */
-  private handle_editor_selection(column: Fragment_column, editor: string){
+  private handle_editor_selection(column: Fragment_column, editor: string): void{
     // Set the editor for the given column
     this.columns.find(i => i.name === column.name).editor = editor; 
     this.request_fragments(this.columns.find(i => i.name === column.name))
@@ -241,7 +241,7 @@ export class FragmentsComponent implements OnInit {
    * @param fragment selected by the user
    * @author Ycreak
    */
-   private handle_fragment_click(fragment: Fragment){
+   private handle_fragment_click(fragment: Fragment): void{
       this.current_fragment = fragment
       // Request content from this fragment
       this.request_fragment_content(fragment.fragment_id)
@@ -261,7 +261,7 @@ export class FragmentsComponent implements OnInit {
    * Colours all fragment titles black
    * @author Ycreak
    */
-  private colour_fragments_black(){
+  private colour_fragments_black(): void{
     for(let index in this.columns){
       let fragment_array = this.columns[index].fragments
       for(let fragment in fragment_array){
@@ -275,7 +275,7 @@ export class FragmentsComponent implements OnInit {
    * @param fragment of which the linked fragments should be coloured
    * @author Ycreak
    */
-  private colour_linked_fragments(fragment: Fragment){
+  private colour_linked_fragments(fragment: Fragment): void{
     for(let index in fragment.linked_fragments){
       // Loop through all fragments
       let linked_fragment_id = fragment.linked_fragments[index] 
@@ -298,7 +298,7 @@ export class FragmentsComponent implements OnInit {
    * Function to handle the login dialog
    * @author Ycreak
    */
-  private login() {
+  private login(): void{
     const dialogRef = this.matdialog.open(LoginComponent, {
       height: '60vh',
       width: '40vw',
@@ -309,7 +309,7 @@ export class FragmentsComponent implements OnInit {
    * Test function
    * @author Ycreak
    */  
-  private test(){
+  private test(): void{
     console.log('############ TESTING ############')
     
     console.log(this.columns)
@@ -327,7 +327,7 @@ export class FragmentsComponent implements OnInit {
    * @returns updated array with nice HTML formatting included
    * @author Ycreak
    */
-   private add_HTML_to_lines(array){        
+   private add_HTML_to_lines(array: Fragment[]): Fragment[]{        
     // For each element in the given array
     for(let fragment in array){
       // Loop through all fragments      
@@ -357,7 +357,7 @@ export class FragmentsComponent implements OnInit {
    * @returns fragments in the order we want
    * @author Ycreak
    */    
-  private sort_fragments_on_status(fragments){
+  private sort_fragments_on_status(fragments: Fragment[]): Fragment[]{
     let normal = this.utility.filter_object_on_key(fragments, 'status', "Certum")
     let incerta = this.utility.filter_object_on_key(fragments, 'status', 'Incertum')
     let adesp = this.utility.filter_object_on_key(fragments, 'status', 'Adesp.')
@@ -368,13 +368,12 @@ export class FragmentsComponent implements OnInit {
   
   /**
    * This function retrieves the column from the columns object given its name.
-   * If no column with the given name is found, an empty list is returned
    * @param name of the requested column
    * @returns requested column object
    * @author Ycreak
    */
-  private get_column_from_columns(name: string) {
-    return (this.columns.find(i => i.name === name) || []);
+  private get_column_from_columns(name: string): Fragment_column {
+    return (this.columns.find(i => i.name === name)); //) || []);
   }
 
   /**
@@ -385,7 +384,7 @@ export class FragmentsComponent implements OnInit {
    * @param source array of all fragments, from which we want one given fragment_name added to array
    * @returns 
    */
-  private add_fragment_to_array(array, fragment_name, source){
+  private add_fragment_to_array(array, fragment_name, source): Array<Fragment>{
     for(let fragment in source){
       if(source[fragment].fragment_name == fragment_name){
         array.push(source[fragment])

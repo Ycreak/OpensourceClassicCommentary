@@ -11,8 +11,8 @@
 <mat-toolbar color="primary">
     <span><h3 class='h3-title'>Open Source Classics Commentary</h3></span>
     <span class="spacer"></span>
-    <button mat-button class="btn" routerLink="/dashboard" *ngIf="this.authService.is_logged_in">DASHBOARD</button>
-    <button mat-button class="btn" (click)="test('thing')" *ngIf="this.authService.is_teacher"> TEST</button>
+    <button mat-button class="btn" routerLink="/dashboard" *ngIf="this.auth_service.is_logged_in">DASHBOARD</button>
+    <button mat-button class="btn" (click)="test('thing')" *ngIf="this.auth_service.is_teacher"> TEST</button>
     <mat-checkbox class="btn" [(ngModel)]="toggle_column_one">ONE</mat-checkbox>
     <mat-checkbox class="btn" [(ngModel)]="toggle_column_two">TWO</mat-checkbox>
     <mat-checkbox class="btn" [(ngModel)]="toggle_column_three">THREE</mat-checkbox>
@@ -26,7 +26,7 @@
 <mat-menu #menu="matMenu">
     <button routerLink="/text" mat-menu-item>Text OSCC</button>
     <button routerLink="/scansion" mat-menu-item>Scansion</button>
-    <a href="http://oscc.nolden.biz/Documentation/" target='_blank' mat-menu-item *ngIf="this.authService.is_teacher">Documentation</a>  
+    <a href="http://oscc.nolden.biz/Documentation/" target='_blank' mat-menu-item *ngIf="this.auth_service.is_teacher">Documentation</a>  
     <button (click)="login()" mat-menu-item>Login</button>
     <button (click)="this.dialog.OpenAbout()" mat-menu-item>About</button>
     <button mat-menu-item>V22.07.31</button>
