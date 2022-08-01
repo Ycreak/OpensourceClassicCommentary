@@ -1,103 +1,87 @@
 
 <h3 class="center">Login to OSCC</h3>
-
 <div class="div-padding-sm"></div>
 
-<div class="alert alert-primary center" role="alert" *ngIf="this.authService.is_logged_in">Welcome! You are logged in! <br> Click anywhere outside this dialog to begin.</div>
-
+<!-- If the user is logged in, show this alert -->
+<div class="alert alert-primary center" role="alert" *ngIf="this.auth_service.is_logged_in">Welcome! You are logged in! <br> Click anywhere outside this dialog to begin.</div>
 <div class="div-padding-lg"></div>
 
-<!-- <div class="col-sm overflow_scroll"> -->
+<mat-accordion class="example-headers-align" multi>
+  <!-- Expansion panel for the login of an existing user -->
+  <mat-expansion-panel [expanded]="login_form_expanded">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Login
+      </mat-panel-title>
+      <mat-panel-description>
+        <mat-icon>login</mat-icon>
+      </mat-panel-description>
+    </mat-expansion-panel-header>
 
-  <mat-accordion class="example-headers-align" multi>
-    <mat-expansion-panel [expanded]="login_expanded">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          Login
-        </mat-panel-title>
-        <mat-panel-description>
-          <mat-icon>login</mat-icon>
-        </mat-panel-description>
-      </mat-expansion-panel-header>
+    <div class="div-padding-lg"></div>
 
-      <div class="div-padding-lg"></div>
+    <form [formGroup]="login_form" (ngSubmit)="submit_login(this.login_form.value)">
+      <mat-form-field appearance="fill" class="input-form-full-width">
+        <mat-label>Enter your username</mat-label>
+        <input matInput required formControlName="username">
+      </mat-form-field>
+    
+      <div class="div-padding-sm"></div>
+    
+      <mat-form-field appearance="fill" class="input-form-full-width">
+        <mat-label>Enter your password</mat-label>
+        <input matInput required [type]="hide ? 'password' : 'text'" formControlName="password">
+      </mat-form-field>
+    
+      <div class="div-padding-sm"></div>
+    
+      <button mat-button type="submit" [disabled]="!login_form.valid">Login</button>
+    </form>
 
-      <form [formGroup]="login_form" (ngSubmit)="submit_login(this.login_form.value)">
+  </mat-expansion-panel>
+  
+  <!-- Expansion panel for the creation of a new user -->
+  <mat-expansion-panel [expanded]="create_form_expanded">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Create
+      </mat-panel-title>
+      <mat-panel-description>
+        <mat-icon>create</mat-icon>
+      </mat-panel-description>
+    </mat-expansion-panel-header>
 
-        <mat-form-field appearance="fill" class="input-form-full-width">
-          <mat-label>Enter your username</mat-label>
-          <input matInput required formControlName="username">
-        </mat-form-field>
+    <form [formGroup]="create_form" (ngSubmit)="submit_create(this.create_form.value)">
+      <mat-form-field appearance="fill" class="input-form-full-width">
+        <mat-label>Enter your username</mat-label>
+        <input matInput required formControlName="username">
+      </mat-form-field>
+    
+      <div class="div-padding-sm"></div>
+    
+      <mat-form-field appearance="fill" class="input-form-full-width">
+        <mat-label>Enter your password</mat-label>
+        <input matInput required [type]="hide ? 'password' : 'text'" formControlName="password1">
+      </mat-form-field>
+    
+      <div class="div-padding-sm"></div>
+
+      <mat-form-field appearance="fill" class="input-form-full-width">
+        <mat-label>Enter your password again</mat-label>
+        <input matInput required [type]="hide_password ? 'password' : 'text'" formControlName="password2">
+      </mat-form-field>
+
+      <div class="div-padding-sm"></div>
       
-        <div class="div-padding-sm"></div>
-      
-        <mat-form-field appearance="fill" class="input-form-full-width">
-          <mat-label>Enter your password</mat-label>
-          <input matInput required [type]="hide ? 'password' : 'text'" formControlName="password">
-          <!-- <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
-          <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-          </button> -->
-        </mat-form-field>
-      
-        <div class="div-padding-sm"></div>
-      
-        <button mat-button type="submit" [disabled]="!login_form.valid">Login</button>
-      
-      </form>
+      <mat-form-field appearance="fill" class="input-form-full-width">
+        <mat-label>Enter the magic word</mat-label>
+        <input matInput required formControlName="magic_word">
+      </mat-form-field>
 
-    </mat-expansion-panel>
-
-    <mat-expansion-panel [expanded]="create_expanded">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          Create
-        </mat-panel-title>
-        <mat-panel-description>
-          <mat-icon>create</mat-icon>
-        </mat-panel-description>
-      </mat-expansion-panel-header>
-
-      <form [formGroup]="create_form" (ngSubmit)="submit_create(this.create_form.value)">
-
-        <mat-form-field appearance="fill" class="input-form-full-width">
-          <mat-label>Enter your username</mat-label>
-          <input matInput required formControlName="username">
-        </mat-form-field>
+      <div class="div-padding-sm"></div>
       
-        <div class="div-padding-sm"></div>
-      
-        <mat-form-field appearance="fill" class="input-form-full-width">
-          <mat-label>Enter your password</mat-label>
-          <input matInput required [type]="hide ? 'password' : 'text'" formControlName="password1">
-          <!-- <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide"> -->
-          <!-- <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon> -->
-          <!-- </button> -->
-        </mat-form-field>
-      
-        <div class="div-padding-sm"></div>
+      <button mat-button type="submit" [disabled]="!create_form.valid">Create</button>
+    </form>
 
-        <mat-form-field appearance="fill" class="input-form-full-width">
-          <mat-label>Enter your password again</mat-label>
-          <input matInput required [type]="hide ? 'password' : 'text'" formControlName="password2">
-          <!-- <input matInput required [type]="hide ? 'password' : 'text'" formControlName="password2"> -->
-          <!-- <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide"> -->
-          <!-- <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon> -->
-          <!-- </button> -->
-        </mat-form-field>
-
-        <div class="div-padding-sm"></div>
-        
-        <mat-form-field appearance="fill" class="input-form-full-width">
-          <mat-label>Enter the magic word</mat-label>
-          <input matInput required formControlName="magic_word">
-        </mat-form-field>
-
-        <div class="div-padding-sm"></div>
-        
-        <button mat-button type="submit" [disabled]="!create_form.valid">Create</button>
-      
-      </form>
-
-    </mat-expansion-panel>
-  </mat-accordion>
-<!-- </div> -->
+  </mat-expansion-panel>
+</mat-accordion>

@@ -31,7 +31,7 @@ export class DialogService {
    * @param message shows text about what is happening
    * @param item the item that is about to change
    */
-  public OpenConfirmationDialog(message, item): Observable<boolean>{
+  public open_confirmation_dialog(message, item): Observable<boolean>{
     const dialogRef = this.dialog.open(ConfirmationDialog, {
       width: 'auto',
       data: {

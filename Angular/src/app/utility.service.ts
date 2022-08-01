@@ -262,7 +262,7 @@ export class UtilityService {
    * Opens Material popup window with the given message
    * @param message information that is showed in the popup
    */
-  public OpenSnackbar(message){
+  public open_snackbar(message){
     this.snackBar.open(message, 'Close', {
       duration: 5000
     });
@@ -272,7 +272,7 @@ export class UtilityService {
    * Function to handle the error err. Calls Snackbar to show it on screen
    * @param err the generated error
    */
-  public HandleErrorMessage(err) {
+  public handle_error_message(err) {
 
     let output = '';
     
@@ -284,7 +284,7 @@ export class UtilityService {
     }    
     
     console.log(err)
-    this.OpenSnackbar(output);
+    this.open_snackbar(output);
   }
   
   
