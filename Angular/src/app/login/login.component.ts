@@ -45,7 +45,7 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  private submit_login(form): void {
+  public submit_login(form): void {
     // Process checkout data here
     this.api.login_user(form).subscribe(
       res => {
@@ -61,7 +61,7 @@ export class LoginComponent implements OnInit {
    * @param form provided by the user
    * @returns void, but does request api for creation of a user
    */
-  private submit_create(form): void {
+  public submit_create(form): void {
     //TODO: check for proper input
     if(form.username.length < 5 || form.password1.length < 5){
       this.utility.open_snackbar('Please provide proper details');

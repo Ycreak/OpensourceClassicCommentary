@@ -57,7 +57,7 @@ export class ScansionComponent implements OnInit {
   public async scan_lines(given_lines){
     console.log(given_lines)
     this.spinner = true;
-    this.neural_data = await this.api.scan_given_lines(given_lines);
+    // this.neural_data = await this.api.scan_given_lines(given_lines);
     this.spinner= false;
     // this.syllables = this.neural_data.syllables;
     // this.scores = this.neural_data.score;
@@ -71,7 +71,7 @@ export class ScansionComponent implements OnInit {
 
   public async Request_neural_data(book_number: number, line_number: number){
     // Should be fixed
-    this.neural_data = await this.api.Get_neural_data(this.book_number, this.line_number);
+    // this.neural_data = await this.api.Get_neural_data(this.book_number, this.line_number);
     
     // this.syllables = this.neural_data.syllables;
     // this.expected = this.neural_data.expected;

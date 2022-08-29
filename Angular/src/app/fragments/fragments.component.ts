@@ -54,7 +54,9 @@ export class FragmentsComponent implements OnInit {
 
   ngOnInit(): void {
     // Create an empty current_fragment variable to be filled whenever the user clicks a fragment
-    this.current_fragment = new Fragment({});
+    // Its data is shown in the commentary column and not used anywhere else
+    this.current_fragment = new Fragment('','','','','','','','','','',[],'',[],[],0, []);
+
     // Create templates for the possible fragment columns
     let column1 = new Fragment_column('ONE', 'Ennius', 'Thyestes', 'TRF');
     let column2 = new Fragment_column('TWO', 'TBA', 'TBA', 'TBA');
@@ -134,8 +136,7 @@ export class FragmentsComponent implements OnInit {
    */
   private request_fragments(column: Fragment_column): void{
     this.api.get_fragments(column.author, column.title, column.editor).subscribe(
-      data => { 
-        let fragment_list: Fragment[] = this.create_fragment_list(data);
+      fragment_list => { 
         // Format the data just how we want it
         fragment_list = this.add_HTML_to_lines(fragment_list);
         fragment_list = fragment_list.sort(this.utility.sort_fragment_array_numerically);
@@ -154,19 +155,19 @@ export class FragmentsComponent implements OnInit {
     );  
   }
 
-  /**
-   * Creates a list of typescript fragment objects using the json received from the server
-   * @param fragment_json which is received from the server
-   * @returns list of Fragment objects
-   * @author Ycreak
-   */
-  private create_fragment_list(fragment_json: JSON): Fragment[]{
-    let fragment_list: Fragment[] = [];
-    for(let index in fragment_json){
-      fragment_list.push(new Fragment(fragment_json[index]))
-    }
-    return fragment_list
-  }
+  // /**
+  //  * Creates a list of typescript fragment objects using the json received from the server
+  //  * @param fragment_json which is received from the server
+  //  * @returns list of Fragment objects
+  //  * @author Ycreak
+  //  */
+  // private create_fragment_list(fragment_json: JSON): Fragment[]{
+  //   let fragment_list: Fragment[] = [];
+  //   for(let index in fragment_json){
+  //     fragment_list.push(new Fragment(fragment_json[index]))
+  //   }
+  //   return fragment_list
+  // }
 
   /** 
    * Requests the API function for all content corresponding to the given fragment id.
@@ -179,7 +180,7 @@ export class FragmentsComponent implements OnInit {
   private request_fragment_content(fragment_id: string): void{
     this.api.get_fragment_content(fragment_id).subscribe(data => {     
       this.fragment_clicked = true;
-      this.current_fragment.add_content(data);
+      this.add_content_to_current_fragment(data);
     });
   }
 
@@ -243,8 +244,11 @@ export class FragmentsComponent implements OnInit {
    */
    private handle_fragment_click(fragment: Fragment): void{
       this.current_fragment = fragment
+
+      console.log(fragment)
+
       // Request content from this fragment
-      this.request_fragment_content(fragment.fragment_id)
+      this.request_fragment_content(fragment.id)
       // Request content from its linked fragments
       //TODO:
       
@@ -280,16 +284,16 @@ export class FragmentsComponent implements OnInit {
       // Loop through all fragments
       let linked_fragment_id = fragment.linked_fragments[index] 
       // Set colours of corresponding fragments from the other columns if found
-      let corresponding_fragment = this.columns.find(i => i.name === 'ONE').fragments.find(i => i.fragment_id === linked_fragment_id);
+      let corresponding_fragment = this.columns.find(i => i.name === 'ONE').fragments.find(i => i.id === linked_fragment_id);
       if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
 
-      corresponding_fragment = this.columns.find(i => i.name === 'TWO').fragments.find(i => i.fragment_id === linked_fragment_id);
+      corresponding_fragment = this.columns.find(i => i.name === 'TWO').fragments.find(i => i.id === linked_fragment_id);
       if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
       
-      corresponding_fragment = this.columns.find(i => i.name === 'THREE').fragments.find(i => i.fragment_id === linked_fragment_id);
+      corresponding_fragment = this.columns.find(i => i.name === 'THREE').fragments.find(i => i.id === linked_fragment_id);
       if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
 
-      corresponding_fragment = this.columns.find(i => i.name === 'FOUR').fragments.find(i => i.fragment_id === linked_fragment_id);
+      corresponding_fragment = this.columns.find(i => i.name === 'FOUR').fragments.find(i => i.id === linked_fragment_id);
       if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
     }
   }
@@ -298,7 +302,7 @@ export class FragmentsComponent implements OnInit {
    * Function to handle the login dialog
    * @author Ycreak
    */
-  private login(): void{
+  public login(): void{
     const dialogRef = this.matdialog.open(LoginComponent, {
       height: '60vh',
       width: '40vw',
@@ -331,7 +335,7 @@ export class FragmentsComponent implements OnInit {
     // For each element in the given array
     for(let fragment in array){
       // Loop through all fragments      
-      let current_fragment =  array[fragment]
+      let current_fragment = array[fragment]
       for(let item in current_fragment.lines){
         // Loop through all lines of current fragment
         let line_number = current_fragment.lines[item].line_number;
@@ -392,6 +396,23 @@ export class FragmentsComponent implements OnInit {
     }
     return array
   }
+
+  /**
+   * Adds the JSON with fragment content retrieved from the server to the corresponding
+   * fields of our current_fragment object for viewing in the Commentary column in HTML.
+   * An entry should not be made if the received field is empty to prevent empty expansion panels
+   * @param fragment 
+   * @author Ycreak
+   */
+  private add_content_to_current_fragment(fragment): void{
+    if(fragment['translation'] != ''){ this.current_fragment.translation = fragment['translation']}
+    if(fragment['differences'] != ''){ this.current_fragment.differences = fragment['differences']}
+    if(fragment['apparatus'] != ''){ this.current_fragment.apparatus = fragment['apparatus']}
+    if(fragment['commentary'] != ''){ this.current_fragment.commentary = fragment['commentary']}
+    if(fragment['reconstruction'] != ''){ this.current_fragment.reconstruction = fragment['reconstruction']}
+    if(fragment['context'] != ''){ this.current_fragment.context = fragment['context']}
+    if(fragment['bibliography'] != ''){ this.current_fragment.bibliography = fragment['bibliography']}
+}
 
 }
 

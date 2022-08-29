@@ -1,15 +1,19 @@
 export class Context
 {
-    constructor(id: number, fragmentID: number, contextAuthor: string, context: string)
+    constructor(
+        public author: string,
+        public location: string,
+        public text: string,
+    )
     {
-        this.id = id;
-        this.fragment = fragmentID;
-        this.contextAuthor = contextAuthor;
-        this.context = context;
+        // this.id = id;
+        // this.fragment = fragmentID;
+        // this.contextAuthor = contextAuthor;
+        // this.context = context;
     }
 
-    id: number;
-    fragment?: number;
-    contextAuthor: string;
-    context: string;
+    // id: number;
+    // fragment?: number;
+    // contextAuthor: string;
+    // context: string;
 }

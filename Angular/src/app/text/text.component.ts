@@ -30,7 +30,7 @@ export class TextComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
-    this.api.GetAuthors().subscribe(data => this.authorsJSON = data);
+    this.api.get_authors().subscribe(data => this.authorsJSON = data);
     this.RequestText(1) // Retrieve Seneca's Thyestes by default
   }
 
@@ -39,7 +39,7 @@ export class TextComponent implements OnInit {
    * @param author whose books are to be returned
    */
   public RequestBooks(author: string){
-    this.api.GetBooks(author).subscribe(
+    this.api.get_titles(author).subscribe(
       data => {
         this.booksJSON = data;
         this.currentBook = data[0].id; //FIXME: Self evident
@@ -60,7 +60,7 @@ export class TextComponent implements OnInit {
    * @param book whose text is to be retrieved
    */
   public RequestText(book: number){
-    this.api.GetText(book).subscribe(
+    this.api.get_text(book).subscribe(
       data => {
         this.T_Text = data;
       }
@@ -74,7 +74,7 @@ export class TextComponent implements OnInit {
   public RequestCommentary(lineNumber: number){
     this.selectedLine = lineNumber;
     
-    this.api.GetTextCommentary(this.currentBook, lineNumber).subscribe(
+    this.api.get_text_commentary(this.currentBook, lineNumber).subscribe(
       data => {
         this.T_TextCommentary = data;
       }

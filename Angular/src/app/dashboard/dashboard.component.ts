@@ -1,11 +1,15 @@
 // Library imports
 import { Component, OnInit} from '@angular/core';
+import { AfterViewInit, ViewChild } from '@angular/core';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import { FormBuilder } from '@angular/forms';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators, FormArray } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {MatPaginator} from '@angular/material/paginator';
+import {MatSort} from '@angular/material/sort';
+import {MatTableDataSource} from '@angular/material/table';
 
 // Component imports
 import { ApiService } from '../api.service';
@@ -21,12 +25,24 @@ import insertTextAtCursor from 'insert-text-at-cursor';
 import { IKeyboardLayouts, keyboardLayouts, MAT_KEYBOARD_LAYOUTS, MatKeyboardModule } from 'angular-onscreen-material-keyboard';
 // To install the onscreen keyboard: $ npm i angular-onscreen-material-keyboard
 
+export interface UserData {
+  username: string;
+  role: string;
+}
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
+
+  
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+  
+  displayedColumns: string[] = ['username', 'role']; //['id', 'name', 'progress', 'fruit'];
+  dataSource: MatTableDataSource<UserData>;
 
   selected_author: string = '';
   selected_book: string = '';
@@ -37,7 +53,7 @@ export class DashboardComponent implements OnInit {
   retrieved_books: object;
   retrieved_editors: object;
 
-  retrieved_fragment: object;
+  retrieved_fragment: Fragment;
   retrieved_fragments: object;
   retrieved_fragment_numbers: object;
 
@@ -79,8 +95,6 @@ export class DashboardComponent implements OnInit {
     pages: '',
   });
 
-  possible_status = ['normal', 'incertum', 'adesp.']
-
   pointer_editor : string;
 
   spinner_active : boolean = false;
@@ -94,7 +108,7 @@ export class DashboardComponent implements OnInit {
     password2: '',
   });
 
-  retrieved_users : object;
+  retrieved_users : UserData[]; 
   selected_user : string = '';
   user_selected : boolean = false; // controls user deletion button
   new_user : string = '';
@@ -117,18 +131,38 @@ export class DashboardComponent implements OnInit {
     public dialog: DialogService,
     private formBuilder: FormBuilder,
     public authService: AuthService,
-    ) {}
+    ) {
+
+    // Assign the data to the data source for the table to render
+    this.dataSource = new MatTableDataSource(this.retrieved_users);
+    }
+
+    public ngAfterViewInit() {
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+    }
+
+    public applyFilter(event: Event) {
+      const filterValue = (event.target as HTMLInputElement).value;
+      this.dataSource.filter = filterValue.trim().toLowerCase();
+  
+      if (this.dataSource.paginator) {
+        this.dataSource.paginator.firstPage();
+      }
+    }
+
   /**
    * On Init, we just load the list of authors. From here, selection is started
    */
   ngOnInit(): void {
     this.RequestAuthors()
-    this.request_bibliography_authors()
+    this.Request_users()
+    // this.request_bibliography_authors()
 
-    this.bibliography_author_selection_form_filtered_options = this.bibliography_author_selection_form.valueChanges.pipe(
-      startWith(''),
-      map(value => this.filter_autocomplete_options(value)),
-    );
+    // this.bibliography_author_selection_form_filtered_options = this.bibliography_author_selection_form.valueChanges.pipe(
+    //   startWith(''),
+    //   map(value => this.filter_autocomplete_options(value)),
+    // );
   }
 
 
@@ -137,8 +171,9 @@ export class DashboardComponent implements OnInit {
    * @param thing item to be printed
    */
   public Test(thing){
-    console.log(thing)
-    console.log(this.bibliography_author_selection_form_options)
+    console.log(this.retrieved_users)
+
+    // console.log(this.bibliography_author_selection_form_options)
     // console.log(this.retrieved_fragment)
     
     // let current_fragment = new Fragment({});
@@ -152,6 +187,22 @@ export class DashboardComponent implements OnInit {
 
 
   }
+
+  // /** Builds and returns a new User. */
+  // public createNewUser(id: number): UserData {
+  //   const name =
+  //     NAMES[Math.round(Math.random() * (NAMES.length - 1))] +
+  //     ' ' +
+  //     NAMES[Math.round(Math.random() * (NAMES.length - 1))].charAt(0) +
+  //     '.';
+
+  //   return {
+  //     id: id.toString(),
+  //     name: name,
+  //     progress: Math.round(Math.random() * 100).toString(),
+  //     fruit: FRUITS[Math.round(Math.random() * (FRUITS.length - 1))],
+  //   };
+  // }
 
   public Retrieve_fragment_numbers(fragments){    
     let number_list = []
@@ -197,7 +248,7 @@ export class DashboardComponent implements OnInit {
   public Update_content_form(fragment){
     // This functions updates the fragmentForm with the provided fragment
     // FIXME: This should be done using a for loop
-    this.UpdateForm('fragmentForm','_id', fragment._id);
+    this.UpdateForm('fragmentForm','_id', fragment.id);
     this.UpdateForm('fragmentForm','fragment_name', fragment.fragment_name);
     this.UpdateForm('fragmentForm','author', fragment.author);
     this.UpdateForm('fragmentForm','title', fragment.title);
@@ -343,14 +394,14 @@ export class DashboardComponent implements OnInit {
     items.removeAt(index);
   }
 
-  public Request_fragment_lock(form){
+  // public Request_fragment_lock(form){
     
-    let lock_status = (form.lock ? 1 : 0);
+  //   let lock_status = (form.lock ? 1 : 0);
         
-    this.api.update_fragment_lock({'_id': form._id, 'lock': lock_status}).subscribe(
-      res => this.utility.handle_error_message(res), err => this.utility.handle_error_message(err)
-    );  
-  }
+  //   this.api.update_fragment_lock({'id': form._id, 'lock': lock_status}).subscribe(
+  //     res => this.utility.handle_error_message(res), err => this.utility.handle_error_message(err)
+  //   );  
+  // }
 
 //   _____  ______ ____  _    _ ______  _____ _______ _____ 
 //  |  __ \|  ____/ __ \| |  | |  ____|/ ____|__   __/ ____|
@@ -363,14 +414,14 @@ export class DashboardComponent implements OnInit {
    * Requests all authors from the database. No parameters needed
    */
   public RequestAuthors(){
-    this.api.GetAuthors().subscribe(
+    this.api.get_authors().subscribe(
       data => this.retrieved_authors = data,
       err => this.utility.handle_error_message(err),
     );      
   }
 
   public RequestBooks(author: string){
-    this.api.GetBooks(author).subscribe(
+    this.api.get_titles(author).subscribe(
       data => {
         this.retrieved_books = data;
       }
@@ -378,7 +429,7 @@ export class DashboardComponent implements OnInit {
   }
 
   public RequestEditors(author: string, book: string){
-    this.api.GetEditors(author, book).subscribe(
+    this.api.get_editors(author, book).subscribe(
       data => {
         this.retrieved_editors = data;
       }
@@ -386,7 +437,7 @@ export class DashboardComponent implements OnInit {
   }
 
   public Request_fragments(author: string, book: string, editor: string){
-    this.api.GetFragments(author, book, editor).subscribe(
+    this.api.get_fragments(author, book, editor).subscribe(
       data => { 
         this.retrieved_fragments = data;
         this.retrieved_fragment_numbers = this.Retrieve_fragment_numbers(data);
@@ -436,7 +487,7 @@ export class DashboardComponent implements OnInit {
     
     this.dialog.open_confirmation_dialog('Are you sure you want to DELETE this fragment?', item_string).subscribe(result => {
       if(result){
-        this.api.delete_fragment({'_id':fragment._id}).subscribe(
+        this.api.delete_fragment({'id':fragment.id}).subscribe(
           res => this.utility.handle_error_message(res), err => this.utility.handle_error_message(err)
         );
       }
@@ -447,30 +498,30 @@ export class DashboardComponent implements OnInit {
     this.Request_fragments(this.selected_author, this.selected_book, this.selected_editor);
   }
 
-  public Request_automatic_fragment_linker(author, title){
+  // public Request_automatic_fragment_linker(author, title){
     
-    let item_string = author + ', ' +  title;
+  //   let item_string = author + ', ' +  title;
     
-    let fragment = new Fragment({});
-    fragment.author = author;
-    fragment.title = title;
+  //   let fragment = new Fragment({});
+  //   fragment.author = author;
+  //   fragment.title = title;
 
-    this.dialog.open_confirmation_dialog('Are you sure you want to LINK fragments from this text?', item_string).subscribe(result => {
-      if(result){
-        this.spinner_active = true;
-        this.api.automatic_fragment_linker(fragment).subscribe(
-          res => {
-            this.utility.handle_error_message(res),
-            this.spinner_active = false;
-          }, 
-          err => {
-            this.utility.handle_error_message(err),
-            this.spinner_active = false;
-          },
-        );
-      }
-    });
-  }
+  //   this.dialog.open_confirmation_dialog('Are you sure you want to LINK fragments from this text?', item_string).subscribe(result => {
+  //     if(result){
+  //       this.spinner_active = true;
+  //       this.api.automatic_fragment_linker(fragment).subscribe(
+  //         res => {
+  //           this.utility.handle_error_message(res),
+  //           this.spinner_active = false;
+  //         }, 
+  //         err => {
+  //           this.utility.handle_error_message(err),
+  //           this.spinner_active = false;
+  //         },
+  //       );
+  //     }
+  //   });
+  // }
 
   public add_bibliography_entry_to_fragment(bib_entry, fragment){
     console.log('bib', bib_entry._id)
@@ -659,7 +710,13 @@ export class DashboardComponent implements OnInit {
 
   public Request_users(){
     this.api.get_users().subscribe(
-      data => this.retrieved_users = data,
+      data => {
+        this.retrieved_users = data;
+        // Rebuild the table that displays the users
+        this.dataSource = new MatTableDataSource(this.retrieved_users);
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+      },
       err => this.utility.handle_error_message(err),
     );      
   }
