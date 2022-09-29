@@ -20,7 +20,7 @@ This database will provide a clear and accessible overview of the scholarly trad
 See [the manual]() and the [Fragment component overview](#Fragment_component) on how to work with the OSCC.
 
 ## Project overview
-The project consists of three parts. A frontend written with Angular, an API written with Flask and a NoSQL database powered by Apache CouchDB. Below a diagram of the program. The next sections will describe each of the three parts and their subcomponents.
+The project consists of three parts. A frontend written with Angular (client-sided), an API written with Flask (server-sided) and a NoSQL database powered by Apache CouchDB. Below a diagram of the program. The next sections will describe each of the three parts and their subcomponents.
 
 <img src="https://github.com/Ycreak/OpensourceClassicCommentary/blob/development/project_overview_2.png" width="100%">
 
@@ -58,7 +58,7 @@ The project aims at using as few dependencies as possible. At the moment, the fo
 A complete list including version numbers can be found in the [Angular documentation]().
 
 ### Components
-The project consists of two main components, being the Fragments component and the Dashboard components. All components and services are described below.
+The project consists of two main components, being the Fragments component and the Dashboard components. All components and services are described below. As a whole, the project is built using the elements from the Angular Material library.
 
 <a name="Fragment_component"/>
 
@@ -76,17 +76,89 @@ The Dashboard component allows users to add, edit and remove fragment and user d
 
 1. The _Change Fragment Data_ expansion panel allows the user to create, revise and delete fragments. Via the drop down menus in the top the fragment can be selected via its author, text and edition. Six tabs are then presented to the user. The first allows for the editing of fragment meta data. The second tab allows for the revision of fragment lines, with the third and forth being used for editing the commentary (content and context). The fifth tab is used for linking the selected fragment to fragments from other texts and editions. The last tab allows administrators to lock a fragment or text, as to disallow any further changes by users. Three buttons are provided. The first one creates a new fragment given the provided meta data. The second one revises the selected fragment given the changes in meta data, content, context and so on. The last button allows the user to delete the selected fragment.
 
-2. The _Change User Data_ expansion panel allows the user to change user data. 
+2. The _Change User Data_ expansion panel allows the user to change user data. It consists of a table with all users that the current user is allowed to edit. When clicking on an entry of the table, the user can change their name and/or password. Administrators can also create and delete users, and change their roles. 
 
-#### Auth
 #### Login
+The Login component allows a user to login and access user features such as the dashboard. It is a simple dialog window with two options:
+
+1. Login of current user. This allows the user to login with an existing account.
+2. Creation of new user. This allows anyone to create a new account by providing a username and password. As the project is currently invite only, a magic word created by the administrators is needed to create an account.
+
+The Login component only handles the dialog window and its input (including sanitation). The communication with the API is handled via the Auth service, which is invoked by the Login component. See below.
+
 #### Text
+(deprecated)
+
 #### Dialogs
+The folder Dialogs contains html files with templates that can be included in a dialog from anywhere within the project. At the moment, the following dialogs exist:
+ 
+1. About. Relates the about information for the project. Is currently included in the Fragments component and accessible from the Navbar Menu.
+  
 #### Services
-##### Utility
+The project contains multiple services that can be invoked from anywhere within the project. OSCC uses the following services:
+
 ##### API
+The API service handles all communication with the Flask backend. As with the Dashboard, it handles fragment and user data requests via GET. Additionally, requests to add, revise and delete fragments and users are handled via POST. Any retrieved data will be automatically put into models for easy access. For example, a retrieved JSON with fragment data will be automatically put in the Typescript object called Fragment. The service also includes a listener for any server errors, which will be displayed to the user via the Snackbar functionality. In essence, each component requests the API for data. The API will then handle the actual communication with the backend. All functionalities can be found in the [Angular documentation]().
+  
+##### Auth
+The Auth service handles the authentication of users. This component is invoked by the Login component and saves the information regarding the current user (name, role, etc.). This data is used by the Fragments and Dashboard components to know the privileges of the user. For example, if the user is a student, the button for fragment deletion will be disabled.
 
-
+##### Utility
+The utility service contains basic functions that can be used by any component. For example, a function exists to easily filter an object given a key, or to show an error message received from the server in a snackbar popup. For all available functions and their documentation, see the [Angular documentation]().
+  
 ## Flask API
+Flask handles all incoming requests from Angular. It is important to note that the API does not trust the incoming data and will sanitise everything without exception. After fulfilling a request, data is sent back to Angular using the JSON format.
+  
+### Installation
+To use the Flask framework, navigate to the Server folder and create a Python environment and install all dependencies using pip:  
+  
+```console 
+pip install -r requirements.txt
+```  
+  
+The next order of business is to start the server using the following command:
+
+```console 
+FLASK_APP=server.py FLASK_ENV=development flask run --port 5003
+```
+  
+This command runs the server in development mode and creates a watcher that will reload the server whenever a change is made to the code. Of course, the port can be changed. Make sure that Angular communicates with the correct address and port. Additionally, port forwarding might be needed when communicating to a server outside the local network.
+
+_NOTE: communication with the server is encrypted and uses SSL and HTTPS. Make sure to have valid certificates whenever deploying the server. SSL can be disabled by removing the **ssl_context** option in server.py. Although this is acceptable for developing practises, SSL should be enabled for production._
+
+### Dependencies
+The server uses the following Python-pip dependencies (the exact versions can be found in the [Flask documentation]():
+
++ numpy
++ flask
++ flask_cors
++ flask_restful
++ flask_jsonpify
++ couchdb
++ jsonpickle
++ fuzzywuzzy  
+  
+### Components
+The server has two functionalities: managing fragment information and managing user information. All data entering the server is handled in _server.py_. Based on the called function, information is sanitised and forwarded to _Fragment_handling.py_ or _User_handling.py_. Whenever one of these classes has processed the data and communicated with the database, the data is packed in a JSON and returned to Angular.
+
+#### Fragment Handling
+Fragment Handling receives a sanitised object called Fragment from the server alongside instructions on what to do with the object. This class will establish communication with the database. Next, it will return the Fragment object with the requested information to the calling class. All functions and their descriptions can be found in the [Flask documentation]().
+
+#### User Handling
+User Handling receives a sanitised object called User from the server alongside instructions on what to do with the object. This class will establish communication with the database. Next, it will return the User object with the requested information to the calling class. All functions and their descriptions can be found in the [Flask documentation]().
 
 ## CouchDB Backend
+The database is powered by Apache CouchDB and is therefore a NoSQL database. The benefit of this approach is that each fragment is a document with all its information contained in a single JSON. Likewise, each User is a document accompanied by its information. This allows for easy backup and storage, as we can simply store the Fragment documents on any server or repository. Other researchers can then easily download the dataset and use it for other purposes by opening the JSON files. 
+
+### Installation
+The installation of the database is operating specific. Please consult the [CouchDB website](https://couchdb.apache.org/) for more information. If installed correctly, creating two tables called **Users** and **Fragments** will allow the server to communicate correctly with the database.
+
+### Tables
+The database contains the following tables:
+
+#### Fragment Table
+
+#### Users Table
+
+
+## Deployment of the Project
