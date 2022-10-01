@@ -9,20 +9,26 @@ Roman Republic tragedy presents two paradoxes: even though it was one of the mos
 This database will provide a clear and accessible overview of the scholarly traditions, highlighting the differences between editions and their significance; it includes information from editions long out of print and prohibitive or difficult to obtain outside a few select universities, opening up this knowledge to a broader public; it allows the user to view the arrangements of previous editions and to play with possible arrangements, producing new insights into the text; finally, scholars and students are able to add content to the database, enabling greater collaboration in the field. Until now, there has been no tool to work actively and dynamically with the different editions and arrangements of fragments. This database makes this possible.
 
 ### Table of Contents  
-+ [Project Overview](#Requirements)  
-+ [Angular Frontend](#Dataset)  
-+ [Flask API](#CRF)  
-+ [CouchDB Database](#LSTM)  
++ [Getting Started](#get_started)  
++ [Project Overview](#project_overview)  
++ [Angular Frontend API](#angular)  
++ [Flask API](#flask)  
++ [CouchDB Database](#couchdb)  
++ [Project Deployment](#deployment)  
 
-<a name="Requirements"/>
+<a name="get_started"/>
 
 ## Getting started
 See [the manual]() and the [Fragment component overview](#Fragment_component) on how to work with the OSCC.
+
+<a name="project_overview"/>
 
 ## Project overview
 The project consists of three parts. A frontend written with Angular (client-sided), an API written with Flask (server-sided) and a NoSQL database powered by Apache CouchDB. Below a diagram of the program. The next sections will describe each of the three parts and their subcomponents.
 
 <img src="https://github.com/Ycreak/OpensourceClassicCommentary/blob/development/project_overview_2.png" width="100%">
+
+<a name="angular"/>
 
 ## Angular Frontend
 The frontend is written with Angular and allows the user to interact with the fragments. 
@@ -106,6 +112,8 @@ The Auth service handles the authentication of users. This component is invoked 
 ##### Utility
 The utility service contains basic functions that can be used by any component. For example, a function exists to easily filter an object given a key, or to show an error message received from the server in a snackbar popup. For all available functions and their documentation, see the [Angular documentation]().
   
+<a name="flask"/>
+  
 ## Flask API
 Flask handles all incoming requests from Angular. It is important to note that the API does not trust the incoming data and will sanitise everything without exception. After fulfilling a request, data is sent back to Angular using the JSON format.
   
@@ -127,7 +135,7 @@ This command runs the server in development mode and creates a watcher that will
 _NOTE: communication with the server is encrypted and uses SSL and HTTPS. Make sure to have valid certificates whenever deploying the server. SSL can be disabled by removing the **ssl_context** option in server.py. Although this is acceptable for developing practises, SSL should be enabled for production._
 
 ### Dependencies
-The server uses the following Python-pip dependencies (the exact versions can be found in the [Flask documentation]():
+The server uses the following Python-pip dependencies (the exact versions can be found in the [Flask documentation]()):
 
 + numpy
 + flask
@@ -147,6 +155,8 @@ Fragment Handling receives a sanitised object called Fragment from the server al
 #### User Handling
 User Handling receives a sanitised object called User from the server alongside instructions on what to do with the object. This class will establish communication with the database. Next, it will return the User object with the requested information to the calling class. All functions and their descriptions can be found in the [Flask documentation]().
 
+<a name="couchdb"/>
+
 ## CouchDB Backend
 The database is powered by Apache CouchDB and is therefore a NoSQL database. The benefit of this approach is that each fragment is a document with all its information contained in a single JSON. Likewise, each User is a document accompanied by its information. This allows for easy backup and storage, as we can simply store the Fragment documents on any server or repository. Other researchers can then easily download the dataset and use it for other purposes by opening the JSON files. 
 
@@ -157,8 +167,37 @@ The installation of the database is operating specific. Please consult the [Couc
 The database contains the following tables:
 
 #### Fragment Table
+The Fragment table contains documents representing each fragment. Stored in JSON format, it contains the following fields:
+
++ _id: contains the identifier of the document/fragment.
++ fragment_name: represents the name of the fragment in string format.
++ author: represents the original author of the text in which the fragment occurs according to the given editor.
++ title: represents the original text to which the fragment is attributed by the editor.
++ editor: represents the name of the editor that related the fragment in question.
++ translation: represents the translation of the fragment.
++ differences: represents the editorial differences of the fragment.
++ apparatus: represents the apparatus criticus of the fragment.
++ commentary: represents the commentary of the fragment.
++ reconstruction: represents the reconstruction of the fragment.
++ status: represents the status of the fragment: _certum, incertum_ or _indespota_.
++ context: used for a list with various contexts in which the fragment is found. Each context entry contains the following fields:
+  * context author: contains the author of the context in which the fragment is found.
+  * location: contains the location (text or title) in which the fragment is found.
+  * text: contains the text in which the fragment is found.
++ lines: contains a list representing all lines of the fragment. Each entry contains the following fields:
+  * line number: contains the name of the line.
+  * text: contains the actual content of the line.
++ linked_fragments: contains a list of all linked fragments. This linking is done via the identifier of other fragments.
++ lock: contains an integer denoting whether a fragment is locked for editing.
 
 #### Users Table
+The Users table contains documents representing each user. Stored in JSON format, it contains the following fields:
 
++ _id: contains the identifier of the document/fragment.
++ username: contains the username of the user.
++ password: contains the hashed password of the user. Hashing is done using sha512 with added salt, with only the hash being stored.
++ role: contains the role of the user. Current roles are _admin, teacher, student and guest_.
+
+<a name="deployment"/>
 
 ## Deployment of the Project
