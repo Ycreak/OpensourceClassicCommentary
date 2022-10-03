@@ -140,7 +140,7 @@ The server uses the following Python-pip dependencies (the exact versions can be
 + numpy
 + flask
 + flask_cors
-+ flask_restful
++ flask_restful (deprecated)
 + flask_jsonpify
 + couchdb
 + jsonpickle
