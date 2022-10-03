@@ -155,6 +155,12 @@ Fragment Handling receives a sanitised object called Fragment from the server al
 #### User Handling
 User Handling receives a sanitised object called User from the server alongside instructions on what to do with the object. This class will establish communication with the database. Next, it will return the User object with the requested information to the calling class. All functions and their descriptions can be found in the [Flask documentation]().
 
+### Communication overview
+The communication between frontend and API is done via two models: Fragment and User. The communication looks as follows: in Angular a Typescript Object is created called Fragment. In the API component this object is turned into a JSON object and sent to Flask. After validation the JSON object is deserialized into a Python object. This structuring ensures a predictability of sent and received data between API and frontend and a simple programming structure for the API. In essence, both Typescript and Python work with their respective objects, with the API services taking care of the communication via JSON and HTTPS. The downside of this approach is the excess of data transferred. For example, when changing a user's password, an empty role field will be transferred instead of the required fields *username* and *new_password*. To illustrate:
+
+<img src="https://github.com/Ycreak/OpensourceClassicCommentary/blob/development/project_overview_api.png">
+
+
 <a name="couchdb"/>
 
 ## CouchDB Backend
