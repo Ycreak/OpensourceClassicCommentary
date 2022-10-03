@@ -20,7 +20,7 @@ class User_handler():
         # Select the database we need
         self.user_db = database['users']
 
-    def Find_user(self, user): #-> tuple[bool, dict]: #FIXME: does not work on Pi
+    def find_user(self, user): #-> tuple[bool, dict]: #FIXME: does not work on Pi
         """Finds the requested user in the database
 
         Args:
@@ -44,7 +44,7 @@ class User_handler():
         except:
             return False, {}
 
-    def Login_user(self, user) -> make_response:
+    def login_user(self, user) -> make_response:
         """ Function to handle login of user. Checks if user exists and if its password is correct.
         Handles errors accordingly.
 
@@ -57,7 +57,7 @@ class User_handler():
         Returns:
             response: flask response object
         """             
-        user_exist, found_user = self.Find_user(user)
+        user_exist, found_user = self.find_user(user)
 
         if user_exist:
             if self.Verify_password(found_user['password'], user.password):
@@ -69,7 +69,7 @@ class User_handler():
         else:
             return make_response('This user does not exist!', 401)
 
-    def Create_user(self, user) -> make_response:
+    def create_user(self, user) -> make_response:
         """ Inserts the provided user and their password into the database iff the
         username does not yet exist.
 
@@ -79,9 +79,9 @@ class User_handler():
         Returns:
             response: flask response object
         """
-        hashed_password = self.Hash_password(user.password)  # Password obfuscation using hashing
+        hashed_password = self.hash_password(user.password)  # Password obfuscation using hashing
 
-        user_exist, _ = self.Find_user(user)
+        user_exist, _ = self.find_user(user)
 
         if user_exist:
             return make_response('This username is already taken', 403)
@@ -96,7 +96,7 @@ class User_handler():
             
             return make_response('User succesfully created', 201)
 
-    def Delete_user(self, user) -> make_response:
+    def delete_user(self, user) -> make_response:
         """ Function to delete the user of the provided username
 
         Args:
@@ -108,7 +108,7 @@ class User_handler():
         Returns:
             response: flask response object
         """        
-        user_exist, found_user = self.Find_user(user)
+        user_exist, found_user = self.find_user(user)
 
         if user_exist:
             doc = self.user_db[found_user['_id']]
@@ -117,7 +117,7 @@ class User_handler():
         else:
             return make_response('This user does not exist', 400)
 
-    def Change_password(self, user) -> make_response:
+    def change_password(self, user) -> make_response:
         """Function to change the password of a user.
 
         Args:
@@ -126,9 +126,9 @@ class User_handler():
         Returns:
             response: flask response object
         """
-        new_password = self.Hash_password(user.new_password)  # Password obfuscation using hashing
+        new_password = self.hash_password(user.new_password)  # Password obfuscation using hashing
 
-        user_exist, found_user = self.Find_user(user)
+        user_exist, found_user = self.find_user(user)
 
         if user_exist:
             doc = self.user_db[found_user['_id']]          
@@ -139,7 +139,7 @@ class User_handler():
             return make_response('This user does not exist', 400)
 
 
-    def Change_role(self, user) -> make_response:
+    def change_role(self, user) -> make_response:
         """Function to change the role of a user.
 
         Args:
@@ -149,7 +149,7 @@ class User_handler():
             response: flask response object
         """        
 
-        user_exist, found_user = self.Find_user(user)
+        user_exist, found_user = self.find_user(user)
 
         if user_exist:        
             doc = self.user_db[found_user['_id']]          
@@ -159,7 +159,7 @@ class User_handler():
         else:
             return make_response('Could not find a user', 400)    
 
-    def Retrieve_all_users(self) -> list:
+    def retrieve_all_users(self) -> list:
         """Retrieves all available users from the database and returns them in a list
 
         Returns:
@@ -172,7 +172,7 @@ class User_handler():
 
         return sorted(user_list, key=lambda k: k['username'])
 
-    def Hash_password(self, password):
+    def hash_password(self, password) -> str:
         """ Hash a password for storing it in the database.
 
         Args:
@@ -187,7 +187,7 @@ class User_handler():
         pwdhash = binascii.hexlify(pwdhash)
         return (salt + pwdhash).decode('ascii')
 
-    def Verify_password(self, stored_password, provided_password):
+    def verify_password(self, stored_password, provided_password):
         """Verify a stored password against one provided by user
 
         Args:

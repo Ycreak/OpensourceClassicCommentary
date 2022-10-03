@@ -14,7 +14,7 @@ db = couch['fragments'] # existing
 
 
 
-def Change_field_fragments(field, replacement):
+def change_field_fragments(field, replacement):
     for id in db:
 
         doc = db[id]
@@ -26,12 +26,12 @@ def Change_field_fragments(field, replacement):
 
         doc_id, doc_rev = db.save(doc)
 
-def Print_all_documents():
+def print_all_documents():
     for id in db:
         doc = db[id]
         print(doc)    
 
-def Add_field_to_fragments(field, data):
+def add_field_to_fragments(field, data):
     for id in db:
 
         doc = db[id]
@@ -42,7 +42,7 @@ def Add_field_to_fragments(field, data):
 
         print(doc)
 
-def Migrate_fragments(item):
+def migrate_fragments(item):
     new_fragment = copy.deepcopy(fragment_empty)
 
     new_fragment['fragment_name'] = item['fragmentName']
@@ -67,5 +67,5 @@ def Migrate_fragments(item):
 ########
 # MAIN #
 ########
-Add_field_to_fragments('lock', 0)
+add_field_to_fragments('lock', 0)
 # Print_all_documents()

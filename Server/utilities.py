@@ -1,6 +1,6 @@
 # Utility functions
 
-def Retrieve_data_from_db(db, selector, fields):
+def retrieve_data_from_db(db, selector, fields):
     """Function to retrieve data from the given database using a mongoDB search query
 
     Args:
@@ -14,5 +14,5 @@ def Retrieve_data_from_db(db, selector, fields):
     return db.find({
             'selector': selector,
             'fields': fields,
-            'limit': 1000
+            'limit': 1000 # Needs to be set explicitly. Default is 25 documents
     })

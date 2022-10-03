@@ -30,16 +30,16 @@ class Fragment_handler:
         # Instantiate bibliography handler for when we need it
         self.bib_handler = Bibliography_handler()
 
-    def Retrieve_all_authors(self) -> list:
+    def retrieve_all_authors(self) -> list:
         """Retrieves all the authors that exist in all documents in the database
 
         Returns:
             list: of all unique authors in the database
         """        
-        data = Retrieve_data_from_db(self.frag_db, {}, ['author'])
+        data = retrieve_data_from_db(self.frag_db, {}, ['author'])
         return sorted(set([x['author'] for x in data]))
 
-    def Retrieve_all_titles(self, author) -> list:
+    def retrieve_all_titles(self, author) -> list:
         """Retrieves all available titles per given author
 
         Args:
@@ -48,10 +48,10 @@ class Fragment_handler:
         Returns:
             list: of all titles from the given author
         """        
-        data = Retrieve_data_from_db(self.frag_db, {'author': author}, ['title'])
+        data = retrieve_data_from_db(self.frag_db, {'author': author}, ['title'])
         return sorted(set([x['title'] for x in data]))
         
-    def Retrieve_all_editors(self, author, title) -> list:
+    def retrieve_all_editors(self, author, title) -> list:
         """Retrieves all editors available given an author and a title
 
         Args:
@@ -61,10 +61,10 @@ class Fragment_handler:
         Returns:
             list: of all editors from the given author and title
         """        
-        data = Retrieve_data_from_db(self.frag_db, {'author': author, 'title': title}, ['editor'])
+        data = retrieve_data_from_db(self.frag_db, {'author': author, 'title': title}, ['editor'])
         return sorted(set([x['editor'] for x in data]))
         
-    def Retrieve_all_fragments(self, author, title, editor) -> list:
+    def retrieve_all_fragments(self, author, title, editor) -> list:
         """Retrieves all fragments available given an author, title and editor.
         NB: only retrieves the fields needed to show an edition!
 
@@ -76,7 +76,7 @@ class Fragment_handler:
         Returns:
             list: of all fragments given the parameters
         """                
-        fragments = Retrieve_data_from_db(self.frag_db, {'author': author, 'title': title, 'editor': editor}, [])
+        fragments = retrieve_data_from_db(self.frag_db, {'author': author, 'title': title, 'editor': editor}, [])
 
         fragment_list = []
 
@@ -95,7 +95,7 @@ class Fragment_handler:
 
         return fragment_list
 
-    def Retrieve_fragment_content(self, fragment):
+    def retrieve_fragment_content(self, fragment):
                 
         doc = self.frag_db[fragment._id]
 
@@ -124,7 +124,7 @@ class Fragment_handler:
 
         return fragment
 
-    def Retrieve_complete_fragment(self, fragment_id) -> dict:
+    def retrieve_complete_fragment(self, fragment_id) -> dict:
         """Returns all the data from the given fragment. Called in the dashboard
 
         Args:
@@ -135,7 +135,7 @@ class Fragment_handler:
         """                
         return self.frag_db[fragment_id]
 
-    def Find_fragment(self, fragment): # -> tuple(bool, dict): #FIXME: does not work on Pi
+    def find_fragment(self, fragment): # -> tuple(bool, dict): #FIXME: does not work on Pi
         """Finds the requested fragment in the database
 
         Args:
@@ -145,7 +145,7 @@ class Fragment_handler:
             bool: boolean indicating if user was found or not
             json: nosql document of the found fragment
         """                   
-        found_fragment = Retrieve_data_from_db(self.frag_db, {'author': fragment.author,
+        found_fragment = retrieve_data_from_db(self.frag_db, {'author': fragment.author,
                                                               'title': fragment.title,
                                                               'editor': fragment.editor,
                                                               'fragment_name': fragment.fragment_name}, [])
@@ -159,7 +159,7 @@ class Fragment_handler:
             return False, {}    
 
     # POST FUNCTIONS
-    def Create_fragment(self, fragment) -> make_response:
+    def create_fragment(self, fragment) -> make_response:
         """ Creates a fragment from the provided data
 
         Args:
@@ -185,7 +185,7 @@ class Fragment_handler:
             doc_id, doc_rev = self.frag_db.save(new_fragment)
             return make_response('Succesfully created fragment!', 201)
 
-    def Revise_fragment(self, fragment) -> make_response:
+    def revise_fragment(self, fragment) -> make_response:
         """Revises the provided fragment with the provided data
 
         Args:
@@ -244,7 +244,7 @@ class Fragment_handler:
     #         doc_id, doc_rev = self.frag_db.save(new_fragment)
     #         return make_response('Succesfully created fragment!', 201)            
 
-    def Delete_fragment(self, fragment) -> make_response:
+    def delete_fragment(self, fragment) -> make_response:
         """Deletes the given fragment using its id
 
         Args:
@@ -258,7 +258,7 @@ class Fragment_handler:
 
         return make_response('Succesfully deleted fragment!', 200)
 
-    def Set_fragment_lock(self, fragment) -> make_response:
+    def set_fragment_lock(self, fragment) -> make_response:
         """Locks the fragment so that it cannot be edited
 
         Args:
@@ -273,7 +273,7 @@ class Fragment_handler:
 
         return make_response('Fragment lock status set', 200)
 
-    def Automatic_fragment_linker(self, given_fragment):
+    def automatic_fragment_linker(self, given_fragment):
         '''
         Finds fragments containing similar lines and links the fragments together.
         This function is very very very expensive. You should be Richie Rich rich.
@@ -327,7 +327,7 @@ class Fragment_handler:
         # print(f'Found and linked {link_counter} matching lines.')
         return make_response(f'Found and linked {link_counter} matching lines.', 200)  
 
-    def Get_line_similarity(self, a, b):
+    def get_line_similarity(self, a, b):
         """ Returns the ratio of similarity between the two given strings
 
         Args:
