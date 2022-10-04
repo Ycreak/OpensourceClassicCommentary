@@ -3,8 +3,8 @@ import { Component, OnInit} from '@angular/core';
 import { AfterViewInit, ViewChild } from '@angular/core';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
-import { FormBuilder } from '@angular/forms';
-import { ReactiveFormsModule, FormControl, FormGroup, Validators, FormArray } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
+import { ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators, UntypedFormArray } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {MatPaginator} from '@angular/material/paginator';
@@ -61,7 +61,7 @@ export class DashboardComponent implements OnInit {
   retrieved_author_bibliography: object;
 
   // Forms
-  fragmentForm: FormGroup = this.formBuilder.group({
+  fragmentForm: UntypedFormGroup = this.formBuilder.group({
     _id: '',
     fragment_name: '', //['', Validators.required],
     author: '',
@@ -80,7 +80,7 @@ export class DashboardComponent implements OnInit {
     lock: 0,
   });
 
-  bibliography_form : FormGroup = this.formBuilder.group({
+  bibliography_form : UntypedFormGroup = this.formBuilder.group({
     _id: '',
     bib_entry_type: 'book', // Book is default on page load
     author: '',
@@ -119,17 +119,17 @@ export class DashboardComponent implements OnInit {
   allow_fragment_creation = false;
 
   // Bibliography author selection
-  bibliography_author_selection_form = new FormControl();
+  bibliography_author_selection_form = new UntypedFormControl();
   bibliography_author_selection_form_options: string[] = [];
   bibliography_author_selection_form_filtered_options: Observable<string[]>;
-  bibliography_form_selected_type = new FormControl(0);
+  bibliography_form_selected_type = new UntypedFormControl(0);
   bib_entry_selected : boolean = false;
 
   constructor(
     private api: ApiService,
     private utility: UtilityService,
     public dialog: DialogService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     public authService: AuthService,
     ) {
 
@@ -265,7 +265,7 @@ export class DashboardComponent implements OnInit {
 
     // Fill the fragment context array
     for (let item in fragment.context){
-      let items = this.fragmentForm.get('context') as FormArray;
+      let items = this.fragmentForm.get('context') as UntypedFormArray;
       items.push(
         this.formBuilder.group({
           author: fragment.context[item].author,
@@ -276,7 +276,7 @@ export class DashboardComponent implements OnInit {
     }
     // Fill the fragment lines array
     for (let item in fragment.lines){
-      let items = this.fragmentForm.get('lines') as FormArray;
+      let items = this.fragmentForm.get('lines') as UntypedFormArray;
       items.push(
         this.formBuilder.group({
           'line_number': fragment.lines[item].line_number,
@@ -286,7 +286,7 @@ export class DashboardComponent implements OnInit {
     }
     // Fill the linked fragment array
     for (let item in fragment.linked_fragments){
-      let items = this.fragmentForm.get('linked_fragments') as FormArray;
+      let items = this.fragmentForm.get('linked_fragments') as UntypedFormArray;
       items.push(
         this.formBuilder.group({
           fragment_id: fragment.linked_fragments[item],
@@ -299,7 +299,7 @@ export class DashboardComponent implements OnInit {
       // Request additional data from this item
       this.request_bibliography_from_id(fragment.linked_bib_entries[item])
 
-      let items = this.fragmentForm.get('linked_bib_entries') as FormArray;
+      let items = this.fragmentForm.get('linked_bib_entries') as UntypedFormArray;
       items.push(
         this.formBuilder.group({
           bib_id: fragment.linked_bib_entries[item],
@@ -314,7 +314,7 @@ export class DashboardComponent implements OnInit {
 ////////////////////////////////////////////////////////////////////////////
 
   public Push_fragment_line(line_number, text){
-    let fragment_lines = this.fragmentForm.get('lines') as FormArray;
+    let fragment_lines = this.fragmentForm.get('lines') as UntypedFormArray;
     fragment_lines.push(
       this.formBuilder.group({
         line_number: line_number,
@@ -324,7 +324,7 @@ export class DashboardComponent implements OnInit {
   }
 
   public Push_fragment_context(author, location, text){
-    let fragment_context = this.fragmentForm.get('context') as FormArray;
+    let fragment_context = this.fragmentForm.get('context') as UntypedFormArray;
     fragment_context.push(
       this.formBuilder.group({
         author: author,
@@ -335,7 +335,7 @@ export class DashboardComponent implements OnInit {
   }
 
   public push_bibliography_reference(bib_entry){
-    let bibliography_references = this.fragmentForm.get('linked_bib_entries') as FormArray;
+    let bibliography_references = this.fragmentForm.get('linked_bib_entries') as UntypedFormArray;
     bibliography_references.push(
       this.formBuilder.group({
         bib_id: bib_entry._id,
@@ -377,10 +377,10 @@ export class DashboardComponent implements OnInit {
   }
 
   public Clear_fields(){
-    let context = this.fragmentForm.get('context') as FormArray
-    let lines = this.fragmentForm.get('lines') as FormArray
-    let linked_fragments = this.fragmentForm.get('linked_fragments') as FormArray
-    let linked_bib_entries = this.fragmentForm.get('linked_bib_entries') as FormArray
+    let context = this.fragmentForm.get('context') as UntypedFormArray
+    let lines = this.fragmentForm.get('lines') as UntypedFormArray
+    let linked_fragments = this.fragmentForm.get('linked_fragments') as UntypedFormArray
+    let linked_bib_entries = this.fragmentForm.get('linked_bib_entries') as UntypedFormArray
 
     context.clear()
     lines.clear()
@@ -390,7 +390,7 @@ export class DashboardComponent implements OnInit {
 
 
   public Remove_form_item(target: string, index: number) {
-    let items = this.fragmentForm.get(target) as FormArray;
+    let items = this.fragmentForm.get(target) as UntypedFormArray;
     items.removeAt(index);
   }
 
@@ -630,7 +630,7 @@ export class DashboardComponent implements OnInit {
       data => {
         let temp; // simple object to access Python JSON (TODO: needs to be Angular model)
         temp = data;       
-        let linked_bib_entries = this.fragmentForm.get('linked_bib_entries') as FormArray;
+        let linked_bib_entries = this.fragmentForm.get('linked_bib_entries') as UntypedFormArray;
         // Find the entry with our id
         let index = linked_bib_entries.value.findIndex(x => x.bib_id === id);
         // Add the data retrieved to the corresponding fields

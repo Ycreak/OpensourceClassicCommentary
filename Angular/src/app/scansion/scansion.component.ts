@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { ApiService } from '../api.service';
 
-import { FormBuilder, FormControl, FormGroup, Validators, FormArray } from '@angular/forms';
+import { UntypedFormBuilder, FormControl, UntypedFormGroup, Validators, FormArray } from '@angular/forms';
 
 
 @Component({
@@ -13,7 +13,7 @@ import { FormBuilder, FormControl, FormGroup, Validators, FormArray } from '@ang
 export class ScansionComponent implements OnInit {
 
   // Forms
-  line_form: FormGroup = this.formBuilder.group({
+  line_form: UntypedFormGroup = this.formBuilder.group({
     lines: '',
   });
 
@@ -41,7 +41,7 @@ export class ScansionComponent implements OnInit {
 
   constructor(
     private api: ApiService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
   ) { }
 
 

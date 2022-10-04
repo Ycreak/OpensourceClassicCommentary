@@ -2,7 +2,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 
 // Component imports
 import { DialogService } from '../services/dialog.service';
@@ -36,7 +36,7 @@ export class LoginComponent implements OnInit {
   constructor(
     public auth_service: AuthService, 
     public router: Router,
-    private form_builder: FormBuilder,
+    private form_builder: UntypedFormBuilder,
     private api: ApiService,
     private utility: UtilityService,
     private dialog: DialogService,
