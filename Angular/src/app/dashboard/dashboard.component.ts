@@ -21,8 +21,8 @@ import { DialogService } from '../services/dialog.service';
 import { Fragment } from '../models/Fragment';
 
 // Third party imports
-import insertTextAtCursor from 'insert-text-at-cursor';
-import { IKeyboardLayouts, keyboardLayouts, MAT_KEYBOARD_LAYOUTS, MatKeyboardModule } from 'angular-onscreen-material-keyboard';
+// import insertTextAtCursor from 'insert-text-at-cursor';
+// import { IKeyboardLayouts, keyboardLayouts, MAT_KEYBOARD_LAYOUTS, MatKeyboardModule } from 'angular-onscreen-material-keyboard';
 // To install the onscreen keyboard: $ npm i angular-onscreen-material-keyboard
 
 export interface UserData {
