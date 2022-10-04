@@ -53,6 +53,8 @@ Of course, the port can be changed to suit your needs. The poll option denotes t
 
 The website will now be hosted on the local host and can be accessed via any javascript-capable browser via [https://localhost:4200](https://localhost:4200).
 
+To keep the project up to date, use [Angular's update guide](https://update.angular.io/).
+
 ### Dependencies
 The project aims at using as few dependencies as possible. At the moment, the following dependencies are used:
 + angular-onscreen-material-keyboard : ^0.4.0
