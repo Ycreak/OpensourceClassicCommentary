@@ -1,0 +1,1925 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>open-source-classic-commentary documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="../" class="navbar-brand">open-source-classic-commentary documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content injectable">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li>Injectables</li>
+  <li >UtilityService</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>src/app/utility.service.ts</code>
+        </p>
+
+
+
+
+
+            <section>
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#convert_whitespace_encoding" >convert_whitespace_encoding</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#CreateOwnFragment" >CreateOwnFragment</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#filter_object_on_key" >filter_object_on_key</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#FilterArrayOnKey" >FilterArrayOnKey</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#GetFragmentNumbers" >GetFragmentNumbers</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#handle_error_message" >handle_error_message</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#IsEmpty" >IsEmpty</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#IsEmptyArray" >IsEmptyArray</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#moveAndDrop" >moveAndDrop</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#open_snackbar" >open_snackbar</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#PopArray" >PopArray</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#PushToArray" >PushToArray</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#sort_fragment_array_numerically" >sort_fragment_array_numerically</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#SortArrayNumerically" >SortArrayNumerically</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#SortNumeric" >SortNumeric</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#Test" >Test</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#uniq" >uniq</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+            <section>
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(snackBar: MatSnackBar)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="8" class="link-to-prism">src/app/utility.service.ts:8</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>snackBar</td>
+                                                  
+                                                        <td>
+                                                                    <code>MatSnackBar</code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+            <section>
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="convert_whitespace_encoding"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span ><b>convert_whitespace_encoding</b></span>
+                        <a href="#convert_whitespace_encoding"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>convert_whitespace_encoding(string: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="219"
+                            class="link-to-prism">src/app/utility.service.ts:219</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Takes a string and looks for whitespace decoding. Converts it to html spans</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>string</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="CreateOwnFragment"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span ><b>CreateOwnFragment</b></span>
+                        <a href="#CreateOwnFragment"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>CreateOwnFragment(body, header, array, noteStatus)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="27"
+                            class="link-to-prism">src/app/utility.service.ts:27</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Function to create a custom fragment. Can also be used to create
+little headers by leaving body or header empty.</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>body</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>header</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>array</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>noteStatus</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="filter_object_on_key"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span ><b>filter_object_on_key</b></span>
+                        <a href="#filter_object_on_key"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>filter_object_on_key(array, key, value)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="233"
+                            class="link-to-prism">src/app/utility.service.ts:233</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>array</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>key</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>value</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="FilterArrayOnKey"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span ><b>FilterArrayOnKey</b></span>
+                        <a href="#FilterArrayOnKey"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>FilterArrayOnKey(array, key, value)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="241"
+                            class="link-to-prism">src/app/utility.service.ts:241</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>array</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>key</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>value</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="GetFragmentNumbers"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span ><b>GetFragmentNumbers</b></span>
+                        <a href="#GetFragmentNumbers"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>GetFragmentNumbers(editor: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, array)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="58"
+                            class="link-to-prism">src/app/utility.service.ts:58</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Returns a sorted list of all fragments numbers from a given editor</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>editor</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>editor who&#39;s fragment numbers have to be retrieved</p>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>array</td>
+                                    <td>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>array of all fragments. This is F_Fragments. //TODO: is this true?</p>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="handle_error_message"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span ><b>handle_error_message</b></span>
+                        <a href="#handle_error_message"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>handle_error_message(err)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="275"
+                            class="link-to-prism">src/app/utility.service.ts:275</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Function to handle the error err. Calls Snackbar to show it on screen</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>err</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>the generated error</p>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="IsEmpty"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span ><b>IsEmpty</b></span>
+                        <a href="#IsEmpty"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>IsEmpty(obj: JSON)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="191"
+                            class="link-to-prism">src/app/utility.service.ts:191</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Check if a json object is actually empty</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>obj</td>
+                                    <td>
+                                            <code>JSON</code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>-- json object to be checked</p>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        <p>whether obj is an empty json object</p>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="IsEmptyArray"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span ><b>IsEmptyArray</b></span>
+                        <a href="#IsEmptyArray"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>IsEmptyArray(array)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="199"
+                            class="link-to-prism">src/app/utility.service.ts:199</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>array</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="moveAndDrop"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span ><b>moveAndDrop</b></span>
+                        <a href="#moveAndDrop"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>moveAndDrop(event: CdkDragDrop<string[]>, array)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="293"
+                            class="link-to-prism">src/app/utility.service.ts:293</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>event</td>
+                                    <td>
+                                            <code>CdkDragDrop&lt;string[]&gt;</code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>array</td>
+                                    <td>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="open_snackbar"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span ><b>open_snackbar</b></span>
+                        <a href="#open_snackbar"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>open_snackbar(message)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="265"
+                            class="link-to-prism">src/app/utility.service.ts:265</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Opens Material popup window with the given message</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>message</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>information that is showed in the popup</p>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="PopArray"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span ><b>PopArray</b></span>
+                        <a href="#PopArray"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>PopArray(array)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="251"
+                            class="link-to-prism">src/app/utility.service.ts:251</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>array</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="PushToArray"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span ><b>PushToArray</b></span>
+                        <a href="#PushToArray"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>PushToArray(item, array)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="245"
+                            class="link-to-prism">src/app/utility.service.ts:245</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>item</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>array</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="sort_fragment_array_numerically"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span ><b>sort_fragment_array_numerically</b></span>
+                        <a href="#sort_fragment_array_numerically"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>sort_fragment_array_numerically(a, b)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="170"
+                            class="link-to-prism">src/app/utility.service.ts:170</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Sorts array numerically on fragment number</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>a</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>b</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        <p>sorted array.</p>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SortArrayNumerically"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span ><b>SortArrayNumerically</b></span>
+                        <a href="#SortArrayNumerically"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>SortArrayNumerically(a, b)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="149"
+                            class="link-to-prism">src/app/utility.service.ts:149</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Sorts array numerically on fragment number</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>a</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>b</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        <p>sorted array.</p>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SortNumeric"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span ><b>SortNumeric</b></span>
+                        <a href="#SortNumeric"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>SortNumeric(a: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>, b: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="128"
+                            class="link-to-prism">src/app/utility.service.ts:128</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Sorts array numerically on fragment number</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>a</td>
+                                    <td>
+                                                <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>b</td>
+                                    <td>
+                                                <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        <p>sorted array</p>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="Test"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span ><b>Test</b></span>
+                        <a href="#Test"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>Test(thing)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="257"
+                            class="link-to-prism">src/app/utility.service.ts:257</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>thing</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="uniq"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span ><b>uniq</b></span>
+                        <a href="#uniq"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>uniq(a)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="209"
+                            class="link-to-prism">src/app/utility.service.ts:209</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>a</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Injectable } from &#x27;@angular/core&#x27;;
+import {MatSnackBar} from &#x27;@angular/material/snack-bar&#x27;;
+import {CdkDragDrop, moveItemInArray, transferArrayItem, CdkDragEnd} from &#x27;@angular/cdk/drag-drop&#x27;;
+
+@Injectable({
+  providedIn: &#x27;root&#x27;
+})
+export class UtilityService {
+
+  constructor(
+    private snackBar: MatSnackBar,
+  ) { }
+
+
+    /**
+     * Shared Dashboard and Fragments functions
+     */
+
+    /**
+     * Function to create a custom fragment. Can also be used to create
+     * little headers by leaving body or header empty.
+     * @param body 
+     * @param header 
+     * @param array 
+     * @return array in the correct format to be processed
+     */
+    public CreateOwnFragment(body, header, array, noteStatus){
+      // Set a value if a field has been left empty. Otherwise Firebase will be mad.
+      if (body &#x3D;&#x3D; null){
+        body &#x3D; &#x27; &#x27;
+      }
+      if (header &#x3D;&#x3D; null){
+        header &#x3D;&#x3D; &#x27; &#x27;
+      }
+      // Create a array for each content line. Here it only allows one.
+      let contentArray &#x3D; []
+      // Push the array with one entry to a content array. This is only done like
+      // this to allow easy processing with the CreateFragments function in Utilities.
+      contentArray.push({
+        lineName: header,
+        lineContent: body,
+        lineComplete: body, // This should have html formatting.
+      })
+
+      console.log(&#x27;hi&#x27;, array)
+
+      // Push the created data to the array and empty the used arrays.
+      array.push({ fragmentName: header, content: contentArray, note: noteStatus})
+      // Return this new array.
+      return array
+    }
+
+  /**
+   * Returns a sorted list of all fragments numbers from a given editor
+   * @param editor editor who&#x27;s fragment numbers have to be retrieved
+   * @param array array of all fragments. This is F_Fragments. //TODO: is this true?
+   */
+    public GetFragmentNumbers(editor: number, array){
+      // Initialise list
+      let list &#x3D; [];
+      // Push all fragment numbers to a list
+      for(let key in array){      
+        list.push(array[key].fragmentName);
+      } 
+      // Only take the unique values from this list
+      list &#x3D; this.uniq(list);
+      // Sort list numerically
+      return list.sort(this.SortNumeric);    
+    }
+
+    // This function merges the multiple lines in a single fragment.
+    // The structure looks as follows: Fragment 2, [[1, &quot;hello&quot;],[2,&quot;hi&quot;]]
+    // public MergeLinesIntoFragment(givenArray){
+    //   let array &#x3D; [];
+    //   let contentArray &#x3D; [];
+    //   // For each element in the given array
+    //   for(let element in givenArray){
+    //     // Data needed for proper retrieval
+    //     let fragmentName &#x3D; givenArray[element].fragmentName
+    //     let lineContent &#x3D; givenArray[element].lineContent //FIXME: Should be lineContent
+    //     let lineName &#x3D; givenArray[element].lineName
+    //     let status &#x3D; givenArray[element].status 
+    //     let buildString &#x3D; &#x27;&lt;p&gt;&#x27; + lineName + &#x27;: &#x27; + lineContent + &#x27;&lt;/p&gt;&#x27;;
+    //     // Turn tabs into HTML tabs
+    //     buildString &#x3D; this.convert_whitespace_encoding(buildString);
+    //     // Find the element.fragmentName in the array and check whether it exists.
+    //     let currentFragment &#x3D; array.find(x &#x3D;&gt; x.fragmentName &#x3D;&#x3D;&#x3D; fragmentName)
+    //     if(currentFragment){ // The current fragmentName is already in the array.
+    //       // Save the content found in a temporary array
+    //       contentArray &#x3D; currentFragment.content;
+    //       // Delete the entry (to allow it to be recreated after this if)
+    //       array.splice(array.findIndex((x &#x3D;&gt; x.fragmentName &#x3D;&#x3D;&#x3D; fragmentName)),1);   
+    //     }
+    //     // Push the content (either completely new or with the stored content included)      
+    //     contentArray.push({
+    //       lineName: lineName,
+    //       lineContent: lineContent,
+    //       lineComplete: buildString,
+    //     })
+    //     // Push the created data to the array and empty the used arrays.
+    //     array.push({ fragmentName: givenArray[element].fragmentName, content: contentArray, status: status})
+    //     contentArray &#x3D; [];
+    //   }
+    //   // Sort the lines in array, needs to be own function
+    //   for(let element in array){
+    //     array[element].content.sort(this.SortFragmentsArrayNumerically);
+    //   }
+      
+    //   // Put normal fragments first, then incerta and then adespota. TODO: should be separate function
+    //   let normal &#x3D; this.FilterObjOnKey(array, &#x27;status&#x27;, &#x27;&#x27;)
+    //   let incerta &#x3D; this.FilterObjOnKey(array, &#x27;status&#x27;, &#x27;Incertum&#x27;)
+    //   let adesp &#x3D; this.FilterObjOnKey(array, &#x27;status&#x27;, &#x27;Adesp.&#x27;)
+    //   // Concatenate in the order we want (i&#x27;m a hacker)
+    //   array &#x3D; normal.concat(incerta).concat(adesp)
+  
+    //   console.log(&#x27;array&#x27;, array)
+    //   return array
+    // }
+
+
+  /**
+  * Sorts array numerically on fragment number
+  * @param a
+  * @param b
+  * @returns sorted array
+  * @author Ycreak
+  */ // TODO: Complete rewrite. Should put Adesp and Incert. on the bottom. 
+  public SortNumeric(a: any, b: any) {
+    // Sort array via the number element given.
+    // To allow fragments like &#x27;350-356&#x27; to be ordered.
+    const A &#x3D; Number(a);
+    const B &#x3D; Number(b);
+
+    let comparison &#x3D; 0;
+    if (A &gt; B) {
+      comparison &#x3D; 1;
+    } else if (A &lt; B) {
+      comparison &#x3D; -1;
+    }
+    return comparison;
+  }
+
+  /**
+  * Sorts array numerically on fragment number
+  * @param boolean called from array
+  * @returns sorted array.
+  * @author Ycreak
+  */ // TODO: Should put Adesp and Incert. on the bottom. 
+  public SortArrayNumerically(a, b) {
+    // Sort array via the number element given.
+    // To allow fragments like &#x27;350-356&#x27; to be ordered.
+    const A &#x3D; Number(a.fragmentName.split(&quot;-&quot;, 1));
+    const B &#x3D; Number(b.fragmentName.split(&quot;-&quot;, 1));
+
+    let comparison &#x3D; 0;
+    if (A &gt; B) {
+      comparison &#x3D; 1;
+    } else if (A &lt; B) {
+      comparison &#x3D; -1;
+    }
+    return comparison;
+  }
+
+  /** Sorts array numerically on fragment number
+  * @param boolean called from array
+  * @param field on which to perform the comparison TODO:
+  * @returns sorted array.
+  * @author Ycreak
+  */ 
+  public sort_fragment_array_numerically(a, b) {
+    // Sort array via the number element given.
+    // To allow fragments like &#x27;350-356&#x27; to be ordered.
+    const A &#x3D; Number(a.fragment_name.split(&quot;-&quot;, 1));
+    const B &#x3D; Number(b.fragment_name.split(&quot;-&quot;, 1));
+
+    let comparison &#x3D; 0;
+    if (A &gt; B) {
+      comparison &#x3D; 1;
+    } else if (A &lt; B) {
+      comparison &#x3D; -1;
+    }
+    return comparison;
+  }
+
+  /**
+   * Check if a json object is actually empty
+   * @param obj -- json object to be checked
+   * @returns whether obj is an empty json object
+   * @author Ycreak, ppbors // Nani?
+   */
+  public IsEmpty(obj: JSON) : boolean {
+    for (var prop in obj) {
+      if (obj.hasOwnProperty(prop))
+        return false;
+    }
+    return true;
+  }
+
+  public IsEmptyArray(array) : boolean {
+    if(Array.isArray(array) &amp;&amp; array.length){
+      return false;
+    }
+    else{
+      return true;
+    }
+  }
+
+  // Returns a list of uniq numbers. Used for fragmentnumber lists.
+  public uniq(a) {
+    return a.sort().filter(function(item, pos, ary) {
+        return !pos || item !&#x3D; ary[pos - 1];
+    });
+  }
+
+  /**
+   * Takes a string and looks for whitespace decoding. Converts it to html spans
+   * @param string 
+   */
+  public convert_whitespace_encoding(string: string){
+    // Find fish hooks with number in between.
+    const matches &#x3D; string.match(/&lt;(\d+)&gt;/);
+    // If found, replace it with the correct whitespace number
+    if (matches) {
+        console.log(matches);
+        // Create a span with the number of indents we want. Character level.
+        // matches[0] contains including fish hooks, matches[1] only number
+        let replacement &#x3D; &#x27;&lt;span style&#x3D;&quot;padding-left:&#x27; + matches[1] + &#x27;ch;&quot;&gt;&lt;/span&gt;&#x27;
+        string &#x3D; string.replace(matches[0], replacement);       
+    }  
+    return string
+  }
+
+  public filter_object_on_key(array, key, value){
+    var temp &#x3D; array.filter(obj &#x3D;&gt; {
+      return obj[key] &#x3D;&#x3D;&#x3D; value;
+    })
+    return temp    
+  } 
+
+  // Creates main editor array: the third field has the mainEditor key. Should be named properly.
+  public FilterArrayOnKey(array, key, value){
+    return array.filter(x &#x3D;&gt; x[key] &#x3D;&#x3D;&#x3D; value);
+  }
+
+  public PushToArray(item, array){
+    // Simple function to push given item to given array
+    array.push(item);
+    return array;
+  }
+
+  public PopArray(array){
+    // Simple function to pop item from given array  
+    let _ &#x3D; array.pop();
+    return array;
+  }
+
+  public Test(thing){
+    console.log(&#x27;Test output:&#x27;, thing)
+  }
+
+    /**
+   * Opens Material popup window with the given message
+   * @param message information that is showed in the popup
+   */
+  public open_snackbar(message){
+    this.snackBar.open(message, &#x27;Close&#x27;, {
+      duration: 5000
+    });
+  }
+
+  /**
+   * Function to handle the error err. Calls Snackbar to show it on screen
+   * @param err the generated error
+   */
+  public handle_error_message(err) {
+
+    let output &#x3D; &#x27;&#x27;;
+    
+    if (err.ok){
+      output &#x3D; err.status + &#x27;: &#x27; + err.body;
+    }
+    else{
+      output &#x3D; err.status + &#x27;: &#x27; + err.error;
+    }    
+    
+    console.log(err)
+    this.open_snackbar(output);
+  }
+  
+  
+
+  // Allows a fragment to be moved and dropped to create a custom ordering
+  public moveAndDrop(event: CdkDragDrop&lt;string[]&gt;, array) {
+    moveItemInArray(array, event.previousIndex, event.currentIndex);
+  }
+
+}
+
+
+</code></pre>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'injectable';
+            var COMPODOC_CURRENT_PAGE_URL = 'UtilityService.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

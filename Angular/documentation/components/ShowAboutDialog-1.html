@@ -1,0 +1,361 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>open-source-classic-commentary documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="../" class="navbar-brand">open-source-classic-commentary documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+<ol class="breadcrumb">
+  <li>Components</li>
+  <li
+  >
+  ShowAboutDialog</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li >
+            <a href="#templateData" role="tab" id="templateData-tab" data-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li >
+            <a href="#tree" role="tab" id="tree-tab" data-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info"><p class="comment">
+    <h3>File</h3>
+</p>
+<p class="comment">
+    <code>src/app/services/dialog.service.ts</code>
+</p>
+
+
+
+
+
+
+<section>
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>about-dialog</code></td>
+            </tr>
+
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>../dialogs/about-dialog.html</code></td>
+            </tr>
+
+
+
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+
+
+
+
+
+
+
+
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Injectable, Inject, Component } from &#x27;@angular/core&#x27;;
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from &#x27;@angular/material/dialog&#x27;;
+import { TemplateRef, ViewChild } from &#x27;@angular/core&#x27;;
+
+import { Observable } from &#x27;rxjs&#x27;;
+
+@Injectable({
+  providedIn: &#x27;root&#x27;
+})
+export class DialogService {
+
+
+  constructor(
+    private dialog: MatDialog, 
+
+  ) { }
+
+  // Opens dialog for the about information
+  public OpenAbout(): void {
+    // const scrollStrategy &#x3D; this.overlay.scrollStrategies.reposition();
+
+    const dialogRef &#x3D; this.dialog.open(ShowAboutDialog, 
+      {
+      autoFocus: false, // To allow scrolling in the dialog
+      maxHeight: &#x27;90vh&#x27; //you can adjust the value as per your view
+      });
+  }
+
+  /**
+   * Opens a confirmation dialog with the provided message
+   * @param message shows text about what is happening
+   * @param item the item that is about to change
+   */
+  public open_confirmation_dialog(message, item): Observable&lt;boolean&gt;{
+    const dialogRef &#x3D; this.dialog.open(ConfirmationDialog, {
+      width: &#x27;auto&#x27;,
+      data: {
+        message: message,
+        item: item,
+      }
+    });  
+    return dialogRef.afterClosed(); // Returns observable.
+  }
+}
+
+// Simple class to open the about information written in said html file.
+@Component({
+  selector: &#x27;about-dialog&#x27;,
+  templateUrl: &#x27;../dialogs/about-dialog.html&#x27;,
+})
+export class ShowAboutDialog {}
+
+/**
+ * Class to show a confirmation dialog when needed. 
+ * Shows whatever data is given
+ */
+@Component({
+  selector: &#x27;confirmation-dialog&#x27;,
+  templateUrl: &#x27;../dialogs/confirmation-dialog.html&#x27;,
+})
+export class ConfirmationDialog {
+  constructor(
+    public dialogRef: MatDialogRef&lt;ConfirmationDialog&gt;,
+    @Inject(MAT_DIALOG_DATA) public data) { }
+    
+    onNoClick(): void {
+      this.dialogRef.close();
+    }
+}</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="c-templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;h3&gt;About the OpenSourceClassicsCommentary&lt;/h3&gt;
+
+  &lt;p class&#x3D;&#x27;pi&#x27;&gt;The Open Source Classics Commentary on the Fragments of Roman Republican Tragedy is an interdisciplinary project between researchers in Classics and Computer Science.&lt;/p&gt;
+  &lt;p&gt;Roman Republic tragedy presents two paradoxes: even though it was one of the most popular genres of its age, it now only survives in fragments, and even though it has profoundly influenced modern visions of Roman culture, it is still greatly understudied and inaccessible to anyone beyond a tiny minority of specialized scholars – working with textual fragments is extremely complex. This project will help introduce non-specialists to these texts, and to grasp precisely these complexities, from technical matters such as the critical apparatus and metrical analysis, to the role subjective editorial interpretation and contextualisation play. Editors are driven by different agendas, which can be philological, cultural or even political, affecting everything from the structuring of the fragments and their arrangement to emendations and translations. This means there is no such thing as a definitive edition, and the collation of different editions is crucial for understanding the history of the scholarship and unpicking the assumptions that shape the field today.&lt;/p&gt;
+  &lt;p&gt;This database will provide a clear and accessible overview of the scholarly traditions, highlighting the differences between editions and their significance; it includes information from editions long out of print and prohibitive or difficult to obtain outside a few select universities, opening up this knowledge to a broader public; it allows the user to view the arrangements of previous editions and to play with possible arrangements, producing new insights into the text; finally, scholars and students are able to add content to the database, enabling greater collaboration in the field. Until now, there has been no tool to work actively and dynamically with the different editions and arrangements of fragments. This database makes this possible.&lt;/p&gt;
+
+  &lt;hr&gt;
+  &lt;h3&gt;Getting started&lt;/h3&gt;
+  &lt;p&gt;Click the fragments in the left column to retrieve their commentary. Click and hold to move fragments around. The menu buttons allow for more columns to be openend. Linked fragments will be shown over multiple columns with blue and pink headers. The playground can be used to order fragments in two dimensions.&lt;/p&gt;
+
+  &lt;hr&gt;
+
+  &lt;h3&gt;Personnel&lt;/h3&gt;
+
+  &lt;ul&gt;
+    &lt;li&gt;Prof. dr. Antje Wessels - Editor
+    &lt;/li&gt;
+    &lt;li&gt;dr. Matthew Payne - Editor
+    &lt;/li&gt;
+    &lt;li&gt;Luuk Nolden - Developer
+    &lt;/li&gt;
+    &lt;li&gt;Philippe Bors - Developer
+    &lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;hr&gt;
+  &lt;h3&gt;Contributors&lt;/h3&gt;
+  &lt;p&gt;Contributions towards the commentary on Ennius&#x27; &lt;i&gt;Thyestes&lt;/i&gt; were made by students of the course &lt;i&gt;Ennius&#x27; Tragedies 2019&lt;/i&gt; within the (Research) Master programme, Leiden University, including: Jona Oomis, Anouk van der Vlis, Constantina Kyriacou, Guusje Peerboom, Ian Matthewson, Kees Geluk, Sara Bellomo, Sol Titarsoleij, Thomas Kluitenburg, Wessel van Duijn, and Youp Theunisz.&lt;/p&gt;
+  &lt;p&gt;The commentary on Livius Andronicus&#x27; &lt;i&gt;Aegisthus&lt;/i&gt; was drafted by Ioanna Lykiardopoulou (&lt;i&gt;TrRF&lt;/i&gt; frgg. 2-5) and Wessel van Duijn (&lt;i&gt;TrRF&lt;/i&gt; frgg. 6-9).&lt;/p&gt;
+  &lt;p&gt;The commentaries on Naevius&#x27; &lt;i&gt;Lycurgus&lt;/i&gt;, Pacuvius&#x27; &lt;i&gt;Dulorestes&lt;/i&gt; and Accius&#x27; &lt;i&gt;Stasiastae&lt;/i&gt; were drafted by students of the course &lt;i&gt;Roman Republican Tragedy 2021-2&lt;/i&gt; within the (Research) Master programme &lt;i&gt;Classics and Ancient Civilizations&lt;/i&gt;, Leiden University, including: Colm Murphy, Dena Boogaard, Duncan Kampschuur, Esther Faasen, Eva den Ouden, Evelien Nijveld, Hylke de Boer, Ino Kormakopoulou, João Pedro Hallett Cravinho, Johanna van der Poel, Koen Gimberg, Kyriaki Giannikou, Leoniek Koster, Lily Bickers, Louise Meijer, Lucas Faessen, Manon Junggeburt, Marianne Bakker, Melissa Allieri, Mona Palmeira, Niels van den Berg, Pieter Kasteleyn, Rianne Gräeve, Stefania Spanoudi., Tamar van Gelderen, Tessa Jaspers, Teunis Kramer, Thomas van Dam, Vyron Emmanouil Bafounis, Wiebe Snoeij.&lt;/p&gt;
+  &lt;p&gt;The commentaries on Naevius&#x27; &lt;i&gt;Lycurgus&lt;/i&gt;, Pacuvius&#x27; &lt;i&gt;Dulorestes&lt;/i&gt; and Accius&#x27; &lt;i&gt;Stasiastae&lt;/i&gt; are awaiting redaction.&lt;/p&gt;
+  
+   
+
+
+  &lt;hr&gt;
+  &lt;h3&gt;Automated Scansion Tool&lt;/h3&gt;
+  &lt;p&gt;We are currently developing a tool for automated scansion. We are beginning with dactylic and iambic poetry. In the future we hope that it will be sophisticated enough to be able to provide scansions of the tragic fragments present in the database. The tool will interface with a model
+  trained via machine learning to identify the prosodic information from a text - whether a syllable is long or short, an elision is present, and so forth. The project is funded by a Small Grant from the Leiden University Centre for Digital Humanities (LUCDH).
+  For more information about the project, see the description on &lt;a href&#x3D;&quot;https://www.universiteitleiden.nl/en/humanities/centre-for-digital-humanities/projects/small-grant-projects#developing-an-intelligent-metrical-analysis-tool-for-latin-poetry&quot; target&#x3D;&quot;_blank&quot;&gt;the LUCDH site.&lt;/a&gt;&lt;/p&gt;  
+
+  &lt;hr&gt;
+  &lt;h3&gt;Thanks&lt;/h3&gt;
+  &lt;p&gt;We are grateful to LUCAS, Leiden University, and LUCDH, Leiden University, for granting financial support.&lt;/p&gt;
+
+&lt;!-- &lt;/div mat-dialog-content&gt; --&gt;
+
+
+
+
+
+
+
+&lt;!-- &lt;mat-dialog-actions align&#x3D;&quot;end&quot;&gt;
+  &lt;button mat-button mat-dialog-close&gt;Close&lt;/button&gt;
+&lt;/mat-dialog-actions&gt; --&gt;
+</code></pre>
+    </div>
+
+
+    <div class="tab-pane fade " id="c-tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Html element</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Component</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Html element with directive</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><h3>About the OpenSourceClassicsCommentary</h3>  <p class=\'pi\'>The Open Source Classics Commentary on the Fragments of Roman Republican Tragedy is an interdisciplinary project between researchers in Classics and Computer Science.</p>  <p>Roman Republic tragedy presents two paradoxes: even though it was one of the most popular genres of its age, it now only survives in fragments, and even though it has profoundly influenced modern visions of Roman culture, it is still greatly understudied and inaccessible to anyone beyond a tiny minority of specialized scholars – working with textual fragments is extremely complex. This project will help introduce non-specialists to these texts, and to grasp precisely these complexities, from technical matters such as the critical apparatus and metrical analysis, to the role subjective editorial interpretation and contextualisation play. Editors are driven by different agendas, which can be philological, cultural or even political, affecting everything from the structuring of the fragments and their arrangement to emendations and translations. This means there is no such thing as a definitive edition, and the collation of different editions is crucial for understanding the history of the scholarship and unpicking the assumptions that shape the field today.</p>  <p>This database will provide a clear and accessible overview of the scholarly traditions, highlighting the differences between editions and their significance; it includes information from editions long out of print and prohibitive or difficult to obtain outside a few select universities, opening up this knowledge to a broader public; it allows the user to view the arrangements of previous editions and to play with possible arrangements, producing new insights into the text; finally, scholars and students are able to add content to the database, enabling greater collaboration in the field. Until now, there has been no tool to work actively and dynamically with the different editions and arrangements of fragments. This database makes this possible.</p>  <hr>  <h3>Getting started</h3>  <p>Click the fragments in the left column to retrieve their commentary. Click and hold to move fragments around. The menu buttons allow for more columns to be openend. Linked fragments will be shown over multiple columns with blue and pink headers. The playground can be used to order fragments in two dimensions.</p>  <hr>  <h3>Personnel</h3>  <ul>    <li>Prof. dr. Antje Wessels - Editor    </li>    <li>dr. Matthew Payne - Editor    </li>    <li>Luuk Nolden - Developer    </li>    <li>Philippe Bors - Developer    </li>  </ul>  <hr>  <h3>Contributors</h3>  <p>Contributions towards the commentary on Ennius\' <i>Thyestes</i> were made by students of the course <i>Ennius\' Tragedies 2019</i> within the (Research) Master programme, Leiden University, including: Jona Oomis, Anouk van der Vlis, Constantina Kyriacou, Guusje Peerboom, Ian Matthewson, Kees Geluk, Sara Bellomo, Sol Titarsoleij, Thomas Kluitenburg, Wessel van Duijn, and Youp Theunisz.</p>  <p>The commentary on Livius Andronicus\' <i>Aegisthus</i> was drafted by Ioanna Lykiardopoulou (<i>TrRF</i> frgg. 2-5) and Wessel van Duijn (<i>TrRF</i> frgg. 6-9).</p>  <p>The commentaries on Naevius\' <i>Lycurgus</i>, Pacuvius\' <i>Dulorestes</i> and Accius\' <i>Stasiastae</i> were drafted by students of the course <i>Roman Republican Tragedy 2021-2</i> within the (Research) Master programme <i>Classics and Ancient Civilizations</i>, Leiden University, including: Colm Murphy, Dena Boogaard, Duncan Kampschuur, Esther Faasen, Eva den Ouden, Evelien Nijveld, Hylke de Boer, Ino Kormakopoulou, João Pedro Hallett Cravinho, Johanna van der Poel, Koen Gimberg, Kyriaki Giannikou, Leoniek Koster, Lily Bickers, Louise Meijer, Lucas Faessen, Manon Junggeburt, Marianne Bakker, Melissa Allieri, Mona Palmeira, Niels van den Berg, Pieter Kasteleyn, Rianne Gräeve, Stefania Spanoudi., Tamar van Gelderen, Tessa Jaspers, Teunis Kramer, Thomas van Dam, Vyron Emmanouil Bafounis, Wiebe Snoeij.</p>  <p>The commentaries on Naevius\' <i>Lycurgus</i>, Pacuvius\' <i>Dulorestes</i> and Accius\' <i>Stasiastae</i> are awaiting redaction.</p>       <hr>  <h3>Automated Scansion Tool</h3>  <p>We are currently developing a tool for automated scansion. We are beginning with dactylic and iambic poetry. In the future we hope that it will be sophisticated enough to be able to provide scansions of the tragic fragments present in the database. The tool will interface with a model  trained via machine learning to identify the prosodic information from a text - whether a syllable is long or short, an elision is present, and so forth. The project is funded by a Small Grant from the Leiden University Centre for Digital Humanities (LUCDH).  For more information about the project, see the description on <a href="https://www.universiteitleiden.nl/en/humanities/centre-for-digital-humanities/projects/small-grant-projects#developing-an-intelligent-metrical-analysis-tool-for-latin-poetry" target="_blank">the LUCDH site.</a></p>    <hr>  <h3>Thanks</h3>  <p>We are grateful to LUCAS, Leiden University, and LUCDH, Leiden University, for granting financial support.</p><!-- </div mat-dialog-content> --><!-- <mat-dialog-actions align="end">  <button mat-button mat-dialog-close>Close</button></mat-dialog-actions> --></div>'
+    var COMPONENTS = [{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'ConfirmationDialog', 'selector': 'confirmation-dialog'},{'name': 'DashboardComponent', 'selector': 'app-dashboard'},{'name': 'FragmentsComponent', 'selector': 'app-fragments'},{'name': 'LoginComponent', 'selector': 'app-login'},{'name': 'ScansionComponent', 'selector': 'app-scansion'},{'name': 'ShowAboutDialog', 'selector': 'about-dialog'},{'name': 'ShowAboutDialog', 'selector': 'about-dialog'},{'name': 'TextComponent', 'selector': 'app-text'}];
+    var DIRECTIVES = [];
+    var ACTUAL_COMPONENT = {'name': 'ShowAboutDialog-1'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'ShowAboutDialog-1.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

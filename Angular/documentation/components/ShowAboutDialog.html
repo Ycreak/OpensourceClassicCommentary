@@ -1,0 +1,717 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>open-source-classic-commentary documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="../" class="navbar-brand">open-source-classic-commentary documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+<ol class="breadcrumb">
+  <li>Components</li>
+  <li
+  >
+  ShowAboutDialog</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li >
+            <a href="#templateData" role="tab" id="templateData-tab" data-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li >
+            <a href="#tree" role="tab" id="tree-tab" data-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info"><p class="comment">
+    <h3>File</h3>
+</p>
+<p class="comment">
+    <code>src/app/fragments/fragments.component.ts</code>
+</p>
+
+
+
+
+
+
+<section>
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>about-dialog</code></td>
+            </tr>
+
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>../dialogs/about-dialog.html</code></td>
+            </tr>
+
+
+
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+
+
+
+
+
+
+
+
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, OnInit, ViewEncapsulation } from &#x27;@angular/core&#x27;;
+import { MatDialog } from &#x27;@angular/material/dialog&#x27;; // Library used for interacting with the page
+import { TemplateRef, ViewChild } from &#x27;@angular/core&#x27;; // To allow dialog windows within the current window
+
+// Component imports
+import { LoginComponent } from &#x27;../login/login.component&#x27;
+
+// Service imports
+import { ApiService } from &#x27;../api.service&#x27;;
+import { DialogService } from &#x27;../services/dialog.service&#x27;;
+import { UtilityService } from &#x27;../utility.service&#x27;;
+import { AuthService } from &#x27;../auth/auth.service&#x27;;
+
+// Model imports
+import { Fragment } from &#x27;../models/Fragment&#x27;;
+import { Fragment_column } from &#x27;../models/Fragment_column&#x27;;
+
+@Component({
+  selector: &#x27;app-fragments&#x27;,
+  templateUrl: &#x27;./fragments.component.html&#x27;,
+  styleUrls: [&#x27;./fragments.component.scss&#x27;],
+  encapsulation: ViewEncapsulation.None,
+})
+export class FragmentsComponent implements OnInit {
+  // Initiate the possibility to call dialogs
+  @ViewChild(&#x27;CallBookSelect&#x27;) CallBookSelect: TemplateRef&lt;any&gt;;
+  @ViewChild(&#x27;CallAbout&#x27;) CallAbout: TemplateRef&lt;any&gt;;
+
+  // Toggle switches for the HTML columns/modes
+  toggle_column_one: boolean &#x3D; true;
+  toggle_column_two: boolean &#x3D; false;
+  toggle_column_three: boolean &#x3D; false;
+  toggle_column_four: boolean &#x3D; false;
+  toggle_commentary: boolean &#x3D; true;
+  toggle_playground: boolean &#x3D; false;
+  // Booleans for HTML related items
+  spinner: boolean &#x3D; false; // Boolean to toggle the spinner.
+  server_down: boolean &#x3D; true; // to indicate server failure
+  // Global Class Variables with text data corresponding to the front-end text fields.
+  current_fragment: Fragment; // Variable to store the clicked fragment and its data
+  fragment_clicked: boolean &#x3D; false; // Shows &quot;click a fragment&quot; banner at startup if nothing is yet selected
+
+  // Object to store all column data: just an array with column data in the form of fragment columns
+  columns: Array&lt;Fragment_column&gt; &#x3D; [];
+  
+  constructor(
+    private api: ApiService,
+    private utility: UtilityService,
+    public auth_service: AuthService,
+    public dialog: DialogService,
+    private matdialog: MatDialog, 
+    ) { }
+
+  ngOnInit(): void {
+    // Create an empty current_fragment variable to be filled whenever the user clicks a fragment
+    // Its data is shown in the commentary column and not used anywhere else
+    this.current_fragment &#x3D; new Fragment(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,[],&#x27;&#x27;,[],[],0, []);
+
+    // Create templates for the possible fragment columns
+    let column1 &#x3D; new Fragment_column(&#x27;ONE&#x27;, &#x27;Ennius&#x27;, &#x27;Thyestes&#x27;, &#x27;TRF&#x27;);
+    let column2 &#x3D; new Fragment_column(&#x27;TWO&#x27;, &#x27;TBA&#x27;, &#x27;TBA&#x27;, &#x27;TBA&#x27;);
+    let column3 &#x3D; new Fragment_column(&#x27;THREE&#x27;, &#x27;TBA&#x27;, &#x27;TBA&#x27;, &#x27;TBA&#x27;);
+    let column4 &#x3D; new Fragment_column(&#x27;FOUR&#x27;, &#x27;TBA&#x27;, &#x27;TBA&#x27;, &#x27;TBA&#x27;);
+    // And two for the playground
+    let playground1 &#x3D; new Fragment_column(&#x27;PLAY1&#x27;, &#x27;TBA&#x27;, &#x27;TBA&#x27;, &#x27;TBA&#x27;);
+    let playground2 &#x3D; new Fragment_column(&#x27;PLAY2&#x27;, &#x27;TBA&#x27;, &#x27;TBA&#x27;, &#x27;TBA&#x27;);
+    // Push these to the columns array for later use in the HTML component
+    this.columns.push(column1, column2, column3, column4, playground1, playground2)
+
+    // Request authors for each column (TODO: this could be nicer)
+    this.request_authors(column1)
+    this.request_authors(column2)
+    this.request_authors(column3)
+    this.request_authors(column4)
+    this.request_authors(playground1)
+    this.request_authors(playground2)
+
+    // Request the fragments for the first column
+    this.request_fragments(column1);
+  }
+
+  //   _____  ______ ____  _    _ ______  _____ _______ _____ 
+  //  |  __ \|  ____/ __ \| |  | |  ____|/ ____|__   __/ ____|
+  //  | |__) | |__ | |  | | |  | | |__  | (___    | | | (___  
+  //  |  _  /|  __|| |  | | |  | |  __|  \___ \   | |  \___ \ 
+  //  | | \ \| |___| |__| | |__| | |____ ____) |  | |  ____) |
+  //  |_|  \_\______\___\_\\____/|______|_____/   |_| |_____/  
+  /**
+   * Requests the API function for authors
+   * @param column: Fragment_column 
+   * @returns data -&gt; column.retrieved_authors
+   * @author Ycreak
+   */
+   private request_authors(column: Fragment_column): void{
+    this.api.get_authors().subscribe(data &#x3D;&gt; {
+      this.server_down &#x3D; false; //FIXME: needs to be handled properly
+      // Enter this retrieved data in the correct column
+      this.columns.find(i &#x3D;&gt; i.name &#x3D;&#x3D;&#x3D; column.name).retrieved_authors &#x3D; data; 
+    });
+  }
+
+  /** Requests the API function for books given the author.
+   * @param column: Fragment_column 
+   * @returns data -&gt; column.retrieved_authors
+   * @author Bors &amp; Ycreak
+   */
+  private request_titles(column: Fragment_column): void{
+    this.api.get_titles(column.author).subscribe(
+      data &#x3D;&gt; {
+        this.columns.find(i &#x3D;&gt; i.name &#x3D;&#x3D;&#x3D; column.name).retrieved_titles &#x3D; data; 
+      }
+    );      
+  }
+  /**
+   * Requests the API function for editors given the author and book.
+   * @param column: Fragment_column
+   * @returns data -&gt; column.retrieved_editors 
+   * @author Bors &amp; Ycreak
+   */
+  private request_editors(column: Fragment_column): void{
+    this.api.get_editors(column.author, column.title).subscribe(
+      data &#x3D;&gt; {
+        this.columns.find(i &#x3D;&gt; i.name &#x3D;&#x3D;&#x3D; column.name).retrieved_editors &#x3D; data; 
+      }
+    );
+  }
+
+  /**
+   * Requests the API function for fragments given the author, book and editor.
+   * @param column: Fragment_column
+   * @returns Object with fragments that are sorted numerically and on their status. Also
+   *          adds an HTML formatted string to the object for easy printing. Note that the
+   *          new data is added to the corresponding field in the provided parameter
+   * @author Bors &amp; Ycreak
+   */
+  private request_fragments(column: Fragment_column): void{
+    this.api.get_fragments(column.author, column.title, column.editor).subscribe(
+      fragment_list &#x3D;&gt; { 
+        // Format the data just how we want it
+        fragment_list &#x3D; this.add_HTML_to_lines(fragment_list);
+        fragment_list &#x3D; fragment_list.sort(this.utility.sort_fragment_array_numerically);
+        fragment_list &#x3D; this.sort_fragments_on_status(fragment_list);
+        // Store the formatted data at the correct place
+        column.fragments &#x3D; fragment_list;
+        // While we are at it, save the fragment numbers: this is used in the playground to retrieve specific fragments
+        column.fragment_numbers &#x3D; this.retrieve_fragment_numbers(fragment_list); 
+        // Now check if the column already exists. If so, delete it, so we can push a brand new object       
+        if(this.columns.length &gt; 0){
+          this.columns.splice(this.columns.findIndex(i &#x3D;&gt; i.name &#x3D;&#x3D;&#x3D; column.name), 1)
+        }
+        // And now push the column with formatted data to the array of columns to be displayed in HTML    
+        this.columns.push(column)
+      }
+    );  
+  }
+
+  // /**
+  //  * Creates a list of typescript fragment objects using the json received from the server
+  //  * @param fragment_json which is received from the server
+  //  * @returns list of Fragment objects
+  //  * @author Ycreak
+  //  */
+  // private create_fragment_list(fragment_json: JSON): Fragment[]{
+  //   let fragment_list: Fragment[] &#x3D; [];
+  //   for(let index in fragment_json){
+  //     fragment_list.push(new Fragment(fragment_json[index]))
+  //   }
+  //   return fragment_list
+  // }
+
+  /** 
+   * Requests the API function for all content corresponding to the given fragment id.
+   * The retrieved data will then be added to the current_fragment model for displaying
+   * in the HTML frontend
+   * @param fragment_id 
+   * @returns fills all content variables with data. e.g. data -&gt; this.f_commentary 
+   * @author Bors &amp; Ycreak
+   */
+  private request_fragment_content(fragment_id: string): void{
+    this.api.get_fragment_content(fragment_id).subscribe(data &#x3D;&gt; {     
+      this.fragment_clicked &#x3D; true;
+      this.add_content_to_current_fragment(data);
+    });
+  }
+
+  /**
+   * Given an object with fragments, returns a list of all fragment names.
+   * @param fragments: Fragments[], list of all fragments retrieved from the server
+   * @returns list of all fragment names 
+   * @author Ycreak
+   */
+  private retrieve_fragment_numbers(fragments): string[]{    
+    let number_list: string[] &#x3D; []
+    for(let fragment in fragments){
+      number_list.push(fragments[fragment].fragment_name)
+    }
+    return number_list
+  }
+
+  /**
+   * Function to handle what happens when an author is selected in HTML. 
+   * Request for titles given author made to the api via request_titles().
+   * @param column current column in which the action is happening
+   * @param author selected by the user
+   * @author Ycreak
+   */
+  private handle_author_selection(column: Fragment_column, author: string): void{
+    // Set the author for the given column
+    this.columns.find(i &#x3D;&gt; i.name &#x3D;&#x3D;&#x3D; column.name).author &#x3D; author; 
+    this.request_titles(column);
+  }
+
+  /**
+   * Function to handle what happens when a title is selected in HTML.
+   * Request for editors given author and title made to the api via request_editors()
+   * @param column current column in which the action is happening
+   * @param title selected by the user
+   * @author Ycreak
+   */
+  private handle_title_selection(column: Fragment_column, title: string): void{
+    // Set the title for the given column
+    this.columns.find(i &#x3D;&gt; i.name &#x3D;&#x3D;&#x3D; column.name).title &#x3D; title; 
+    this.request_editors(column);
+  }
+
+  /**
+   * Function to handle what happens when an editor is selected in HTML.
+   * Request for fragments given author, title and editor made to the api via request_fragments()
+   * @param column current column in which the action is happening
+   * @param editor selected by the user
+   * @author Ycreak
+   */
+  private handle_editor_selection(column: Fragment_column, editor: string): void{
+    // Set the editor for the given column
+    this.columns.find(i &#x3D;&gt; i.name &#x3D;&#x3D;&#x3D; column.name).editor &#x3D; editor; 
+    this.request_fragments(this.columns.find(i &#x3D;&gt; i.name &#x3D;&#x3D;&#x3D; column.name))
+  }
+
+  /**
+   * Function to handle what happens when a fragment is selected in HTML.
+   * @param fragment selected by the user
+   * @author Ycreak
+   */
+   private handle_fragment_click(fragment: Fragment): void{
+      this.current_fragment &#x3D; fragment
+
+      console.log(fragment)
+
+      // Request content from this fragment
+      this.request_fragment_content(fragment.id)
+      // Request content from its linked fragments
+      //TODO:
+      
+      // The next part handles the colouring of clicked and referenced fragments.
+      // First, restore all fragments to their original black colour when a new fragment is clicked
+      this.colour_fragments_black()
+      // Second, colour the clicked fragment
+      fragment.colour &#x3D; &#x27;#3F51B5&#x27;;
+      // Lastly, colour the linked fragments
+      this.colour_linked_fragments(fragment)
+  }
+
+  /**
+   * Colours all fragment titles black
+   * @author Ycreak
+   */
+  private colour_fragments_black(): void{
+    for(let index in this.columns){
+      let fragment_array &#x3D; this.columns[index].fragments
+      for(let fragment in fragment_array){
+        fragment_array[fragment].colour &#x3D; &#x27;black&#x27;;
+      }       
+    }
+  }
+
+  /**
+   * Given the current fragment, colour the linked fragments in the other columns
+   * @param fragment of which the linked fragments should be coloured
+   * @author Ycreak
+   */
+  private colour_linked_fragments(fragment: Fragment): void{
+    for(let index in fragment.linked_fragments){
+      // Loop through all fragments
+      let linked_fragment_id &#x3D; fragment.linked_fragments[index] 
+      // Set colours of corresponding fragments from the other columns if found
+      let corresponding_fragment &#x3D; this.columns.find(i &#x3D;&gt; i.name &#x3D;&#x3D;&#x3D; &#x27;ONE&#x27;).fragments.find(i &#x3D;&gt; i.id &#x3D;&#x3D;&#x3D; linked_fragment_id);
+      if(corresponding_fragment) corresponding_fragment.colour &#x3D; &#x27;#FF4081&#x27;;
+
+      corresponding_fragment &#x3D; this.columns.find(i &#x3D;&gt; i.name &#x3D;&#x3D;&#x3D; &#x27;TWO&#x27;).fragments.find(i &#x3D;&gt; i.id &#x3D;&#x3D;&#x3D; linked_fragment_id);
+      if(corresponding_fragment) corresponding_fragment.colour &#x3D; &#x27;#FF4081&#x27;;
+      
+      corresponding_fragment &#x3D; this.columns.find(i &#x3D;&gt; i.name &#x3D;&#x3D;&#x3D; &#x27;THREE&#x27;).fragments.find(i &#x3D;&gt; i.id &#x3D;&#x3D;&#x3D; linked_fragment_id);
+      if(corresponding_fragment) corresponding_fragment.colour &#x3D; &#x27;#FF4081&#x27;;
+
+      corresponding_fragment &#x3D; this.columns.find(i &#x3D;&gt; i.name &#x3D;&#x3D;&#x3D; &#x27;FOUR&#x27;).fragments.find(i &#x3D;&gt; i.id &#x3D;&#x3D;&#x3D; linked_fragment_id);
+      if(corresponding_fragment) corresponding_fragment.colour &#x3D; &#x27;#FF4081&#x27;;
+    }
+  }
+
+  /**
+   * Function to handle the login dialog
+   * @author Ycreak
+   */
+  public login(): void{
+    const dialogRef &#x3D; this.matdialog.open(LoginComponent, {
+      height: &#x27;60vh&#x27;,
+      width: &#x27;40vw&#x27;,
+    });
+  }
+
+  /**
+   * Test function
+   * @author Ycreak
+   */  
+  private test(): void{
+    console.log(&#x27;############ TESTING ############&#x27;)
+    
+    console.log(this.columns)
+    // console.log(this.columns.find(i &#x3D;&gt; i.name &#x3D;&#x3D;&#x3D; &#x27;ONE&#x27;));
+    // console.log(this.columns.find(i &#x3D;&gt; i.name &#x3D;&#x3D;&#x3D; &#x27;TWO&#x27;));
+
+    console.log(&#x27;############ ####### ############&#x27;)
+
+  }
+
+  /**
+   * This function adds HTML to the lines of the given array. Simply put, it inserts every
+   * line number and its content in an HTML paragraph for easy insertion in HTML.
+   * @param array with fragments as retrieved from the server
+   * @returns updated array with nice HTML formatting included
+   * @author Ycreak
+   */
+   private add_HTML_to_lines(array: Fragment[]): Fragment[]{        
+    // For each element in the given array
+    for(let fragment in array){
+      // Loop through all fragments      
+      let current_fragment &#x3D; array[fragment]
+      for(let item in current_fragment.lines){
+        // Loop through all lines of current fragment
+        let line_number &#x3D; current_fragment.lines[item].line_number;
+        let line_text &#x3D; current_fragment.lines[item].text;
+        line_text &#x3D; this.utility.convert_whitespace_encoding(line_text)
+        let line_complete &#x3D; &#x27;&lt;p&gt;&#x27; + line_number + &#x27;: &#x27; + line_text + &#x27;&lt;/p&gt;&#x27;;
+        // Now push the updated lines to the correct place
+        let updated_lines &#x3D; {
+          &#x27;line_number&#x27;: line_number,
+          &#x27;text&#x27;: line_text,
+          &#x27;line_complete&#x27;: line_complete,
+        }
+        current_fragment.lines[item] &#x3D; updated_lines;
+      }
+    }
+    return array
+  }
+
+  /**
+   * Sorts the given object of fragments on status. We want to display Certa, followed
+   * by Incerta and Adespota.
+   * @param fragments 
+   * @returns fragments in the order we want
+   * @author Ycreak
+   */    
+  private sort_fragments_on_status(fragments: Fragment[]): Fragment[]{
+    let normal &#x3D; this.utility.filter_object_on_key(fragments, &#x27;status&#x27;, &quot;Certum&quot;)
+    let incerta &#x3D; this.utility.filter_object_on_key(fragments, &#x27;status&#x27;, &#x27;Incertum&#x27;)
+    let adesp &#x3D; this.utility.filter_object_on_key(fragments, &#x27;status&#x27;, &#x27;Adesp.&#x27;)
+    // Concatenate in the order we want
+    fragments &#x3D; normal.concat(incerta).concat(adesp)
+    return fragments
+  }
+  
+  /**
+   * This function retrieves the column from the columns object given its name.
+   * @param name of the requested column
+   * @returns requested column object
+   * @author Ycreak
+   */
+  private get_column_from_columns(name: string): Fragment_column {
+    return (this.columns.find(i &#x3D;&gt; i.name &#x3D;&#x3D;&#x3D; name)); //) || []);
+  }
+
+  /**
+   * Possibility to add fragment objects to a new array for printing in the Playground
+   * It takes the given array and tries to add the given fragment_name from the provided source
+   * @param array of selected number fragments to which to add another fragment
+   * @param fragment_name of which we want to add its object to the array
+   * @param source array of all fragments, from which we want one given fragment_name added to array
+   * @returns 
+   */
+  private add_fragment_to_array(array, fragment_name, source): Array&lt;Fragment&gt;{
+    for(let fragment in source){
+      if(source[fragment].fragment_name &#x3D;&#x3D; fragment_name){
+        array.push(source[fragment])
+      }
+    }
+    return array
+  }
+
+  /**
+   * Adds the JSON with fragment content retrieved from the server to the corresponding
+   * fields of our current_fragment object for viewing in the Commentary column in HTML.
+   * An entry should not be made if the received field is empty to prevent empty expansion panels
+   * @param fragment 
+   * @author Ycreak
+   */
+  private add_content_to_current_fragment(fragment): void{
+    if(fragment[&#x27;translation&#x27;] !&#x3D; &#x27;&#x27;){ this.current_fragment.translation &#x3D; fragment[&#x27;translation&#x27;]}
+    if(fragment[&#x27;differences&#x27;] !&#x3D; &#x27;&#x27;){ this.current_fragment.differences &#x3D; fragment[&#x27;differences&#x27;]}
+    if(fragment[&#x27;apparatus&#x27;] !&#x3D; &#x27;&#x27;){ this.current_fragment.apparatus &#x3D; fragment[&#x27;apparatus&#x27;]}
+    if(fragment[&#x27;commentary&#x27;] !&#x3D; &#x27;&#x27;){ this.current_fragment.commentary &#x3D; fragment[&#x27;commentary&#x27;]}
+    if(fragment[&#x27;reconstruction&#x27;] !&#x3D; &#x27;&#x27;){ this.current_fragment.reconstruction &#x3D; fragment[&#x27;reconstruction&#x27;]}
+    if(fragment[&#x27;context&#x27;] !&#x3D; &#x27;&#x27;){ this.current_fragment.context &#x3D; fragment[&#x27;context&#x27;]}
+    if(fragment[&#x27;bibliography&#x27;] !&#x3D; &#x27;&#x27;){ this.current_fragment.bibliography &#x3D; fragment[&#x27;bibliography&#x27;]}
+}
+
+}
+
+// Simple component to open the about information written in said html file.
+@Component({
+  selector: &#x27;about-dialog&#x27;,
+  templateUrl: &#x27;../dialogs/about-dialog.html&#x27;,
+})
+export class ShowAboutDialog {}
+
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="c-templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;h3&gt;About the OpenSourceClassicsCommentary&lt;/h3&gt;
+
+  &lt;p class&#x3D;&#x27;pi&#x27;&gt;The Open Source Classics Commentary on the Fragments of Roman Republican Tragedy is an interdisciplinary project between researchers in Classics and Computer Science.&lt;/p&gt;
+  &lt;p&gt;Roman Republic tragedy presents two paradoxes: even though it was one of the most popular genres of its age, it now only survives in fragments, and even though it has profoundly influenced modern visions of Roman culture, it is still greatly understudied and inaccessible to anyone beyond a tiny minority of specialized scholars – working with textual fragments is extremely complex. This project will help introduce non-specialists to these texts, and to grasp precisely these complexities, from technical matters such as the critical apparatus and metrical analysis, to the role subjective editorial interpretation and contextualisation play. Editors are driven by different agendas, which can be philological, cultural or even political, affecting everything from the structuring of the fragments and their arrangement to emendations and translations. This means there is no such thing as a definitive edition, and the collation of different editions is crucial for understanding the history of the scholarship and unpicking the assumptions that shape the field today.&lt;/p&gt;
+  &lt;p&gt;This database will provide a clear and accessible overview of the scholarly traditions, highlighting the differences between editions and their significance; it includes information from editions long out of print and prohibitive or difficult to obtain outside a few select universities, opening up this knowledge to a broader public; it allows the user to view the arrangements of previous editions and to play with possible arrangements, producing new insights into the text; finally, scholars and students are able to add content to the database, enabling greater collaboration in the field. Until now, there has been no tool to work actively and dynamically with the different editions and arrangements of fragments. This database makes this possible.&lt;/p&gt;
+
+  &lt;hr&gt;
+  &lt;h3&gt;Getting started&lt;/h3&gt;
+  &lt;p&gt;Click the fragments in the left column to retrieve their commentary. Click and hold to move fragments around. The menu buttons allow for more columns to be openend. Linked fragments will be shown over multiple columns with blue and pink headers. The playground can be used to order fragments in two dimensions.&lt;/p&gt;
+
+  &lt;hr&gt;
+
+  &lt;h3&gt;Personnel&lt;/h3&gt;
+
+  &lt;ul&gt;
+    &lt;li&gt;Prof. dr. Antje Wessels - Editor
+    &lt;/li&gt;
+    &lt;li&gt;dr. Matthew Payne - Editor
+    &lt;/li&gt;
+    &lt;li&gt;Luuk Nolden - Developer
+    &lt;/li&gt;
+    &lt;li&gt;Philippe Bors - Developer
+    &lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;hr&gt;
+  &lt;h3&gt;Contributors&lt;/h3&gt;
+  &lt;p&gt;Contributions towards the commentary on Ennius&#x27; &lt;i&gt;Thyestes&lt;/i&gt; were made by students of the course &lt;i&gt;Ennius&#x27; Tragedies 2019&lt;/i&gt; within the (Research) Master programme, Leiden University, including: Jona Oomis, Anouk van der Vlis, Constantina Kyriacou, Guusje Peerboom, Ian Matthewson, Kees Geluk, Sara Bellomo, Sol Titarsoleij, Thomas Kluitenburg, Wessel van Duijn, and Youp Theunisz.&lt;/p&gt;
+  &lt;p&gt;The commentary on Livius Andronicus&#x27; &lt;i&gt;Aegisthus&lt;/i&gt; was drafted by Ioanna Lykiardopoulou (&lt;i&gt;TrRF&lt;/i&gt; frgg. 2-5) and Wessel van Duijn (&lt;i&gt;TrRF&lt;/i&gt; frgg. 6-9).&lt;/p&gt;
+  &lt;p&gt;The commentaries on Naevius&#x27; &lt;i&gt;Lycurgus&lt;/i&gt;, Pacuvius&#x27; &lt;i&gt;Dulorestes&lt;/i&gt; and Accius&#x27; &lt;i&gt;Stasiastae&lt;/i&gt; were drafted by students of the course &lt;i&gt;Roman Republican Tragedy 2021-2&lt;/i&gt; within the (Research) Master programme &lt;i&gt;Classics and Ancient Civilizations&lt;/i&gt;, Leiden University, including: Colm Murphy, Dena Boogaard, Duncan Kampschuur, Esther Faasen, Eva den Ouden, Evelien Nijveld, Hylke de Boer, Ino Kormakopoulou, João Pedro Hallett Cravinho, Johanna van der Poel, Koen Gimberg, Kyriaki Giannikou, Leoniek Koster, Lily Bickers, Louise Meijer, Lucas Faessen, Manon Junggeburt, Marianne Bakker, Melissa Allieri, Mona Palmeira, Niels van den Berg, Pieter Kasteleyn, Rianne Gräeve, Stefania Spanoudi., Tamar van Gelderen, Tessa Jaspers, Teunis Kramer, Thomas van Dam, Vyron Emmanouil Bafounis, Wiebe Snoeij.&lt;/p&gt;
+  &lt;p&gt;The commentaries on Naevius&#x27; &lt;i&gt;Lycurgus&lt;/i&gt;, Pacuvius&#x27; &lt;i&gt;Dulorestes&lt;/i&gt; and Accius&#x27; &lt;i&gt;Stasiastae&lt;/i&gt; are awaiting redaction.&lt;/p&gt;
+  
+   
+
+
+  &lt;hr&gt;
+  &lt;h3&gt;Automated Scansion Tool&lt;/h3&gt;
+  &lt;p&gt;We are currently developing a tool for automated scansion. We are beginning with dactylic and iambic poetry. In the future we hope that it will be sophisticated enough to be able to provide scansions of the tragic fragments present in the database. The tool will interface with a model
+  trained via machine learning to identify the prosodic information from a text - whether a syllable is long or short, an elision is present, and so forth. The project is funded by a Small Grant from the Leiden University Centre for Digital Humanities (LUCDH).
+  For more information about the project, see the description on &lt;a href&#x3D;&quot;https://www.universiteitleiden.nl/en/humanities/centre-for-digital-humanities/projects/small-grant-projects#developing-an-intelligent-metrical-analysis-tool-for-latin-poetry&quot; target&#x3D;&quot;_blank&quot;&gt;the LUCDH site.&lt;/a&gt;&lt;/p&gt;  
+
+  &lt;hr&gt;
+  &lt;h3&gt;Thanks&lt;/h3&gt;
+  &lt;p&gt;We are grateful to LUCAS, Leiden University, and LUCDH, Leiden University, for granting financial support.&lt;/p&gt;
+
+&lt;!-- &lt;/div mat-dialog-content&gt; --&gt;
+
+
+
+
+
+
+
+&lt;!-- &lt;mat-dialog-actions align&#x3D;&quot;end&quot;&gt;
+  &lt;button mat-button mat-dialog-close&gt;Close&lt;/button&gt;
+&lt;/mat-dialog-actions&gt; --&gt;
+</code></pre>
+    </div>
+
+
+    <div class="tab-pane fade " id="c-tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Html element</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Component</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Html element with directive</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><h3>About the OpenSourceClassicsCommentary</h3>  <p class=\'pi\'>The Open Source Classics Commentary on the Fragments of Roman Republican Tragedy is an interdisciplinary project between researchers in Classics and Computer Science.</p>  <p>Roman Republic tragedy presents two paradoxes: even though it was one of the most popular genres of its age, it now only survives in fragments, and even though it has profoundly influenced modern visions of Roman culture, it is still greatly understudied and inaccessible to anyone beyond a tiny minority of specialized scholars – working with textual fragments is extremely complex. This project will help introduce non-specialists to these texts, and to grasp precisely these complexities, from technical matters such as the critical apparatus and metrical analysis, to the role subjective editorial interpretation and contextualisation play. Editors are driven by different agendas, which can be philological, cultural or even political, affecting everything from the structuring of the fragments and their arrangement to emendations and translations. This means there is no such thing as a definitive edition, and the collation of different editions is crucial for understanding the history of the scholarship and unpicking the assumptions that shape the field today.</p>  <p>This database will provide a clear and accessible overview of the scholarly traditions, highlighting the differences between editions and their significance; it includes information from editions long out of print and prohibitive or difficult to obtain outside a few select universities, opening up this knowledge to a broader public; it allows the user to view the arrangements of previous editions and to play with possible arrangements, producing new insights into the text; finally, scholars and students are able to add content to the database, enabling greater collaboration in the field. Until now, there has been no tool to work actively and dynamically with the different editions and arrangements of fragments. This database makes this possible.</p>  <hr>  <h3>Getting started</h3>  <p>Click the fragments in the left column to retrieve their commentary. Click and hold to move fragments around. The menu buttons allow for more columns to be openend. Linked fragments will be shown over multiple columns with blue and pink headers. The playground can be used to order fragments in two dimensions.</p>  <hr>  <h3>Personnel</h3>  <ul>    <li>Prof. dr. Antje Wessels - Editor    </li>    <li>dr. Matthew Payne - Editor    </li>    <li>Luuk Nolden - Developer    </li>    <li>Philippe Bors - Developer    </li>  </ul>  <hr>  <h3>Contributors</h3>  <p>Contributions towards the commentary on Ennius\' <i>Thyestes</i> were made by students of the course <i>Ennius\' Tragedies 2019</i> within the (Research) Master programme, Leiden University, including: Jona Oomis, Anouk van der Vlis, Constantina Kyriacou, Guusje Peerboom, Ian Matthewson, Kees Geluk, Sara Bellomo, Sol Titarsoleij, Thomas Kluitenburg, Wessel van Duijn, and Youp Theunisz.</p>  <p>The commentary on Livius Andronicus\' <i>Aegisthus</i> was drafted by Ioanna Lykiardopoulou (<i>TrRF</i> frgg. 2-5) and Wessel van Duijn (<i>TrRF</i> frgg. 6-9).</p>  <p>The commentaries on Naevius\' <i>Lycurgus</i>, Pacuvius\' <i>Dulorestes</i> and Accius\' <i>Stasiastae</i> were drafted by students of the course <i>Roman Republican Tragedy 2021-2</i> within the (Research) Master programme <i>Classics and Ancient Civilizations</i>, Leiden University, including: Colm Murphy, Dena Boogaard, Duncan Kampschuur, Esther Faasen, Eva den Ouden, Evelien Nijveld, Hylke de Boer, Ino Kormakopoulou, João Pedro Hallett Cravinho, Johanna van der Poel, Koen Gimberg, Kyriaki Giannikou, Leoniek Koster, Lily Bickers, Louise Meijer, Lucas Faessen, Manon Junggeburt, Marianne Bakker, Melissa Allieri, Mona Palmeira, Niels van den Berg, Pieter Kasteleyn, Rianne Gräeve, Stefania Spanoudi., Tamar van Gelderen, Tessa Jaspers, Teunis Kramer, Thomas van Dam, Vyron Emmanouil Bafounis, Wiebe Snoeij.</p>  <p>The commentaries on Naevius\' <i>Lycurgus</i>, Pacuvius\' <i>Dulorestes</i> and Accius\' <i>Stasiastae</i> are awaiting redaction.</p>       <hr>  <h3>Automated Scansion Tool</h3>  <p>We are currently developing a tool for automated scansion. We are beginning with dactylic and iambic poetry. In the future we hope that it will be sophisticated enough to be able to provide scansions of the tragic fragments present in the database. The tool will interface with a model  trained via machine learning to identify the prosodic information from a text - whether a syllable is long or short, an elision is present, and so forth. The project is funded by a Small Grant from the Leiden University Centre for Digital Humanities (LUCDH).  For more information about the project, see the description on <a href="https://www.universiteitleiden.nl/en/humanities/centre-for-digital-humanities/projects/small-grant-projects#developing-an-intelligent-metrical-analysis-tool-for-latin-poetry" target="_blank">the LUCDH site.</a></p>    <hr>  <h3>Thanks</h3>  <p>We are grateful to LUCAS, Leiden University, and LUCDH, Leiden University, for granting financial support.</p><!-- </div mat-dialog-content> --><!-- <mat-dialog-actions align="end">  <button mat-button mat-dialog-close>Close</button></mat-dialog-actions> --></div>'
+    var COMPONENTS = [{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'ConfirmationDialog', 'selector': 'confirmation-dialog'},{'name': 'DashboardComponent', 'selector': 'app-dashboard'},{'name': 'FragmentsComponent', 'selector': 'app-fragments'},{'name': 'LoginComponent', 'selector': 'app-login'},{'name': 'ScansionComponent', 'selector': 'app-scansion'},{'name': 'ShowAboutDialog', 'selector': 'about-dialog'},{'name': 'ShowAboutDialog', 'selector': 'about-dialog'},{'name': 'TextComponent', 'selector': 'app-text'}];
+    var DIRECTIVES = [];
+    var ACTUAL_COMPONENT = {'name': 'ShowAboutDialog'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'ShowAboutDialog.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>
