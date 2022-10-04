@@ -77,7 +77,7 @@ import { TextComponent } from './text/text.component';
 // import { IKeyboardLayouts, keyboardLayouts, MAT_KEYBOARD_LAYOUTS, MatKeyboardModule } from 'angular-onscreen-material-keyboard';
 
 // Allows communication with firebase
-import { AngularFireModule } from '@angular/fire';
+// import { AngularFireModule } from '@angular/fire';
 import { environment } from '../environments/environment';
 import { ScansionComponent } from './scansion/scansion.component';
 
@@ -174,7 +174,7 @@ const appRoutes: Routes = [
     ClipboardModule,
     // MatKeyboardModule,
 
-    AngularFireModule.initializeApp(environment.firebase),
+    // AngularFireModule.initializeApp(environment.firebase),
   ],
   providers: [
     {

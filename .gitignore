@@ -2,6 +2,7 @@
 
 # compiled output
 Angular/dist
+Angular/.angular
 /tmp
 /out-tsc
 # Only exists if Bazel was run
