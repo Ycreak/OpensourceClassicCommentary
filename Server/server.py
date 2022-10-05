@@ -17,7 +17,7 @@ from fragment_handling import Fragment_handler
 from bibliography_handling import Bibliography_handler
 from user_handling import User_handler
 from Models.fragment import Fragment
-from Models.user import User, UserSchema
+from Models.user import User #, UserSchema
 from Models.bib_entry import Bib_entry
 
 app = Flask(__name__)
@@ -39,19 +39,19 @@ Fragment interfacing
 def authors():
     # Route to retrieve a list of all authors in the fragment database
     result = frag_db.retrieve_all_authors()
-    return jsonify(Create_simple_JSON_list(result, 'name'))
+    return jsonify(create_simple_JSON_list(result, 'name'))
 
 @app.route("/books")
 def books():
     # Route to retrieve a list of all books given an author
     result = frag_db.retrieve_all_titles(request_arguments('author'))
-    return jsonify(Create_simple_JSON_list(result, 'name'))
+    return jsonify(create_simple_JSON_list(result, 'name'))
 
 @app.route("/editors")
 def editors():
     # Route to retrieve a list of all editors given an author and editor
     result = frag_db.retrieve_all_editors(request_arguments('author'), request_arguments('book'))
-    return jsonify(Create_simple_JSON_list(result, 'name'))
+    return jsonify(create_simple_JSON_list(result, 'name'))
 
 @app.route("/fragments")
 def fragments():
@@ -169,15 +169,16 @@ def login_user():
 @app.route("/create_user", methods=['POST'])
 def create_user():
     # Route to allow for the creation of a user
-    result = UserSchema().load(request.get_json())
+    
+    ## FIXME: experiments with marshmallow schemas
+    # result = UserSchema().load(request.get_json())
     # result = schema.load(user_data)  
     # import pprint
-    print(result.username)
-    print(result.role)
+    # print(result.username)
+    # print(result.role)
 
-
-    # received_user = User(request.get_json())
-    # return user_db.create_user(received_user)
+    received_user = User(request.get_json())
+    return user_db.create_user(received_user)
 
 @app.route("/delete_user", methods=['POST'])
 def delete_user():
