@@ -23,7 +23,7 @@
 
 <!-- TAB GROUPS TO ENTER DATA -->
 <div class="container-fluid">
-  <mat-accordion class="example-headers-align" multi>
+  <mat-accordion multi>
     <!-- Change fragment expansion panel -->
     <mat-expansion-panel *ngIf="this.authService.is_teacher || this.authService.is_student" [expanded]="true">
       <mat-expansion-panel-header>

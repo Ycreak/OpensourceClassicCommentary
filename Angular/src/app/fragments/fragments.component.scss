@@ -1,21 +1,9 @@
 @import url('../app.component.scss');
- /* DISPLAYING OF FRAGMENTS */
+// Fragments component specific CSS. For more generic CSS, see ../app.component.scss.
 
-.fragment-list {
-  width: auto;
-  max-width: 100%;
-  min-height: auto;
-  display: block;
-  background: white;
-  // border-radius: 4px;
-  overflow: hidden;
-  // padding: 10px 5px 0px 5px;
-}
+/* Fragment and commentary column related CSS */
 
-.fragment-box-div{
-  border-bottom: solid 1px #ccc;
-}
-
+// Box in which the fragment is shown. Created by the for-loop in Fragment Column.
 .fragment-box {
   padding: 10px 5px 0px 5px;
   border-bottom: solid 1px #ccc;
@@ -50,21 +38,16 @@
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-// .fragment-box:last-child {
-//   border: none;
-// }
-
 .fragment-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
+// For the notes in the playground
 .input-form{
-  width: 100%;
+  width: var(--width);
 }
 
-.input-form-wide{
-  width: 100%;
-}
+/* Playground related CSS */
 
 .note {
   // width: auto;
@@ -93,7 +76,6 @@
               0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 
-// Playground CSS
 .playground {
   // border: solid 1px #ccc;
   color: rgba(0, 0, 0, 0.87);
@@ -118,92 +100,19 @@
               0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 
-.zlayer2{
-  z-index: 2;
+.zlayer{
+  z-index: var(--layer);
 }
 
-.zlayer3{
-  z-index: 3;
+.playground-height-padding{
+  min-height: 150ch;
 }
 
-// MULTIPLAYER CSS
-.multiplayer-container {
-  // width: 30%;
-  max-width: 100%;
-  margin: 0 25px 25px 0;
-  display: inline-block;
-  vertical-align: top;
-}
-
-.multiplayer-list {
-  border: solid 1px #ccc;
-  min-height: 60px;
-  background: white;
-  border-radius: 4px;
-  overflow: hidden;
-  display: block;
-}
-
-.divNote {
-  text-align: center;
-  color: #3F51B5;
-}
-
-.span1 {
-  padding-left: 20ch;
-}
-
-.example-box {
-  padding: 20px 10px;
-  border-bottom: solid 1px #ccc;
-  color: rgba(0, 0, 0, 0.87);
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  box-sizing: border-box;
-  cursor: move;
-  background: white;
-  font-size: 14px;
-}
-
-.cdk-drag-preview {
-  box-sizing: border-box;
-  border-radius: 4px;
-  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-              0 8px 10px 1px rgba(0, 0, 0, 0.14),
-              0 3px 14px 2px rgba(0, 0, 0, 0.12);
-}
-
-.cdk-drag-placeholder {
-  opacity: 0;
-}
-
-.cdk-drag-animating {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
-.example-box:last-child {
-  border: none;
-}
-
-.example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
+/* Navbar CSS */
 .mat-checkbox-layout {
   margin-bottom: 0;
 }
 
 .mat-checkbox-label {
   width: fit-content;
-}
-
-.red{
-  color: #3F51B5;
-  background: #eee;
-}
-
-.height-padding{
-  min-height: 150ch;
 }

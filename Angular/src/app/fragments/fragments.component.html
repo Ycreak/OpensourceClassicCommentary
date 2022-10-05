@@ -174,7 +174,7 @@
     <!-- Row to show the playground -->
     <hr>
     <div class="div-padding-lg"></div>
-    <div class="container-fluid height-padding" *ngIf="toggle_playground">               
+    <div class="container-fluid playground-height-padding" *ngIf="toggle_playground">               
         <div class="row">
             <!-- Possiblity to select an editor to begin with -->
             <ng-container 
@@ -211,7 +211,7 @@
 
             <!-- Possibility to add a little note -->
             <div mat-dialog-content>
-                <mat-form-field class="input-form">
+                <mat-form-field class="input-form" style="--width: 100%;">
                     <input matInput placeholder="Add a note" [(ngModel)]='note'>
                     <button type="button" mat-icon-button matSuffix (click)="get_column_from_columns('PLAY2').note_array = this.utility.PopArray(get_column_from_columns('PLAY2').note_array)">
                         <mat-icon>{{'remove'}}</mat-icon>
@@ -227,11 +227,11 @@
 
         <hr>
         <!-- For loop to print all the notes -->
-        <div *ngFor="let note of get_column_from_columns('PLAY2').note_array" class="note zlayer3" cdkDrag>
+        <div *ngFor="let note of get_column_from_columns('PLAY2').note_array" class="note zlayer" style="--layer: 3;" cdkDrag>
             {{note}}
         </div>
         <!-- For loop to print all the base selected fragments -->
-        <div *ngFor="let fragment of get_column_from_columns('PLAY1').fragments" class="playground zlayer2" cdkDrag>
+        <div *ngFor="let fragment of get_column_from_columns('PLAY1').fragments" class="playground zlayer" style="--layer: 2;" cdkDrag>
             
             <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.title}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
             
@@ -240,7 +240,7 @@
             </div> 
         </div>
         <!-- For loop to print the added fragments -->
-        <div *ngFor="let fragment of get_column_from_columns('PLAY2').secondary_fragments" class="playground zlayer2" cdkDrag>
+        <div *ngFor="let fragment of get_column_from_columns('PLAY2').secondary_fragments" class="playground zlayer" style="--layer: 2;" cdkDrag>
             <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.title}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
             <div *ngFor="let line of fragment.lines">           
                 <div [innerHTML]="line.line_complete"></div>
