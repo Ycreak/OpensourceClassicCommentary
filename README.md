@@ -53,7 +53,13 @@ Of course, the port can be changed to suit your needs. The poll option denotes t
 
 The website will now be hosted on the local host and can be accessed via any javascript-capable browser via [https://localhost:4200](https://localhost:4200).
 
-To keep the project up to date, use [Angular's update guide](https://update.angular.io/).
+To keep the project up to date, use [Angular's update guide](https://update.angular.io/). Make sure to also update the dependencies listed in package.json using npm-check-updates. In the Angular folder, issue the following commands:
+
+```console 
+npm i -g npm-check-updates
+ncu -u
+npm install
+```
 
 ### Dependencies
 The project aims at using as few dependencies as possible. At the moment, the following dependencies are used:
