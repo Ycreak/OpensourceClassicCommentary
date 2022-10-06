@@ -11,6 +11,8 @@ import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 
+import {animate, state, style, transition, trigger} from '@angular/animations';
+
 // Component imports
 import { ApiService } from '../api.service';
 import { UtilityService } from '../utility.service';
@@ -33,7 +35,16 @@ export interface UserData {
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  styleUrls: ['./dashboard.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
+
+
 })
 export class DashboardComponent implements OnInit {
 
@@ -41,8 +52,11 @@ export class DashboardComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   
-  displayedColumns: string[] = ['username', 'role']; //['id', 'name', 'progress', 'fruit'];
+  columnsToDisplay: string[] = ['username', 'role']; //['id', 'name', 'progress', 'fruit'];
   dataSource: MatTableDataSource<UserData>;
+  columnsToDisplayWithExpand = [...this.columnsToDisplay, 'expand'];
+  expandedElement: UserData | null; //PeriodicElement | null;
+
 
   selected_author: string = '';
   selected_book: string = '';
@@ -554,6 +568,7 @@ export class DashboardComponent implements OnInit {
   public on_bibliography_tab_change(tab_change_event: MatTabChangeEvent): void {
     this.UpdateForm('bibliography_form', 'bib_entry_type', tab_change_event.tab.textLabel.toLowerCase())
   }
+
   
   /**
    * When a bibliography entry is selected by the user, put all relevant data in the fields for easy
@@ -683,7 +698,7 @@ export class DashboardComponent implements OnInit {
           res => {
             this.utility.handle_error_message(res),
             this.request_bibliography_authors();  // After a succesful response, retrieve the authors again.
-          }, err => this.utility.handle_error_message(err)        );
+          }, err => this.utility.handle_error_message(err));
       }
     });
     this.Reset_form();
@@ -693,11 +708,11 @@ export class DashboardComponent implements OnInit {
     //////////////////////////////////////
    // USER RELATED DASHBOARD FUNCTIONS //
   //////////////////////////////////////
-  public Request_change_password(form){
+  public Request_change_password(form, username){
     if(form.password1 == form.password2){
-      this.dialog.open_confirmation_dialog('Are you sure you want to CHANGE your password', this.authService.logged_user).subscribe(result => {
+      this.dialog.open_confirmation_dialog("Are you sure you want to CHANGE this user's password", username).subscribe(result => {
         if(result){
-          this.api.user_change_password({'username':this.authService.logged_user,'new_password':form.password1}).subscribe(
+          this.api.user_change_password({'username':username,'new_password':form.password1}).subscribe(
             res => this.utility.handle_error_message(res), err => this.utility.handle_error_message(err)
           );
         }
