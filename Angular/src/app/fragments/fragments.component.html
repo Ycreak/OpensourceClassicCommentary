@@ -43,7 +43,7 @@
 <div class="container-fluid">
     <div class="row">
         <!-- First column, containing the fragments from the selected edition (these are movable) -->                                
-        <div *ngIf="toggle_column_one" class="col-sm overflowColumn">
+        <div *ngIf="toggle_column_one" class="col-sm overflow_column">
             <div class="row"> <!-- Text information and edition of reference selection -->
                 <div class="col-4"> <ng-container *ngTemplateOutlet="select_author;context:{column: 'ONE'}"></ng-container> </div>
                 <div class="col-4"> <ng-container *ngTemplateOutlet="select_title;context:{column: 'ONE'}"></ng-container> </div>
@@ -54,7 +54,7 @@
         </div>
 
         <!-- Second column, containing the fragments from other editions (these are movable) -->                                
-        <div *ngIf="toggle_column_two" class="col-sm overflowColumn">
+        <div *ngIf="toggle_column_two" class="col-sm overflow_column">
             <div class="row"> <!-- Text information and edition of reference selection -->
                 <div class="col-4"> <ng-container *ngTemplateOutlet="select_author;context:{column: 'TWO'}"></ng-container> </div>
                 <div class="col-4"> <ng-container *ngTemplateOutlet="select_title;context:{column: 'TWO'}"></ng-container> </div>
@@ -65,7 +65,7 @@
         </div>
     
         <!-- Third column, containing the fragments from other editions (these are movable) -->                                
-        <div *ngIf="toggle_column_three" class="col-sm overflowColumn">
+        <div *ngIf="toggle_column_three" class="col-sm overflow_column">
             <div class="row"> <!-- Text information and edition of reference selection -->
                 <div class="col-4"> <ng-container *ngTemplateOutlet="select_author;context:{column: 'THREE'}"></ng-container> </div>
                 <div class="col-4"> <ng-container *ngTemplateOutlet="select_title;context:{column: 'THREE'}"></ng-container> </div>
@@ -76,7 +76,7 @@
         </div>
 
         <!-- Fourth column, containing the fragments from other editions (these are movable) -->                                
-        <div *ngIf="toggle_column_four" class="col-sm overflowColumn">
+        <div *ngIf="toggle_column_four" class="col-sm overflow_column">
             <div class="row"> <!-- Text information and edition of reference selection -->
                 <div class="col-4"> <ng-container *ngTemplateOutlet="select_author;context:{column: 'FOUR'}"></ng-container> </div>
                 <div class="col-4"> <ng-container *ngTemplateOutlet="select_title;context:{column: 'FOUR'}"></ng-container> </div>
@@ -87,7 +87,7 @@
         </div>      
 
         <!-- Column with commentary, shown if a fragment from the edition of reference is clicked -->
-        <div *ngIf="toggle_commentary" class="col-sm overflowColumn">
+        <div *ngIf="toggle_commentary" class="col-sm overflow_column">
             <!-- Show either fragment data or the fact that no fragment has been selected yet. -->
             <div *ngIf="this.fragment_clicked; else no_fragment_clicked">
                 <!-- Fragment information -->

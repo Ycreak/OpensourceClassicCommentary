@@ -8,13 +8,8 @@ body, h1, h2, h3, h4, h5 {
 }
 
 /* HTML Elements */
-.overflowColumn {
+.overflow_column {
     height: 90vh;
-    overflow-y: scroll;
-}
-
-/* HTML Elements */
-.overflow_scroll {
     overflow-y: scroll;
 }
 
@@ -22,6 +17,7 @@ div {
     word-wrap: break-word;
 }
 
+// TODO: we can merge these div-padding functions with a variable for the padding amount
 .div-padding {
     padding: 1em;
 }
@@ -51,34 +47,7 @@ span {
 
 button {
     margin: 0.2em;
-  } 
-
-.btn {
-    background-color: #3F51B5;
-    color: #FFFFFC;
-    font-family: 'Arial';
-    font-size: 13px;
-   
-    &:hover {
-      background-color: #5363BD;
-  
-      color: white;
-    }
-}
-
-.center {
-    text-align: center;
-}
-
-.spacer {
-    flex: 1 1 auto;
-}
-
-/** MODALS **/
-.bibList {
-    height: auto;
-    width: 100%;
-}
+    } 
 
 /** MATERIAL **/
 .mat-list-item:hover {
@@ -95,15 +64,7 @@ button {
     flex: 1 1 auto;
 }
 
-.tab { 
-    display:inline-block; 
-    margin-left: 5em; 
-}
-
-.mat-tooltip {
-    font-size: 1.5rem !important;
-  }
-
+/* Input form related CSS */
 .input-form-full-width { 
     width: 90%;
 }
