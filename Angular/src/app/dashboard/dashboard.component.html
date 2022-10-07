@@ -731,8 +731,7 @@
     </ng-container>
     
     <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
-    <!-- TODO: click on the row to expand it, not just the button. Click here is not working -->
-    <tr mat-row *matRowDef="let row; columns: columnsToDisplayWithExpand;"
+    <tr mat-row *matRowDef="let element; columns: columnsToDisplayWithExpand;"
       class="table-element-row"
       [class.table-expanded-row]="expandedElement === element"
       (click)="expandedElement = expandedElement === element ? null : element">
