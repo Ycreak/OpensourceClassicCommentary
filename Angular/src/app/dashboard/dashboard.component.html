@@ -9,11 +9,10 @@
 
 <!-- Simple toolbar with all the different buttons and the title -->
 <mat-toolbar color="primary">
-    <span><h3 class='h3-title'>OSCC Dashboard for user {{this.authService.logged_user}} ({{this.authService.role}})</h3></span>
+    <span style="width: fit-content; transform: translateY(-1px)">
+      <h3 class='h3-title'>OSCC Dashboard for user {{this.authService.logged_user}} ({{this.authService.role}})</h3></span>
     <span class="spacer"></span>
-    
     <button mat-button class="btn" (click)="this.RequestAuthors()">RELOAD AUTHORS</button>
-
     <button mat-button class="btn" *ngIf="this.authService.is_teacher" (click)="Test('Navbar')">TEST</button>
     <button mat-button class="btn" routerLink="/fragments">FRAGMENTS</button>
     <!-- <button mat-button class="btn" (click)="RequestAuthors()">RELOAD AUTHORS</button> -->
