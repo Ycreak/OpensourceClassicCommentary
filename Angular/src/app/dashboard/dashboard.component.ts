@@ -3,7 +3,7 @@ import { Component, OnInit} from '@angular/core';
 import { AfterViewInit, ViewChild } from '@angular/core';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
-import { UntypedFormBuilder } from '@angular/forms';
+import { UntypedFormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators, UntypedFormArray } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -30,6 +30,7 @@ import { Fragment } from '../models/Fragment';
 export interface UserData {
   username: string;
   role: string;
+  _id: string;
 }
 
 @Component({
@@ -74,14 +75,18 @@ export class DashboardComponent implements OnInit {
   retrieved_bibliography_authors: object;
   retrieved_author_bibliography: object;
 
-  // Forms
-  fragmentForm: UntypedFormGroup = this.formBuilder.group({
-    _id: '',
-    fragment_name: '', //['', Validators.required],
-    author: '',
-    title: '',
-    editor: '',
-    translation: '',
+  /**
+   * This form contains all data needed to create a fragment.
+   * It is built in stages by all the fragment tabs on the HTML
+   * side. When revising  
+   */ 
+  fragment_form: UntypedFormGroup = this.formBuilder.group({
+    _id: '', 
+    fragment_name: new FormControl('', Validators.compose([Validators.required, Validators.pattern('[a-zA-Z0-9-_ ]*')])), // alphanumeric characters and dashes allowed 
+    author: ['', Validators.compose([Validators.required, Validators.pattern('[a-zA-Z ]*')])], // alpha characters allowed
+    title: ['', Validators.compose([Validators.required, Validators.pattern('[a-zA-Z ]*')])], // alpha characters allowed
+    editor: ['', Validators.compose([Validators.required, Validators.pattern('[a-zA-Z ]*')])], // alpha characters allowed
+    translation: '', 
     differences: '',
     commentary: '',
     apparatus: '',
@@ -90,11 +95,60 @@ export class DashboardComponent implements OnInit {
     lines: this.formBuilder.array([ ]),
     linked_fragments: this.formBuilder.array([ ]),
     linked_bib_entries: this.formBuilder.array([ ]),
-    status: '',
+    status: ['', Validators.required], 
     lock: 0,
   });
 
-  bibliography_form : UntypedFormGroup = this.formBuilder.group({
+  fragment_form2 = new FormGroup({
+    fragment_name: new FormControl('', [
+      Validators.required,
+      Validators.pattern('[a-zA-Z0-9-_ ]*')
+    ]),
+    author: new FormControl('', [
+      Validators.required, 
+      Validators.pattern('[a-zA-Z ]*')
+    ]), // alpha characters allowed
+    title: new FormControl('', [
+      Validators.required, 
+      Validators.pattern('[a-zA-Z ]*')
+    ]), // alpha characters allowed
+    editor: new FormControl('', [
+      Validators.required, 
+      Validators.pattern('[a-zA-Z ]*')
+    ]), // alpha characters allowed
+    translation: new FormControl(''),
+    difference: new FormControl(''),
+    commenta: new FormControl(''),
+    apparatus: new FormControl(''),
+    reconstruction: new FormControl(''),
+
+    context: new FormGroup({
+      author: new FormControl(''),
+      location: new FormControl(''),
+      text: new FormControl(''),
+    }),
+    
+    lines: new FormGroup({
+      linenumber: new FormControl(''),
+      text: new FormControl(''),
+    }),
+    
+    linked_fragments: new FormGroup({
+      fragment_id: new FormControl(''),
+    }),
+
+    linked_bib_entries: new FormGroup({
+      bib_id: new FormControl(''),
+    }),
+
+    status: new FormControl('', Validators.required),
+    lock: new FormControl(''),
+  },
+  // {updateOn: 'blur'} 
+  );
+
+
+  bibliography_form : UntypedFormGroup = this.formBuilder.group({ //TODO: Validators
     _id: '',
     bib_entry_type: 'book', // Book is default on page load
     author: '',
@@ -114,8 +168,8 @@ export class DashboardComponent implements OnInit {
   spinner_active : boolean = false;
 
   // User dashboard
-  isChecked = false;
-  temp = ''
+  // isChecked = false;
+  // temp = ''
   hide : boolean = true;
   change_password_form = this.formBuilder.group({
     password1: '',
@@ -179,14 +233,43 @@ export class DashboardComponent implements OnInit {
     // );
   }
 
+  get fragment_name() {
+    return this.fragment_form2.get('fragment_name')
+  }
+  get author() {
+    return this.fragment_form2.get('author')
+  }
+  get title() {
+    return this.fragment_form2.get('title')
+  }
+  get editor() {
+    return this.fragment_form2.get('editor')
+  }
+
+  public get_error_message(hint){  //TODO: Move this somewhere else (better)
+    let error_message: string = '';
+    
+    if (this.fragment_form2.hasError('required')) {
+      error_message = 'You must enter a value';
+    }
+    else if (this.fragment_form2.hasError('pattern')) {
+      error_message = 'You entered disallowed characters';
+    }
+    else{
+      error_message = "Something else lol"
+    }
+    let resulting_message: string = hint + ': ' + error_message;
+    return resulting_message
+  }
 
   /**
    * Simple test function, can be used for whatever
    * @param thing item to be printed
    */
   public Test(thing){
-    console.log(this.retrieved_users)
+    console.log(this.fragment_form2.value)
 
+    // console.log(this.retrieved_users)
     // console.log(this.bibliography_author_selection_form_options)
     // console.log(this.retrieved_fragment)
     
@@ -252,34 +335,34 @@ export class DashboardComponent implements OnInit {
     // Clears context and lines
     this.Clear_fields()
 
-    this.UpdateForm('fragmentForm','translation', '');
-    this.UpdateForm('fragmentForm','differences', '');
-    this.UpdateForm('fragmentForm','commentary', '');
-    this.UpdateForm('fragmentForm','apparatus', '');
-    this.UpdateForm('fragmentForm','reconstruction', '');
+    this.UpdateForm('fragment_form','translation', '');
+    this.UpdateForm('fragment_form','differences', '');
+    this.UpdateForm('fragment_form','commentary', '');
+    this.UpdateForm('fragment_form','apparatus', '');
+    this.UpdateForm('fragment_form','reconstruction', '');
   }
 
   public Update_content_form(fragment){
-    // This functions updates the fragmentForm with the provided fragment
+    // This functions updates the fragment_form with the provided fragment
     // FIXME: This should be done using a for loop
-    this.UpdateForm('fragmentForm','_id', fragment.id);
-    this.UpdateForm('fragmentForm','fragment_name', fragment.fragment_name);
-    this.UpdateForm('fragmentForm','author', fragment.author);
-    this.UpdateForm('fragmentForm','title', fragment.title);
-    this.UpdateForm('fragmentForm','editor', fragment.editor);
-    this.UpdateForm('fragmentForm','translation', fragment.translation);
-    this.UpdateForm('fragmentForm','differences', fragment.differences);
-    this.UpdateForm('fragmentForm','commentary', fragment.commentary);
-    this.UpdateForm('fragmentForm','apparatus', fragment.apparatus);
-    this.UpdateForm('fragmentForm','reconstruction', fragment.reconstruction);
-    this.UpdateForm('fragmentForm','status', fragment.status);
-    this.UpdateForm('fragmentForm','lock', fragment.lock);
+    this.UpdateForm('fragment_form','_id', fragment.id);
+    this.UpdateForm('fragment_form','fragment_name', fragment.fragment_name);
+    this.UpdateForm('fragment_form','author', fragment.author);
+    this.UpdateForm('fragment_form','title', fragment.title);
+    this.UpdateForm('fragment_form','editor', fragment.editor);
+    this.UpdateForm('fragment_form','translation', fragment.translation);
+    this.UpdateForm('fragment_form','differences', fragment.differences);
+    this.UpdateForm('fragment_form','commentary', fragment.commentary);
+    this.UpdateForm('fragment_form','apparatus', fragment.apparatus);
+    this.UpdateForm('fragment_form','reconstruction', fragment.reconstruction);
+    this.UpdateForm('fragment_form','status', fragment.status);
+    this.UpdateForm('fragment_form','lock', fragment.lock);
 
   
 
     // Fill the fragment context array
     for (let item in fragment.context){
-      let items = this.fragmentForm.get('context') as UntypedFormArray;
+      let items = this.fragment_form.get('context') as UntypedFormArray;
       items.push(
         this.formBuilder.group({
           author: fragment.context[item].author,
@@ -290,7 +373,7 @@ export class DashboardComponent implements OnInit {
     }
     // Fill the fragment lines array
     for (let item in fragment.lines){
-      let items = this.fragmentForm.get('lines') as UntypedFormArray;
+      let items = this.fragment_form.get('lines') as UntypedFormArray;
       items.push(
         this.formBuilder.group({
           'line_number': fragment.lines[item].line_number,
@@ -300,7 +383,7 @@ export class DashboardComponent implements OnInit {
     }
     // Fill the linked fragment array
     for (let item in fragment.linked_fragments){
-      let items = this.fragmentForm.get('linked_fragments') as UntypedFormArray;
+      let items = this.fragment_form.get('linked_fragments') as UntypedFormArray;
       items.push(
         this.formBuilder.group({
           fragment_id: fragment.linked_fragments[item],
@@ -313,7 +396,7 @@ export class DashboardComponent implements OnInit {
       // Request additional data from this item
       this.request_bibliography_from_id(fragment.linked_bib_entries[item])
 
-      let items = this.fragmentForm.get('linked_bib_entries') as UntypedFormArray;
+      let items = this.fragment_form.get('linked_bib_entries') as UntypedFormArray;
       items.push(
         this.formBuilder.group({
           bib_id: fragment.linked_bib_entries[item],
@@ -328,7 +411,7 @@ export class DashboardComponent implements OnInit {
 ////////////////////////////////////////////////////////////////////////////
 
   public Push_fragment_line(line_number, text){
-    let fragment_lines = this.fragmentForm.get('lines') as UntypedFormArray;
+    let fragment_lines = this.fragment_form.get('lines') as UntypedFormArray;
     fragment_lines.push(
       this.formBuilder.group({
         line_number: line_number,
@@ -338,7 +421,7 @@ export class DashboardComponent implements OnInit {
   }
 
   public Push_fragment_context(author, location, text){
-    let fragment_context = this.fragmentForm.get('context') as UntypedFormArray;
+    let fragment_context = this.fragment_form.get('context') as UntypedFormArray;
     fragment_context.push(
       this.formBuilder.group({
         author: author,
@@ -349,7 +432,7 @@ export class DashboardComponent implements OnInit {
   }
 
   public push_bibliography_reference(bib_entry){
-    let bibliography_references = this.fragmentForm.get('linked_bib_entries') as UntypedFormArray;
+    let bibliography_references = this.fragment_form.get('linked_bib_entries') as UntypedFormArray;
     bibliography_references.push(
       this.formBuilder.group({
         bib_id: bib_entry._id,
@@ -362,7 +445,7 @@ export class DashboardComponent implements OnInit {
 
   // DEPRECATED
   // public Push_fragment_link(author, title, editor ,fragment_name, fragment_id){
-  //   let fragment_link = this.fragmentForm.get('linked_fragments') as FormArray;
+  //   let fragment_link = this.fragment_form.get('linked_fragments') as FormArray;
   //   fragment_link.push(
   //     this.formBuilder.group({
   //       author: author,
@@ -385,16 +468,16 @@ export class DashboardComponent implements OnInit {
   }
 
   public Reset_form(){
-    this.fragmentForm.reset();
+    this.fragment_form.reset();
     this.bibliography_form.reset();
     this.Clear_fields();
   }
 
   public Clear_fields(){
-    let context = this.fragmentForm.get('context') as UntypedFormArray
-    let lines = this.fragmentForm.get('lines') as UntypedFormArray
-    let linked_fragments = this.fragmentForm.get('linked_fragments') as UntypedFormArray
-    let linked_bib_entries = this.fragmentForm.get('linked_bib_entries') as UntypedFormArray
+    let context = this.fragment_form.get('context') as UntypedFormArray
+    let lines = this.fragment_form.get('lines') as UntypedFormArray
+    let linked_fragments = this.fragment_form.get('linked_fragments') as UntypedFormArray
+    let linked_bib_entries = this.fragment_form.get('linked_bib_entries') as UntypedFormArray
 
     context.clear()
     lines.clear()
@@ -404,7 +487,7 @@ export class DashboardComponent implements OnInit {
 
 
   public Remove_form_item(target: string, index: number) {
-    let items = this.fragmentForm.get(target) as UntypedFormArray;
+    let items = this.fragment_form.get(target) as UntypedFormArray;
     items.removeAt(index);
   }
 
@@ -512,36 +595,41 @@ export class DashboardComponent implements OnInit {
     this.Request_fragments(this.selected_author, this.selected_book, this.selected_editor);
   }
 
-  // public Request_automatic_fragment_linker(author, title){
-    
-  //   let item_string = author + ', ' +  title;
-    
-  //   let fragment = new Fragment({});
-  //   fragment.author = author;
-  //   fragment.title = title;
+  public capitalize_word(word: string) {
+    if (!word) return word;
+    return word[0].toUpperCase() + word.substr(1).toLowerCase();
+  }
 
-  //   this.dialog.open_confirmation_dialog('Are you sure you want to LINK fragments from this text?', item_string).subscribe(result => {
-  //     if(result){
-  //       this.spinner_active = true;
-  //       this.api.automatic_fragment_linker(fragment).subscribe(
-  //         res => {
-  //           this.utility.handle_error_message(res),
-  //           this.spinner_active = false;
-  //         }, 
-  //         err => {
-  //           this.utility.handle_error_message(err),
-  //           this.spinner_active = false;
-  //         },
-  //       );
-  //     }
-  //   });
-  // }
+  public request_automatic_fragment_linker(author, title){
+    
+    let item_string = author + ', ' +  title;
+    
+    let fragment = new Fragment('','','','','','','','','','',[],'',[],[],0, []); //FIXME: dit moet beter kunnen
+    fragment.author = author;
+    fragment.title = title;
+
+    this.dialog.open_confirmation_dialog('Are you sure you want to LINK fragments from this text?', item_string).subscribe(result => {
+      if(result){
+        this.spinner_active = true;
+        this.api.automatic_fragment_linker(fragment).subscribe(
+          res => {
+            this.utility.handle_error_message(res),
+            this.spinner_active = false;
+          }, 
+          err => {
+            this.utility.handle_error_message(err),
+            this.spinner_active = false;
+          },
+        );
+      }
+    });
+  }
 
   public add_bibliography_entry_to_fragment(bib_entry, fragment){
     console.log('bib', bib_entry._id)
     console.log('frg', fragment._id)
 
-    console.log(this.fragmentForm.value)
+    console.log(this.fragment_form.value)
 
   }
 
@@ -645,7 +733,7 @@ export class DashboardComponent implements OnInit {
       data => {
         let temp; // simple object to access Python JSON (TODO: needs to be Angular model)
         temp = data;       
-        let linked_bib_entries = this.fragmentForm.get('linked_bib_entries') as UntypedFormArray;
+        let linked_bib_entries = this.fragment_form.get('linked_bib_entries') as UntypedFormArray;
         // Find the entry with our id
         let index = linked_bib_entries.value.findIndex(x => x.bib_id === id);
         // Add the data retrieved to the corresponding fields

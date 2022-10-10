@@ -45,9 +45,21 @@ span {
     width: 2em;
 }
 
+span.mat-button-focus-overlay {
+    width: inherit;
+}
+
 button {
     margin: 0.2em;
     } 
+
+.btn {
+    color: lightsteelblue;
+}
+
+button.btn:hover {
+    color: white
+}
 
 /** MATERIAL **/
 .mat-list-item:hover {

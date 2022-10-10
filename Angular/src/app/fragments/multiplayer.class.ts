@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { UtilityService } from '../utility.service';
 
 //   __  __       _ _   _       _                       
 //  |  \/  |     | | | (_)     | |                      
@@ -19,6 +20,7 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
   export class Multiplayer{
     constructor(
         private firestore: AngularFirestore,
+        private utility: UtilityService
       ){
         // console.log("Constructor called"); //FIXME: why is this not called upon class creation? (it is now)
       }
@@ -114,7 +116,8 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
           this.InitiateFirestore(this.sessionCode, this.tableName)
       })
       .catch(e => {
-          console.log(e); //TODO: should be done using the snackbar
+        console.log(e)
+        this.utility.open_snackbar(e)
       })
     }
     /**
@@ -151,7 +154,7 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
       // Unsubscribe from the previous watcher.
       this.firestore_session.unsubscribe();      
       // Show Snackbar with information. FIXME: it is underneath the keyboard xD
-      // this.open_snackbar('Please create a new session before doing anything.') TODO:
+      // this.utility.open_snackbar('Please create a new session before doing anything.') TODO:
     }
     /**
      * Simple function to empty the recycle bin.
@@ -176,9 +179,11 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
         // On succes, log. TODO: we could just leave this out.
         .then(() => {
           console.log('Sync complete');
-        }) // On error, log error. TODO: this should be in a snackbar
+          this.utility.open_snackbar('Sync complete')
+        })
         .catch(function(error) {
-          // console.error('Error writing document: ', error);
+          console.error('Error writing document: ', error);
+          this.utility.open_snackbar('Error writing document: ', error)
           this.handle_error_message(error)
         });   
     }

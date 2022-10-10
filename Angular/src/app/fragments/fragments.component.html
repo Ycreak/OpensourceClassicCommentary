@@ -9,7 +9,8 @@
 
 <!-- Navigation bar -->
 <mat-toolbar color="primary">
-    <span><h3 class='h3-title'>Open Source Classics Commentary</h3></span>
+    <span style="width: fit-content; transform: translateY(-1px)">
+        <h3 class='h3-title'>Open Source Classics Commentary</h3></span>
     <span class="spacer"></span>
     <button mat-button class="btn" routerLink="/dashboard" *ngIf="this.auth_service.is_logged_in">DASHBOARD</button>
     <button mat-button class="btn" (click)="test('thing')" *ngIf="this.auth_service.is_teacher"> TEST</button>

@@ -1,6 +1,21 @@
 @import url('../app.component.scss');
 // Fragments component specific CSS. For more generic CSS, see ../app.component.scss.
 
+/* Toolbar/header CSS */
+// Alignment
+mat-checkbox.btn label span.mat-checkbox-inner-container {
+  width: 28px;
+}
+
+mat-checkbox.btn label span.mat-checkbox-label {
+  width: fit-content;
+}
+
+// Hide checkmark
+mat-checkbox.btn label span span svg {
+  display: none
+}
+
 /* Fragment and commentary column related CSS */
 
 // Box in which the fragment is shown. Created by the for-loop in Fragment Column.
