@@ -13,7 +13,7 @@
       <h3 class='h3-title'>OSCC Dashboard for user {{this.authService.logged_user}} ({{this.authService.role}})</h3></span>
     <span class="spacer"></span>
     <button mat-button class="btn" (click)="this.RequestAuthors()">RELOAD AUTHORS</button>
-    <button mat-button class="btn" *ngIf="this.authService.is_teacher" (click)="Test('Navbar')">TEST</button>
+    <button mat-button class="btn" *ngIf="this.authService.is_teacher" (click)="test('Navbar')">TEST</button>
     <button mat-button class="btn" routerLink="/fragments">FRAGMENTS</button>
     <!-- <button mat-button class="btn" (click)="RequestAuthors()">RELOAD AUTHORS</button> -->
 </mat-toolbar>
@@ -46,8 +46,7 @@
               (click)="this.RequestBooks(author.name)"
               (click)="this.retrieved_books = []; this.retrieved_editors = []; this.retrieved_fragment_numbers = []"
               (click)="this.fragment_selected = false; this.allow_fragment_creation = false"
-              (click)="this.UpdateForm('fragment_form', 'author', author.name); this.Clean_fragment_content()"
-              (click)="this.UpdateForm('fragment_form', 'title', ''); this.UpdateForm('fragment_form', 'editor', ''); this.UpdateForm('fragment_form', 'fragment_name', '')">
+              (click)="this.reset_fragment_form()">
                 {{ author.name }} 
             </mat-option>
         </mat-select>  
@@ -61,8 +60,7 @@
                 (click)="this.RequestEditors(this.selected_author, book.name)"
                 (click)="this.retrieved_editors = []; this.retrieved_fragment_numbers = []"
                 (click)="this.fragment_selected = false; this.allow_fragment_creation = false"
-                (click)="this.UpdateForm('fragment_form', 'title', book.name); this.Clean_fragment_content()"
-                (click)="this.UpdateForm('fragment_form', 'editor', ''); this.UpdateForm('fragment_form', 'fragment_name', '')">
+                (click)="this.reset_fragment_form()">
                   {{ book.name }}                
               </mat-option>
           </mat-select>
@@ -76,9 +74,8 @@
                   (click)="this.Request_fragments(this.selected_author, this.selected_book, editor.name)"
                   (click)="this.retrieved_fragment_numbers = []"
                   (click)="this.fragment_selected = false; this.allow_fragment_creation = true"
-                  (click)="this.UpdateForm('fragment_form', 'editor', editor.name); this.Clean_fragment_content()"
-                  (click)="this.UpdateForm('fragment_form', 'fragment_name', '')">
-                  {{ editor.name }}                     
+                  (click)="this.reset_fragment_form()">
+                    {{ editor.name }}                     
               </mat-option>
           </mat-select>
       </mat-form-field>
@@ -87,8 +84,8 @@
           <mat-label>Fragment</mat-label>
           <mat-select>
               <mat-option *ngFor="let fragment_number of this.retrieved_fragment_numbers" [value]="fragment_number"
-                (click)="Reset_form()"    
-                (click)="this.Retrieve_requested_fragment(this.retrieved_fragments, fragment_number)"
+                (click)="reset_fragment_form()"    
+                (click)="this.retrieve_requested_fragment(this.retrieved_fragments, fragment_number)"
                 (click)="this.fragment_selected = true">
                   {{ fragment_number }} 
               </mat-option>
@@ -659,8 +656,7 @@
 
     <hr>
 
-<!-- USERS PANEL -->
-
+    <!-- Change user expansion panel -->
     <mat-expansion-panel *ngIf="this.authService.is_logged_in" [expanded]="true">
       <mat-expansion-panel-header>
         <mat-panel-title>
@@ -675,7 +671,7 @@
       <!-- Functionality to filter the table -->
       <mat-form-field appearance="standard">
         <mat-label>Filter users</mat-label>
-        <input matInput (keyup)="applyFilter($event)" placeholder="Ex. John" #input>
+        <input matInput (keyup)="apply_user_table_filter($event)" placeholder="Ex. John" #input>
       </mat-form-field>
 
       <!-- Table itself -->
@@ -750,8 +746,8 @@
                     <mat-label>New user role</mat-label>
                   </mat-form-field>
                   <br>
-                  <button mat-stroked-button color="warn" (click)="Request_delete_user(element.username)">Delete user</button>
-                  <button mat-stroked-button color="primary" (click)="Request_change_role(element.username, element.role)">Change role</button>    
+                  <button mat-stroked-button color="warn" (click)="request_delete_user(element.username)">Delete user</button>
+                  <button mat-stroked-button color="primary" (click)="request_change_role(element.username, element.role)">Change role</button>    
             
                 </div>
               
@@ -778,7 +774,7 @@
 
       <hr>
 
-      <!-- <h5>Create a new user.</h5> -->
+      <!-- form to allow admins to create new users -->
       <div *ngIf="this.authService.is_teacher">
         <form [formGroup]="create_new_user_form" (ngSubmit)="request_create_user(create_new_user_form.value)">
           <mat-form-field class="input-form-half" appearance="fill">
@@ -802,12 +798,7 @@
         </form>  
       </div>
     </mat-expansion-panel>
-
    </mat-accordion>
-
-
-
-
 </div>
 
 

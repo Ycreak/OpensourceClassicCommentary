@@ -172,12 +172,9 @@ export class DashboardComponent implements OnInit {
   });
 
   retrieved_users : UserData[]; 
-  // selected_user : string = '';
-  // user_selected : boolean = false; // controls user deletion button
-  // new_user : string = '';
-  // new_user_password : string = '';
 
-  // Whether a fragment is selected
+  // Whether a fragment is selected: allows for the revision button to be clickable
+  //FIXME: one of these is superfluous
   fragment_selected : boolean = false;
   allow_fragment_creation = false;
 
@@ -200,26 +197,12 @@ export class DashboardComponent implements OnInit {
     this.user_table_users = new MatTableDataSource(this.retrieved_users);
     }
 
-    public ngAfterViewInit() {
-      this.user_table_users.paginator = this.paginator;
-      this.user_table_users.sort = this.sort;
-    }
-
-    public applyFilter(event: Event) {
-      const filterValue = (event.target as HTMLInputElement).value;
-      this.user_table_users.filter = filterValue.trim().toLowerCase();
-  
-      if (this.user_table_users.paginator) {
-        this.user_table_users.paginator.firstPage();
-      }
-    }
-
   /**
    * On Init, we just load the list of authors. From here, selection is started
    */
   ngOnInit(): void {
     this.RequestAuthors()
-    this.Request_users()
+    this.request_users()
     // this.request_bibliography_authors()
 
     // this.bibliography_author_selection_form_filtered_options = this.bibliography_author_selection_form.valueChanges.pipe(
@@ -228,46 +211,20 @@ export class DashboardComponent implements OnInit {
     // );
   }
 
-
+  // initiate the table sorting and paginator
+  public ngAfterViewInit() {
+    this.user_table_users.paginator = this.paginator;
+    this.user_table_users.sort = this.sort;
+  }
 
   /**
    * Simple test function, can be used for whatever
    * @param thing item to be printed
+   * @author Ycreak
    */
-  public Test(thing){
+  public test(thing){
     console.log(this.fragment_form.value)
-
-    // console.log(this.retrieved_users)
-    // console.log(this.bibliography_author_selection_form_options)
-    // console.log(this.retrieved_fragment)
-    
-    // let current_fragment = new Fragment({});
-
-    // current_fragment.author = 'Ennius'
-    // current_fragment.title = 'Thyestes'
-
-    // console.log(current_fragment)
-
-    // this.Request_automatic_fragment_linker(current_fragment)
-
-
   }
-
-  // /** Builds and returns a new User. */
-  // public createNewUser(id: number): UserData {
-  //   const name =
-  //     NAMES[Math.round(Math.random() * (NAMES.length - 1))] +
-  //     ' ' +
-  //     NAMES[Math.round(Math.random() * (NAMES.length - 1))].charAt(0) +
-  //     '.';
-
-  //   return {
-  //     id: id.toString(),
-  //     name: name,
-  //     progress: Math.round(Math.random() * 100).toString(),
-  //     fruit: FRUITS[Math.round(Math.random() * (FRUITS.length - 1))],
-  //   };
-  // }
 
   public Retrieve_fragment_numbers(fragments){    
     let number_list = []
@@ -281,7 +238,8 @@ export class DashboardComponent implements OnInit {
     return number_list
   }
 
-  public Retrieve_requested_fragment(fragments, fragment_number){
+  public retrieve_requested_fragment(fragments, fragment_number){
+    //FIXME: what is this even?
     let fragment_id = ''
 
     for(let fragment in fragments){
@@ -294,89 +252,58 @@ export class DashboardComponent implements OnInit {
       data => { 
         this.retrieved_fragment = data;
         this.selected_fragment = fragment_number;
-        this.Update_content_form(this.retrieved_fragment);
+        this.convert_Fragment_to_fragment_form(this.retrieved_fragment);
 
     });
   }
 
-  public Clean_fragment_content(){
-    // Clears context and lines
-    this.Clear_fields()
-
-    this.UpdateForm('fragment_form','translation', '');
-    this.UpdateForm('fragment_form','differences', '');
-    this.UpdateForm('fragment_form','commentary', '');
-    this.UpdateForm('fragment_form','apparatus', '');
-    this.UpdateForm('fragment_form','reconstruction', '');
-  }
-
-  public Update_content_form(fragment){
+  /**
+   * This function takes the Typescript Fragment object retrieved from the server and uses
+   * its data fields to fill in the fragment_form. 
+   * @param fragment Fragment object that is to be parsed into the fragment_form
+   * @author Ycreak
+   */
+  public convert_Fragment_to_fragment_form(fragment: Fragment): void{
     // This functions updates the fragment_form with the provided fragment
-    // FIXME: This should be done using a for loop
-    this.UpdateForm('fragment_form','_id', fragment.id);
-    this.UpdateForm('fragment_form','fragment_name', fragment.fragment_name);
-    this.UpdateForm('fragment_form','author', fragment.author);
-    this.UpdateForm('fragment_form','title', fragment.title);
-    this.UpdateForm('fragment_form','editor', fragment.editor);
-    this.UpdateForm('fragment_form','translation', fragment.translation);
-    this.UpdateForm('fragment_form','differences', fragment.differences);
-    this.UpdateForm('fragment_form','commentary', fragment.commentary);
-    this.UpdateForm('fragment_form','apparatus', fragment.apparatus);
-    this.UpdateForm('fragment_form','reconstruction', fragment.reconstruction);
-    this.UpdateForm('fragment_form','status', fragment.status);
-    this.UpdateForm('fragment_form','lock', fragment.lock);
+    let fragment_items: string[] = ['fragment_name', 'author', 'title', 'editor', 'translation',
+    'differences', 'commentary', 'apparatus', 'reconstruction', 'status', 'lock']
 
-  
-
+    for (let item in fragment_items){
+      this.update_form_field('fragment_form', fragment_items[item], fragment[fragment_items[item]]);
+    }
     // Fill the fragment context array
-    for (let item in fragment.context){
-      let items = this.fragment_form.get('context') as UntypedFormArray;
-      items.push(
-        this.formBuilder.group({
-          author: fragment.context[item].author,
-          location: fragment.context[item].location,
-          text: fragment.context[item].text,
-        })
+    for (let i in fragment.context){
+      this.push_fragment_context_to_fragment_form(
+        fragment.context[i].author,
+        fragment.context[i].location,
+        fragment.context[i].text
       );
     }
     // Fill the fragment lines array
-    for (let item in fragment.lines){
-      let items = this.fragment_form.get('lines') as UntypedFormArray;
-      items.push(
-        this.formBuilder.group({
-          'line_number': fragment.lines[item].line_number,
-          'text': fragment.lines[item].text,
-        })
-      );
+    for (let i in fragment.lines){
+      this.push_fragment_line_to_fragment_form(
+        fragment.lines[i].line_number, 
+        fragment.lines[i].text);
     }
     // Fill the linked fragment array
-    for (let item in fragment.linked_fragments){
-      let items = this.fragment_form.get('linked_fragments') as UntypedFormArray;
-      items.push(
-        this.formBuilder.group({
-          fragment_id: fragment.linked_fragments[item],
-        })
-      );
-    }
-
-    for (let item in fragment.linked_bib_entries){
-
-      // Request additional data from this item
-      this.request_bibliography_from_id(fragment.linked_bib_entries[item])
-
-      let items = this.fragment_form.get('linked_bib_entries') as UntypedFormArray;
-      items.push(
-        this.formBuilder.group({
-          bib_id: fragment.linked_bib_entries[item],
-          author: '',
-          title: '',
-          year: '',
-        })
-      );
+    for (let i in fragment.linked_fragments){
+      continue
     }
   }
 
-////////////////////////////////////////////////////////////////////////////
+  /**
+   * Function to allow the User table to be filtered indifferently of field
+   * @param event that triggered the filtering process
+   * @author Ycreak
+   */
+  public apply_user_table_filter(event: Event): void {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.user_table_users.filter = filterValue.trim().toLowerCase();
+
+    if (this.user_table_users.paginator) {
+      this.user_table_users.paginator.firstPage();
+    }
+  }
 
   /**
    * This function creates a form group containing a single line of a fragment and pushes
@@ -385,7 +312,7 @@ export class DashboardComponent implements OnInit {
    * @param text with string containing the lines content
    * @author Ycreak
    */
-  public push_fragment_line_to_fragment_form(line_number: number, text: string): void{
+  public push_fragment_line_to_fragment_form(line_number: string, text: string): void{
     // First, create a form group to represent a line
     let new_line = new FormGroup({
       line_number: new FormControl(line_number),
@@ -396,7 +323,7 @@ export class DashboardComponent implements OnInit {
     fragment_lines_array.push(new_line);
   }
 
-    /**
+  /**
    * This function creates a form group containing a single context of a fragment and pushes
    * it to the fragment_form, specifically to the context FormArray.
    * @param author author of the given context
@@ -416,58 +343,28 @@ export class DashboardComponent implements OnInit {
     fragment_context_array.push(new_context);    
   }
 
-  public push_bibliography_reference(bib_entry){
-    let bibliography_references = this.fragment_form.get('linked_bib_entries') as UntypedFormArray;
-    bibliography_references.push(
-      this.formBuilder.group({
-        bib_id: bib_entry._id,
-        author: bib_entry.author,
-        title: bib_entry.title,
-        year: bib_entry.year,
-      })
-    );
-  }
-
-  // DEPRECATED
-  // public Push_fragment_link(author, title, editor ,fragment_name, fragment_id){
-  //   let fragment_link = this.fragment_form.get('linked_fragments') as FormArray;
-  //   fragment_link.push(
-  //     this.formBuilder.group({
-  //       author: author,
-  //       title: title,
-  //       editor: editor,
-  //       fragment_name: fragment_name,
-  //       fragment_id: fragment_id,
-  //     })
-  //   );    
-  // }  
-  // FORM RELATED FUNCTIONS
   /**
    * Updates a value of a key in the given form
    * @param form what form is to be updated
    * @param key what field is to be updated
    * @param value what value is to be written
+   * @author Ycreak
    */
-  public UpdateForm(form, key, value) {
+  public update_form_field(form: string, key: string, value: string): void{
     this[form].patchValue({[key]: value});
   }
 
-  public Reset_form(){
+  /**
+   * Function to reset the fragment form
+   * @author Ycreak
+   */
+  public reset_fragment_form(): void{
+    // First, remove all data from the form
     this.fragment_form.reset();
-    this.bibliography_form.reset();
-    this.Clear_fields();
-  }
-
-  public Clear_fields(){
-    let context = this.fragment_form.get('context') as UntypedFormArray
-    let lines = this.fragment_form.get('lines') as UntypedFormArray
-    let linked_fragments = this.fragment_form.get('linked_fragments') as UntypedFormArray
-    let linked_bib_entries = this.fragment_form.get('linked_bib_entries') as UntypedFormArray
-
-    context.clear()
-    lines.clear()
-    linked_fragments.clear()
-    linked_bib_entries.clear()
+    // Second, remove the controls created for the FormArrays
+    this.fragment_form.setControl('context', new FormArray([]));
+    this.fragment_form.setControl('lines', new FormArray([]));
+    this.fragment_form.setControl('linked_fragments', new FormArray([]));
   }
 
   /**
@@ -475,20 +372,12 @@ export class DashboardComponent implements OnInit {
    * @param form_name encapsulating form
    * @param target FormArray from which to delete an item
    * @param index number of the item we want to delete
+   * @author Ycreak
    */
   public remove_form_item_from_form_array(form_name: string, target: string, index: number): void{
     let form_array_in_question = this[form_name].get(target) as FormArray;
     form_array_in_question.removeAt(index);
   }
-
-  // public Request_fragment_lock(form){
-    
-  //   let lock_status = (form.lock ? 1 : 0);
-        
-  //   this.api.update_fragment_lock({'id': form._id, 'lock': lock_status}).subscribe(
-  //     res => this.utility.handle_error_message(res), err => this.utility.handle_error_message(err)
-  //   );  
-  // }
 
 //   _____  ______ ____  _    _ ______  _____ _______ _____ 
 //  |  __ \|  ____/ __ \| |  | |  ____|/ ____|__   __/ ____|
@@ -550,7 +439,7 @@ export class DashboardComponent implements OnInit {
           );
         }
       });
-      this.Reset_form();
+      this.reset_fragment_form();
     }
   }
 
@@ -565,7 +454,7 @@ export class DashboardComponent implements OnInit {
       }
     });
     // Now reset form and request the fragments again
-    this.Reset_form();
+    this.reset_fragment_form();
     this.Request_fragments(this.selected_author, this.selected_book, this.selected_editor);
   }
 
@@ -580,7 +469,7 @@ export class DashboardComponent implements OnInit {
       }
     });
     // Now reset form and request the fragments again
-    this.Reset_form();
+    this.reset_fragment_form();
     this.fragment_selected = false;
     this.Request_fragments(this.selected_author, this.selected_book, this.selected_editor);
   }
@@ -615,17 +504,103 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  public add_bibliography_entry_to_fragment(bib_entry, fragment){
-    console.log('bib', bib_entry._id)
-    console.log('frg', fragment._id)
-
-    console.log(this.fragment_form.value)
-
+    //////////////////////////////////////
+   // USER RELATED DASHBOARD FUNCTIONS //
+  //////////////////////////////////////
+  public request_change_password(form, username){
+    if(form.password1 == form.password2){
+      this.dialog.open_confirmation_dialog("Are you sure you want to CHANGE this user's password", username).subscribe(result => {
+        if(result){
+          this.api.user_change_password({'username':username,'new_password':form.password1}).subscribe(
+            res => this.utility.handle_error_message(res), err => this.utility.handle_error_message(err)
+          );
+        }
+      });
+    }
+    else{
+      this.utility.open_snackbar('Passwords do not match.');
+    }
   }
+
+  public request_users(){
+    this.api.get_users().subscribe(
+      data => {
+        this.retrieved_users = data;
+        // Rebuild the table that displays the users
+        this.user_table_users = new MatTableDataSource(this.retrieved_users);
+        this.user_table_users.paginator = this.paginator;
+        this.user_table_users.sort = this.sort;
+      },
+      err => this.utility.handle_error_message(err),
+    );      
+  }
+
+  public request_create_user(form_results){
+
+    this.dialog.open_confirmation_dialog('Are you sure you want to CREATE this user?', form_results.new_user).subscribe(result => {
+      if(result){
+        this.api.create_user({'username':form_results.new_user,'password':form_results.new_password}).subscribe(
+          res => {
+            this.utility.handle_error_message(res),
+            this.request_users();
+          },
+          err => this.utility.handle_error_message(err)
+        );
+      }
+    });
+    
+  }
+
+  public request_change_role(user, role){
+    let item_string = user + ', ' + role;
+    this.dialog.open_confirmation_dialog('Are you sure you want to CHANGE the role of this user?', item_string).subscribe(result => {
+      if(result){
+        this.api.user_change_role({'username':user,'new_role':role}).subscribe(
+          res => {
+            this.utility.handle_error_message(res),
+            this.request_users();
+          },
+          err => this.utility.handle_error_message(err)
+        );
+      }
+    });
+  }
+
+  public request_delete_user(username){
+    this.dialog.open_confirmation_dialog('Are you sure you want to DELETE this user?', username).subscribe(result => {
+      if(result){
+        this.api.delete_user({'username':username}).subscribe(
+          res => {
+            this.utility.handle_error_message(res),
+            this.request_users();
+            // this.user_selected = false;
+          },
+          err => this.utility.handle_error_message(err)
+        );
+      }
+    });
+  }
+
+
+
+
+
 
     //////////////////////////////////////////////
    // BIBLIOGRAPHY RELATED DASHBOARD FUNCTIONS //
   //////////////////////////////////////////////
+  public push_bibliography_reference(bib_entry){
+    let bibliography_references = this.fragment_form.get('linked_bib_entries') as UntypedFormArray;
+    bibliography_references.push(
+      this.formBuilder.group({
+        bib_id: bib_entry._id,
+        author: bib_entry.author,
+        title: bib_entry.title,
+        year: bib_entry.year,
+      })
+    );
+  }
+  
   /** 
    * Filters the list of authors based on the user's search input
    * @param value user input
@@ -644,10 +619,19 @@ export class DashboardComponent implements OnInit {
    * @param tab_change_event angular event that gives the bibliography type to be changed to.
    */  
   public on_bibliography_tab_change(tab_change_event: MatTabChangeEvent): void {
-    this.UpdateForm('bibliography_form', 'bib_entry_type', tab_change_event.tab.textLabel.toLowerCase())
+    this.update_form_field('bibliography_form', 'bib_entry_type', tab_change_event.tab.textLabel.toLowerCase())
   }
 
-  
+  public add_bibliography_entry_to_fragment(bib_entry, fragment){
+    console.log('bib', bib_entry._id)
+    console.log('frg', fragment._id)
+
+    console.log(this.fragment_form.value)
+
+  }
+
+
+
   /**
    * When a bibliography entry is selected by the user, put all relevant data in the fields for easy
    * revision.
@@ -661,17 +645,17 @@ export class DashboardComponent implements OnInit {
     if (bib_entry.bib_entry_type == 'book') this.bibliography_form_selected_type.setValue(0);
     if (bib_entry.bib_entry_type == 'article') this.bibliography_form_selected_type.setValue(1);
 
-    this.UpdateForm('bibliography_form','_id', bib_entry._id);
-    this.UpdateForm('bibliography_form','author', bib_entry.author);
-    this.UpdateForm('bibliography_form','title', bib_entry.title);
-    this.UpdateForm('bibliography_form','year', bib_entry.year);
-    this.UpdateForm('bibliography_form','series', bib_entry.series);
-    this.UpdateForm('bibliography_form','number', bib_entry.number);
-    this.UpdateForm('bibliography_form','loction', bib_entry.location);
-    this.UpdateForm('bibliography_form','editon', bib_entry.edition);
-    this.UpdateForm('bibliography_form','journal', bib_entry.journal);
-    this.UpdateForm('bibliography_form','volume', bib_entry.volume);
-    this.UpdateForm('bibliography_form','pages', bib_entry.pages);
+    this.update_form_field('bibliography_form','_id', bib_entry._id);
+    this.update_form_field('bibliography_form','author', bib_entry.author);
+    this.update_form_field('bibliography_form','title', bib_entry.title);
+    this.update_form_field('bibliography_form','year', bib_entry.year);
+    this.update_form_field('bibliography_form','series', bib_entry.series);
+    this.update_form_field('bibliography_form','number', bib_entry.number);
+    this.update_form_field('bibliography_form','loction', bib_entry.location);
+    this.update_form_field('bibliography_form','editon', bib_entry.edition);
+    this.update_form_field('bibliography_form','journal', bib_entry.journal);
+    this.update_form_field('bibliography_form','volume', bib_entry.volume);
+    this.update_form_field('bibliography_form','pages', bib_entry.pages);
 
 
   }
@@ -747,7 +731,7 @@ export class DashboardComponent implements OnInit {
         );
       }
     });
-    this.Reset_form();
+    // this.reset_form('bib_form');
   }
 
   public request_create_bibliography_entry(bibliography){
@@ -764,7 +748,7 @@ export class DashboardComponent implements OnInit {
         );
       }
     });
-    this.Reset_form();
+    // this.reset_form('bib_form');
   }
 
   public request_delete_bibliography_entry(bibliography){
@@ -779,86 +763,11 @@ export class DashboardComponent implements OnInit {
           }, err => this.utility.handle_error_message(err));
       }
     });
-    this.Reset_form();
+    // this.reset_form('bib_form');
     this.bib_entry_selected = false;
   }
 
-    //////////////////////////////////////
-   // USER RELATED DASHBOARD FUNCTIONS //
-  //////////////////////////////////////
-  public request_change_password(form, username){
-    if(form.password1 == form.password2){
-      this.dialog.open_confirmation_dialog("Are you sure you want to CHANGE this user's password", username).subscribe(result => {
-        if(result){
-          this.api.user_change_password({'username':username,'new_password':form.password1}).subscribe(
-            res => this.utility.handle_error_message(res), err => this.utility.handle_error_message(err)
-          );
-        }
-      });
-    }
-    else{
-      this.utility.open_snackbar('Passwords do not match.');
-    }
-  }
 
-  public Request_users(){
-    this.api.get_users().subscribe(
-      data => {
-        this.retrieved_users = data;
-        // Rebuild the table that displays the users
-        this.user_table_users = new MatTableDataSource(this.retrieved_users);
-        this.user_table_users.paginator = this.paginator;
-        this.user_table_users.sort = this.sort;
-      },
-      err => this.utility.handle_error_message(err),
-    );      
-  }
-
-  public request_create_user(form_results){
-
-    this.dialog.open_confirmation_dialog('Are you sure you want to CREATE this user?', form_results.new_user).subscribe(result => {
-      if(result){
-        this.api.create_user({'username':form_results.new_user,'password':form_results.new_password}).subscribe(
-          res => {
-            this.utility.handle_error_message(res),
-            this.Request_users();
-          },
-          err => this.utility.handle_error_message(err)
-        );
-      }
-    });
-    
-  }
-
-  public Request_change_role(user, role){
-    let item_string = user + ', ' + role;
-    this.dialog.open_confirmation_dialog('Are you sure you want to CHANGE the role of this user?', item_string).subscribe(result => {
-      if(result){
-        this.api.user_change_role({'username':user,'new_role':role}).subscribe(
-          res => {
-            this.utility.handle_error_message(res),
-            this.Request_users();
-          },
-          err => this.utility.handle_error_message(err)
-        );
-      }
-    });
-  }
-
-  public Request_delete_user(username){
-    this.dialog.open_confirmation_dialog('Are you sure you want to DELETE this user?', username).subscribe(result => {
-      if(result){
-        this.api.delete_user({'username':username}).subscribe(
-          res => {
-            this.utility.handle_error_message(res),
-            this.Request_users();
-            // this.user_selected = false;
-          },
-          err => this.utility.handle_error_message(err)
-        );
-      }
-    });
-  }
 
 
 }
