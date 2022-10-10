@@ -661,145 +661,149 @@
 
 <!-- USERS PANEL -->
 
-<!-- Functionality to filter the table -->
-<mat-form-field appearance="standard">
-  <mat-label>Filter users</mat-label>
-  <input matInput (keyup)="applyFilter($event)" placeholder="Ex. John" #input>
-</mat-form-field>
-
-
-<!-- Table itself -->
-<div class="mat-elevation-z8">
-  <table mat-table [dataSource]="this.dataSource" matSort multiTemplateDataRows>
-
-    <!-- Column generation from columns list -->
-    <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
-      <th mat-header-cell *matHeaderCellDef> {{this.capitalize_word(column)}} </th>
-      <td mat-cell *matCellDef="let element"> {{element[column]}}</td>
-    </ng-container>
-
-    <!-- expand button (Column)-->
-    <ng-container matColumnDef="expand">
-      <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
-      <td mat-cell *matCellDef="let element">
-        <button mat-icon-button aria-label="expand row" (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
-          <mat-icon *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
-          <mat-icon *ngIf="expandedElement === element">keyboard_arrow_up</mat-icon>
-        </button>
-      </td>
-    </ng-container>
-
-    <!-- TODO: Expand self user automatically -->
-    <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
-    <ng-container matColumnDef="expandedDetail">
-      <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplayWithExpand.length">
-        
-        <div class="table-element-detail"
-        [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
-        
-          <!-- Area to change the user's password -->
-          <div class="table-element-description table-expansion-panel-subcontainer">
-            <hr>
-            <p>Change the password of the selected user here.</p>
-            <!-- TODO: it would be nice to use the user document id instead of their username to change passwords. -->
-            <form [formGroup]="change_password_form" (ngSubmit)="Request_change_password(change_password_form.value, element.username)">
-              <mat-form-field class="input-form-half" appearance="fill">
-                <mat-label>Enter your password</mat-label>
-                <input matInput required [type]="hide ? 'password' : 'text'" formControlName="password1">
-                <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
-                <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-                </button>
-              </mat-form-field>
-      
-              <mat-form-field class="input-form-half" appearance="fill">
-                <mat-label>Enter your password again</mat-label>
-                <input matInput required [type]="hide ? 'password' : 'text'" formControlName="password2">
-                <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
-                <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-                </button>
-              </mat-form-field>
-      
-              <div class="div-padding-sm"></div>
-      
-              <button mat-raised-button color="warn" type="submit" [disabled]="!change_password_form.valid">Change password</button>
-      
-            </form>
-          </div>
-                              
-          <!-- Area to change the user data -->
-          <div class="table-element-description table-expansion-panel-subcontainer">
-          
-            <hr>
-            <p>Change the role of the selected user here.</p>
-            <mat-form-field appearance="fill">
-              <mat-select required [(ngModel)]="element.role">
-                <mat-option value="guest">Guest</mat-option>
-                <mat-option value="student">Student</mat-option>
-                <mat-option value="teacher">Teacher</mat-option>
-              </mat-select>
-              <mat-label>New user role</mat-label>
-            </mat-form-field>
-            <br>
-            <button mat-stroked-button color="warn" (click)="Request_delete_user(element.username)">Delete user</button>
-            <button mat-stroked-button color="primary" (click)="Request_change_role(element.username, element.role)">Change role</button>    
-      
-          </div>
-         
-        </div>
-      </td>
-    </ng-container>
-    
-    <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
-    <tr mat-row *matRowDef="let element; columns: columnsToDisplayWithExpand;"
-      class="table-element-row"
-      [class.table-expanded-row]="expandedElement === element"
-      (click)="expandedElement = expandedElement === element ? null : element">
-    </tr>
-    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="table-detail-row"></tr>
-
-    <!-- Row shown when there is no matching data. -->
-    <tr class="mat-row" *matNoDataRow>
-      <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
-    </tr>
-  </table>
-
-  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
-</div>
-
-<hr>
-
-    <!-- New user creation panel -->
-    <mat-expansion-panel *ngIf="this.authService.is_teacher" (opened)="this.Request_users()">
+    <mat-expansion-panel *ngIf="this.authService.is_logged_in" [expanded]="true">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          Create new users
+          Change user data
         </mat-panel-title>
         <mat-panel-description>
-          Create new users for the OSCC.
+          Create and delete users, change roles and passwords.
           <mat-icon>manage_accounts</mat-icon>
         </mat-panel-description>
-      </mat-expansion-panel-header>
-  
-      <mat-form-field class="input-form-half">
-        <mat-label>New user</mat-label>
-        <input matInput type="text" [(ngModel)]="this.new_user">
-        <mat-hint>Provide the name of the new user</mat-hint>                       
+      </mat-expansion-panel-header>   
+
+      <!-- Functionality to filter the table -->
+      <mat-form-field appearance="standard">
+        <mat-label>Filter users</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Ex. John" #input>
       </mat-form-field>
 
-      <mat-form-field class="input-form-half" appearance="fill">
-        <mat-label>Enter their new password</mat-label>
-        <input matInput required [type]="hide ? 'password' : 'text'" [(ngModel)]="this.new_user_password">
-        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
-        <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-        </button>
-      </mat-form-field>
+      <!-- Table itself -->
+      <div class="mat-elevation-z8">
+        <table mat-table [dataSource]="this.user_table_users" matSort multiTemplateDataRows>
 
-      <br>
-      <div class="div-padding-lg"></div>
-      <button mat-stroked-button color='primary' (click)="Request_create_user(this.new_user, this.new_user_password); this.new_user = ''; this.new_user_password = ''">Create user</button>
-  
+          <!-- Column generation from columns list -->
+          <ng-container matColumnDef="{{column}}" *ngFor="let column of user_table_columns_to_display">
+            <th mat-header-cell *matHeaderCellDef> {{this.capitalize_word(column)}} </th>
+            <td mat-cell *matCellDef="let element"> {{element[column]}}</td>
+          </ng-container>
+
+          <!-- expand button (Column)-->
+          <ng-container matColumnDef="expand">
+            <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+            <td mat-cell *matCellDef="let element">
+              <button mat-icon-button aria-label="expand row" (click)="(user_table_expanded_element = user_table_expanded_element === element ? null : element); $event.stopPropagation()">
+                <mat-icon *ngIf="user_table_expanded_element !== element">keyboard_arrow_down</mat-icon>
+                <mat-icon *ngIf="user_table_expanded_element === element">keyboard_arrow_up</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <!-- TODO: Expand self user automatically -->
+          <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+          <ng-container matColumnDef="expandedDetail">
+            <td mat-cell *matCellDef="let element" [attr.colspan]="user_table_columns_to_displayWithExpand.length">
+              
+              <div class="table-element-detail"
+              [@detailExpand]="element == user_table_expanded_element ? 'expanded' : 'collapsed'">
+              
+                <!-- Area to change the user's password -->
+                <div class="table-element-description table-expansion-panel-subcontainer">
+                  <hr>
+                  <p>Change the password of the selected user here.</p>
+                  <!-- TODO: it would be nice to use the user document id instead of their username to change passwords. -->
+                  <form [formGroup]="change_password_form" (ngSubmit)="request_change_password(change_password_form.value, element.username)">
+                    <mat-form-field class="input-form-half" appearance="fill">
+                      <mat-label>Enter your password</mat-label>
+                      <input matInput required [type]="hide ? 'password' : 'text'" formControlName="password1">
+                      <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                      <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                      </button>
+                    </mat-form-field>
+            
+                    <mat-form-field class="input-form-half" appearance="fill">
+                      <mat-label>Enter your password again</mat-label>
+                      <input matInput required [type]="hide ? 'password' : 'text'" formControlName="password2">
+                      <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                      <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                      </button>
+                    </mat-form-field>
+            
+                    <div class="div-padding-sm"></div>
+            
+                    <button mat-raised-button color="warn" type="submit" [disabled]="!change_password_form.valid">Change password</button>
+            
+                  </form>
+                </div>
+                                    
+                <!-- Area to change the user data -->
+                <div class="table-element-description table-expansion-panel-subcontainer">
+                
+                  <hr>
+                  <p>Change the role of the selected user here.</p>
+                  <mat-form-field appearance="fill">
+                    <mat-select required [(ngModel)]="element.role">
+                      <mat-option value="guest">Guest</mat-option>
+                      <mat-option value="student">Student</mat-option>
+                      <mat-option value="teacher">Teacher</mat-option>
+                    </mat-select>
+                    <mat-label>New user role</mat-label>
+                  </mat-form-field>
+                  <br>
+                  <button mat-stroked-button color="warn" (click)="Request_delete_user(element.username)">Delete user</button>
+                  <button mat-stroked-button color="primary" (click)="Request_change_role(element.username, element.role)">Change role</button>    
+            
+                </div>
+              
+              </div>
+            </td>
+          </ng-container>
+          
+          <tr mat-header-row *matHeaderRowDef="user_table_columns_to_displayWithExpand"></tr>
+          <tr mat-row *matRowDef="let element; columns: user_table_columns_to_displayWithExpand;"
+            class="table-element-row"
+            [class.table-expanded-row]="user_table_expanded_element === element"
+            (click)="user_table_expanded_element = user_table_expanded_element === element ? null : element">
+          </tr>
+          <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="table-detail-row"></tr>
+
+          <!-- Row shown when there is no matching data. -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+          </tr>
+        </table>
+
+        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
+      </div>
+
+      <hr>
+
+      <!-- <h5>Create a new user.</h5> -->
+      <div *ngIf="this.authService.is_teacher">
+        <form [formGroup]="create_new_user_form" (ngSubmit)="request_create_user(create_new_user_form.value)">
+          <mat-form-field class="input-form-half" appearance="fill">
+            <mat-label>Provide the name of a new user</mat-label>
+            <input matInput required formControlName="new_user">
+          </mat-form-field>
+
+          <br>
+          <mat-form-field class="input-form-half" appearance="fill">
+            <mat-label>Enter their new password</mat-label>
+            <input matInput required [type]="hide ? 'password' : 'text'" formControlName="new_password">
+              <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+              </button>
+          </mat-form-field>
+
+          <div class="div-padding-sm"></div>
+
+          <button mat-raised-button color="primary" type="submit" [disabled]="!create_new_user_form.valid">Create new user</button>
+
+        </form>  
+      </div>
     </mat-expansion-panel>
-  </mat-accordion>
+
+   </mat-accordion>
 
 
 

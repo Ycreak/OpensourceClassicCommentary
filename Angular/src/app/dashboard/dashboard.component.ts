@@ -10,7 +10,6 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
-
 import {animate, state, style, transition, trigger} from '@angular/animations';
 
 // Component imports
@@ -27,17 +26,18 @@ import { Fragment } from '../models/Fragment';
 // import { IKeyboardLayouts, keyboardLayouts, MAT_KEYBOARD_LAYOUTS, MatKeyboardModule } from 'angular-onscreen-material-keyboard';
 // To install the onscreen keyboard: $ npm i angular-onscreen-material-keyboard
 
+// Interface to show Users in the table. FIXME: should this be a model?
 export interface UserData {
   username: string;
   role: string;
-  _id: string;
+  id: string;
 }
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
-  animations: [
+  animations: [ // For the User table
     trigger('detailExpand', [
       state('collapsed', style({height: '0px', minHeight: '0'})),
       state('expanded', style({height: '*'})),
@@ -50,14 +50,18 @@ export interface UserData {
 export class DashboardComponent implements OnInit {
 
   
+  // For the user table
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   
+  spinner_active : boolean = false;
+  hide : boolean = true; // Whether to hide passwords in the material form fields
+
   // User table specific variables
-  columnsToDisplay: string[] = ['username', 'role']; //['id', 'name', 'progress', 'fruit'];
-  dataSource: MatTableDataSource<UserData>;
-  columnsToDisplayWithExpand = [...this.columnsToDisplay, 'expand'];
-  expandedElement: UserData | null; //PeriodicElement | null;
+  user_table_columns_to_display: string[] = ['username', 'role'];
+  user_table_users: MatTableDataSource<UserData>;
+  user_table_columns_to_displayWithExpand = [...this.user_table_columns_to_display, 'expand'];
+  user_table_expanded_element: UserData | null;
 
   selected_author: string = '';
   selected_book: string = '';
@@ -118,7 +122,40 @@ export class DashboardComponent implements OnInit {
     lock: new FormControl(''),
   });
 
+  /** 
+   * This form is used to change the password of the selected user. 
+   * After all validators, it will be parsed to a User object. 
+   */ 
+  change_password_form = new FormGroup({
+    password1: new FormControl('', [
+      Validators.required,
+      Validators.pattern('[a-zA-Z0-9-_ ]*')
+    ]),
+    password2: new FormControl('', [
+      Validators.required,
+      Validators.pattern('[a-zA-Z0-9-_ ]*')
+    ]),
+  });
 
+  /** 
+   * This form is used to change the password of the selected user. 
+   * After all validators, it will be parsed to a User object. 
+   */ 
+   create_new_user_form = new FormGroup({
+    new_user: new FormControl('', [
+      Validators.required,
+      Validators.pattern('[a-zA-Z0-9-_ ]*')
+    ]),
+    new_password: new FormControl('', [
+      Validators.required,
+      Validators.pattern('[a-zA-Z0-9-_ ]*')
+    ]),
+  });
+
+  /** 
+   * This form is used for the creation of a bibliography entry. 
+   * After all validators, it will be parsed to a Bib object. 
+   */ 
   bibliography_form : UntypedFormGroup = this.formBuilder.group({ //TODO: Validators
     _id: '',
     bib_entry_type: 'book', // Book is default on page load
@@ -134,24 +171,11 @@ export class DashboardComponent implements OnInit {
     pages: '',
   });
 
-  pointer_editor : string;
-
-  spinner_active : boolean = false;
-
-  // User dashboard
-  // isChecked = false;
-  // temp = ''
-  hide : boolean = true;
-  change_password_form = this.formBuilder.group({
-    password1: '',
-    password2: '',
-  });
-
   retrieved_users : UserData[]; 
-  selected_user : string = '';
-  user_selected : boolean = false; // controls user deletion button
-  new_user : string = '';
-  new_user_password : string = '';
+  // selected_user : string = '';
+  // user_selected : boolean = false; // controls user deletion button
+  // new_user : string = '';
+  // new_user_password : string = '';
 
   // Whether a fragment is selected
   fragment_selected : boolean = false;
@@ -173,20 +197,20 @@ export class DashboardComponent implements OnInit {
     ) {
 
     // Assign the data to the data source for the table to render
-    this.dataSource = new MatTableDataSource(this.retrieved_users);
+    this.user_table_users = new MatTableDataSource(this.retrieved_users);
     }
 
     public ngAfterViewInit() {
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
+      this.user_table_users.paginator = this.paginator;
+      this.user_table_users.sort = this.sort;
     }
 
     public applyFilter(event: Event) {
       const filterValue = (event.target as HTMLInputElement).value;
-      this.dataSource.filter = filterValue.trim().toLowerCase();
+      this.user_table_users.filter = filterValue.trim().toLowerCase();
   
-      if (this.dataSource.paginator) {
-        this.dataSource.paginator.firstPage();
+      if (this.user_table_users.paginator) {
+        this.user_table_users.paginator.firstPage();
       }
     }
 
@@ -762,7 +786,7 @@ export class DashboardComponent implements OnInit {
     //////////////////////////////////////
    // USER RELATED DASHBOARD FUNCTIONS //
   //////////////////////////////////////
-  public Request_change_password(form, username){
+  public request_change_password(form, username){
     if(form.password1 == form.password2){
       this.dialog.open_confirmation_dialog("Are you sure you want to CHANGE this user's password", username).subscribe(result => {
         if(result){
@@ -782,32 +806,28 @@ export class DashboardComponent implements OnInit {
       data => {
         this.retrieved_users = data;
         // Rebuild the table that displays the users
-        this.dataSource = new MatTableDataSource(this.retrieved_users);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
+        this.user_table_users = new MatTableDataSource(this.retrieved_users);
+        this.user_table_users.paginator = this.paginator;
+        this.user_table_users.sort = this.sort;
       },
       err => this.utility.handle_error_message(err),
     );      
   }
 
-  public Request_create_user(new_user, new_password){
+  public request_create_user(form_results){
 
-    if(new_user == '' || new_password == ''){
-      this.utility.open_snackbar('Please provide proper details');
-    }
-    else{
-      this.dialog.open_confirmation_dialog('Are you sure you want to CREATE this user?', new_user).subscribe(result => {
-        if(result){
-          this.api.create_user({'username':new_user,'password':new_password}).subscribe(
-            res => {
-              this.utility.handle_error_message(res),
-              this.Request_users();
-            },
-            err => this.utility.handle_error_message(err)
-          );
-        }
-      });
-    }
+    this.dialog.open_confirmation_dialog('Are you sure you want to CREATE this user?', form_results.new_user).subscribe(result => {
+      if(result){
+        this.api.create_user({'username':form_results.new_user,'password':form_results.new_password}).subscribe(
+          res => {
+            this.utility.handle_error_message(res),
+            this.Request_users();
+          },
+          err => this.utility.handle_error_message(err)
+        );
+      }
+    });
+    
   }
 
   public Request_change_role(user, role){
@@ -832,7 +852,7 @@ export class DashboardComponent implements OnInit {
           res => {
             this.utility.handle_error_message(res),
             this.Request_users();
-            this.user_selected = false;
+            // this.user_selected = false;
           },
           err => this.utility.handle_error_message(err)
         );
