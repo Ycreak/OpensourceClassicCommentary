@@ -30,7 +30,7 @@ class User_handler():
             bool: boolean indicating if user was found or not
             json: nosql document of the found user
         """            
-        found_user = Retrieve_data_from_db(self.user_db, {'username': user.username}, [])
+        found_user = retrieve_data_from_db(self.user_db, {'username': user.username}, [])
         
         print('found', found_user)
         
