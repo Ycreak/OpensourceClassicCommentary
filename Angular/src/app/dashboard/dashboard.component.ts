@@ -3,7 +3,7 @@ import { Component, OnInit} from '@angular/core';
 import { AfterViewInit, ViewChild } from '@angular/core';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
-import { UntypedFormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, FormControl, FormGroup, FormArray } from '@angular/forms';
 import { ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators, UntypedFormArray } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -53,11 +53,11 @@ export class DashboardComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   
+  // User table specific variables
   columnsToDisplay: string[] = ['username', 'role']; //['id', 'name', 'progress', 'fruit'];
   dataSource: MatTableDataSource<UserData>;
   columnsToDisplayWithExpand = [...this.columnsToDisplay, 'expand'];
   expandedElement: UserData | null; //PeriodicElement | null;
-
 
   selected_author: string = '';
   selected_book: string = '';
@@ -75,35 +75,16 @@ export class DashboardComponent implements OnInit {
   retrieved_bibliography_authors: object;
   retrieved_author_bibliography: object;
 
-  /**
-   * This form contains all data needed to create a fragment.
-   * It is built in stages by all the fragment tabs on the HTML
-   * side. When revising  
+  /** 
+   * This form represents the Fragment class. It is built in stages by all the fragment tabs on the HTML.
+   * After all validators, it will be parsed to a Fragment object. It is used in the Dashboard for the creation
+   * and revision of fragments.
    */ 
-  fragment_form: UntypedFormGroup = this.formBuilder.group({
-    _id: '', 
-    fragment_name: new FormControl('', Validators.compose([Validators.required, Validators.pattern('[a-zA-Z0-9-_ ]*')])), // alphanumeric characters and dashes allowed 
-    author: ['', Validators.compose([Validators.required, Validators.pattern('[a-zA-Z ]*')])], // alpha characters allowed
-    title: ['', Validators.compose([Validators.required, Validators.pattern('[a-zA-Z ]*')])], // alpha characters allowed
-    editor: ['', Validators.compose([Validators.required, Validators.pattern('[a-zA-Z ]*')])], // alpha characters allowed
-    translation: '', 
-    differences: '',
-    commentary: '',
-    apparatus: '',
-    reconstruction: '',
-    context: this.formBuilder.array([ ]),
-    lines: this.formBuilder.array([ ]),
-    linked_fragments: this.formBuilder.array([ ]),
-    linked_bib_entries: this.formBuilder.array([ ]),
-    status: ['', Validators.required], 
-    lock: 0,
-  });
-
-  fragment_form2 = new FormGroup({
+  fragment_form = new FormGroup({
     fragment_name: new FormControl('', [
       Validators.required,
-      Validators.pattern('[a-zA-Z0-9-_ ]*')
-    ]),
+      Validators.pattern('[0-9-_ ]*')
+    ]), // numbers and "-" and "_" allowed.
     author: new FormControl('', [
       Validators.required, 
       Validators.pattern('[a-zA-Z ]*')
@@ -117,35 +98,25 @@ export class DashboardComponent implements OnInit {
       Validators.pattern('[a-zA-Z ]*')
     ]), // alpha characters allowed
     translation: new FormControl(''),
-    difference: new FormControl(''),
-    commenta: new FormControl(''),
+    differences: new FormControl(''),
+    commentary: new FormControl(''),
     apparatus: new FormControl(''),
     reconstruction: new FormControl(''),
+    // This array is dynamically filled by the function push_fragment_context_to_fragment_form().
+    // It will contain multiple FormGroups per context, containing an author, location and text.
+    context: new FormArray([]),
+    // This array is dynamically filled by the function push_fragment_line_to_fragment_form().
+    // It will contain multiple FormGroups per line, containing a line_number and line_text.
+    lines: new FormArray([]),
+   
+    linked_fragments: new FormArray([]),
 
-    context: new FormGroup({
-      author: new FormControl(''),
-      location: new FormControl(''),
-      text: new FormControl(''),
-    }),
-    
-    lines: new FormGroup({
-      linenumber: new FormControl(''),
-      text: new FormControl(''),
-    }),
-    
-    linked_fragments: new FormGroup({
-      fragment_id: new FormControl(''),
-    }),
-
-    linked_bib_entries: new FormGroup({
-      bib_id: new FormControl(''),
-    }),
+    linked_bib_entries: new FormArray([]),
 
     status: new FormControl('', Validators.required),
+    published: new FormControl(''),
     lock: new FormControl(''),
-  },
-  // {updateOn: 'blur'} 
-  );
+  });
 
 
   bibliography_form : UntypedFormGroup = this.formBuilder.group({ //TODO: Validators
@@ -233,41 +204,14 @@ export class DashboardComponent implements OnInit {
     // );
   }
 
-  get fragment_name() {
-    return this.fragment_form2.get('fragment_name')
-  }
-  get author() {
-    return this.fragment_form2.get('author')
-  }
-  get title() {
-    return this.fragment_form2.get('title')
-  }
-  get editor() {
-    return this.fragment_form2.get('editor')
-  }
 
-  public get_error_message(hint){  //TODO: Move this somewhere else (better)
-    let error_message: string = '';
-    
-    if (this.fragment_form2.hasError('required')) {
-      error_message = 'You must enter a value';
-    }
-    else if (this.fragment_form2.hasError('pattern')) {
-      error_message = 'You entered disallowed characters';
-    }
-    else{
-      error_message = "Something else lol"
-    }
-    let resulting_message: string = hint + ': ' + error_message;
-    return resulting_message
-  }
 
   /**
    * Simple test function, can be used for whatever
    * @param thing item to be printed
    */
   public Test(thing){
-    console.log(this.fragment_form2.value)
+    console.log(this.fragment_form.value)
 
     // console.log(this.retrieved_users)
     // console.log(this.bibliography_author_selection_form_options)
@@ -410,25 +354,42 @@ export class DashboardComponent implements OnInit {
 
 ////////////////////////////////////////////////////////////////////////////
 
-  public Push_fragment_line(line_number, text){
-    let fragment_lines = this.fragment_form.get('lines') as UntypedFormArray;
-    fragment_lines.push(
-      this.formBuilder.group({
-        line_number: line_number,
-        text: text,
-      })
-    );
+  /**
+   * This function creates a form group containing a single line of a fragment and pushes
+   * it to the fragment_form, specifically to the lines FormArray.
+   * @param line_number given number of the fragment
+   * @param text with string containing the lines content
+   * @author Ycreak
+   */
+  public push_fragment_line_to_fragment_form(line_number: number, text: string): void{
+    // First, create a form group to represent a line
+    let new_line = new FormGroup({
+      line_number: new FormControl(line_number),
+      text: new FormControl(text),
+    });
+    // Next, push the created form group to the lines FormArray    
+    let fragment_lines_array = this.fragment_form.get('lines') as FormArray;
+    fragment_lines_array.push(new_line);
   }
 
-  public Push_fragment_context(author, location, text){
-    let fragment_context = this.fragment_form.get('context') as UntypedFormArray;
-    fragment_context.push(
-      this.formBuilder.group({
-        author: author,
-        location: location,
-        text: text,
-      })
-    );
+    /**
+   * This function creates a form group containing a single context of a fragment and pushes
+   * it to the fragment_form, specifically to the context FormArray.
+   * @param author author of the given context
+   * @param location location in which the context appears
+   * @param text text of the actual context in which the fragment appears
+   * @author Ycreak
+   */
+  public push_fragment_context_to_fragment_form(_author: string, _location: string, _text: string): void{
+    // First, create a form group to represent a context
+    let new_context = new FormGroup({
+      author: new FormControl(_author),
+      location: new FormControl(_location),
+      text: new FormControl(_text),
+    });    
+    // Next, push the created form group to the context FormArray    
+    let fragment_context_array = this.fragment_form.get('context') as FormArray;
+    fragment_context_array.push(new_context);    
   }
 
   public push_bibliography_reference(bib_entry){
@@ -485,10 +446,15 @@ export class DashboardComponent implements OnInit {
     linked_bib_entries.clear()
   }
 
-
-  public Remove_form_item(target: string, index: number) {
-    let items = this.fragment_form.get(target) as UntypedFormArray;
-    items.removeAt(index);
+  /**
+   * Remove an item from a FormArray within a Form
+   * @param form_name encapsulating form
+   * @param target FormArray from which to delete an item
+   * @param index number of the item we want to delete
+   */
+  public remove_form_item_from_form_array(form_name: string, target: string, index: number): void{
+    let form_array_in_question = this[form_name].get(target) as FormArray;
+    form_array_in_question.removeAt(index);
   }
 
   // public Request_fragment_lock(form){
