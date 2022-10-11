@@ -46,8 +46,8 @@ export class ApiService {
   public get_fragment_content(fragment_id: string): Observable<JSON> {
     return this.http.get<JSON>(this.FlaskURL + `fragment_content?fragment_id=${fragment_id}`);
   }
-  public get_specific_fragment(fragment_id: string): Observable<Fragment> {
-    return this.http.get<Fragment>(this.FlaskURL + `complete_fragment?fragment_id=${fragment_id}`);
+  public get_specific_fragment(author: string, title: string, editor: string, fragment_name: string): Observable<Fragment> {
+    return this.http.get<Fragment>(this.FlaskURL + `complete_fragment?fragment_id=${author}&book=${title}&editor=${editor}&fragment_name=${fragment_name}`);
   }
   public get_authors(): Observable<Author[]> {
     return this.http.get<Author[]>(this.FlaskURL + `authors`);

@@ -124,7 +124,7 @@ class Fragment_handler:
 
         return fragment
 
-    def retrieve_complete_fragment(self, fragment_id) -> dict:
+    def retrieve_complete_fragment(self, fragment) -> dict:
         """Returns all the data from the given fragment. Called in the dashboard
 
         Args:
@@ -133,7 +133,9 @@ class Fragment_handler:
         Returns:
             couch document: with all data of the requested fragment
         """                
-        return self.frag_db[fragment_id]
+        result, found_fragment = self.find_fragment(fragment)
+        
+        return found_fragment #self.frag_db[fragment_id]
 
     def find_fragment(self, fragment): # -> tuple(bool, dict): #FIXME: does not work on Pi
         """Finds the requested fragment in the database
@@ -169,7 +171,7 @@ class Fragment_handler:
             flask response: confirmation of (un)successful execution
         """
         # Check if the fragment already exists in the database
-        fragment_exist, _ = self.Find_fragment(fragment)
+        fragment_exist, _ = self.find_fragment(fragment)
 
         if fragment_exist:          
             return make_response('Fragment already exists!', 403)

@@ -287,7 +287,15 @@ export class UtilityService {
     this.open_snackbar(output);
   }
   
-  
+  /**
+   * Capitalizes the first letter of each given word
+   * @param word the word to be capitalized
+   * @author CptVickers
+   */
+  public capitalize_word(word: string) {
+    if (!word) return word;
+    return word[0].toUpperCase() + word.substr(1).toLowerCase();
+  }
 
   // Allows a fragment to be moved and dropped to create a custom ordering
   public moveAndDrop(event: CdkDragDrop<string[]>, array) {

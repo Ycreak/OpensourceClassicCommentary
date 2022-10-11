@@ -66,7 +66,7 @@ export class DashboardComponent implements OnInit {
   selected_author: string = '';
   selected_book: string = '';
   selected_editor: string = '';
-  selected_fragment : string;
+  // selected_fragment : string;
 
   retrieved_authors: object;
   retrieved_books: object;
@@ -118,8 +118,8 @@ export class DashboardComponent implements OnInit {
     linked_bib_entries: new FormArray([]),
 
     status: new FormControl('', Validators.required),
-    published: new FormControl(''),
-    lock: new FormControl(''),
+    published: new FormControl('unpublished'),
+    lock: new FormControl('unlocked'),
   });
 
   /** 
@@ -201,7 +201,7 @@ export class DashboardComponent implements OnInit {
    * On Init, we just load the list of authors. From here, selection is started
    */
   ngOnInit(): void {
-    this.RequestAuthors()
+    this.request_authors()
     this.request_users()
     // this.request_bibliography_authors()
 
@@ -226,7 +226,8 @@ export class DashboardComponent implements OnInit {
     console.log(this.fragment_form.value)
   }
 
-  public Retrieve_fragment_numbers(fragments){    
+  // Given a list of fragments, this function extracts its numbers to a list for easy selection later
+  public retrieve_fragment_numbers(fragments){    
     let number_list = []
 
     for(let fragment in fragments){
@@ -238,22 +239,20 @@ export class DashboardComponent implements OnInit {
     return number_list
   }
 
-  public retrieve_requested_fragment(fragments, fragment_number){
-    //FIXME: what is this even?
-    let fragment_id = ''
+    /**
+   * Loads the specified fragment into the dashboard as a form
+   * @param author author of the fragment
+   * @param title title of the fragment
+   * @param editor editor of the fragment
+   * @param fragment_name name of the fragment
+   * @author Ycreak CptVickers
+   */
+  public retrieve_requested_fragment(author: string, title: string, editor: string, fragment_name: string): void{
 
-    for(let fragment in fragments){
-      if(fragments[fragment].fragment_name == fragment_number){
-        fragment_id = fragments[fragment].id
-      }
-    }
-    // Now, get this fragment from the server
-    this.api.get_specific_fragment(fragment_id).subscribe(
+    this.api.get_specific_fragment(author, title, editor, fragment_name).subscribe(
       data => { 
         this.retrieved_fragment = data;
-        this.selected_fragment = fragment_number;
         this.convert_Fragment_to_fragment_form(this.retrieved_fragment);
-
     });
   }
 
@@ -266,7 +265,7 @@ export class DashboardComponent implements OnInit {
   public convert_Fragment_to_fragment_form(fragment: Fragment): void{
     // This functions updates the fragment_form with the provided fragment
     let fragment_items: string[] = ['fragment_name', 'author', 'title', 'editor', 'translation',
-    'differences', 'commentary', 'apparatus', 'reconstruction', 'status', 'lock']
+    'differences', 'commentary', 'apparatus', 'reconstruction', 'status', 'lock', 'published']
 
     for (let item in fragment_items){
       this.update_form_field('fragment_form', fragment_items[item], fragment[fragment_items[item]]);
@@ -389,14 +388,20 @@ export class DashboardComponent implements OnInit {
   /**
    * Requests all authors from the database. No parameters needed
    */
-  public RequestAuthors(){
+  public request_authors(): void{
     this.api.get_authors().subscribe(
       data => this.retrieved_authors = data,
       err => this.utility.handle_error_message(err),
     );      
   }
 
-  public RequestBooks(author: string){
+  /**
+   * Requests the titles by the given author. Result is written
+   * to this.retrieved_books.
+   * @param author name of the author who's books are to be retrieved
+   * @author Ycreak
+   */
+  public request_books(author: string): void{
     this.api.get_titles(author).subscribe(
       data => {
         this.retrieved_books = data;
@@ -404,7 +409,14 @@ export class DashboardComponent implements OnInit {
     );      
   }
 
-  public RequestEditors(author: string, book: string){
+  /**
+   * Requests the editors by the given author and book title. Result is written
+   * to this.retrieved_editors.
+   * @param author name of the author who's books are to be retrieved
+   * @param book name of the title who's editors are to be retrieved
+   * @author Ycreak
+   */
+  public request_editors(author: string, book: string): void{
     this.api.get_editors(author, book).subscribe(
       data => {
         this.retrieved_editors = data;
@@ -412,26 +424,42 @@ export class DashboardComponent implements OnInit {
     );
   }
 
-  public Request_fragments(author: string, book: string, editor: string){
+  /**
+   * Requests the fragments by the given author, book and editor. Result is written
+   * to this.retrieved_fragments.
+   * @param author name of the author who's books are to be retrieved
+   * @param book name of the title who's editors are to be retrieved
+   * @param editor name of the editor who's fragments are to be retrieved
+   * @author Ycreak
+   */  
+  public request_fragments(author: string, book: string, editor: string): void{
     this.api.get_fragments(author, book, editor).subscribe(
       data => { 
         this.retrieved_fragments = data;
-        this.retrieved_fragment_numbers = this.Retrieve_fragment_numbers(data);
+        // Additionally, create a list of fragment numbers for 
+        // easy selection in the drop down menus.
+        this.retrieved_fragment_numbers = this.retrieve_fragment_numbers(data);
       });  
   }
 
-  public Request_revise_fragment(fragment){
+  /**
+   * This function requests the api to revise the fragment given the fragment_form.
+   * @param fragment_form which represents a Fragment, edited by the user in the dashboard
+   * @author Ycreak
+   * TODO: should we parse the formgroup to a Fragment object?
+   */
+  public request_revise_fragment(fragment_form: FormGroup): void{
     // If the fragment is locked and the user is not a teacher, we will not allow this operation.
         
-    if(fragment.lock && !this.authService.is_teacher){
+    if(fragment_form.value.lock && !this.authService.is_teacher){
       this.utility.open_snackbar('This fragment is locked.')
     }
     else{
-      let item_string = fragment.author + ', ' +  fragment.title + ', ' + fragment.editor + ': ' + fragment.fragment_name
+      let item_string = fragment_form.value.author + ', ' +  fragment_form.value.title + ', ' + fragment_form.value.editor + ': ' + fragment_form.value.fragment_name
 
       this.dialog.open_confirmation_dialog('Are you sure you want to REVISE this fragment?', item_string).subscribe(result => {
         if(result){
-          this.api.revise_fragment(fragment).subscribe(
+          this.api.revise_fragment(fragment_form).subscribe(
             res => {
               this.utility.handle_error_message(res);
             }, 
@@ -443,47 +471,69 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  public Request_create_fragment(fragment){
-    let item_string = fragment.author + ', ' +  fragment.title + ', ' + fragment.editor + ': ' + fragment.fragment_name
+  /**
+   * Given the fragment_form which represents a Fragment, this function requests the api to create a
+   * new fragment. NB: this only uses the provided meta data to create a new fragment.
+   * @param fragment_form which represents a Fragment, edited by the user in the dashboard
+   * @author Ycreak
+   * TODO: should we parse the formgroup to a Fragment object?
+   */
+  public request_create_fragment(fragment_form: FormGroup): void{
+    let item_string = fragment_form.value.author + ', ' +  fragment_form.value.title + ', ' + fragment_form.value.editor + ': ' + fragment_form.value.fragment_name
 
     this.dialog.open_confirmation_dialog('Are you sure you want to CREATE this fragment?', item_string).subscribe(result => {
       if(result){
-        this.api.create_fragment(fragment).subscribe(
+        this.api.create_fragment(fragment_form).subscribe(
           res => this.utility.handle_error_message(res), err => this.utility.handle_error_message(err)
         );
       }
     });
     // Now reset form and request the fragments again
+    this.request_fragments(this.selected_author, this.selected_book, this.selected_editor); //TODO: Is this still needed?
+    let saved_new_fragment: [string, string, string, string];
+    saved_new_fragment = [fragment_form.value.author, fragment_form.value.title, fragment_form.value.editor, fragment_form.value.fragment_name];
     this.reset_fragment_form();
-    this.Request_fragments(this.selected_author, this.selected_book, this.selected_editor);
+    this.retrieve_requested_fragment(...saved_new_fragment);    
+    this.fragment_selected = true;
   }
 
-  public Request_delete_fragment(fragment){
-    let item_string = fragment.author + ', ' +  fragment.title + ', ' + fragment.editor + ': ' + fragment.fragment_name
+  /**
+   * Given the fragment_form which represents a Fragment, this function requests the api to delete the
+   * selected fragment. This is done via its id.
+   * @param fragment_form which represents a Fragment, edited by the user in the dashboard
+   * @author Ycreak
+   */
+  public request_delete_fragment(fragment_form: FormGroup): void{
+    let item_string = fragment_form.value.author + ', ' +  fragment_form.value.title + ', ' + fragment_form.value.editor + ': ' + fragment_form.value.fragment_name
     
     this.dialog.open_confirmation_dialog('Are you sure you want to DELETE this fragment?', item_string).subscribe(result => {
       if(result){
-        this.api.delete_fragment({'id':fragment.id}).subscribe(
+        this.api.delete_fragment({'id':fragment_form.value.id}).subscribe(
           res => this.utility.handle_error_message(res), err => this.utility.handle_error_message(err)
         );
       }
     });
-    // Now reset form and request the fragments again
+    // Now reset form and request the fragments again to refresh the list, now without the deleted fragment
     this.reset_fragment_form();
     this.fragment_selected = false;
-    this.Request_fragments(this.selected_author, this.selected_book, this.selected_editor);
+    this.request_fragments(this.selected_author, this.selected_book, this.selected_editor);
   }
 
-  public capitalize_word(word: string) {
-    if (!word) return word;
-    return word[0].toUpperCase() + word.substr(1).toLowerCase();
-  }
-
-  public request_automatic_fragment_linker(author, title){
+  /**
+   * This function requests the server to link all similar fragments from a given author and title. 
+   * Linking between authors or titles is only possible manually. Linking is based on similarity and
+   * done via the fuzzywuzzy library. See the function within the server for more information.
+   * @param author name of the author who's fragments are to be linked between editions
+   * @param title name of the title who's fragments are to be linked between editions
+   * @author CptVickers Ycreak
+   */
+  public request_automatic_fragment_linker(author: string, title: string): void{
     
     let item_string = author + ', ' +  title;
     
-    let fragment = new Fragment('','','','','','','','','','',[],'',[],[],0, []); //FIXME: dit moet beter kunnen
+    let fragment = new Fragment('','','','','','','','','','',[],'',[],[],0, []); 
+    
+    //FIXME: do we want to send a fragment object to the server, or only the items that it needs?
     fragment.author = author;
     fragment.title = title;
 
@@ -507,11 +557,19 @@ export class DashboardComponent implements OnInit {
     //////////////////////////////////////
    // USER RELATED DASHBOARD FUNCTIONS //
   //////////////////////////////////////
-  public request_change_password(form, username){
-    if(form.password1 == form.password2){
+  
+  /**
+   * This function requests the changing of the selected user's password. If the dialog is succesful,
+   * communication with the server is started. If the passwords do not match, the snackbar is invoked.
+   * @param form change_password form with new passwords
+   * @param username of the currently selected user in the table
+   * @author Ycreak
+   */
+  public request_change_password(form: FormGroup, username: string): void{
+    if(form.value.password1 == form.value.password2){
       this.dialog.open_confirmation_dialog("Are you sure you want to CHANGE this user's password", username).subscribe(result => {
         if(result){
-          this.api.user_change_password({'username':username,'new_password':form.password1}).subscribe(
+          this.api.user_change_password({'username':username,'new_password':form.value.password1}).subscribe(
             res => this.utility.handle_error_message(res), err => this.utility.handle_error_message(err)
           );
         }
@@ -522,10 +580,20 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+  /**
+   * This function requests users from the server based on the role of the logged in user. 
+   * If a user is student, only the student will be retrieved. For teachers, all students will
+   * be retrieved in addition to themselves. Administrators will receive all users. 
+   * @param role
+   * @author Ycreak
+   * TODO: provide this.api.get_users with the logged in user. The server should then decide
+   * what information is provided to the frontend.
+   */
   public request_users(){
     this.api.get_users().subscribe(
       data => {
         this.retrieved_users = data;
+        //FIXME: this should be handled somewhere else, preferably by a listener
         // Rebuild the table that displays the users
         this.user_table_users = new MatTableDataSource(this.retrieved_users);
         this.user_table_users.paginator = this.paginator;
@@ -535,8 +603,13 @@ export class DashboardComponent implements OnInit {
     );      
   }
 
+  /**
+   * This function requests the API to create a new user given the form. With a username and 
+   * provided password a new user is requested from the server.
+   * @param form_results containing data of the form
+   * @author Ycreak
+   */
   public request_create_user(form_results){
-
     this.dialog.open_confirmation_dialog('Are you sure you want to CREATE this user?', form_results.new_user).subscribe(result => {
       if(result){
         this.api.create_user({'username':form_results.new_user,'password':form_results.new_password}).subscribe(
@@ -548,9 +621,15 @@ export class DashboardComponent implements OnInit {
         );
       }
     });
-    
   }
 
+  /**
+   * This function requests the changing of the role of a user. 
+   * @param user name of the user who's role is to change
+   * @param role new role to be given to the user
+   * @author Ycreak
+   * TODO: use the id of the user instead of the name to avoid potential problems
+   */
   public request_change_role(user, role){
     let item_string = user + ', ' + role;
     this.dialog.open_confirmation_dialog('Are you sure you want to CHANGE the role of this user?', item_string).subscribe(result => {
@@ -566,25 +645,25 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  public request_delete_user(username){
+  /**
+   * This function requests the api to delete a user given their username
+   * @param username name of the user who's account is to be deleted
+   * @author Ycreak
+   * TODO: this should be done using the id of the user
+   */
+  public request_delete_user(username: string): void{
     this.dialog.open_confirmation_dialog('Are you sure you want to DELETE this user?', username).subscribe(result => {
       if(result){
         this.api.delete_user({'username':username}).subscribe(
           res => {
             this.utility.handle_error_message(res),
             this.request_users();
-            // this.user_selected = false;
           },
           err => this.utility.handle_error_message(err)
         );
       }
     });
   }
-
-
-
-
-
 
     //////////////////////////////////////////////
    // BIBLIOGRAPHY RELATED DASHBOARD FUNCTIONS //
