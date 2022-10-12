@@ -2,6 +2,11 @@ import { Injectable } from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {CdkDragDrop, moveItemInArray, transferArrayItem, CdkDragEnd} from '@angular/cdk/drag-drop';
 
+// Model imports 
+import { Fragment } from './models/Fragment';
+import { User } from './models/User';
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -300,6 +305,38 @@ export class UtilityService {
   // Allows a fragment to be moved and dropped to create a custom ordering
   public moveAndDrop(event: CdkDragDrop<string[]>, array) {
     moveItemInArray(array, event.previousIndex, event.currentIndex);
+  }
+
+  /**
+   * Create an empty fragment to work with
+   * @returns Fragment object that is completely empty
+   * @author Ycreak
+   */
+  public create_empty_fragment(): Fragment {
+    return new Fragment('', '', '', '', '', '', '', '', '', '', [], '', [], [], 0, []);
+  }
+
+  /**
+   * Create an empty user to work with
+   * @returns user object that is completely empty
+   * @author Ycreak
+   */
+   public create_empty_user(): User {
+    return new User('', '', '');
+  }
+
+  /**
+   * Given a list of fragments, this function extracts its numbers to a list for easy selection later
+   * @param fragments list of Fragments to loop through
+   * @returns list with strings of fragment_names
+   */
+   public retrieve_fragment_names_from_fragment_list(fragments: Fragment[]): string[] {
+    let number_list = []
+    for (let fragment in fragments) {
+      number_list.push(fragments[fragment].fragment_name)
+    }
+    // Sort the list and return it
+    return number_list.sort(this.SortNumeric);
   }
 
 }

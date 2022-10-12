@@ -53,11 +53,11 @@ def editors():
     result = frag_db.retrieve_all_editors(request_arguments('author'), request_arguments('book'))
     return jsonify(create_simple_JSON_list(result, 'name'))
 
-@app.route("/fragments")
+@app.route("/fragments", methods=['POST'])
 def fragments():
     # Route to retrieve all fragments given an author, book and editor
-    fragments_list = frag_db.retrieve_all_fragments(request_arguments('author'), request_arguments('book'), request_arguments('editor'))
-    return jsonify(fragments_list)
+    result = frag_db.retrieve_all_fragments(Fragment(request.get_json()))
+    return jsonify(result)
 
 @app.route("/fragment_content")
 def fragment_content():
@@ -65,10 +65,10 @@ def fragment_content():
     result = frag_db.retrieve_fragment_content(Fragment({'_id':request_arguments('fragment_id')}))
     return jsonpickle.encode(result)
 
-@app.route("/complete_fragment")
+@app.route("/complete_fragment", methods=['POST'])
 def complete_fragment():
     # Route to retrieve a fragment in full. Used by the dashboard
-    result = frag_db.retrieve_complete_fragment(request_arguments('fragment_id'))
+    result = frag_db.retrieve_complete_fragment(Fragment(request.get_json()))
     return jsonify(result)
 
 # The following routes are POST methods
@@ -82,8 +82,7 @@ def create_fragment():
 @app.route("/automatic_fragment_linker", methods=['POST'])
 def automatic_fragment_linker():
     # Route to allow for the creation of the given fragment
-    received_fragment = Fragment(request.get_json())
-    response = frag_db.automatic_fragment_linker(received_fragment)
+    response = frag_db.automatic_fragment_linker(Fragment(request.get_json()))
     return response  
 
 @app.route("/revise_fragment", methods=['POST'])
@@ -96,15 +95,7 @@ def revise_fragment():
 @app.route("/delete_fragment", methods=['POST'])
 def delete_fragment():
     # Route to allow for the deletion of the given fragment
-    received_fragment = Fragment(request.get_json())
-    response = frag_db.delete_fragment(received_fragment)
-    return response
-
-@app.route("/set_fragment_lock",  methods=['POST'])
-def set_fragment_lock():
-    # Route to allow the user to lock or unlock a specific fragment
-    received_fragment = Fragment(request.get_json())
-    response = frag_db.set_fragment_lock(received_fragment)
+    response = frag_db.delete_fragment(Fragment(request.get_json()))
     return response
 
 '''
@@ -154,10 +145,10 @@ def delete_bibliography_entry():
 User interface
 '''
 # The following routes are GET methods
-@app.route("/retrieve_users")
+@app.route("/retrieve_users", methods=['POST'])
 def retrieve_users():
     # Route to retrieve all a list of all unique users in the database
-    return jsonify(user_db.retrieve_all_users())
+    return jsonify(user_db.retrieve_users(User(request.get_json())))
 
 # The following routes are POST methods
 @app.route("/login_user", methods=['POST'])

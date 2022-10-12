@@ -64,7 +64,7 @@ class Fragment_handler:
         data = retrieve_data_from_db(self.frag_db, {'author': author, 'title': title}, ['editor'])
         return sorted(set([x['editor'] for x in data]))
         
-    def retrieve_all_fragments(self, author, title, editor) -> list:
+    def retrieve_all_fragments(self, fragment) -> list:
         """Retrieves all fragments available given an author, title and editor.
         NB: only retrieves the fields needed to show an edition!
 
@@ -76,7 +76,7 @@ class Fragment_handler:
         Returns:
             list: of all fragments given the parameters
         """                
-        fragments = retrieve_data_from_db(self.frag_db, {'author': author, 'title': title, 'editor': editor}, [])
+        fragments = retrieve_data_from_db(self.frag_db, {'author': fragment.author, 'title': fragment.title, 'editor': fragment.editor}, [])
 
         fragment_list = []
 

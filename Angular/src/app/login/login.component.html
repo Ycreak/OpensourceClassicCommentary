@@ -20,7 +20,7 @@
 
     <div class="div-padding-lg"></div>
 
-    <form [formGroup]="login_form" (ngSubmit)="submit_login(this.login_form.value)">
+    <form [formGroup]="login_form" (ngSubmit)="submit_login(this.login_form)">
       <mat-form-field appearance="fill" class="input-form-full-width">
         <mat-label>Enter your username</mat-label>
         <input matInput required formControlName="username">
@@ -30,7 +30,7 @@
     
       <mat-form-field appearance="fill" class="input-form-full-width">
         <mat-label>Enter your password</mat-label>
-        <input matInput required [type]="hide_password ? 'password' : 'text'" formControlName="password">
+        <input matInput required [type]="hide_password ? 'password' : 'text'" formControlName="password1">
       </mat-form-field>
     
       <div class="div-padding-sm"></div>

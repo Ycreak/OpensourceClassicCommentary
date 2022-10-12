@@ -9,6 +9,8 @@ import { DialogService } from '../services/dialog.service';
 import { ApiService } from '../api.service';
 import { UtilityService } from '../utility.service';
 
+import { User } from '../models/User';
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -23,7 +25,7 @@ export class LoginComponent implements OnInit {
   // Form used to login existing user
   login_form = this.form_builder.group({
     username: '',
-    password: '',
+    password1: '',
   });
   // Form used to create new user
   create_form = this.form_builder.group({
@@ -46,10 +48,13 @@ export class LoginComponent implements OnInit {
   }
 
   public submit_login(form): void {
-    // Process checkout data here
-    this.api.login_user(form).subscribe(
+    // Create a user session for the auth_service to fill in    
+    let api_data = this.utility.create_empty_user();
+    api_data.username = form.value.username; api_data.password = form.value.password;
+    
+    this.api.login_user(api_data).subscribe(
       res => {
-        this.auth_service.Login_user(res, form.username)
+        this.auth_service.login_user(res)
         this.login_form_expanded = false;
         this.create_form_expanded = false;
       }, err => this.utility.handle_error_message(err)
@@ -77,7 +82,10 @@ export class LoginComponent implements OnInit {
     if(form.password1 == form.password2){
       this.dialog.open_confirmation_dialog('Are you sure you want to CREATE this user?', form.username).subscribe(result => {
         if(result){
-          this.api.create_user({'username':form.username,'password':form.password1}).subscribe(
+          let api_data = this.utility.create_empty_user();
+          api_data.username = form.new_user; api_data.new_password = form.new_password
+  
+          this.api.create_user(api_data).subscribe(
             res => {
               this.utility.handle_error_message(res),
               this.login_form_expanded = false;

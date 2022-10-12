@@ -53,9 +53,10 @@ export class FragmentsComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
+
     // Create an empty current_fragment variable to be filled whenever the user clicks a fragment
     // Its data is shown in the commentary column and not used anywhere else
-    this.current_fragment = new Fragment('','','','','','','','','','',[],'',[],[],0, []);
+    this.current_fragment = this.utility.create_empty_fragment();
 
     // Create templates for the possible fragment columns
     let column1 = new Fragment_column('ONE', 'Ennius', 'Thyestes', 'TRF');
@@ -135,7 +136,11 @@ export class FragmentsComponent implements OnInit {
    * @author Bors & Ycreak
    */
   private request_fragments(column: Fragment_column): void{
-    this.api.get_fragments(column.author, column.title, column.editor).subscribe(
+    
+    let api_data = this.utility.create_empty_fragment();
+    api_data.author = column.author; api_data.title = column.title; api_data.editor = column.editor;
+
+    this.api.get_fragments(api_data).subscribe(
       fragment_list => { 
         // Format the data just how we want it
         fragment_list = this.add_HTML_to_lines(fragment_list);

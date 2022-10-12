@@ -10,10 +10,10 @@
 <!-- Simple toolbar with all the different buttons and the title -->
 <mat-toolbar color="primary">
     <span style="width: fit-content; transform: translateY(-1px)">
-      <h3 class='h3-title'>OSCC Dashboard for user {{this.authService.logged_user}} ({{this.authService.role}})</h3></span>
+      <h3 class='h3-title'>OSCC Dashboard for user {{this.authService.current_user_name}} ({{this.authService.current_user_role}})</h3></span>
     <span class="spacer"></span>
     <button mat-button class="btn" (click)="this.request_authors()">RELOAD AUTHORS</button>
-    <button mat-button class="btn" *ngIf="this.authService.is_teacher" (click)="test('Navbar')">TEST</button>
+    <button mat-button class="btn" *ngIf="this.authService.current_user_role == 'teacher'" (click)="test('Navbar')">TEST</button>
     <button mat-button class="btn" routerLink="/fragments">FRAGMENTS</button>
     <!-- <button mat-button class="btn" (click)="request_authors()">RELOAD AUTHORS</button> -->
 </mat-toolbar>
@@ -26,7 +26,7 @@
 <div class="container-fluid">
   <mat-accordion multi>
     <!-- Change fragment expansion panel -->
-    <mat-expansion-panel *ngIf="this.authService.is_teacher || this.authService.is_student" [expanded]="true">
+    <mat-expansion-panel *ngIf="this.authService.current_user_role == 'teacher' || this.authService.current_user_role == 'student'" [expanded]="true">
       <mat-expansion-panel-header>
         <mat-panel-title>
           Change fragment data
@@ -83,11 +83,11 @@
       <mat-form-field>
           <mat-label>Fragment</mat-label>
           <mat-select>
-              <mat-option *ngFor="let fragment_number of this.retrieved_fragment_numbers" [value]="fragment_number"
+              <mat-option *ngFor="let fragment_name of this.retrieved_fragment_numbers" [value]="fragment_name"
                 (click)="this.reset_fragment_form()" 
-                (click)="this.retrieve_requested_fragment(this.retrieved_fragments, fragment_number)"
+                (click)="this.retrieve_requested_fragment(selected_author, selected_book, selected_editor, fragment_name)"
                 (click)="this.fragment_selected = true">
-                  {{ fragment_number }} 
+                  {{ fragment_name }} 
               </mat-option>
           </mat-select>
       </mat-form-field>
@@ -95,11 +95,11 @@
       <hr>
       <!-- Buttons to submit fragment data -->
       <button mat-stroked-button color="primary" [disabled]="!fragment_form.valid" (click)="request_create_fragment(this.fragment_form.value)" 
-      *ngIf="this.authService.is_teacher || this.authService.is_student">Create Fragment</button>
+      *ngIf="this.authService.current_user_role == 'teacher' || this.authService.current_user_role == 'student'">Create Fragment</button>
       <button mat-stroked-button color="primary" [disabled]="!fragment_form.valid" (click)="request_revise_fragment(this.fragment_form)" 
-        *ngIf="this.authService.is_teacher || this.authService.is_student">Revise Fragment</button>
+      *ngIf="this.authService.current_user_role == 'teacher' || this.authService.current_user_role == 'student'">Revise Fragment</button>
       <button mat-stroked-button color="warn" [disabled]="!fragment_selected" (click)="request_delete_fragment(this.fragment_form.value)" 
-          *ngIf="this.authService.is_teacher">Delete Fragment</button>
+      *ngIf="this.authService.current_user_role == 'teacher'">Delete Fragment</button>
 
       <hr>
       
@@ -526,11 +526,11 @@
 
       <!-- Buttons to submit fragment data -->
       <button mat-stroked-button color="primary" [disabled]="!bibliography_form.valid" (click)="request_create_bibliography_entry(this.bibliography_form.value)" 
-      *ngIf="this.authService.is_teacher || this.authService.is_student">Create bibliography entry</button>
+      *ngIf="this.authService.current_user_role == 'teacher' || this.authService.current_user_role == 'student'">Create bibliography entry</button>
       <button mat-stroked-button color="primary" [disabled]="!bibliography_form.valid" (click)="request_revise_bibliography_entry(this.bibliography_form.value)" 
-        *ngIf="this.authService.is_teacher || this.authService.is_student">Revise bibliography entry</button>
+      *ngIf="this.authService.current_user_role == 'teacher' || this.authService.current_user_role == 'student'">Revise bibliography entry</button>
       <button mat-stroked-button color="warn" [disabled]="!bib_entry_selected" (click)="request_delete_bibliography_entry(this.bibliography_form.value)" 
-          *ngIf="this.authService.is_teacher">Delete bibliography entry</button>
+          *ngIf="this.authService.current_user_role == 'teacher'">Delete bibliography entry</button>
       <hr>
       
       <!-- Find the name of your author -->
@@ -731,7 +731,7 @@
                 </div>
                                     
                 <!-- Area to change the user data -->
-                <div class="table-element-description table-expansion-panel-subcontainer">
+                <div class="table-element-description table-expansion-panel-subcontainer" *ngIf="this.authService.current_user_role == 'teacher'">
                 
                   <hr>
                   <p>Change the role of the selected user here.</p>
@@ -744,8 +744,8 @@
                     <mat-label>New user role</mat-label>
                   </mat-form-field>
                   <br>
-                  <button mat-stroked-button color="warn" (click)="request_delete_user(element.username)">Delete user</button>
-                  <button mat-stroked-button color="primary" (click)="request_change_role(element.username, element.role)">Change role</button>    
+                  <button mat-stroked-button color="warn" (click)="request_delete_user(element)">Delete user</button>
+                  <button mat-stroked-button color="primary" (click)="request_change_role(element)">Change role</button>    
             
                 </div>
               
@@ -773,7 +773,7 @@
       <hr>
 
       <!-- form to allow admins to create new users -->
-      <div *ngIf="this.authService.is_teacher">
+      <div *ngIf="this.authService.current_user_role == 'teacher'">
         <form [formGroup]="create_new_user_form" (ngSubmit)="request_create_user(create_new_user_form.value)">
           <mat-form-field class="input-form-half" appearance="fill">
             <mat-label>Provide the name of a new user</mat-label>

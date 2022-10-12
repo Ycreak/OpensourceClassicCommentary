@@ -1,42 +1,32 @@
 import { Injectable } from '@angular/core';
+import { User } from '../models/User';
+
+import { UtilityService } from '../utility.service';
+
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  // Login level should be an integer. 0 for guest, 1 for student, 2 for teacher en 3 for admin.
+  
+  constructor(
+    private utility: UtilityService,
+    ) { }
+  
   is_logged_in = true;
-  is_student = false;
-  is_teacher = true;
-  isGuest = false;
-
-  role: string;
   
   redirectUrl: string;
 
+  current_user_name: string = 'Lucus';
+  current_user_role: string = 'teacher';
 
-  logged_user : string;
   magic_phrase : string = 'Accius';
 
-  public Login_user(res, username){
+  public login_user(user){
     // Getting here means the server approved login
     this.is_logged_in = true;
-    this.logged_user = username;
-    this.role = res.body;
-    // Now set the role the server returns to us
-    switch(res.body) { 
-      case 'teacher': { 
-        this.is_teacher = true; 
-        break; 
-      } 
-      case 'student': { 
-        this.is_student = true; 
-        break; 
-      } 
-      default: { 
-        this.isGuest = true; 
-        break; 
-      } 
-   }
+    this.current_user_name = user.username;
+    this.current_user_role = user.role;
+
   }
 }

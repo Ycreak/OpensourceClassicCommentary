@@ -31,9 +31,7 @@ class User_handler():
             json: nosql document of the found user
         """            
         found_user = retrieve_data_from_db(self.user_db, {'username': user.username}, [])
-        
-        print('found', found_user)
-        
+                
         result = [x for x in found_user]
         
         print('result', result)
@@ -60,7 +58,7 @@ class User_handler():
         user_exist, found_user = self.find_user(user)
 
         if user_exist:
-            if self.Verify_password(found_user['password'], user.password):
+            if self.verify_password(found_user['password'], user.password):
                 found_user_role = found_user['role']
                 # Return the role of the found user to Angular
                 return make_response(found_user_role, 200)
@@ -159,16 +157,28 @@ class User_handler():
         else:
             return make_response('Could not find a user', 400)    
 
-    def retrieve_all_users(self) -> list:
+    def retrieve_users(self, user) -> list:
         """Retrieves all available users from the database and returns them in a list
+        NB: this is based on the privileges of the user
 
         Returns:
             list: of all users in the database (sorted and unique)
         """        
+        #TODO: a teacher should only retrieve their own account and those of their students
+        # admins should retrieve all users
+        # students only their own data
         user_list = []        
         
-        for id in self.user_db:
-            user_list.append({'username':self.user_db[id]['username'],'role':self.user_db[id]['role']})
+        print(user.role, '@##@@', user.username)
+
+        if user.role == 'teacher':
+            for id in self.user_db:
+                user_list.append({'id':self.user_db[id]['_id'],'username':self.user_db[id]['username'],'role':self.user_db[id]['role']})
+
+        elif user.role == 'student':
+            _, found_student = self.find_user(user)
+            user_list.append(found_student)
+
 
         return sorted(user_list, key=lambda k: k['username'])
 

@@ -4,6 +4,9 @@ class Fragment:
     """    
     def __init__(self, received_fragment):
     
+        print('#############################')
+        print(received_fragment['author'])
+
         # Fragment meta data
         if "_id" in received_fragment: 
             assert isinstance(received_fragment['_id'], str)
