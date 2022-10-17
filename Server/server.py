@@ -59,6 +59,12 @@ def fragments():
     result = frag_db.retrieve_all_fragments(Fragment(request.get_json()))
     return jsonify(result)
 
+@app.route("/fragments_names", methods=['POST'])
+def fragment_names():
+    # Route to retrieve all fragments given an author, book and editor
+    result = frag_db.retrieve_fragments_names(Fragment(request.get_json()))
+    return jsonify(result)
+
 @app.route("/fragment_content")
 def fragment_content():
     # Route to retrieve the content of the given fragment

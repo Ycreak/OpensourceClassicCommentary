@@ -21,57 +21,57 @@ export class UtilityService {
      * Shared Dashboard and Fragments functions
      */
 
-    /**
-     * Function to create a custom fragment. Can also be used to create
-     * little headers by leaving body or header empty.
-     * @param body 
-     * @param header 
-     * @param array 
-     * @return array in the correct format to be processed
-     */
-    public CreateOwnFragment(body, header, array, noteStatus){
-      // Set a value if a field has been left empty. Otherwise Firebase will be mad.
-      if (body == null){
-        body = ' '
-      }
-      if (header == null){
-        header == ' '
-      }
-      // Create a array for each content line. Here it only allows one.
-      let contentArray = []
-      // Push the array with one entry to a content array. This is only done like
-      // this to allow easy processing with the CreateFragments function in Utilities.
-      contentArray.push({
-        lineName: header,
-        lineContent: body,
-        lineComplete: body, // This should have html formatting.
-      })
+  //   /**
+  //    * Function to create a custom fragment. Can also be used to create
+  //    * little headers by leaving body or header empty.
+  //    * @param body 
+  //    * @param header 
+  //    * @param array 
+  //    * @return array in the correct format to be processed
+  //    */
+  //   public CreateOwnFragment(body, header, array, noteStatus){
+  //     // Set a value if a field has been left empty. Otherwise Firebase will be mad.
+  //     if (body == null){
+  //       body = ' '
+  //     }
+  //     if (header == null){
+  //       header == ' '
+  //     }
+  //     // Create a array for each content line. Here it only allows one.
+  //     let contentArray = []
+  //     // Push the array with one entry to a content array. This is only done like
+  //     // this to allow easy processing with the CreateFragments function in Utilities.
+  //     contentArray.push({
+  //       lineName: header,
+  //       lineContent: body,
+  //       lineComplete: body, // This should have html formatting.
+  //     })
 
-      console.log('hi', array)
+  //     console.log('hi', array)
 
-      // Push the created data to the array and empty the used arrays.
-      array.push({ fragmentName: header, content: contentArray, note: noteStatus})
-      // Return this new array.
-      return array
-    }
+  //     // Push the created data to the array and empty the used arrays.
+  //     array.push({ fragmentName: header, content: contentArray, note: noteStatus})
+  //     // Return this new array.
+  //     return array
+  //   }
 
-  /**
-   * Returns a sorted list of all fragments numbers from a given editor
-   * @param editor editor who's fragment numbers have to be retrieved
-   * @param array array of all fragments. This is F_Fragments. //TODO: is this true?
-   */
-    public GetFragmentNumbers(editor: number, array){
-      // Initialise list
-      let list = [];
-      // Push all fragment numbers to a list
-      for(let key in array){      
-        list.push(array[key].fragmentName);
-      } 
-      // Only take the unique values from this list
-      list = this.uniq(list);
-      // Sort list numerically
-      return list.sort(this.SortNumeric);    
-    }
+  // /**
+  //  * Returns a sorted list of all fragments numbers from a given editor
+  //  * @param editor editor who's fragment numbers have to be retrieved
+  //  * @param array array of all fragments. This is F_Fragments. //TODO: is this true?
+  //  */
+  //   public GetFragmentNumbers(editor: number, array){
+  //     // Initialise list
+  //     let list = [];
+  //     // Push all fragment numbers to a list
+  //     for(let key in array){      
+  //       list.push(array[key].fragmentName);
+  //     } 
+  //     // Only take the unique values from this list
+  //     list = this.uniq(list);
+  //     // Sort list numerically
+  //     return list.sort(this.SortNumeric);    
+  //   }
 
     // This function merges the multiple lines in a single fragment.
     // The structure looks as follows: Fragment 2, [[1, "hello"],[2,"hi"]]
@@ -145,26 +145,26 @@ export class UtilityService {
     return comparison;
   }
 
-  /**
-  * Sorts array numerically on fragment number
-  * @param boolean called from array
-  * @returns sorted array.
-  * @author Ycreak
-  */ // TODO: Should put Adesp and Incert. on the bottom. 
-  public SortArrayNumerically(a, b) {
-    // Sort array via the number element given.
-    // To allow fragments like '350-356' to be ordered.
-    const A = Number(a.fragmentName.split("-", 1));
-    const B = Number(b.fragmentName.split("-", 1));
+  // /**
+  // * Sorts array numerically on fragment number
+  // * @param boolean called from array
+  // * @returns sorted array.
+  // * @author Ycreak
+  // */ // TODO: Should put Adesp and Incert. on the bottom. 
+  // public SortArrayNumerically(a, b) {
+  //   // Sort array via the number element given.
+  //   // To allow fragments like '350-356' to be ordered.
+  //   const A = Number(a.fragmentName.split("-", 1));
+  //   const B = Number(b.fragmentName.split("-", 1));
 
-    let comparison = 0;
-    if (A > B) {
-      comparison = 1;
-    } else if (A < B) {
-      comparison = -1;
-    }
-    return comparison;
-  }
+  //   let comparison = 0;
+  //   if (A > B) {
+  //     comparison = 1;
+  //   } else if (A < B) {
+  //     comparison = -1;
+  //   }
+  //   return comparison;
+  // }
 
   /** Sorts array numerically on fragment number
   * @param boolean called from array
@@ -220,8 +220,9 @@ export class UtilityService {
   /**
    * Takes a string and looks for whitespace decoding. Converts it to html spans
    * @param string 
+   * @author Ycreak
    */
-  public convert_whitespace_encoding(string: string){
+  public convert_whitespace_encoding(string: string): string{
     // Find fish hooks with number in between.
     const matches = string.match(/<(\d+)>/);
     // If found, replace it with the correct whitespace number

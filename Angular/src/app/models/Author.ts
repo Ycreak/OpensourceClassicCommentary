@@ -1,7 +1,8 @@
 export class Author 
 {
-    constructor(
-        public name = name   
-    )
-    {  }
+    constructor(name: string)
+    { 
+        this.name = name
+    }
+    public name: string
 }

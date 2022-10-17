@@ -124,6 +124,21 @@ class Fragment_handler:
 
         return fragment
 
+    def retrieve_fragments_names(self, fragment):
+        """Retrieves all fragment_names available given an author, title and an editor
+
+        Args:
+            fragment (Fragment): fragment object containing all needed data fields
+
+        Returns:
+            list: of all editors from the given author and title
+        """        
+        data = retrieve_data_from_db(self.frag_db, {'author': fragment.author,
+                                                    'title': fragment.title,
+                                                    'editor': fragment.editor,                                           
+                                                    }, ['fragment_name'])
+        return sorted(set([x['fragment_name'] for x in data]))
+    
     def retrieve_complete_fragment(self, fragment) -> dict:
         """Returns all the data from the given fragment. Called in the dashboard
 

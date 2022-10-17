@@ -11,7 +11,6 @@ import { Observable } from 'rxjs';
 import { throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 
-
 // Model imports
 import { Fragment } from './models/Fragment';
 import { Author } from './models/Author';
@@ -82,6 +81,9 @@ export class ApiService {
   public get_specific_fragment(fragment: Fragment): Observable<Fragment> {
     return this.http.post<Fragment>(this.FlaskURL + `complete_fragment`, fragment, { observe: 'body', responseType: 'json'});
   }
+  public get_fragment_names(fragment: Fragment): Observable<string[]> {
+    return this.http.post<string[]>(this.FlaskURL + `fragments_names`, fragment, { observe: 'body', responseType: 'json'});
+  }  
   public create_fragment(fragment: FormGroup): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `create_fragment`, fragment, { observe: 'response', responseType: 'text' as 'json' });
   } 

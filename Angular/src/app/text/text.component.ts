@@ -42,7 +42,7 @@ export class TextComponent implements OnInit {
     this.api.get_titles(author).subscribe(
       data => {
         this.booksJSON = data;
-        this.currentBook = data[0].id; //FIXME: Self evident
+        // this.currentBook = data[0].id; //FIXME: broken
         this.currentBookTitle = data[0].title
       }
     );      

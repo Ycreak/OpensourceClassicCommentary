@@ -15,12 +15,16 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 // Component imports
 import { ApiService } from '../api.service';
 import { UtilityService } from '../utility.service';
-import { AuthService } from '../auth/auth.service';
+import { auth_service } from '../auth/auth.service';
 import { DialogService } from '../services/dialog.service';
 
 // Model imports 
 import { Fragment } from '../models/Fragment';
 import { User } from '../models/User';
+import { Author } from '../models/Author';
+import { Book } from '../models/Book';
+import { Editor } from '../models/Editor';
+
 
 // Third party imports
 // import insertTextAtCursor from 'insert-text-at-cursor';
@@ -56,14 +60,16 @@ export class DashboardComponent implements OnInit {
   user_table_columns_to_displayWithExpand = [...this.user_table_columns_to_display, 'expand'];
   user_table_expanded_element: User | null;
 
-  selected_author: string = '';
-  selected_book: string = '';
-  selected_editor: string = '';
-  // selected_fragment : string;
+  // These variables keep track of the selected author, title and editor for communication with the server.
+  selected_author: string;
+  selected_book: string;
+  selected_editor: string;
 
-  retrieved_authors: object;
-  retrieved_books: object;
-  retrieved_editors: object;
+  // These variables are used to fill the drop down menus with authors, titles and editors. 
+  retrieved_authors: Author[];
+  retrieved_books: Book[];
+  retrieved_editors: Editor[];
+  retrieved_fragment_names: string[];
 
   retrieved_fragment: Fragment;
   retrieved_fragments: Fragment[];
@@ -183,7 +189,7 @@ export class DashboardComponent implements OnInit {
     private utility: UtilityService,
     public dialog: DialogService,
     private formBuilder: UntypedFormBuilder,
-    public authService: AuthService,
+    public auth_service: auth_service,
   ) {
 
     // Assign the data to the data source for the table to render
@@ -217,12 +223,12 @@ export class DashboardComponent implements OnInit {
    * @author Ycreak
    */
   public test(thing) {
-
+    console.log(this.retrieved_fragment_names)
     // let temp = new Fragment;
     // temp.author = 'luukie'
 
     // console.log(temp)
-    console.log(this.fragment_form.value)
+    // console.log(this.fragment_form.value)
   }
 
   /**
@@ -394,27 +400,6 @@ export class DashboardComponent implements OnInit {
   }
 
   /**
-   * Requests the fragments by the given author, book and editor. Result is written
-   * to this.retrieved_fragments.
-   * @param author name of the author who's books are to be retrieved
-   * @param book name of the title who's editors are to be retrieved
-   * @param editor name of the editor who's fragments are to be retrieved
-   * @author Ycreak
-   */
-  public request_fragments(author: string, title: string, editor: string): void {
-    // Create a Fragment object to be send to the server
-    let api_data = this.utility.create_empty_fragment();
-    api_data.author = author; api_data.title = title; api_data.editor = editor;
-    
-    this.api.get_fragments(api_data).subscribe(
-      data => {
-        this.retrieved_fragments = data;
-        // Additionally, create a list of fragment numbers for easy selection in the drop down menus.
-        this.retrieved_fragment_numbers = this.utility.retrieve_fragment_names_from_fragment_list(data);
-      });
-  }
-
-  /**
    * Loads the specified fragment into the dashboard as a form
    * @param author author of the fragment
    * @param title title of the fragment
@@ -427,12 +412,32 @@ export class DashboardComponent implements OnInit {
       let api_data = this.utility.create_empty_fragment();
       api_data.author = author; api_data.title = title; api_data.editor = editor; api_data.fragment_name = fragment_name;
 
+      // console.log(api_data)
+
       this.api.get_specific_fragment(api_data).subscribe(
         data => {
           this.retrieved_fragment = data;
           this.convert_Fragment_to_fragment_form(this.retrieved_fragment);
         });
     }
+
+  /**
+   * Given the author, title and editor, request the names of the fragments from the server.
+   * @param author author of the fragment
+   * @param title title of the fragment
+   * @param editor editor of the fragment
+   * @author Ycreak
+   */
+   public request_fragment_names(author: string, title: string, editor: string): void {
+    // Create api/fragment object to send to the server
+    let api_data = this.utility.create_empty_fragment();
+    api_data.author = author; api_data.title = title; api_data.editor = editor;
+
+    this.api.get_fragment_names(api_data).subscribe(
+      data => {
+        this.retrieved_fragment_names = data;
+      });
+  }
 
   /**
    * This function requests the api to revise the fragment given the fragment_form.
@@ -443,7 +448,7 @@ export class DashboardComponent implements OnInit {
   public request_revise_fragment(fragment_form: FormGroup): void {
     // If the fragment is locked and the user is not a teacher, we will not allow this operation.
 
-    if (fragment_form.value.lock){ //&& !this.authService.current_user.role == 'teacher') {
+    if (fragment_form.value.lock){ //&& !this.auth_service.current_user.role == 'teacher') {
       this.utility.open_snackbar('This fragment is locked.')
     }
     else {
@@ -481,7 +486,7 @@ export class DashboardComponent implements OnInit {
       }
     });
     // Now reset form and request the fragments again
-    this.request_fragments(this.selected_author, this.selected_book, this.selected_editor); //TODO: Is this still needed?
+    this.request_fragment_names(this.selected_author, this.selected_book, this.selected_editor); //TODO: Is this still needed?
     let saved_new_fragment: [string, string, string, string];
     saved_new_fragment = [fragment_form.value.author, fragment_form.value.title, fragment_form.value.editor, fragment_form.value.fragment_name];
     this.reset_fragment_form();
@@ -508,7 +513,7 @@ export class DashboardComponent implements OnInit {
     // Now reset form and request the fragments again to refresh the list, now without the deleted fragment
     this.reset_fragment_form();
     this.fragment_selected = false;
-    this.request_fragments(this.selected_author, this.selected_book, this.selected_editor);
+    this.request_fragment_names(this.selected_author, this.selected_book, this.selected_editor);
   }
 
   /**
@@ -557,7 +562,7 @@ export class DashboardComponent implements OnInit {
   public request_users() {
     // We will provide the api with the currently logged in user to check its privileges
     let api_data = this.utility.create_empty_user(); 
-    api_data.role = this.authService.current_user_role; api_data.username = this.authService.current_user_name;
+    api_data.role = this.auth_service.current_user_role; api_data.username = this.auth_service.current_user_name;
     
     this.api.get_users(api_data).subscribe(
       data => {
