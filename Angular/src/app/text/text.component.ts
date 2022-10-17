@@ -101,7 +101,7 @@ export class TextComponent implements OnInit {
    * @param block JSON to be checked
    */
   public CheckEmptyBlock(block : JSON){
-    if(this.utility.IsEmpty(block)) {
+    if(this.utility.is_empty(block)) {
       return true;
     } else {
       return false;

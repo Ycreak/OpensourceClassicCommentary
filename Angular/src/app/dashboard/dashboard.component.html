@@ -44,8 +44,8 @@
             <mat-option *ngFor="let author of this.retrieved_authors" [value]="author.name"
               (click)="this.selected_author = author.name"  
               (click)="this.request_books(author.name)"
-              (click)="this.retrieved_books = []; this.retrieved_editors = []; this.retrieved_fragment_numbers = []"
-              (click)="this.fragment_selected = false; this.allow_fragment_creation = false"
+              (click)="this.retrieved_books = []; this.retrieved_editors = []; this.retrieved_fragment_names = []"
+              (click)="this.fragment_selected = false;"
               (click)="this.reset_fragment_form()">
                 {{ author.name }} 
             </mat-option>
@@ -58,8 +58,8 @@
               <mat-option *ngFor="let book of this.retrieved_books" [value]="book.name" 
                 (click)="this.selected_book = book.name"  
                 (click)="this.request_editors(this.selected_author, book.name)"
-                (click)="this.retrieved_editors = []; this.retrieved_fragment_numbers = []"
-                (click)="this.fragment_selected = false; this.allow_fragment_creation = false"
+                (click)="this.retrieved_editors = []; this.retrieved_fragment_names = []"
+                (click)="this.fragment_selected = false;"
                 (click)="this.reset_fragment_form()">
                   {{ book.name }}                
               </mat-option>
@@ -72,8 +72,8 @@
               <mat-option *ngFor="let editor of this.retrieved_editors" [value]="editor.name"
                   (click)="this.selected_editor = editor.name"  
                   (click)="this.request_fragment_names(this.selected_author, this.selected_book, editor.name)"
-                  (click)="this.retrieved_fragment_numbers = []"
-                  (click)="this.fragment_selected = false; this.allow_fragment_creation = true"
+                  (click)="this.retrieved_fragment_names = []"
+                  (click)="this.fragment_selected = false;"
                   (click)="this.reset_fragment_form()">
                     {{ editor.name }}                     
               </mat-option>
@@ -94,11 +94,11 @@
 
       <hr>
       <!-- Buttons to submit fragment data -->
-      <button mat-stroked-button color="primary" [disabled]="!fragment_form.valid" (click)="request_create_fragment(this.fragment_form.value)" 
+      <button mat-stroked-button color="primary" [disabled]="!fragment_form.valid" (click)="request_create_fragment(this.fragment_form)" 
       *ngIf="this.auth_service.current_user_role == 'teacher' || this.auth_service.current_user_role == 'student'">Create Fragment</button>
       <button mat-stroked-button color="primary" [disabled]="!fragment_form.valid" (click)="request_revise_fragment(this.fragment_form)" 
       *ngIf="this.auth_service.current_user_role == 'teacher' || this.auth_service.current_user_role == 'student'">Revise Fragment</button>
-      <button mat-stroked-button color="warn" [disabled]="!fragment_selected" (click)="request_delete_fragment(this.fragment_form.value)" 
+      <button mat-stroked-button color="warn" [disabled]="!fragment_selected" (click)="request_delete_fragment(this.fragment_form)" 
       *ngIf="this.auth_service.current_user_role == 'teacher'">Delete Fragment</button>
 
       <hr>

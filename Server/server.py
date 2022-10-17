@@ -65,10 +65,13 @@ def fragment_names():
     result = frag_db.retrieve_fragments_names(Fragment(request.get_json()))
     return jsonify(result)
 
-@app.route("/fragment_content")
+@app.route("/fragment_content", methods=['POST'])
 def fragment_content():
     # Route to retrieve the content of the given fragment
-    result = frag_db.retrieve_fragment_content(Fragment({'_id':request_arguments('fragment_id')}))
+
+    print(request.get_json())
+
+    result = frag_db.retrieve_fragment_content(Fragment(request.get_json()))
     return jsonpickle.encode(result)
 
 @app.route("/complete_fragment", methods=['POST'])
@@ -124,7 +127,6 @@ def get_bibliography_from_id():
     # Route to retrieve the complete bibliography for a given id
     result = bib_db.retrieve_bibliography_from_id(request_arguments('_id'))
     return jsonpickle.encode(result)
-    
 
 @app.route("/create_bibliography_entry",  methods=['POST'])
 def create_bibliography_entry():
@@ -166,14 +168,6 @@ def login_user():
 @app.route("/create_user", methods=['POST'])
 def create_user():
     # Route to allow for the creation of a user
-    
-    ## FIXME: experiments with marshmallow schemas
-    # result = UserSchema().load(request.get_json())
-    # result = schema.load(user_data)  
-    # import pprint
-    # print(result.username)
-    # print(result.role)
-
     received_user = User(request.get_json())
     return user_db.create_user(received_user)
 

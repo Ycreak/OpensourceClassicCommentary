@@ -8,9 +8,9 @@ class Fragment:
         print(received_fragment['author'])
 
         # Fragment meta data
-        if "_id" in received_fragment: 
-            assert isinstance(received_fragment['_id'], str)
-            self._id = received_fragment['_id']
+        if "id" in received_fragment: 
+            assert isinstance(received_fragment['id'], str)
+            self._id = received_fragment['id']
 
         if "fragment_name" in received_fragment: 
             assert isinstance(received_fragment['fragment_name'], str)

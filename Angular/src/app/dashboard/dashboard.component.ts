@@ -1,12 +1,10 @@
 // Library imports
 import { Component, OnInit } from '@angular/core';
-import { AfterViewInit, ViewChild } from '@angular/core';
+import { ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
 import { UntypedFormBuilder, FormControl, FormGroup, FormArray } from '@angular/forms';
-import { ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators, UntypedFormArray } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators, UntypedFormArray } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -25,8 +23,7 @@ import { Author } from '../models/Author';
 import { Book } from '../models/Book';
 import { Editor } from '../models/Editor';
 
-
-// Third party imports
+// Third party imports. TODO: These should be fixed again.
 // import insertTextAtCursor from 'insert-text-at-cursor';
 // import { IKeyboardLayouts, keyboardLayouts, MAT_KEYBOARD_LAYOUTS, MatKeyboardModule } from 'angular-onscreen-material-keyboard';
 // To install the onscreen keyboard: $ npm i angular-onscreen-material-keyboard
@@ -42,8 +39,6 @@ import { Editor } from '../models/Editor';
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
   ],
-
-
 })
 export class DashboardComponent implements OnInit {
 
@@ -53,6 +48,9 @@ export class DashboardComponent implements OnInit {
 
   spinner_active: boolean = false;
   hide: boolean = true; // Whether to hide passwords in the material form fields
+
+  // We only allow the delete fragment button if one is actually selected.
+  fragment_selected: boolean = false;
 
   // User table specific variables
   user_table_columns_to_display: string[] = ['username', 'role'];
@@ -71,14 +69,11 @@ export class DashboardComponent implements OnInit {
   retrieved_editors: Editor[];
   retrieved_fragment_names: string[];
 
-  retrieved_fragment: Fragment;
-  retrieved_fragments: Fragment[];
-  retrieved_fragment_numbers: string[];
-
+  // List with users shown in the Table  
+  retrieved_users: User[];
+  
   retrieved_bibliography_authors: object;
   retrieved_author_bibliography: object;
-
-  retrieved_users: User[];
 
   /** 
    * This form represents the Fragment class. It is built in stages by all the fragment tabs on the HTML.
@@ -130,11 +125,11 @@ export class DashboardComponent implements OnInit {
   change_password_form = new FormGroup({
     password1: new FormControl('', [
       Validators.required,
-      Validators.pattern('[a-zA-Z0-9-_ ]*')
+      Validators.pattern('[a-zA-Z0-9-_]*')
     ]),
     password2: new FormControl('', [
       Validators.required,
-      Validators.pattern('[a-zA-Z0-9-_ ]*')
+      Validators.pattern('[a-zA-Z0-9-_]*')
     ]),
   });
 
@@ -145,11 +140,11 @@ export class DashboardComponent implements OnInit {
   create_new_user_form = new FormGroup({
     new_user: new FormControl('', [
       Validators.required,
-      Validators.pattern('[a-zA-Z0-9-_ ]*')
+      Validators.pattern('[a-zA-Z0-9-_]*')
     ]),
     new_password: new FormControl('', [
       Validators.required,
-      Validators.pattern('[a-zA-Z0-9-_ ]*')
+      Validators.pattern('[a-zA-Z0-9-_]*')
     ]),
   });
 
@@ -171,11 +166,6 @@ export class DashboardComponent implements OnInit {
     volume: '',
     pages: '',
   });
-
-  // Whether a fragment is selected: allows for the revision button to be clickable
-  //FIXME: one of these is superfluous
-  fragment_selected: boolean = false;
-  allow_fragment_creation = false;
 
   // Bibliography author selection
   bibliography_author_selection_form = new UntypedFormControl();
@@ -412,12 +402,9 @@ export class DashboardComponent implements OnInit {
       let api_data = this.utility.create_empty_fragment();
       api_data.author = author; api_data.title = title; api_data.editor = editor; api_data.fragment_name = fragment_name;
 
-      // console.log(api_data)
-
       this.api.get_specific_fragment(api_data).subscribe(
-        data => {
-          this.retrieved_fragment = data;
-          this.convert_Fragment_to_fragment_form(this.retrieved_fragment);
+        fragment => {
+          this.convert_Fragment_to_fragment_form(fragment);
         });
     }
 
@@ -486,8 +473,9 @@ export class DashboardComponent implements OnInit {
       }
     });
     // Now reset form and request the fragments again
-    this.request_fragment_names(this.selected_author, this.selected_book, this.selected_editor); //TODO: Is this still needed?
+    this.request_fragment_names(this.selected_author, this.selected_book, this.selected_editor);
     let saved_new_fragment: [string, string, string, string];
+    //FIXME: CptVickers, this is not very OOP of you.
     saved_new_fragment = [fragment_form.value.author, fragment_form.value.title, fragment_form.value.editor, fragment_form.value.fragment_name];
     this.reset_fragment_form();
     this.retrieve_requested_fragment(...saved_new_fragment);
@@ -525,7 +513,6 @@ export class DashboardComponent implements OnInit {
    * @author CptVickers Ycreak
    */
   public request_automatic_fragment_linker(author: string, title: string): void {
-
     let item_string = author + ', ' + title;
     let api_data = this.utility.create_empty_fragment(); 
     api_data.author = author; api_data.title = title;
@@ -657,7 +644,6 @@ export class DashboardComponent implements OnInit {
    * @author Ycreak
    */
   public request_delete_user(user): void {
-
     this.dialog.open_confirmation_dialog('Are you sure you want to DELETE this user?', user.username).subscribe(result => {
       if (result) {        
         this.api.delete_user(user).subscribe(

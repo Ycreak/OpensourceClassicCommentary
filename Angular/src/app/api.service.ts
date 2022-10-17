@@ -2,25 +2,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
-import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
+import { FormGroup } from '@angular/forms';
 
-import { UntypedFormBuilder, FormControl, FormGroup, FormArray } from '@angular/forms';
-
-
-import { Observable } from 'rxjs';
-import { throwError } from 'rxjs';
-import { catchError, retry } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 // Model imports
 import { Fragment } from './models/Fragment';
 import { Author } from './models/Author';
 import { Editor } from './models/Editor';
-
 import { Book } from './models/Book';
-
 import { User } from './models/User';
-import { Text } from './models/Text';
-import { TextCommentary } from './models/TextCommentary';
 
 @Injectable({
   providedIn: 'root'
@@ -39,9 +32,6 @@ export class ApiService {
 //  | |__| | |____   | |   
 //   \_____|______|  |_|                  
 
-  public get_fragment_content(fragment_id: string): Observable<JSON> {
-    return this.http.get<JSON>(this.FlaskURL + `fragment_content?fragment_id=${fragment_id}`);
-  }
   public get_authors(): Observable<Author[]> {
     return this.http.get<Author[]>(this.FlaskURL + `authors`);
   }
@@ -60,11 +50,11 @@ export class ApiService {
   public get_editors(author: string, book: string): Observable<Editor[]> {
     return this.http.get<Editor[]>(this.FlaskURL + `editors?author=${author}&book=${book}`);
   }
-  public get_text(bookID: number): Observable<Text[]> {
-    return this.http.get<Text[]>(this.FlaskURL + `tlines?textID=${bookID}`);
+  public get_text(bookID: number): Observable<any[]> {
+    return this.http.get<any[]>(this.FlaskURL + `tlines?textID=${bookID}`);
   }
-  public get_text_commentary(textID: number, lineNumber: number): Observable<TextCommentary[]> {
-    return this.http.get<TextCommentary[]>(this.FlaskURL + `tcommentary?textID=${textID}&lineNumber=${lineNumber}`); //FIXME: needs to be TCommentary
+  public get_text_commentary(textID: number, lineNumber: number): Observable<any[]> {
+    return this.http.get<any[]>(this.FlaskURL + `tcommentary?textID=${textID}&lineNumber=${lineNumber}`);
   }
 
 //   _____   ____   _____ _______ 
@@ -77,6 +67,9 @@ export class ApiService {
   // Fragments
   public get_fragments(fragment: Fragment): Observable<Fragment[]> {
     return this.http.post<Fragment[]>(this.FlaskURL + `fragments`, fragment, { observe: 'body', responseType: 'json'});
+  }
+  public get_fragment_content(fragment: Fragment): Observable<Fragment> {
+    return this.http.post<Fragment>(this.FlaskURL + `fragment_content`, fragment, { observe: 'body', responseType: 'json'});
   }
   public get_specific_fragment(fragment: Fragment): Observable<Fragment> {
     return this.http.post<Fragment>(this.FlaskURL + `complete_fragment`, fragment, { observe: 'body', responseType: 'json'});

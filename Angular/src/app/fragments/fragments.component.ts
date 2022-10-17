@@ -183,7 +183,10 @@ export class FragmentsComponent implements OnInit {
    * @author Bors & Ycreak
    */
   private request_fragment_content(fragment_id: string): void{
-    this.api.get_fragment_content(fragment_id).subscribe(data => {     
+    let api_data = this.utility.create_empty_fragment(); 
+    api_data.id = fragment_id;
+
+    this.api.get_fragment_content(api_data).subscribe(data => {     
       this.fragment_clicked = true;
       this.add_content_to_current_fragment(data);
     });
