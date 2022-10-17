@@ -15,7 +15,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 // Component imports
 import { ApiService } from '../api.service';
 import { UtilityService } from '../utility.service';
-import { auth_service } from '../auth/auth.service';
+import { AuthService } from '../auth/auth.service';
 import { DialogService } from '../services/dialog.service';
 
 // Model imports 
@@ -189,7 +189,7 @@ export class DashboardComponent implements OnInit {
     private utility: UtilityService,
     public dialog: DialogService,
     private formBuilder: UntypedFormBuilder,
-    public auth_service: auth_service,
+    public auth_service: AuthService,
   ) {
 
     // Assign the data to the data source for the table to render
