@@ -13,6 +13,10 @@ body, h1, h2, h3, h4, h5 {
     overflow-y: scroll;
 }
 
+.spacer {
+    flex: 1 1 auto;
+}
+
 div {
     word-wrap: break-word;
 }
