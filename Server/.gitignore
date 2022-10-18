@@ -1,5 +1,5 @@
 # Project-specific
-Models/server_credentials.py
+server_credentials.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
