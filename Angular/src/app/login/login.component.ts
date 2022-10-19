@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit {
   // Form used to login existing user
   login_form = this.form_builder.group({
     username: '',
-    password1: '',
+    password: '',
   });
   // Form used to create new user
   create_form = this.form_builder.group({
@@ -47,11 +47,13 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  public submit_login(form): void {
+  public submit_login(login_form): void {
     // Create a user session for the auth_service to fill in    
     let api_data = this.utility.create_empty_user();
-    api_data.username = form.value.username; api_data.password = form.value.password;
+    api_data.username = login_form.value.username; api_data.password = login_form.value.password;
     
+    console.log(api_data)
+
     this.api.login_user(api_data).subscribe(
       res => {
         this.auth_service.login_user(res)
@@ -83,7 +85,7 @@ export class LoginComponent implements OnInit {
       this.dialog.open_confirmation_dialog('Are you sure you want to CREATE this user?', form.username).subscribe(result => {
         if(result){
           let api_data = this.utility.create_empty_user();
-          api_data.username = form.new_user; api_data.new_password = form.new_password
+          api_data.username = form.new_user; api_data.password = form.password1
   
           this.api.create_user(api_data).subscribe(
             res => {
