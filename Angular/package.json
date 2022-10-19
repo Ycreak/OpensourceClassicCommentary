@@ -22,6 +22,7 @@
     "@angular/platform-browser": "^14.2.4",
     "@angular/platform-browser-dynamic": "^14.2.4",
     "@angular/router": "^14.2.4",
+    "@efaps/angular-onscreen-material-keyboard": "^0.14.1",
     "@fortawesome/fontawesome-free": "^5.15.4",
     "@kolkov/angular-editor": "^3.0.0-beta.0",
     "bootstrap": "^5.2.2",
@@ -31,6 +32,7 @@
     "ngx-simple-text-editor": "^1.2.0",
     "react": "^18.2.0",
     "rxjs": "~7.5.7",
+    "simple-keyboard": "^3.4.175",
     "tslib": "^2.4.0"
   },
   "devDependencies": {

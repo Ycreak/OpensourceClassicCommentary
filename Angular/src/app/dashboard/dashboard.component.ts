@@ -27,8 +27,9 @@ import { Editor } from '../models/Editor';
 
 // Third party imports. TODO: These should be fixed again.
 // import insertTextAtCursor from 'insert-text-at-cursor';
-// import { IKeyboardLayouts, keyboardLayouts, MAT_KEYBOARD_LAYOUTS, MatKeyboardModule } from 'angular-onscreen-material-keyboard';
-// To install the onscreen keyboard: $ npm i angular-onscreen-material-keyboard
+import { IKeyboardLayouts, keyboardLayouts, MAT_KEYBOARD_LAYOUTS, MatKeyboardModule } from '@efaps/angular-onscreen-material-keyboard';
+// To install the onscreen keyboard: $ npm i @efaps/angular-onscreen-material-keyboard
+
 
 @Component({
   selector: 'app-dashboard',
@@ -208,6 +209,7 @@ export class DashboardComponent implements OnInit {
     //   startWith(''),
     //   map(value => this.filter_autocomplete_options(value)),
     // );
+
   }
 
 
@@ -223,7 +225,7 @@ export class DashboardComponent implements OnInit {
    * @author Ycreak
    */
   public test(thing): void {
-    console.log(this.fragment_form.value)
+    console.log(this.retrieved_users)
     // let temp = new Fragment;
     // temp.author = 'luukie'
 

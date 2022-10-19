@@ -77,8 +77,9 @@ import {MatPaginatorModule} from '@angular/material/paginator';
 // Allows copying to clipboard
 import {ClipboardModule} from '@angular/cdk/clipboard';
 import { TextComponent } from './text/text.component'; 
-// Allows a virtual keyboard #TODO: deprecated?
-// import { IKeyboardLayouts, keyboardLayouts, MAT_KEYBOARD_LAYOUTS, MatKeyboardModule } from 'angular-onscreen-material-keyboard';
+
+// Allows a virtual keyboard
+import { IKeyboardLayouts, keyboardLayouts, MAT_KEYBOARD_LAYOUTS, MatKeyboardModule } from '@efaps/angular-onscreen-material-keyboard';
 
 // Allows communication with firebase
 // import { AngularFireModule } from '@angular/fire';
@@ -86,33 +87,25 @@ import { environment } from '../environments/environment';
 import { ScansionComponent } from './scansion/scansion.component';
 
 // Virtual Keyboard Layout
-// const customLayouts: IKeyboardLayouts = {
-//   ...keyboardLayouts,
-//   'OSCCLayout': {
-//     'name': 'OSCCLayout',
-//     'keys': [
-//       [
-//         ['<b>', '</b>'],
-//         ['<i>', '</i>'],
-//         ['<p>', '</p>'],
-//         ['<sub>', '</sub>'],
-//         ['<sup>', '</sup>'],
-//         ['<span>', '</span>'],      
-//       ],
-//       [
-//         ['⟨', '⟨'],
-//         ['⟩', '⟩'],
-//         ['†', '†'],
-//         [' ×', ' ×'],
-//         [' -', ' -'],
-//         [' ⏑', ' ⏑'],
-//         [' ⏓', ' ⏒'],
-//         [' ⏕', ' ⏔'],  
-//       ]
-//     ],
-//     'lang': ['OSCC']
-//   }
-// };
+const customLayouts: IKeyboardLayouts = {
+  ...keyboardLayouts,
+  'OSCCLayout': {
+    'name': 'OSCCLayout',
+    'keys': [
+      [
+        ['⟨', '⟨'],
+        ['⟩', '⟩'],
+        ['†', '†'],
+        [' ×', ' ×'],
+        [' -', ' -'],
+        [' ⏑', ' ⏑'],
+        [' ⏓', ' ⏒'],
+        [' ⏕', ' ⏔'],  
+      ]
+    ],
+    'lang': ['OSCC']
+  }
+};
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
@@ -178,7 +171,7 @@ const appRoutes: Routes = [
     // To allow the drag and drop
     DragDropModule,
     ClipboardModule,
-    // MatKeyboardModule,
+    MatKeyboardModule,
 
     // AngularFireModule.initializeApp(environment.firebase),
   ],
@@ -189,10 +182,10 @@ const appRoutes: Routes = [
       multi: true,
       
     },
-    // { 
-    //   provide: MAT_KEYBOARD_LAYOUTS, 
-    //   useValue: customLayouts 
-    // },
+    { 
+      provide: MAT_KEYBOARD_LAYOUTS, 
+      useValue: customLayouts 
+    },
   ],
   bootstrap: [AppComponent]
 })
