@@ -15,6 +15,7 @@ import { AuthService } from '../auth/auth.service';
 // Model imports
 import { Fragment } from '../models/Fragment';
 import { Fragment_column } from '../models/Fragment_column';
+import { Text_column } from '../models/Text_column';
 
 @Component({
   selector: 'app-fragments',
@@ -28,10 +29,6 @@ export class FragmentsComponent implements OnInit {
   @ViewChild('CallAbout') CallAbout: TemplateRef<any>;
 
   // Toggle switches for the HTML columns/modes
-  toggle_column_one: boolean = true;
-  toggle_column_two: boolean = false;
-  toggle_column_three: boolean = false;
-  toggle_column_four: boolean = false;
   toggle_commentary: boolean = true;
   toggle_playground: boolean = false;
   // Booleans for HTML related items
@@ -42,8 +39,14 @@ export class FragmentsComponent implements OnInit {
   fragment_clicked: boolean = false; // Shows "click a fragment" banner at startup if nothing is yet selected
 
   // Object to store all column data: just an array with column data in the form of fragment columns
-  columns: Array<Fragment_column> = [];
-  
+  columns: Fragment_column[] = [];
+
+  // text_column: Text_column;
+  column1: Fragment_column;
+
+  // We keep track of the number of columns to identify them
+  column_identifier: number = 1;
+
   constructor(
     private api: ApiService,
     private utility: UtilityService,
@@ -59,26 +62,25 @@ export class FragmentsComponent implements OnInit {
     this.current_fragment = this.utility.create_empty_fragment();
 
     // Create templates for the possible fragment columns
-    let column1 = new Fragment_column('ONE', 'Ennius', 'Thyestes', 'TRF');
-    let column2 = new Fragment_column('TWO', 'TBA', 'TBA', 'TBA');
-    let column3 = new Fragment_column('THREE', 'TBA', 'TBA', 'TBA');
-    let column4 = new Fragment_column('FOUR', 'TBA', 'TBA', 'TBA');
+    this.column1 = new Fragment_column(1, '', 'Ennius', 'Thyestes', 'TRF');
+    
     // And two for the playground
-    let playground1 = new Fragment_column('PLAY1', 'TBA', 'TBA', 'TBA');
-    let playground2 = new Fragment_column('PLAY2', 'TBA', 'TBA', 'TBA');
+    // let playground1 = new Fragment_column('PLAY1', 'TBA', 'TBA', 'TBA');
+    // let playground2 = new Fragment_column('PLAY2', 'TBA', 'TBA', 'TBA');
+    
     // Push these to the columns array for later use in the HTML component
-    this.columns.push(column1, column2, column3, column4, playground1, playground2)
+    this.columns.push(this.column1)
 
-    // Request authors for each column (TODO: this could be nicer)
-    this.request_authors(column1)
-    this.request_authors(column2)
-    this.request_authors(column3)
-    this.request_authors(column4)
-    this.request_authors(playground1)
-    this.request_authors(playground2)
+    
+    
+    
+    // Request authors for each column
+    this.request_authors(this.column1)
+    // this.request_authors(playground1)
+    // this.request_authors(playground2)
 
     // Request the fragments for the first column
-    this.request_fragments(column1);
+    this.request_fragments(this.column1);
   }
 
   //   _____  ______ ____  _    _ ______  _____ _______ _____ 
@@ -97,7 +99,9 @@ export class FragmentsComponent implements OnInit {
     this.api.get_authors().subscribe(data => {
       this.server_down = false; //FIXME: needs to be handled properly
       // Enter this retrieved data in the correct column
-      this.columns.find(i => i.name === column.name).retrieved_authors = data; 
+      this.columns.find(i => i.id === column.id).retrieved_authors = data; 
+
+      console.log(this.columns.find(i => i.id === column.id))
     });
   }
 
@@ -109,7 +113,7 @@ export class FragmentsComponent implements OnInit {
   private request_titles(column: Fragment_column): void{
     this.api.get_titles(column.author).subscribe(
       data => {
-        this.columns.find(i => i.name === column.name).retrieved_titles = data; 
+        this.columns.find(i => i.id === column.id).retrieved_titles = data; 
       }
     );      
   }
@@ -122,7 +126,7 @@ export class FragmentsComponent implements OnInit {
   private request_editors(column: Fragment_column): void{
     this.api.get_editors(column.author, column.title).subscribe(
       data => {
-        this.columns.find(i => i.name === column.name).retrieved_editors = data; 
+        this.columns.find(i => i.id === column.id).retrieved_editors = data; 
       }
     );
   }
@@ -150,29 +154,13 @@ export class FragmentsComponent implements OnInit {
         column.fragments = fragment_list;
         // While we are at it, save the fragment numbers: this is used in the playground to retrieve specific fragments
         column.fragment_numbers = this.retrieve_fragment_numbers(fragment_list); 
-        // Now check if the column already exists. If so, delete it, so we can push a brand new object       
+        // Now check if the column already exists. If so, replace it with the new object.
         if(this.columns.length > 0){
-          this.columns.splice(this.columns.findIndex(i => i.name === column.name), 1)
+          this.columns[this.columns.findIndex(i => i.id === column.id)] = column
         }
-        // And now push the column with formatted data to the array of columns to be displayed in HTML    
-        this.columns.push(column)
       }
     );  
   }
-
-  // /**
-  //  * Creates a list of typescript fragment objects using the json received from the server
-  //  * @param fragment_json which is received from the server
-  //  * @returns list of Fragment objects
-  //  * @author Ycreak
-  //  */
-  // private create_fragment_list(fragment_json: JSON): Fragment[]{
-  //   let fragment_list: Fragment[] = [];
-  //   for(let index in fragment_json){
-  //     fragment_list.push(new Fragment(fragment_json[index]))
-  //   }
-  //   return fragment_list
-  // }
 
   /** 
    * Requests the API function for all content corresponding to the given fragment id.
@@ -215,7 +203,7 @@ export class FragmentsComponent implements OnInit {
    */
   private handle_author_selection(column: Fragment_column, author: string): void{
     // Set the author for the given column
-    this.columns.find(i => i.name === column.name).author = author; 
+    this.columns.find(i => i.id === column.id).author = author; 
     this.request_titles(column);
   }
 
@@ -228,7 +216,7 @@ export class FragmentsComponent implements OnInit {
    */
   private handle_title_selection(column: Fragment_column, title: string): void{
     // Set the title for the given column
-    this.columns.find(i => i.name === column.name).title = title; 
+    this.columns.find(i => i.id === column.id).title = title; 
     this.request_editors(column);
   }
 
@@ -241,8 +229,8 @@ export class FragmentsComponent implements OnInit {
    */
   private handle_editor_selection(column: Fragment_column, editor: string): void{
     // Set the editor for the given column
-    this.columns.find(i => i.name === column.name).editor = editor; 
-    this.request_fragments(this.columns.find(i => i.name === column.name))
+    this.columns.find(i => i.id === column.id).editor = editor; 
+    this.request_fragments(this.columns.find(i => i.id === column.id))
   }
 
   /**
@@ -283,26 +271,94 @@ export class FragmentsComponent implements OnInit {
   }
 
   /**
+   * This function adds a new column to the columns array
+   * @author Ycreak
+   */
+  public add_column(): void{
+    //TODO: shall we create a limit? like no more than 100,000 columns?
+    // First, increment the column_identifier to create a new and unique id
+    this.column_identifier += 1;
+    // Create new column with the appropriate name
+    let new_fragment_column = new Fragment_column(this.column_identifier,'', '', '', '');
+    this.columns.push(new_fragment_column)    
+    this.request_authors(new_fragment_column);
+  }
+
+  /**
+   * This function deletes a column from this.columns given its name
+   * @param column_id of column that is to be closed
+   * @author Ycreak
+   */
+  public close_column(column_id): void{
+    const object_index = this.columns.findIndex(object => {
+      return object.id === column_id;
+    });    
+    this.columns.splice(object_index, 1);
+  }
+
+  /**
+   * This function moves a column inside this.columns to allow the user to move columns
+   * around on the frontend.
+   * @param column_id of column that is to be moved
+   * @param direction of movement
+   * @author Ycreak
+   */
+   public move_column(column_id, direction): void{
+    // First get the current index of the column we want to move
+    const from_index = this.columns.findIndex(object => {
+      return object.id === column_id;
+    });
+    // Next, generate the new index when the column would be moved
+    let to_index = 0;
+    if(direction == 'left'){
+      to_index = from_index - 1;
+    }
+    else{
+      to_index = from_index + 1;
+    }
+    // If this next location is valid, move the column to that location, otherwise do nothing
+    if (to_index >= 0 && to_index < this.columns.length){
+      this.columns = this.move_element_in_array(this.columns, from_index, to_index)
+    }
+  }
+
+  /**
+   * This function moves an element within an array from the given location to the given new location
+   * @param arr in which the moving should be done
+   * @param from_index element's index that is to be moved
+   * @param to_index index to where the element is to be moved
+   * @returns updated array
+   * @author Ycreak
+   */
+  public move_element_in_array(arr, from_index, to_index): Array<any> {
+      var element = arr[from_index];
+      arr.splice(from_index, 1);
+      arr.splice(to_index, 0, element);
+      return arr
+  }
+
+  /**
    * Given the current fragment, colour the linked fragments in the other columns
    * @param fragment of which the linked fragments should be coloured
    * @author Ycreak
+   * TODO: make working with new structure
    */
   private colour_linked_fragments(fragment: Fragment): void{
     for(let index in fragment.linked_fragments){
       // Loop through all fragments
       let linked_fragment_id = fragment.linked_fragments[index] 
       // Set colours of corresponding fragments from the other columns if found
-      let corresponding_fragment = this.columns.find(i => i.name === 'ONE').fragments.find(i => i.id === linked_fragment_id);
-      if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
+      // let corresponding_fragment = this.columns.find(i => i.id === 1).fragments.find(i => i.id === linked_fragment_id);
+      // if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
 
-      corresponding_fragment = this.columns.find(i => i.name === 'TWO').fragments.find(i => i.id === linked_fragment_id);
-      if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
+      // corresponding_fragment = this.columns.find(i => i.id === 2).fragments.find(i => i.id === linked_fragment_id);
+      // if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
       
-      corresponding_fragment = this.columns.find(i => i.name === 'THREE').fragments.find(i => i.id === linked_fragment_id);
-      if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
+      // corresponding_fragment = this.columns.find(i => i.id === 3).fragments.find(i => i.id === linked_fragment_id);
+      // if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
 
-      corresponding_fragment = this.columns.find(i => i.name === 'FOUR').fragments.find(i => i.id === linked_fragment_id);
-      if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
+      // corresponding_fragment = this.columns.find(i => i.id === 4).fragments.find(i => i.id === linked_fragment_id);
+      // if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
     }
   }
 
@@ -323,10 +379,6 @@ export class FragmentsComponent implements OnInit {
    */  
   private test(): void{
     console.log('############ TESTING ############')
-    
-    console.log(this.columns)
-    // console.log(this.columns.find(i => i.name === 'ONE'));
-    // console.log(this.columns.find(i => i.name === 'TWO'));
 
     console.log('############ ####### ############')
 
@@ -384,8 +436,8 @@ export class FragmentsComponent implements OnInit {
    * @returns requested column object
    * @author Ycreak
    */
-  private get_column_from_columns(name: string): Fragment_column {
-    return (this.columns.find(i => i.name === name)); //) || []);
+  public get_column_from_columns(id: number): Fragment_column {
+    return (this.columns.find(i => i.id === id)); //) || []);
   }
 
   /**

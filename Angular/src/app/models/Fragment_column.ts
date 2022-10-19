@@ -2,8 +2,9 @@ import { Fragment } from './Fragment';
 
 export class Fragment_column
 {
-    constructor(name: string, author: string, title: string, editor: string)
+    constructor(id: number, name: string, author: string, title: string, editor: string)
     {
+        this.id = id
         this.name = name;
         
         this.author = author;
@@ -16,7 +17,8 @@ export class Fragment_column
 
     }
 
-    name : string = 'TBA'
+    id : number;
+    name : string;
 
     author : string = 'TBA';
     title : string = 'TBA';
@@ -33,5 +35,8 @@ export class Fragment_column
     retrieved_editors : object;
 
     note_array : Array<string> = [];
+
+    // Whether to show or hide the column
+    visible: boolean = true;
 }
 

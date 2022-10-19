@@ -131,3 +131,38 @@ mat-checkbox.btn label span span svg {
 .mat-checkbox-label {
   width: fit-content;
 }
+
+// Text component
+::ng-deep .mat-line{
+  word-wrap: break-word !important;
+  white-space: pre-wrap !important;
+}
+
+::ng-deep  .mat-list .mat-list-item{
+  height:initial!important;
+}
+
+.neat-lines .mat-list-item {
+  height: auto;
+  width: 100%;
+}
+
+.selection-form {
+  min-width: 50%;
+  max-width: 100%;
+  /* width: 100%; */
+}
+
+.button-toolbar {
+  max-height: 10px;
+  min-height: 30px;
+  background: #9FA8DA;
+  color: white;
+}
+
+.checkbox-button-toolbar{
+  // background-color: #3F51B5;
+  color: #FFFFFC;
+  font-family: 'Arial';
+  font-size: 13px;
+}
