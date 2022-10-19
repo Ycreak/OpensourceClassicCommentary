@@ -17,7 +17,7 @@
     <!-- Routing buttons -->
     <button mat-button class="btn" routerLink="/dashboard" *ngIf="this.auth_service.is_logged_in">DASHBOARD</button>
     
-    <button mat-button class="btn" (click)="add_column()"> ADD COLUMN</button>
+    <button mat-button class="btn" (click)="add_column()"> ADD FRAGMENT COLUMN</button>
 
     <!-- Column toggle buttons -->
     <mat-checkbox class="btn" [(ngModel)]="toggle_commentary">COMMENTARY</mat-checkbox>
@@ -67,26 +67,9 @@
 <div class="container-fluid">
 
     <div class="row"> <!-- Row that contains the columns and commentary -->
-        
-        <!-- <div *ngIf="column_to_display.visible"> -->
         <div *ngFor="let column_to_display of this.columns" class="col" [hidden]="!column_to_display.visible">
-                <ng-container [ngTemplateOutlet]='fragment_column_template' [ngTemplateOutletContext]="{given_column:column_to_display}"></ng-container>
-            <!-- </div> -->
+            <ng-container [ngTemplateOutlet]='fragment_column_template' [ngTemplateOutletContext]="{given_column:column_to_display}"></ng-container>
         </div>
-
-        <!-- <mat-grid-list cols="this.number_of_columns" rowHeight="800px">
-            <mat-grid-tile
-                *ngFor="let column_to_display of this.columns"
-                [colspan]="1"
-                [rowspan]="1"
-                [style.background]="white">
-                <ng-container [ngTemplateOutlet]='fragment_column_template' [ngTemplateOutletContext]="{given_column:column_to_display}"></ng-container>
-            </mat-grid-tile>
-          </mat-grid-list> -->
-          
-
-
-
 
         <!-- Column with commentary, shown if a fragment from the edition of reference is clicked -->
         <div *ngIf="toggle_commentary" class="col overflow_column">
@@ -157,17 +140,6 @@
 
             <hr>
 
-            <!-- Show the bibliography attached to the fragment -->
-            <!-- <mat-expansion-panel *ngIf="this.current_fragment.bibliography.length > 0">
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        <b>Fragment Bibliography</b>
-                    </mat-panel-title>
-                </mat-expansion-panel-header>
-                    <div *ngFor="let item of this.current_fragment.bibliography">
-                        <div [innerHTML]="item"></div>
-                    </div>
-            </mat-expansion-panel> -->
         </div>
         <hr>
     </div> <!-- This closes the first row. Other items will be put under this row -->
@@ -253,41 +225,17 @@
 
 <!-- TEMPLATES -->
 
-<!-- Template for a text column -->
-<ng-template #text_column_template let-given_column="given_column" let-hint="hint">  
-    <div class="col-sm overflow_column">
-        <div class="row">
-            <div class="col-4"> <ng-container *ngTemplateOutlet="select_author;context:{column: given_column}"></ng-container> </div>
-            <div class="col-4"> <ng-container *ngTemplateOutlet="select_title;context:{column: 'THREE'}"></ng-container> </div>
-            <div class="col-4"> <ng-container *ngTemplateOutlet="select_editor;context:{column: 'THREE'}"></ng-container> </div>
-        </div>
-        
-        <div *ngFor="let line of given_column.lines">
-            <p>{{line}}</p>
-        </div>
-    </div>
-</ng-template>
+
 
 <!-- Template for a fragment column -->
 <ng-template #fragment_column_template let-given_column="given_column" let-hint="hint">  
-    <!-- <div class="col-sm overflow_column"> -->
-        
-    <!-- <div class="row">
-        <button mat-icon-button (click)="close_column(given_column.name)">
-            <mat-icon>delete_forever</mat-icon>
-        </button>   
-     
-    </div>         -->
-    
     <div class="row">
         <div class="col-4"> <ng-container *ngTemplateOutlet="select_author;context:{column: given_column}"></ng-container> </div>
         <div class="col-4"> <ng-container *ngTemplateOutlet="select_title;context:{column: given_column}"></ng-container> </div>
         <div class="col-4"> <ng-container *ngTemplateOutlet="select_editor;context:{column: given_column}"></ng-container> </div>        
     </div>
-
     <!-- Fragments loop to display all fragments of the chosen edition of reference -->
     <div class="row">
-
         <div cdkDropList (cdkDropListDropped)="this.utility.moveAndDrop($event, given_column.fragments)">
             <div *ngFor="let fragment of given_column.fragments"> 
                 <div class="fragment-box" (click)="handle_fragment_click(fragment)" cdkDrag>
@@ -301,6 +249,7 @@
     </div>
 </ng-template>
 
+<!-- Template for the select author mat-option field -->
 <ng-template #select_author let-column="column" let-hint="hint">  
     <mat-form-field class="selection-form">
         <mat-label>Author</mat-label>

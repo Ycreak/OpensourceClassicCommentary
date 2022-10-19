@@ -341,24 +341,19 @@ export class FragmentsComponent implements OnInit {
    * Given the current fragment, colour the linked fragments in the other columns
    * @param fragment of which the linked fragments should be coloured
    * @author Ycreak
-   * TODO: make working with new structure
    */
   private colour_linked_fragments(fragment: Fragment): void{
-    for(let index in fragment.linked_fragments){
-      // Loop through all fragments
-      let linked_fragment_id = fragment.linked_fragments[index] 
-      // Set colours of corresponding fragments from the other columns if found
-      // let corresponding_fragment = this.columns.find(i => i.id === 1).fragments.find(i => i.id === linked_fragment_id);
-      // if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
+    // Loop through all fragments the linked fragments
+    for(let i in fragment.linked_fragments){
+      let linked_fragment_id = fragment.linked_fragments[i] 
 
-      // corresponding_fragment = this.columns.find(i => i.id === 2).fragments.find(i => i.id === linked_fragment_id);
-      // if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
-      
-      // corresponding_fragment = this.columns.find(i => i.id === 3).fragments.find(i => i.id === linked_fragment_id);
-      // if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
-
-      // corresponding_fragment = this.columns.find(i => i.id === 4).fragments.find(i => i.id === linked_fragment_id);
-      // if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
+      // Now, for each fragment that is linked, try to find it in the other columns
+      for(let j in this.columns){
+        // in each column, take a look in the fragments array to find the linked fragment
+        let corresponding_fragment = this.columns[j].fragments.find(i => i.id === linked_fragment_id);
+        // colour it if found
+        if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
+      }
     }
   }
 
