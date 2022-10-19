@@ -85,7 +85,7 @@ export class LoginComponent implements OnInit {
       this.dialog.open_confirmation_dialog('Are you sure you want to CREATE this user?', form.username).subscribe(result => {
         if(result){
           let api_data = this.utility.create_empty_user();
-          api_data.username = form.new_user; api_data.password = form.password1
+          api_data.username = form.username; api_data.password = form.password1
   
           this.api.create_user(api_data).subscribe(
             res => {
