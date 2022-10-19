@@ -7,7 +7,7 @@ export class User {
     }
 
     public password: string;
-    public new_password: string;
-    public new_role: string;
+    // public new_password: string;
+    // public new_role: string;
 }
 

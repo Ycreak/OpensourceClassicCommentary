@@ -612,7 +612,7 @@ export class DashboardComponent implements OnInit {
     this.dialog.open_confirmation_dialog('Are you sure you want to CREATE this user?', form_results.new_user).subscribe(result => {
       if (result) {
         let api_data = this.utility.create_empty_user();
-        api_data.username = form_results.new_user; api_data.new_password = form_results.new_password
+        api_data.username = form_results.new_user; api_data.password = form_results.new_password
 
         this.api.create_user(api_data).subscribe(
           res => {
@@ -636,7 +636,7 @@ export class DashboardComponent implements OnInit {
     this.dialog.open_confirmation_dialog('Are you sure you want to CHANGE the role of this user?', item_string).subscribe(result => {
       if (result) {
         let api_data = this.utility.create_empty_user();
-        api_data.username = user.username; api_data.new_role = user.role
+        api_data.username = user.username; api_data.role = user.role
 
         this.api.user_change_role(api_data).subscribe(
           res => {
@@ -661,7 +661,7 @@ export class DashboardComponent implements OnInit {
       this.dialog.open_confirmation_dialog("Are you sure you want to CHANGE this user's password", username).subscribe(result => {
         if (result) {
           let api_data = this.utility.create_empty_user();
-          api_data.username = username; api_data.new_password = form.value.password1
+          api_data.username = username; api_data.password = form.value.password1
   
           this.api.user_change_password(api_data).subscribe(
             res => this.utility.handle_error_message(res), err => this.utility.handle_error_message(err)

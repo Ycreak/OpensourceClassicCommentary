@@ -20,7 +20,7 @@ export class AuthService {
   current_user_name: string = 'Lucus';
   current_user_role: string = 'teacher';
 
-  magic_phrase : string = 'Accius';
+  magic_phrase : string = 'Naevius';
 
   public login_user(user){
     // Getting here means the server approved login

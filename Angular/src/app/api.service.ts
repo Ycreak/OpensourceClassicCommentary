@@ -22,7 +22,7 @@ export class ApiService {
 
   constructor(private http: HttpClient) { }
 
-  // FlaskURL: String = 'https://oscc.nolden.biz:5003/'; // For production (http! not https)                                 
+  // FlaskURL: String = 'https://oscc.nolden.biz:5003/'; // For production (https)                                 
   FlaskURL: String = 'http://localhost:5003/'; // For deployment (http! not https)                                 
 
 //    _____ ______ _______ 
