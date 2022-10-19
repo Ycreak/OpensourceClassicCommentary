@@ -69,8 +69,12 @@ The project aims at using as few dependencies as possible. At the moment, the fo
 + @angular/forms : ^10.1.6
 + @angular/material : ^10.2.7
 + @angular/router : ^10.1.6
++ ngx-simple-text-editor
 
 A complete list including version numbers can be found in the [Angular documentation]().
+
+#### Rich Text Editor
+The OSCC allows the user to edit fragments via a rich text editor. This editor is invoked via the buttons called *Rich Text*, which starts the ngx-simple-text-editor. In short, the text field including its HTML formatting is given to the editor via the dialog service. This opens a new dialog and the WYSIWYG editor. When closing the editor, the updated text field is send back in plain HTML to be used in the Dashboard for example. The editor is programmed in such a way that it is easily swapped out by a new one if the ngx-simple-text-editor dependency breaks. Additionally, the OSCC will still be functional without the editor, though restricting the user to editing in plain HTML.
 
 ### Components
 The project consists of two main components, being the Fragments component and the Dashboard components. All components and services are described below. As a whole, the project is built using the elements from the Angular Material library.
