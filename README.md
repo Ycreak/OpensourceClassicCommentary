@@ -40,6 +40,7 @@ To install and run the Angular component on your PC, make sure to have [NodeJS](
 npm install --save @angular/material @angular/cdk
 npm install --save bootstrap
 npm install ngx-simple-text-editor --save
+npm install simple-keyboard --save
 npm install --save jquery
 npm install
 ```
