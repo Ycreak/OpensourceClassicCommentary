@@ -1,5 +1,5 @@
 // Library imports
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UntypedFormBuilder, FormControl, FormGroup, FormArray } from '@angular/forms';
@@ -9,6 +9,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { EditorConfig, ST_BUTTONS, BOLD_BUTTON, ITALIC_BUTTON, SUBSCRIPT_BUTTON, SUPERSCRIPT_BUTTON,
+          UNORDERED_LIST_BUTTON, ORDERED_LIST_BUTTON } from 'ngx-simple-text-editor';
 
 // Component imports
 import { ApiService } from '../api.service';
@@ -174,6 +176,12 @@ export class DashboardComponent implements OnInit {
   bibliography_form_selected_type = new UntypedFormControl(0);
   bib_entry_selected: boolean = false;
 
+  //TODO: this should be moved to a new service focused on this editor
+  WYSIWYG_editor_config: EditorConfig = {
+    buttons: [BOLD_BUTTON, ITALIC_BUTTON, SUBSCRIPT_BUTTON, SUPERSCRIPT_BUTTON, UNORDERED_LIST_BUTTON, ORDERED_LIST_BUTTON],
+  };  
+
+
   constructor(
     private api: ApiService,
     private utility: UtilityService,
@@ -193,6 +201,7 @@ export class DashboardComponent implements OnInit {
     this.request_authors()
     this.request_users()
 
+    this.retrieve_requested_fragment('Ennius', 'Thyestes', 'TRF', '134')
     // this.request_bibliography_authors()
 
     // this.bibliography_author_selection_form_filtered_options = this.bibliography_author_selection_form.valueChanges.pipe(
@@ -200,6 +209,7 @@ export class DashboardComponent implements OnInit {
     //   map(value => this.filter_autocomplete_options(value)),
     // );
   }
+
 
   // initiate the table sorting and paginator
   public ngAfterViewInit() {
@@ -212,13 +222,39 @@ export class DashboardComponent implements OnInit {
    * @param thing item to be printed
    * @author Ycreak
    */
-  public test(thing) {
-    console.log(this.retrieved_fragment_names)
+  public test(thing): void {
+    console.log(this.fragment_form.value)
     // let temp = new Fragment;
     // temp.author = 'luukie'
 
     // console.log(temp)
     // console.log(this.fragment_form.value)
+  }
+
+  /**
+   * This function requests a wysiwyg dialog to handle data updating to the fragment_form.
+   * It functions by providing the field of fragment_form which is to be updated by the editor.
+   * The dialog is called provided the config of the editor and the string to be edited. An edited string
+   * is returned by the dialog service
+   * @param field from fragment_form which is to be send and updated
+   * @author Ycreak
+   */
+  public request_wysiwyg_dialog(field: string, index: number = 0): void{  
+    if(field == 'context'){
+      // For the context, retrieve the context text field from the fragment form and pass that to the dialog
+      let form_array_field = this.fragment_form.value.context[index].text;
+      this.dialog.open_wysiwyg_dialog(form_array_field, this.WYSIWYG_editor_config).subscribe(result => {
+        // Now update the correct field. This is done by getting the FormArray and patching the correct
+        // FormGroup within this array. This is to ensure dynamic updating on the frontend
+        let context_array = this.fragment_form.controls["context"] as FormArray;
+        context_array.controls[index].patchValue({['text']: result});
+      });
+    }
+    else{ // The other content fields can be updated by just getting their content strings
+      this.dialog.open_wysiwyg_dialog(this.fragment_form.value[field], this.WYSIWYG_editor_config).subscribe(result => {
+        this.update_form_field('fragment_form', field, result)
+      });
+    }
   }
 
   /**

@@ -1,0 +1,10 @@
+<!-- This dialog calls the st-editor, which allows WYSIWYG editing of the given string, which is encoded in data.content.
+The configuration for the editor is given via data.config. When accept is clicked, the updated data is returned to the caller
+in plain HTML. -->
+<div mat-dialog-content>
+  <div>
+    <st-editor [(ngModel)]="data.content" [config]="data.config"></st-editor>
+  </div>
+  
+</div>
+<button mat-button [mat-dialog-close]="data.content">Accept</button>

@@ -41,6 +41,19 @@ export class DialogService {
     });  
     return dialogRef.afterClosed(); // Returns observable.
   }
+
+  public open_wysiwyg_dialog(content, config): Observable<string>{
+    const dialogRef = this.dialog.open(WYSIWYGDialog, {
+      disableClose: true, //FIXME: this is a hack. clicking outside should return the data to the user
+      width: '90%',
+      height: '75%',
+      data: {
+        content: content,
+        config: config,
+      }
+    });  
+    return dialogRef.afterClosed(); // Returns observable.
+  }
 }
 
 // Simple class to open the about information written in said html file.
@@ -66,4 +79,40 @@ export class ConfirmationDialog {
     onNoClick(): void {
       this.dialogRef.close();
     }
+}
+
+@Component({
+  selector: 'wysiwyg-dialog',
+  templateUrl: '../dialogs/wysiwyg-dialog.html',
+})
+export class WYSIWYGDialog {
+
+  local_data:any;
+
+  constructor(
+    public dialogRef: MatDialogRef<WYSIWYGDialog>,
+    @Inject(MAT_DIALOG_DATA) public data) { 
+    
+    console.log(data);
+    this.local_data = {...data};
+  }
+
+  doAction(){
+    this.dialogRef.close({data: this.local_data});
+  }
+
+  closeDialog(){
+    this.dialogRef.close({data:this.local_data});
+  }
+
+
+
+
+    save() {
+      this.dialogRef.close({ data:this.local_data});
+    }
+
+    // onNoClick(): void {
+    //   this.dialogRef.close();
+    // }
 }

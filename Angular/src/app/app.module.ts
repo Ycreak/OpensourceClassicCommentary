@@ -29,6 +29,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { NgxSimpleTextEditorModule } from 'ngx-simple-text-editor';
 
 // Component Imports
 import { AppRoutingModule } from './app-routing.module';
@@ -41,7 +42,10 @@ import { SafeHtmlPipe } from './pipes/safeHtml.pipe';
 // import { SafeHtmlPipe } from './fragments/fragments.component';
 
 import { ConfirmationDialog } from './services/dialog.service';
+import { WYSIWYGDialog } from './services/dialog.service';
+
 // import { Multiplayer } from './fragments/fragments.component';
+
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorInterceptor } from './api.service';
@@ -126,11 +130,12 @@ const appRoutes: Routes = [
     FragmentsComponent,
     SafeHtmlPipe,
     DashboardComponent,
-    ConfirmationDialog,
     LoginComponent,
     TextComponent,
     ScansionComponent,
     // Multiplayer,
+    ConfirmationDialog,
+    WYSIWYGDialog,
     // DialogContentComponent,
   ],
   imports: [
@@ -140,6 +145,7 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes, { relativeLinkResolution: 'legacy' }),
 
     // Multiplayer,
+    NgxSimpleTextEditorModule,
 
     FormsModule,
     BrowserAnimationsModule,
