@@ -220,3 +220,12 @@ The Users table contains documents representing each user. Stored in JSON format
 <a name="deployment"/>
 
 ## Deployment of the Project
+To build Angular, run the following command when inside the Angular folder:
+
+```console 
+ng build
+```
+
+If the program is ran from a subdomain, do not forget to specify said domain. For example: --base-href=/OSCC/
+The production can now be found in Angular/dist and is ready for deployment on an HTML server.
+
