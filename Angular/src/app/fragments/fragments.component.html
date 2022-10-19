@@ -68,7 +68,7 @@
 
     <div class="row"> <!-- Row that contains the columns and commentary -->
         <div *ngFor="let column_to_display of this.columns" class="col" [hidden]="!column_to_display.visible">
-            <ng-container [ngTemplateOutlet]='fragment_column_template' [ngTemplateOutletContext]="{given_column:column_to_display}"></ng-container>
+                <ng-container [ngTemplateOutlet]='fragment_column_template' [ngTemplateOutletContext]="{given_column:column_to_display}"></ng-container>
         </div>
 
         <!-- Column with commentary, shown if a fragment from the edition of reference is clicked -->
@@ -236,7 +236,9 @@
     </div>
     <!-- Fragments loop to display all fragments of the chosen edition of reference -->
     <div class="row">
-        <div cdkDropList (cdkDropListDropped)="this.utility.moveAndDrop($event, given_column.fragments)">
+        <!-- Columns are connected via the cdkDropListConnectedTo property. -->
+        <div cdkDropList id="{{given_column.id}}" [cdkDropListData]="given_column.fragments" 
+            [cdkDropListConnectedTo]="connected_columns_list" (cdkDropListDropped)="this.utility.drop($event)">
             <div *ngFor="let fragment of given_column.fragments"> 
                 <div class="fragment-box" (click)="handle_fragment_click(fragment)" cdkDrag>
                     <b [style.color]="fragment.colour">Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.title}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>

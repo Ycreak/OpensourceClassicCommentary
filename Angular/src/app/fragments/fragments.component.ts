@@ -43,9 +43,13 @@ export class FragmentsComponent implements OnInit {
 
   // text_column: Text_column;
   column1: Fragment_column;
+  column2: Fragment_column;
 
   // We keep track of the number of columns to identify them
   column_identifier: number = 1;
+
+  // List of connected columns to allow dragging and dropping between columns
+  connected_columns_list: string[] = [];
 
   constructor(
     private api: ApiService,
@@ -62,14 +66,16 @@ export class FragmentsComponent implements OnInit {
     this.current_fragment = this.utility.create_empty_fragment();
 
     // Create templates for the possible fragment columns
-    this.column1 = new Fragment_column(1, '', 'Ennius', 'Thyestes', 'TRF');
-    
+    this.column1 = new Fragment_column(1, 'ETT', 'Ennius', 'Thyestes', 'TRF');
+    // this.column2 = new Fragment_column(2, 'ETR', 'Ennius', 'Thyestes', 'Ribbeck');
+
     // And two for the playground
     // let playground1 = new Fragment_column('PLAY1', 'TBA', 'TBA', 'TBA');
     // let playground2 = new Fragment_column('PLAY2', 'TBA', 'TBA', 'TBA');
     
     // Push these to the columns array for later use in the HTML component
     this.columns.push(this.column1)
+    // this.columns.push(this.column2)
 
     
     
@@ -81,6 +87,8 @@ export class FragmentsComponent implements OnInit {
 
     // Request the fragments for the first column
     this.request_fragments(this.column1);
+    // this.request_fragments(this.column2);
+
   }
 
   //   _____  ______ ____  _    _ ______  _____ _______ _____ 
@@ -240,9 +248,6 @@ export class FragmentsComponent implements OnInit {
    */
    private handle_fragment_click(fragment: Fragment): void{
       this.current_fragment = fragment
-
-      console.log(fragment)
-
       // Request content from this fragment
       this.request_fragment_content(fragment.id)
       // Request content from its linked fragments
@@ -278,10 +283,13 @@ export class FragmentsComponent implements OnInit {
     //TODO: shall we create a limit? like no more than 100,000 columns?
     // First, increment the column_identifier to create a new and unique id
     this.column_identifier += 1;
-    // Create new column with the appropriate name
+
+    // Create new column with the appropriate name. TODO: create better identifiers than simple integers
     let new_fragment_column = new Fragment_column(this.column_identifier,'', '', '', '');
     this.columns.push(new_fragment_column)    
     this.request_authors(new_fragment_column);
+    // And update the connected columns list
+    this.update_connected_columns_list()
   }
 
   /**
@@ -294,6 +302,8 @@ export class FragmentsComponent implements OnInit {
       return object.id === column_id;
     });    
     this.columns.splice(object_index, 1);
+    // And update the connected columns list
+    this.update_connected_columns_list()
   }
 
   /**
@@ -322,6 +332,16 @@ export class FragmentsComponent implements OnInit {
     }
   }
 
+  /**
+   * This function creates a list of connected columns to allow dragging and dropping
+   * @author Ycreak
+   */
+  public update_connected_columns_list(): void{
+    this.connected_columns_list = [];
+    for (let i of this.columns) {
+      this.connected_columns_list.push(String(i.id));
+    };
+  }
   /**
    * This function moves an element within an array from the given location to the given new location
    * @param arr in which the moving should be done
@@ -458,6 +478,7 @@ export class FragmentsComponent implements OnInit {
    * An entry should not be made if the received field is empty to prevent empty expansion panels
    * @param fragment 
    * @author Ycreak
+   * TODO: this should be done with a nice for-loop
    */
   private add_content_to_current_fragment(fragment): void{
     if(fragment['translation'] != ''){ this.current_fragment.translation = fragment['translation']}

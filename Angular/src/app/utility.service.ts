@@ -103,10 +103,19 @@ export class UtilityService {
   /**
    * Allows a fragment to be moved and dropped to create a custom ordering
    * @param event what happens to the column
-   * @param array new ordering of the array representing the column
+   * @author Ycreak
    */
-  public moveAndDrop(event: CdkDragDrop<string[]>, array): void {
-    moveItemInArray(array, event.previousIndex, event.currentIndex);
+  public drop(event: CdkDragDrop<string[]>) {
+    if (event.container === event.previousContainer) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex,
+      );
+    }
   }
 
   /**
