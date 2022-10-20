@@ -147,75 +147,52 @@
 
     <!-- Row to show the playground -->
     <hr>
-    <div class="div-padding-lg"></div>
+    <!-- <div class="div-padding-lg"></div> -->
     <div class="container-fluid playground-height-padding" *ngIf="toggle_playground">               
         <div class="row">
             <!-- Possiblity to select an editor to begin with -->
-            <ng-container 
-                *ngTemplateOutlet="select_author;context:{column: 'PLAY1', hint:'For your base edition'}">
-            </ng-container>
-            <ng-container 
-                *ngTemplateOutlet="select_title;context:{column: 'PLAY1', hint:'For your base edition'}">
-            </ng-container>               
-            <ng-container 
-                *ngTemplateOutlet="select_editor;context:{column: 'PLAY1', hint:'For your base edition'}">
-            </ng-container>
-
-            <ng-container 
-                *ngTemplateOutlet="select_author;context:{column: 'PLAY2', hint:'To add a single fragment'}">
-            </ng-container>
-            <ng-container 
-                *ngTemplateOutlet="select_title;context:{column: 'PLAY2', hint:'To add a single fragment'}">
-            </ng-container>    
-            <ng-container 
-                *ngTemplateOutlet="select_editor;context:{column: 'PLAY2', hint:'To add a single fragment'}">
-            </ng-container>   
-
-            <!-- Possibility to select a fragment from given editor -->
-            <mat-form-field class="select-form">
-                <mat-label>Select fragment</mat-label>
-                <mat-select>
-                    <mat-option *ngFor="let fragment_number of get_column_from_columns('PLAY2').fragment_numbers" [value]="fragment_number"
-                        (click)="get_column_from_columns('PLAY2').secondary_fragments = this.add_fragment_to_array(get_column_from_columns('PLAY2').secondary_fragments, fragment_number, get_column_from_columns('PLAY2').fragments)">
-                        {{ fragment_number }} 
-                    </mat-option>
-                </mat-select>
-                <mat-hint>To add a single fragment</mat-hint>
-            </mat-form-field>  <!-- TODO: allow targeted deletion from this.playground.add_fragment_array -->
+            <div class="col-2"> <ng-container *ngTemplateOutlet="select_author;context:{column: this.playground}"></ng-container> </div>
+            <div class="col-2"> <ng-container *ngTemplateOutlet="select_title;context:{column: this.playground}"></ng-container> </div>
+            <div class="col-2"> <ng-container *ngTemplateOutlet="select_editor;context:{column: this.playground}"></ng-container> </div>   
+            <div class="col-2">
+                <mat-form-field class="select-form">
+                    <mat-label>Select fragment</mat-label>
+                    <mat-select>
+                        <mat-option *ngFor="let fragment_number of this.playground.fragment_numbers" [value]="fragment_number"
+                            (click)="add_single_fragment_to_playground(this.playground, fragment_number)">
+                            {{ fragment_number }} 
+                        </mat-option>
+                    </mat-select>
+                    <mat-hint>To add a single fragment</mat-hint>
+                </mat-form-field>  
+            </div>
+            <div class="col-2"> <button mat-button (click)="this.request_fragments(this.playground)">Add full edition</button> </div>
+            <div class="col-2"> <button mat-button (click)="this.delete_clicked_item_from_playground(this.playground, 'fragment')">Delete clicked fragment</button> </div>
 
             <!-- Possibility to add a little note -->
-            <div mat-dialog-content>
+            <div mat-dialog-content class="col-10">
                 <mat-form-field class="input-form" style="--width: 100%;">
                     <input matInput placeholder="Add a note" [(ngModel)]='note'>
-                    <button type="button" mat-icon-button matSuffix (click)="get_column_from_columns('PLAY2').note_array = this.utility.PopArray(get_column_from_columns('PLAY2').note_array)">
-                        <mat-icon>{{'remove'}}</mat-icon>
-                    </button>
-                    <!-- FIXME: this needs to be fixed. I swapped functions, but this doesnt work at all like this -->
-                    <button type="button" mat-icon-button matSuffix (click)="get_column_from_columns('PLAY2').note_array = this.utility.PushToArray(note, get_column_from_columns('PLAY2').note_array)">
+                    <button type="button" mat-icon-button matSuffix (click)="this.playground.note_array = this.utility.push_to_array(note, this.playground.note_array)">
                         <mat-icon>{{'add'}}</mat-icon>
                     </button>
                     <mat-hint>To organise your edition</mat-hint>
                 </mat-form-field>               
-            </div>  
+            </div>
+            <div class="col-2"> <button mat-button (click)="this.delete_clicked_item_from_playground(this.playground, 'note')">Delete clicked note</button> </div>
+  
         </div>
 
         <hr>
         <!-- For loop to print all the notes -->
-        <div *ngFor="let note of get_column_from_columns('PLAY2').note_array" class="note zlayer" style="--layer: 3;" cdkDrag>
+        <div *ngFor="let note of this.playground.note_array" class="note zlayer" style="--layer: 3;" (click)="this.playground.clicked_note = note" cdkDrag>
             {{note}}
         </div>
         <!-- For loop to print all the base selected fragments -->
-        <div *ngFor="let fragment of get_column_from_columns('PLAY1').fragments" class="playground zlayer" style="--layer: 2;" cdkDrag>
+        <div *ngFor="let fragment of this.playground.fragments" class="playground zlayer" style="--layer: 2;" cdkDrag (click)="this.playground.clicked_fragment = fragment">
             
             <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.title}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
             
-            <div *ngFor="let line of fragment.lines">           
-                <div [innerHTML]="line.line_complete"></div>
-            </div> 
-        </div>
-        <!-- For loop to print the added fragments -->
-        <div *ngFor="let fragment of get_column_from_columns('PLAY2').secondary_fragments" class="playground zlayer" style="--layer: 2;" cdkDrag>
-            <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.title}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
             <div *ngFor="let line of fragment.lines">           
                 <div [innerHTML]="line.line_complete"></div>
             </div> 
@@ -224,8 +201,6 @@
 </div>
 
 <!-- TEMPLATES -->
-
-
 
 <!-- Template for a fragment column -->
 <ng-template #fragment_column_template let-given_column="given_column" let-hint="hint">  

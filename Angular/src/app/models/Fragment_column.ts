@@ -1,3 +1,7 @@
+import { Author } from './Author';
+import { Editor } from './Editor';
+import { Book } from './Book';
+
 import { Fragment } from './Fragment';
 
 export class Fragment_column
@@ -14,29 +18,28 @@ export class Fragment_column
         this.retrieved_authors = [];
         this.retrieved_titles = [];
         this.retrieved_editors = [];
-
     }
 
     id : number;
     name : string;
 
-    author : string = 'TBA';
-    title : string = 'TBA';
-    editor : string = 'TBA';
+    author : string;
+    title : string;
+    editor : string;
 
-    fragments : Array<Fragment> = [];
-    fragment_numbers : Array<string> = [];
+    fragments : Fragment[] = [];
+    fragment_numbers : string[] = [];
 
-    secondary_fragments : Array<Fragment> = []; // Used for the playground. needs better design
-
-    // Should be a nice object, not a dirty json
-    retrieved_authors : object;
-    retrieved_titles : object;
-    retrieved_editors : object;
+    retrieved_authors : Author[];
+    retrieved_titles : Book[];
+    retrieved_editors : Editor[];
 
     note_array : Array<string> = [];
 
+    clicked_fragment : Fragment;
+    clicked_note : string;
+
     // Whether to show or hide the column
-    visible: boolean = true;
+    visible: boolean = false;
 }
 

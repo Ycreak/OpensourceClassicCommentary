@@ -147,6 +147,23 @@ export class UtilityService {
     return new User('', '', '');
   }
 
+  /**
+   * Function to push an item to an array
+   * @param item to be pushed
+   * @param array to be extended
+   * @returns new array with item pushed
+   * @author Ycreak
+   */
+  public push_to_array(item, array): Array<any>{
+    array.push(item);
+    return array;
+  }
+
+  public PopArray(array){
+    let _ = array.pop();
+    return array;
+  }
+
   /// TEXT COMPONENT
   /**
    * Check if a json object is actually empty
