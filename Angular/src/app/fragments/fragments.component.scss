@@ -16,6 +16,11 @@ mat-checkbox.btn label span span svg {
   display: none
 }
 
+// Onclick ripple effect
+button.btn span.mat-ripple {
+  width: inherit;
+}
+
 /* Fragment and commentary column related CSS */
 
 // Box in which the fragment is shown. Created by the for-loop in Fragment Column.
