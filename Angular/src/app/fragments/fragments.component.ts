@@ -16,7 +16,6 @@ import { AuthService } from '../auth/auth.service';
 import { Fragment } from '../models/Fragment';
 import { Fragment_column } from '../models/Fragment_column';
 import { Text_column } from '../models/Text_column';
-import { Playground } from '../models/Playground';
 
 @Component({
   selector: 'app-fragments',
