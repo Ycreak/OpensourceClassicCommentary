@@ -4,7 +4,7 @@ import { Line } from './Line';
 export class Fragment {
     constructor(
 
-        public id: string,
+        public _id: string,
         public fragment_name: string,
         public author: string,
         public title: string,

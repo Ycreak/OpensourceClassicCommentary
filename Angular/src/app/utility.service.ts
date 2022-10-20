@@ -91,6 +91,8 @@ export class UtilityService {
   public handle_error_message(err): void {
     let output = '';
     
+    console.log(err)
+
     if (err.ok){
       output = err.status + ': ' + err.body;
     }

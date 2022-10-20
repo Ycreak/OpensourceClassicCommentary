@@ -42,16 +42,22 @@
         </mat-panel-description>
       </mat-expansion-panel-header>
 
-      <!-- Selection of fragment -->
+      <!-- Selection of fragment. All the clicks below are to make sure the form field stays in sync with
+      all types of unlogical user routes and inputs -->
       <mat-form-field>
         <mat-label>Select author</mat-label>
-        <mat-select>
+        <mat-select [(ngModel)]="this.selected_author">
             <mat-option *ngFor="let author of this.retrieved_authors" [value]="author.name"
-              (click)="this.selected_author = author.name"  
-              (click)="this.request_books(author.name)"
+              (click)="this.selected_author = author.name"
+              
+              (click)="this.selected_book = ''; this.selected_editor = ''; this.selected_fragment = '';"
               (click)="this.retrieved_books = []; this.retrieved_editors = []; this.retrieved_fragment_names = []"
-              (click)="this.fragment_selected = false;"
-              (click)="this.reset_fragment_form()">
+              
+              (click)="this.reset_fragment_form()"
+              (click)="this.update_form_field('fragment_form', 'author', author.name);"
+
+              (click)="this.request_books(author.name)"
+              (click)="this.fragment_selected = false;">
                 {{ author.name }} 
             </mat-option>
         </mat-select>  
@@ -59,13 +65,19 @@
 
       <mat-form-field>
           <mat-label>Select text</mat-label>
-          <mat-select>
+          <mat-select [(ngModel)]="this.selected_book">
               <mat-option *ngFor="let book of this.retrieved_books" [value]="book.name" 
                 (click)="this.selected_book = book.name"  
-                (click)="this.request_editors(this.selected_author, book.name)"
+                
+                (click)="this.selected_editor = ''; this.selected_fragment = '';"
                 (click)="this.retrieved_editors = []; this.retrieved_fragment_names = []"
-                (click)="this.fragment_selected = false;"
-                (click)="this.reset_fragment_form()">
+                
+                (click)="this.reset_fragment_form()"
+                (click)="this.update_form_field('fragment_form', 'author', selected_author);"
+                (click)="this.update_form_field('fragment_form', 'title', book.name);"
+
+                (click)="this.request_editors(this.selected_author, book.name)"
+                (click)="this.fragment_selected = false;">
                   {{ book.name }}                
               </mat-option>
           </mat-select>
@@ -73,13 +85,20 @@
   
       <mat-form-field>
           <mat-label>Select edition</mat-label>
-          <mat-select>
+          <mat-select [(ngModel)]="this.selected_editor">
               <mat-option *ngFor="let editor of this.retrieved_editors" [value]="editor.name"
-                  (click)="this.selected_editor = editor.name"  
-                  (click)="this.request_fragment_names(this.selected_author, this.selected_book, editor.name)"
+                  (click)="this.selected_editor = editor.name"
+
+                  (click)="this.selected_fragment = '';"
                   (click)="this.retrieved_fragment_names = []"
-                  (click)="this.fragment_selected = false;"
-                  (click)="this.reset_fragment_form()">
+
+                  (click)="this.reset_fragment_form()"
+                  (click)="this.update_form_field('fragment_form', 'author', selected_author);"
+                  (click)="this.update_form_field('fragment_form', 'title', selected_book);"
+                  (click)="this.update_form_field('fragment_form', 'editor', editor.name);"
+
+                  (click)="this.request_fragment_names(this.selected_author, this.selected_book, editor.name)"
+                  (click)="this.fragment_selected = false;">
                     {{ editor.name }}                     
               </mat-option>
           </mat-select>
@@ -87,10 +106,13 @@
   
       <mat-form-field>
           <mat-label>Fragment</mat-label>
-          <mat-select>
+          <mat-select [(ngModel)]="this.selected_fragment">
               <mat-option *ngFor="let fragment_name of this.retrieved_fragment_names" [value]="fragment_name"
-                (click)="this.reset_fragment_form()" 
-                (click)="this.retrieve_requested_fragment(selected_author, selected_book, selected_editor, fragment_name)"
+                (click)="this.selected_fragment = fragment_name"
+
+                (click)="this.update_form_field('fragment_form', 'fragment_name', fragment_name);" 
+  
+                (click)="this.retrieve_requested_fragment(this.selected_author, this.selected_book, this.selected_editor, fragment_name)"
                 (click)="this.fragment_selected = true">
                   {{ fragment_name }} 
               </mat-option>

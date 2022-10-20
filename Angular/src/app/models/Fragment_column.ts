@@ -8,7 +8,7 @@ export class Fragment_column
 {
     constructor(id: number, name: string, author: string, title: string, editor: string)
     {
-        this.id = id
+        this._id = id
         this.name = name;
         
         this.author = author;
@@ -20,7 +20,7 @@ export class Fragment_column
         this.retrieved_editors = [];
     }
 
-    id : number;
+    _id : number;
     name : string;
 
     author : string;

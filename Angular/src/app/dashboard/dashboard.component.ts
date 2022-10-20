@@ -65,6 +65,7 @@ export class DashboardComponent implements OnInit {
   selected_author: string;
   selected_book: string;
   selected_editor: string;
+  selected_fragment: string;
 
   // These variables are used to fill the drop down menus with authors, titles and editors. 
   retrieved_authors: Author[];
@@ -84,6 +85,8 @@ export class DashboardComponent implements OnInit {
    * and revision of fragments.
    */
   fragment_form = new FormGroup({
+    _id: new FormControl(''),
+
     fragment_name: new FormControl('', [
       Validators.required,
       Validators.pattern('[0-9-_ ]*')
@@ -202,7 +205,7 @@ export class DashboardComponent implements OnInit {
     this.request_authors()
     this.request_users()
 
-    this.retrieve_requested_fragment('Ennius', 'Thyestes', 'TRF', '134')
+    // this.retrieve_requested_fragment('Ennius', 'Thyestes', 'TRF', '134')
     // this.request_bibliography_authors()
 
     // this.bibliography_author_selection_form_filtered_options = this.bibliography_author_selection_form.valueChanges.pipe(
@@ -225,12 +228,8 @@ export class DashboardComponent implements OnInit {
    * @author Ycreak
    */
   public test(thing): void {
-    console.log(this.retrieved_users)
-    // let temp = new Fragment;
-    // temp.author = 'luukie'
+    console.log(this.fragment_form.value)
 
-    // console.log(temp)
-    // console.log(this.fragment_form.value)
   }
 
   /**
@@ -267,7 +266,7 @@ export class DashboardComponent implements OnInit {
    */
   public convert_Fragment_to_fragment_form(fragment: Fragment): void {
     // This functions updates the fragment_form with the provided fragment
-    let fragment_items: string[] = ['fragment_name', 'author', 'title', 'editor', 'translation',
+    let fragment_items: string[] = ['_id', 'fragment_name', 'author', 'title', 'editor', 'translation',
       'differences', 'commentary', 'apparatus', 'reconstruction', 'status', 'lock', 'published']
 
     for (let item in fragment_items) {
@@ -405,6 +404,10 @@ export class DashboardComponent implements OnInit {
    * @author Ycreak
    */
   public request_books(author: string): void {
+    
+    this.retrieved_books = [];
+    this.selected_book = '';    
+    
     this.api.get_titles(author).subscribe(
       data => {
         this.retrieved_books = data;
@@ -420,6 +423,9 @@ export class DashboardComponent implements OnInit {
    * @author Ycreak
    */
   public request_editors(author: string, book: string): void {
+    this.retrieved_editors = [];
+    this.selected_editor = '';
+    
     this.api.get_editors(author, book).subscribe(
       data => {
         this.retrieved_editors = data;
@@ -436,13 +442,20 @@ export class DashboardComponent implements OnInit {
    * @author Ycreak CptVickers
    */
     public retrieve_requested_fragment(author: string, title: string, editor: string, fragment_name: string): void {
-      // Create api/fragment object to send to the server
+      // Reset the fragment_form to allow a clean insertion of the requested fragment
+      this.reset_fragment_form();
+      // Create api/fragment object to send to the server      
       let api_data = this.utility.create_empty_fragment();
       api_data.author = author; api_data.title = title; api_data.editor = editor; api_data.fragment_name = fragment_name;
 
       this.api.get_specific_fragment(api_data).subscribe(
         fragment => {
           this.convert_Fragment_to_fragment_form(fragment);
+          // Also update the selection fields
+          this.selected_author = fragment.author;
+          this.selected_book = fragment.title;
+          this.selected_editor = fragment.editor;
+          this.selected_fragment = fragment.fragment_name;
         });
     }
 
@@ -481,15 +494,24 @@ export class DashboardComponent implements OnInit {
 
       this.dialog.open_confirmation_dialog('Are you sure you want to REVISE this fragment?', item_string).subscribe(result => {
         if (result) {
-          this.api.revise_fragment(fragment_form).subscribe(
+
+          this.api.revise_fragment(fragment_form.value).subscribe(
             res => {
               this.utility.handle_error_message(res);
+              this.fragment_selected = true;
+              // It might be possible we have created a new author, title or editor. Retrieve the lists again
+              this.request_authors();
+              this.request_books(fragment_form.value.author);
+              this.request_editors(fragment_form.value.author, fragment_form.value.title)
+              // After creation, refresh the list of fragment names so the new one appears directly
+              this.request_fragment_names(fragment_form.value.author, fragment_form.value.title, fragment_form.value.editor);
+              // Also, retrieve that revised fragment so we can continue editing!
+              this.retrieve_requested_fragment(fragment_form.value.author, fragment_form.value.title, fragment_form.value.editor, fragment_form.value.fragment_name);
             },
             err => this.utility.handle_error_message(err)
           );
         }
       });
-      this.reset_fragment_form();
     }
   }
 
@@ -501,23 +523,28 @@ export class DashboardComponent implements OnInit {
    * TODO: should we parse the formgroup to a Fragment object?
    */
   public request_create_fragment(fragment_form: FormGroup): void {
+
     let item_string = fragment_form.value.author + ', ' + fragment_form.value.title + ', ' + fragment_form.value.editor + ': ' + fragment_form.value.fragment_name
 
     this.dialog.open_confirmation_dialog('Are you sure you want to CREATE this fragment?', item_string).subscribe(result => {
       if (result) {
-        this.api.create_fragment(fragment_form).subscribe(
-          res => this.utility.handle_error_message(res), err => this.utility.handle_error_message(err)
+        this.api.create_fragment(fragment_form.value).subscribe(
+          res => {
+            this.utility.handle_error_message(res);
+            this.fragment_selected = true;
+            // It might be possible we have created a new author, title or editor. Retrieve the lists again
+            this.request_authors();
+            this.request_books(fragment_form.value.author);
+            this.request_editors(fragment_form.value.author, fragment_form.value.title)
+            // After creation, refresh the list of fragment names so the new one appears directly
+            this.request_fragment_names(fragment_form.value.author, fragment_form.value.title, fragment_form.value.editor);
+            // Also, retrieve that created fragment so we can start editing!
+            this.retrieve_requested_fragment(fragment_form.value.author, fragment_form.value.title, fragment_form.value.editor, fragment_form.value.fragment_name);
+          },
+          err => this.utility.handle_error_message(err),
         );
       }
     });
-    // Now reset form and request the fragments again
-    this.request_fragment_names(this.selected_author, this.selected_book, this.selected_editor);
-    let saved_new_fragment: [string, string, string, string];
-    //FIXME: CptVickers, this is not very OOP of you.
-    saved_new_fragment = [fragment_form.value.author, fragment_form.value.title, fragment_form.value.editor, fragment_form.value.fragment_name];
-    this.reset_fragment_form();
-    this.retrieve_requested_fragment(...saved_new_fragment);
-    this.fragment_selected = true;
   }
 
   /**
@@ -531,15 +558,29 @@ export class DashboardComponent implements OnInit {
 
     this.dialog.open_confirmation_dialog('Are you sure you want to DELETE this fragment?', item_string).subscribe(result => {
       if (result) {
-        this.api.delete_fragment(fragment_form).subscribe(
-          res => this.utility.handle_error_message(res), err => this.utility.handle_error_message(err)
+        this.api.delete_fragment(fragment_form.value).subscribe(
+          res => {
+            this.utility.handle_error_message(res);
+
+            // It might be possible we have deleted an entire author, title or editor. Retrieve the lists again
+            this.request_authors();
+            this.request_books(fragment_form.value.author);
+            this.request_editors(fragment_form.value.author, fragment_form.value.title)
+            this.request_fragment_names(fragment_form.value.author, fragment_form.value.title, fragment_form.value.editor);
+            // Also, reset the selected fields to the beginning. We begin fresh!
+            this.selected_author = '';
+            this.selected_book = '';
+            this.selected_editor = '';
+            this.selected_fragment = '';
+
+            // Lastly, reset the fragment form
+            this.reset_fragment_form();
+            this.fragment_selected = false;
+          }, 
+          err => this.utility.handle_error_message(err)
         );
       }
     });
-    // Now reset form and request the fragments again to refresh the list, now without the deleted fragment
-    this.reset_fragment_form();
-    this.fragment_selected = false;
-    this.request_fragment_names(this.selected_author, this.selected_book, this.selected_editor);
   }
 
   /**
@@ -592,7 +633,6 @@ export class DashboardComponent implements OnInit {
     this.api.get_users(api_data).subscribe(
       data => {
         this.retrieved_users = data;
-        console.log(this.retrieved_users)
 
         //FIXME: this should be handled somewhere else, preferably by a listener
         // Rebuild the table that displays the users
