@@ -5,12 +5,13 @@ class Fragment:
     def __init__(self, received_fragment):
     
         print('#############################')
-        print(received_fragment['author'])
+        print('fragment_id', received_fragment['fragment_id'])
+        print('#############################')
 
         # Fragment meta data
-        if "id" in received_fragment: 
-            assert isinstance(received_fragment['id'], str)
-            self._id = received_fragment['id']
+        if "fragment_id" in received_fragment: 
+            assert isinstance(received_fragment['fragment_id'], str)
+            self.fragment_id = received_fragment['fragment_id']
 
         if "fragment_name" in received_fragment: 
             assert isinstance(received_fragment['fragment_name'], str)
@@ -85,7 +86,7 @@ class Fragment:
             self.linked_bib_entries = list(set(linked_bib_entries_list)) 
 
     # Default fragment fields
-    _id: str = ''
+    fragment_id: str = ''
     fragment_name: str = ''
     author: str = ''
     title: str = '' 

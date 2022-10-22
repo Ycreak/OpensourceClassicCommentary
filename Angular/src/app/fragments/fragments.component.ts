@@ -29,8 +29,8 @@ export class FragmentsComponent implements OnInit {
   @ViewChild('CallAbout') CallAbout: TemplateRef<any>;
 
   // Toggle switches for the HTML columns/modes
-  toggle_commentary: boolean = false;
-  toggle_playground: boolean = true;
+  toggle_commentary: boolean = true;
+  toggle_playground: boolean = false;
   // Booleans for HTML related items
   spinner: boolean = false; // Boolean to toggle the spinner.
   server_down: boolean = true; // to indicate server failure
@@ -159,7 +159,7 @@ export class FragmentsComponent implements OnInit {
           column.fragments = fragment_list;
           // Now check if the column already exists. If so, replace it with the new object.
           if(this.columns.length > 0){
-            this.columns[this.columns.findIndex(i => i._id === column._id)] = column
+            this.columns[this.columns.findIndex(i => i.column_id === column.column_id)] = column
           }
         }
         else{
@@ -181,7 +181,9 @@ export class FragmentsComponent implements OnInit {
    */
   private request_fragment_content(fragment_id: string): void{
     let api_data = this.utility.create_empty_fragment(); 
-    api_data._id = fragment_id;
+    api_data.fragment_id = fragment_id;
+
+    console.log(fragment_id)
 
     this.api.get_fragment_content(api_data).subscribe(data => {     
       this.fragment_clicked = true;
@@ -275,8 +277,10 @@ export class FragmentsComponent implements OnInit {
    */
    private handle_fragment_click(fragment: Fragment): void{
       this.current_fragment = fragment
+
+      console.log(fragment.fragment_id) //FIXME: _id is not working.
       // Request content from this fragment
-      this.request_fragment_content(fragment._id)
+      this.request_fragment_content(fragment.fragment_id)
       // Request content from its linked fragments
       //TODO:
       
@@ -326,7 +330,7 @@ export class FragmentsComponent implements OnInit {
    */
   public close_column(column_id): void{
     const object_index = this.columns.findIndex(object => {
-      return object._id === column_id;
+      return object.column_id === column_id;
     });    
     this.columns.splice(object_index, 1);
     // And update the connected columns list
@@ -343,7 +347,7 @@ export class FragmentsComponent implements OnInit {
    public move_column(column_id, direction): void{
     // First get the current index of the column we want to move
     const from_index = this.columns.findIndex(object => {
-      return object._id === column_id;
+      return object.column_id === column_id;
     });
     // Next, generate the new index when the column would be moved
     let to_index = 0;
@@ -366,7 +370,7 @@ export class FragmentsComponent implements OnInit {
   public update_connected_columns_list(): void{
     this.connected_columns_list = [];
     for (let i of this.columns) {
-      this.connected_columns_list.push(String(i._id));
+      this.connected_columns_list.push(String(i.column_id));
     };
   }
   /**
@@ -392,7 +396,7 @@ export class FragmentsComponent implements OnInit {
   public delete_clicked_item_from_playground(column: Fragment_column, item: string): void{
     if(item == 'fragment'){
       const object_index = column.fragments.findIndex(object => {
-        return object._id === column.clicked_fragment._id;
+        return object.fragment_id === column.clicked_fragment.fragment_id;
       });    
       column.fragments.splice(object_index, 1);
     }
@@ -417,7 +421,7 @@ export class FragmentsComponent implements OnInit {
       // Now, for each fragment that is linked, try to find it in the other columns
       for(let j in this.columns){
         // in each column, take a look in the fragments array to find the linked fragment
-        let corresponding_fragment = this.columns[j].fragments.find(i => i._id === linked_fragment_id);
+        let corresponding_fragment = this.columns[j].fragments.find(i => i.fragment_id === linked_fragment_id);
         // colour it if found
         if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
       }

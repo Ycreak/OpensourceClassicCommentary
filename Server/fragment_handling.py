@@ -36,6 +36,18 @@ class Fragment_handler:
         Returns:
             list: of all unique authors in the database
         """        
+        
+        # temp = ['Ennius', 'Livius Andronicus', 'Naevius', 'Pacuvius', 'Lucus', 'Accius', 'Gijs']
+
+        # data = retrieve_data_from_db(self.frag_db, {}, [])
+        # for x in data:
+        #     if x['author'] not in temp:
+            
+        #         print(x.id)
+        #         print(x['author'])
+        
+        # exit(0)
+        
         data = retrieve_data_from_db(self.frag_db, {}, ['author'])
         return sorted(set([x['author'] for x in data]))
 
@@ -82,7 +94,7 @@ class Fragment_handler:
 
         for fragment in fragments:
             fragment_entry = {
-                'id' : fragment.id,
+                'fragment_id' : fragment['_id'],
                 'author' : fragment['author'],
                 'title' : fragment['title'],
                 'editor' : fragment['editor'],
@@ -97,30 +109,30 @@ class Fragment_handler:
 
     def retrieve_fragment_content(self, fragment):
                 
-        doc = self.frag_db[fragment._id]
+        doc = self.frag_db[fragment.fragment_id]
 
         for content in ['translation', 'apparatus', 'differences', 'context', 'commentary', 'reconstruction']:
             setattr(fragment, content, doc[content])
         
         # Also add linked bib entries separately as list
         bib_entry_list = []
-        if 'linked_bib_entries' in doc:        
-            for bib_entry_id in doc['linked_bib_entries']:
-                # retrieve the bib entry given the id and put it in the list
-                bibliography = self.bib_handler.retrieve_bibliography_from_id(bib_entry_id)
+        # if 'linked_bib_entries' in doc:        
+        #     for bib_entry_id in doc['linked_bib_entries']:
+        #         # retrieve the bib entry given the id and put it in the list
+        #         bibliography = self.bib_handler.retrieve_bibliography_from_id(bib_entry_id)
                 
-                # book
-                if bibliography['bib_entry_type'] == "book": # TODO vraag welk format men wil
-                    string = f"<p>{bibliography['author']}, ({bibliography['year']}), <i>{bibliography['title']}</i></p>"
-                elif bibliography['bib_entry_type'] == 'article':
-                    string = f"<p>{bibliography['author']}, ({bibliography['year']}), <i>{bibliography['title']}</i></p>"
-                else: raise KeyError("Bibliography has no valid type")
+        #         # book
+        #         if bibliography['bib_entry_type'] == "book": # TODO vraag welk format men wil
+        #             string = f"<p>{bibliography['author']}, ({bibliography['year']}), <i>{bibliography['title']}</i></p>"
+        #         elif bibliography['bib_entry_type'] == 'article':
+        #             string = f"<p>{bibliography['author']}, ({bibliography['year']}), <i>{bibliography['title']}</i></p>"
+        #         else: raise KeyError("Bibliography has no valid type")
 
-                bib_entry_list.append(string)
+        #         bib_entry_list.append(string)
 
-        # bib_entry_list
-        print(bib_entry_list)
-        setattr(fragment, 'bib_entries', sorted(bib_entry_list))
+        # # bib_entry_list
+        # print(bib_entry_list)
+        # setattr(fragment, 'bib_entries', sorted(bib_entry_list))
 
         return fragment
 
@@ -149,7 +161,8 @@ class Fragment_handler:
             couch document: with all data of the requested fragment
         """                
         result, found_fragment = self.find_fragment(fragment)
-        
+        # Add the fragment_id to the mix
+        found_fragment['fragment_id'] = found_fragment.id
         return found_fragment #self.frag_db[fragment_id]
 
     def find_fragment(self, fragment): # -> tuple(bool, dict): #FIXME: does not work on Pi
@@ -210,56 +223,17 @@ class Fragment_handler:
 
         Returns:
             flask response: response on successful execution
-        """        
-        doc = self.frag_db[fragment._id]
+        """                
+        doc = self.frag_db[fragment.fragment_id]
 
         for field in doc:
-            if hasattr(fragment, field):
+            if hasattr(fragment, field) and field != 'fragment_id':
                 doc[field] = getattr(fragment, field)
 
         doc_id, doc_rev = self.frag_db.save(doc)
         
         return make_response('Succesfully revised fragment!', 200)
-
-
-    # DEPRECATED: this used to be the Create/Revise button. Separated again.
-    # def Revise_fragment(self, fragment) -> make_response:
-    #     """Revises the provided fragment with the provided data. Creates a new one
-    #     if none exists yet.
-
-    #     Args:
-    #         fragment (object): fragment model containing all revised fragment data
-
-    #     Returns:
-    #         flask response: response on successful execution
-    #     """        
-    #     # Check if the fragment already exists in the database
-    #     fragment_exist, _ = self.Find_fragment(fragment)
-
-    #     if fragment_exist:          
-    #         doc = self.frag_db[fragment._id]
-
-    #         for fragment_entry in ['fragment_name', 'author', 'title', 'editor', 'translation', 
-    #                         'differences', 'apparatus', 'commentary', 'reconstruction',
-    #                         'context', 'lines', 'linked_fragments', 'status']:
-    #             doc[fragment_entry] = getattr(fragment, fragment_entry)
-            
-    #         doc_id, doc_rev = self.frag_db.save(doc)
-    #         return make_response('Succesfully revised fragment!', 200)
-
-    #     else:
-    #         new_fragment = copy.deepcopy(fragment.fragment_empty)
-
-    #         for fragment_entry in ['fragment_name', 'author', 'title', 'editor', 'translation', 
-    #                         'differences', 'apparatus', 'commentary', 'reconstruction',
-    #                         'context', 'lines', 'linked_fragments', 'status']:
-    #             new_fragment[fragment_entry] = getattr(fragment, fragment_entry)
-
-    #         # Give the fragment a unique id
-    #         new_fragment['_id'] = uuid4().hex
-
-    #         doc_id, doc_rev = self.frag_db.save(new_fragment)
-    #         return make_response('Succesfully created fragment!', 201)            
+       
 
     def delete_fragment(self, fragment) -> make_response:
         """Deletes the given fragment using its id
@@ -270,25 +244,25 @@ class Fragment_handler:
         Returns:
             flask response: with information about the status
         """      
-        doc = self.frag_db[fragment._id]
+        doc = self.frag_db[fragment.fragment_id]
         self.frag_db.delete(doc)
 
         return make_response('Succesfully deleted fragment!', 200)
 
-    def set_fragment_lock(self, fragment) -> make_response:
-        """Locks the fragment so that it cannot be edited
+    # def set_fragment_lock(self, fragment) -> make_response:
+    #     """Locks the fragment so that it cannot be edited
 
-        Args:
-            fragment (object): fragment object with the id and lock status to be changed
+    #     Args:
+    #         fragment (object): fragment object with the id and lock status to be changed
 
-        Returns:
-            flask response: confirmation of lock status change
-        """
-        doc = self.frag_db[fragment._id]
-        doc['lock'] = fragment.lock
-        doc_id, doc_rev = self.frag_db.save(doc)
+    #     Returns:
+    #         flask response: confirmation of lock status change
+    #     """
+    #     doc = self.frag_db[fragment.id_]
+    #     doc['lock'] = fragment.lock
+    #     doc_id, doc_rev = self.frag_db.save(doc)
 
-        return make_response('Fragment lock status set', 200)
+    #     return make_response('Fragment lock status set', 200)
 
     def automatic_fragment_linker(self, given_fragment):
         '''
@@ -330,13 +304,13 @@ class Fragment_handler:
                         if self.Get_line_similarity(current_fragment_line.get('text'), other_fragment_line.get('text')) >= EQUALITY_RATIO:
 
                             # Link both fragments together
-                            doc = self.frag_db[current_fragment['_id']]                           
-                            doc['linked_fragments'].append(other_fragment['_id'])  # -> link the found fragment to the given fragment
+                            doc = self.frag_db[current_fragment['id']]                           
+                            doc['linked_fragments'].append(other_fragment['id'])  # -> link the found fragment to the given fragment
                             doc['linked_fragments'] = list(set(doc['linked_fragments']))
                             doc_id, doc_rev = self.frag_db.save(doc)
 
-                            doc = self.frag_db[other_fragment['_id']]
-                            doc['linked_fragments'].append(current_fragment['_id'])  # -> link the found fragment to the given fragment
+                            doc = self.frag_db[other_fragment['id']]
+                            doc['linked_fragments'].append(current_fragment['id'])  # -> link the found fragment to the given fragment
                             doc['linked_fragments'] = list(set(doc['linked_fragments']))                            
                             doc_id, doc_rev = self.frag_db.save(doc)
 
@@ -389,6 +363,10 @@ class Fragment_handler:
 # Developer functions
 if __name__ == "__main__":
     fh = Fragment_handler()
+
+    temp = fh.retrieve_all_authors()
+    print(temp)
+
 
     # fh.create_complete_backup()
     # fh.create_additional_field('linked_bib_entries', [])

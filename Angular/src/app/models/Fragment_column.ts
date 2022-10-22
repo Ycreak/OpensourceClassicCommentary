@@ -8,7 +8,7 @@ export class Fragment_column
 {
     constructor(id: number, name: string, author: string, title: string, editor: string)
     {
-        this._id = id
+        this.column_id = id
         this.name = name;
         
         this.author = author;
@@ -20,7 +20,7 @@ export class Fragment_column
         this.retrieved_editors = [];
     }
 
-    _id : number;
+    column_id : number;
     name : string;
 
     author : string;
@@ -40,6 +40,6 @@ export class Fragment_column
     clicked_note : string;
 
     // Whether to show or hide the column
-    visible: boolean = false;
+    visible: boolean = true;
 }
 

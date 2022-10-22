@@ -85,7 +85,7 @@ export class DashboardComponent implements OnInit {
    * and revision of fragments.
    */
   fragment_form = new FormGroup({
-    _id: new FormControl(''),
+    fragment_id: new FormControl(''),
 
     fragment_name: new FormControl('', [
       Validators.required,
@@ -266,7 +266,7 @@ export class DashboardComponent implements OnInit {
    */
   public convert_Fragment_to_fragment_form(fragment: Fragment): void {
     // This functions updates the fragment_form with the provided fragment
-    let fragment_items: string[] = ['_id', 'fragment_name', 'author', 'title', 'editor', 'translation',
+    let fragment_items: string[] = ['fragment_id', 'fragment_name', 'author', 'title', 'editor', 'translation',
       'differences', 'commentary', 'apparatus', 'reconstruction', 'status', 'lock', 'published']
 
     for (let item in fragment_items) {
@@ -742,7 +742,7 @@ export class DashboardComponent implements OnInit {
     let bibliography_references = this.fragment_form.get('linked_bib_entries') as UntypedFormArray;
     bibliography_references.push(
       this.formBuilder.group({
-        bib_id: bib_entry._id,
+        bib_id: bib_entry.id,
         author: bib_entry.author,
         title: bib_entry.title,
         year: bib_entry.year,
@@ -772,8 +772,8 @@ export class DashboardComponent implements OnInit {
   }
 
   public add_bibliography_entry_to_fragment(bib_entry, fragment) {
-    console.log('bib', bib_entry._id)
-    console.log('frg', fragment._id)
+    console.log('bib', bib_entry.id)
+    console.log('frg', fragment.id)
 
     console.log(this.fragment_form.value)
 
@@ -794,7 +794,7 @@ export class DashboardComponent implements OnInit {
     if (bib_entry.bib_entry_type == 'book') this.bibliography_form_selected_type.setValue(0);
     if (bib_entry.bib_entry_type == 'article') this.bibliography_form_selected_type.setValue(1);
 
-    this.update_form_field('bibliography_form', '_id', bib_entry._id);
+    this.update_form_field('bibliography_form', '_id', bib_entry.id);
     this.update_form_field('bibliography_form', 'author', bib_entry.author);
     this.update_form_field('bibliography_form', 'title', bib_entry.title);
     this.update_form_field('bibliography_form', 'year', bib_entry.year);
@@ -905,7 +905,7 @@ export class DashboardComponent implements OnInit {
 
     this.dialog.open_confirmation_dialog('Are you sure you want to DELETE this bibliography entry?', item_string).subscribe(result => {
       if (result) {
-        this.api.delete_bibliography_entry({ '_id': bibliography._id }).subscribe(
+        this.api.delete_bibliography_entry({ '_id': bibliography.id }).subscribe(
           res => {
             this.utility.handle_error_message(res),
               this.request_bibliography_authors();  // After a succesful response, retrieve the authors again.

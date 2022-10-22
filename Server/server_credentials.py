@@ -1,6 +1,6 @@
 class Credentials:
     username = 'admin'
-    password = 'YcreakPasswd26!'
+    password = 'yVu4DES8qzajPCy'
     host = 'localhost'
     port = '5984'
 

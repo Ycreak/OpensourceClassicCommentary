@@ -5,9 +5,9 @@ class Bib_entry:
     def __init__(self, received_bib_entry):
     
         # Fragment meta data
-        if "_id" in received_bib_entry: 
-            assert isinstance(received_bib_entry['_id'], str)
-            self._id = received_bib_entry['_id']
+        if "id" in received_bib_entry: 
+            assert isinstance(received_bib_entry['id'], str)
+            self.id = received_bib_entry['id']
 
         if "bib_entry_type" in received_bib_entry: # TODO: what else?
             assert isinstance(received_bib_entry['bib_entry_type'], str)

@@ -75,7 +75,7 @@ class Bibliography_handler:
         Returns:
             flask response: response on successful execution
         """                  
-        doc = self.bib_db[bib_entry._id]
+        doc = self.bib_db[bib_entry.id]
 
         # Take the document and replace its fields with the new data received
         for field in doc:
@@ -97,7 +97,7 @@ class Bibliography_handler:
         Returns:
             flask response: with information about the status
         """      
-        doc = self.bib_db[bib_entry._id]
+        doc = self.bib_db[bib_entry.id]
         self.bib_db.delete(doc)
 
         return make_response('Succesfully deleted fragment!', 200)
@@ -129,7 +129,7 @@ class Bibliography_handler:
         for bibliography in bibliographies:
             
             bib_object = Bib_entry(bibliography)
-            bib_entry = {'_id' : bib_object._id, 'bib_entry_type': bib_object.bib_entry_type}
+            bib_entry = {'_id' : bib_object.id, 'bib_entry_type': bib_object.bib_entry_type}
             
             if hasattr(bib_object, 'author'): bib_entry['author'] = bib_object.author
             if hasattr(bib_object, 'title'): bib_entry['title'] = bib_object.title
@@ -159,7 +159,7 @@ class Bibliography_handler:
   
         for bibliography in bibliographies:   # This needs to be a loop for some reason     
             bib_object = Bib_entry(bibliography)  
-            bib_entry = {'_id' : bib_object._id, 'bib_entry_type': bib_object.bib_entry_type}
+            bib_entry = {'_id' : bib_object.id, 'bib_entry_type': bib_object.bib_entry_type}
             
             if hasattr(bib_object, 'author'): bib_entry['author'] = bib_object.author
             if hasattr(bib_object, 'title'): bib_entry['title'] = bib_object.title
