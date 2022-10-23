@@ -25,12 +25,6 @@ import { Author } from '../models/Author';
 import { Title } from '../models/Title';
 import { Editor } from '../models/Editor';
 
-// Third party imports. TODO: These should be fixed again.
-// import insertTextAtCursor from 'insert-text-at-cursor';
-import { IKeyboardLayouts, keyboardLayouts, MAT_KEYBOARD_LAYOUTS, MatKeyboardModule } from '@efaps/angular-onscreen-material-keyboard';
-// To install the onscreen keyboard: $ npm i @efaps/angular-onscreen-material-keyboard
-
-
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -473,7 +467,7 @@ export class DashboardComponent implements OnInit {
 
     this.api.get_fragment_names(api_data).subscribe(
       data => {
-        this.retrieved_fragment_names = data;
+        this.retrieved_fragment_names = data.sort(this.utility.sort_array_numerically);
       });
   }
 
@@ -481,7 +475,6 @@ export class DashboardComponent implements OnInit {
    * This function requests the api to revise the fragment given the fragment_form.
    * @param fragment_form which represents a Fragment, edited by the user in the dashboard
    * @author Ycreak
-   * TODO: should we parse the formgroup to a Fragment object?
    */
   public request_revise_fragment(fragment_form: FormGroup): void {
     // If the fragment is locked and the user is not a teacher, we will not allow this operation.
@@ -520,7 +513,6 @@ export class DashboardComponent implements OnInit {
    * new fragment. NB: this only uses the provided meta data to create a new fragment.
    * @param fragment_form which represents a Fragment, edited by the user in the dashboard
    * @author Ycreak
-   * TODO: should we parse the formgroup to a Fragment object?
    */
   public request_create_fragment(fragment_form: FormGroup): void {
 
@@ -622,8 +614,6 @@ export class DashboardComponent implements OnInit {
    * If a user is student, only the student will be retrieved. For teachers, all students will
    * be retrieved in addition to themselves. Administrators will receive all users. 
    * @author Ycreak
-   * TODO: provide this.api.get_users with the logged in user. The server should then decide
-   * what information is provided to the frontend.
    */
   public request_users() {
     // We will provide the api with the currently logged in user to check its privileges

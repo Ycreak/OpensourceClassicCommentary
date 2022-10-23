@@ -18,7 +18,7 @@ export class UtilityService {
 
   /** Sorts array numerically on fragment number
   * @param boolean called from array
-  * @param field on which to perform the comparison TODO:
+  * @param field on which to perform the comparison
   * @returns sorted array.
   * @author Ycreak
   */ 
@@ -36,6 +36,28 @@ export class UtilityService {
     }
     return comparison;
   }
+
+  /** Sorts array numerically
+  * @param boolean called from array
+  * @param field on which to perform the comparison
+  * @returns sorted array.
+  * @author Ycreak
+  */ 
+   public sort_array_numerically(a, b) {
+    // Sort array via the number element given.
+    // To allow fragments like '350-356' to be ordered.
+    const A = Number(a.split("-", 1));
+    const B = Number(b.split("-", 1));
+
+    let comparison = 0;
+    if (A > B) {
+      comparison = 1;
+    } else if (A < B) {
+      comparison = -1;
+    }
+    return comparison;
+  }
+
 
   /**
    * Takes a string and looks for whitespace decoding. Converts it to html spans
