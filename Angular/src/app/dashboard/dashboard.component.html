@@ -65,7 +65,7 @@
 
       <mat-form-field>
           <mat-label>Select text</mat-label>
-          <mat-select [(ngModel)]="this.selected_title">
+          <mat-select [(ngModel)]="this.selected_title" ngDefaultControl>
               <mat-option *ngFor="let title of this.retrieved_titles" [value]="title.name" 
                 (click)="this.selected_title = title.name"  
                 
