@@ -1,5 +1,5 @@
-import datetime as dt
-from marshmallow import Schema, fields, post_load
+# import datetime as dt
+# from marshmallow import Schema, fields, post_load
 
 # class UserSchema(Schema):
 #     username = fields.Str()
@@ -40,24 +40,24 @@ class User:
             assert isinstance(received_user['password'], str)
             self.password = received_user['password']
 
-        if "new_password" in received_user: 
-            assert isinstance(received_user['new_password'], str)
-            self.new_password = received_user['new_password']
+        # if "new_password" in received_user: 
+        #     assert isinstance(received_user['new_password'], str)
+        #     self.new_password = received_user['new_password']
             
         if "role" in received_user: 
             assert isinstance(received_user['role'], str)
             self.role = received_user['role']
 
-        if "new_role" in received_user: 
-            assert isinstance(received_user['new_role'], str)
-            self.new_role = received_user['new_role']
+        # if "new_role" in received_user: 
+        #     assert isinstance(received_user['new_role'], str)
+        #     self.new_role = received_user['new_role']
 
     # Default fragment fields
     username = ''
     password = ''
-    new_password = ''
+    # new_password = ''
     role = ''
-    new_role = ''
+    # new_role = ''
 
     user_empty = {
         "username": "",

@@ -52,11 +52,12 @@ export class LoginComponent implements OnInit {
     let api_data = this.utility.create_empty_user();
     api_data.username = login_form.value.username; api_data.password = login_form.value.password;
     
-    console.log(api_data)
+    // console.log(api_data)
 
     this.api.login_user(api_data).subscribe(
       res => {
-        this.auth_service.login_user(res)
+        // FIXME: this needs to be handled properly with Flask. Fix for the staging build
+        this.auth_service.login_user(api_data)
         this.login_form_expanded = false;
         this.create_form_expanded = false;
       }, err => this.utility.handle_error_message(err)

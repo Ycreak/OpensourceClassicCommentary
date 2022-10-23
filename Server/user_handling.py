@@ -34,7 +34,7 @@ class User_handler():
                 
         result = [x for x in found_user]
         
-        print('result', result)
+        # print('result', result)
 
         try:
             user = result[0]
@@ -58,10 +58,12 @@ class User_handler():
         user_exist, found_user = self.find_user(user)
 
         if user_exist:
+            
             if self.verify_password(found_user['password'], user.password):
+                                
                 found_user_role = found_user['role']
                 # Return the role of the found user to Angular
-                return make_response(found_user_role, 200)
+                return make_response('Login succesful!', 200)
             else:
                 return make_response('Invalid password', 403)   
         else:
@@ -124,13 +126,13 @@ class User_handler():
         Returns:
             response: flask response object
         """
-        new_password = self.hash_password(user.new_password)  # Password obfuscation using hashing
+        new_password = self.hash_password(user.password)  # Password obfuscation using hashing
 
         user_exist, found_user = self.find_user(user)
 
         if user_exist:
             doc = self.user_db[found_user['_id']]          
-            doc['password'] = user.new_password
+            doc['password'] = new_password
             doc_id, doc_rev = self.user_db.save(doc)   
             return make_response('Password succesfully updated', 200)
         else:
@@ -151,7 +153,7 @@ class User_handler():
 
         if user_exist:        
             doc = self.user_db[found_user['_id']]          
-            doc['role'] = user.new_role
+            doc['role'] = user.role
             doc_id, doc_rev = self.user_db.save(doc)   
             return make_response('Role succesfully updated', 200)
         else:

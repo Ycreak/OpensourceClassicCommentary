@@ -14,22 +14,22 @@ import jsonpickle
 
 # Class Impots
 from fragment_handling import Fragment_handler
-from bibliography_handling import Bibliography_handler
+# from bibliography_handling import Bibliography_handler
 from user_handling import User_handler
 from Models.fragment import Fragment
 from Models.user import User #, UserSchema
-from Models.bib_entry import Bib_entry
+# from Models.bib_entry import Bib_entry
 
 app = Flask(__name__)
 api = Api(app) # TODO: Deprecated?
 
 # Only allow requests from these specific origins
-CORS(app, origins = ["http://localhost:4200", "https://oscc.lucdh.nl"])
+CORS(app, origins = ["http://localhost:4200", "https://oscc.lucdh.nl","https://oscc.nolden.biz"])
 
 # Instantiate the fragment handler and user handler at server startup
 frag_db = Fragment_handler()
 user_db = User_handler()
-bib_db = Bibliography_handler()
+# bib_db = Bibliography_handler()
 
 '''
 Fragment interfacing
@@ -110,44 +110,44 @@ def delete_fragment():
 '''
 Bibliography interface
 '''
-@app.route("/get_bibliography_authors")
-def get_bibliography_authors():
-    # Route to retrieve a list of all authors in the bibliography database
-    result = bib_db.retrieve_all_authors()
-    return jsonify(create_simple_JSON_list(result, 'name'))
+# @app.route("/get_bibliography_authors")
+# def get_bibliography_authors():
+#     # Route to retrieve a list of all authors in the bibliography database
+#     result = bib_db.retrieve_all_authors()
+#     return jsonify(create_simple_JSON_list(result, 'name'))
 
-@app.route("/get_bibliography_from_author")
-def get_bibliography_from_author():
-    # Route to retrieve the complete bibliography for a given author
-    result = bib_db.retrieve_bibliography_from_author(request_arguments('author'))
-    return jsonpickle.encode(result)
+# @app.route("/get_bibliography_from_author")
+# def get_bibliography_from_author():
+#     # Route to retrieve the complete bibliography for a given author
+#     result = bib_db.retrieve_bibliography_from_author(request_arguments('author'))
+#     return jsonpickle.encode(result)
 
-@app.route("/get_bibliography_from_id")
-def get_bibliography_from_id():
-    # Route to retrieve the complete bibliography for a given id
-    result = bib_db.retrieve_bibliography_from_id(request_arguments('_id'))
-    return jsonpickle.encode(result)
+# @app.route("/get_bibliography_from_id")
+# def get_bibliography_from_id():
+#     # Route to retrieve the complete bibliography for a given id
+#     result = bib_db.retrieve_bibliography_from_id(request_arguments('_id'))
+#     return jsonpickle.encode(result)
 
-@app.route("/create_bibliography_entry",  methods=['POST'])
-def create_bibliography_entry():
-    # Route to allow the user to create a specific bibliography item
-    received_bibliography = Bib_entry(request.get_json())
-    response = bib_db.add_entry(received_bibliography)
-    return response
+# @app.route("/create_bibliography_entry",  methods=['POST'])
+# def create_bibliography_entry():
+#     # Route to allow the user to create a specific bibliography item
+#     received_bibliography = Bib_entry(request.get_json())
+#     response = bib_db.add_entry(received_bibliography)
+#     return response
 
-@app.route("/revise_bibliography_entry",  methods=['POST'])
-def revise_bibliography_entry():
-    # Route to allow the user to revise a specific bibliography item
-    received_bibliography = Bib_entry(request.get_json())
-    response = bib_db.revise_entry(received_bibliography)
-    return response
+# @app.route("/revise_bibliography_entry",  methods=['POST'])
+# def revise_bibliography_entry():
+#     # Route to allow the user to revise a specific bibliography item
+#     received_bibliography = Bib_entry(request.get_json())
+#     response = bib_db.revise_entry(received_bibliography)
+#     return response
 
-@app.route("/delete_bibliography_entry",  methods=['POST'])
-def delete_bibliography_entry():
-    # Route to allow the user to delete a specific bibliography item
-    received_bibliography = Bib_entry(request.get_json())
-    response = bib_db.delete_entry(received_bibliography)
-    return response
+# @app.route("/delete_bibliography_entry",  methods=['POST'])
+# def delete_bibliography_entry():
+#     # Route to allow the user to delete a specific bibliography item
+#     received_bibliography = Bib_entry(request.get_json())
+#     response = bib_db.delete_entry(received_bibliography)
+#     return response
 
 '''
 User interface

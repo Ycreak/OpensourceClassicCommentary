@@ -12,7 +12,7 @@ import string
 
 # Class Imports
 from server_credentials import Credentials
-from bibliography_handling import Bibliography_handler
+# from bibliography_handling import Bibliography_handler
 from Models.fragment import Fragment
 from utilities import *
 
@@ -28,7 +28,7 @@ class Fragment_handler:
         # Select the database we need
         self.frag_db = database['fragments']
         # Instantiate bibliography handler for when we need it
-        self.bib_handler = Bibliography_handler()
+        # self.bib_handler = Bibliography_handler()
 
     def retrieve_all_authors(self) -> list:
         """Retrieves all the authors that exist in all documents in the database

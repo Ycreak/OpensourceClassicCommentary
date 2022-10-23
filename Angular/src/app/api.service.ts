@@ -22,7 +22,11 @@ export class ApiService {
 
   constructor(private http: HttpClient) { }
 
+  // URL for production
   // FlaskURL: String = 'https://oscc.nolden.biz:5003/'; // For production (https)                                 
+  // URL for staging
+  // FlaskURL: String = 'https://oscc.nolden.biz:5004/'; // For production (https)                                 
+  // URL for development
   FlaskURL: String = 'http://localhost:5003/'; // For deployment (http! not https)                                 
 
 //    _____ ______ _______ 
@@ -93,8 +97,8 @@ export class ApiService {
   public get_users(user: User): Observable<User[]> {
     return this.http.post<User[]>(this.FlaskURL + `retrieve_users`, user, { observe: 'body', responseType: 'json'});
   }
-  public login_user(user: User): Observable<User> {
-    return this.http.post<User>(this.FlaskURL + `login_user`, user, { observe: 'body', responseType: 'json'});
+  public login_user(user: User): Observable<any> {
+    return this.http.post<any>(this.FlaskURL + `login_user`, user, { observe: 'response', responseType: 'text' as 'json' });
   }
   public create_user(user: User): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `create_user`, user, { observe: 'response', responseType: 'text' as 'json'  });
