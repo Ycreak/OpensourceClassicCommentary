@@ -56,13 +56,13 @@ def editors():
 @app.route("/fragments", methods=['POST'])
 def fragments():
     # Route to retrieve all fragments given an author, book and editor
-    result = frag_db.retrieve_all_fragments(Fragment(request.get_json()))
+    result = frag_db.retrieve_all_fragments(Fragment(**request.get_json()))
     return jsonify(result)
 
 @app.route("/fragments_names", methods=['POST'])
 def fragment_names():
     # Route to retrieve all fragments given an author, book and editor
-    result = frag_db.retrieve_fragments_names(Fragment(request.get_json()))
+    result = frag_db.retrieve_fragments_names(Fragment(**request.get_json()))
     return jsonify(result)
 
 @app.route("/fragment_content", methods=['POST'])
@@ -71,40 +71,40 @@ def fragment_content():
     print(request.get_json())
 
     # Route to retrieve the content of the given fragment
-    result = frag_db.retrieve_fragment_content(Fragment(request.get_json()))
+    result = frag_db.retrieve_fragment_content(Fragment(**request.get_json()))
     return jsonpickle.encode(result)
 
 @app.route("/complete_fragment", methods=['POST'])
 def complete_fragment():
     # Route to retrieve a fragment in full. Used by the dashboard
-    result = frag_db.retrieve_complete_fragment(Fragment(request.get_json()))
+    result = frag_db.retrieve_complete_fragment(Fragment(**request.get_json()))
     return jsonify(result)
 
 # The following routes are POST methods
 @app.route("/create_fragment", methods=['POST'])
 def create_fragment():
     # Route to allow for the creation of the given fragment
-    received_fragment = Fragment(request.get_json())
+    received_fragment = Fragment(**request.get_json())
     response = frag_db.create_fragment(received_fragment)
     return response
 
 @app.route("/automatic_fragment_linker", methods=['POST'])
 def automatic_fragment_linker():
     # Route to allow for the creation of the given fragment
-    response = frag_db.automatic_fragment_linker(Fragment(request.get_json()))
+    response = frag_db.automatic_fragment_linker(Fragment(**request.get_json()))
     return response  
 
 @app.route("/revise_fragment", methods=['POST'])
 def revise_fragment():
     # Route to allow for the revision of the given fragment
-    received_fragment = Fragment(request.get_json())
+    received_fragment = Fragment(**request.get_json())
     response = frag_db.revise_fragment(received_fragment)
     return response
 
 @app.route("/delete_fragment", methods=['POST'])
 def delete_fragment():
     # Route to allow for the deletion of the given fragment
-    response = frag_db.delete_fragment(Fragment(request.get_json()))
+    response = frag_db.delete_fragment(Fragment(**request.get_json()))
     return response
 
 '''
