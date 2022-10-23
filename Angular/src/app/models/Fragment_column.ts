@@ -1,6 +1,6 @@
 import { Author } from './Author';
 import { Editor } from './Editor';
-import { Book } from './Book';
+import { Title } from './Title';
 
 import { Fragment } from './Fragment';
 
@@ -31,7 +31,7 @@ export class Fragment_column
     fragment_numbers : string[] = [];
 
     retrieved_authors : Author[];
-    retrieved_titles : Book[];
+    retrieved_titles : Title[];
     retrieved_editors : Editor[];
 
     note_array : Array<string> = [];

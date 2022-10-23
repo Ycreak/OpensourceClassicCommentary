@@ -1,6 +1,9 @@
 # Project-specific
 server_credentials.py
 
+#Folders
+server_backups
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

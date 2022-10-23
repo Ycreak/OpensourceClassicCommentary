@@ -22,7 +22,7 @@ import { DialogService } from '../services/dialog.service';
 import { Fragment } from '../models/Fragment';
 import { User } from '../models/User';
 import { Author } from '../models/Author';
-import { Book } from '../models/Book';
+import { Title } from '../models/Title';
 import { Editor } from '../models/Editor';
 
 // Third party imports. TODO: These should be fixed again.
@@ -69,7 +69,7 @@ export class DashboardComponent implements OnInit {
 
   // These variables are used to fill the drop down menus with authors, titles and editors. 
   retrieved_authors: Author[];
-  retrieved_titles: Book[];
+  retrieved_titles: Title[];
   retrieved_editors: Editor[];
   retrieved_fragment_names: string[];
 

@@ -12,7 +12,7 @@ import { catchError } from 'rxjs/operators';
 import { Fragment } from './models/Fragment';
 import { Author } from './models/Author';
 import { Editor } from './models/Editor';
-import { Book } from './models/Book';
+import { Title } from './models/Title';
 import { User } from './models/User';
 
 @Injectable({
@@ -44,8 +44,8 @@ export class ApiService {
   public  get_bibliography_from_id(_id): Observable<JSON> {
     return this.http.get<JSON>(this.FlaskURL + `get_bibliography_from_id?_id=${_id}`);
   }
-  public get_titles(author: string): Observable<Book[]> {
-    return this.http.get<Book[]>(this.FlaskURL + `titles?author=${author}`);
+  public get_titles(author: string): Observable<Title[]> {
+    return this.http.get<Title[]>(this.FlaskURL + `titles?author=${author}`);
   }
   public get_editors(author: string, title: string): Observable<Editor[]> {
     return this.http.get<Editor[]>(this.FlaskURL + `editors?author=${author}&title=${title}`);
