@@ -41,27 +41,27 @@ def authors():
     result = frag_db.retrieve_all_authors()
     return jsonify(create_simple_JSON_list(result, 'name'))
 
-@app.route("/books")
-def books():
-    # Route to retrieve a list of all books given an author
+@app.route("/titles")
+def titles():
+    # Route to retrieve a list of all titles given an author
     result = frag_db.retrieve_all_titles(request_arguments('author'))
     return jsonify(create_simple_JSON_list(result, 'name'))
 
 @app.route("/editors")
 def editors():
     # Route to retrieve a list of all editors given an author and editor
-    result = frag_db.retrieve_all_editors(request_arguments('author'), request_arguments('book'))
+    result = frag_db.retrieve_all_editors(request_arguments('author'), request_arguments('title'))
     return jsonify(create_simple_JSON_list(result, 'name'))
 
 @app.route("/fragments", methods=['POST'])
 def fragments():
-    # Route to retrieve all fragments given an author, book and editor
+    # Route to retrieve all fragments given an author, title and editor
     result = frag_db.retrieve_all_fragments(Fragment(request.get_json()))
     return jsonify(result)
 
 @app.route("/fragments_names", methods=['POST'])
 def fragment_names():
-    # Route to retrieve all fragments given an author, book and editor
+    # Route to retrieve all fragments given an author, title and editor
     result = frag_db.retrieve_fragments_names(Fragment(request.get_json()))
     return jsonify(result)
 

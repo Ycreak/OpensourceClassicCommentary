@@ -21,9 +21,9 @@
     <!-- <button (click)="OpenAbout()" mat-menu-item>About</button> -->
 </mat-menu>
 
-<!-- Author and Book select dialog -->
+<!-- Author and title select dialog -->
 <ng-template #CallBookSelect>   
-  <h3>Select an author and a book to display.</h3>
+  <h3>Select an author and a title to display.</h3>
   <hr>
   <mat-form-field>
       <mat-label>Select author</mat-label>
@@ -36,7 +36,7 @@
   </mat-form-field> 
   
   <mat-form-field>
-      <mat-label>Select book</mat-label>
+      <mat-label>Select title</mat-label>
       <mat-select>
       <mat-option *ngFor="let book of this.booksJSON" [value]="book" 
           (click)="RequestText(book.id)">

@@ -63,13 +63,13 @@ export class DashboardComponent implements OnInit {
 
   // These variables keep track of the selected author, title and editor for communication with the server.
   selected_author: string;
-  selected_book: string;
+  selected_title: string;
   selected_editor: string;
   selected_fragment: string;
 
   // These variables are used to fill the drop down menus with authors, titles and editors. 
   retrieved_authors: Author[];
-  retrieved_books: Book[];
+  retrieved_titles: Book[];
   retrieved_editors: Editor[];
   retrieved_fragment_names: string[];
 
@@ -399,18 +399,18 @@ export class DashboardComponent implements OnInit {
 
   /**
    * Requests the titles by the given author. Result is written
-   * to this.retrieved_books.
-   * @param author name of the author who's books are to be retrieved
+   * to this.retrieved_titles.
+   * @param author name of the author who's titles are to be retrieved
    * @author Ycreak
    */
-  public request_books(author: string): void {
+  public request_titles(author: string): void {
     
-    this.retrieved_books = [];
-    this.selected_book = '';    
+    this.retrieved_titles = [];
+    this.selected_title = '';    
     
     this.api.get_titles(author).subscribe(
       data => {
-        this.retrieved_books = data;
+        this.retrieved_titles = data;
       }
     );
   }
@@ -418,15 +418,15 @@ export class DashboardComponent implements OnInit {
   /**
    * Requests the editors by the given author and book title. Result is written
    * to this.retrieved_editors.
-   * @param author name of the author who's books are to be retrieved
-   * @param book name of the title who's editors are to be retrieved
+   * @param author name of the author who's editors are to be retrieved
+   * @param title name of the title who's editors are to be retrieved
    * @author Ycreak
    */
-  public request_editors(author: string, book: string): void {
+  public request_editors(author: string, title: string): void {
     this.retrieved_editors = [];
     this.selected_editor = '';
     
-    this.api.get_editors(author, book).subscribe(
+    this.api.get_editors(author, title).subscribe(
       data => {
         this.retrieved_editors = data;
       }
@@ -453,7 +453,7 @@ export class DashboardComponent implements OnInit {
           this.convert_Fragment_to_fragment_form(fragment);
           // Also update the selection fields
           this.selected_author = fragment.author;
-          this.selected_book = fragment.title;
+          this.selected_title = fragment.title;
           this.selected_editor = fragment.editor;
           this.selected_fragment = fragment.fragment_name;
         });
@@ -501,7 +501,7 @@ export class DashboardComponent implements OnInit {
               this.fragment_selected = true;
               // It might be possible we have created a new author, title or editor. Retrieve the lists again
               this.request_authors();
-              this.request_books(fragment_form.value.author);
+              this.request_titles(fragment_form.value.author);
               this.request_editors(fragment_form.value.author, fragment_form.value.title)
               // After creation, refresh the list of fragment names so the new one appears directly
               this.request_fragment_names(fragment_form.value.author, fragment_form.value.title, fragment_form.value.editor);
@@ -534,7 +534,7 @@ export class DashboardComponent implements OnInit {
             this.fragment_selected = true;
             // It might be possible we have created a new author, title or editor. Retrieve the lists again
             this.request_authors();
-            this.request_books(fragment_form.value.author);
+            this.request_titles(fragment_form.value.author);
             this.request_editors(fragment_form.value.author, fragment_form.value.title)
             // After creation, refresh the list of fragment names so the new one appears directly
             this.request_fragment_names(fragment_form.value.author, fragment_form.value.title, fragment_form.value.editor);
@@ -564,12 +564,12 @@ export class DashboardComponent implements OnInit {
 
             // It might be possible we have deleted an entire author, title or editor. Retrieve the lists again
             this.request_authors();
-            this.request_books(fragment_form.value.author);
+            this.request_titles(fragment_form.value.author);
             this.request_editors(fragment_form.value.author, fragment_form.value.title)
             this.request_fragment_names(fragment_form.value.author, fragment_form.value.title, fragment_form.value.editor);
             // Also, reset the selected fields to the beginning. We begin fresh!
             this.selected_author = '';
-            this.selected_book = '';
+            this.selected_title = '';
             this.selected_editor = '';
             this.selected_fragment = '';
 

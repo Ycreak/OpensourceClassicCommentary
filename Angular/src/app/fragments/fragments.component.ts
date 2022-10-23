@@ -109,7 +109,7 @@ export class FragmentsComponent implements OnInit {
     });
   }
 
-  /** Requests the API function for books given the author.
+  /** Requests the API function for titles given the author.
    * @param column: Fragment_column 
    * @returns data -> column.retrieved_authors
    * @author Bors & Ycreak
@@ -122,7 +122,7 @@ export class FragmentsComponent implements OnInit {
     );      
   }
   /**
-   * Requests the API function for editors given the author and book.
+   * Requests the API function for editors given the author and title.
    * @param column: Fragment_column
    * @returns data -> column.retrieved_editors 
    * @author Bors & Ycreak
@@ -136,7 +136,7 @@ export class FragmentsComponent implements OnInit {
   }
 
   /**
-   * Requests the API function for fragments given the author, book and editor.
+   * Requests the API function for fragments given the author, title and editor.
    * @param column: Fragment_column
    * @returns Object with fragments that are sorted numerically and on their status. Also
    *          adds an HTML formatted string to the object for easy printing. Note that the

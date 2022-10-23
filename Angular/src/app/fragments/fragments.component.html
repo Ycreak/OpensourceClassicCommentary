@@ -245,9 +245,9 @@
     <mat-form-field class="selection-form">
         <mat-label>Text</mat-label>
         <mat-select>
-            <mat-option *ngFor="let book of column.retrieved_titles" [value]="book" 
-            (click)="this.handle_title_selection(column, book.name)">
-                {{ book.name }}                
+            <mat-option *ngFor="let title of column.retrieved_titles" [value]="title" 
+            (click)="this.handle_title_selection(column, title.name)">
+                {{ title.name }}                
             </mat-option>
         </mat-select>
         <mat-hint>{{hint}}</mat-hint>

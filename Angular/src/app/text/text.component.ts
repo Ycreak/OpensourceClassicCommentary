@@ -35,8 +35,8 @@ export class TextComponent implements OnInit {
   }
 
   /**
-   * Requests a list of books using a given author
-   * @param author whose books are to be returned
+   * Requests a list of titles using a given author
+   * @param author whose titles are to be returned
    */
   public RequestBooks(author: string){
     this.api.get_titles(author).subscribe(
@@ -56,11 +56,11 @@ export class TextComponent implements OnInit {
   }
 
   /**
-   * Request the text from the given book
-   * @param book whose text is to be retrieved
+   * Request the text from the given title
+   * @param title whose text is to be retrieved
    */
-  public RequestText(book: number){
-    this.api.get_text(book).subscribe(
+  public RequestText(title: number){
+    this.api.get_text(title).subscribe(
       data => {
         this.T_Text = data;
       }

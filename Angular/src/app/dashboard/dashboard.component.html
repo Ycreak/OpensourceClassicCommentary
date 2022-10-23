@@ -50,13 +50,13 @@
             <mat-option *ngFor="let author of this.retrieved_authors" [value]="author.name"
               (click)="this.selected_author = author.name"
               
-              (click)="this.selected_book = ''; this.selected_editor = ''; this.selected_fragment = '';"
-              (click)="this.retrieved_books = []; this.retrieved_editors = []; this.retrieved_fragment_names = []"
+              (click)="this.selected_title = ''; this.selected_editor = ''; this.selected_fragment = '';"
+              (click)="this.retrieved_titles = []; this.retrieved_editors = []; this.retrieved_fragment_names = []"
               
               (click)="this.reset_fragment_form()"
               (click)="this.update_form_field('fragment_form', 'author', author.name);"
 
-              (click)="this.request_books(author.name)"
+              (click)="this.request_titles(author.name)"
               (click)="this.fragment_selected = false;">
                 {{ author.name }} 
             </mat-option>
@@ -65,20 +65,20 @@
 
       <mat-form-field>
           <mat-label>Select text</mat-label>
-          <mat-select [(ngModel)]="this.selected_book">
-              <mat-option *ngFor="let book of this.retrieved_books" [value]="book.name" 
-                (click)="this.selected_book = book.name"  
+          <mat-select [(ngModel)]="this.selected_title">
+              <mat-option *ngFor="let title of this.retrieved_titles" [value]="title.name" 
+                (click)="this.selected_title = title.name"  
                 
                 (click)="this.selected_editor = ''; this.selected_fragment = '';"
                 (click)="this.retrieved_editors = []; this.retrieved_fragment_names = []"
                 
                 (click)="this.reset_fragment_form()"
                 (click)="this.update_form_field('fragment_form', 'author', selected_author);"
-                (click)="this.update_form_field('fragment_form', 'title', book.name);"
+                (click)="this.update_form_field('fragment_form', 'title', title.name);"
 
-                (click)="this.request_editors(this.selected_author, book.name)"
+                (click)="this.request_editors(this.selected_author, title.name)"
                 (click)="this.fragment_selected = false;">
-                  {{ book.name }}                
+                  {{ title.name }}                
               </mat-option>
           </mat-select>
       </mat-form-field>
@@ -94,10 +94,10 @@
 
                   (click)="this.reset_fragment_form()"
                   (click)="this.update_form_field('fragment_form', 'author', selected_author);"
-                  (click)="this.update_form_field('fragment_form', 'title', selected_book);"
+                  (click)="this.update_form_field('fragment_form', 'title', selected_title);"
                   (click)="this.update_form_field('fragment_form', 'editor', editor.name);"
 
-                  (click)="this.request_fragment_names(this.selected_author, this.selected_book, editor.name)"
+                  (click)="this.request_fragment_names(this.selected_author, this.selected_title, editor.name)"
                   (click)="this.fragment_selected = false;">
                     {{ editor.name }}                     
               </mat-option>
@@ -112,7 +112,7 @@
 
                 (click)="this.update_form_field('fragment_form', 'fragment_name', fragment_name);" 
   
-                (click)="this.retrieve_requested_fragment(this.selected_author, this.selected_book, this.selected_editor, fragment_name)"
+                (click)="this.retrieve_requested_fragment(this.selected_author, this.selected_title, this.selected_editor, fragment_name)"
                 (click)="this.fragment_selected = true">
                   {{ fragment_name }} 
               </mat-option>
@@ -468,7 +468,7 @@
                   <mat-select>
                       <mat-option *ngFor="let author of this.retrieved_authors" [value]="author.name"
                         (click)="this.selected_author = author.name"  
-                        (click)="this.request_books(author.name)">
+                        (click)="this.request_titles(author.name)">
                           {{ author.name }} 
                       </mat-option>
                   </mat-select>  
@@ -477,15 +477,15 @@
                 <mat-form-field>
                     <mat-label>Select text</mat-label>
                     <mat-select>
-                        <mat-option *ngFor="let book of this.retrieved_books" [value]="book.name" 
-                          (click)="this.selected_book = book.name">
-                            {{ book.name }}                
+                        <mat-option *ngFor="let title of this.retrieved_titles" [value]="title.name" 
+                          (click)="this.selected_title = title.name">
+                            {{ title.name }}                
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
 
-                <div> <!--FIXME: should only be clickable if author and book are selected -->
-                  <button mat-stroked-button color="primary" (click)="request_automatic_fragment_linker(this.selected_author, this.selected_book)" 
+                <div> <!--FIXME: should only be clickable if author and title are selected -->
+                  <button mat-stroked-button color="primary" (click)="request_automatic_fragment_linker(this.selected_author, this.selected_title)" 
                   *ngIf="this.auth_service.current_user_role == 'teacher'">Automatically link fragments</button>
                 </div>
               </div>
@@ -604,7 +604,7 @@
             <mat-form-field class="input-form-half">
               <mat-label>Author</mat-label>
               <input matInput type="text" formControlName="author"> <!--required> -->
-              <!-- <mat-hint>U adds book, u gib name =3 uwu</mat-hint>                        -->
+              <!-- <mat-hint>U adds title, u gib name =3 uwu</mat-hint>                        -->
             </mat-form-field>
           
             <mat-form-field class="input-form-half">
@@ -616,31 +616,26 @@
             <mat-form-field class="input-form-half">
               <mat-label>Year</mat-label>
               <input matInput type="text" formControlName="year"> <!--required> -->
-              <!-- <mat-hint>U adds book, u gib name =3 uwu</mat-hint>                        -->
             </mat-form-field>
             
             <mat-form-field class="input-form-half">
               <mat-label>Series</mat-label>
               <input matInput type="text" formControlName="series"> <!--required> -->
-              <!-- <mat-hint>U adds book, u gib name =3 uwu</mat-hint>                        -->
             </mat-form-field>
 
             <mat-form-field class="input-form-half">
               <mat-label>Number</mat-label>
               <input matInput type="text" formControlName="number"> <!--required> -->
-              <!-- <mat-hint>U adds book, u gib name =3 uwu</mat-hint>                        -->
             </mat-form-field>        
 
             <mat-form-field class="input-form-half">
               <mat-label>Location</mat-label>
               <input matInput type="text" formControlName="location"> <!--required> -->
-              <!-- <mat-hint>U adds book, u gib name =3 uwu</mat-hint>                        -->
             </mat-form-field>
             
             <mat-form-field class="input-form-half">
               <mat-label>Edition</mat-label>
               <input matInput type="text" formControlName="edition"> <!--required> -->
-              <!-- <mat-hint>U adds book, u gib name =3 uwu</mat-hint>                        -->
             </mat-form-field>          
           
           </mat-tab>
@@ -649,37 +644,31 @@
             <mat-form-field class="input-form-half">
               <mat-label>Author</mat-label>
               <input matInput type="text" formControlName="author"> <!--required> -->
-              <!-- <mat-hint>U adds book, u gib name =3 uwu</mat-hint>                        -->
             </mat-form-field>
           
             <mat-form-field class="input-form-half">
               <mat-label>Title</mat-label>
               <input matInput type="text" formControlName="title"> <!--required> -->
-              <!-- <mat-hint>U adds book, u gib name =3 uwu</mat-hint>                        -->
             </mat-form-field>
             
             <mat-form-field class="input-form-half">
               <mat-label>Year</mat-label>
               <input matInput type="text" formControlName="year"> <!--required> -->
-              <!-- <mat-hint>U adds book, u gib name =3 uwu</mat-hint>                        -->
             </mat-form-field>
             
             <mat-form-field class="input-form-half">
               <mat-label>Journal</mat-label>
               <input matInput type="text" formControlName="journal"> <!--required> -->
-              <!-- <mat-hint>U adds book, u gib name =3 uwu</mat-hint>                        -->
             </mat-form-field>
 
             <mat-form-field class="input-form-half">
               <mat-label>Volume</mat-label>
               <input matInput type="text" formControlName="volume"> <!--required> -->
-              <!-- <mat-hint>U adds book, u gib name =3 uwu</mat-hint>                        -->
             </mat-form-field>        
 
             <mat-form-field class="input-form-half">
               <mat-label>Pages</mat-label>
               <input matInput type="text" formControlName="pages"> <!--required> -->
-              <!-- <mat-hint>U adds book, u gib name =3 uwu</mat-hint>                        -->
             </mat-form-field>            
           </mat-tab>      
         </form>

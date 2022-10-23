@@ -7,7 +7,7 @@ export class Bibliography
         text: number,
         editors: string,
         author: string,
-        book: string,
+        title: string,
         article: string,
         journal: string,
         volume: string,
@@ -24,7 +24,7 @@ export class Bibliography
         this.text = text;
         this.editors = editors
         this.author = author
-        this.book = book
+        this.title = title
         this.article = article
         this.journal = journal
         this.volume = volume
@@ -42,7 +42,7 @@ export class Bibliography
 
     editors: string;
     author: string;
-    book: string;
+    title: string;
     article: string;
     journal: string;
     volume: string;

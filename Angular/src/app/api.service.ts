@@ -45,13 +45,13 @@ export class ApiService {
     return this.http.get<JSON>(this.FlaskURL + `get_bibliography_from_id?_id=${_id}`);
   }
   public get_titles(author: string): Observable<Book[]> {
-    return this.http.get<Book[]>(this.FlaskURL + `books?author=${author}`);
+    return this.http.get<Book[]>(this.FlaskURL + `titles?author=${author}`);
   }
-  public get_editors(author: string, book: string): Observable<Editor[]> {
-    return this.http.get<Editor[]>(this.FlaskURL + `editors?author=${author}&book=${book}`);
+  public get_editors(author: string, title: string): Observable<Editor[]> {
+    return this.http.get<Editor[]>(this.FlaskURL + `editors?author=${author}&title=${title}`);
   }
-  public get_text(bookID: number): Observable<any[]> {
-    return this.http.get<any[]>(this.FlaskURL + `tlines?textID=${bookID}`);
+  public get_text(titleID: number): Observable<any[]> {
+    return this.http.get<any[]>(this.FlaskURL + `tlines?textID=${titleID}`);
   }
   public get_text_commentary(textID: number, lineNumber: number): Observable<any[]> {
     return this.http.get<any[]>(this.FlaskURL + `tcommentary?textID=${textID}&lineNumber=${lineNumber}`);
