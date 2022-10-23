@@ -175,15 +175,15 @@ export class FragmentsComponent implements OnInit {
    * Requests the API function for all content corresponding to the given fragment id.
    * The retrieved data will then be added to the current_fragment model for displaying
    * in the HTML frontend
-   * @param fragment_id 
+   * @param _id 
    * @returns fills all content variables with data. e.g. data -> this.f_commentary 
    * @author Bors & Ycreak
    */
-  private request_fragment_content(fragment_id: string): void{
+  private request_fragment_content(_id: string): void{
     let api_data = this.utility.create_empty_fragment(); 
-    api_data.fragment_id = fragment_id;
+    api_data._id = _id;
 
-    console.log(fragment_id)
+    console.log(_id)
 
     this.api.get_fragment_content(api_data).subscribe(data => {     
       this.fragment_clicked = true;
@@ -278,9 +278,9 @@ export class FragmentsComponent implements OnInit {
    private handle_fragment_click(fragment: Fragment): void{
       this.current_fragment = fragment
 
-      console.log(fragment.fragment_id) //FIXME: _id is not working.
+      console.log(fragment._id) //FIXME: _id is not working.
       // Request content from this fragment
-      this.request_fragment_content(fragment.fragment_id)
+      this.request_fragment_content(fragment._id)
       // Request content from its linked fragments
       //TODO:
       
@@ -396,7 +396,7 @@ export class FragmentsComponent implements OnInit {
   public delete_clicked_item_from_playground(column: Fragment_column, item: string): void{
     if(item == 'fragment'){
       const object_index = column.fragments.findIndex(object => {
-        return object.fragment_id === column.clicked_fragment.fragment_id;
+        return object._id === column.clicked_fragment._id;
       });    
       column.fragments.splice(object_index, 1);
     }
@@ -421,7 +421,7 @@ export class FragmentsComponent implements OnInit {
       // Now, for each fragment that is linked, try to find it in the other columns
       for(let j in this.columns){
         // in each column, take a look in the fragments array to find the linked fragment
-        let corresponding_fragment = this.columns[j].fragments.find(i => i.fragment_id === linked_fragment_id);
+        let corresponding_fragment = this.columns[j].fragments.find(i => i._id === linked_fragment_id);
         // colour it if found
         if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
       }

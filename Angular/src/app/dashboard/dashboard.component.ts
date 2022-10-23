@@ -85,9 +85,9 @@ export class DashboardComponent implements OnInit {
    * and revision of fragments.
    */
   fragment_form = new FormGroup({
-    fragment_id: new FormControl(''),
+    _id: new FormControl(''),
 
-    fragment_name: new FormControl('', [
+    fragment_name: new FormControl('', [ //TODO: Rename to fragment_number because numeric?
       Validators.required,
       Validators.pattern('[0-9-_ ]*')
     ]), // numbers and "-" and "_" allowed.
@@ -266,7 +266,7 @@ export class DashboardComponent implements OnInit {
    */
   public convert_Fragment_to_fragment_form(fragment: Fragment): void {
     // This functions updates the fragment_form with the provided fragment
-    let fragment_items: string[] = ['fragment_id', 'fragment_name', 'author', 'title', 'editor', 'translation',
+    let fragment_items: string[] = ['_id', 'fragment_name', 'author', 'title', 'editor', 'translation',
       'differences', 'commentary', 'apparatus', 'reconstruction', 'status', 'lock', 'published']
 
     for (let item in fragment_items) {
