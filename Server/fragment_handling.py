@@ -94,7 +94,7 @@ class Fragment_handler:
 
         for fragment in fragments:
             fragment_entry = {
-                '_id' : fragment['_id'],
+                'fragment_id' : fragment['_id'],
                 'author' : fragment['author'],
                 'title' : fragment['title'],
                 'editor' : fragment['editor'],
@@ -109,7 +109,7 @@ class Fragment_handler:
 
     def retrieve_fragment_content(self, fragment):
                 
-        doc = self.frag_db[fragment._id]
+        doc = self.frag_db[fragment.fragment_id]
 
         for content in ['translation', 'apparatus', 'differences', 'context', 'commentary', 'reconstruction']:
             setattr(fragment, content, doc[content])
@@ -155,15 +155,15 @@ class Fragment_handler:
         """Returns all the data from the given fragment. Called in the dashboard
 
         Args:
-            _id (str): identifier of the fragment document
+            fragment_id (str): identifier of the fragment document
 
         Returns:
             couch document: with all data of the requested fragment
         """                
         result, found_fragment = self.find_fragment(fragment)
-        # Add the _id to the mix
-        found_fragment['_id'] = found_fragment.id
-        return found_fragment #self.frag_db[_id]
+        # Add the fragment_id to the mix
+        found_fragment['fragment_id'] = found_fragment.id
+        return found_fragment #self.frag_db[fragment_id]
 
     def find_fragment(self, fragment): # -> tuple(bool, dict): #FIXME: does not work on Pi
         """Finds the requested fragment in the database
@@ -204,15 +204,15 @@ class Fragment_handler:
         if fragment_exist:          
             return make_response('Fragment already exists!', 403)
         else:
-            new_fragment = Fragment(uuid4().hex, # Give the fragment an unique id
-                                    fragment.fragment_name,
-                                    fragment.author,
-                                    fragment.title,
-                                    fragment.editor,
-                                    fragment.status
-            )
+            new_fragment = copy.deepcopy(fragment.fragment_empty)
 
-            doc_id, doc_rev = self.frag_db.save(new_fragment.as_dict())
+            for fragment_entry in ['author', 'title', 'editor', 'fragment_name', 'status']:
+                new_fragment[fragment_entry] = getattr(fragment, fragment_entry)
+
+            # Give the fragment a unique id
+            new_fragment['_id'] = uuid4().hex
+
+            doc_id, doc_rev = self.frag_db.save(new_fragment)
             return make_response('Succesfully created fragment!', 201)
 
     def revise_fragment(self, fragment) -> make_response:
@@ -224,10 +224,10 @@ class Fragment_handler:
         Returns:
             flask response: response on successful execution
         """                
-        doc = self.frag_db[fragment._id]
+        doc = self.frag_db[fragment.fragment_id]
 
         for field in doc:
-            if hasattr(fragment, field) and field != '_id':
+            if hasattr(fragment, field) and field != 'fragment_id':
                 doc[field] = getattr(fragment, field)
 
         doc_id, doc_rev = self.frag_db.save(doc)
@@ -244,7 +244,7 @@ class Fragment_handler:
         Returns:
             flask response: with information about the status
         """      
-        doc = self.frag_db[fragment._id]
+        doc = self.frag_db[fragment.fragment_id]
         self.frag_db.delete(doc)
 
         return make_response('Succesfully deleted fragment!', 200)
