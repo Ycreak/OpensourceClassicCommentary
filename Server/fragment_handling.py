@@ -109,6 +109,8 @@ class Fragment_handler:
 
     def retrieve_fragment_content(self, fragment):
                 
+        print(fragment.fragment_id)
+
         doc = self.frag_db[fragment.fragment_id]
 
         for content in ['translation', 'apparatus', 'differences', 'context', 'commentary', 'reconstruction']:

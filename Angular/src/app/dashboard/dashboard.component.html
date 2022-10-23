@@ -46,7 +46,7 @@
       all types of unlogical user routes and inputs -->
       <mat-form-field>
         <mat-label>Select author</mat-label>
-        <mat-select [(ngModel)]="this.selected_author">
+        <mat-select [(ngModel)]="this.selected_author" ngDefaultControl>
             <mat-option *ngFor="let author of this.retrieved_authors" [value]="author.name"
               (click)="this.selected_author = author.name"
               
@@ -85,7 +85,7 @@
   
       <mat-form-field>
           <mat-label>Select edition</mat-label>
-          <mat-select [(ngModel)]="this.selected_editor">
+          <mat-select [(ngModel)]="this.selected_editor" ngDefaultControl>
               <mat-option *ngFor="let editor of this.retrieved_editors" [value]="editor.name"
                   (click)="this.selected_editor = editor.name"
 
@@ -106,7 +106,7 @@
   
       <mat-form-field>
           <mat-label>Fragment</mat-label>
-          <mat-select [(ngModel)]="this.selected_fragment">
+          <mat-select [(ngModel)]="this.selected_fragment" ngDefaultControl>
               <mat-option *ngFor="let fragment_name of this.retrieved_fragment_names" [value]="fragment_name"
                 (click)="this.selected_fragment = fragment_name"
 
@@ -183,7 +183,7 @@
             <div class="div-padding-sm"></div>
 
             <mat-form-field appearance="fill">
-              <mat-select required formControlName="status">
+              <mat-select required formControlName="status" ngDefaultControl>
                 <mat-option value="Certum">Certum</mat-option>
                 <mat-option value="Incertum">Incertum</mat-option>
                 <mat-option value="Adesp.">Adespota</mat-option>
@@ -511,7 +511,7 @@
             <!-- <mat-checkbox class="padding-left" formControlName="lock">Lock fragment</mat-checkbox> -->
 
             <mat-form-field appearance="fill">
-              <mat-select formControlName="lock">
+              <mat-select formControlName="lock" ngDefaultControl>
                 <mat-option value="locked">Locked</mat-option>
                 <mat-option value="unlocked">Unlocked</mat-option>
               </mat-select>
@@ -521,7 +521,7 @@
             <div class="div-padding-sm"></div>
 
             <mat-form-field appearance="fill">
-              <mat-select formControlName="published">
+              <mat-select formControlName="published" ngDefaultControl>
                 <mat-option value="published">Published</mat-option>
                 <mat-option value="unpublished">Unpublished</mat-option>
               </mat-select>
@@ -759,7 +759,7 @@
                   <hr>
                   <p>Change the role of the selected user here.</p>
                   <mat-form-field appearance="fill">
-                    <mat-select required [(ngModel)]="element.role">
+                    <mat-select required [(ngModel)]="element.role" ngDefaultControl>
                       <mat-option value="guest">Guest</mat-option>
                       <mat-option value="student">Student</mat-option>
                       <mat-option value="teacher">Teacher</mat-option>

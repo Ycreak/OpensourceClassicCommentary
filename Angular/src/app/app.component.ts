@@ -12,7 +12,7 @@ import { Context } from './models/Context';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'OpenSourceClassicsCommentary';
+  title = 'OpenSourceClassicCommentary';
 
   constructor(private api: ApiService) {
 
@@ -22,7 +22,14 @@ export class AppComponent {
       Here the basic usage of the api methods (the data logging is just for testing)
     */
 
-    // GET METHODS
+    // Unit tests
+    // this.api.get_authors().subscribe(data => {
+    //   if (data.find(e => e.name === 'Ennius')){
+    //     console.log('Get authors failed')
+    //   }
+    // }
+    // ) 
+
     // this.api.GetReferencerID(134, 1, 6).subscribe(data => console.log(data));
     // this.api.GetFragments(6).subscribe(data => console.log(data));
     // this.api.GetAuthors().subscribe(data => console.log(data));

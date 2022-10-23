@@ -14,9 +14,9 @@
     <span class="example-spacer"></span>
     <!-- <button mat-button class="btn" routerLink="/fragments">OSCC</button> -->
 
-  <mat-checkbox class="btn" [(ngModel)]="syllabified">SYLLABIFIED</mat-checkbox>
+  <mat-checkbox class="btn" [(ngModel)]="syllabified" ngDefaultControl>SYLLABIFIED</mat-checkbox>
 
-  <mat-radio-group [(ngModel)]="network_type">
+  <mat-radio-group [(ngModel)]="network_type" ngDefaultControl>
     <mat-radio-button value="FLAIR">FLAIR</mat-radio-button>
     <mat-radio-button value="LSTM">LSTM</mat-radio-button>
     <mat-radio-button value="CRF">CRF</mat-radio-button>

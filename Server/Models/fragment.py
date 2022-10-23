@@ -10,7 +10,7 @@ class Fragment:
 
         # Fragment meta data
         if "fragment_id" in received_fragment: 
-            assert isinstance(received_fragment['fragment_id'], str)
+        #     assert isinstance(received_fragment['fragment_id'], str)
             self.fragment_id = received_fragment['fragment_id']
 
         if "fragment_name" in received_fragment: 
@@ -33,42 +33,42 @@ class Fragment:
             assert isinstance(received_fragment['status'], str)
             self.status = received_fragment['status']
 
-        if "lock" in received_fragment: 
-            assert isinstance(received_fragment['lock'], int)
-            self.lock = received_fragment['lock']
+        # if "lock" in received_fragment: 
+        #     assert isinstance(received_fragment['lock'], int)
+        #     self.lock = received_fragment['lock']
 
         # Fragment content fields
         if "translation" in received_fragment: 
-            assert isinstance(received_fragment['translation'], str)
+            # assert isinstance(received_fragment['translation'], str)
             self.translation = received_fragment['translation']
             
         if "differences" in received_fragment: 
-            assert isinstance(received_fragment['differences'], str)
+            # assert isinstance(received_fragment['differences'], str)
             self.differences = received_fragment['differences']
             
         if "apparatus" in received_fragment:             
-            assert isinstance(received_fragment['apparatus'], str)
+            # assert isinstance(received_fragment['apparatus'], str)
             self.apparatus = received_fragment['apparatus']
             
         if "commentary" in received_fragment: 
-            assert isinstance(received_fragment['commentary'], str)
+            # assert isinstance(received_fragment['commentary'], str)
             self.commentary = received_fragment['commentary']
 
         if "reconstruction" in received_fragment: 
-            assert isinstance(received_fragment['reconstruction'], str)
+            # assert isinstance(received_fragment['reconstruction'], str)
             self.reconstruction = received_fragment['reconstruction']
 
         if "context" in received_fragment: 
-            assert isinstance(received_fragment['context'], list)
+            # assert isinstance(received_fragment['context'], list)
             self.context = received_fragment['context']
 
         if "lines" in received_fragment: 
-            assert isinstance(received_fragment['lines'], list)
+            # assert isinstance(received_fragment['lines'], list)
             self.lines = received_fragment['lines']
 
         # Fragment linking information
         if "linked_fragments" in received_fragment: 
-            assert isinstance(received_fragment['linked_fragments'], list)
+            # assert isinstance(received_fragment['linked_fragments'], list)
             # From Angular, we receive an JSON object (from the formbuilder)
             # We must turn this into a set list again.
             linked_fragment_list = []
@@ -77,7 +77,7 @@ class Fragment:
             self.linked_fragments = list(set(linked_fragment_list)) # Angular needs a tissue for its issue
 
         if "linked_bib_entries" in received_fragment: 
-            assert isinstance(received_fragment['linked_bib_entries'], list)
+            # assert isinstance(received_fragment['linked_bib_entries'], list)
             # From Angular, we receive an JSON object (from the formbuilder)
             # We must turn this into a set list again.
             linked_bib_entries_list = []

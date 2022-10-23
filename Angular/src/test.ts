@@ -7,6 +7,16 @@ import {
   platformBrowserDynamicTesting
 } from '@angular/platform-browser-dynamic/testing';
 
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatMenuModule } from '@angular/material/menu';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+
+
+
+
 declare const require: {
   context(path: string, deep?: boolean, filter?: RegExp): {
     keys(): string[];
@@ -15,8 +25,16 @@ declare const require: {
 };
 
 // First, initialize the Angular testing environment.
-getTestBed().initTestEnvironment(
+getTestBed().initTestEnvironment([
   BrowserDynamicTestingModule,
+  MatDialogModule,
+  MatSnackBarModule,
+  MatMenuModule,
+  HttpClientTestingModule,
+  ReactiveFormsModule,
+  FormsModule,
+  MatAutocompleteModule,
+],
   platformBrowserDynamicTesting()
 );
 // Then we find all the tests.

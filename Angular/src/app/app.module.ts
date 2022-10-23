@@ -76,7 +76,7 @@ import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatPaginatorModule} from '@angular/material/paginator'; 
 // Allows copying to clipboard
 import {ClipboardModule} from '@angular/cdk/clipboard';
-import { TextComponent } from './text/text.component'; 
+// import { TextComponent } from './text/text.component'; 
 
 // Allows a virtual keyboard
 import { IKeyboardLayouts, keyboardLayouts, MAT_KEYBOARD_LAYOUTS, MatKeyboardModule } from '@efaps/angular-onscreen-material-keyboard';
@@ -84,7 +84,7 @@ import { IKeyboardLayouts, keyboardLayouts, MAT_KEYBOARD_LAYOUTS, MatKeyboardMod
 // Allows communication with firebase
 // import { AngularFireModule } from '@angular/fire';
 import { environment } from '../environments/environment';
-import { ScansionComponent } from './scansion/scansion.component';
+// import { ScansionComponent } from './scansion/scansion.component';
 
 // Virtual Keyboard Layout
 const customLayouts: IKeyboardLayouts = {
@@ -111,8 +111,8 @@ const customLayouts: IKeyboardLayouts = {
 const appRoutes: Routes = [
   {path: '', component: FragmentsComponent},
   {path: 'fragments', component: FragmentsComponent},
-  {path: 'text', component: TextComponent},
-  {path: 'scansion', component: ScansionComponent},
+  // {path: 'text', component: TextComponent},
+  // {path: 'scansion', component: ScansionComponent},
   {path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
   {path: '**', redirectTo: ''}
 ]
@@ -124,8 +124,8 @@ const appRoutes: Routes = [
     SafeHtmlPipe,
     DashboardComponent,
     LoginComponent,
-    TextComponent,
-    ScansionComponent,
+    // TextComponent,
+    // ScansionComponent,
     // Multiplayer,
     ConfirmationDialog,
     WYSIWYGDialog,
