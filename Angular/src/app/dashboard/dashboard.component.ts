@@ -6,7 +6,7 @@ import { UntypedFormBuilder, FormControl, FormGroup, FormArray } from '@angular/
 import { UntypedFormControl, UntypedFormGroup, Validators, UntypedFormArray } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
+import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { EditorConfig, ST_BUTTONS, BOLD_BUTTON, ITALIC_BUTTON, SUBSCRIPT_BUTTON, SUPERSCRIPT_BUTTON,
@@ -41,7 +41,14 @@ export class DashboardComponent implements OnInit {
 
   // For the user table
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatSort) matSort: MatSort;
+  private sort: any;
+  @ViewChild(MatSort) set content(content: Element) {
+    this.sort = content;
+    if (this.sort) {
+      this.user_table_users.sort = this.sort
+    }
+  }
 
   spinner_active: boolean = false;
   hide: boolean = true; // Whether to hide passwords in the material form fields
@@ -211,9 +218,9 @@ export class DashboardComponent implements OnInit {
 
 
   // initiate the table sorting and paginator
-  public ngAfterViewInit() {
+  public ngAfterViewInit(): void {
     this.user_table_users.paginator = this.paginator;
-    this.user_table_users.sort = this.sort;
+    this.user_table_users.sort = this.matSort;
   }
 
   /**
@@ -298,6 +305,35 @@ export class DashboardComponent implements OnInit {
     if (this.user_table_users.paginator) {
       this.user_table_users.paginator.firstPage();
     }
+  }
+  
+  
+  /**
+   * Function to allow sorting of the User table
+   * @param sort object that carries the sorting instructions provided by the Sort event
+   * @author CptVickers
+   */
+  sort_user_table(sort: Sort): void {
+    const data = this.user_table_users.data.slice();
+    if (!sort.active || sort.direction === '') {
+      this.user_table_users.data = data;
+      return;
+    }
+
+    this.user_table_users.data = data.sort((a, b) => {
+      const isAsc = sort.direction === 'asc';
+      switch (sort.active) {
+        case 'username':
+          return compare(a.username, b.username, isAsc);
+        case 'role':
+          return compare(a.role, b.role, isAsc);
+        default:
+          return 0;
+      }
+      function compare(a: number | string, b: number | string, isAsc: boolean) {
+        return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+      }
+    });
   }
 
   /**

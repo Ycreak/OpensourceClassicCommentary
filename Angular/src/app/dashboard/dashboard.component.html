@@ -697,11 +697,11 @@
 
       <!-- Table itself -->
       <div class="mat-elevation-z8">
-        <table mat-table [dataSource]="this.user_table_users" matSort multiTemplateDataRows>
+        <table mat-table [dataSource]="this.user_table_users" matSort (matSortChange)="sort_user_table($event)" multiTemplateDataRows>
 
           <!-- Column generation from columns list -->
           <ng-container matColumnDef="{{column}}" *ngFor="let column of user_table_columns_to_display">
-            <th mat-header-cell *matHeaderCellDef> {{this.utility.capitalize_word(column)}} </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="{{column}}"> {{this.utility.capitalize_word(column)}} </th>
             <td mat-cell *matCellDef="let element"> {{element[column]}}</td>
           </ng-container>
 

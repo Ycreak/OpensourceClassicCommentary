@@ -53,6 +53,7 @@ import { HttpErrorInterceptor } from './api.service';
 // Material Imports
 import {MatFormFieldModule} from '@angular/material/form-field'; 
 import {MatSelectModule} from '@angular/material/select'; 
+import {MatSortModule} from '@angular/material/sort';
 import {MatListModule} from '@angular/material/list'; 
 import {MatProgressBarModule} from '@angular/material/progress-bar'; 
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'; 
@@ -148,6 +149,7 @@ const appRoutes: Routes = [
     MatDialogModule,
     MatFormFieldModule,
     MatSelectModule,
+    MatSortModule,
     MatProgressBarModule,
     MatExpansionModule,
     MatListModule,
