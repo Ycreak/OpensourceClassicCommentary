@@ -7,7 +7,7 @@ import { UntypedFormControl, UntypedFormGroup, Validators, UntypedFormArray } fr
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatCell, MatCellDef, MatRow, MatTableDataSource } from '@angular/material/table';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { EditorConfig, ST_BUTTONS, BOLD_BUTTON, ITALIC_BUTTON, SUBSCRIPT_BUTTON, SUPERSCRIPT_BUTTON,
           UNORDERED_LIST_BUTTON, ORDERED_LIST_BUTTON } from 'ngx-simple-text-editor';
@@ -319,7 +319,7 @@ export class DashboardComponent implements OnInit {
       this.user_table_users.data = data;
       return;
     }
-
+    
     this.user_table_users.data = data.sort((a, b) => {
       const isAsc = sort.direction === 'asc';
       switch (sort.active) {
@@ -327,13 +327,25 @@ export class DashboardComponent implements OnInit {
           return compare(a.username, b.username, isAsc);
         case 'role':
           return compare(a.role, b.role, isAsc);
-        default:
-          return 0;
+          default:
+            return 0;
+          }
+          function compare(a: number | string, b: number | string, isAsc: boolean) {
+            return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+          }
+        });
       }
-      function compare(a: number | string, b: number | string, isAsc: boolean) {
-        return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
-      }
-    });
+      
+      
+  /**
+   * Function to allow automatic expansion of the current user in the users table
+   * @param element user table element that needs to be expanded
+   * @author CptVickers
+   */
+  expand_row(element: any): void {
+    if (element['username']) { // TODO simple input check for lack of a better one
+      this.user_table_expanded_element = element
+    }
   }
 
   /**
