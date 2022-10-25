@@ -24,6 +24,8 @@ import { User } from '../models/User';
 import { Author } from '../models/Author';
 import { Title } from '../models/Title';
 import { Editor } from '../models/Editor';
+import { SafeSubscriber } from 'rxjs/internal/Subscriber';
+import { Bibliography } from '../models/Bibliography';
 
 @Component({
   selector: 'app-dashboard',
@@ -179,6 +181,47 @@ export class DashboardComponent implements OnInit {
     buttons: [BOLD_BUTTON, ITALIC_BUTTON, SUBSCRIPT_BUTTON, SUPERSCRIPT_BUTTON, UNORDERED_LIST_BUTTON, ORDERED_LIST_BUTTON],
   };  
 
+  // Reusable observer objects (for subscribing to ApiService observables)
+  fragment_edit_observer = new SafeSubscriber({
+    next: (res) => {
+      this.utility.handle_error_message(res);
+      this.fragment_selected = true;
+      // It might be possible we have created a new author, title or editor. Retrieve the lists again
+      this.request_authors();
+      this.request_titles(this.fragment_form.value.author);
+      this.request_editors(this.fragment_form.value.author, this.fragment_form.value.title)
+      // After creation, refresh the list of fragment names so the new one appears directly
+      this.request_fragment_names(this.fragment_form.value.author, this.fragment_form.value.title, this.fragment_form.value.editor);
+      // Also, retrieve that revised fragment so we can continue editing!
+      this.retrieve_requested_fragment(this.fragment_form.value.author, this.fragment_form.value.title, this.fragment_form.value.editor, this.fragment_form.value.fragment_name);
+    },
+    error: (err) => this.utility.handle_error_message(err)
+  });
+
+  user_edit_observer = new SafeSubscriber({
+    next: (res) => {
+      this.utility.handle_error_message(res),
+        this.request_users();
+    },
+    error: (err) => this.utility.handle_error_message(err)
+  });
+
+  bibliography_edit_observer = new SafeSubscriber({
+    next: (res) => {
+      this.utility.handle_error_message(res),
+        this.request_bibliography_authors();  // After a succesful response, retrieve the authors again.
+    }, 
+    error: (err) => this.utility.handle_error_message(err)
+  });
+
+
+
+//   _____ _   _ _____ _______ 
+//  |_   _| \ | |_   _|__   __|
+//    | | |  \| | | |    | |   
+//    | | | . ` | | |    | |   
+//   _| |_| |\  |_| |_   | |   
+//  |_____|_| \_|_____|  |_|   
 
   constructor(
     private api: ApiService,
@@ -385,9 +428,10 @@ export class DashboardComponent implements OnInit {
    * Requests all authors from the database. No parameters needed
    */
   public request_authors(): void {
-    this.api.get_authors().subscribe(
-      data => this.retrieved_authors = data,
-      err => this.utility.handle_error_message(err),
+    this.api.get_authors().subscribe({
+      next: (data) => this.retrieved_authors = data,
+      error: (err) => this.utility.handle_error_message(err)
+    }
     );
   }
 
@@ -487,22 +531,7 @@ export class DashboardComponent implements OnInit {
 
       this.dialog.open_confirmation_dialog('Are you sure you want to REVISE this fragment?', item_string).subscribe(result => {
         if (result) {
-
-          this.api.revise_fragment(fragment_form.value).subscribe(
-            res => {
-              this.utility.handle_error_message(res);
-              this.fragment_selected = true;
-              // It might be possible we have created a new author, title or editor. Retrieve the lists again
-              this.request_authors();
-              this.request_titles(fragment_form.value.author);
-              this.request_editors(fragment_form.value.author, fragment_form.value.title)
-              // After creation, refresh the list of fragment names so the new one appears directly
-              this.request_fragment_names(fragment_form.value.author, fragment_form.value.title, fragment_form.value.editor);
-              // Also, retrieve that revised fragment so we can continue editing!
-              this.retrieve_requested_fragment(fragment_form.value.author, fragment_form.value.title, fragment_form.value.editor, fragment_form.value.fragment_name);
-            },
-            err => this.utility.handle_error_message(err)
-          );
+          this.api.revise_fragment(fragment_form.value).subscribe(this.fragment_edit_observer);
         }
       });
     }
@@ -520,21 +549,7 @@ export class DashboardComponent implements OnInit {
 
     this.dialog.open_confirmation_dialog('Are you sure you want to CREATE this fragment?', item_string).subscribe(result => {
       if (result) {
-        this.api.create_fragment(fragment_form.value).subscribe(
-          res => {
-            this.utility.handle_error_message(res);
-            this.fragment_selected = true;
-            // It might be possible we have created a new author, title or editor. Retrieve the lists again
-            this.request_authors();
-            this.request_titles(fragment_form.value.author);
-            this.request_editors(fragment_form.value.author, fragment_form.value.title)
-            // After creation, refresh the list of fragment names so the new one appears directly
-            this.request_fragment_names(fragment_form.value.author, fragment_form.value.title, fragment_form.value.editor);
-            // Also, retrieve that created fragment so we can start editing!
-            this.retrieve_requested_fragment(fragment_form.value.author, fragment_form.value.title, fragment_form.value.editor, fragment_form.value.fragment_name);
-          },
-          err => this.utility.handle_error_message(err),
-        );
+        this.api.create_fragment(fragment_form.value).subscribe(this.fragment_edit_observer);
       }
     });
   }
@@ -550,27 +565,7 @@ export class DashboardComponent implements OnInit {
 
     this.dialog.open_confirmation_dialog('Are you sure you want to DELETE this fragment?', item_string).subscribe(result => {
       if (result) {
-        this.api.delete_fragment(fragment_form.value).subscribe(
-          res => {
-            this.utility.handle_error_message(res);
-
-            // It might be possible we have deleted an entire author, title or editor. Retrieve the lists again
-            this.request_authors();
-            this.request_titles(fragment_form.value.author);
-            this.request_editors(fragment_form.value.author, fragment_form.value.title)
-            this.request_fragment_names(fragment_form.value.author, fragment_form.value.title, fragment_form.value.editor);
-            // Also, reset the selected fields to the beginning. We begin fresh!
-            this.selected_author = '';
-            this.selected_title = '';
-            this.selected_editor = '';
-            this.selected_fragment = '';
-
-            // Lastly, reset the fragment form
-            this.reset_fragment_form();
-            this.fragment_selected = false;
-          }, 
-          err => this.utility.handle_error_message(err)
-        );
+        this.api.delete_fragment(fragment_form.value).subscribe(this.fragment_edit_observer);
       }
     });
   }
@@ -591,16 +586,16 @@ export class DashboardComponent implements OnInit {
     this.dialog.open_confirmation_dialog('Are you sure you want to LINK fragments from this text?', item_string).subscribe(result => {
       if (result) {
         this.spinner_active = true;
-        this.api.automatic_fragment_linker(api_data).subscribe(
-          res => {
+        this.api.automatic_fragment_linker(api_data).subscribe({
+          next: (res) => {
             this.utility.handle_error_message(res),
               this.spinner_active = false;
           },
-          err => {
+          error: (err) => {
             this.utility.handle_error_message(err),
               this.spinner_active = false;
-          },
-        );
+          }
+        });
       }
     });
   }
@@ -620,8 +615,8 @@ export class DashboardComponent implements OnInit {
     let api_data = this.utility.create_empty_user(); 
     api_data.role = this.auth_service.current_user_role; api_data.username = this.auth_service.current_user_name;
     
-    this.api.get_users(api_data).subscribe(
-      data => {
+    this.api.get_users(api_data).subscribe({
+      next: (data) => {
         this.retrieved_users = data;
 
         //FIXME: this should be handled somewhere else, preferably by a listener
@@ -630,8 +625,8 @@ export class DashboardComponent implements OnInit {
         this.user_table_users.paginator = this.paginator;
         this.user_table_users.sort = this.sort;
       },
-      err => this.utility.handle_error_message(err),
-    );
+      error: (err) => this.utility.handle_error_message(err),
+    });
   }
 
   /**
@@ -646,13 +641,7 @@ export class DashboardComponent implements OnInit {
         let api_data = this.utility.create_empty_user();
         api_data.username = form_results.new_user; api_data.password = form_results.new_password
 
-        this.api.create_user(api_data).subscribe(
-          res => {
-            this.utility.handle_error_message(res),
-              this.request_users();
-          },
-          err => this.utility.handle_error_message(err)
-        );
+        this.api.create_user(api_data).subscribe(this.user_edit_observer);
       }
     });
   }
@@ -670,13 +659,7 @@ export class DashboardComponent implements OnInit {
         let api_data = this.utility.create_empty_user();
         api_data.username = user.username; api_data.role = user.role
 
-        this.api.user_change_role(api_data).subscribe(
-          res => {
-            this.utility.handle_error_message(res),
-              this.request_users();
-          },
-          err => this.utility.handle_error_message(err)
-        );
+        this.api.user_change_role(api_data).subscribe(this.user_edit_observer);
       }
     });
   }
@@ -695,8 +678,10 @@ export class DashboardComponent implements OnInit {
           let api_data = this.utility.create_empty_user();
           api_data.username = username; api_data.password = form.value.password1
   
-          this.api.user_change_password(api_data).subscribe(
-            res => this.utility.handle_error_message(res), err => this.utility.handle_error_message(err)
+          this.api.user_change_password(api_data).subscribe({
+            next: (res) => this.utility.handle_error_message(res), 
+            error: (err) => this.utility.handle_error_message(err)
+          }
           );
         }
       });
@@ -714,13 +699,7 @@ export class DashboardComponent implements OnInit {
   public request_delete_user(user): void {
     this.dialog.open_confirmation_dialog('Are you sure you want to DELETE this user?', user.username).subscribe(result => {
       if (result) {        
-        this.api.delete_user(user).subscribe(
-          res => {
-            this.utility.handle_error_message(res),
-              this.request_users();
-          },
-          err => this.utility.handle_error_message(err)
-        );
+        this.api.delete_user(user).subscribe(this.user_edit_observer);
       }
     });
   }
@@ -820,12 +799,12 @@ export class DashboardComponent implements OnInit {
    * @author Ycreak
    */
   public request_bibliography_authors() {
-    this.api.get_bibliography_authors().subscribe(
-      data => {
+    this.api.get_bibliography_authors().subscribe({
+      next: (data) => {
         this.bibliography_author_selection_form_options = this.push_bibliography_authors_in_list(data); //TODO: this need to be handled with a model
       },
-      err => this.utility.handle_error_message(err),
-    );
+      error: (err) => this.utility.handle_error_message(err)
+    });
   }
 
   public request_bibliography_from_author(author) {
@@ -862,12 +841,7 @@ export class DashboardComponent implements OnInit {
 
     this.dialog.open_confirmation_dialog('Are you sure you want to REVISE this bibliography entry?', item_string).subscribe(result => {
       if (result) {
-        this.api.revise_bibliography_entry(bibliography).subscribe(
-          res => {
-            this.utility.handle_error_message(res),
-              this.request_bibliography_authors();  // After a succesful response, retrieve the authors again.
-          }, err => this.utility.handle_error_message(err)
-        );
+        this.api.revise_bibliography_entry(bibliography).subscribe(this.bibliography_edit_observer);
       }
     });
     // this.reset_form('bib_form');
@@ -879,12 +853,7 @@ export class DashboardComponent implements OnInit {
 
     this.dialog.open_confirmation_dialog('Are you sure you want to CREATE this bibliography entry?', item_string).subscribe(result => {
       if (result) {
-        this.api.create_bibliography_entry(bibliography).subscribe(
-          res => {
-            this.utility.handle_error_message(res),
-              this.request_bibliography_authors();  // After a succesful response, retrieve the authors again.
-          }, err => this.utility.handle_error_message(err)
-        );
+        this.api.create_bibliography_entry(bibliography).subscribe(this.bibliography_edit_observer);
       }
     });
     // this.reset_form('bib_form');
@@ -895,11 +864,7 @@ export class DashboardComponent implements OnInit {
 
     this.dialog.open_confirmation_dialog('Are you sure you want to DELETE this bibliography entry?', item_string).subscribe(result => {
       if (result) {
-        this.api.delete_bibliography_entry({ '_id': bibliography.id }).subscribe(
-          res => {
-            this.utility.handle_error_message(res),
-              this.request_bibliography_authors();  // After a succesful response, retrieve the authors again.
-          }, err => this.utility.handle_error_message(err));
+        this.api.delete_bibliography_entry({ '_id': bibliography.id }).subscribe(this.bibliography_edit_observer);
       }
     });
     // this.reset_form('bib_form');
