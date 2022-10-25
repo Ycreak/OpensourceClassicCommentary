@@ -789,9 +789,19 @@
           <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="table-detail-row"></tr>
 
           <!-- Row shown when there is no matching data. -->
-          <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
-          </tr>
+          <ng-component *ngIf="data_loaded; else show_loading_hint">
+            <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+            </tr>
+          </ng-component>
+          <ng-template #show_loading_hint>
+            <tr class="mat-row" *matNoDataRow>
+              <ng-container *ngIf="(loading_hint | async) as hint">
+                <td class="mat-cell" colspan="4">{{hint}}</td>
+              </ng-container>
+              <!-- <td class="mat-cell" colspan="4">Loading data...</td> -->
+            </tr>
+          </ng-template>
         </table>
 
         <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>

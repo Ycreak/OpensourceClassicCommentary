@@ -1,14 +1,14 @@
 // Library imports
 import { Component, OnInit, Inject } from '@angular/core';
 import { ViewChild } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, delay } from 'rxjs';
 import { UntypedFormBuilder, FormControl, FormGroup, FormArray } from '@angular/forms';
 import { UntypedFormControl, UntypedFormGroup, Validators, UntypedFormArray } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatCell, MatCellDef, MatRow, MatTableDataSource } from '@angular/material/table';
-import { animate, state, style, transition, trigger } from '@angular/animations';
+import { animate, animation, state, style, transition, trigger } from '@angular/animations';
 import { EditorConfig, ST_BUTTONS, BOLD_BUTTON, ITALIC_BUTTON, SUBSCRIPT_BUTTON, SUPERSCRIPT_BUTTON,
           UNORDERED_LIST_BUTTON, ORDERED_LIST_BUTTON } from 'ngx-simple-text-editor';
 
@@ -24,6 +24,8 @@ import { User } from '../models/User';
 import { Author } from '../models/Author';
 import { Title } from '../models/Title';
 import { Editor } from '../models/Editor';
+import { shareReplay } from 'rxjs/operators';
+import { MatGridTileHeaderCssMatStyler } from '@angular/material/grid-list';
 
 @Component({
   selector: 'app-dashboard',
@@ -186,6 +188,8 @@ export class DashboardComponent implements OnInit {
     buttons: [BOLD_BUTTON, ITALIC_BUTTON, SUBSCRIPT_BUTTON, SUPERSCRIPT_BUTTON, UNORDERED_LIST_BUTTON, ORDERED_LIST_BUTTON],
   };  
 
+  data_loaded: boolean = false // Returns true if the table has loaded its data
+  loading_hint:Observable<unknown> // Loading hint animation
 
   constructor(
     private api: ApiService,
@@ -203,6 +207,7 @@ export class DashboardComponent implements OnInit {
    * On Init, we just load the list of authors. From here, selection is started
    */
   ngOnInit(): void {
+    this.loading_hint = this.get_loading_hint() // Initialize the loading hint
     this.request_authors()
     this.request_users()
 
@@ -213,7 +218,7 @@ export class DashboardComponent implements OnInit {
     //   startWith(''),
     //   map(value => this.filter_autocomplete_options(value)),
     // );
-
+    
   }
 
 
@@ -677,6 +682,7 @@ export class DashboardComponent implements OnInit {
         this.user_table_users = new MatTableDataSource(this.retrieved_users);
         this.user_table_users.paginator = this.paginator;
         this.user_table_users.sort = this.sort;
+        this.data_loaded = true
       },
       err => this.utility.handle_error_message(err),
     );
@@ -954,6 +960,27 @@ export class DashboardComponent implements OnInit {
     this.bib_entry_selected = false;
   }
 
+  /** TODO: move to utils?
+   * Function that adds a subscribable loading hint to the dashboard component
+   * @author CptVickers
+   */
+   public get_loading_hint(): Observable<string> {
+    let loading_hint = new Observable<string>((subscriber) => {
+      function f() {
+        subscriber.next("Loading data");
+        setTimeout(function() {subscriber.next("Loading data.")}, 500);
+        setTimeout(function() {subscriber.next("Loading data..")}, 1000);
+        setTimeout(function() {subscriber.next("Loading data...")}, 1500);
+      }
+      f();
+      const loading_hint_generator = setInterval(f, 2000);
+      return function unsubscribe() {
+        clearInterval(loading_hint_generator);
+        subscriber.complete();
+      }
+    })
+    return loading_hint
+  }
 
 
 
