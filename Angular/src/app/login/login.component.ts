@@ -2,7 +2,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
-import { UntypedFormBuilder } from '@angular/forms';
+import { UntypedFormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 // Component imports
 import { DialogService } from '../services/dialog.service';
@@ -23,17 +23,35 @@ export class LoginComponent implements OnInit {
   create_form_expanded : boolean = false; // to toggle the user create form field
 
   // Form used to login existing user
-  login_form = this.form_builder.group({
-    username: '',
-    password: '',
-  });
+  login_form = new FormGroup({
+    username: new FormControl(''),
+    password: new FormControl('')
+  })
+  
   // Form used to create new user
-  create_form = this.form_builder.group({
-    username: '',
-    password1: '',
-    password2: '',
-    magic_word: '',
-  });
+  create_form = new FormGroup({
+    username: new FormControl('', [
+      Validators.maxLength(20),
+      Validators.required,
+      Validators.pattern('[a-zA-z0-9 .\'_-]*')
+    ]),
+    password1: new FormControl('', [
+      Validators.minLength(5),
+      Validators.maxLength(30),
+      Validators.required,
+      Validators.pattern('[a-zA-z0-9$&+,:;=?@#|\'<>.^*()%!-]*')
+    ]),
+    password2: new FormControl('', [
+      Validators.minLength(5),
+      Validators.maxLength(30),
+      Validators.required,
+      Validators.pattern('[a-zA-z0-9$&+,:;=?@#|\'<>.^*()%!-]*')
+    ]),
+    magic_word: new FormControl('', [
+      Validators.required
+    ])
+  })
+
 
   constructor(
     public auth_service: AuthService, 
@@ -50,7 +68,8 @@ export class LoginComponent implements OnInit {
   public submit_login(login_form): void {
     // Create a user session for the auth_service to fill in    
     let api_data = this.utility.create_empty_user();
-    api_data.username = login_form.value.username; api_data.password = login_form.value.password;
+    api_data.username = login_form.value.username; 
+    api_data.password = encodeURIComponent(login_form.value.password);
     
     // console.log(api_data)
 
@@ -70,11 +89,6 @@ export class LoginComponent implements OnInit {
    * @returns void, but does request api for creation of a user
    */
   public submit_create(form): void {
-    //TODO: check for proper input
-    if(form.username.length < 5 || form.password1.length < 5){
-      this.utility.open_snackbar('Please provide proper details');
-      return
-    }
     // Check if the magic word is correct
     if(form.magic_word != this.auth_service.magic_phrase){
       this.utility.open_snackbar('That is not the magic word');
@@ -86,7 +100,8 @@ export class LoginComponent implements OnInit {
       this.dialog.open_confirmation_dialog('Are you sure you want to CREATE this user?', form.username).subscribe(result => {
         if(result){
           let api_data = this.utility.create_empty_user();
-          api_data.username = form.username; api_data.password = form.password1
+          api_data.username = form.username; 
+          api_data.password = encodeURIComponent(form.password1);
   
           this.api.create_user(api_data).subscribe(
             res => {
@@ -100,7 +115,7 @@ export class LoginComponent implements OnInit {
       });
     }
     else{
-      this.utility.open_snackbar('Passwords do not match.');
+      this.utility.open_snackbar('Passwords do not match.'); // TODO: Let FormControl handle this
     }
   }
 
