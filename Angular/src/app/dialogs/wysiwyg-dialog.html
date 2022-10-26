@@ -2,9 +2,40 @@
 The configuration for the editor is given via data.config. When accept is clicked, the updated data is returned to the caller
 in plain HTML. -->
 <div mat-dialog-content>
+  
+  <button (click)="data.content = data.content + '⟨'"> ⟨ </button>
+  <button (click)="data.content = data.content + '⟩'"> ⟩ </button>
+
+  <button [cdkCopyToClipboard]="'†'"> † </button>
+  <button (click)="data.content = data.content + '×'"> × </button>
+
+  <button (click)="data.content = data.content + '-'"> - </button>
+  <button (click)="data.content = data.content + '⏑'"> ⏑ </button>
+
+  <button (click)="data.content = data.content + '⏓'"> ⏓ </button>
+  <button (click)="data.content = data.content + '⏒'"> ⏒ </button>
+
+  <button (click)="data.content = data.content + '⏕'"> ⏕ </button>
+  <button (click)="data.content = data.content + '⏔'"> ⏔ </button> 
+
   <div>
     <st-editor [(ngModel)]="data.content" [config]="data.config"></st-editor>
   </div>
   
+  {{data.content}}
+  <!-- <button (click)="data.content = data.content + '⟨'"> ⟨ </button> -->
+
+<!-- 
+  ['⟨', '⟨'],
+  ['⟩', '⟩'],
+  ['†', '†'],
+  [' ×', ' ×'],
+  [' -', ' -'],
+  [' ⏑', ' ⏑'],
+  [' ⏓', ' ⏒'],
+  [' ⏕', ' ⏔'],   -->
+
+
+
 </div>
 <button mat-button [mat-dialog-close]="data.content">Accept</button>
