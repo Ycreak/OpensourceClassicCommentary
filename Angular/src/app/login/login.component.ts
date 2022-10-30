@@ -15,13 +15,12 @@ import { SafeSubscriber } from 'rxjs/internal/Subscriber';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
-
   hide_password = true; // password hiding in dialog
-  login_form_expanded : boolean = true; // to toggle user login form field
-  create_form_expanded : boolean = false; // to toggle the user create form field
+  login_form_expanded: boolean = true; // to toggle user login form field
+  create_form_expanded: boolean = false; // to toggle the user create form field
 
   // Form used to login existing user
   login_form = this.form_builder.group({
@@ -37,28 +36,28 @@ export class LoginComponent implements OnInit {
   });
 
   constructor(
-    public auth_service: AuthService, 
+    public auth_service: AuthService,
     public router: Router,
     private form_builder: UntypedFormBuilder,
     private api: ApiService,
     private utility: UtilityService,
-    private dialog: DialogService,
-    ) { }
+    private dialog: DialogService
+  ) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   public submit_login(login_form): void {
-    // Create a user session for the auth_service to fill in    
+    // Create a user session for the auth_service to fill in
     let api_data = this.utility.create_empty_user();
-    api_data.username = login_form.value.username; api_data.password = login_form.value.password;
-    
+    api_data.username = login_form.value.username;
+    api_data.password = login_form.value.password;
+
     // console.log(api_data)
 
     this.api.login_user(api_data).subscribe({
       next: (res) => {
         // FIXME: this needs to be handled properly with Flask. Fix for the staging build
-        this.auth_service.login_user(api_data)
+        this.auth_service.login_user(api_data);
         this.login_form_expanded = false;
         this.create_form_expanded = false;
       }, 
@@ -73,16 +72,16 @@ export class LoginComponent implements OnInit {
    */
   public submit_create(form): void {
     //TODO: check for proper input
-    if(form.username.length < 5 || form.password1.length < 5){
+    if (form.username.length < 5 || form.password1.length < 5) {
       this.utility.open_snackbar('Please provide proper details');
-      return
+      return;
     }
     // Check if the magic word is correct
-    if(form.magic_word != this.auth_service.magic_phrase){
+    if (form.magic_word != this.auth_service.magic_phrase) {
       this.utility.open_snackbar('That is not the magic word');
-      return
+      return;
     }
-    // Check if the two given passwords are identical. If so, show confirmation dialog. 
+    // Check if the two given passwords are identical. If so, show confirmation dialog.
     // If succesful, request the creation of the user from the api
     if(form.password1 == form.password2){
       this.dialog.open_confirmation_dialog('Are you sure you want to CREATE this user?', form.username).subscribe(result => {
@@ -117,5 +116,4 @@ export class LoginComponent implements OnInit {
   //   //   }
   //   // });
   // }
-
 }

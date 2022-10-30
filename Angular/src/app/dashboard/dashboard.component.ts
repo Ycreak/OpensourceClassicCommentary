@@ -2,15 +2,39 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
-import { UntypedFormBuilder, FormControl, FormGroup, FormArray } from '@angular/forms';
-import { UntypedFormControl, UntypedFormGroup, Validators, UntypedFormArray } from '@angular/forms';
+import {
+  UntypedFormBuilder,
+  FormControl,
+  FormGroup,
+  FormArray,
+} from '@angular/forms';
+import {
+  UntypedFormControl,
+  UntypedFormGroup,
+  Validators,
+  UntypedFormArray,
+} from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { animate, state, style, transition, trigger } from '@angular/animations';
-import { EditorConfig, ST_BUTTONS, BOLD_BUTTON, ITALIC_BUTTON, SUBSCRIPT_BUTTON, SUPERSCRIPT_BUTTON,
-          UNORDERED_LIST_BUTTON, ORDERED_LIST_BUTTON } from 'ngx-simple-text-editor';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
+import {
+  EditorConfig,
+  ST_BUTTONS,
+  BOLD_BUTTON,
+  ITALIC_BUTTON,
+  SUBSCRIPT_BUTTON,
+  SUPERSCRIPT_BUTTON,
+  UNORDERED_LIST_BUTTON,
+  ORDERED_LIST_BUTTON,
+} from 'ngx-simple-text-editor';
 
 // Component imports
 import { ApiService } from '../api.service';
@@ -18,29 +42,31 @@ import { UtilityService } from '../utility.service';
 import { AuthService } from '../auth/auth.service';
 import { DialogService } from '../services/dialog.service';
 
-// Model imports 
+// Model imports
 import { Fragment } from '../models/Fragment';
 import { User } from '../models/User';
 import { Author } from '../models/Author';
 import { Title } from '../models/Title';
 import { Editor } from '../models/Editor';
-import { SafeSubscriber } from 'rxjs/internal/Subscriber';
-import { Bibliography } from '../models/Bibliography';
+
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
-  animations: [ // For the User table
+  animations: [
+    // For the User table
     trigger('detailExpand', [
       state('collapsed', style({ height: '0px', minHeight: '0' })),
       state('expanded', style({ height: '*' })),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+      transition(
+        'expanded <=> collapsed',
+        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
+      ),
     ]),
   ],
 })
 export class DashboardComponent implements OnInit {
-
   // For the user table
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -54,7 +80,10 @@ export class DashboardComponent implements OnInit {
   // User table specific variables
   user_table_columns_to_display: string[] = ['username', 'role'];
   user_table_users: MatTableDataSource<User>;
-  user_table_columns_to_displayWithExpand = [...this.user_table_columns_to_display, 'expand'];
+  user_table_columns_to_displayWithExpand = [
+    ...this.user_table_columns_to_display,
+    'expand',
+  ];
   user_table_expanded_element: User | null;
 
   // These variables keep track of the selected author, title and editor for communication with the server.
@@ -63,19 +92,19 @@ export class DashboardComponent implements OnInit {
   selected_editor: string;
   selected_fragment: string;
 
-  // These variables are used to fill the drop down menus with authors, titles and editors. 
+  // These variables are used to fill the drop down menus with authors, titles and editors.
   retrieved_authors: Author[];
   retrieved_titles: Title[];
   retrieved_editors: Editor[];
   retrieved_fragment_names: string[];
 
-  // List with users shown in the Table  
+  // List with users shown in the Table
   retrieved_users: User[];
-  
+
   retrieved_bibliography_authors: object;
   retrieved_author_bibliography: object;
 
-  /** 
+  /**
    * This form represents the Fragment class. It is built in stages by all the fragment tabs on the HTML.
    * After all validators, it will be parsed to a Fragment object. It is used in the Dashboard for the creation
    * and revision of fragments.
@@ -85,19 +114,19 @@ export class DashboardComponent implements OnInit {
 
     fragment_name: new FormControl('', [
       Validators.required,
-      Validators.pattern('[0-9-_ ]*')
+      Validators.pattern('[0-9-_ ]*'),
     ]), // numbers and "-" and "_" allowed.
     author: new FormControl('', [
       Validators.required,
-      Validators.pattern('[a-zA-Z ]*')
+      Validators.pattern('[a-zA-Z ]*'),
     ]), // alpha characters allowed
     title: new FormControl('', [
       Validators.required,
-      Validators.pattern('[a-zA-Z ]*')
+      Validators.pattern('[a-zA-Z ]*'),
     ]), // alpha characters allowed
     editor: new FormControl('', [
       Validators.required,
-      Validators.pattern('[a-zA-Z ]*')
+      Validators.pattern('[a-zA-Z ]*'),
     ]), // alpha characters allowed
     translation: new FormControl(''),
     differences: new FormControl(''),
@@ -120,41 +149,42 @@ export class DashboardComponent implements OnInit {
     lock: new FormControl('unlocked'),
   });
 
-  /** 
-   * This form is used to change the password of the selected user. 
-   * After all validators, it will be parsed to a User object. 
+  /**
+   * This form is used to change the password of the selected user.
+   * After all validators, it will be parsed to a User object.
    */
   change_password_form = new FormGroup({
     password1: new FormControl('', [
       Validators.required,
-      Validators.pattern('[a-zA-Z0-9-_]*')
+      Validators.pattern('[a-zA-Z0-9-_]*'),
     ]),
     password2: new FormControl('', [
       Validators.required,
-      Validators.pattern('[a-zA-Z0-9-_]*')
+      Validators.pattern('[a-zA-Z0-9-_]*'),
     ]),
   });
 
-  /** 
-   * This form is used to change the password of the selected user. 
-   * After all validators, it will be parsed to a User object. 
+  /**
+   * This form is used to change the password of the selected user.
+   * After all validators, it will be parsed to a User object.
    */
   create_new_user_form = new FormGroup({
     new_user: new FormControl('', [
       Validators.required,
-      Validators.pattern('[a-zA-Z0-9-_]*')
+      Validators.pattern('[a-zA-Z0-9-_]*'),
     ]),
     new_password: new FormControl('', [
       Validators.required,
-      Validators.pattern('[a-zA-Z0-9-_]*')
+      Validators.pattern('[a-zA-Z0-9-_]*'),
     ]),
   });
 
-  /** 
-   * This form is used for the creation of a bibliography entry. 
-   * After all validators, it will be parsed to a Bib object. 
+  /**
+   * This form is used for the creation of a bibliography entry.
+   * After all validators, it will be parsed to a Bib object.
    */
-  bibliography_form: UntypedFormGroup = this.formBuilder.group({ //TODO: Validators
+  bibliography_form: UntypedFormGroup = this.formBuilder.group({
+    //TODO: Validators
     _id: '',
     bib_entry_type: 'book', // Book is default on page load
     author: '',
@@ -178,18 +208,81 @@ export class DashboardComponent implements OnInit {
 
   //TODO: this should be moved to a new service focused on this editor
   WYSIWYG_editor_config: EditorConfig = {
-    buttons: [BOLD_BUTTON, ITALIC_BUTTON, SUBSCRIPT_BUTTON, SUPERSCRIPT_BUTTON, UNORDERED_LIST_BUTTON, ORDERED_LIST_BUTTON],
-  };  
+    buttons: [
+      BOLD_BUTTON,
+      ITALIC_BUTTON,
+      SUBSCRIPT_BUTTON,
+      SUPERSCRIPT_BUTTON,
+      UNORDERED_LIST_BUTTON,
+      ORDERED_LIST_BUTTON,
+    ],
+  };
 
+  // Reusable observer objects (for subscribing to ApiService observables)
+  fragment_edit_observer = new SafeSubscriber({
+    next: (res: any) => {
+      this.utility.handle_error_message(res);
+      this.fragment_selected = true;
+      
+      // It might be possible we have created a new author, title or editor. Retrieve the lists again
+      this.request_authors();
+      this.request_titles(this.fragment_form.value.author);
+      this.request_editors(
+        this.fragment_form.value.author,
+        this.fragment_form.value.title
+      );
+      this.request_fragment_names(
+        this.fragment_form.value.author,
+        this.fragment_form.value.title,
+        this.fragment_form.value.editor
+      );
+
+      // If the edited was not deleted, reload it into the form.
+      if (res.ok && !/delete_fragment/.test(res.url)) {
+        this.retrieve_requested_fragment(
+        this.fragment_form.value.author,
+        this.fragment_form.value.title,
+        this.fragment_form.value.editor,
+        this.fragment_form.value.fragment_name
+        );
+      }
+      // Otherwise clear the form
+      else {
+        this.reset_fragment_form();
+      }
+    },
+    error: (err) => this.utility.handle_error_message(err),
+  });
+
+  user_edit_observer = new SafeSubscriber({
+    next: (res) => {
+      this.utility.handle_error_message(res), this.request_users();
+    },
+    error: (err) => this.utility.handle_error_message(err),
+  });
+
+  bibliography_edit_observer = new SafeSubscriber({
+    next: (res) => {
+      this.utility.handle_error_message(res),
+        this.request_bibliography_authors(); // After a succesful response, retrieve the authors again.
+    },
+    error: (err) => this.utility.handle_error_message(err),
+  });
+
+  //   _____ _   _ _____ _______
+  //  |_   _| \ | |_   _|__   __|
+  //    | | |  \| | | |    | |
+  //    | | | . ` | | |    | |
+  //   _| |_| |\  |_| |_   | |
+  //  |_____|_| \_|_____|  |_|
 
   constructor(
     private api: ApiService,
     private utility: UtilityService,
     public dialog: DialogService,
     private formBuilder: UntypedFormBuilder,
-    public auth_service: AuthService,
+    public auth_service: AuthService
   ) {
-
     // Assign the data to the data source for the table to render
     this.user_table_users = new MatTableDataSource(this.retrieved_users);
   }
@@ -198,8 +291,8 @@ export class DashboardComponent implements OnInit {
    * On Init, we just load the list of authors. From here, selection is started
    */
   ngOnInit(): void {
-    this.request_authors()
-    this.request_users()
+    this.request_authors();
+    this.request_users();
 
     // this.retrieve_requested_fragment('Ennius', 'Thyestes', 'TRF', '134')
     // this.request_bibliography_authors()
@@ -208,9 +301,7 @@ export class DashboardComponent implements OnInit {
     //   startWith(''),
     //   map(value => this.filter_autocomplete_options(value)),
     // );
-
   }
-
 
   // initiate the table sorting and paginator
   public ngAfterViewInit() {
@@ -224,8 +315,7 @@ export class DashboardComponent implements OnInit {
    * @author Ycreak
    */
   public test(thing): void {
-    console.log(this.fragment_form.value)
-
+    console.log(this.fragment_form.value);
   }
 
   /**
@@ -236,37 +326,63 @@ export class DashboardComponent implements OnInit {
    * @param field from fragment_form which is to be send and updated
    * @author Ycreak
    */
-  public request_wysiwyg_dialog(field: string, index: number = 0): void{  
-    if(field == 'context'){
+  public request_wysiwyg_dialog(field: string, index: number = 0): void {
+    if (field == 'context') {
       // For the context, retrieve the context text field from the fragment form and pass that to the dialog
       let form_array_field = this.fragment_form.value.context[index].text;
-      this.dialog.open_wysiwyg_dialog(form_array_field, this.WYSIWYG_editor_config).subscribe(result => {
-        // Now update the correct field. This is done by getting the FormArray and patching the correct
-        // FormGroup within this array. This is to ensure dynamic updating on the frontend
-        let context_array = this.fragment_form.controls["context"] as FormArray;
-        context_array.controls[index].patchValue({['text']: result});
-      });
-    }
-    else{ // The other content fields can be updated by just getting their content strings
-      this.dialog.open_wysiwyg_dialog(this.fragment_form.value[field], this.WYSIWYG_editor_config).subscribe(result => {
-        this.update_form_field('fragment_form', field, result)
-      });
+      this.dialog
+        .open_wysiwyg_dialog(form_array_field, this.WYSIWYG_editor_config)
+        .subscribe((result) => {
+          // Now update the correct field. This is done by getting the FormArray and patching the correct
+          // FormGroup within this array. This is to ensure dynamic updating on the frontend
+          let context_array = this.fragment_form.controls[
+            'context'
+          ] as FormArray;
+          context_array.controls[index].patchValue({ ['text']: result });
+        });
+    } else {
+      // The other content fields can be updated by just getting their content strings
+      this.dialog
+        .open_wysiwyg_dialog(
+          this.fragment_form.value[field],
+          this.WYSIWYG_editor_config
+        )
+        .subscribe((result) => {
+          this.update_form_field('fragment_form', field, result);
+        });
     }
   }
 
   /**
    * This function takes the Typescript Fragment object retrieved from the server and uses
-   * its data fields to fill in the fragment_form. 
+   * its data fields to fill in the fragment_form.
    * @param fragment Fragment object that is to be parsed into the fragment_form
    * @author Ycreak
    */
   public convert_Fragment_to_fragment_form(fragment: Fragment): void {
     // This functions updates the fragment_form with the provided fragment
-    let fragment_items: string[] = ['fragment_id', 'fragment_name', 'author', 'title', 'editor', 'translation',
-      'differences', 'commentary', 'apparatus', 'reconstruction', 'status', 'lock', 'published']
+    let fragment_items: string[] = [
+      'fragment_id',
+      'fragment_name',
+      'author',
+      'title',
+      'editor',
+      'translation',
+      'differences',
+      'commentary',
+      'apparatus',
+      'reconstruction',
+      'status',
+      'lock',
+      'published',
+    ];
 
     for (let item in fragment_items) {
-      this.update_form_field('fragment_form', fragment_items[item], fragment[fragment_items[item]]);
+      this.update_form_field(
+        'fragment_form',
+        fragment_items[item],
+        fragment[fragment_items[item]]
+      );
     }
     // Fill the fragment context array
     for (let i in fragment.context) {
@@ -280,11 +396,12 @@ export class DashboardComponent implements OnInit {
     for (let i in fragment.lines) {
       this.push_fragment_line_to_fragment_form(
         fragment.lines[i].line_number,
-        fragment.lines[i].text);
+        fragment.lines[i].text
+      );
     }
     // Fill the linked fragment array
     for (let i in fragment.linked_fragments) {
-      continue
+      continue;
     }
   }
 
@@ -309,13 +426,16 @@ export class DashboardComponent implements OnInit {
    * @param text with string containing the lines content
    * @author Ycreak
    */
-  public push_fragment_line_to_fragment_form(line_number: string, text: string): void {
+  public push_fragment_line_to_fragment_form(
+    line_number: string,
+    text: string
+  ): void {
     // First, create a form group to represent a line
     let new_line = new FormGroup({
       line_number: new FormControl(line_number),
       text: new FormControl(text),
     });
-    // Next, push the created form group to the lines FormArray    
+    // Next, push the created form group to the lines FormArray
     let fragment_lines_array = this.fragment_form.get('lines') as FormArray;
     fragment_lines_array.push(new_line);
   }
@@ -328,14 +448,18 @@ export class DashboardComponent implements OnInit {
    * @param text text of the actual context in which the fragment appears
    * @author Ycreak
    */
-  public push_fragment_context_to_fragment_form(_author: string, _location: string, _text: string): void {
+  public push_fragment_context_to_fragment_form(
+    _author: string,
+    _location: string,
+    _text: string
+  ): void {
     // First, create a form group to represent a context
     let new_context = new FormGroup({
       author: new FormControl(_author),
       location: new FormControl(_location),
       text: new FormControl(_text),
     });
-    // Next, push the created form group to the context FormArray    
+    // Next, push the created form group to the context FormArray
     let fragment_context_array = this.fragment_form.get('context') as FormArray;
     fragment_context_array.push(new_context);
   }
@@ -371,17 +495,21 @@ export class DashboardComponent implements OnInit {
    * @param index number of the item we want to delete
    * @author Ycreak
    */
-  public remove_form_item_from_form_array(form_name: string, target: string, index: number): void {
+  public remove_form_item_from_form_array(
+    form_name: string,
+    target: string,
+    index: number
+  ): void {
     let form_array_in_question = this[form_name].get(target) as FormArray;
     form_array_in_question.removeAt(index);
   }
 
-  //   _____  ______ ____  _    _ ______  _____ _______ _____ 
+  //   _____  ______ ____  _    _ ______  _____ _______ _____
   //  |  __ \|  ____/ __ \| |  | |  ____|/ ____|__   __/ ____|
-  //  | |__) | |__ | |  | | |  | | |__  | (___    | | | (___  
-  //  |  _  /|  __|| |  | | |  | |  __|  \___ \   | |  \___ \ 
+  //  | |__) | |__ | |  | | |  | | |__  | (___    | | | (___
+  //  |  _  /|  __|| |  | | |  | |  __|  \___ \   | |  \___ \
   //  | | \ \| |___| |__| | |__| | |____ ____) |  | |  ____) |
-  //  |_|  \_\______\___\_\\____/|______|_____/   |_| |_____/                                                    
+  //  |_|  \_\______\___\_\\____/|______|_____/   |_| |_____/
 
   /**
    * Requests all authors from the database. No parameters needed
@@ -401,15 +529,12 @@ export class DashboardComponent implements OnInit {
    * @author Ycreak
    */
   public request_titles(author: string): void {
-    
     this.retrieved_titles = [];
-    this.selected_title = '';    
-    
-    this.api.get_titles(author).subscribe(
-      data => {
-        this.retrieved_titles = data;
-      }
-    );
+    this.selected_title = '';
+
+    this.api.get_titles(author).subscribe((data) => {
+      this.retrieved_titles = data;
+    });
   }
 
   /**
@@ -422,12 +547,10 @@ export class DashboardComponent implements OnInit {
   public request_editors(author: string, title: string): void {
     this.retrieved_editors = [];
     this.selected_editor = '';
-    
-    this.api.get_editors(author, title).subscribe(
-      data => {
-        this.retrieved_editors = data;
-      }
-    );
+
+    this.api.get_editors(author, title).subscribe((data) => {
+      this.retrieved_editors = data;
+    });
   }
 
   /**
@@ -438,23 +561,30 @@ export class DashboardComponent implements OnInit {
    * @param fragment_name name of the fragment
    * @author Ycreak CptVickers
    */
-    public retrieve_requested_fragment(author: string, title: string, editor: string, fragment_name: string): void {
-      // Reset the fragment_form to allow a clean insertion of the requested fragment
-      this.reset_fragment_form();
-      // Create api/fragment object to send to the server      
-      let api_data = this.utility.create_empty_fragment();
-      api_data.author = author; api_data.title = title; api_data.editor = editor; api_data.fragment_name = fragment_name;
+  public retrieve_requested_fragment(
+    author: string,
+    title: string,
+    editor: string,
+    fragment_name: string
+  ): void {
+    // Reset the fragment_form to allow a clean insertion of the requested fragment
+    this.reset_fragment_form();
+    // Create api/fragment object to send to the server
+    let api_data = this.utility.create_empty_fragment();
+    api_data.author = author;
+    api_data.title = title;
+    api_data.editor = editor;
+    api_data.fragment_name = fragment_name;
 
-      this.api.get_specific_fragment(api_data).subscribe(
-        fragment => {
-          this.convert_Fragment_to_fragment_form(fragment);
-          // Also update the selection fields
-          this.selected_author = fragment.author;
-          this.selected_title = fragment.title;
-          this.selected_editor = fragment.editor;
-          this.selected_fragment = fragment.fragment_name;
-        });
-    }
+    this.api.get_specific_fragment(api_data).subscribe((fragment) => {
+      this.convert_Fragment_to_fragment_form(fragment);
+      // Also update the selection fields
+      this.selected_author = fragment.author;
+      this.selected_title = fragment.title;
+      this.selected_editor = fragment.editor;
+      this.selected_fragment = fragment.fragment_name;
+    });
+  }
 
   /**
    * Given the author, title and editor, request the names of the fragments from the server.
@@ -463,15 +593,22 @@ export class DashboardComponent implements OnInit {
    * @param editor editor of the fragment
    * @author Ycreak
    */
-   public request_fragment_names(author: string, title: string, editor: string): void {
+  public request_fragment_names(
+    author: string,
+    title: string,
+    editor: string
+  ): void {
     // Create api/fragment object to send to the server
     let api_data = this.utility.create_empty_fragment();
-    api_data.author = author; api_data.title = title; api_data.editor = editor;
+    api_data.author = author;
+    api_data.title = title;
+    api_data.editor = editor;
 
-    this.api.get_fragment_names(api_data).subscribe(
-      data => {
-        this.retrieved_fragment_names = data.sort(this.utility.sort_array_numerically);
-      });
+    this.api.get_fragment_names(api_data).subscribe((data) => {
+      this.retrieved_fragment_names = data.sort(
+        this.utility.sort_array_numerically
+      );
+    });
   }
 
   /**
@@ -482,11 +619,18 @@ export class DashboardComponent implements OnInit {
   public request_revise_fragment(fragment_form: FormGroup): void {
     // If the fragment is locked and the user is not a teacher, we will not allow this operation.
 
-    if (fragment_form.value.lock){ //&& !this.auth_service.current_user.role == 'teacher') {
-      this.utility.open_snackbar('This fragment is locked.')
-    }
-    else {
-      let item_string = fragment_form.value.author + ', ' + fragment_form.value.title + ', ' + fragment_form.value.editor + ': ' + fragment_form.value.fragment_name
+    if (fragment_form.value.lock) {
+      //&& !this.auth_service.current_user.role == 'teacher') {
+      this.utility.open_snackbar('This fragment is locked.');
+    } else {
+      let item_string =
+        fragment_form.value.author +
+        ', ' +
+        fragment_form.value.title +
+        ', ' +
+        fragment_form.value.editor +
+        ': ' +
+        fragment_form.value.fragment_name;
 
       this.dialog.open_confirmation_dialog('Are you sure you want to REVISE this fragment?', item_string).subscribe(result => {
         if (result) {
@@ -549,7 +693,14 @@ export class DashboardComponent implements OnInit {
    * @author Ycreak
    */
   public request_delete_fragment(fragment_form: FormGroup): void {
-    let item_string = fragment_form.value.author + ', ' + fragment_form.value.title + ', ' + fragment_form.value.editor + ': ' + fragment_form.value.fragment_name
+    let item_string =
+      fragment_form.value.author +
+      ', ' +
+      fragment_form.value.title +
+      ', ' +
+      fragment_form.value.editor +
+      ': ' +
+      fragment_form.value.fragment_name;
 
     this.dialog.open_confirmation_dialog('Are you sure you want to DELETE this fragment?', item_string).subscribe(result => {
       if (result) {
@@ -579,17 +730,21 @@ export class DashboardComponent implements OnInit {
   }
 
   /**
-   * This function requests the server to link all similar fragments from a given author and title. 
+   * This function requests the server to link all similar fragments from a given author and title.
    * Linking between authors or titles is only possible manually. Linking is based on similarity and
    * done via the fuzzywuzzy library. See the function within the server for more information.
    * @param author name of the author who's fragments are to be linked between editions
    * @param title name of the title who's fragments are to be linked between editions
    * @author CptVickers Ycreak
    */
-  public request_automatic_fragment_linker(author: string, title: string): void {
+  public request_automatic_fragment_linker(
+    author: string,
+    title: string
+  ): void {
     let item_string = author + ', ' + title;
-    let api_data = this.utility.create_empty_fragment(); 
-    api_data.author = author; api_data.title = title;
+    let api_data = this.utility.create_empty_fragment();
+    api_data.author = author;
+    api_data.title = title;
 
     this.dialog.open_confirmation_dialog('Are you sure you want to LINK fragments from this text?', item_string).subscribe(result => {
       if (result) {
@@ -613,9 +768,9 @@ export class DashboardComponent implements OnInit {
   //////////////////////////////////////
 
   /**
-   * This function requests users from the server based on the role of the logged in user. 
+   * This function requests users from the server based on the role of the logged in user.
    * If a user is student, only the student will be retrieved. For teachers, all students will
-   * be retrieved in addition to themselves. Administrators will receive all users. 
+   * be retrieved in addition to themselves. Administrators will receive all users.
    * @author Ycreak
    */
   public request_users() {
@@ -638,16 +793,22 @@ export class DashboardComponent implements OnInit {
   }
 
   /**
-   * This function requests the API to create a new user given the form. With a username and 
+   * This function requests the API to create a new user given the form. With a username and
    * provided password a new user is requested from the server.
    * @param form_results containing data of the form
    * @author Ycreak
    */
   public request_create_user(form_results) {
-    this.dialog.open_confirmation_dialog('Are you sure you want to CREATE this user?', form_results.new_user).subscribe(result => {
-      if (result) {
-        let api_data = this.utility.create_empty_user();
-        api_data.username = form_results.new_user; api_data.password = form_results.new_password
+    this.dialog
+      .open_confirmation_dialog(
+        'Are you sure you want to CREATE this user?',
+        form_results.new_user
+      )
+      .subscribe((result) => {
+        if (result) {
+          let api_data = this.utility.create_empty_user();
+          api_data.username = form_results.new_user;
+          api_data.password = form_results.new_password;
 
         this.api.create_user(api_data).subscribe({
           next: (res) => {
@@ -661,17 +822,23 @@ export class DashboardComponent implements OnInit {
   }
 
   /**
-   * This function requests the changing of the role of a user. 
+   * This function requests the changing of the role of a user.
    * @param user name of the user who's role is to change
    * @param role new role to be given to the user
    * @author Ycreak
    */
   public request_change_role(user) {
     let item_string = user.username + ', ' + user.role;
-    this.dialog.open_confirmation_dialog('Are you sure you want to CHANGE the role of this user?', item_string).subscribe(result => {
-      if (result) {
-        let api_data = this.utility.create_empty_user();
-        api_data.username = user.username; api_data.role = user.role
+    this.dialog
+      .open_confirmation_dialog(
+        'Are you sure you want to CHANGE the role of this user?',
+        item_string
+      )
+      .subscribe((result) => {
+        if (result) {
+          let api_data = this.utility.create_empty_user();
+          api_data.username = user.username;
+          api_data.role = user.role;
 
         this.api.user_change_role(api_data).subscribe({
           next: (res) => {
@@ -691,7 +858,7 @@ export class DashboardComponent implements OnInit {
    * @param username of the currently selected user in the table
    * @author Ycreak
    */
-   public request_change_password(form: FormGroup, username: string): void {
+  public request_change_password(form: FormGroup, username: string): void {
     if (form.value.password1 == form.value.password2) {
       this.dialog.open_confirmation_dialog("Are you sure you want to CHANGE this user's password", username).subscribe(result => {
         if (result) {
@@ -734,7 +901,9 @@ export class DashboardComponent implements OnInit {
   // BIBLIOGRAPHY RELATED DASHBOARD FUNCTIONS //
   //////////////////////////////////////////////
   public push_bibliography_reference(bib_entry) {
-    let bibliography_references = this.fragment_form.get('linked_bib_entries') as UntypedFormArray;
+    let bibliography_references = this.fragment_form.get(
+      'linked_bib_entries'
+    ) as UntypedFormArray;
     bibliography_references.push(
       this.formBuilder.group({
         bib_id: bib_entry.id,
@@ -745,7 +914,7 @@ export class DashboardComponent implements OnInit {
     );
   }
 
-  /** 
+  /**
    * Filters the list of authors based on the user's search input
    * @param value user input
    * @return bibliography authors that match the user's input
@@ -753,7 +922,9 @@ export class DashboardComponent implements OnInit {
    */
   private filter_autocomplete_options(value: string): string[] {
     const filterValue = value.toLowerCase();
-    return this.bibliography_author_selection_form_options.filter(option => option.toLowerCase().includes(filterValue));
+    return this.bibliography_author_selection_form_options.filter((option) =>
+      option.toLowerCase().includes(filterValue)
+    );
   }
 
   /**
@@ -763,18 +934,19 @@ export class DashboardComponent implements OnInit {
    * @param tab_change_event angular event that gives the bibliography type to be changed to.
    */
   public on_bibliography_tab_change(tab_change_event: MatTabChangeEvent): void {
-    this.update_form_field('bibliography_form', 'bib_entry_type', tab_change_event.tab.textLabel.toLowerCase())
+    this.update_form_field(
+      'bibliography_form',
+      'bib_entry_type',
+      tab_change_event.tab.textLabel.toLowerCase()
+    );
   }
 
   public add_bibliography_entry_to_fragment(bib_entry, fragment) {
-    console.log('bib', bib_entry.id)
-    console.log('frg', fragment.id)
+    console.log('bib', bib_entry.id);
+    console.log('frg', fragment.id);
 
-    console.log(this.fragment_form.value)
-
+    console.log(this.fragment_form.value);
   }
-
-
 
   /**
    * When a bibliography entry is selected by the user, put all relevant data in the fields for easy
@@ -783,11 +955,12 @@ export class DashboardComponent implements OnInit {
    * @author Ycreak, CptVickers
    */
   public handle_bib_entry_selection(bib_entry) {
-
-    console.log(bib_entry.bib_entry_type)
+    console.log(bib_entry.bib_entry_type);
     // Jump automatically to the correct tab. FIXME: this works buggy
-    if (bib_entry.bib_entry_type == 'book') this.bibliography_form_selected_type.setValue(0);
-    if (bib_entry.bib_entry_type == 'article') this.bibliography_form_selected_type.setValue(1);
+    if (bib_entry.bib_entry_type == 'book')
+      this.bibliography_form_selected_type.setValue(0);
+    if (bib_entry.bib_entry_type == 'article')
+      this.bibliography_form_selected_type.setValue(1);
 
     this.update_form_field('bibliography_form', '_id', bib_entry.id);
     this.update_form_field('bibliography_form', 'author', bib_entry.author);
@@ -800,8 +973,6 @@ export class DashboardComponent implements OnInit {
     this.update_form_field('bibliography_form', 'journal', bib_entry.journal);
     this.update_form_field('bibliography_form', 'volume', bib_entry.volume);
     this.update_form_field('bibliography_form', 'pages', bib_entry.pages);
-
-
   }
 
   /**
@@ -816,7 +987,7 @@ export class DashboardComponent implements OnInit {
     for (let author in authors_json) {
       author_list.push(authors_json[author].name);
     }
-    return author_list
+    return author_list;
   }
 
   /**
@@ -834,10 +1005,9 @@ export class DashboardComponent implements OnInit {
   }
 
   public request_bibliography_from_author(author) {
-    this.api.get_bibliography_from_author(author).subscribe(
-      data => {
-        this.retrieved_author_bibliography = data;
-      });
+    this.api.get_bibliography_from_author(author).subscribe((data) => {
+      this.retrieved_author_bibliography = data;
+    });
   }
 
   /**
@@ -847,18 +1017,19 @@ export class DashboardComponent implements OnInit {
    * @author Ycreak, CptVickers
    */
   public request_bibliography_from_id(id) {
-    this.api.get_bibliography_from_id(id).subscribe(
-      data => {
-        let temp; // simple object to access Python JSON (TODO: needs to be Angular model)
-        temp = data;
-        let linked_bib_entries = this.fragment_form.get('linked_bib_entries') as UntypedFormArray;
-        // Find the entry with our id
-        let index = linked_bib_entries.value.findIndex(x => x.bib_id === id);
-        // Add the data retrieved to the corresponding fields
-        linked_bib_entries.at(index).get('author').setValue(temp.author);
-        linked_bib_entries.at(index).get('title').setValue(temp.title);
-        linked_bib_entries.at(index).get('year').setValue(temp.year);
-      });
+    this.api.get_bibliography_from_id(id).subscribe((data) => {
+      let temp; // simple object to access Python JSON (TODO: needs to be Angular model)
+      temp = data;
+      let linked_bib_entries = this.fragment_form.get(
+        'linked_bib_entries'
+      ) as UntypedFormArray;
+      // Find the entry with our id
+      let index = linked_bib_entries.value.findIndex((x) => x.bib_id === id);
+      // Add the data retrieved to the corresponding fields
+      linked_bib_entries.at(index).get('author').setValue(temp.author);
+      linked_bib_entries.at(index).get('title').setValue(temp.title);
+      linked_bib_entries.at(index).get('year').setValue(temp.year);
+    });
   }
 
   public request_revise_bibliography_entry(bibliography) {
@@ -898,7 +1069,7 @@ export class DashboardComponent implements OnInit {
   }
 
   public request_delete_bibliography_entry(bibliography) {
-    let item_string = bibliography.author + ', ' + bibliography.title
+    let item_string = bibliography.author + ', ' + bibliography.title;
 
     this.dialog.open_confirmation_dialog('Are you sure you want to DELETE this bibliography entry?', item_string).subscribe(result => {
       if (result) {
@@ -914,8 +1085,4 @@ export class DashboardComponent implements OnInit {
     // this.reset_form('bib_form');
     this.bib_entry_selected = false;
   }
-
-
-
-
 }

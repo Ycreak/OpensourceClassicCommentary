@@ -110,7 +110,7 @@ export class UtilityService {
    * @param err the generated error
    * @author Ycreak
    */
-  public handle_error_message(err): void {
+  public handle_error_message(err): void { //TODO: Not only used for errors. Rename?
     let output = '';
     
     console.log(err)
