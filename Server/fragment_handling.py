@@ -369,6 +369,11 @@ if __name__ == "__main__":
     temp = fh.retrieve_all_authors()
     print(temp)
 
+    # Fragment lock rebuild
+    for id in fh.frag_db:
+        doc = fh.frag_db[id]
+        doc['published'] = 'published'
+        doc_id, doc_rev = fh.frag_db.save(doc)
 
     # fh.create_complete_backup()
     # fh.create_additional_field('linked_bib_entries', [])

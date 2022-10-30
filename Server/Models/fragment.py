@@ -33,9 +33,13 @@ class Fragment:
             assert isinstance(received_fragment['status'], str)
             self.status = received_fragment['status']
 
-        # if "lock" in received_fragment: 
+        if "lock" in received_fragment: 
         #     assert isinstance(received_fragment['lock'], int)
-        #     self.lock = received_fragment['lock']
+            self.lock = received_fragment['lock']
+
+        if "published" in received_fragment: 
+        #     assert isinstance(received_fragment['published'], int)
+            self.published = received_fragment['published']
 
         # Fragment content fields
         if "translation" in received_fragment: 
@@ -97,7 +101,8 @@ class Fragment:
     commentary: str = '' 
     reconstruction: str = '' 
     status: str = ''
-    lock: int = 0
+    lock: str = ''
+    published: str = ''
     context: list = [] 
     lines: list = []
     linked_fragments: list = []
@@ -122,5 +127,6 @@ class Fragment:
         ],
         "linked_bib_entries":[
         ],
-        "lock": 0,
+        "lock": '',
+        "published": '',
     }

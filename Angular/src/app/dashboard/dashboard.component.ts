@@ -123,8 +123,8 @@ export class DashboardComponent implements OnInit {
     linked_bib_entries: new FormArray([]),
 
     status: new FormControl('', Validators.required),
-    published: new FormControl('unpublished'),
-    lock: new FormControl('unlocked'),
+    published: new FormControl(''),
+    lock: new FormControl(''),
   });
 
   /** 
@@ -534,7 +534,7 @@ export class DashboardComponent implements OnInit {
   public request_revise_fragment(fragment_form: FormGroup): void {
     // If the fragment is locked and the user is not a teacher, we will not allow this operation.
 
-    if (fragment_form.value.lock){ //&& !this.auth_service.current_user.role == 'teacher') {
+    if (fragment_form.value.lock == 'locked' && this.auth_service.current_user_role != 'teacher') {
       this.utility.open_snackbar('This fragment is locked.')
     }
     else {
