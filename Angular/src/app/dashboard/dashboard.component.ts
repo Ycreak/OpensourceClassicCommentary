@@ -189,7 +189,7 @@ export class DashboardComponent implements OnInit {
   };  
 
   data_loaded: boolean = false // Returns true if the table has loaded its data
-  loading_hint:Observable<unknown> // Loading hint animation
+  loading_hint: Observable<unknown> // Loading hint animation
 
   constructor(
     private api: ApiService,
@@ -207,7 +207,7 @@ export class DashboardComponent implements OnInit {
    * On Init, we just load the list of authors. From here, selection is started
    */
   ngOnInit(): void {
-    this.loading_hint = this.get_loading_hint() // Initialize the loading hint
+    this.loading_hint = this.utility.get_loading_hint() // Initialize the loading hint
     this.request_authors()
     this.request_users()
 
@@ -272,12 +272,14 @@ export class DashboardComponent implements OnInit {
    */
   public convert_Fragment_to_fragment_form(fragment: Fragment): void {
     // This functions updates the fragment_form with the provided fragment
-    let fragment_items: string[] = ['fragment_id', 'fragment_name', 'author', 'title', 'editor', 'translation',
-      'differences', 'commentary', 'apparatus', 'reconstruction', 'status', 'lock', 'published']
-
-    for (let item in fragment_items) {
-      this.update_form_field('fragment_form', fragment_items[item], fragment[fragment_items[item]]);
+    for (let item of ['fragment_id', 'fragment_name', 'author', 'title',
+                      'editor', 'translation', 'differences', 'commentary',
+                      'apparatus', 'reconstruction', 'status', 'lock',
+                      'published']) {
+                        
+      this.update_form_field('fragment_form', item, fragment[item]);
     }
+    
     // Fill the fragment context array
     for (let i in fragment.context) {
       this.push_fragment_context_to_fragment_form(
@@ -348,7 +350,7 @@ export class DashboardComponent implements OnInit {
    * @author CptVickers
    */
   expand_row(element: any): void {
-    if (element['username']) { // TODO simple input check for lack of a better one
+    if (element['username']) { // Check if element has the expected attributes
       this.user_table_expanded_element = element
     }
   }
@@ -960,28 +962,6 @@ export class DashboardComponent implements OnInit {
     this.bib_entry_selected = false;
   }
 
-  /** TODO: move to utils?
-   * Function that adds a subscribable loading hint to the dashboard component
-   * @author CptVickers
-   */
-   public get_loading_hint(): Observable<string> {
-    let loading_hint = new Observable<string>((subscriber) => {
-      function f() {
-        subscriber.next("Loading data");
-        setTimeout(function() {subscriber.next("Loading data.")}, 500);
-        setTimeout(function() {subscriber.next("Loading data..")}, 1000);
-        setTimeout(function() {subscriber.next("Loading data...")}, 1500);
-      }
-      f();
-      const loading_hint_generator = setInterval(f, 2000);
-      return function unsubscribe() {
-        clearInterval(loading_hint_generator);
-        subscriber.complete();
-      }
-    })
-    return loading_hint
-  }
-
-
+  
 
 }

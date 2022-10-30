@@ -85,29 +85,13 @@ export class TextComponent implements OnInit {
    * Checks whether the commentaar is within the scope.
    * If not, the modal will be collapsed as not relevant
    * FIXME: can be done much more elegant
-   * @param commentaarScope 
+   * @param commentaarScope // FIXME: what is this?
    */
   public IsWithinScope(commentaarScope : number){
-    if (commentaarScope + 6 > this.selectedLine){
-      return true;
-    } else {
-      return false;
-    }
+    return (commentaarScope + 6 > this.selectedLine)
   }
 
-  /**
-   * Checks if the JSON block is empty or not
-   * FIXME: this is already in utility
-   * @param block JSON to be checked
-   */
-  public CheckEmptyBlock(block : JSON){
-    if(this.utility.is_empty(block)) {
-      return true;
-    } else {
-      return false;
-    }
   
-  }
 }
 
 

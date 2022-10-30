@@ -50,7 +50,7 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-sm overflow_column">
-          <mat-nav-list class="neat-lines">
+          <mat-nav-list class="neat-lines"> //FIXME: mat-nav-list is not a known element?
             <h3>{{currentBookTitle}}</h3>
             <mat-list-item *ngFor="let line of this.T_Text">
               <a *ngIf="line.lineNumber === null"><h5><b>{{ line.lineContent }}</b></h5></a>
@@ -63,7 +63,7 @@
         <div class="col-sm anyClass">
           <br>
           <!-- Empty Entry -->
-          <div *ngIf="CheckEmptyBlock(this.T_TextCommentary)">No entry found.</div>
+          <div *ngIf="utility.is_empty(this.T_TextCommentary)">No entry found.</div>
           <!-- Valid Entry -->
           <div *ngFor="let commentary of this.T_TextCommentary">
             <mat-expansion-panel [expanded]="IsWithinScope(commentary.lineStart)">
