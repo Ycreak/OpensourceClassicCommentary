@@ -221,9 +221,10 @@ export class DashboardComponent implements OnInit {
 
   // Reusable observer objects (for subscribing to ApiService observables)
   fragment_edit_observer = new SafeSubscriber({
-    next: (res) => {
+    next: (res: any) => {
       this.utility.handle_error_message(res);
       this.fragment_selected = true;
+      
       // It might be possible we have created a new author, title or editor. Retrieve the lists again
       this.request_authors();
       this.request_titles(this.fragment_form.value.author);
@@ -231,19 +232,25 @@ export class DashboardComponent implements OnInit {
         this.fragment_form.value.author,
         this.fragment_form.value.title
       );
-      // After creation, refresh the list of fragment names so the new one appears directly
       this.request_fragment_names(
         this.fragment_form.value.author,
         this.fragment_form.value.title,
         this.fragment_form.value.editor
       );
-      // Also, retrieve that revised fragment so we can continue editing!
-      this.retrieve_requested_fragment(
+
+      // If the edited was not deleted, reload it into the form.
+      if (res.ok && !/delete_fragment/.test(res.url)) {
+        this.retrieve_requested_fragment(
         this.fragment_form.value.author,
         this.fragment_form.value.title,
         this.fragment_form.value.editor,
         this.fragment_form.value.fragment_name
-      );
+        );
+      }
+      // Otherwise clear the form
+      else {
+        this.reset_fragment_form();
+      }
     },
     error: (err) => this.utility.handle_error_message(err),
   });
