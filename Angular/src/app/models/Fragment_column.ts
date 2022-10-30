@@ -26,6 +26,7 @@ export class Fragment_column
     author : string;
     title : string;
     editor : string;
+    fragment_name : string;
 
     fragments : Fragment[] = [];
     fragment_numbers : string[] = [];
@@ -33,6 +34,7 @@ export class Fragment_column
     retrieved_authors : Author[];
     retrieved_titles : Title[];
     retrieved_editors : Editor[];
+    retrieved_fragment_names : string[];
 
     note_array : Array<string> = [];
 

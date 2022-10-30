@@ -182,7 +182,8 @@ export class UtilityService {
    * @author Ycreak
    */
   public create_empty_fragment(): Fragment {
-    return new Fragment('', '', '', '', '', '', '', '', '', '', [], '', [], [], 0, []);
+    //TODO: there should be a proper javascript way to do this
+    return new Fragment('', '', '', '', '', '', '', '', '', '', [], '', [], [], '', '', []);
   }
 
   /**
@@ -234,6 +235,8 @@ export class UtilityService {
       return true;
     }
   }  
+
+
 
 }
 

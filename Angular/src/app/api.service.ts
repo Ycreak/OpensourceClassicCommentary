@@ -8,8 +8,12 @@ import { FormGroup } from '@angular/forms';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
+import { UtilityService } from './utility.service';
+
 // Model imports
 import { Fragment } from './models/Fragment';
+import { Fragment_column } from './models/Fragment_column';
+
 import { Author } from './models/Author';
 import { Editor } from './models/Editor';
 import { Title } from './models/Title';
@@ -20,7 +24,10 @@ import { User } from './models/User';
 })
 export class ApiService {
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private utility: UtilityService,
+    ) { }
 
   // URL for production
   // FlaskURL: String = 'https://oscc.nolden.biz:5003/'; // For production (https)                                 
@@ -28,6 +35,65 @@ export class ApiService {
   // FlaskURL: String = 'https://oscc.nolden.biz:5004/'; // For production (https)                                 
   // URL for development
   FlaskURL: String = 'http://localhost:5003/'; // For deployment (http! not https)                                 
+
+  /**
+   * Requests all authors from the database. No parameters needed
+   */
+  public request_authors(column: Fragment_column): void {
+    this.get_authors().subscribe({
+      next: (data) => column.retrieved_authors = data,
+      error: (err) => this.utility.handle_error_message(err)
+    });
+  }
+
+  /**
+   * Requests the titles by the given author. Result is written
+   * to this.retrieved_titles.
+   * @param author name of the author who's titles are to be retrieved
+   * @author Ycreak
+   */
+   public request_titles(column: Fragment_column): void {    
+    this.get_titles(column.author).subscribe(
+      data => {
+        column.retrieved_titles = data;
+      }
+    );
+  }
+
+  /**
+   * Requests the editors by the given author and book title. Result is written
+   * to this.retrieved_editors.
+   * @param author name of the author who's editors are to be retrieved
+   * @param title name of the title who's editors are to be retrieved
+   * @author Ycreak
+   */
+     public request_editors(column: Fragment_column): void {
+      this.get_editors(column.author, column.title).subscribe(
+        data => {
+          column.retrieved_editors = data;
+        }
+      );
+    }
+
+  /**
+   * Given the author, title and editor, request the names of the fragments from the server.
+   * @param author author of the fragment
+   * @param title title of the fragment
+   * @param editor editor of the fragment
+   * @author Ycreak
+   */
+   public request_fragment_names(column: Fragment_column): void {
+    // Create api/fragment object to send to the server
+    let api_data = this.utility.create_empty_fragment();
+    api_data.author = column.author; 
+    api_data.title = column.title; 
+    api_data.editor = column.editor;
+
+    this.get_fragment_names(api_data).subscribe(
+      data => {
+        column.retrieved_fragment_names = data.sort(this.utility.sort_array_numerically);
+      });
+  }
 
 //    _____ ______ _______ 
 //   / ____|  ____|__   __|

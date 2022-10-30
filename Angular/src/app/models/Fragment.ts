@@ -21,7 +21,8 @@ export class Fragment {
         public lines: Line[],
         public linked_fragments: string[],
 
-        public lock: number,
+        public lock: string,
+        public published: string,
 
         public bibliography: string[],
 
