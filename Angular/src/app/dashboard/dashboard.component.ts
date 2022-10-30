@@ -188,7 +188,7 @@ export class DashboardComponent implements OnInit {
     buttons: [BOLD_BUTTON, ITALIC_BUTTON, SUBSCRIPT_BUTTON, SUPERSCRIPT_BUTTON, UNORDERED_LIST_BUTTON, ORDERED_LIST_BUTTON],
   };  
 
-  data_loaded: boolean = false // Returns true if the table has loaded its data
+  table_data_loaded: boolean = false // Returns true if the table has loaded its data
   loading_hint: Observable<unknown> // Loading hint animation
 
   constructor(
@@ -684,7 +684,7 @@ export class DashboardComponent implements OnInit {
         this.user_table_users = new MatTableDataSource(this.retrieved_users);
         this.user_table_users.paginator = this.paginator;
         this.user_table_users.sort = this.sort;
-        this.data_loaded = true
+        this.table_data_loaded = true
       },
       err => this.utility.handle_error_message(err),
     );
