@@ -104,14 +104,14 @@ export class LoginComponent implements OnInit {
           api_data.username = form.username; 
           api_data.password = encodeURIComponent(form.password1);
   
-          this.api.create_user(api_data).subscribe(
-            res => {
+          this.api.create_user(api_data).subscribe({
+            next: (res) => {
               this.utility.handle_error_message(res),
               this.login_form_expanded = false;
               this.create_form_expanded = false;
             },
-            err => this.utility.handle_error_message(err)
-          );
+            error: (err) => this.utility.handle_error_message(err)
+          });
         }
       });
     }
