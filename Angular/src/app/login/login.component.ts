@@ -10,6 +10,7 @@ import { ApiService } from '../api.service';
 import { UtilityService } from '../utility.service';
 
 import { User } from '../models/User';
+import { SafeSubscriber } from 'rxjs/internal/Subscriber';
 
 @Component({
   selector: 'app-login',
@@ -53,14 +54,15 @@ export class LoginComponent implements OnInit {
 
     // console.log(api_data)
 
-    this.api.login_user(api_data).subscribe(
-      res => {
+    this.api.login_user(api_data).subscribe({
+      next: (res) => {
         // FIXME: this needs to be handled properly with Flask. Fix for the staging build
         this.auth_service.login_user(api_data);
         this.login_form_expanded = false;
         this.create_form_expanded = false;
-      }, err => this.utility.handle_error_message(err)
-    );
+      }, 
+      error: (err) => this.utility.handle_error_message(err)
+    });
   }
 
   /**
@@ -87,14 +89,14 @@ export class LoginComponent implements OnInit {
           let api_data = this.utility.create_empty_user();
           api_data.username = form.username; api_data.password = form.password1
   
-          this.api.create_user(api_data).subscribe(
-            res => {
+          this.api.create_user(api_data).subscribe({
+            next: (res) => {
               this.utility.handle_error_message(res),
               this.login_form_expanded = false;
               this.create_form_expanded = false;
             },
-            err => this.utility.handle_error_message(err)
-          );
+            error: (err) => this.utility.handle_error_message(err)
+          });
         }
       });
     }
