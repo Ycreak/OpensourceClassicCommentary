@@ -73,14 +73,15 @@ export class LoginComponent implements OnInit {
     
     // console.log(api_data)
 
-    this.api.login_user(api_data).subscribe(
-      res => {
+    this.api.login_user(api_data).subscribe({
+      next: (res) => {
         // FIXME: this needs to be handled properly with Flask. Fix for the staging build
-        this.auth_service.login_user(api_data)
+        this.auth_service.login_user(api_data);
         this.login_form_expanded = false;
         this.create_form_expanded = false;
-      }, err => this.utility.handle_error_message(err)
-    );
+      },
+      error: (err) => this.utility.handle_error_message(err),
+    });
   }
 
   /**

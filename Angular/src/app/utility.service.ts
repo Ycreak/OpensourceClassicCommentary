@@ -5,6 +5,7 @@ import {CdkDragDrop, moveItemInArray, transferArrayItem, CdkDragEnd} from '@angu
 // Model imports 
 import { Fragment } from './models/Fragment';
 import { User } from './models/User';
+import { Observable } from 'rxjs';
 
 
 @Injectable({
@@ -122,6 +123,28 @@ export class UtilityService {
       output = err.status + ': ' + err.error;
     }    
     this.open_snackbar(output);
+  }
+
+  /**
+   * Function that adds a subscribable loading hint to the dashboard component
+   * @author CptVickers
+   */
+   public get_loading_hint(): Observable<string> {
+    let loading_hint = new Observable<string>((subscriber) => {
+      function f() {
+        subscriber.next("Loading data");
+        setTimeout(function() {subscriber.next("Loading data.")}, 500);
+        setTimeout(function() {subscriber.next("Loading data..")}, 1000);
+        setTimeout(function() {subscriber.next("Loading data...")}, 1500);
+      }
+      f();
+      const loading_hint_generator = setInterval(f, 2000);
+      return function unsubscribe() {
+        clearInterval(loading_hint_generator);
+        subscriber.complete();
+      }
+    })
+    return loading_hint
   }
   
   /**

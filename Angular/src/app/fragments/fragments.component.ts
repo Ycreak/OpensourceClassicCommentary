@@ -183,8 +183,6 @@ export class FragmentsComponent implements OnInit {
     let api_data = this.utility.create_empty_fragment(); 
     api_data.fragment_id = fragment_id;
 
-    console.log(fragment_id)
-
     this.api.get_fragment_content(api_data).subscribe(data => {     
       this.fragment_clicked = true;
       this.add_content_to_current_fragment(data);
@@ -499,7 +497,7 @@ export class FragmentsComponent implements OnInit {
   /**
    *
    */
-  private add_single_fragment_to_playground(column: Fragment_column, fragment_name): void{
+  private add_single_fragment_to_playground(column: Fragment_column, fragment_name): void{ // FIXME: Deprecated?
 
     // First, retrieve the fragment from the database
     let api_data = this.utility.create_empty_fragment();
@@ -520,16 +518,13 @@ export class FragmentsComponent implements OnInit {
    * An entry should not be made if the received field is empty to prevent empty expansion panels
    * @param fragment 
    * @author Ycreak
-   * TODO: this should be done with a nice for-loop. See convert_Fragment_to_fragment_form in Dashboard
    */
   private add_content_to_current_fragment(fragment): void{
-    if(fragment['translation'] != ''){ this.current_fragment.translation = fragment['translation']}
-    if(fragment['differences'] != ''){ this.current_fragment.differences = fragment['differences']}
-    if(fragment['apparatus'] != ''){ this.current_fragment.apparatus = fragment['apparatus']}
-    if(fragment['commentary'] != ''){ this.current_fragment.commentary = fragment['commentary']}
-    if(fragment['reconstruction'] != ''){ this.current_fragment.reconstruction = fragment['reconstruction']}
-    if(fragment['context'] != ''){ this.current_fragment.context = fragment['context']}
-    if(fragment['bibliography'] != ''){ this.current_fragment.bibliography = fragment['bibliography']}
+    for (let item of ['translation', 'differences', 'apparatus', 'commentary',
+                      'reconstruction', 'context', 'bibliography']) {
+                        
+      if(fragment[item] != ''){ this.current_fragment[item] = fragment[item]}
+    }
 }
 
 }
