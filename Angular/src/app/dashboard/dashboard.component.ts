@@ -180,6 +180,7 @@ export class DashboardComponent implements OnInit {
 
   // In this object all meta data is stored regarding the currently selected fragment
   selected_fragment_data: Fragment_column;
+  linked_fragment_data: Fragment_column;
 
   // To convert a form to an object
   // this.converted_fragment_form = {...this.converted_fragment_form,...this.fragment_form.value}
@@ -206,9 +207,12 @@ export class DashboardComponent implements OnInit {
     
     // We will store all dashboard data in the following data object
     this.selected_fragment_data = new Fragment_column(0, '', '', '', '');
+    this.linked_fragment_data = new Fragment_column(0, '', '', '', '');
+
     
-    this.api.request_authors(this.selected_fragment_data)
-    
+    this.api.request_authors(this.selected_fragment_data);
+    this.api.request_authors(this.linked_fragment_data);
+
     // this.retrieve_requested_fragment('Gijs', 'Thyestes', 'TRF', '134')
     // this.request_bibliography_authors()
 
@@ -294,7 +298,8 @@ export class DashboardComponent implements OnInit {
     }
     // Fill the linked fragment array
     for (let i in fragment.linked_fragments) {
-      continue
+      this.push_linked_fragments_to_fragment_form(
+        fragment.linked_fragments[i]);
     }
   }
 
@@ -372,6 +377,22 @@ export class DashboardComponent implements OnInit {
   }
 
   /**
+   * This function creates a form group containing a single linked fragment and pushes
+   * it to the fragment_form, specifically to the linked_fragment FormArray.
+   * @param linked_fragment_id given id of the linked fragment
+   * @author Ycreak
+   */
+   public push_linked_fragments_to_fragment_form(linked_fragment_id: string): void {
+    // First, create a form group to represent a line
+    let new_linked_fragment = new FormGroup({
+      linked_fragment_id: new FormControl(linked_fragment_id),
+    });
+    // Next, push the created form group to the lines FormArray    
+    let linked_fragments_array = this.fragment_form.get('linked_fragments') as FormArray;
+    linked_fragments_array.push(new_linked_fragment);
+  }
+
+  /**
    * This function creates a form group containing a single context of a fragment and pushes
    * it to the fragment_form, specifically to the context FormArray.
    * @param author author of the given context
@@ -389,6 +410,18 @@ export class DashboardComponent implements OnInit {
     // Next, push the created form group to the context FormArray    
     let fragment_context_array = this.fragment_form.get('context') as FormArray;
     fragment_context_array.push(new_context);
+  }
+
+  /**
+   * Pushes the id of the referenced fragment to the Fragment_form
+   * @param column Fragment_column object with all necessary data
+   * @author Ycreak
+   */
+   public add_referenced_fragment_to_Fragment_form(column: Fragment_column): void {
+    this.api.get_specific_fragment(column).subscribe(
+      fragment => {
+        this.push_linked_fragments_to_fragment_form(fragment.fragment_id)
+      });
   }
 
   /**
@@ -447,10 +480,7 @@ export class DashboardComponent implements OnInit {
       this.reset_fragment_form();
       // Create api/fragment object to send to the server      
       let api_data = this.utility.create_empty_fragment();
-      api_data.author = column.author; 
-      api_data.title = column.title; 
-      api_data.editor = column.editor; 
-      api_data.fragment_name = column.fragment_name;
+      api_data = {...api_data,...column} // Parse column in a fragment object
 
       this.api.get_specific_fragment(api_data).subscribe(
         fragment => {
@@ -573,14 +603,13 @@ export class DashboardComponent implements OnInit {
    * This function requests the server to link all similar fragments from a given author and title. 
    * Linking between authors or titles is only possible manually. Linking is based on similarity and
    * done via the fuzzywuzzy library. See the function within the server for more information.
-   * @param author name of the author who's fragments are to be linked between editions
-   * @param title name of the title who's fragments are to be linked between editions
+   * @param column with all necessary data
    * @author CptVickers Ycreak
    */
-  public request_automatic_fragment_linker(author: string, title: string): void {
-    let item_string = author + ', ' + title;
+  public request_automatic_fragment_linker(column: Fragment_column): void {
+    let item_string = column.author + ', ' + column.title;
     let api_data = this.utility.create_empty_fragment(); 
-    api_data.author = author; api_data.title = title;
+    api_data.author = column.author; api_data.title = column.title;
 
     this.dialog.open_confirmation_dialog('Are you sure you want to LINK fragments from this text?', item_string).subscribe(result => {
       if (result) {

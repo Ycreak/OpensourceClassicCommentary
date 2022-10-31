@@ -4,9 +4,9 @@ class Fragment:
     """    
     def __init__(self, received_fragment):
     
-        print('#############################')
-        print('fragment_id', received_fragment['fragment_id'])
-        print('#############################')
+        # print('#############################')
+        # print('fragment_id', received_fragment['fragment_id'])
+        # print('#############################')
 
         # Fragment meta data
         if "fragment_id" in received_fragment: 
@@ -77,7 +77,7 @@ class Fragment:
             # We must turn this into a set list again.
             linked_fragment_list = []
             for linked_fragment in received_fragment['linked_fragments']:
-                linked_fragment_list.append(linked_fragment['fragment_id'])
+                linked_fragment_list.append(linked_fragment['linked_fragment_id'])
             self.linked_fragments = list(set(linked_fragment_list)) # Angular needs a tissue for its issue
 
         if "linked_bib_entries" in received_fragment: 

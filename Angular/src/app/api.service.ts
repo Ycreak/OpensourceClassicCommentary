@@ -49,7 +49,7 @@ export class ApiService {
   /**
    * Requests the titles by the given author. Result is written
    * to this.retrieved_titles.
-   * @param author name of the author who's titles are to be retrieved
+   * @param column Fragment_column object with all necessary data
    * @author Ycreak
    */
    public request_titles(column: Fragment_column): void {    
@@ -63,8 +63,7 @@ export class ApiService {
   /**
    * Requests the editors by the given author and book title. Result is written
    * to this.retrieved_editors.
-   * @param author name of the author who's editors are to be retrieved
-   * @param title name of the title who's editors are to be retrieved
+   * @param column Fragment_column object with all necessary data
    * @author Ycreak
    */
      public request_editors(column: Fragment_column): void {
@@ -77,9 +76,7 @@ export class ApiService {
 
   /**
    * Given the author, title and editor, request the names of the fragments from the server.
-   * @param author author of the fragment
-   * @param title title of the fragment
-   * @param editor editor of the fragment
+   * @param column Fragment_column object with all necessary data
    * @author Ycreak
    */
    public request_fragment_names(column: Fragment_column): void {
@@ -95,6 +92,18 @@ export class ApiService {
       });
   }
 
+  /**
+   * Requests a specific fragment from the database
+   * @param column Fragment_column object with all necessary data
+   * @author Ycreak CptVickers
+   */
+   public request_specific_fragment(column: Fragment_column): void {
+    this.get_specific_fragment(column).subscribe(
+      fragment => {
+        column.fragments = [fragment]
+      });
+  }
+  
 //    _____ ______ _______ 
 //   / ____|  ____|__   __|
 //  | |  __| |__     | |   
@@ -141,7 +150,7 @@ export class ApiService {
   public get_fragment_content(fragment: Fragment): Observable<Fragment> {
     return this.http.post<Fragment>(this.FlaskURL + `fragment_content`, fragment, { observe: 'body', responseType: 'json'});
   }
-  public get_specific_fragment(fragment: Fragment): Observable<Fragment> {
+  public get_specific_fragment(fragment: object): Observable<Fragment> {
     return this.http.post<Fragment>(this.FlaskURL + `complete_fragment`, fragment, { observe: 'body', responseType: 'json'});
   }
   public get_fragment_names(fragment: Fragment): Observable<string[]> {
