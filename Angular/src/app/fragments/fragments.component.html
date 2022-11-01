@@ -158,9 +158,9 @@
                 <mat-form-field class="select-form">
                     <mat-label>Select fragment</mat-label>
                     <mat-select>
-                        <mat-option *ngFor="let fragment_number of this.playground.fragment_numbers" [value]="fragment_number"
-                            (click)="add_single_fragment_to_playground(this.playground, fragment_number)">
-                            {{ fragment_number }} 
+                        <mat-option *ngFor="let fragment_name of this.playground.fragment_names" [value]="fragment_name"
+                            (click)="add_single_fragment_to_playground(this.playground, fragment_name)">
+                            {{ fragment_name }} 
                         </mat-option>
                     </mat-select>
                     <mat-hint>To add a single fragment</mat-hint>

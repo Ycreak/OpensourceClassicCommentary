@@ -29,7 +29,7 @@ export class Fragment_column
     fragment_name : string;
 
     fragments : Fragment[] = [];
-    fragment_numbers : string[] = [];
+    fragment_names : string[] = [];
 
     retrieved_authors : Author[];
     retrieved_titles : Title[];

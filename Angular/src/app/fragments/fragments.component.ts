@@ -203,23 +203,9 @@ export class FragmentsComponent implements OnInit {
 
     this.api.get_fragment_names(api_data).subscribe(
       data => {
-        column.fragment_numbers = data;
+        column.fragment_names = data;
       });
   }
-
-  // /**
-  //  * Given an object with fragments, returns a list of all fragment names.
-  //  * @param fragments: Fragments[], list of all fragments retrieved from the server
-  //  * @returns list of all fragment names 
-  //  * @author Ycreak
-  //  */
-  // private retrieve_fragment_numbers(fragments): string[]{    
-  //   let number_list: string[] = []
-  //   for(let fragment in fragments){
-  //     number_list.push(fragments[fragment].fragment_name)
-  //   }
-  //   return number_list
-  // }
 
   /**
    * Function to handle what happens when an author is selected in HTML. 
@@ -264,7 +250,6 @@ export class FragmentsComponent implements OnInit {
     else{
       // request a list of fragment names
       this.request_fragment_names(column)
-      console.log(column.fragment_numbers)
     }
   }
 
