@@ -35,6 +35,10 @@
     <button mat-menu-item>V22.10.19</button>
 </mat-menu>
 
+<!-- Loading spinner to show data is being retrieved from the server -->
+<mat-toolbar *ngIf="this.spinner === false" class="progress-toolbar"></mat-toolbar>
+<mat-progress-bar *ngIf="this.spinner" mode="query"></mat-progress-bar>
+
 <!-- Secondary toolbar to manage columns -->
 <mat-toolbar class="button-toolbar">    
     <div *ngFor="let column_to_display of this.columns">
@@ -66,8 +70,8 @@
 <!-- Container for the page. One row per item (commentary, playground, multiplayer, etc.) -->
 <div class="container-fluid">
 
-    <div class="row"> <!-- Row that contains the columns and commentary -->
-        <div *ngFor="let column_to_display of this.columns" class="col" [hidden]="!column_to_display.visible">
+    <div class="row"> <!-- Row that contains the columns and commentary --> 
+        <div *ngFor="let column_to_display of this.columns" class="col overflow_column" [hidden]="!column_to_display.visible">
                 <ng-container [ngTemplateOutlet]='fragment_column_template' [ngTemplateOutletContext]="{given_column:column_to_display}"></ng-container>
         </div>
 
@@ -86,67 +90,33 @@
                 No content is available yet for this fragment.
             </div>
             
-            <!-- Show the translation of the fragment -->
-            <ng-container 
-                *ngTemplateOutlet="show_fragment_content;context:{current_fragment_content: this.current_fragment.translation, title:'Fragment Translation'}">
-            </ng-container>            
-            
-            <hr>
-            
-            <!-- Show the apparatus criticus of the fragment -->
-            <ng-container 
-                *ngTemplateOutlet="show_fragment_content;context:{current_fragment_content: this.current_fragment.apparatus, title:'Apparatus Criticus'}">
-            </ng-container>
-    
-            <hr>
-    
-            <!-- Show the fragment differences -->
-            <ng-container 
-                *ngTemplateOutlet="show_fragment_content;context:{current_fragment_content: this.current_fragment.differences, title:'Editorial Differences'}">
-            </ng-container>
-    
-            <hr>
-    
-            <!-- Show all context items for the selected fragment -->
-            <div *ngFor="let current_context of this.current_fragment.context">
-                <mat-expansion-panel>
-                    <mat-expansion-panel-header>
-                        <mat-panel-title>
-                            <b>Citation Context</b>
-                        </mat-panel-title>
-                        <div>{{current_context.author}} <i>{{current_context.location}}</i></div><div class="div-padding-sm"></div>
-                    </mat-expansion-panel-header>
-                    <div class="mat-expansion-panel-content">
-                        <div class="mat-expansion-panel-body">
-                            <div [innerHTML]="current_context.text"></div>
-                        </div>
-                    </div>
-                </mat-expansion-panel>
+            <!-- Show the commentary for the clicked fragment -->
+            <div *ngIf="this.fragment_has_content(this.current_fragment);">
+                <ng-container [ngTemplateOutlet]='commentary_column_template' [ngTemplateOutletContext]="{given_fragment:this.current_fragment}"></ng-container>
             </div>
             
             <hr>
-    
-            <!-- Show the fragment commentary -->
-            <ng-container 
-                *ngTemplateOutlet="show_fragment_content;context:{current_fragment_content: this.current_fragment.commentary, title:'Fragment Commentary'}">
-            </ng-container>
-    
-            <hr>
-    
-            <!-- Show the fragment reconstruction -->
-            <ng-container 
-                *ngTemplateOutlet="show_fragment_content;context:{current_fragment_content: this.current_fragment.reconstruction, title:'Fragment Reconstruction'}">
-            </ng-container>
 
-            <hr>
+            <div *ngFor="let linked_fragment of this.commentary_column.linked_fragments_content">
+                <div *ngIf="this.fragment_has_content(linked_fragment);">
+                    <h5>Linked commentary from {{linked_fragment.author}}, {{linked_fragment.title}}, 
+                        {{linked_fragment.editor}}, fragment {{linked_fragment.fragment_name}}</h5>
+                    <ng-container [ngTemplateOutlet]='commentary_column_template' [ngTemplateOutletContext]="{given_fragment:linked_fragment}"></ng-container>    
+                </div>
+            </div>
 
         </div>
         <hr>
     </div> <!-- This closes the first row. Other items will be put under this row -->
     
 
+
+    <!-- Loading spinner to show data is being retrieved from the server -->
+    <mat-toolbar *ngIf="this.spinner === false" class="progress-toolbar-playground"></mat-toolbar>
+    <mat-progress-bar *ngIf="this.spinner" mode="query"></mat-progress-bar>
     <!-- Row to show the playground -->
     <hr>
+
     <!-- <div class="div-padding-lg"></div> -->
     <div class="container-fluid playground-height-padding" *ngIf="toggle_playground">               
         <div class="row">
@@ -226,6 +196,46 @@
     </div>
 </ng-template>
 
+<ng-template #commentary_column_template let-given_fragment="given_fragment">  
+
+    <ng-container *ngTemplateOutlet="show_fragment_content;
+        context:{current_fragment_content: given_fragment.translation, title:'Fragment Translation'}">
+    </ng-container> <!-- Show the translation of the fragment -->           
+
+    <ng-container *ngTemplateOutlet="show_fragment_content;
+        context:{current_fragment_content: given_fragment.apparatus, title:'Apparatus Criticus'}">
+    </ng-container> <!-- Show the apparatus criticus of the fragment -->
+
+    <ng-container *ngTemplateOutlet="show_fragment_content;
+        context:{current_fragment_content: given_fragment.differences, title:'Editorial Differences'}">
+    </ng-container> <!-- Show the fragment differences -->
+
+    <div *ngFor="let current_context of given_fragment.context">
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    <b>Citation Context</b>
+                </mat-panel-title>
+                <div>{{current_context.author}} <i>{{current_context.location}}</i></div><div class="div-padding-sm"></div>
+            </mat-expansion-panel-header>
+            <div class="mat-expansion-panel-content">
+                <div class="mat-expansion-panel-body">
+                    <div [innerHTML]="current_context.text"></div>
+                </div>
+            </div>
+        </mat-expansion-panel>
+    </div><hr> <!-- Show all context items for the selected fragment -->
+
+    <ng-container 
+        *ngTemplateOutlet="show_fragment_content;context:{current_fragment_content: given_fragment.commentary, title:'Fragment Commentary'}">
+    </ng-container> <!-- Show the fragment commentary -->
+
+    <ng-container 
+        *ngTemplateOutlet="show_fragment_content;context:{current_fragment_content: given_fragment.reconstruction, title:'Fragment Reconstruction'}">
+    </ng-container> <!-- Show the fragment reconstruction -->
+
+</ng-template>
+
 <!-- Template for the select author mat-option field -->
 <ng-template #select_author let-column="column" let-hint="hint">  
     <mat-form-field class="selection-form">
@@ -282,4 +292,5 @@
             </div>
         </div>
     </mat-expansion-panel>
+    <hr> <!-- And add a nice line to separate the fields -->
 </ng-template>

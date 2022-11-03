@@ -77,7 +77,10 @@ class Fragment:
             # We must turn this into a set list again.
             linked_fragment_list = []
             for linked_fragment in received_fragment['linked_fragments']:
-                linked_fragment_list.append(linked_fragment['linked_fragment_id'])
+                try:
+                    linked_fragment_list.append(linked_fragment['linked_fragment_id'])
+                except:
+                    pass
             self.linked_fragments = list(set(linked_fragment_list)) # Angular needs a tissue for its issue
 
         if "linked_bib_entries" in received_fragment: 

@@ -469,10 +469,7 @@ export class DashboardComponent implements OnInit {
 
   /**
    * Loads the specified fragment into the dashboard as a form
-   * @param author author of the fragment
-   * @param title title of the fragment
-   * @param editor editor of the fragment
-   * @param fragment_name name of the fragment
+   * @param column with all relevant data
    * @author Ycreak CptVickers
    */
     public retrieve_requested_fragment(column: Fragment_column): void {
@@ -480,7 +477,8 @@ export class DashboardComponent implements OnInit {
       this.reset_fragment_form();
       // Create api/fragment object to send to the server      
       let api_data = this.utility.create_empty_fragment();
-      api_data = {...api_data,...column} // Parse column in a fragment object
+      api_data.author = column.author; api_data.title = column.title;
+      api_data.editor = column.editor; api_data.fragment_name = column.fragment_name;
 
       this.api.get_specific_fragment(api_data).subscribe(
         fragment => {

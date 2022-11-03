@@ -39,6 +39,8 @@ export class Fragment_column
     note_array : Array<string> = [];
 
     clicked_fragment : Fragment;
+    linked_fragments_content : Fragment[] = []; //FIXME: needs to be different from Fragment.linked_fragments
+
     clicked_note : string;
 
     // Whether to show or hide the column

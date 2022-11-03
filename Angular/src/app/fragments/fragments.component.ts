@@ -47,6 +47,8 @@ export class FragmentsComponent implements OnInit {
 
   playground: Fragment_column;
 
+  commentary_column: Fragment_column;
+
   // We keep track of the number of columns to identify them
   column_identifier: number = 1;
 
@@ -68,7 +70,9 @@ export class FragmentsComponent implements OnInit {
     this.current_fragment = this.utility.create_empty_fragment();
 
     // Create templates for the possible fragment columns
-    this.column1 = new Fragment_column(1, 'ETT', 'Ennius', 'Thyestes', 'TRF');
+    this.column1 = new Fragment_column(1, 'ETT', 'Ennius', 'Thyestes', 'Warmington');
+    this.commentary_column = new Fragment_column(255, '', '', '', '');
+
     this.request_authors(this.column1)
 
     // this.column2 = new Fragment_column(2, 'ETR', 'Ennius', 'Thyestes', 'Ribbeck');
@@ -102,10 +106,12 @@ export class FragmentsComponent implements OnInit {
    * @author Ycreak
    */
    private request_authors(column: Fragment_column): void{
+    this.toggle_spinner();
     this.api.get_authors().subscribe(data => {
       this.server_down = false; //FIXME: needs to be handled properly
       // Enter this retrieved data in the correct column
-      column.retrieved_authors = data; 
+      column.retrieved_authors = data;
+      this.toggle_spinner(); 
     });
   }
 
@@ -115,9 +121,11 @@ export class FragmentsComponent implements OnInit {
    * @author Bors & Ycreak
    */
   private request_titles(column: Fragment_column): void{
+    this.toggle_spinner();
     this.api.get_titles(column.author).subscribe(
       data => {
         column.retrieved_titles = data; 
+        this.toggle_spinner();
       }
     );      
   }
@@ -128,9 +136,11 @@ export class FragmentsComponent implements OnInit {
    * @author Bors & Ycreak
    */
   private request_editors(column: Fragment_column): void{
+    this.toggle_spinner();
     this.api.get_editors(column.author, column.title).subscribe(
       data => {
-        column.retrieved_editors = data; 
+        column.retrieved_editors = data;
+        this.toggle_spinner(); 
       }
     );
   }
@@ -144,7 +154,8 @@ export class FragmentsComponent implements OnInit {
    * @author Bors & Ycreak
    */
   private request_fragments(column: Fragment_column): void{
-    
+    this.toggle_spinner();
+
     let api_data = this.utility.create_empty_fragment();
     api_data.author = column.author; api_data.title = column.title; api_data.editor = column.editor;
 
@@ -166,26 +177,24 @@ export class FragmentsComponent implements OnInit {
           // In the case of the playground, we want to add the new edition to our playground
           column.fragments = column.fragments.concat(fragment_list);
         }
-        
+        this.toggle_spinner();
       }
     );  
   }
 
   /** 
    * Requests the API function for all content corresponding to the given fragment id.
-   * The retrieved data will then be added to the current_fragment model for displaying
+   * The retrieved data will then be added to the given fragment (by reference) for displaying
    * in the HTML frontend
    * @param fragment_id 
    * @returns fills all content variables with data. e.g. data -> this.f_commentary 
    * @author Bors & Ycreak
    */
-  private request_fragment_content(fragment_id: string): void{
-    let api_data = this.utility.create_empty_fragment(); 
-    api_data.fragment_id = fragment_id;
-
-    this.api.get_fragment_content(api_data).subscribe(data => {     
-      this.fragment_clicked = true;
-      this.add_content_to_current_fragment(data);
+  private request_fragment_content(fragment: Fragment): void{   
+    this.toggle_spinner();
+    this.api.get_fragment_content(fragment).subscribe(data => {     
+      this.add_content_to_current_fragment(fragment, data);
+      this.toggle_spinner();
     });
   }
 
@@ -197,13 +206,15 @@ export class FragmentsComponent implements OnInit {
    * @author Ycreak
    */
    public request_fragment_names(column: Fragment_column): void {
+    this.toggle_spinner();
     // Create api/fragment object to send to the server
     let api_data = this.utility.create_empty_fragment();
     api_data.author = column.author; api_data.title = column.title; api_data.editor = column.editor;
 
     this.api.get_fragment_names(api_data).subscribe(
       data => {
-        column.fragment_names = data;
+        column.fragment_names = data.sort(this.utility.sort_array_numerically);
+        this.toggle_spinner();
       });
   }
 
@@ -259,13 +270,27 @@ export class FragmentsComponent implements OnInit {
    * @author Ycreak
    */
    private handle_fragment_click(fragment: Fragment): void{
+      this.fragment_clicked = true;   
       this.current_fragment = fragment
-
-      console.log(fragment.fragment_id) //FIXME: _id is not working.
       // Request content from this fragment
-      this.request_fragment_content(fragment.fragment_id)
-      // Request content from its linked fragments
-      //TODO:
+      this.request_fragment_content(fragment)
+      // this.request_fragment_content(this.commentary_column.clicked_fragment)
+
+      // Reset the commentary column and its linked fragments
+      this.commentary_column.linked_fragments_content = [];
+
+      // Now retrieve all linked fragments to show their content in the commentary column
+      for(let i in fragment.linked_fragments){
+        let linked_fragment = this.utility.create_empty_fragment()
+        linked_fragment.fragment_id = fragment.linked_fragments[i]
+        // Request the fragment
+        this.api.get_specific_fragment(linked_fragment).subscribe(
+          data => {
+            linked_fragment = data;
+            // and push it to the commentary column
+            this.commentary_column.linked_fragments_content.push(linked_fragment)
+          });
+      }
       
       // The next part handles the colouring of clicked and referenced fragments.
       // First, restore all fragments to their original black colour when a new fragment is clicked
@@ -287,6 +312,14 @@ export class FragmentsComponent implements OnInit {
         fragment_array[fragment].colour = 'black';
       }       
     }
+  }
+
+  /**
+   * Simple function to toggle the spinner
+   * @author Ycreak
+   */
+  public toggle_spinner(): void{
+    this.spinner = !this.spinner;
   }
 
   /**
@@ -428,9 +461,33 @@ export class FragmentsComponent implements OnInit {
    */  
   private test(thing): void{
     console.log('############ TESTING ############')
-    console.log(thing)
+    console.log(this.spinner = !this.spinner)
     console.log('############ ####### ############')
 
+  }
+
+    /**
+     * Function to check if the fragment has content
+     * @param fragment to be checked for content
+     * @returns bool true if the fragment has at least one content field that is not empty
+     * @author Ycreak
+     * TODO: i would like this function to be in Fragment.ts. Is that possible?
+     */
+     public fragment_has_content(fragment: Fragment){
+
+      console.log(fragment)
+
+      if( fragment.differences != '' || 
+          fragment.apparatus != '' ||
+          fragment.translation != '' ||
+          fragment.commentary != '' ||
+          fragment.reconstruction != ''
+      ){
+          return true;
+      }
+      else{
+          return false;
+      }
   }
 
   /**
@@ -501,14 +558,15 @@ export class FragmentsComponent implements OnInit {
    * Adds the JSON with fragment content retrieved from the server to the corresponding
    * fields of our current_fragment object for viewing in the Commentary column in HTML.
    * An entry should not be made if the received field is empty to prevent empty expansion panels
-   * @param fragment 
+   * @param fragment wich is to be filled with data from the server
+   * @param data which is received from the server
    * @author Ycreak
    */
-  private add_content_to_current_fragment(fragment): void{
+  private add_content_to_current_fragment(fragment: Fragment, data: Fragment): void{
     for (let item of ['translation', 'differences', 'apparatus', 'commentary',
                       'reconstruction', 'context', 'bibliography']) {
                         
-      if(fragment[item] != ''){ this.current_fragment[item] = fragment[item]}
+      if(data[item] != ''){ fragment[item] = data[item]}
     }
 }
 

@@ -1,4 +1,5 @@
 # Library Imports
+from tkinter import E
 import couchdb
 import copy
 from uuid import uuid4
@@ -109,13 +110,15 @@ class Fragment_handler:
 
     def retrieve_fragment_content(self, fragment):
                 
-        print(fragment.fragment_id)
-
         doc = self.frag_db[fragment.fragment_id]
+
+        print('#############################')
+        print(doc)
+        print('#############################')
 
         for content in ['translation', 'apparatus', 'differences', 'context', 'commentary', 'reconstruction']:
             setattr(fragment, content, doc[content])
-        
+
         # Also add linked bib entries separately as list
         bib_entry_list = []
         # if 'linked_bib_entries' in doc:        
@@ -162,7 +165,11 @@ class Fragment_handler:
         Returns:
             couch document: with all data of the requested fragment
         """                
-        result, found_fragment = self.find_fragment(fragment)
+        #FIXME: HACK, needs to be fixed by the patch of Philippe
+        if fragment.fragment_id != '':
+            found_fragment = self.frag_db[fragment.fragment_id]
+        else:
+            result, found_fragment = self.find_fragment(fragment)
         # Add the fragment_id to the mix
         found_fragment['fragment_id'] = found_fragment.id
         return found_fragment #self.frag_db[fragment_id]

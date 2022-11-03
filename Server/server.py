@@ -67,9 +67,6 @@ def fragment_names():
 
 @app.route("/fragment_content", methods=['POST'])
 def fragment_content():
-
-    print(request.get_json())
-
     # Route to retrieve the content of the given fragment
     result = frag_db.retrieve_fragment_content(Fragment(request.get_json()))
     return jsonpickle.encode(result)
