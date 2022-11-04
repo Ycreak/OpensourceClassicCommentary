@@ -140,7 +140,7 @@
             <div class="col-2"> <button mat-button (click)="this.delete_clicked_item_from_playground(this.playground, 'fragment')">Delete clicked fragment</button> </div>
 
             <!-- Possibility to add a little note -->
-            <div mat-dialog-content class="col-10">
+            <div mat-dialog-content class="col-6">
                 <mat-form-field class="input-form" style="--width: 100%;">
                     <input matInput placeholder="Add a note" ngDefaultControl [(ngModel)]='note'>
                     <button type="button" mat-icon-button matSuffix (click)="this.playground.note_array = this.utility.push_to_array(note, this.playground.note_array)">
@@ -150,6 +150,8 @@
                 </mat-form-field>               
             </div>
             <div class="col-2"> <button mat-button (click)="this.delete_clicked_item_from_playground(this.playground, 'note')">Delete clicked note</button> </div>
+            <div class="col-2"> <button mat-button (click)="this.playground.fragments = []; this.playground.note_array = [];">Clear playground</button> </div>
+            <div class="col-2"> <button mat-button (click)="this.playground.fragments = []; this.playground.note_array = [];">Retrieve commentary</button> </div>
   
         </div>
 
@@ -159,16 +161,25 @@
             {{note}}
         </div>
         <!-- For loop to print all the base selected fragments -->
-        <div *ngFor="let fragment of this.playground.fragments" class="playground zlayer" style="--layer: 2;" cdkDrag (click)="this.playground.clicked_fragment = fragment">
+        <!-- Recording the clicked fragment allows us to delete it when pressing the delete button -->
+        <!-- Also, keep track whether we are dragging or not. If we drag, we do not want the click event to fire -->
+        <div *ngFor="let fragment of this.playground.fragments" class="playground zlayer" style="--layer: 2;" cdkDrag #draggable="cdkDrag"
             
-            <b>Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.title}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
+            (cdkDragStarted)="this.playground_dragging = true"
+            (click)="this.handle_fragment_click(fragment)"
+            (click)="this.playground.clicked_fragment = fragment">
             
+            <b [style.color]="fragment.colour">Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.title}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
+
             <div *ngFor="let line of fragment.lines">           
                 <div [innerHTML]="line.line_complete"></div>
             </div> 
         </div>
     </div> <!-- Closes the row -->
 </div>
+
+<!-- (click)="this.handle_fragment_click(fragment, draggable._dragRef.isDragging())"> -->
+
 
 <!-- TEMPLATES -->
 

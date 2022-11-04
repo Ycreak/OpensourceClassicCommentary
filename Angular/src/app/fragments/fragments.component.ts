@@ -30,7 +30,7 @@ export class FragmentsComponent implements OnInit {
 
   // Toggle switches for the HTML columns/modes
   toggle_commentary: boolean = true;
-  toggle_playground: boolean = false;
+  toggle_playground: boolean = true;
   // Booleans for HTML related items
   spinner: boolean = false; // Boolean to toggle the spinner.
   server_down: boolean = true; // to indicate server failure
@@ -55,6 +55,8 @@ export class FragmentsComponent implements OnInit {
   // List of connected columns to allow dragging and dropping between columns
   connected_columns_list: string[] = [];
 
+  playground_dragging: boolean;
+
   constructor(
     private api: ApiService,
     private utility: UtilityService,
@@ -78,7 +80,7 @@ export class FragmentsComponent implements OnInit {
     // this.column2 = new Fragment_column(2, 'ETR', 'Ennius', 'Thyestes', 'Ribbeck');
 
     // And two for the playground
-    this.playground = new Fragment_column(0, 'playground', '', '', '');
+    this.playground = new Fragment_column(0, 'playground', 'Accius', 'Aegisthus', 'Dangel');
     this.request_authors(this.playground)
 
     // let playground2 = new Fragment_column('PLAY2', 'TBA', 'TBA', 'TBA');
@@ -89,7 +91,7 @@ export class FragmentsComponent implements OnInit {
 
     // Request the fragments for the first column
     this.request_fragments(this.column1);
-    // this.request_fragments(this.column2);
+    this.request_fragments(this.playground);
 
   }
 
@@ -270,35 +272,43 @@ export class FragmentsComponent implements OnInit {
    * @author Ycreak
    */
    private handle_fragment_click(fragment: Fragment): void{
-      this.fragment_clicked = true;   
-      this.current_fragment = fragment
-      // Request content from this fragment
-      this.request_fragment_content(fragment)
-      // this.request_fragment_content(this.commentary_column.clicked_fragment)
-
-      // Reset the commentary column and its linked fragments
-      this.commentary_column.linked_fragments_content = [];
-
-      // Now retrieve all linked fragments to show their content in the commentary column
-      for(let i in fragment.linked_fragments){
-        let linked_fragment = this.utility.create_empty_fragment()
-        linked_fragment.fragment_id = fragment.linked_fragments[i]
-        // Request the fragment
-        this.api.get_specific_fragment(linked_fragment).subscribe(
-          data => {
-            linked_fragment = data;
-            // and push it to the commentary column
-            this.commentary_column.linked_fragments_content.push(linked_fragment)
-          });
+      // If we are currently dragging a fragment in the playground, we do not want the 
+      // click even to fire.
+      if(!this.playground_dragging){
+        this.fragment_clicked = true;   
+        this.current_fragment = fragment
+        // Request content from this fragment
+        this.request_fragment_content(fragment)
+        // this.request_fragment_content(this.commentary_column.clicked_fragment)
+  
+        // Reset the commentary column and its linked fragments
+        this.commentary_column.linked_fragments_content = [];
+  
+        // Now retrieve all linked fragments to show their content in the commentary column
+        for(let i in fragment.linked_fragments){
+          let linked_fragment = this.utility.create_empty_fragment()
+          linked_fragment.fragment_id = fragment.linked_fragments[i]
+          // Request the fragment
+          this.api.get_specific_fragment(linked_fragment).subscribe(
+            data => {
+              linked_fragment = data;
+              // and push it to the commentary column
+              this.commentary_column.linked_fragments_content.push(linked_fragment)
+            });
+        }
+        
+        // The next part handles the colouring of clicked and referenced fragments.
+        // First, restore all fragments to their original black colour when a new fragment is clicked
+        this.colour_fragments_black()
+        // Second, colour the clicked fragment
+        fragment.colour = '#3F51B5';
+        // Lastly, colour the linked fragments
+        this.colour_linked_fragments(fragment)
       }
-      
-      // The next part handles the colouring of clicked and referenced fragments.
-      // First, restore all fragments to their original black colour when a new fragment is clicked
-      this.colour_fragments_black()
-      // Second, colour the clicked fragment
-      fragment.colour = '#3F51B5';
-      // Lastly, colour the linked fragments
-      this.colour_linked_fragments(fragment)
+      else {
+        // After a drag, make sure to set the dragging boolean on false again
+        this.playground_dragging = false;
+      }
   }
 
   /**
@@ -312,6 +322,10 @@ export class FragmentsComponent implements OnInit {
         fragment_array[fragment].colour = 'black';
       }       
     }
+
+    for(let i in this.playground.fragments){
+      this.playground.fragments[i].colour = 'black';
+    }   
   }
 
   /**
@@ -441,6 +455,10 @@ export class FragmentsComponent implements OnInit {
         // colour it if found
         if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
       }
+      // Do the same for the playground
+      let corresponding_fragment = this.playground.fragments.find(i => i.fragment_id === linked_fragment_id);
+      // colour it if found
+      if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
     }
   }
 
@@ -461,9 +479,9 @@ export class FragmentsComponent implements OnInit {
    */  
   private test(thing): void{
     console.log('############ TESTING ############')
-    console.log(this.spinner = !this.spinner)
+    // console.log(thing.distance)
     console.log('############ ####### ############')
-
+    // console.log(thing.source.getFreeDragPosition());
   }
 
     /**
@@ -474,9 +492,6 @@ export class FragmentsComponent implements OnInit {
      * TODO: i would like this function to be in Fragment.ts. Is that possible?
      */
      public fragment_has_content(fragment: Fragment){
-
-      console.log(fragment)
-
       if( fragment.differences != '' || 
           fragment.apparatus != '' ||
           fragment.translation != '' ||

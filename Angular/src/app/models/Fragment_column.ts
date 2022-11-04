@@ -4,6 +4,12 @@ import { Title } from './Title';
 
 import { Fragment } from './Fragment';
 
+/**
+ * This class represents a Fragment column, which contains meta data about a column. Most
+ * important within a column is the Fragments object, which is a list containing fragments.
+ * This class is also used to pass to api request functions as a pass by reference object.
+ * It is also used by the playground and the dashboard.
+ */
 export class Fragment_column
 {
     constructor(id: number, name: string, author: string, title: string, editor: string)
