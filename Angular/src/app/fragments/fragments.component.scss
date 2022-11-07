@@ -67,19 +67,9 @@ button.btn span.mat-ripple {
   width: var(--width);
 }
 
-.mat-progress-bar {
-  height: 1vh !important;
-}
-
-.progress-toolbar{
-  height: 1vh !important;
-  background: #3F51B5;
-}
-
 .progress-toolbar-playground{ //TODO: this could use some inheritance
   height: 1vh !important;
   background: white;
-
 }
 
 /* Playground related CSS */

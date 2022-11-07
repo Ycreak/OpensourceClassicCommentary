@@ -9,7 +9,7 @@ body, h1, h2, h3, h4, h5 {
 
 /* HTML Elements */
 .overflow_column {
-    height: 90vh;
+    height: 100vh;
     overflow-y: scroll;
 }
 
@@ -79,4 +79,13 @@ button.btn:hover {
 /* Input form related CSS */
 .input-form-full-width { 
     width: 90%;
+}
+
+.progress-toolbar{
+    height: 1vh !important;
+    background: #3F51B5;
+}
+
+.mat-progress-bar {
+    height: 1vh !important;
 }

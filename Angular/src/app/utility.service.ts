@@ -13,6 +13,8 @@ import { Observable } from 'rxjs';
 })
 export class UtilityService {
 
+  spinner = false;
+
   constructor(
     private snackBar: MatSnackBar,
   ) { }
@@ -123,6 +125,7 @@ export class UtilityService {
       output = err.status + ': ' + err.error;
     }    
     this.open_snackbar(output);
+    this.spinner_off()
   }
 
   /**
@@ -236,7 +239,29 @@ export class UtilityService {
     }
   }  
 
+  /**
+   * Simple function to toggle the spinner
+   * @author Ycreak
+   */
+  public toggle_spinner(): void{
+    this.spinner = !this.spinner;
+  }
 
+  /**
+   * Simple function to toggle the spinner
+   * @author Ycreak
+   */
+  public spinner_on(): void{
+    this.spinner = true;
+  }
+
+  /**
+   * Simple function to toggle the spinner
+   * @author Ycreak
+   */
+     public spinner_off(): void{
+      this.spinner = false;
+  }
 
 }
 

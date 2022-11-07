@@ -17,6 +17,10 @@
     <button mat-button class="btn" routerLink="/fragments">FRAGMENTS</button>
 </mat-toolbar>
 
+<!-- Loading spinner to show data is being retrieved from the server -->
+<mat-toolbar *ngIf="this.utility.spinner === false" class="progress-toolbar"></mat-toolbar>
+<mat-progress-bar *ngIf="this.utility.spinner" mode="query"></mat-progress-bar>
+
 <br>
 
 <!-- TAB GROUPS TO ENTER DATA -->
@@ -123,7 +127,7 @@
       <button mat-stroked-button color="primary" [disabled]="!fragment_form.valid" (click)="request_create_fragment(this.fragment_form)" 
       *ngIf="this.auth_service.current_user_role == 'teacher' || this.auth_service.current_user_role == 'student'">Create Fragment</button>
       <button mat-stroked-button color="primary" [disabled]="!fragment_form.valid" (click)="request_revise_fragment(this.fragment_form)" 
-      *ngIf="this.auth_service.current_user_role == 'teacher' || this.auth_service.current_user_role == 'student'">Revise Fragment</button>
+      *ngIf="this.auth_service.current_user_role == 'teacher' || this.auth_service.current_user_role == 'student'">Save Changes</button>
       <button mat-stroked-button color="warn" [disabled]="!fragment_selected" (click)="request_delete_fragment(this.fragment_form)" 
       *ngIf="this.auth_service.current_user_role == 'teacher'">Delete Fragment</button>
 
@@ -135,7 +139,7 @@
         <mat-tab label="Fragment Meta Data"><br> 
           
           <div class="alert alert-info" role="alert">
-            To create a new fragment, please provide all meta data and press the <b>Create Fragment</b> button. The button wont activate before all meta data fields are filled in correctly. To then add content or make changes to your fragment, select yours using the drop down menus at the top and use the <b>Revise Fragment</b> button. After each revision, please reselect your fragment.
+						To create a new fragment, please provide all meta data and press the <b>Create Fragment</b> button. The button wont activate before all meta data fields are filled in correctly. To then add content or make changes to your fragment, select yours using the drop down menus at the top and use the <b>Save Changes</b> button. <i>Nota bene</i>: the Create Fragment button will only send meta data to the server, truncating lines and other content.
           </div>
           <!-- Every mat tab has its own fragment_form call to keep each entity easily separated and organised -->
 
@@ -185,7 +189,7 @@
               <mat-select required formControlName="status" ngDefaultControl>
                 <mat-option value="Certum">Certum</mat-option>
                 <mat-option value="Incertum">Incertum</mat-option>
-                <mat-option value="Adesp.">Adespota</mat-option>
+                <mat-option value="Adesp.">Adespoton</mat-option>
               </mat-select>
               <mat-label>Line status</mat-label>
             </mat-form-field>
@@ -692,7 +696,7 @@
             <td mat-cell *matCellDef="let element">
               {{element[column]}}
               <!-- Logic container for automatic current user row expansion -->
-              <div *ngIf="element['username'] == this.auth_service.current_user_name">{{expand_row(element)}}</div>
+              <div *ngIf="element['username'] == this.auth_service.current_user_name">{{expand_user_table_row(element)}}</div>
             </td>
           </ng-container>
 

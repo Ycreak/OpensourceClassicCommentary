@@ -60,7 +60,7 @@ export class FragmentsComponent implements OnInit {
   constructor(
     private api: ApiService,
     private utility: UtilityService,
-    public auth_service: AuthService,
+		public auth_service: AuthService,
     public dialog: DialogService,
     private matdialog: MatDialog, 
     ) { }
@@ -72,7 +72,7 @@ export class FragmentsComponent implements OnInit {
     this.current_fragment = this.utility.create_empty_fragment();
 
     // Create templates for the possible fragment columns
-    this.column1 = new Fragment_column(1, 'ETT', 'Ennius', 'Thyestes', 'Warmington');
+    this.column1 = new Fragment_column(1, 'ETT', 'Ennius', 'Thyestes', 'TRF');
     this.commentary_column = new Fragment_column(255, '', '', '', '');
 
     this.request_authors(this.column1)
@@ -92,8 +92,7 @@ export class FragmentsComponent implements OnInit {
     // Request the fragments for the first column
     this.request_fragments(this.column1);
     this.request_fragments(this.playground);
-
-  }
+	}
 
   //   _____  ______ ____  _    _ ______  _____ _______ _____ 
   //  |  __ \|  ____/ __ \| |  | |  ____|/ ____|__   __/ ____|
@@ -202,9 +201,7 @@ export class FragmentsComponent implements OnInit {
 
   /**
    * Given the author, title and editor, request the names of the fragments from the server.
-   * @param author author of the fragment
-   * @param title title of the fragment
-   * @param editor editor of the fragment
+   * @param column that is to be filled with data
    * @author Ycreak
    */
    public request_fragment_names(column: Fragment_column): void {
@@ -322,7 +319,7 @@ export class FragmentsComponent implements OnInit {
         fragment_array[fragment].colour = 'black';
       }       
     }
-
+		// Do the same for the playground
     for(let i in this.playground.fragments){
       this.playground.fragments[i].colour = 'black';
     }   

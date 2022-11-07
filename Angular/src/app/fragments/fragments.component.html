@@ -94,8 +94,22 @@
             <div *ngIf="this.fragment_has_content(this.current_fragment);">
                 <ng-container [ngTemplateOutlet]='commentary_column_template' [ngTemplateOutletContext]="{given_fragment:this.current_fragment}"></ng-container>
             </div>
-            
-            <hr>
+           
+            <!-- <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <b>About this author and title</b>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <h5>About Ennius</h5>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                <h5>About Eumenides</h5>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            </mat-expansion-panel> -->
+
+
+
+            <!-- <hr> -->
 
             <div *ngFor="let linked_fragment of this.commentary_column.linked_fragments_content">
                 <div *ngIf="this.fragment_has_content(linked_fragment);">
@@ -106,7 +120,7 @@
             </div>
 
         </div>
-        <hr>
+        <!-- <hr> -->
     </div> <!-- This closes the first row. Other items will be put under this row -->
     
 

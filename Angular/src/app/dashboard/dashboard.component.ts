@@ -51,7 +51,6 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  spinner_active: boolean = false;
   hide: boolean = true; // Whether to hide passwords in the material form fields
 
   // We only allow the delete fragment button if one is actually selected.
@@ -188,7 +187,7 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     public api: ApiService,
-    private utility: UtilityService,
+    public utility: UtilityService,
     public dialog: DialogService,
     private formBuilder: UntypedFormBuilder,
     public auth_service: AuthService,
@@ -323,7 +322,7 @@ export class DashboardComponent implements OnInit {
    * @param sort object that carries the sorting instructions provided by the Sort event
    * @author CptVickers
    */
-  sort_user_table(sort: Sort): void {
+  public sort_user_table(sort: Sort): void {
     const data = this.user_table_users.data.slice();
     if (!sort.active || sort.direction === '') {
       this.user_table_users.data = data;
@@ -352,7 +351,7 @@ export class DashboardComponent implements OnInit {
    * @param element user table element that needs to be expanded
    * @author CptVickers
    */
-  expand_row(element: any): void {
+  public expand_user_table_row(element: any): void {
     if (element['username']) { // Check if element has the expected attributes
       this.user_table_expanded_element = element
     }
@@ -473,6 +472,7 @@ export class DashboardComponent implements OnInit {
    * @author Ycreak CptVickers
    */
     public retrieve_requested_fragment(column: Fragment_column): void {
+      this.utility.toggle_spinner();
       // Reset the fragment_form to allow a clean insertion of the requested fragment
       this.reset_fragment_form();
       // Create api/fragment object to send to the server      
@@ -488,6 +488,7 @@ export class DashboardComponent implements OnInit {
           column.title = fragment.title;
           column.editor = fragment.editor;
           column.fragment_name = fragment.fragment_name;
+          this.utility.toggle_spinner();
         });
     }
 
@@ -512,6 +513,7 @@ export class DashboardComponent implements OnInit {
 
       this.dialog.open_confirmation_dialog('Are you sure you want to REVISE this fragment?', item_string).subscribe(result => {
         if (result) {
+          this.utility.spinner_on();
 
           this.api.revise_fragment(fragment_form.value).subscribe({
             next: (res) => {
@@ -525,6 +527,7 @@ export class DashboardComponent implements OnInit {
               this.api.request_fragment_names(this.selected_fragment_data);
               // Also, retrieve that revised fragment so we can continue editing!
               this.retrieve_requested_fragment(this.selected_fragment_data);
+              this.utility.spinner_off();
             },
             error: (err) => this.utility.handle_error_message(err)
           });
@@ -540,17 +543,17 @@ export class DashboardComponent implements OnInit {
    * @author Ycreak
    */
   public request_create_fragment(fragment_form: FormGroup): void {
-
     // Update the column information with the possibly updated values from the fragment_form
     this.selected_fragment_data.author = fragment_form.value.author;
     this.selected_fragment_data.title = fragment_form.value.title;
     this.selected_fragment_data.editor = fragment_form.value.editor;
     this.selected_fragment_data.fragment_name = fragment_form.value.fragment_name;
-
+    
     let item_string = fragment_form.value.author + ', ' + fragment_form.value.title + ', ' + fragment_form.value.editor + ': ' + fragment_form.value.fragment_name
-
+    
     this.dialog.open_confirmation_dialog('Are you sure you want to CREATE this fragment?', item_string).subscribe(result => {
       if (result) {
+        this.utility.spinner_on();
         this.api.create_fragment(fragment_form.value).subscribe({
           next: (res) => {
             this.utility.handle_error_message(res);
@@ -563,6 +566,7 @@ export class DashboardComponent implements OnInit {
             this.api.request_fragment_names(this.selected_fragment_data);
             // Also, retrieve that revised fragment so we can continue editing!
             this.retrieve_requested_fragment(this.selected_fragment_data);
+            this.utility.spinner_off();
           },
           error: (err) => this.utility.handle_error_message(err),
         });
@@ -577,10 +581,12 @@ export class DashboardComponent implements OnInit {
    * @author Ycreak
    */
   public request_delete_fragment(fragment_form: FormGroup): void {
+    
     let item_string = fragment_form.value.author + ', ' + fragment_form.value.title + ', ' + fragment_form.value.editor + ': ' + fragment_form.value.fragment_name
-
+    
     this.dialog.open_confirmation_dialog('Are you sure you want to DELETE this fragment?', item_string).subscribe(result => {
       if (result) {
+        this.utility.spinner_on();
         this.api.delete_fragment(fragment_form.value).subscribe({
           next: (res) => {
             this.utility.handle_error_message(res);
@@ -590,6 +596,7 @@ export class DashboardComponent implements OnInit {
             // Lastly, reset the fragment form
             this.reset_fragment_form();
             this.fragment_selected = false;
+            this.utility.spinner_off();
           }, 
           error: (err) => this.utility.handle_error_message(err)
         });
@@ -605,21 +612,21 @@ export class DashboardComponent implements OnInit {
    * @author CptVickers Ycreak
    */
   public request_automatic_fragment_linker(column: Fragment_column): void {
+    this.utility.spinner_on();
+    
     let item_string = column.author + ', ' + column.title;
     let api_data = this.utility.create_empty_fragment(); 
     api_data.author = column.author; api_data.title = column.title;
 
     this.dialog.open_confirmation_dialog('Are you sure you want to LINK fragments from this text?', item_string).subscribe(result => {
       if (result) {
-        this.spinner_active = true;
         this.api.automatic_fragment_linker(api_data).subscribe({
           next: (res) => {
-            this.utility.handle_error_message(res),
-              this.spinner_active = false;
+            this.utility.handle_error_message(res);
+            this.utility.spinner_off();
           },
           error: (err) => {
-            this.utility.handle_error_message(err),
-              this.spinner_active = false;
+            this.utility.handle_error_message(err);
           }
         });
       }
@@ -637,6 +644,7 @@ export class DashboardComponent implements OnInit {
    * @author Ycreak
    */
   public request_users() {
+    this.utility.spinner_on();
     // We will provide the api with the currently logged in user to check its privileges
     let api_data = this.utility.create_empty_user(); 
     api_data.role = this.auth_service.current_user_role; api_data.username = this.auth_service.current_user_name;
@@ -651,6 +659,7 @@ export class DashboardComponent implements OnInit {
         this.user_table_users.paginator = this.paginator;
         this.user_table_users.sort = this.sort;
         this.table_data_loaded = true
+        this.utility.spinner_off();
       },
       error: (err) => this.utility.handle_error_message(err),
     });
@@ -663,6 +672,7 @@ export class DashboardComponent implements OnInit {
    * @author Ycreak
    */
   public request_create_user(form_results) {
+    this.utility.spinner_on();
     this.dialog.open_confirmation_dialog('Are you sure you want to CREATE this user?', form_results.new_user).subscribe(result => {
       if (result) {
         let api_data = this.utility.create_empty_user();
@@ -689,6 +699,7 @@ export class DashboardComponent implements OnInit {
     let item_string = user.username + ', ' + user.role;
     this.dialog.open_confirmation_dialog('Are you sure you want to CHANGE the role of this user?', item_string).subscribe(result => {
       if (result) {
+        this.utility.spinner_on();
         let api_data = this.utility.create_empty_user();
         api_data.username = user.username; api_data.role = user.role
 
@@ -711,9 +722,11 @@ export class DashboardComponent implements OnInit {
    * @author Ycreak
    */
    public request_change_password(form: FormGroup, username: string): void {
-    if (form.value.password1 == form.value.password2) {
-      this.dialog.open_confirmation_dialog("Are you sure you want to CHANGE this user's password", username).subscribe(result => {
-        if (result) {
+     
+     if (form.value.password1 == form.value.password2) {
+       this.dialog.open_confirmation_dialog("Are you sure you want to CHANGE this user's password", username).subscribe(result => {
+         if (result) {
+          this.utility.spinner_on();
           let api_data = this.utility.create_empty_user();
           api_data.username = username; api_data.password = form.value.password1
   
@@ -738,6 +751,7 @@ export class DashboardComponent implements OnInit {
   public request_delete_user(user): void {
     this.dialog.open_confirmation_dialog('Are you sure you want to DELETE this user?', user.username).subscribe(result => {
       if (result) {        
+        this.utility.spinner_on();
         this.api.delete_user(user).subscribe({
           next: (res) => {
             this.utility.handle_error_message(res),

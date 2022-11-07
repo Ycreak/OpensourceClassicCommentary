@@ -40,8 +40,12 @@ export class ApiService {
    * Requests all authors from the database. No parameters needed
    */
   public request_authors(column: Fragment_column): void {
+    this.utility.spinner_on();
     this.get_authors().subscribe({
-      next: (data) => column.retrieved_authors = data,
+      next: (data) => {
+        column.retrieved_authors = data;
+        this.utility.spinner_off();
+      },
       error: (err) => this.utility.handle_error_message(err)
     });
   }
@@ -53,9 +57,11 @@ export class ApiService {
    * @author Ycreak
    */
    public request_titles(column: Fragment_column): void {    
+    this.utility.spinner_on()
     this.get_titles(column.author).subscribe(
       data => {
         column.retrieved_titles = data;
+        this.utility.spinner_off()
       }
     );
   }
@@ -67,9 +73,11 @@ export class ApiService {
    * @author Ycreak
    */
      public request_editors(column: Fragment_column): void {
+      this.utility.spinner_on()
       this.get_editors(column.author, column.title).subscribe(
         data => {
           column.retrieved_editors = data;
+          this.utility.spinner_off()
         }
       );
     }
@@ -80,6 +88,7 @@ export class ApiService {
    * @author Ycreak
    */
    public request_fragment_names(column: Fragment_column): void {
+    this.utility.spinner_on()    
     // Create api/fragment object to send to the server
     let api_data = this.utility.create_empty_fragment();
     api_data.author = column.author; 
@@ -89,6 +98,7 @@ export class ApiService {
     this.get_fragment_names(api_data).subscribe(
       data => {
         column.retrieved_fragment_names = data.sort(this.utility.sort_array_numerically);
+        this.utility.spinner_off()
       });
   }
 
@@ -98,9 +108,11 @@ export class ApiService {
    * @author Ycreak CptVickers
    */
    public request_specific_fragment(column: Fragment_column): void {
+    this.utility.spinner_off()
     this.get_specific_fragment(column).subscribe(
       fragment => {
         column.fragments = [fragment]
+        this.utility.spinner_off()
       });
   }
 
