@@ -38,17 +38,6 @@ class Fragment_handler:
             list: of all unique authors in the database
         """        
         
-        # temp = ['Ennius', 'Livius Andronicus', 'Naevius', 'Pacuvius', 'Lucus', 'Accius', 'Gijs']
-
-        # data = retrieve_data_from_db(self.frag_db, {}, [])
-        # for x in data:
-        #     if x['author'] not in temp:
-            
-        #         print(x.id)
-        #         print(x['author'])
-        
-        # exit(0)
-        
         data = retrieve_data_from_db(self.frag_db, {}, ['author'])
         return sorted(set([x['author'] for x in data]))
 
@@ -111,10 +100,6 @@ class Fragment_handler:
     def retrieve_fragment_content(self, fragment):
                 
         doc = self.frag_db[fragment.fragment_id]
-
-        print('#############################')
-        print(doc)
-        print('#############################')
 
         for content in ['translation', 'apparatus', 'differences', 'context', 'commentary', 'reconstruction']:
             setattr(fragment, content, doc[content])
@@ -257,21 +242,6 @@ class Fragment_handler:
         self.frag_db.delete(doc)
 
         return make_response('Succesfully deleted fragment!', 200)
-
-    # def set_fragment_lock(self, fragment) -> make_response:
-    #     """Locks the fragment so that it cannot be edited
-
-    #     Args:
-    #         fragment (object): fragment object with the id and lock status to be changed
-
-    #     Returns:
-    #         flask response: confirmation of lock status change
-    #     """
-    #     doc = self.frag_db[fragment.id_]
-    #     doc['lock'] = fragment.lock
-    #     doc_id, doc_rev = self.frag_db.save(doc)
-
-    #     return make_response('Fragment lock status set', 200)
 
     def automatic_fragment_linker(self, given_fragment):
         '''
