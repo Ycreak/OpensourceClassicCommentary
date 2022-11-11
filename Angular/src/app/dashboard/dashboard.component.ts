@@ -1,6 +1,7 @@
 // Library imports
 import { Component, OnInit, Inject } from '@angular/core';
 import { ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog'; // Library used for interacting with the page
 import { Observable, delay } from 'rxjs';
 import { UntypedFormBuilder, FormControl, FormGroup, FormArray } from '@angular/forms';
 import { UntypedFormControl, UntypedFormGroup, Validators, UntypedFormArray } from '@angular/forms';
@@ -17,6 +18,7 @@ import { ApiService } from '../api.service';
 import { UtilityService } from '../utility.service';
 import { AuthService } from '../auth/auth.service';
 import { DialogService } from '../services/dialog.service';
+import { LoginComponent } from '../login/login.component'
 
 // Model imports 
 import { Fragment } from '../models/Fragment';
@@ -191,6 +193,7 @@ export class DashboardComponent implements OnInit {
     public dialog: DialogService,
     private formBuilder: UntypedFormBuilder,
     public auth_service: AuthService,
+    private matdialog: MatDialog,
   ) {
 
     // Assign the data to the data source for the table to render
@@ -238,6 +241,17 @@ export class DashboardComponent implements OnInit {
     console.log(this.fragment_form.value)
 
   }
+
+  /**
+   * Function to handle the login dialog //TODO Also used in dashboard. Move to utils?
+   * @author Ycreak
+   */
+      public login(): void{
+      const dialogRef = this.matdialog.open(LoginComponent, {
+        height: '60vh',
+        width: '40vw',
+      });
+    }
 
   /**
    * This function requests a wysiwyg dialog to handle data updating to the fragment_form.
