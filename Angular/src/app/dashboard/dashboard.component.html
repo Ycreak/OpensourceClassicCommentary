@@ -15,7 +15,18 @@
     <!-- <button mat-button class="btn" (click)="this.api.request_authors(this.selected_fragment_data)">RELOAD AUTHORS</button> -->
     <button mat-button class="btn" *ngIf="this.auth_service.current_user_role == 'teacher'" (click)="test('Navbar')">TEST</button>
     <button mat-button class="btn" routerLink="/fragments">FRAGMENTS</button>
+    <button mat-button class="btn" [matMenuTriggerFor]="menu">MENU</button>
 </mat-toolbar>
+
+<!-- Navigation bar menu -->
+<mat-menu #menu="matMenu">
+  <!-- <button routerLink="/text" mat-menu-item>Text OSCC</button> -->
+  <!-- <button routerLink="/scansion" mat-menu-item>Scansion</button> -->
+  <button (click)="login()" mat-menu-item>Login</button>
+  <a href="https://github.com/Ycreak/OpensourceClassicCommentary/" target='_blank' mat-menu-item>Documentation</a>  
+  <button (click)="this.dialog.OpenAbout()" mat-menu-item>About</button>
+  <button mat-menu-item>V22.10.19</button>
+</mat-menu>
 
 <!-- Loading spinner to show data is being retrieved from the server -->
 <mat-toolbar *ngIf="this.utility.spinner === false" class="progress-toolbar"></mat-toolbar>

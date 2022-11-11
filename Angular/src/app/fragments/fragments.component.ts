@@ -460,7 +460,7 @@ export class FragmentsComponent implements OnInit {
   }
 
   /**
-   * Function to handle the login dialog
+   * Function to handle the login dialog //TODO Also used in dashboard. Move to utils?
    * @author Ycreak
    */
   public login(): void{
