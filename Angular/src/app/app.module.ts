@@ -87,6 +87,7 @@ import { IKeyboardLayouts, keyboardLayouts, MAT_KEYBOARD_LAYOUTS, MatKeyboardMod
 // import { AngularFireModule } from '@angular/fire';
 import { environment } from '../environments/environment';
 import { ScansionComponent } from './scansion/scansion.component';
+import { TestsComponent } from './tests/tests.component';
 
 // Virtual Keyboard Layout
 const customLayouts: IKeyboardLayouts = {
@@ -114,7 +115,8 @@ const appRoutes: Routes = [
   {path: '', component: FragmentsComponent},
   {path: 'fragments', component: FragmentsComponent},
   // {path: 'text', component: TextComponent},
-  {path: 'scansion', component: ScansionComponent},
+  {path: 'tests', component: TestsComponent, canActivate: [AuthGuard]},
+  {path: 'scansion', component: ScansionComponent, canActivate: [AuthGuard]},
   {path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
   {path: '**', redirectTo: ''}
 ]
@@ -132,6 +134,7 @@ const appRoutes: Routes = [
     ConfirmationDialog,
     WYSIWYGDialog,
     SettingsDialog,
+    TestsComponent,
     // DialogContentComponent,
     ],
   imports: [

@@ -150,7 +150,7 @@ export class ApiService {
   public get_bibliography_from_author(author): Observable<JSON> {
     return this.http.get<JSON>(this.FlaskURL + `get_bibliography_from_author?author=${author}`);
   }
-  public  get_bibliography_from_id(_id): Observable<JSON> {
+  public get_bibliography_from_id(_id): Observable<JSON> {
     return this.http.get<JSON>(this.FlaskURL + `get_bibliography_from_id?_id=${_id}`);
   }
   public get_titles(author: string): Observable<Title[]> {
@@ -186,13 +186,13 @@ export class ApiService {
   public get_fragment_names(fragment: Fragment): Observable<string[]> {
     return this.http.post<string[]>(this.FlaskURL + `fragments_names`, fragment, { observe: 'body', responseType: 'json'});
   }  
-  public create_fragment(fragment: FormGroup): Observable<any> {
+  public create_fragment(fragment: any): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `create_fragment`, fragment, { observe: 'response', responseType: 'text' as 'json' });
   } 
-  public revise_fragment(fragment: FormGroup): Observable<any> {
+  public revise_fragment(fragment: any): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `revise_fragment`, fragment, { observe: 'response', responseType: 'text' as 'json'  });
   }
-  public delete_fragment(fragment: FormGroup): Observable<any> {
+  public delete_fragment(fragment: any): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `delete_fragment`, fragment, { observe: 'response', responseType: 'text' as 'json'  });
   }
   public automatic_fragment_linker(fragment: Fragment): Observable<any> {
