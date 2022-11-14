@@ -43,9 +43,10 @@ import { SafeHtmlPipe } from './pipes/safeHtml.pipe';
 
 import { ConfirmationDialog } from './services/dialog.service';
 import { WYSIWYGDialog } from './services/dialog.service';
+import { SettingsDialog } from './services/dialog.service';
 
 // import { Multiplayer } from './fragments/fragments.component';
-
+// Directives
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorInterceptor } from './api.service';
@@ -85,7 +86,7 @@ import { IKeyboardLayouts, keyboardLayouts, MAT_KEYBOARD_LAYOUTS, MatKeyboardMod
 // Allows communication with firebase
 // import { AngularFireModule } from '@angular/fire';
 import { environment } from '../environments/environment';
-// import { ScansionComponent } from './scansion/scansion.component';
+import { ScansionComponent } from './scansion/scansion.component';
 
 // Virtual Keyboard Layout
 const customLayouts: IKeyboardLayouts = {
@@ -113,7 +114,7 @@ const appRoutes: Routes = [
   {path: '', component: FragmentsComponent},
   {path: 'fragments', component: FragmentsComponent},
   // {path: 'text', component: TextComponent},
-  // {path: 'scansion', component: ScansionComponent},
+  {path: 'scansion', component: ScansionComponent},
   {path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
   {path: '**', redirectTo: ''}
 ]
@@ -126,12 +127,13 @@ const appRoutes: Routes = [
     DashboardComponent,
     LoginComponent,
     // TextComponent,
-    // ScansionComponent,
+    ScansionComponent,
     // Multiplayer,
     ConfirmationDialog,
     WYSIWYGDialog,
+    SettingsDialog,
     // DialogContentComponent,
-  ],
+    ],
   imports: [
     BrowserModule,
     AppRoutingModule,

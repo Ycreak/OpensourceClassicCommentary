@@ -10,27 +10,32 @@
 
 <!-- Simple toolbar with all the different buttons and the title -->
 <mat-toolbar color="primary">
-    <h3 class='h3-title'>Neural Networks 4 Latin Metre</h3>
-    <span class="example-spacer"></span>
+    <h3 class='h3-title'>Latin Scansion with Neural Networks</h3>
     <!-- <button mat-button class="btn" routerLink="/fragments">OSCC</button> -->
+    <span class="spacer"></span>
+    <!-- <button mat-button class="btn" (click)="this.api.request_authors(this.selected_fragment_data)">RELOAD AUTHORS</button> -->
+    <button mat-button class="btn" routerLink="/fragments">FRAGMENTS</button>
+  <!-- <mat-checkbox class="btn" [(ngModel)]="syllabified" ngDefaultControl>SYLLABIFIED</mat-checkbox> -->
 
-  <mat-checkbox class="btn" [(ngModel)]="syllabified" ngDefaultControl>SYLLABIFIED</mat-checkbox>
-
-  <mat-radio-group [(ngModel)]="network_type" ngDefaultControl>
+  <!-- <mat-radio-group [(ngModel)]="network_type" ngDefaultControl>
     <mat-radio-button value="FLAIR">FLAIR</mat-radio-button>
     <mat-radio-button value="LSTM">LSTM</mat-radio-button>
     <mat-radio-button value="CRF">CRF</mat-radio-button>
-  </mat-radio-group>
+  </mat-radio-group> -->
     
 
 </mat-toolbar>
-<mat-progress-bar *ngIf="this.spinner" mode="indeterminate"></mat-progress-bar>
+
+<!-- Loading spinner to show data is being retrieved from the server -->
+<mat-toolbar *ngIf="this.utility.spinner === false" class="progress-toolbar"></mat-toolbar>
+<mat-progress-bar *ngIf="this.utility.spinner" mode="query"></mat-progress-bar>
+
 
 <br>
 
 
 
-<div class="center"><p><b>Input your lines below, separated by a cariage return (enter).</b></p></div>
+<div class="center"><p><b>Input your lines below, separated by a carriage return (enter).</b></p></div>
 
 <form [formGroup]="line_form" class="lines-form">
 
@@ -39,15 +44,17 @@
   </mat-form-field>
 </form>
 
-<button mat-raised-button color="primary" class='lines-form' (click)="scan_lines(line_form.value.lines)">Scan with {{network_type}} network</button>
+<button mat-raised-button color="primary" class='lines-form' (click)="scan_lines(line_form.value.lines)">Scan lines</button>
 
 <hr>
 
-<div class="center"><p><b>The confidence of the network for the given label is denoted by the float in the last row (score between 0 and 1).</b></p></div>
+<!-- <div class="center"><p><b>The confidence of the network for the given label is denoted by the float in the last row (score between 0 and 1).</b></p></div> -->
 <div class="center"><p><b>After syllabifying your lines, the neural network scanned them as follows:</b></p></div>
 
 <div class='div-padding-left-right' *ngFor="let sentence of this.neural_data">
   <hr>
+  <i>{{sentence.original_line}}</i>
+  
   <mat-grid-list cols="{{sentence.length}}" rowHeight="1em">
     <mat-grid-tile
         *ngFor="let syllable of sentence.syllables"
@@ -72,7 +79,7 @@
     </mat-grid-tile>
   </mat-grid-list>  
 
-  <mat-grid-list cols="{{sentence.length}}" rowHeight="1em">
+  <!-- <mat-grid-list cols="{{sentence.length}}" rowHeight="1em">
     <mat-grid-tile
         *ngFor="let score of sentence.score"
         
@@ -82,157 +89,6 @@
       <b>{{score}}</b>
       
     </mat-grid-tile>
-  </mat-grid-list>  
+  </mat-grid-list>   -->
 </div>
  
-<br>
-
-
-<!-- <div> -->
-  <!-- <div class="container">
-      <div class="row">
-          <div class="col-sm">
-
-              <div mat-dialog-content>
-                  <mat-form-field class="input-form">
-                      <input matInput placeholder="Select Aeneid Book" [(ngModel)]='book_number'>
-                  </mat-form-field>               
-              </div>
-          </div>
-          <div class="col-sm">
-              <div mat-dialog-content>
-                  <mat-form-field class="input-form">
-                      <input matInput placeholder="Select Aeneid Line" [(ngModel)]='line_number'>
-                  </mat-form-field>               
-              </div>
-          </div>
-          <div class="col-sm">
-              <button type="button" (click)="Request_neural_data(book_number, line_number)">
-                  start
-              </button>
-          </div>
-      </div>
-    </div> -->
-
-  <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-
-  <!-- <mat-grid-list cols="20" rowHeight="1em">
-    <mat-grid-tile
-        *ngFor="let syllable of this.syllables"
-        
-        [colspan]="1"
-        [rowspan]="2"
-        [style.background]="'#DDDDDD'">
-      <b>{{syllable}}</b>
-      
-    </mat-grid-tile>
-  </mat-grid-list>  
-
-  <mat-grid-list cols="20" rowHeight="1em">
-      <mat-grid-tile
-          *ngFor="let label of this.expected; let i=index"
-          
-          [colspan]="1"
-          [rowspan]="2"
-          [style.background]="'lightgreen'">
-        {{label}}      
-      </mat-grid-tile>
-    </mat-grid-list>
-
-    <mat-grid-list cols="20" rowHeight="1em">
-      <mat-grid-tile
-          *ngFor="let label of this.neural_data.nn_predicted; let i=index"
-          
-          [colspan]="1"
-          [rowspan]="2"
-          [style.background]="this.neural_data.correct_list_nn[i]">
-        {{label}}      
-      </mat-grid-tile>
-    </mat-grid-list>
-
-    <mat-grid-list cols="20" rowHeight="1em">
-      <mat-grid-tile
-          *ngFor="let label of this.neural_data.seqlab_predicted; let i=index"
-          
-          [colspan]="1"
-          [rowspan]="2"
-          [style.background]="this.neural_data.correct_list_seqlab[i]">
-        {{label}}      
-      </mat-grid-tile>
-    </mat-grid-list>
-    
-    <mat-grid-list cols="20" rowHeight="1em">
-      <mat-grid-tile
-          *ngFor="let label of this.neural_data.hmm_predicted; let i=index"
-          
-          [colspan]="1"
-          [rowspan]="2"
-          [style.background]="this.neural_data.correct_list_hmm[i]">
-        {{label}}      
-      </mat-grid-tile>
-    </mat-grid-list> -->
-
-  <!-- <br> -->
-
-    <!-- <mat-grid-list cols="20" rowHeight="1em">
-      <mat-grid-tile
-          *ngFor="let expectation of this.expected; let i=index"
-          
-          [colspan]="1"
-          [rowspan]="2"
-          [style.background]="'lightgreen'">
-        {{expectation}}
-        
-      </mat-grid-tile>
-    </mat-grid-list>  
-
-    <mat-grid-list cols="20" rowHeight="1em">
-      <mat-grid-tile
-          *ngFor="let prediction of this.predicted; let i=index"
-          
-          [colspan]="1"
-          [rowspan]="2"
-          [style.background]="this.correct_list[i]">
-        {{prediction}}      
-      </mat-grid-tile>
-    </mat-grid-list>
-
-    <br>
-    <mat-grid-list cols="20" rowHeight="1em">
-      <mat-grid-tile
-          *ngFor="let confidence of this.confidence; let i=index"
-          
-          [colspan]="1"
-          [rowspan]="2"
-          [style.background]="this.correct_list[i]">
-        {{confidence/100}}      
-      </mat-grid-tile>
-    </mat-grid-list> -->
-
-
-
-    <!-- <br>
-
-  <br>
-
-  <p>First syllables are shown, then expected scansion and predicted scansion from the different models.</p>
-
-  <table>
-      <tr>
-        <th>Abbr.</th>
-        <th>Model</th>
-      </tr>
-      <tr>
-        <td>NN</td>
-        <td>Sequential Neural Network</td>
-      </tr>
-      <tr>
-        <td>SeqLab</td>
-        <td>Sequence Labeling Network</td>
-      </tr>
-      <tr>
-          <td>HMM</td>
-          <td>Hidden Markov Chain</td>
-      </tr>
-  </table>  -->
-<!-- </div> -->
