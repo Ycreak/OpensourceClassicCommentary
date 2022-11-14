@@ -12,11 +12,11 @@
     <span style="width: fit-content; transform: translateY(-1px)">
         <h3 class='h3-title'>Open Source Classics Commentary (Staging)</h3></span>
     <span class="spacer"></span>
-    <button mat-button class="btn" (click)="test('thing')" *ngIf="this.auth_service.current_user_role == 'teacher'"> TEST</button>
-    
+    <button mat-button class="btn" (click)="test('8')" *ngIf="this.auth_service.current_user_role == 'teacher'"> TEST</button>
+
     <!-- Routing buttons -->
     <button mat-button class="btn" routerLink="/dashboard" *ngIf="this.auth_service.is_logged_in">DASHBOARD</button>
-    
+
     <button mat-button class="btn" (click)="add_column()"> ADD FRAGMENT COLUMN</button>
 
     <!-- Column toggle buttons -->
@@ -28,16 +28,17 @@
 <!-- Navigation bar menu -->
 <mat-menu #menu="matMenu">
     <!-- <button routerLink="/text" mat-menu-item>Text OSCC</button> -->
-    <!-- <button routerLink="/scansion" mat-menu-item>Scansion</button> -->
     <button (click)="login()" mat-menu-item>Login</button>
-    <a href="https://github.com/Ycreak/OpensourceClassicCommentary/" target='_blank' mat-menu-item>Documentation</a>  
+    <button routerLink="/scansion" mat-menu-item *ngIf="this.auth_service.is_logged_in">Scansion</button>
+    <a href="https://github.com/Ycreak/OpensourceClassicCommentary/" target='_blank' mat-menu-item>Documentation</a>
+    <button (click)="open_settings()" mat-menu-item>Settings</button>
     <button (click)="this.dialog.OpenAbout()" mat-menu-item>About</button>
-    <button mat-menu-item>V22.10.19</button>
+    <button mat-menu-item>V22.11.09</button>
 </mat-menu>
 
 <!-- Loading spinner to show data is being retrieved from the server -->
-<mat-toolbar *ngIf="this.spinner === false" class="progress-toolbar"></mat-toolbar>
-<mat-progress-bar *ngIf="this.spinner" mode="query"></mat-progress-bar>
+<mat-toolbar *ngIf="this.utility.spinner === false" class="progress-toolbar"></mat-toolbar>
+<mat-progress-bar *ngIf="this.utility.spinner" mode="query"></mat-progress-bar>
 
 <!-- Secondary toolbar to manage columns -->
 <mat-toolbar class="button-toolbar">    
@@ -126,8 +127,8 @@
 
 
     <!-- Loading spinner to show data is being retrieved from the server -->
-    <mat-toolbar *ngIf="this.spinner === false" class="progress-toolbar-playground"></mat-toolbar>
-    <mat-progress-bar *ngIf="this.spinner" mode="query"></mat-progress-bar>
+    <mat-toolbar *ngIf="this.utility.spinner === false" class="progress-toolbar-playground"></mat-toolbar>
+    <mat-progress-bar *ngIf="this.utility.spinner" mode="query"></mat-progress-bar>
     <!-- Row to show the playground -->
     <hr>
 
@@ -165,7 +166,7 @@
             </div>
             <div class="col-2"> <button mat-button (click)="this.delete_clicked_item_from_playground(this.playground, 'note')">Delete clicked note</button> </div>
             <div class="col-2"> <button mat-button (click)="this.playground.fragments = []; this.playground.note_array = [];">Clear playground</button> </div>
-            <div class="col-2"> <button mat-button (click)="this.playground.fragments = []; this.playground.note_array = [];">Retrieve commentary</button> </div>
+            <!-- <div class="col-2"> <button mat-button (click)="this.playground.fragments = []; this.playground.note_array = [];">Retrieve commentary</button> </div> -->
   
         </div>
 
@@ -180,7 +181,7 @@
         <div *ngFor="let fragment of this.playground.fragments" class="playground zlayer" style="--layer: 2;" cdkDrag #draggable="cdkDrag"
             
             (cdkDragStarted)="this.playground_dragging = true"
-            (click)="this.handle_fragment_click(fragment)"
+            (click)="this.handle_fragment_click(fragment, true)"
             (click)="this.playground.clicked_fragment = fragment">
             
             <b [style.color]="fragment.colour">Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.title}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
@@ -207,10 +208,14 @@
     <!-- Fragments loop to display all fragments of the chosen edition of reference -->
     <div class="row">
         <!-- Columns are connected via the cdkDropListConnectedTo property. -->
-        <div cdkDropList id="{{given_column.column_id}}" [cdkDropListData]="given_column.fragments" 
-            [cdkDropListConnectedTo]="connected_columns_list" (cdkDropListDropped)="this.utility.drop($event)">
+        <div cdkDropList id="{{given_column.column_id}}" 
+            [cdkDropListData]="given_column.fragments" 
+            [cdkDropListConnectedTo]="connected_columns_list" 
+            (cdkDropListDropped)="this.utility.drop($event)">
             <div *ngFor="let fragment of given_column.fragments"> 
-                <div class="fragment-box" (click)="handle_fragment_click(fragment)" cdkDrag>
+                <div class="fragment-box" (click)="handle_fragment_click(fragment)" cdkDrag
+                    [cdkDragDisabled]="this.oscc_settings.dragging_disabled"
+                    [attr.id]="fragment.fragment_id">
                     <b [style.color]="fragment.colour">Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.title}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
                     <div *ngFor="let fragment_line of fragment.lines">      
                         <div [innerHTML]="fragment_line.line_complete | safeHtml"></div>  <!--safeHtml to allow whitespaces             -->

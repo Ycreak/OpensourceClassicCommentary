@@ -13,7 +13,7 @@ import { Observable } from 'rxjs';
 })
 export class UtilityService {
 
-  spinner = false;
+  spinner: boolean = false;
 
   constructor(
     private snackBar: MatSnackBar,

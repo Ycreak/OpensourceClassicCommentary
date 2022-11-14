@@ -54,6 +54,24 @@ export class DialogService {
     });  
     return dialogRef.afterClosed(); // Returns observable.
   }
+
+  /**
+   * This function handles the settings dialog. Settings are passed in the data object.
+   * @param settings oscc_settings object with all settings that can be changed
+   * @returns Observable with the oscc_settings object if successful
+   * @author Ycreak
+   * TODO: have a close button that discards changes?
+   */
+  public open_settings_dialog(settings): Observable<string>{
+    const dialogRef = this.dialog.open(SettingsDialog, {
+      disableClose: true, //FIXME: this is a hack. clicking outside should return the data to the user
+      width: 'auto',
+      height: 'auto',
+      data: settings
+    });  
+    return dialogRef.afterClosed(); // Returns observable.
+  }
+
 }
 
 // Simple class to open the about information written in said html file.
@@ -105,14 +123,18 @@ export class WYSIWYGDialog {
     this.dialogRef.close({data:this.local_data});
   }
 
+  save() {
+    this.dialogRef.close({ data:this.local_data});
+  }
+}
 
-
-
-    save() {
-      this.dialogRef.close({ data:this.local_data});
-    }
-
-    // onNoClick(): void {
-    //   this.dialogRef.close();
-    // }
+@Component({
+  selector: 'settings-dialog',
+  templateUrl: '../dialogs/settings-dialog.html',
+})
+export class SettingsDialog {
+  constructor(
+    public dialogRef: MatDialogRef<SettingsDialog>,
+    @Inject(MAT_DIALOG_DATA) public data) { 
+  }
 }

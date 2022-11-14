@@ -245,7 +245,6 @@ export class DashboardComponent implements OnInit {
    */
   public test(thing): void {
     console.log(this.fragment_form.value)
-
   }
 
   /**

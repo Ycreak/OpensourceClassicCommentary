@@ -1,0 +1,18 @@
+<!-- This dialog is used to change system settings. It receives an oscc_settings object called data,
+  which can be changed using the toggles defined below. -->
+<div mat-dialog-content>
+    
+  <h2>OSCC Settings</h2>
+  
+  <br>
+  <p>
+    <mat-slide-toggle [(ngModel)]="data.dragging_disabled">Disable fragment dragging</mat-slide-toggle>
+  </p>
+  <br>
+  <p>
+    <mat-slide-toggle [(ngModel)]="data.auto_scroll_linked_fragments">Auto scroll to linked fragments</mat-slide-toggle>
+  </p>
+</div>
+
+<br><br><br>
+<button mat-button [mat-dialog-close]="data">Accept</button>
