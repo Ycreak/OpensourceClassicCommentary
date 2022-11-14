@@ -78,7 +78,7 @@ export class FragmentsComponent implements OnInit {
   playground_dragging: boolean;
 
   constructor(
-    private api: ApiService,
+    public api: ApiService,
     public utility: UtilityService,
 		public auth_service: AuthService,
     public dialog: DialogService,
