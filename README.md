@@ -235,4 +235,6 @@ Checklist before building:
 + Check if the correct API URL has been used
 + Check if the version number is updated
 + Check if the build is Staging or Stable
++ Run the Server Communication Tests in the testing component (localhost:4200/tests)
++ Run the unit tests with ng test
 
