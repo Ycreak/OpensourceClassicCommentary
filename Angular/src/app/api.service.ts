@@ -35,9 +35,12 @@ export class ApiService {
   // URL for production
   // FlaskURL: String = 'https://oscc.nolden.biz:5003/'; // For production (https)                                 
   // URL for staging
-  // FlaskURL: String = 'https://oscc.nolden.biz:5004/'; // For production (https)                                 
+  // FlaskURL: String = 'https://oscc.nolden.biz:5004/'; // For staging (https)                                 
   // URL for development
   FlaskURL: String = 'http://localhost:5003/'; // For deployment (http! not https)                                 
+
+  // NeuralURL: String = 'http://localhost:5002/'; 
+  NeuralURL: String = 'https://oscc.nolden.biz:5002/'; 
 
 
   /**
@@ -225,6 +228,10 @@ export class ApiService {
     return this.http.post<any>(this.FlaskURL + `delete_bibliography_entry`, fragment, { observe: 'response', responseType: 'text' as 'json'  });
   }
 
+  // Neural networks part
+  public scan_lines(lines: object): Observable<any> {
+    return this.http.post<any>(this.NeuralURL + `scan_lines`, lines, { observe: 'body', responseType: 'json'});
+  }
 
 }
 

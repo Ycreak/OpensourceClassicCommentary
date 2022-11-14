@@ -40,6 +40,12 @@ export class FragmentsComponent implements OnInit {
   @ViewChild('CallBookSelect') CallBookSelect: TemplateRef<any>;
   @ViewChild('CallAbout') CallAbout: TemplateRef<any>;
 
+  //TODO: this should be system wide
+  oscc_settings = { 
+    dragging_disabled : false, 
+    auto_scroll_linked_fragments : false,
+  }; 
+
   // Toggle switches for the HTML columns/modes
   toggle_commentary: boolean = true;
   toggle_playground: boolean = true;
@@ -56,6 +62,8 @@ export class FragmentsComponent implements OnInit {
   // text_column: Text_column;
   column1: Fragment_column;
   column2: Fragment_column;
+  column3: Fragment_column;
+  column4: Fragment_column;
 
   playground: Fragment_column;
 
@@ -70,8 +78,8 @@ export class FragmentsComponent implements OnInit {
   playground_dragging: boolean;
 
   constructor(
-    public api: ApiService,
-    private utility: UtilityService,
+    private api: ApiService,
+    public utility: UtilityService,
 		public auth_service: AuthService,
     public dialog: DialogService,
     private matdialog: MatDialog, 
@@ -89,8 +97,6 @@ export class FragmentsComponent implements OnInit {
 
     this.request_authors(this.column1)
 
-    // this.column2 = new Fragment_column(2, 'ETR', 'Ennius', 'Thyestes', 'Ribbeck');
-
     // And two for the playground
     this.playground = new Fragment_column(0, 'playground', 'Accius', 'Aegisthus', 'Dangel');
     this.request_authors(this.playground)
@@ -99,12 +105,11 @@ export class FragmentsComponent implements OnInit {
     
     // Push these to the columns array for later use in the HTML component
     this.columns.push(this.column1)
-    // this.columns.push(this.column2)
-
+    
     // Request the fragments for the first column
     this.request_fragments(this.column1);
-    this.request_fragments(this.playground);
-	}
+
+  }
 
   //   _____  ______ ____  _    _ ______  _____ _______ _____ 
   //  |  __ \|  ____/ __ \| |  | |  ____|/ ____|__   __/ ____|
@@ -119,12 +124,12 @@ export class FragmentsComponent implements OnInit {
    * @author Ycreak
    */
    private request_authors(column: Fragment_column): void{
-    this.toggle_spinner();
+    this.utility.spinner_on();
     this.api.get_authors().subscribe(data => {
       this.server_down = false; //FIXME: needs to be handled properly
       // Enter this retrieved data in the correct column
       column.retrieved_authors = data;
-      this.toggle_spinner(); 
+      this.utility.spinner_off(); 
     });
   }
 
@@ -134,11 +139,11 @@ export class FragmentsComponent implements OnInit {
    * @author Bors & Ycreak
    */
   private request_titles(column: Fragment_column): void{
-    this.toggle_spinner();
+    this.utility.spinner_on();
     this.api.get_titles(column.author).subscribe(
       data => {
         column.retrieved_titles = data; 
-        this.toggle_spinner();
+        this.utility.spinner_off(); 
       }
     );      
   }
@@ -149,11 +154,11 @@ export class FragmentsComponent implements OnInit {
    * @author Bors & Ycreak
    */
   private request_editors(column: Fragment_column): void{
-    this.toggle_spinner();
+    this.utility.spinner_on();
     this.api.get_editors(column.author, column.title).subscribe(
       data => {
         column.retrieved_editors = data;
-        this.toggle_spinner(); 
+        this.utility.spinner_off(); 
       }
     );
   }
@@ -167,11 +172,11 @@ export class FragmentsComponent implements OnInit {
    * @author Bors & Ycreak
    */
   private request_fragments(column: Fragment_column): void{
-    this.toggle_spinner();
-
+    this.utility.spinner_on();
+    
     let api_data = this.utility.create_empty_fragment();
     api_data.author = column.author; api_data.title = column.title; api_data.editor = column.editor;
-
+    
     this.api.get_fragments(api_data).subscribe(
       fragment_list => { 
         // Format the data just how we want it
@@ -190,7 +195,7 @@ export class FragmentsComponent implements OnInit {
           // In the case of the playground, we want to add the new edition to our playground
           column.fragments = column.fragments.concat(fragment_list);
         }
-        this.toggle_spinner();
+        this.utility.spinner_off(); 
       }
     );  
   }
@@ -204,10 +209,11 @@ export class FragmentsComponent implements OnInit {
    * @author Bors & Ycreak
    */
   private request_fragment_content(fragment: Fragment): void{   
-    this.toggle_spinner();
-    this.api.get_fragment_content(fragment).subscribe(data => {     
-      this.add_content_to_current_fragment(fragment, data);
-      this.toggle_spinner();
+    this.utility.spinner_on();
+    this.api.get_fragment_content(fragment).subscribe(
+      data => {     
+        this.add_content_to_current_fragment(fragment, data);
+        this.utility.spinner_off(); 
     });
   }
 
@@ -217,7 +223,7 @@ export class FragmentsComponent implements OnInit {
    * @author Ycreak
    */
    public request_fragment_names(column: Fragment_column): void {
-    this.toggle_spinner();
+    this.utility.spinner_on();
     // Create api/fragment object to send to the server
     let api_data = this.utility.create_empty_fragment();
     api_data.author = column.author; api_data.title = column.title; api_data.editor = column.editor;
@@ -225,7 +231,7 @@ export class FragmentsComponent implements OnInit {
     this.api.get_fragment_names(api_data).subscribe(
       data => {
         column.fragment_names = data.sort(this.utility.sort_array_numerically);
-        this.toggle_spinner();
+        this.utility.spinner_off(); 
       });
   }
 
@@ -280,10 +286,11 @@ export class FragmentsComponent implements OnInit {
    * @param fragment selected by the user
    * @author Ycreak
    */
-   private handle_fragment_click(fragment: Fragment): void{
+   private handle_fragment_click(fragment: Fragment, from_playground: boolean = false): void{
       // If we are currently dragging a fragment in the playground, we do not want the 
       // click even to fire.
       if(!this.playground_dragging){
+
         this.fragment_clicked = true;   
         this.current_fragment = fragment
         // Request content from this fragment
@@ -303,6 +310,7 @@ export class FragmentsComponent implements OnInit {
               linked_fragment = data;
               // and push it to the commentary column
               this.commentary_column.linked_fragments_content.push(linked_fragment)
+              this.utility.spinner_off();
             });
         }
         
@@ -313,11 +321,16 @@ export class FragmentsComponent implements OnInit {
         fragment.colour = '#3F51B5';
         // Lastly, colour the linked fragments
         this.colour_linked_fragments(fragment)
+
+        if(!from_playground && this.oscc_settings.auto_scroll_linked_fragments){ // Only scroll when not in playground
+          this.scroll_linked_fragments(fragment)
+        }
       }
       else {
         // After a drag, make sure to set the dragging boolean on false again
         this.playground_dragging = false;
       }
+      // this.utility.spinner_off();
   }
 
   /**
@@ -447,6 +460,25 @@ export class FragmentsComponent implements OnInit {
     }
   }
 
+  public scroll_linked_fragments(fragment: Fragment){
+
+    for(let i in fragment.linked_fragments){
+      let linked_fragment_id = fragment.linked_fragments[i] 
+
+      // Now, for each fragment that is linked, try to find it in the other columns
+      for(let j in this.columns){
+        // in each column, take a look in the fragments array to find the linked fragment
+        let corresponding_fragment = this.columns[j].fragments.find(i => i.fragment_id === linked_fragment_id);
+        // move to this fragment if found
+        if(corresponding_fragment) {
+          // Scroll to the corresponding element in the found column
+          const element = document.getElementById(corresponding_fragment.fragment_id);
+          element.scrollIntoView({block: "nearest", behavior: "smooth"}); 
+        }
+      }    
+    }
+  }
+
   /**
    * Given the current fragment, colour the linked fragments in the other columns
    * @param fragment of which the linked fragments should be coloured
@@ -483,14 +515,46 @@ export class FragmentsComponent implements OnInit {
   }
 
   /**
+   * Function to handle the settings dialog. Will save changes via the oscc_settings object
+   * @author Ycreak
+   */
+  public open_settings(): void {
+    this.dialog.open_settings_dialog(this.oscc_settings).subscribe(result => {
+      console.log(result['dragging_disabled'])
+      this.oscc_settings.dragging_disabled = result['dragging_disabled']
+      this.oscc_settings.auto_scroll_linked_fragments = result['auto_scroll_linked_fragments']
+    });
+  }
+
+  /**
    * Test function
    * @author Ycreak
    */  
   private test(thing): void{
     console.log('############ TESTING ############')
-    // console.log(thing.distance)
+
+    console.log(this.oscc_settings.dragging_disabled)
+
+    // this.column2 = new Fragment_column(2, 'ETR', 'Ennius', 'Thyestes', 'Ribbeck');
+    // this.column3 = new Fragment_column(3, 'ETJ', 'Ennius', 'Thyestes', 'Jocelyn');
+    // this.column4 = new Fragment_column(4, 'ETV', 'Ennius', 'Thyestes', 'Vahlen');    
+    
+    // this.columns.push(this.column2)
+    // this.columns.push(this.column3)
+    // this.columns.push(this.column4)
+
+    // this.request_authors(this.column2)
+    // this.request_authors(this.column3)
+    // this.request_authors(this.column4)
+
+
+    // this.request_fragments(this.column2);
+    // this.request_fragments(this.column3);
+    // this.request_fragments(this.column4);
+
+    // this.update_connected_columns_list();
+
     console.log('############ ####### ############')
-    // console.log(thing.source.getFreeDragPosition());
   }
 
     /**
