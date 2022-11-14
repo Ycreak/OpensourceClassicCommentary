@@ -6,7 +6,7 @@ import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/c
 import { FormGroup } from '@angular/forms';
 
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, defaultIfEmpty, repeatWhen, tap } from 'rxjs/operators';
 
 import { UtilityService } from './utility.service';
 
@@ -23,11 +23,14 @@ import { User } from './models/User';
   providedIn: 'root'
 })
 export class ApiService {
+  network_status: boolean; // Indicates if server is reachable or not
 
   constructor(
     private http: HttpClient,
     private utility: UtilityService,
-    ) { }
+    ) {
+      this.network_status = true; // Assumed online until HttpErrorResponse is received.
+     }
 
   // URL for production
   // FlaskURL: String = 'https://oscc.nolden.biz:5003/'; // For production (https)                                 
@@ -35,6 +38,17 @@ export class ApiService {
   // FlaskURL: String = 'https://oscc.nolden.biz:5004/'; // For production (https)                                 
   // URL for development
   FlaskURL: String = 'http://localhost:5003/'; // For deployment (http! not https)                                 
+
+
+  /**
+   * Getter function for public property network_status
+   * @return {boolean} network_status - Status indicating whether or not the server is
+   *                                    successfully returning requests
+   * @author CptVickers
+   */
+  public get_network_status(): boolean {
+    return this.network_status;
+  }
 
   /**
    * Requests all authors from the database. No parameters needed
@@ -217,10 +231,22 @@ export class ApiService {
 // Interceptor for HTTP errors
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor { 
+  constructor(private api: ApiService) {}
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
-      catchError((error: HttpErrorResponse) => {
-        return throwError(error);
+      tap({
+        next: (res) => {
+          this.api.network_status = true; // Set network status to true on successful response
+        },
+        error: (err) => {
+          if (err instanceof HttpErrorResponse){
+            if (err.status == 0){ // If server is unavailable
+              this.api.network_status = false; // Set network status to false on unsuccessful response
+            }
+          }
+          return throwError(() => (err));
+        }
+        
       })
     );
   }

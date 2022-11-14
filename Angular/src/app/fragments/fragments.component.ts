@@ -2,6 +2,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog'; // Library used for interacting with the page
 import { TemplateRef, ViewChild } from '@angular/core'; // To allow dialog windows within the current window
+import { trigger, transition, style, animate } from '@angular/animations';
 
 // Component imports
 import { LoginComponent } from '../login/login.component'
@@ -22,6 +23,17 @@ import { Text_column } from '../models/Text_column';
   templateUrl: './fragments.component.html',
   styleUrls: ['./fragments.component.scss'],
   encapsulation: ViewEncapsulation.None,
+  animations: [
+    trigger('fadeSlideInOut', [
+      transition(':enter', [
+          style({ opacity: 0, transform: 'translateY(10px)' }),
+          animate('500ms', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+      transition(':leave', [
+          animate('500ms', style({ opacity: 0, transform: 'translateY(10px)' })),
+      ]),
+  ])
+  ],
 })
 export class FragmentsComponent implements OnInit {
   // Initiate the possibility to call dialogs
@@ -58,7 +70,7 @@ export class FragmentsComponent implements OnInit {
   playground_dragging: boolean;
 
   constructor(
-    private api: ApiService,
+    public api: ApiService,
     private utility: UtilityService,
 		public auth_service: AuthService,
     public dialog: DialogService,
