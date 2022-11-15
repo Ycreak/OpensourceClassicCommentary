@@ -36,9 +36,6 @@ import { Text_column } from '../models/Text_column';
   ],
 })
 export class FragmentsComponent implements OnInit {
-  // Initiate the possibility to call dialogs
-  @ViewChild('CallBookSelect') CallBookSelect: TemplateRef<any>;
-  @ViewChild('CallAbout') CallAbout: TemplateRef<any>;
 
   //TODO: this should be system wide
   oscc_settings = { 
@@ -656,14 +653,7 @@ export class FragmentsComponent implements OnInit {
                         
       if(data[item] != ''){ fragment[item] = data[item]}
     }
-}
+  }
 
 }
-
-// Simple component to open the about information written in said html file.
-@Component({
-  selector: 'about-dialog',
-  templateUrl: '../dialogs/about-dialog.html',
-})
-export class ShowAboutDialog {}
 
