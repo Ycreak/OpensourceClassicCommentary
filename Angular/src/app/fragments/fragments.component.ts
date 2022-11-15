@@ -41,6 +41,8 @@ export class FragmentsComponent implements OnInit {
   oscc_settings = { 
     dragging_disabled : false, 
     auto_scroll_linked_fragments : false,
+    show_headers : true, 
+    show_line_names : true, 
   }; 
 
   // Toggle switches for the HTML columns/modes
@@ -592,6 +594,7 @@ export class FragmentsComponent implements OnInit {
         let line_number = current_fragment.lines[item].line_number;
         let line_text = current_fragment.lines[item].text;
         line_text = this.utility.convert_whitespace_encoding(line_text)
+        //FIXME: line_complete deprecated
         let line_complete = '<p>' + line_number + ': ' + line_text + '</p>';
         // Now push the updated lines to the correct place
         let updated_lines = {

@@ -97,22 +97,7 @@
                 <ng-container [ngTemplateOutlet]='commentary_column_template' [ngTemplateOutletContext]="{given_fragment:this.current_fragment}"></ng-container>
             </div>
            
-            <!-- <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        <b>About this author and title</b>
-                    </mat-panel-title>
-                </mat-expansion-panel-header>
-                <h5>About Ennius</h5>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                <h5>About Eumenides</h5>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-            </mat-expansion-panel> -->
-
-
-
             <!-- <hr> -->
-
             <div *ngFor="let linked_fragment of this.commentary_column.linked_fragments_content">
                 <div *ngIf="this.fragment_has_content(linked_fragment);">
                     <h5>Linked commentary from {{linked_fragment.author}}, {{linked_fragment.title}}, 
@@ -185,17 +170,18 @@
             (click)="this.handle_fragment_click(fragment, true)"
             (click)="this.playground.clicked_fragment = fragment">
             
-            <b [style.color]="fragment.colour">Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.title}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
+            <div *ngIf="this.oscc_settings.show_headers"><b [style.color]="fragment.colour">Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.title}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i></div>
 
-            <div *ngFor="let line of fragment.lines">           
-                <div [innerHTML]="line.line_complete"></div>
+            <div *ngFor="let fragment_line of fragment.lines">           
+                <p *ngIf="this.oscc_settings.show_line_names; else no_line_names_playground" [innerHTML]="fragment_line.line_number + ': ' + fragment_line.text | safeHtml"></p>
+                <ng-template #no_line_names_playground>
+                    <!--safeHtml to allow whitespaces made by spans-->
+                    <p [innerHTML]="fragment_line.text | safeHtml"></p>
+                </ng-template>
             </div> 
         </div>
     </div> <!-- Closes the row -->
 </div>
-
-<!-- (click)="this.handle_fragment_click(fragment, draggable._dragRef.isDragging())"> -->
-
 
 <!-- TEMPLATES -->
 
@@ -217,9 +203,13 @@
                 <div class="fragment-box" (click)="handle_fragment_click(fragment)" cdkDrag
                     [cdkDragDisabled]="this.oscc_settings.dragging_disabled"
                     [attr.id]="fragment.fragment_id">
-                    <b [style.color]="fragment.colour">Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.title}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
+                    <div *ngIf="this.oscc_settings.show_headers"><b [style.color]="fragment.colour">Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.title}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i></div>
                     <div *ngFor="let fragment_line of fragment.lines">      
-                        <div [innerHTML]="fragment_line.line_complete | safeHtml"></div>  <!--safeHtml to allow whitespaces             -->
+                        <p *ngIf="this.oscc_settings.show_line_names; else no_line_names" [innerHTML]="fragment_line.line_number + ': ' + fragment_line.text | safeHtml"></p>
+                        <ng-template #no_line_names>
+                            <!--safeHtml to allow whitespaces made by spans-->
+                            <p [innerHTML]="fragment_line.text | safeHtml"></p>
+                        </ng-template>
                     </div>  
                 </div>
             </div>
