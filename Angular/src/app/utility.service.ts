@@ -194,7 +194,7 @@ export class UtilityService {
    * @returns user object that is completely empty
    * @author Ycreak
    */
-   public create_empty_user(): User {
+  public create_empty_user(): User {
     return new User('', '', '');
   }
 
@@ -210,7 +210,13 @@ export class UtilityService {
     return array;
   }
 
-  public PopArray(array){
+  /**
+   * Function to pop an item from an array
+   * @param array to be popped
+   * @returns new array with item popped
+   * @author Ycreak
+   */
+  public pop_array(array){
     let _ = array.pop();
     return array;
   }
