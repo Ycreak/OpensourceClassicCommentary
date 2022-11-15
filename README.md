@@ -231,10 +231,9 @@ If the program is ran from a subdomain, do not forget to specify said domain. Fo
 The production can now be found in Angular/dist and is ready for deployment on an HTML server.
 
 Checklist before building:
-+ Check if AuthService does not login automatically
-+ Check if the correct API URL has been used
 + Check if the version number is updated
 + Check if the build is Staging or Stable
++ Check if the correct API URL has been used
 + Run the Server Communication Tests in the testing component (localhost:4200/tests)
 + Run the unit tests with ng test
-
++ Check if AuthService does not login automatically
