@@ -14,23 +14,23 @@ class Fragment:
             self.fragment_id = received_fragment['fragment_id']
 
         if "fragment_name" in received_fragment: 
-            assert isinstance(received_fragment['fragment_name'], str)
+            # assert isinstance(received_fragment['fragment_name'], str)
             self.fragment_name = received_fragment['fragment_name']
             
         if "author" in received_fragment: 
-            assert isinstance(received_fragment['author'], str)
+            # assert isinstance(received_fragment['author'], str)
             self.author = received_fragment['author']
 
         if "title" in received_fragment: 
-            assert isinstance(received_fragment['title'], str)
+            # assert isinstance(received_fragment['title'], str)
             self.title = received_fragment['title']
             
         if "editor" in received_fragment: 
-            assert isinstance(received_fragment['editor'], str)
+            # assert isinstance(received_fragment['editor'], str)
             self.editor = received_fragment['editor']
             
         if "status" in received_fragment: 
-            assert isinstance(received_fragment['status'], str)
+            # assert isinstance(received_fragment['status'], str)
             self.status = received_fragment['status']
 
         if "lock" in received_fragment: 
