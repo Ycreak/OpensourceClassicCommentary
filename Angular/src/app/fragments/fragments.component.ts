@@ -3,6 +3,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog'; // Library used for interacting with the page
 import { TemplateRef, ViewChild } from '@angular/core'; // To allow dialog windows within the current window
 import { trigger, transition, style, animate } from '@angular/animations';
+import { fromEvent, Observable, Subscription } from "rxjs";
 
 // Component imports
 import { LoginComponent } from '../login/login.component'
@@ -17,6 +18,7 @@ import { AuthService } from '../auth/auth.service';
 import { Fragment } from '../models/Fragment';
 import { Fragment_column } from '../models/Fragment_column';
 import { Text_column } from '../models/Text_column';
+import * as internal from 'stream';
 
 @Component({
   selector: 'app-fragments',
@@ -37,6 +39,9 @@ import { Text_column } from '../models/Text_column';
 })
 export class FragmentsComponent implements OnInit {
 
+  window_resize_observable$: Observable<Event>
+  window_resize_subscription$: Subscription
+
   //TODO: this should be system wide
   oscc_settings = { 
     dragging_disabled : false, 
@@ -47,7 +52,7 @@ export class FragmentsComponent implements OnInit {
 
   // Toggle switches for the HTML columns/modes
   toggle_commentary: boolean = true;
-  toggle_playground: boolean = true;
+  toggle_playground: boolean = false;
   // Booleans for HTML related items
   spinner: boolean = false; // Boolean to toggle the spinner.
   server_down: boolean = true; // to indicate server failure
@@ -76,6 +81,8 @@ export class FragmentsComponent implements OnInit {
 
   playground_dragging: boolean;
 
+  window_size: number;
+
   constructor(
     public api: ApiService,
     public utility: UtilityService,
@@ -85,29 +92,37 @@ export class FragmentsComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
+    // Retrieve the window_size to correctly set the navbar size
+    this.window_size = this.retrieve_viewport_size();    
 
     // Create an empty current_fragment variable to be filled whenever the user clicks a fragment
     // Its data is shown in the commentary column and not used anywhere else
     this.current_fragment = this.utility.create_empty_fragment();
+    this.commentary_column = new Fragment_column(255, '', '', '', '');
 
     // Create templates for the possible fragment columns
     this.column1 = new Fragment_column(1, 'ETT', 'Ennius', 'Thyestes', 'TRF');
-    this.commentary_column = new Fragment_column(255, '', '', '', '');
-
-    this.request_authors(this.column1)
-
-    // And two for the playground
-    this.playground = new Fragment_column(0, 'playground', 'Accius', 'Aegisthus', 'Dangel');
-    this.request_authors(this.playground)
-
-    // let playground2 = new Fragment_column('PLAY2', 'TBA', 'TBA', 'TBA');
-    
     // Push these to the columns array for later use in the HTML component
     this.columns.push(this.column1)
-    
     // Request the fragments for the first column
     this.request_fragments(this.column1);
+    this.request_authors(this.column1)
+    
+    // And for the playground
+    this.playground = new Fragment_column(0, 'playground', 'Accius', 'Aegisthus', 'Dangel');
+    this.request_authors(this.playground)
+    // this.request_fragments(this.playground);
 
+    // Create an observable to check for the changing of window size
+    this.window_resize_observable$ = fromEvent(window, 'resize')
+    this.window_resize_subscription$ = this.window_resize_observable$.subscribe( evt => {
+      // Find the window size. If it is too small, we will disable to playground to save space on the navbar
+      this.window_size = this.retrieve_viewport_size();    
+    })
+  }
+
+  ngOnDestroy() {
+    this.window_resize_subscription$.unsubscribe()
   }
 
   //   _____  ______ ____  _    _ ______  _____ _______ _____ 
@@ -235,59 +250,12 @@ export class FragmentsComponent implements OnInit {
   }
 
   /**
-   * Function to handle what happens when an author is selected in HTML. 
-   * Request for titles given author made to the api via request_titles().
-   * @param column current column in which the action is happening
-   * @param author selected by the user
-   * @author Ycreak
-   */
-  private handle_author_selection(column: Fragment_column, author: string): void{
-    // Set the author for the given column
-    column.author = author; 
-    this.request_titles(column)    
-  }
-
-  /**
-   * Function to handle what happens when a title is selected in HTML.
-   * Request for editors given author and title made to the api via request_editors()
-   * @param column current column in which the action is happening
-   * @param title selected by the user
-   * @author Ycreak
-   */
-  private handle_title_selection(column: Fragment_column, title: string): void{
-    // Set the title for the given column
-    column.title = title; 
-    this.request_editors(column)
-  }
-
-  /**
-   * Function to handle what happens when an editor is selected in HTML.
-   * Request for fragments given author, title and editor made to the api via request_fragments()
-   * @param column current column in which the action is happening
-   * @param editor selected by the user
-   * @author Ycreak
-   */
-  private handle_editor_selection(column: Fragment_column, editor: string): void{
-    // Set the editor for the given column
-    column.editor = editor; 
-    // Only retrieve fragments on editor selection if we are not in the playground
-    if(column.name != 'playground'){ 
-      this.request_fragments(column);
-    }
-    else{
-      // request a list of fragment names
-      this.request_fragment_names(column)
-    }
-  }
-
-  /**
    * Function to handle what happens when a fragment is selected in HTML.
    * @param fragment selected by the user
    * @author Ycreak
    */
    private handle_fragment_click(fragment: Fragment, from_playground: boolean = false): void{
-      // If we are currently dragging a fragment in the playground, we do not want the 
-      // click even to fire.
+      // If we are currently dragging a fragment in the playground, we do not want the click even to fire.
       if(!this.playground_dragging){
 
         this.fragment_clicked = true;   
@@ -329,7 +297,6 @@ export class FragmentsComponent implements OnInit {
         // After a drag, make sure to set the dragging boolean on false again
         this.playground_dragging = false;
       }
-      // this.utility.spinner_off();
   }
 
   /**
@@ -525,14 +492,46 @@ export class FragmentsComponent implements OnInit {
     });
   }
 
+  private get_offset( el ) {
+    var _x = 0;
+    var _y = 0;
+    while( el && !isNaN( el.offsetLeft ) && !isNaN( el.offsetTop ) ) {
+        _x += el.offsetLeft - el.scrollLeft;
+        _y += el.offsetTop - el.scrollTop;
+        el = el.offsetParent;
+    }
+    return { top: _y, left: _x };
+}
+
   /**
    * Test function
    * @author Ycreak
    */  
   private test(thing): void{
     console.log('############ TESTING ############')
+    
+    console.log(window.innerWidth);
+    
+    // this.utility.spinner_on()
+    // console.log('coord X: ' + (thing.layerX - thing.offsetX))
+    // console.log('coord Y: ' + (thing.layerY - thing.offsetY))
 
-    console.log(this.oscc_settings.dragging_disabled)
+    // for (let i in this.playground.fragments){
+    //   let fragment_id = this.playground.fragments[i].fragment_id
+    //   let element = document.getElementById(fragment_id)
+    //   let rect = element.getBoundingClientRect();
+    //   console.log(fragment_id, rect.top, rect.right, rect.bottom, rect.left);
+    // }
+
+    
+
+    // let box = document.getElementById('233cabdf0f5144d78b82849c8aada6da')
+    // box.style.top = '358px';
+    // box.style.left = '808px';
+
+    // let x = this.get_offset( document.getElementById(thing) ); 
+
+    // console.log(box)
 
     // this.column2 = new Fragment_column(2, 'ETR', 'Ennius', 'Thyestes', 'Ribbeck');
     // this.column3 = new Fragment_column(3, 'ETJ', 'Ennius', 'Thyestes', 'Jocelyn');
@@ -594,13 +593,10 @@ export class FragmentsComponent implements OnInit {
         let line_number = current_fragment.lines[item].line_number;
         let line_text = current_fragment.lines[item].text;
         line_text = this.utility.convert_whitespace_encoding(line_text)
-        //FIXME: line_complete deprecated
-        let line_complete = '<p>' + line_number + ': ' + line_text + '</p>';
         // Now push the updated lines to the correct place
         let updated_lines = {
           'line_number': line_number,
           'text': line_text,
-          'line_complete': line_complete,
         }
         current_fragment.lines[item] = updated_lines;
       }
@@ -655,6 +651,19 @@ export class FragmentsComponent implements OnInit {
                       'reconstruction', 'context', 'bibliography']) {
                         
       if(data[item] != ''){ fragment[item] = data[item]}
+    }
+  }
+
+  /**
+   * Simple function that retrieves the viewport size
+   * @returns viewport size as integer
+   * @author Ycreak
+   */
+   private retrieve_viewport_size(): number {
+    try {
+      return window.innerWidth
+    } catch (exceptionVar) {
+      return 1100 // default-ish size
     }
   }
 

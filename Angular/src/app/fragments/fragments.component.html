@@ -7,34 +7,36 @@
 <!-- Maybe we should get a local stylesheet? -->
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 
+<!-- <h3 *ngIf="this.window_size < 475" style="text-align: center;">This page looks better in landscape mode</h3> -->
+
 <!-- Navigation bar -->
 <mat-toolbar color="primary">
     <span style="width: fit-content; transform: translateY(-1px)">
-        <h3 class='h3-title'>Open Source Classics Commentary (Staging)</h3></span>
+        <h3 *ngIf="this.window_size > 725; else small_title" class='h3-title'>Open Source Classics Commentary</h3>
+    </span>
+
+    <ng-template #small_title>
+        <h3 class='h3-title'>OSCC</h3>
+    </ng-template>
+
     <span class="spacer"></span>
-    <button mat-button class="btn" (click)="test('8')" *ngIf="this.auth_service.current_user_role == 'teacher'"> TEST</button>
-
-    <!-- Routing buttons -->
-    <button mat-button class="btn" routerLink="/dashboard" *ngIf="this.auth_service.is_logged_in">DASHBOARD</button>
-
-    <button mat-button class="btn" (click)="add_column()"> ADD FRAGMENT COLUMN</button>
-
-    <!-- Column toggle buttons -->
+    
     <mat-checkbox class="btn" ngDefaultControl [(ngModel)]="toggle_commentary">COMMENTARY</mat-checkbox>
     <mat-checkbox class="btn" ngDefaultControl [(ngModel)]="toggle_playground">PLAYGROUND</mat-checkbox>
+    
     <button mat-button class="btn" [matMenuTriggerFor]="menu">MENU</button>
 </mat-toolbar>
 
 <!-- Navigation bar menu -->
 <mat-menu #menu="matMenu">
-    <!-- <button routerLink="/text" mat-menu-item>Text OSCC</button> -->
     <button (click)="login()" mat-menu-item>Login</button>
-    <button routerLink="/scansion" mat-menu-item *ngIf="this.auth_service.is_logged_in">Scansion</button>
+    <button mat-menu-item routerLink="/dashboard" *ngIf="this.auth_service.is_logged_in">Dashboard</button>
+    <button mat-menu-item routerLink="/scansion" *ngIf="this.auth_service.is_logged_in">Scansion</button>
     <a href="https://github.com/Ycreak/OpensourceClassicCommentary/" target='_blank' mat-menu-item>Documentation</a>
     <button (click)="open_settings()" mat-menu-item>Settings</button>
     <button routerLink="/tests" mat-menu-item *ngIf="this.auth_service.is_logged_in">Unit Tests</button>
     <button (click)="this.dialog.open_about_dialog()" mat-menu-item>About</button>
-    <button mat-menu-item>V22.11.09</button>
+    <div mat-menu-item>V22.11.16</div>
 </mat-menu>
 
 <!-- Loading spinner to show data is being retrieved from the server -->
@@ -43,6 +45,12 @@
 
 <!-- Secondary toolbar to manage columns -->
 <mat-toolbar class="button-toolbar">    
+    <div>
+        <button mat-button (click)="add_column()">
+            Add column
+        </button>  
+        | <!-- Separator-->
+    </div>
     <div *ngFor="let column_to_display of this.columns">
         <!-- Checkbox to hide and show columns -->
         <mat-checkbox class="btn checkbox-button-toolbar" ngDefaultControl [(ngModel)]="column_to_display.visible">{{column_to_display.author}}-{{column_to_display.title}}-{{column_to_display.editor}}</mat-checkbox>
@@ -263,7 +271,8 @@
         <mat-label>Author</mat-label>
         <mat-select>
             <mat-option *ngFor="let author of column.retrieved_authors" [value]="author"
-                (click)="this.handle_author_selection(column, author.name)">
+                (click)="column.author = author.name"
+                (click)="this.request_titles(column)">
                 {{ author.name }} 
             </mat-option>
         </mat-select>
@@ -277,7 +286,8 @@
         <mat-label>Text</mat-label>
         <mat-select>
             <mat-option *ngFor="let title of column.retrieved_titles" [value]="title" 
-            (click)="this.handle_title_selection(column, title.name)">
+                (click)="column.title = title.name"
+                (click)="this.request_editors(column)">
                 {{ title.name }}                
             </mat-option>
         </mat-select>
@@ -289,12 +299,28 @@
 <ng-template #select_editor let-column="column" let-hint="hint">   
     <mat-form-field class="selection-form">
         <mat-label>Edition</mat-label>
-        <mat-select>
-            <mat-option *ngFor="let editor of column.retrieved_editors" [value]="editor"
-                (click)="this.handle_editor_selection(column, editor.name)">
-                {{ editor.name }}                     
+        <mat-select *ngIf="column.name != 'playground'; else playground_editor_select">
+            <mat-option 
+              *ngFor="let editor of column.retrieved_editors" 
+              [value]="editor"
+              (click)="column.editor = editor.name"
+              (click)="this.request_fragments(column)">
+              {{ editor.name }}                     
             </mat-option>
         </mat-select>
+        <!-- For playground, retrieve fragment names instead if directly loading an edition -->
+        <ng-template #playground_editor_select>
+          <mat-select>
+            <mat-option 
+              *ngFor="let editor of column.retrieved_editors" 
+              [value]="editor"
+              (click)="column.editor = editor.name"
+              (click)="this.request_fragment_names(column)">
+              {{ editor.name }}                     
+            </mat-option>
+          </mat-select>
+        </ng-template>
+
         <mat-hint>{{hint}}</mat-hint>
     </mat-form-field>
 </ng-template>
