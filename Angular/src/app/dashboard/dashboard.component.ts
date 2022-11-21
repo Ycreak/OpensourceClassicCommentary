@@ -214,8 +214,8 @@ export class DashboardComponent implements OnInit {
     this.request_users()
     
     // We will store all dashboard data in the following data object
-    this.selected_fragment_data = new Fragment_column(0, '', '', '', '');
-    this.linked_fragment_data = new Fragment_column(0, '', '', '', '');
+    this.selected_fragment_data = new Fragment_column('0', '', '', '', '');
+    this.linked_fragment_data = new Fragment_column('0', '', '', '', '');
 
     
     this.api.request_authors(this.selected_fragment_data);
@@ -599,7 +599,7 @@ export class DashboardComponent implements OnInit {
           next: (res) => {
             this.utility.handle_error_message(res);
             // Reset the fragment_data object and start anew.
-            this.selected_fragment_data = new Fragment_column(0, '', '', '', '');
+            this.selected_fragment_data = new Fragment_column('0', '', '', '', '');
             this.api.request_authors(this.selected_fragment_data)
             // Lastly, reset the fragment form
             this.reset_fragment_form();

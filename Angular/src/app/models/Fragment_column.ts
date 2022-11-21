@@ -12,7 +12,7 @@ import { Fragment } from './Fragment';
  */
 export class Fragment_column
 {
-    constructor(id: number, name: string, author: string, title: string, editor: string)
+    constructor(id: string, name: string, author: string, title: string, editor: string)
     {
         this.column_id = id
         this.name = name;
@@ -26,7 +26,7 @@ export class Fragment_column
         this.retrieved_editors = [];
     }
 
-    column_id : number;
+    column_id : string; // has to be a string for cdkDrag
     name : string;
 
     author : string;
@@ -48,6 +48,9 @@ export class Fragment_column
     linked_fragments_content : Fragment[] = []; //FIXME: needs to be different from Fragment.linked_fragments
 
     clicked_note : string;
+
+    // Boolean to keep track whether a column has seen an edit
+    edited : boolean = false;
 
     // Whether to show or hide the column
     visible: boolean = true;

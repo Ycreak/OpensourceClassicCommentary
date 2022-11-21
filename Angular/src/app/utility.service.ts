@@ -156,6 +156,9 @@ export class UtilityService {
    * @author Ycreak
    */
   public drop(event: CdkDragDrop<string[]>) {
+    
+    // console.log(event)
+    
     if (event.container === event.previousContainer) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {

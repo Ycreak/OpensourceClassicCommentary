@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog'; // Library used for intera
 import { TemplateRef, ViewChild } from '@angular/core'; // To allow dialog windows within the current window
 import { trigger, transition, style, animate } from '@angular/animations';
 import { fromEvent, Observable, Subscription } from "rxjs";
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 // Component imports
 import { LoginComponent } from '../login/login.component'
@@ -83,8 +84,6 @@ export class FragmentsComponent implements OnInit {
   // Variable to keep track of the window width, used to scale the site for small displays
   window_size: number;
 
-  luukie : boolean = false;
-
   constructor(
     public api: ApiService,
     public utility: UtilityService,
@@ -100,10 +99,10 @@ export class FragmentsComponent implements OnInit {
     // Create an empty current_fragment variable to be filled whenever the user clicks a fragment
     // Its data is shown in the commentary column and not used anywhere else
     this.current_fragment = this.utility.create_empty_fragment();
-    this.commentary_column = new Fragment_column(255, '', '', '', '');
+    this.commentary_column = new Fragment_column('255', '', '', '', '');
 
     // Create templates for the possible fragment columns
-    this.column1 = new Fragment_column(1, 'ETT', 'Ennius', 'Thyestes', 'Ribbeck');
+    this.column1 = new Fragment_column('1', 'ETT', 'Ennius', 'Thyestes', 'Ribbeck');
     // Push these to the columns array for later use in the HTML component
     this.columns.push(this.column1)
     // Request the fragments for the first column
@@ -111,7 +110,7 @@ export class FragmentsComponent implements OnInit {
     this.request_authors(this.column1)
     
     // And for the playground
-    this.playground = new Fragment_column(0, 'playground', 'Accius', 'Aegisthus', 'Dangel');
+    this.playground = new Fragment_column('0', 'playground', 'Accius', 'Aegisthus', 'Dangel');
     this.request_authors(this.playground)
     // this.request_fragments(this.playground);
 
@@ -121,6 +120,13 @@ export class FragmentsComponent implements OnInit {
       // Find the window size. If it is too small, we will disable to playground to save space on the navbar
       this.window_size = this.retrieve_viewport_size();    
     })
+
+    this.column2 = new Fragment_column('2', 'ETR', 'Ennius', 'Thyestes', 'TRF');
+    this.columns.push(this.column2);
+    this.request_authors(this.column2);
+    this.request_fragments(this.column2);
+    this.update_connected_columns_list();
+
   }
 
   ngOnDestroy() {
@@ -336,7 +342,7 @@ export class FragmentsComponent implements OnInit {
     this.column_identifier += 1;
 
     // Create new column with the appropriate name. TODO: create better identifiers than simple integers
-    let new_fragment_column = new Fragment_column(this.column_identifier,'', '', '', '');
+    let new_fragment_column = new Fragment_column(String(this.column_identifier),'', '', '', '');
     this.columns.push(new_fragment_column)    
     this.request_authors(new_fragment_column);
     // And update the connected columns list
@@ -474,10 +480,27 @@ export class FragmentsComponent implements OnInit {
    */
   public open_settings(): void {
     this.dialog.open_settings_dialog(this.oscc_settings).subscribe(result => {
-      console.log(result['dragging_disabled'])
+      // console.log(result['dragging_disabled'])
       this.oscc_settings.dragging_disabled = result['dragging_disabled']
       this.oscc_settings.auto_scroll_linked_fragments = result['auto_scroll_linked_fragments']
     });
+  }
+
+  /**
+   * We keep track of dragging and dropping within or between columns. If an edit occurs,
+   * we set the corresponding fragment_column boolean 'edited' to true.
+   * @param event containing the column identifiers of those that are edited
+   * @author Ycreak
+   * @TODO: what type is 'event'? CdkDragDrop<string[]> does not allow reading.
+   */
+  private track_edited_columns(event: any): void {    
+    // First, find the corresponding columns in this.columns using the column_id that is used
+    // in this.connected_columns_list used by cdkDrag (and encoded in event)
+    let edited_column_1 = this.columns.find(i => i.column_id === event.container.id);
+    let edited_column_2 = this.columns.find(i => i.column_id === event.previousContainer.id);
+    // Next, set the edited flag to true.
+    edited_column_1.edited = true;
+    edited_column_2.edited = true;
   }
 
   /**
@@ -486,9 +509,10 @@ export class FragmentsComponent implements OnInit {
    */  
   private test(thing): void{
     console.log('############ TESTING ############')
-    this.luukie = !this.luukie;
     // console.log(this.commentary_column);
-    
+
+    // console.log(this.columns[thing.container.id])
+    // console.log(this.columns[thing.previousContainer.id])
     // this.utility.spinner_on()
     // console.log('coord X: ' + (thing.layerX - thing.offsetX))
     // console.log('coord Y: ' + (thing.layerY - thing.offsetY))
@@ -511,23 +535,24 @@ export class FragmentsComponent implements OnInit {
     // console.log(box)
 
     // this.column2 = new Fragment_column(2, 'ETR', 'Ennius', 'Thyestes', 'Ribbeck');
+    // this.columns.push(this.column2)
+    // this.request_authors(this.column2)
+    // this.request_fragments(this.column2);
+    
+    // this.update_connected_columns_list();
     // this.column3 = new Fragment_column(3, 'ETJ', 'Ennius', 'Thyestes', 'Jocelyn');
     // this.column4 = new Fragment_column(4, 'ETV', 'Ennius', 'Thyestes', 'Vahlen');    
     
-    // this.columns.push(this.column2)
     // this.columns.push(this.column3)
     // this.columns.push(this.column4)
 
-    // this.request_authors(this.column2)
     // this.request_authors(this.column3)
     // this.request_authors(this.column4)
 
 
-    // this.request_fragments(this.column2);
     // this.request_fragments(this.column3);
     // this.request_fragments(this.column4);
 
-    // this.update_connected_columns_list();
 
     console.log('############ ####### ############')
   }

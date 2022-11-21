@@ -58,7 +58,7 @@
             ngDefaultControl   
             [(ngModel)]="column_to_display.visible"
             color="accent">
-            {{column_to_display.author}}-{{column_to_display.title}}-{{column_to_display.editor}} <sup *ngIf=this.luukie>edited</sup>
+            {{column_to_display.author}}-{{column_to_display.title}}-{{column_to_display.editor}} <sup *ngIf=column_to_display.edited>edited</sup>
         </mat-checkbox>
         <!-- Buttons to close columns or to move columns to left and right -->
         <button mat-icon-button (click)="move_column(column_to_display.column_id, 'left')">
@@ -177,7 +177,8 @@
         <!-- For loop to print all the base selected fragments -->
         <!-- Recording the clicked fragment allows us to delete it when pressing the delete button -->
         <!-- Also, keep track whether we are dragging or not. If we drag, we do not want the click event to fire -->
-        <div *ngFor="let fragment of this.playground.fragments" class="playground zlayer" style="--layer: 2;" cdkDrag #draggable="cdkDrag"
+        <div *ngFor="let fragment of this.playground.fragments" class="playground zlayer" style="--layer: 2;" cdkDrag #draggable="cdk
+        "
             
             (cdkDragStarted)="this.playground_dragging = true"
             (click)="this.handle_fragment_click(fragment, true)"
@@ -213,10 +214,14 @@
             [cdkDropListConnectedTo]="connected_columns_list" 
             (cdkDropListDropped)="this.utility.drop($event)">
             <div *ngFor="let fragment of given_column.fragments"> 
-                <div class="fragment-box" (click)="handle_fragment_click(fragment)" cdkDrag
+                <div class="fragment-box" (click)="handle_fragment_click(fragment)" 
+                    cdkDrag
                     [cdkDragDisabled]="this.oscc_settings.dragging_disabled"
+                    (cdkDragDropped)="this.track_edited_columns($event)"
                     [attr.id]="fragment.fragment_id">
-                    <div *ngIf="this.oscc_settings.show_headers"><b [style.color]="fragment.colour">Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.title}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i></div>
+                    <div *ngIf="this.oscc_settings.show_headers">
+                        <b [style.color]="fragment.colour">Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.title}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
+                    </div>
                     <div *ngFor="let fragment_line of fragment.lines">      
                         <p *ngIf="this.oscc_settings.show_line_names; else no_line_names" [innerHTML]="fragment_line.line_number + ': ' + fragment_line.text | safeHtml"></p>
                         <ng-template #no_line_names>
