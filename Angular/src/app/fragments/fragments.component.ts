@@ -63,14 +63,12 @@ export class FragmentsComponent implements OnInit {
   // Object to store all column data: just an array with column data in the form of fragment columns
   columns: Fragment_column[] = [];
 
-  // text_column: Text_column;
+  // Data columns
   column1: Fragment_column;
   column2: Fragment_column;
   column3: Fragment_column;
   column4: Fragment_column;
-
   playground: Fragment_column;
-
   commentary_column: Fragment_column;
 
   // We keep track of the number of columns to identify them
@@ -79,9 +77,13 @@ export class FragmentsComponent implements OnInit {
   // List of connected columns to allow dragging and dropping between columns
   connected_columns_list: string[] = [];
 
+  // Boolean to keep track if we are dragging or clicking a fragment within the playground
   playground_dragging: boolean;
 
+  // Variable to keep track of the window width, used to scale the site for small displays
   window_size: number;
+
+  luukie : boolean = false;
 
   constructor(
     public api: ApiService,
@@ -101,7 +103,7 @@ export class FragmentsComponent implements OnInit {
     this.commentary_column = new Fragment_column(255, '', '', '', '');
 
     // Create templates for the possible fragment columns
-    this.column1 = new Fragment_column(1, 'ETT', 'Ennius', 'Thyestes', 'TRF');
+    this.column1 = new Fragment_column(1, 'ETT', 'Ennius', 'Thyestes', 'Ribbeck');
     // Push these to the columns array for later use in the HTML component
     this.columns.push(this.column1)
     // Request the fragments for the first column
@@ -377,7 +379,7 @@ export class FragmentsComponent implements OnInit {
     }
     // If this next location is valid, move the column to that location, otherwise do nothing
     if (to_index >= 0 && to_index < this.columns.length){
-      this.columns = this.move_element_in_array(this.columns, from_index, to_index)
+      this.columns = this.utility.move_element_in_array(this.columns, from_index, to_index)
     }
   }
 
@@ -390,20 +392,6 @@ export class FragmentsComponent implements OnInit {
     for (let i of this.columns) {
       this.connected_columns_list.push(String(i.column_id));
     };
-  }
-  /**
-   * This function moves an element within an array from the given location to the given new location
-   * @param arr in which the moving should be done
-   * @param from_index element's index that is to be moved
-   * @param to_index index to where the element is to be moved
-   * @returns updated array
-   * @author Ycreak
-   */
-  public move_element_in_array(arr, from_index, to_index): Array<any> {
-      var element = arr[from_index];
-      arr.splice(from_index, 1);
-      arr.splice(to_index, 0, element);
-      return arr
   }
 
   /**
@@ -492,25 +480,14 @@ export class FragmentsComponent implements OnInit {
     });
   }
 
-  private get_offset( el ) {
-    var _x = 0;
-    var _y = 0;
-    while( el && !isNaN( el.offsetLeft ) && !isNaN( el.offsetTop ) ) {
-        _x += el.offsetLeft - el.scrollLeft;
-        _y += el.offsetTop - el.scrollTop;
-        el = el.offsetParent;
-    }
-    return { top: _y, left: _x };
-}
-
   /**
    * Test function
    * @author Ycreak
    */  
   private test(thing): void{
     console.log('############ TESTING ############')
-    
-    console.log(window.innerWidth);
+    this.luukie = !this.luukie;
+    // console.log(this.commentary_column);
     
     // this.utility.spinner_on()
     // console.log('coord X: ' + (thing.layerX - thing.offsetX))
@@ -563,6 +540,7 @@ export class FragmentsComponent implements OnInit {
      * TODO: i would like this function to be in Fragment.ts. Is that possible?
      */
      public fragment_has_content(fragment: Fragment){
+            
       if( fragment.differences != '' || 
           fragment.apparatus != '' ||
           fragment.translation != '' ||
@@ -577,8 +555,9 @@ export class FragmentsComponent implements OnInit {
   }
 
   /**
-   * This function adds HTML to the lines of the given array. Simply put, it inserts every
-   * line number and its content in an HTML paragraph for easy insertion in HTML.
+   * This function adds HTML to the lines of the given array. At the moment,
+   * it converts white space encoding for every applicable line by looping through
+   * all elements in a fragment list.
    * @param array with fragments as retrieved from the server
    * @returns updated array with nice HTML formatting included
    * @author Ycreak
@@ -590,12 +569,11 @@ export class FragmentsComponent implements OnInit {
       let current_fragment = array[fragment]
       for(let item in current_fragment.lines){
         // Loop through all lines of current fragment
-        let line_number = current_fragment.lines[item].line_number;
         let line_text = current_fragment.lines[item].text;
         line_text = this.utility.convert_whitespace_encoding(line_text)
         // Now push the updated lines to the correct place
         let updated_lines = {
-          'line_number': line_number,
+          'line_number': current_fragment.lines[item].line_number,
           'text': line_text,
         }
         current_fragment.lines[item] = updated_lines;
@@ -648,8 +626,7 @@ export class FragmentsComponent implements OnInit {
    */
   private add_content_to_current_fragment(fragment: Fragment, data: Fragment): void{
     for (let item of ['translation', 'differences', 'apparatus', 'commentary',
-                      'reconstruction', 'context', 'bibliography']) {
-                        
+                      'reconstruction', 'context', 'bibliography']) {       
       if(data[item] != ''){ fragment[item] = data[item]}
     }
   }

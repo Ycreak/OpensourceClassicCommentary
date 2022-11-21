@@ -269,6 +269,32 @@ export class UtilityService {
       this.spinner = false;
   }
 
+  /**
+   * This function moves an element within an array from the given location to the given new location
+   * @param arr in which the moving should be done
+   * @param from_index element's index that is to be moved
+   * @param to_index index to where the element is to be moved
+   * @returns updated array
+   * @author Ycreak
+   */
+  public move_element_in_array(arr, from_index, to_index): Array<any> {
+    var element = arr[from_index];
+    arr.splice(from_index, 1);
+    arr.splice(to_index, 0, element);
+    return arr
+  }
+
+  private get_offset( el ) {
+    var _x = 0;
+    var _y = 0;
+    while( el && !isNaN( el.offsetLeft ) && !isNaN( el.offsetTop ) ) {
+        _x += el.offsetLeft - el.scrollLeft;
+        _y += el.offsetTop - el.scrollTop;
+        el = el.offsetParent;
+    }
+    return { top: _y, left: _x };
+  }
+
 }
 
 

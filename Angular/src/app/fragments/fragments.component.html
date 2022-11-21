@@ -20,6 +20,7 @@
     </ng-template>
 
     <span class="spacer"></span>
+    <button mat-button class="btn" (click)="test('0')" *ngIf="this.auth_service.current_user_name == 'Lucus'">TEST</button>
     
     <mat-checkbox class="btn" ngDefaultControl [(ngModel)]="toggle_commentary">COMMENTARY</mat-checkbox>
     <mat-checkbox class="btn" ngDefaultControl [(ngModel)]="toggle_playground">PLAYGROUND</mat-checkbox>
@@ -53,7 +54,12 @@
     </div>
     <div *ngFor="let column_to_display of this.columns">
         <!-- Checkbox to hide and show columns -->
-        <mat-checkbox class="btn checkbox-button-toolbar" ngDefaultControl [(ngModel)]="column_to_display.visible">{{column_to_display.author}}-{{column_to_display.title}}-{{column_to_display.editor}}</mat-checkbox>
+        <mat-checkbox class="btn checkbox-button-toolbar" 
+            ngDefaultControl   
+            [(ngModel)]="column_to_display.visible"
+            color="accent">
+            {{column_to_display.author}}-{{column_to_display.title}}-{{column_to_display.editor}} <sup *ngIf=this.luukie>edited</sup>
+        </mat-checkbox>
         <!-- Buttons to close columns or to move columns to left and right -->
         <button mat-icon-button (click)="move_column(column_to_display.column_id, 'left')">
             <mat-icon>keyboard_arrow_left</mat-icon>
@@ -96,8 +102,8 @@
             <ng-template #no_fragment_clicked><h4>Click a fragment to show its content.</h4></ng-template>
 
             <!-- Show banner if no commentary available -->
-            <div *ngIf="this.current_fragment.no_content" class="alert alert-info" role="alert">
-                No content is available yet for this fragment.
+            <div *ngIf="!this.fragment_has_content(this.current_fragment);" class="alert alert-info" role="alert">
+                No content is available yet for this specific fragment.
             </div>
             
             <!-- Show the commentary for the clicked fragment -->
@@ -105,7 +111,6 @@
                 <ng-container [ngTemplateOutlet]='commentary_column_template' [ngTemplateOutletContext]="{given_fragment:this.current_fragment}"></ng-container>
             </div>
            
-            <!-- <hr> -->
             <div *ngFor="let linked_fragment of this.commentary_column.linked_fragments_content">
                 <div *ngIf="this.fragment_has_content(linked_fragment);">
                     <h5>Linked commentary from {{linked_fragment.author}}, {{linked_fragment.title}}, 
