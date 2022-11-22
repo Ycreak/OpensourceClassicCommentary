@@ -1,5 +1,4 @@
 # Library Imports
-from tkinter import E
 import couchdb
 import copy
 from uuid import uuid4
@@ -343,14 +342,12 @@ class Fragment_handler:
 if __name__ == "__main__":
     fh = Fragment_handler()
 
-    temp = fh.retrieve_all_authors()
-    print(temp)
-
-    # Fragment lock rebuild
     for id in fh.frag_db:
         doc = fh.frag_db[id]
-        doc['published'] = 'published'
-        doc_id, doc_rev = fh.frag_db.save(doc)
+        if doc['editor'] == 'TrRF':
+            print(id)
+            doc['editor'] = 'TRF'
+            doc_id, doc_rev = fh.frag_db.save(doc)
 
     # fh.create_complete_backup()
     # fh.create_additional_field('linked_bib_entries', [])
