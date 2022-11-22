@@ -511,7 +511,7 @@ export class FragmentsComponent implements OnInit {
    * @author Ycreak
    * @TODO: this should be moved to the server
    */
-  private request_introduction(requested_introduction): void {
+  private request_introduction(requested_introduction: string): void {
     let new_introduction = new Introductions();
     let my_introduction = new_introduction.dict[requested_introduction];
     this.dialog.open_custom_dialog(my_introduction);
