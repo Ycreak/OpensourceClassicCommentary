@@ -21,6 +21,11 @@ button.btn span.mat-ripple {
   width: inherit;
 }
 
+// To show a little hand on <a> elements without href but with click events
+.a-void {
+  cursor: pointer;
+}
+
 /* Fragment and commentary column related CSS */
 
 // Box in which the fragment is shown. Created by the for-loop in Fragment Column.

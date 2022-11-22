@@ -44,6 +44,7 @@ import { SafeHtmlPipe } from './pipes/safeHtml.pipe';
 import { ConfirmationDialog } from './services/dialog.service';
 import { WYSIWYGDialog } from './services/dialog.service';
 import { SettingsDialog } from './services/dialog.service';
+import { CustomDialog } from './services/dialog.service';
 
 // import { Multiplayer } from './fragments/fragments.component';
 // Directives
@@ -134,6 +135,7 @@ const appRoutes: Routes = [
     ConfirmationDialog,
     WYSIWYGDialog,
     SettingsDialog,
+    CustomDialog,
     TestsComponent,
     // DialogContentComponent,
     ],

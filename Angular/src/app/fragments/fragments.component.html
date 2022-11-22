@@ -96,8 +96,12 @@
             <!-- Show either fragment data or the fact that no fragment has been selected yet. -->
             <div *ngIf="this.fragment_clicked; else no_fragment_clicked">
                 <!-- Fragment information -->
-                <h4>Selected {{this.current_fragment.author}}, {{this.current_fragment.title}}, 
-                    {{this.current_fragment.editor}}, fragment {{this.current_fragment.fragment_name}}</h4> <hr>
+                <h4>Selected 
+                    <a class='a-void' (click)="this.request_introduction(this.current_fragment.author)">{{this.current_fragment.author}}</a>, <!-- Do not forget the comma and space -->
+                    <a class='a-void' (click)="this.request_introduction(this.current_fragment.title)">{{this.current_fragment.title}}</a>, 
+                    {{this.current_fragment.editor}}, 
+                    fragment {{this.current_fragment.fragment_name}}
+                </h4> <hr>
             </div>
             <ng-template #no_fragment_clicked><h4>Click a fragment to show its content.</h4></ng-template>
 

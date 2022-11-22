@@ -80,6 +80,23 @@ export class DialogService {
     return dialogRef.afterClosed(); // Returns observable.
   }
 
+  /**
+   * Opens a dialog that shows the provided content
+   * @param content that is to be shown
+   * @author Ycreak
+   */
+   public open_custom_dialog(content): void {
+    const dialogRef = this.dialog.open(CustomDialog, {
+      width: '90%',
+      height: '75%',
+      data: {
+        content: content,
+      }
+    });  
+  }
+
+
+
 }
 
 /**
@@ -121,6 +138,21 @@ export class WYSIWYGDialog {
 
   constructor(
     public dialogRef: MatDialogRef<WYSIWYGDialog>,
+    @Inject(MAT_DIALOG_DATA) public data) { 
+  }
+}
+
+/**
+ * Class to show a dialog with the provided content. 
+ * The provided 'data' is shown inside this editor.
+ */
+ @Component({
+  selector: 'custom-dialog',
+  templateUrl: '../dialogs/custom-dialog.html',
+})
+export class CustomDialog {
+  constructor(
+    public dialogRef: MatDialogRef<CustomDialog>,
     @Inject(MAT_DIALOG_DATA) public data) { 
   }
 }

@@ -18,8 +18,10 @@ import { AuthService } from '../auth/auth.service';
 // Model imports
 import { Fragment } from '../models/Fragment';
 import { Fragment_column } from '../models/Fragment_column';
+import { Introductions } from '../models/Introductions';
+
 import { Text_column } from '../models/Text_column';
-import * as internal from 'stream';
+import * as internal from 'stream'; // TODO: What is this?
 
 @Component({
   selector: 'app-fragments',
@@ -102,7 +104,7 @@ export class FragmentsComponent implements OnInit {
     this.commentary_column = new Fragment_column('255', '', '', '', '');
 
     // Create templates for the possible fragment columns
-    this.column1 = new Fragment_column('1', 'ETT', 'Ennius', 'Thyestes', 'Ribbeck');
+    this.column1 = new Fragment_column('1', 'ETT', 'Ennius', 'Thyestes', 'TRF');
     // Push these to the columns array for later use in the HTML component
     this.columns.push(this.column1)
     // Request the fragments for the first column
@@ -117,15 +119,16 @@ export class FragmentsComponent implements OnInit {
     // Create an observable to check for the changing of window size
     this.window_resize_observable$ = fromEvent(window, 'resize')
     this.window_resize_subscription$ = this.window_resize_observable$.subscribe( evt => {
-      // Find the window size. If it is too small, we will disable to playground to save space on the navbar
+      // Find the window size. If it is too small, we will abbreviate the title to save space on the navbar
       this.window_size = this.retrieve_viewport_size();    
     })
 
-    this.column2 = new Fragment_column('2', 'ETR', 'Ennius', 'Thyestes', 'TRF');
-    this.columns.push(this.column2);
-    this.request_authors(this.column2);
-    this.request_fragments(this.column2);
-    this.update_connected_columns_list();
+    // this.column2 = new Fragment_column('2', 'ETR', 'Ennius', 'Thyestes', 'TRF');
+    // this.columns.push(this.column2);
+    // this.request_authors(this.column2);
+    // this.request_fragments(this.column2);
+    // this.column_identifier += 1;
+    // this.update_connected_columns_list();
 
   }
 
@@ -480,7 +483,6 @@ export class FragmentsComponent implements OnInit {
    */
   public open_settings(): void {
     this.dialog.open_settings_dialog(this.oscc_settings).subscribe(result => {
-      // console.log(result['dragging_disabled'])
       this.oscc_settings.dragging_disabled = result['dragging_disabled']
       this.oscc_settings.auto_scroll_linked_fragments = result['auto_scroll_linked_fragments']
     });
@@ -501,6 +503,18 @@ export class FragmentsComponent implements OnInit {
     // Next, set the edited flag to true.
     edited_column_1.edited = true;
     edited_column_2.edited = true;
+  }
+
+  /**
+   * This function opens the requested introduction in a dialog
+   * @param requested_introduction string containing the requested introduction
+   * @author Ycreak
+   * @TODO: this should be moved to the server
+   */
+  private request_introduction(requested_introduction): void {
+    let new_introduction = new Introductions();
+    let my_introduction = new_introduction.dict[requested_introduction];
+    this.dialog.open_custom_dialog(my_introduction);
   }
 
   /**
@@ -660,6 +674,7 @@ export class FragmentsComponent implements OnInit {
    * Simple function that retrieves the viewport size
    * @returns viewport size as integer
    * @author Ycreak
+   * @TODO: move to utilities
    */
    private retrieve_viewport_size(): number {
     try {
