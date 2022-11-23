@@ -3,22 +3,22 @@ The configuration for the editor is given via data.config. When accept is clicke
 in plain HTML. -->
 <div mat-dialog-content>
   
-  <quill-editor [ngModel]="data.content" (onEditorCreated)="create_editor_instance($event)">
+  <quill-editor [(ngModel)]="data.content" (onEditorCreated)="create_editor_instance($event)">
 
     <div quill-editor-toolbar>
-        <!-- Add a bold and italics buttons -->
-        <button class="ql-bold"></button>
-        <button class="ql-italic"></button>
-        <!-- Add subscript and superscript buttons -->
-        <button class="ql-script" value="sub"></button>
-        <button class="ql-script" value="super"></button>
-        <!-- Add list buttons -->
-        <button class="ql-list" value="ordered"></button>
-        <button class="ql-list" value="bullet"></button>
-        <!-- Add clean formatting button -->
-        <button class="ql-clean"></button>
-        <!-- Add custom buttons -->
-        <button (click)="add_symbol('†')">†</button>
+      <!-- Add a bold and italics buttons -->
+      <button class="ql-bold"></button>
+      <button class="ql-italic"></button>
+      <!-- Add subscript and superscript buttons -->
+      <button class="ql-script" value="sub"></button>
+      <button class="ql-script" value="super"></button>
+      <!-- Add list buttons -->
+      <button class="ql-list" value="ordered"></button>
+      <button class="ql-list" value="bullet"></button>
+      <!-- Add clean formatting button -->
+      <button class="ql-clean"></button>
+      <!-- Add custom buttons -->
+      <button (click)="add_symbol('†')">†</button>
     </div>
   
   </quill-editor>
@@ -45,7 +45,7 @@ in plain HTML. -->
     <st-editor [(ngModel)]="data.content" [config]="data.config"></st-editor>
   </div>
   -->
-  {{data.content}} 
+  <!-- {{data.content}}  -->
   <!-- <button (click)="data.content = data.content + '⟨'"> ⟨ </button> -->
 
 <!-- 

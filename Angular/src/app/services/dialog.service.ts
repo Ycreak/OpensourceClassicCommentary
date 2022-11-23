@@ -152,18 +152,16 @@ export class WYSIWYGDialog {
     if (range) {
       if (range.length == 0) {
         // insert the symbol at the cursor location
-        this.editor_instance.insertText(range.index, symbol);
+        this.editor_instance.insertText(range.index, symbol, 'user');
       } 
       else {
         // if there is a selection, insert symbol before and after selection        
-        this.editor_instance.insertText(range.index, symbol);
-        this.editor_instance.insertText((range.index + range.length + 1), '†');
+        this.editor_instance.insertText(range.index, symbol, 'user');
+        this.editor_instance.insertText((range.index + range.length + 1), symbol, 'user');
 
       }
     }
   }
-
-
 }
 
 /**
