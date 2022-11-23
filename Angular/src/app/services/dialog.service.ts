@@ -50,14 +50,13 @@ export class DialogService {
    * @returns content that is edited by the editor
    * @author Ycreak
    */
-  public open_wysiwyg_dialog(content, config): Observable<string>{
+  public open_wysiwyg_dialog(content): Observable<string>{
     const dialogRef = this.dialog.open(WYSIWYGDialog, {
       disableClose: true, //FIXME: this is a hack. clicking outside should return the data to the user
       width: '90%',
       height: '75%',
       data: {
         content: content,
-        config: config,
       }
     });  
     return dialogRef.afterClosed(); // Returns observable.
@@ -141,24 +140,34 @@ export class WYSIWYGDialog {
     @Inject(MAT_DIALOG_DATA) public data) { 
   }
 
-  editor_instance;
+  editor_instance; // allows communication with the editor
 
-  public create_editor_instance(editor_instance) {
-   this.editor_instance = editor_instance;
-  }
-
+  /**
+   * This function inserts the given symbol in the desired manner in the rich text editor.
+   * If the cursor has selected a word, the word will be pre- and succeeded by the symbol.
+   * If the cursor is placed somewhere in the text, the symbol will be inserted at that location.
+   * @param symbol that is to be placed in the text
+   * @author Ycreak
+   */
   public add_symbol(symbol: string): void {
     let range = this.editor_instance.getSelection();
     if (range) {
       if (range.length == 0) {
         // insert the symbol at the cursor location
-        this.editor_instance.insertText(range.index, symbol, 'user');
+        this.editor_instance.insertText(range.index, symbol, true, 'user');
+        //FIXME: the next line makes sure ngModel is updated. This is a bug with the ngx-quill package
+        this.editor_instance.insertText(range.index, '', 'user');
       } 
       else {
         // if there is a selection, insert symbol before and after selection        
-        this.editor_instance.insertText(range.index, symbol, 'user');
-        this.editor_instance.insertText((range.index + range.length + 1), symbol, 'user');
-
+        if (symbol == '⟨' || symbol == '⟩'){
+          this.editor_instance.insertText(range.index, '⟨', 'user');
+          this.editor_instance.insertText((range.index + range.length + 1), '⟩', 'user');
+        }
+        else{
+          this.editor_instance.insertText(range.index, symbol, 'user');
+          this.editor_instance.insertText((range.index + range.length + 1), symbol, 'user');
+        }
       }
     }
   }

@@ -9,8 +9,6 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatCell, MatCellDef, MatRow, MatTableDataSource } from '@angular/material/table';
 import { animate, animation, state, style, transition, trigger } from '@angular/animations';
-import { EditorConfig, ST_BUTTONS, BOLD_BUTTON, ITALIC_BUTTON, SUBSCRIPT_BUTTON, SUPERSCRIPT_BUTTON,
-          UNORDERED_LIST_BUTTON, ORDERED_LIST_BUTTON } from 'ngx-simple-text-editor';
 
 // Component imports
 import { ApiService } from '../api.service';
@@ -178,11 +176,6 @@ export class DashboardComponent implements OnInit {
   bibliography_form_selected_type = new UntypedFormControl(0);
   bib_entry_selected: boolean = false;
 
-  //TODO: this should be moved to a new service focused on this editor
-  WYSIWYG_editor_config: EditorConfig = {
-    buttons: [BOLD_BUTTON, ITALIC_BUTTON, SUBSCRIPT_BUTTON, SUPERSCRIPT_BUTTON, UNORDERED_LIST_BUTTON, ORDERED_LIST_BUTTON],
-  };  
-
   table_data_loaded: boolean = false // Returns true if the table has loaded its data
   loading_hint: Observable<unknown> // Loading hint animation
 
@@ -259,7 +252,7 @@ export class DashboardComponent implements OnInit {
     if(field == 'context'){
       // For the context, retrieve the context text field from the fragment form and pass that to the dialog
       let form_array_field = this.fragment_form.value.context[index].text;
-      this.dialog.open_wysiwyg_dialog(form_array_field, this.WYSIWYG_editor_config).subscribe(result => {
+      this.dialog.open_wysiwyg_dialog(form_array_field).subscribe(result => {
         // Now update the correct field. This is done by getting the FormArray and patching the correct
         // FormGroup within this array. This is to ensure dynamic updating on the frontend
         let context_array = this.fragment_form.controls["context"] as FormArray;
@@ -267,7 +260,7 @@ export class DashboardComponent implements OnInit {
       });
     }
     else{ // The other content fields can be updated by just getting their content strings
-      this.dialog.open_wysiwyg_dialog(this.fragment_form.value[field], this.WYSIWYG_editor_config).subscribe(result => {
+      this.dialog.open_wysiwyg_dialog(this.fragment_form.value[field]).subscribe(result => {
         this.update_form_field('fragment_form', field, result)
       });
     }
