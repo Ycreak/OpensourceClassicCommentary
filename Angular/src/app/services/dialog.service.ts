@@ -140,6 +140,30 @@ export class WYSIWYGDialog {
     public dialogRef: MatDialogRef<WYSIWYGDialog>,
     @Inject(MAT_DIALOG_DATA) public data) { 
   }
+
+  editor_instance;
+
+  public create_editor_instance(editor_instance) {
+   this.editor_instance = editor_instance;
+  }
+
+  public add_symbol(symbol: string): void {
+    let range = this.editor_instance.getSelection();
+    if (range) {
+      if (range.length == 0) {
+        // insert the symbol at the cursor location
+        this.editor_instance.insertText(range.index, symbol);
+      } 
+      else {
+        // if there is a selection, insert symbol before and after selection        
+        this.editor_instance.insertText(range.index, symbol);
+        this.editor_instance.insertText((range.index + range.length + 1), '†');
+
+      }
+    }
+  }
+
+
 }
 
 /**

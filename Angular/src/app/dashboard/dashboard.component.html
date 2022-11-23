@@ -7,6 +7,8 @@
 <!-- Maybe we should get a local stylesheet? -->
 <!-- <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> -->
 
+
+
 <!-- Simple toolbar with all the different buttons and the title -->
 <mat-toolbar color="primary">
     <span style="width: fit-content; transform: translateY(-1px)">
@@ -686,7 +688,7 @@
       </mat-expansion-panel-header>   
 
       <!-- Functionality to filter the table -->
-      <mat-form-field appearance="standard">
+      <mat-form-field appearance="fill">
         <mat-label>Filter users</mat-label>
         <input matInput (keyup)="apply_user_table_filter($event)" placeholder="Ex. John" #input>
       </mat-form-field>

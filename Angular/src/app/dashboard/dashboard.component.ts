@@ -23,8 +23,8 @@ import { Fragment } from '../models/Fragment';
 import { Fragment_column } from '../models/Fragment_column';
 
 import { User } from '../models/User';
-import { shareReplay } from 'rxjs/operators';
-import { MatGridTileHeaderCssMatStyler } from '@angular/material/grid-list';
+// import { shareReplay } from 'rxjs/operators';
+// import { MatGridTileHeaderCssMatStyler } from '@angular/material/grid-list';
 
 @Component({
   selector: 'app-dashboard',
@@ -221,7 +221,7 @@ export class DashboardComponent implements OnInit {
     this.api.request_authors(this.selected_fragment_data);
     this.api.request_authors(this.linked_fragment_data);
 
-    // this.retrieve_requested_fragment('Gijs', 'Thyestes', 'TRF', '134')
+    // this.retrieve_requested_fragment('Ennius', 'Thyestes', 'TRF', '134')
     // this.request_bibliography_authors()
 
     // this.bibliography_author_selection_form_filtered_options = this.bibliography_author_selection_form.valueChanges.pipe(

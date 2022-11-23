@@ -79,6 +79,7 @@ import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatPaginatorModule} from '@angular/material/paginator'; 
 // Allows copying to clipboard
 import {ClipboardModule} from '@angular/cdk/clipboard';
+import { QuillModule } from 'ngx-quill'
 // import { TextComponent } from './text/text.component'; 
 
 // Allows a virtual keyboard
@@ -144,7 +145,7 @@ const appRoutes: Routes = [
     AppRoutingModule,
     HttpClientModule,
     RouterModule.forRoot(appRoutes, {}),
-
+    QuillModule.forRoot(), // rich text editor
     // Multiplayer,
     NgxSimpleTextEditorModule,
 
@@ -180,7 +181,7 @@ const appRoutes: Routes = [
     // To allow the drag and drop
     DragDropModule,
     ClipboardModule,
-    MatKeyboardModule,
+    // MatKeyboardModule,
 
     // AngularFireModule.initializeApp(environment.firebase),
   ],
@@ -191,10 +192,10 @@ const appRoutes: Routes = [
       multi: true,
       
     },
-    { 
-      provide: MAT_KEYBOARD_LAYOUTS, 
-      useValue: customLayouts 
-    },
+    // { 
+    //   provide: MAT_KEYBOARD_LAYOUTS, 
+    //   useValue: customLayouts 
+    // },
   ],
   bootstrap: [AppComponent]
 })
