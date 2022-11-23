@@ -82,7 +82,7 @@ import {ClipboardModule} from '@angular/cdk/clipboard';
 // import { TextComponent } from './text/text.component'; 
 
 // Allows a virtual keyboard
-import { IKeyboardLayouts, keyboardLayouts, MAT_KEYBOARD_LAYOUTS, MatKeyboardModule } from '@efaps/angular-onscreen-material-keyboard';
+// import { IKeyboardLayouts, keyboardLayouts, MAT_KEYBOARD_LAYOUTS, MatKeyboardModule } from '@efaps/angular-onscreen-material-keyboard';
 
 // Allows communication with firebase
 // import { AngularFireModule } from '@angular/fire';
@@ -91,25 +91,25 @@ import { ScansionComponent } from './scansion/scansion.component';
 import { TestsComponent } from './tests/tests.component';
 
 // Virtual Keyboard Layout
-const customLayouts: IKeyboardLayouts = {
-  ...keyboardLayouts,
-  'OSCCLayout': {
-    'name': 'OSCCLayout',
-    'keys': [
-      [
-        ['⟨', '⟨'],
-        ['⟩', '⟩'],
-        ['†', '†'],
-        ['×', '×'],
-        ['-', '-'],
-        ['⏑', '⏑'],
-        ['⏓', '⏒'],
-        ['⏕', '⏔'],  
-      ]
-    ],
-    'lang': ['OSCC']
-  }
-};
+// const customLayouts: IKeyboardLayouts = {
+//   ...keyboardLayouts,
+//   'OSCCLayout': {
+//     'name': 'OSCCLayout',
+//     'keys': [
+//       [
+//         ['⟨', '⟨'],
+//         ['⟩', '⟩'],
+//         ['†', '†'],
+//         ['×', '×'],
+//         ['-', '-'],
+//         ['⏑', '⏑'],
+//         ['⏓', '⏒'],
+//         ['⏕', '⏔'],  
+//       ]
+//     ],
+//     'lang': ['OSCC']
+//   }
+// };
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
