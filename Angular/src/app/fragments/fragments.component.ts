@@ -704,17 +704,17 @@ export class FragmentsComponent implements OnInit {
    */
 
     public generate_fragment_gradient_color(n_fragments: number, fragment_index: number){
-      let max_brightness: number = 95;
-      let min_brightness: number = 20;
-      let max_brightness_diff: number = 30;
+      let max_hue: number = 360;
+      let min_hue: number = 0;
+      let max_hue_diff: number = 30;
 
-      let brightness_step = (max_brightness - min_brightness)/n_fragments;
-      if (brightness_step > max_brightness_diff){
-        brightness_step = max_brightness_diff;
+      let hue_step = (max_hue - min_hue)/n_fragments;
+      if (hue_step > max_hue_diff){
+        hue_step = max_hue_diff;
       }
-      let calculated_brightness = min_brightness+brightness_step*fragment_index;
+      let calculated_hue = min_hue+hue_step*fragment_index;
 
-      return `HSL(231, 48%, ${calculated_brightness}%)`
+      return `HSL(${calculated_hue}, 48%, 50%)`
     }
 }
 
