@@ -46,6 +46,12 @@ button.btn span.mat-ripple {
     background: #eee;
     cursor: pointer;
   }
+
+  // Border on left side has color gradient indicating initial fragment order.
+  // Border-left-color property is generated and set elsewhere via types
+  border-left-style: solid;
+  border-left-width: medium;
+  border-left-color: transparent;
 }
 
 /* CDK Drag 'n Drop CSS */
