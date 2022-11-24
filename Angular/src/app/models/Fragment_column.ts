@@ -54,5 +54,8 @@ export class Fragment_column
 
     // Whether to show or hide the column
     visible: boolean = true;
+
+    // Original order of the column fragments
+    orig_fragment_order: string[] = [];
 }
 

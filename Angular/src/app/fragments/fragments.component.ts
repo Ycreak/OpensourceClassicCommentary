@@ -48,6 +48,7 @@ export class FragmentsComponent implements OnInit {
   //TODO: this should be system wide
   oscc_settings = { 
     dragging_disabled : false, 
+    fragment_order_gradient : true,
     auto_scroll_linked_fragments : false,
     show_headers : true, 
     show_line_names : true, 
@@ -211,6 +212,11 @@ export class FragmentsComponent implements OnInit {
         // Store the formatted data at the correct place
         if(column.name != 'playground'){
           column.fragments = fragment_list;
+          // Store the original order of the fragments in the column object
+          column.orig_fragment_order = []; // Clear first
+          for (let frag of fragment_list){
+            column.orig_fragment_order.push(frag.fragment_name);
+          }
           // Now check if the column already exists. If so, replace it with the new object.
           if(this.columns.length > 0){
             this.columns[this.columns.findIndex(i => i.column_id === column.column_id)] = column
@@ -482,9 +488,11 @@ export class FragmentsComponent implements OnInit {
    * @author Ycreak
    */
   public open_settings(): void {
-    this.dialog.open_settings_dialog(this.oscc_settings).subscribe(result => {
-      this.oscc_settings.dragging_disabled = result['dragging_disabled']
-      this.oscc_settings.auto_scroll_linked_fragments = result['auto_scroll_linked_fragments']
+    this.dialog.open_settings_dialog(this.oscc_settings).subscribe((result) => {
+      console.log(result);
+      this.oscc_settings.dragging_disabled = result['dragging_disabled'];
+      this.oscc_settings.fragment_order_gradient = result['fragment_order_gradient'];
+      this.oscc_settings.auto_scroll_linked_fragments = result['auto_scroll_linked_fragments'];
     });
   }
 
@@ -700,5 +708,37 @@ export class FragmentsComponent implements OnInit {
     }
   }
 
+    /**
+   * Simple function that generates a gradient color for each
+   * fragment in a fragment column.
+   * This is to indicate the initial order of the fragments.
+   * 
+   * Each fragment gets a color chosen from a set color
+   * brightness range, though two neighboring fragments can
+   * only have a set difference in brightness.
+   * @param n_fragments The total number of fragments in the column
+   * @param fragment_index The index of the current fragment
+   * @returns: Color as HSL value (presented as string)
+   * @author CptVickers
+   */
+
+    public generate_fragment_gradient_color(n_fragments: number, fragment_index: number){
+      if (this.oscc_settings.fragment_order_gradient == true){
+        let max_hue: number = 360;
+        let min_hue: number = 0;
+        let max_hue_diff: number = 30;
+  
+        let hue_step = (max_hue - min_hue)/n_fragments;
+        if (hue_step > max_hue_diff){
+          hue_step = max_hue_diff;
+        }
+        let calculated_hue = min_hue+hue_step*fragment_index;
+  
+        return `HSL(${calculated_hue}, 48%, 50%)`
+      }
+      else{
+        return 'transparent'
+      }
+    }
 }
 
