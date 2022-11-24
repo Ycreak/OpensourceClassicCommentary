@@ -48,6 +48,7 @@ export class FragmentsComponent implements OnInit {
   //TODO: this should be system wide
   oscc_settings = { 
     dragging_disabled : false, 
+    fragment_order_gradient : true,
     auto_scroll_linked_fragments : false,
     show_headers : true, 
     show_line_names : true, 
@@ -487,9 +488,11 @@ export class FragmentsComponent implements OnInit {
    * @author Ycreak
    */
   public open_settings(): void {
-    this.dialog.open_settings_dialog(this.oscc_settings).subscribe(result => {
-      this.oscc_settings.dragging_disabled = result['dragging_disabled']
-      this.oscc_settings.auto_scroll_linked_fragments = result['auto_scroll_linked_fragments']
+    this.dialog.open_settings_dialog(this.oscc_settings).subscribe((result) => {
+      console.log(result);
+      this.oscc_settings.dragging_disabled = result['dragging_disabled'];
+      this.oscc_settings.fragment_order_gradient = result['fragment_order_gradient'];
+      this.oscc_settings.auto_scroll_linked_fragments = result['auto_scroll_linked_fragments'];
     });
   }
 
@@ -704,17 +707,22 @@ export class FragmentsComponent implements OnInit {
    */
 
     public generate_fragment_gradient_color(n_fragments: number, fragment_index: number){
-      let max_hue: number = 360;
-      let min_hue: number = 0;
-      let max_hue_diff: number = 30;
-
-      let hue_step = (max_hue - min_hue)/n_fragments;
-      if (hue_step > max_hue_diff){
-        hue_step = max_hue_diff;
+      if (this.oscc_settings.fragment_order_gradient == true){
+        let max_hue: number = 360;
+        let min_hue: number = 0;
+        let max_hue_diff: number = 30;
+  
+        let hue_step = (max_hue - min_hue)/n_fragments;
+        if (hue_step > max_hue_diff){
+          hue_step = max_hue_diff;
+        }
+        let calculated_hue = min_hue+hue_step*fragment_index;
+  
+        return `HSL(${calculated_hue}, 48%, 50%)`
       }
-      let calculated_hue = min_hue+hue_step*fragment_index;
-
-      return `HSL(${calculated_hue}, 48%, 50%)`
+      else{
+        return 'transparent'
+      }
     }
 }
 
