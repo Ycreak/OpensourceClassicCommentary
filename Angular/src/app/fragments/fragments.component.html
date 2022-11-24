@@ -1,31 +1,74 @@
-<!-- I think this can be removed. -->
-<script src="vendor/jquery/jquery.min.js"></script>
-<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- Import the stylesheet for the Material icons -->
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<!-- I think this can be removed. -->
+<!-- <script src="vendor/jquery/jquery.min.js"></script> -->
+<!-- <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script> -->
+
 
 <!-- Maybe we should get a local stylesheet? -->
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-
-<!-- <h3 *ngIf="this.window_size < 475" style="text-align: center;">This page looks better in landscape mode</h3> -->
+<!-- <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> -->
 
 <!-- Navigation bar -->
 <mat-toolbar color="primary">
     <span style="width: fit-content; transform: translateY(-1px)">
-        <h3 *ngIf="this.window_size > 725; else small_title" class='h3-title'>Open Source Classics Commentary</h3>
+        <h3 
+            *ngIf="this.window_size > 725; else small_title" 
+            class='navbar'>
+            Open Source Classics Commentary
+        </h3>
     </span>
 
     <ng-template #small_title>
-        <h3 class='h3-title'>OSCC</h3>
+        <h3 class='navbar'>OSCC</h3>
     </ng-template>
 
     <span class="spacer"></span>
-    <button mat-button class="btn" (click)="test('0')" *ngIf="this.auth_service.current_user_name == 'Lucus'">TEST</button>
     
-    <mat-checkbox class="btn" ngDefaultControl [(ngModel)]="toggle_commentary">COMMENTARY</mat-checkbox>
-    <mat-checkbox class="btn" ngDefaultControl [(ngModel)]="toggle_playground">PLAYGROUND</mat-checkbox>
+    <button mat-stroked-button 
+        class="navbar" 
+        *ngIf="this.auth_service.current_user_name == 'Lucus'"
+        (click)="test('0')">
+            TEST
+    </button>
     
-    <button mat-button class="btn" [matMenuTriggerFor]="menu">MENU</button>
+    <button mat-stroked-button 
+        *ngIf="!this.commentary_enabled; else commentary_disabled"
+        class="navbar button-padding" 
+        (click)="this.toggle_commentary()">
+            COMMENTARY
+    </button>
+
+    <ng-template #commentary_disabled>
+        <button mat-flat-button 
+        color="accent"
+        class="button-padding"
+        (click)="this.toggle_commentary()">
+            COMMENTARY
+        </button>    
+    </ng-template>
+
+    <button mat-stroked-button 
+        *ngIf="!this.playground_enabled; else playground_disabled"
+        class="navbar button-padding" 
+        (click)="this.toggle_playground()">
+            PLAYGROUND
+    </button>
+
+    <ng-template #playground_disabled>
+        <button mat-flat-button 
+        class="button-padding"
+        color="accent"
+        (click)="this.toggle_playground()">
+            PLAYGROUND
+        </button>    
+    </ng-template>
+
+    <button mat-stroked-button 
+        class="navbar" 
+        [matMenuTriggerFor]="menu">
+            MENU
+    </button>
+
 </mat-toolbar>
 
 <!-- Navigation bar menu -->
@@ -45,36 +88,45 @@
 <mat-progress-bar *ngIf="this.utility.spinner" mode="query"></mat-progress-bar>
 
 <!-- Secondary toolbar to manage columns -->
-<mat-toolbar class="button-toolbar">    
+<mat-toolbar class="column-toolbar">    
     <div>
-        <button mat-button (click)="add_column()">
+        <button class='navbar' mat-button (click)="add_column()">
             Add column
         </button>  
         | <!-- Separator-->
     </div>
-    <div *ngFor="let column_to_display of this.columns">
-        <!-- Checkbox to hide and show columns -->
-        <mat-checkbox class="btn checkbox-button-toolbar" 
-            ngDefaultControl   
-            [(ngModel)]="column_to_display.visible"
-            color="accent">
+     
+    <ng-container *ngFor="let column_to_display of this.columns">
+        <!-- Button to hide and show columns -->
+        <button mat-icon-button matSuffix 
+            (click)="column_to_display.visible = !column_to_display.visible" 
+            [attr.aria-pressed]="column_to_display.visible">
+                <mat-icon>{{column_to_display.visible ? 'visibility' : 'visibility_off'}}</mat-icon>
+        </button>
+        
+        <!-- FIXME: This is in a button, because i cannot match the font properly -->
+        <button class='navbar' mat-button>
             {{column_to_display.author}}-{{column_to_display.title}}-{{column_to_display.editor}} <sup *ngIf=column_to_display.edited>edited</sup>
-        </mat-checkbox>
+        </button>  
+        
         <!-- Buttons to close columns or to move columns to left and right -->
         <button mat-icon-button (click)="move_column(column_to_display.column_id, 'left')">
             <mat-icon>keyboard_arrow_left</mat-icon>
         </button>  
+
         <button mat-icon-button (click)="move_column(column_to_display.column_id, 'right')">
             <mat-icon>keyboard_arrow_right</mat-icon>
         </button>  
+
         <button mat-icon-button (click)="close_column(column_to_display.column_id)">
             <mat-icon>clear</mat-icon>
         </button>  
 
         | <!-- Separator-->
 
-    </div>
+    </ng-container>
 </mat-toolbar>
+
 
 <div class="div-padding-sm"></div>
 
@@ -92,7 +144,7 @@
         </div>
 
         <!-- Column with commentary, shown if a fragment from the edition of reference is clicked -->
-        <div *ngIf="toggle_commentary" class="col overflow_column">
+        <div *ngIf="commentary_enabled" class="col overflow_column">
             <!-- Show either fragment data or the fact that no fragment has been selected yet. -->
             <div *ngIf="this.fragment_clicked; else no_fragment_clicked">
                 <!-- Fragment information -->
@@ -136,7 +188,7 @@
     <hr>
 
     <!-- <div class="div-padding-lg"></div> -->
-    <div class="container-fluid playground-height-padding" *ngIf="toggle_playground">               
+    <div class="container-fluid playground-height-padding" *ngIf="playground_enabled">               
         <div class="row">
             <!-- Possiblity to select an editor to begin with -->
             <div class="col-2"> <ng-container *ngTemplateOutlet="select_author;context:{column: this.playground}"></ng-container> </div>
@@ -313,15 +365,17 @@
 <ng-template #select_editor let-column="column" let-hint="hint">   
     <mat-form-field class="selection-form">
         <mat-label>Edition</mat-label>
-        <mat-select *ngIf="column.name != 'playground'; else playground_editor_select">
-            <mat-option 
-              *ngFor="let editor of column.retrieved_editors" 
-              [value]="editor"
-              (click)="column.editor = editor.name"
-              (click)="this.request_fragments(column)">
-              {{ editor.name }}                     
-            </mat-option>
-        </mat-select>
+        <ng-container *ngIf="column.name != 'playground'; else playground_editor_select">
+            <mat-select>
+                <mat-option 
+                *ngFor="let editor of column.retrieved_editors" 
+                [value]="editor"
+                (click)="column.editor = editor.name"
+                (click)="this.request_fragments(column)">
+                {{ editor.name }}                     
+                </mat-option>
+            </mat-select>
+        </ng-container>
         <!-- For playground, retrieve fragment names instead if directly loading an edition -->
         <ng-template #playground_editor_select>
           <mat-select>

@@ -1,30 +1,40 @@
+@use '@angular/material' as mat;
+
 @import url('../app.component.scss');
 // Fragments component specific CSS. For more generic CSS, see ../app.component.scss.
 
+// @include mat.checkbox-density(1);
+// @include mat.mat-checkbox-label {
+//   color: white;
+// }
+
+
 /* Toolbar/header CSS */
 // Alignment
-mat-checkbox.btn label span.mat-checkbox-inner-container {
-  width: 28px;
-}
+// mat-checkbox.btn label span.mat-checkbox-inner-container {
+//   width: 28px;
+// }
 
-mat-checkbox.btn label span.mat-checkbox-label {
-  width: fit-content;
-}
+// mat-checkbox.btn label span.mat-checkbox-label {
+//   width: fit-content;
+// }
 
 // Hide checkmark
 mat-checkbox.btn label span span svg {
   display: none
 }
 
-// Onclick ripple effect
-button.btn span.mat-ripple {
-  width: inherit;
-}
+// // Onclick ripple effect
+// button.btn span.mat-ripple {
+//   width: inherit;
+// }
 
 // To show a little hand on <a> elements without href but with click events
 .a-void {
   cursor: pointer;
+  color: black;
 }
+
 
 /* Fragment and commentary column related CSS */
 
@@ -139,13 +149,13 @@ button.btn span.mat-ripple {
 }
 
 /* Navbar CSS */
-.mat-checkbox-layout {
-  margin-bottom: 0;
-}
+// .mat-checkbox-layout {
+//   margin-bottom: 0;
+// }
 
-.mat-checkbox-label {
-  width: fit-content;
-}
+// .mat-checkbox-label {
+//   width: fit-content;
+// }
 
 // Text component
 ::ng-deep .mat-line{
@@ -153,11 +163,11 @@ button.btn span.mat-ripple {
   white-space: pre-wrap !important;
 }
 
-::ng-deep  .mat-list .mat-list-item{
+::ng-deep  .mat-mdc-list .mat-mdc-list-item{
   height:initial!important;
 }
 
-.neat-lines .mat-list-item {
+.neat-lines .mat-mdc-list-item {
   height: auto;
   width: 100%;
 }
@@ -168,16 +178,17 @@ button.btn span.mat-ripple {
   /* width: 100%; */
 }
 
-.button-toolbar {
-  max-height: 10px;
-  min-height: 30px;
+.column-toolbar {
+  max-height: 30px;
+  // min-height: 30px;
   background: #9FA8DA;
   color: white;
-}
 
-.checkbox-button-toolbar{
-  // background-color: #3F51B5;
-  color: #FFFFFC;
-  font-family: 'Arial';
-  font-size: 13px;
+  // display : inline-block;
+  // // align-items : center;
+
+  // vertical-align: top !important;
+
+  // align-items: center;
+
 }

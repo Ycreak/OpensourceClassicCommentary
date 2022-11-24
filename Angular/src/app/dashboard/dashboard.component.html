@@ -1,9 +1,9 @@
-<!-- I think this can be removed. -->
-<!-- <script src="vendor/jquery/jquery.min.js"></script> -->
-<!-- <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script> -->
+<!-- Import the stylesheet for the Material icons -->
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
+
+<!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic"> -->
+
 <!-- Maybe we should get a local stylesheet? -->
 <!-- <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> -->
 
@@ -12,11 +12,12 @@
 <!-- Simple toolbar with all the different buttons and the title -->
 <mat-toolbar color="primary">
     <span style="width: fit-content; transform: translateY(-1px)">
-      <h3 class='h3-title'>OSCC Dashboard for user {{this.auth_service.current_user_name}} ({{this.auth_service.current_user_role}})</h3></span>
+      <h3 class='navbar'>OSCC Dashboard for user {{this.auth_service.current_user_name}} ({{this.auth_service.current_user_role}})</h3></span>
     <span class="spacer"></span>
     <!-- <button mat-button class="btn" (click)="this.api.request_authors(this.selected_fragment_data)">RELOAD AUTHORS</button> -->
-    <button mat-button class="btn" *ngIf="this.auth_service.current_user_role == 'teacher'" (click)="test('Navbar')">TEST</button>
-    <button mat-button class="btn" routerLink="/fragments">FRAGMENTS</button>
+    <button mat-button class="navbar button-padding" *ngIf="this.auth_service.current_user_role == 'teacher'" (click)="test('Navbar')">TEST</button>
+    <button mat-stroked-button class="navbar button-padding" routerLink="/fragments">FRAGMENTS</button>
+
 </mat-toolbar>
 
 <!-- Loading spinner to show data is being retrieved from the server -->
@@ -131,11 +132,11 @@
 
       <hr>
       <!-- Buttons to submit fragment data -->
-      <button mat-stroked-button color="primary" [disabled]="!fragment_form.valid" (click)="request_create_fragment(this.fragment_form)" 
+      <button mat-stroked-button class="button-padding" color="primary" [disabled]="!fragment_form.valid" (click)="request_create_fragment(this.fragment_form)" 
       *ngIf="this.auth_service.current_user_role == 'teacher' || this.auth_service.current_user_role == 'student'">Create Fragment</button>
-      <button mat-stroked-button color="primary" [disabled]="!fragment_form.valid" (click)="request_revise_fragment(this.fragment_form)" 
+      <button mat-stroked-button class="button-padding" color="primary" [disabled]="!fragment_form.valid" (click)="request_revise_fragment(this.fragment_form)" 
       *ngIf="this.auth_service.current_user_role == 'teacher' || this.auth_service.current_user_role == 'student'">Save Changes</button>
-      <button mat-stroked-button color="warn" [disabled]="!fragment_selected" (click)="request_delete_fragment(this.fragment_form)" 
+      <button mat-stroked-button class="button-padding" color="warn" [disabled]="!fragment_selected" (click)="request_delete_fragment(this.fragment_form)" 
       *ngIf="this.auth_service.current_user_role == 'teacher'">Delete Fragment</button>
 
       <hr>

@@ -5,11 +5,18 @@ body, h1, h2, h3, h4, h5 {
 
 h4 {
     font-size: 1.25rem;
+    font-family: "Roboto"; 
+    padding: 0.5em;
 }
 
-.h3-title {
-    color: white;
-}
+hr {
+    border : 0;
+    border-top : 1px solid #eee;
+    margin : 20px 0;
+    box-sizing : content-box;
+    height : 0;
+    overflow : visible
+  }
 
 /* HTML Elements */
 .overflow_column {
@@ -21,9 +28,11 @@ h4 {
     flex: 1 1 auto;
 }
 
+/*
 div {
     word-wrap: break-word;
 }
+*/
 
 // TODO: we can merge these div-padding functions with a variable for the padding amount
 .div-padding {
@@ -37,40 +46,45 @@ div {
 .div-padding-lg {
     padding: 0.5em;
 }
+  
+/**
+// .checkbox{
+//     background-color: #3F51B5;
+//     color: #FFFFFC;
+//     font-family: 'Arial';
+//     font-size: 13px;
+// }
+**/
 
 .navbar {
-    background-color: #3F51B5;
-}
-  
-.checkbox{
-    background-color: #3F51B5;
-    color: #FFFFFC;
-    font-family: 'Arial';
-    font-size: 13px;
-}
+    color: white !important;
+  }
 
+/* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
 span.mat-button-focus-overlay {
     width: inherit;
 }
 
-button {
+.button-padding {
     margin: 0.2em;
-    } 
+} 
 
+/*
 .btn {
-    color: lightsteelblue;
+    color: white;
 }
 
-button.btn:hover {
-    color: white
-}
+// button.btn:hover {
+//     color: white
+// }
+*/
 
 /** MATERIAL **/
-.mat-list-item:hover {
+.mat-mdc-list-item:hover {
     background-color: #6495ED;
 }
   
-.mat-form-field {
+.mat-mdc-form-field {
     padding-left: 1em;
     width: auto;
     size: 100%;
@@ -90,6 +104,6 @@ button.btn:hover {
     background: #3F51B5;
 }
 
-.mat-progress-bar {
+.mat-mdc-progress-bar {
     height: 1vh !important;
 }

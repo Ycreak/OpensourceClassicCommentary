@@ -54,8 +54,8 @@ export class FragmentsComponent implements OnInit {
   }; 
 
   // Toggle switches for the HTML columns/modes
-  toggle_commentary: boolean = true;
-  toggle_playground: boolean = false;
+  commentary_enabled: boolean = true;
+  playground_enabled: boolean = false;
   // Booleans for HTML related items
   spinner: boolean = false; // Boolean to toggle the spinner.
   server_down: boolean = true; // to indicate server failure
@@ -515,6 +515,22 @@ export class FragmentsComponent implements OnInit {
     let new_introduction = new Introductions();
     let my_introduction = new_introduction.dict[requested_introduction];
     this.dialog.open_custom_dialog(my_introduction);
+  }
+
+  /**
+   * Simple function to toggle the playground column
+   * @author Ycreak
+   */
+  private toggle_playground(): void {
+    this.playground_enabled = !this.playground_enabled;
+  }
+
+  /**
+   * Simple function to toggle the commentary column
+   * @author Ycreak
+   */
+  private toggle_commentary(): void {
+    this.commentary_enabled = !this.commentary_enabled;
   }
 
   /**

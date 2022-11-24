@@ -6,12 +6,12 @@
   white-space: pre-wrap !important;
 }
 
-::ng-deep  .mat-list .mat-list-item{
+::ng-deep  .mat-mdc-list .mat-mdc-list-item{
   height:initial!important;
 }
 
 /* STYLE CSS */
-.neat-lines .mat-list-item {
+.neat-lines .mat-mdc-list-item {
   height: auto;
   width: 100%;
 }
