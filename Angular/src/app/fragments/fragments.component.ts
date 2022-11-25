@@ -48,7 +48,7 @@ export class FragmentsComponent implements OnInit {
   //TODO: this should be system wide
   oscc_settings = { 
     dragging_disabled : false, 
-    fragment_order_gradient : true,
+    fragment_order_gradient : false,
     auto_scroll_linked_fragments : false,
     show_headers : true, 
     show_line_names : true, 
