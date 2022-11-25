@@ -107,3 +107,9 @@ span.mat-button-focus-overlay {
 .mat-mdc-progress-bar {
     height: 1vh !important;
 }
+
+// Dialogs
+::ng-deep mat-dialog-container {
+    width: fit-content !important;
+    height: fit-content !important;
+   }
