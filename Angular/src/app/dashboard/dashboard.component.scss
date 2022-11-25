@@ -84,3 +84,8 @@ tr.table-element-row:not(.table-expanded-row):active {
 .table-element-description-attribution {
   opacity: 0.5;
 }
+
+// Wysiwyg-editor
+::ng-deep div.ql-toolbar button.symbol-button {
+  transform: translateY(-0.2em);
+}

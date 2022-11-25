@@ -23,17 +23,17 @@ in plain HTML. -->
       <button class="ql-clean"></button>
       <div style="display: inline; float: left; cursor: default;">&nbsp; &nbsp;</div>
       <!-- Add custom buttons -->
-      <button (click)="add_symbol('⟨')">⟨</button>
-      <button (click)="add_symbol('⟩')">⟩</button>
-      <button (click)="add_symbol('†')">†</button>
+      <button class="symbol-button" style="transform: translateY(-0.3em)" (click)="add_symbol('⟨')">⟨</button>
+      <button class="symbol-button" style="transform: translateY(-0.3em)" (click)="add_symbol('⟩')">⟩</button>
+      <button class="symbol-button" style="transform: translateY(-0.3em)" (click)="add_symbol('†')">†</button>
       <div style="display: inline; float: left; cursor: default;">&nbsp; &nbsp;</div>
-      <button (click)="add_symbol('×')">×</button>
-      <button (click)="add_symbol('-')">-</button>
-      <button (click)="add_symbol('⏑')">⏑</button>
-      <button (click)="add_symbol('⏓')">⏓</button>
-      <button (click)="add_symbol('⏒')">⏒</button>
-      <button (click)="add_symbol('⏕')">⏕</button>
-      <button (click)="add_symbol('⏔')">⏔</button>
+      <button class="symbol-button" (click)="add_symbol('×')">×</button>
+      <button class="symbol-button" (click)="add_symbol('-')">-</button>
+      <button class="symbol-button" (click)="add_symbol('⏑')">⏑</button>
+      <button class="symbol-button" (click)="add_symbol('⏓')">⏓</button>
+      <button class="symbol-button" (click)="add_symbol('⏒')">⏒</button>
+      <button class="symbol-button" (click)="add_symbol('⏕')">⏕</button>
+      <button class="symbol-button" (click)="add_symbol('⏔')">⏔</button>
     </div>
   
   </quill-editor>
