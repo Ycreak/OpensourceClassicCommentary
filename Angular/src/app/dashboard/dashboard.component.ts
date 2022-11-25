@@ -253,15 +253,19 @@ export class DashboardComponent implements OnInit {
       // For the context, retrieve the context text field from the fragment form and pass that to the dialog
       let form_array_field = this.fragment_form.value.context[index].text;
       this.dialog.open_wysiwyg_dialog(form_array_field).subscribe(result => {
-        // Now update the correct field. This is done by getting the FormArray and patching the correct
-        // FormGroup within this array. This is to ensure dynamic updating on the frontend
-        let context_array = this.fragment_form.controls["context"] as FormArray;
-        context_array.controls[index].patchValue({['text']: result});
+        if (result){ // Result will only be provided when the user has acceped the changes
+          // Now update the correct field. This is done by getting the FormArray and patching the correct
+          // FormGroup within this array. This is to ensure dynamic updating on the frontend
+          let context_array = this.fragment_form.controls["context"] as FormArray;
+          context_array.controls[index].patchValue({['text']: result});
+        }
       });
     }
     else{ // The other content fields can be updated by just getting their content strings
       this.dialog.open_wysiwyg_dialog(this.fragment_form.value[field]).subscribe(result => {
-        this.update_form_field('fragment_form', field, result)
+        if (result){
+          this.update_form_field('fragment_form', field, result)
+        }
       });
     }
   }

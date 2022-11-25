@@ -37,6 +37,9 @@ in plain HTML. -->
     </div>
   
   </quill-editor>
-</div>
+  
+  <br>
+  <button mat-button [mat-dialog-close]="data.content">Accept</button>
+  <button mat-button [mat-dialog-close]="null">Cancel</button>
 
-<button mat-button [mat-dialog-close]="data.content">Accept</button>
+</div>
