@@ -66,6 +66,7 @@
     <button mat-stroked-button 
         class="navbar" 
         [matMenuTriggerFor]="menu">
+            <mat-icon *ngIf="this.window_size > 850" fontIcon="menu"></mat-icon>
             MENU
     </button>
 
