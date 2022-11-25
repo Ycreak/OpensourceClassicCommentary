@@ -97,13 +97,11 @@
     </div>
      
     <ng-container *ngFor="let column_to_display of this.columns">
-        <!-- Button to hide and show columns -->
-        <button mat-icon-button matSuffix 
-            (click)="column_to_display.visible = !column_to_display.visible" 
-            [attr.aria-pressed]="column_to_display.visible">
-                <mat-icon>{{column_to_display.visible ? 'visibility' : 'visibility_off'}}</mat-icon>
-        </button>
-        
+        <!-- Checkbox to hide and show columns -->
+        <mat-checkbox
+            [(ngModel)]="column_to_display.visible">
+        </mat-checkbox>
+
         <!-- FIXME: This is in a button, because i cannot match the font properly -->
         <button class='navbar' mat-button>
             {{column_to_display.author}}-{{column_to_display.title}}-{{column_to_display.editor}} <sup *ngIf=column_to_display.edited>edited</sup>
