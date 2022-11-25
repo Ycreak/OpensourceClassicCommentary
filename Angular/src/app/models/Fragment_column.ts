@@ -29,10 +29,10 @@ export class Fragment_column
     column_id : string; // has to be a string for cdkDrag
     name : string;
 
-    author : string;
-    title : string;
-    editor : string;
-    fragment_name : string;
+    author : string = 'Author';
+    title : string = 'Title';
+    editor : string = 'Editor';
+    fragment_name : string = 'Fragment';
 
     fragments : Fragment[] = [];
     fragment_names : string[] = [];

@@ -156,9 +156,9 @@
             <ng-template #no_fragment_clicked><h4>Click a fragment to show its content.</h4></ng-template>
 
             <!-- Show banner if no commentary available -->
-            <div *ngIf="!this.fragment_has_content(this.current_fragment);" class="alert alert-info" role="alert">
+            <!-- <div *ngIf="!this.fragment_has_content(this.current_fragment);" class="alert alert-info" role="alert">
                 No content is available yet for this specific fragment.
-            </div>
+            </div> -->
             
             <!-- Show the commentary for the clicked fragment -->
             <div *ngIf="this.fragment_has_content(this.current_fragment);">
@@ -187,13 +187,29 @@
 
     <!-- <div class="div-padding-lg"></div> -->
     <div class="container-fluid playground-height-padding" *ngIf="playground_enabled">               
-        <div class="row">
+        <div class="row">        
+
             <!-- Possiblity to select an editor to begin with -->
             <div class="col-2"> <ng-container *ngTemplateOutlet="select_author;context:{column: this.playground}"></ng-container> </div>
             <div class="col-2"> <ng-container *ngTemplateOutlet="select_title;context:{column: this.playground}"></ng-container> </div>
             <div class="col-2"> <ng-container *ngTemplateOutlet="select_editor;context:{column: this.playground}"></ng-container> </div>   
             <div class="col-2">
-                <mat-form-field class="select-form">
+                <button mat-stroked-button 
+                    class="button-padding"
+                    [matMenuTriggerFor]="fragment_selection">
+                        {{ this.playground.fragment_name }}
+                </button>
+                <mat-menu #fragment_selection="matMenu">
+                    <ng-container *ngFor="let fragment_name of this.playground.fragment_names">
+                        <button mat-menu-item
+                            (click)="this.playground.fragment_name = fragment_name"
+                            (click)="add_single_fragment_to_playground(this.playground, fragment_name)">
+                                {{ fragment_name }}
+                        </button>
+                    </ng-container>
+                </mat-menu>                               
+                
+                <!-- <mat-form-field class="select-form">
                     <mat-label>Select fragment</mat-label>
                     <mat-select>
                         <mat-option *ngFor="let fragment_name of this.playground.fragment_names" [value]="fragment_name"
@@ -202,7 +218,7 @@
                         </mat-option>
                     </mat-select>
                     <mat-hint>To add a single fragment</mat-hint>
-                </mat-form-field>  
+                </mat-form-field>   -->
             </div>
             <div class="col-2"> <button mat-button (click)="this.request_fragments(this.playground)">Add full edition</button> </div>
             <div class="col-2"> <button mat-button (click)="this.delete_clicked_item_from_playground(this.playground, 'fragment')">Delete clicked fragment</button> </div>
@@ -231,9 +247,10 @@
         <!-- For loop to print all the base selected fragments -->
         <!-- Recording the clicked fragment allows us to delete it when pressing the delete button -->
         <!-- Also, keep track whether we are dragging or not. If we drag, we do not want the click event to fire -->
-        <div *ngFor="let fragment of this.playground.fragments" class="playground zlayer" style="--layer: 2;" cdkDrag #draggable="cdk
-        "
-            
+        <div *ngFor="let fragment of this.playground.fragments" 
+            class="playground zlayer" 
+            style="--layer: 2;" 
+            cdkDrag 
             (cdkDragStarted)="this.playground_dragging = true"
             (click)="this.handle_fragment_click(fragment, true)"
             (click)="this.playground.clicked_fragment = fragment">
@@ -255,11 +272,15 @@
 
 <!-- Template for a fragment column -->
 <ng-template #fragment_column_template let-given_column="given_column" let-hint="hint">  
-    <div class="row">
-        <div class="col-4"> <ng-container *ngTemplateOutlet="select_author;context:{column: given_column}"></ng-container> </div>
-        <div class="col-4"> <ng-container *ngTemplateOutlet="select_title;context:{column: given_column}"></ng-container> </div>
-        <div class="col-4"> <ng-container *ngTemplateOutlet="select_editor;context:{column: given_column}"></ng-container> </div>        
-    </div>
+    
+    <!-- <div class="row"> -->
+        <ng-container *ngTemplateOutlet="select_author;context:{column: given_column}"></ng-container>
+        <ng-container *ngTemplateOutlet="select_title;context:{column: given_column}"></ng-container>
+        <ng-container *ngTemplateOutlet="select_editor;context:{column: given_column}"></ng-container>       
+    <!-- </div> -->
+
+    <div class="div-padding-sm"></div>
+
     <!-- Fragments loop to display all fragments of the chosen edition of reference -->
     <div class="row">
         <!-- Columns are connected via the cdkDropListConnectedTo property. -->
@@ -332,7 +353,24 @@
 
 <!-- Template for the select author mat-option field -->
 <ng-template #select_author let-column="column" let-hint="hint">  
-    <mat-form-field class="selection-form">
+
+    <button mat-stroked-button 
+        class="button-padding"
+        [matMenuTriggerFor]="author_selection">
+        {{ column.author }}
+    </button>
+    <mat-menu #author_selection="matMenu">
+    <ng-container *ngFor="let author of column.retrieved_authors">
+            <button mat-menu-item
+                (click)="column.author = author.name"
+                (click)="this.request_titles(column)">
+                    {{ author.name }}
+            </button>
+    </ng-container>
+    </mat-menu>
+
+    <!-- Deprecated since mat-form-field is so uncooperative now -->
+    <!-- <mat-form-field class="selection-form" appearance="outline">
         <mat-label>Author</mat-label>
         <mat-select>
             <mat-option *ngFor="let author of column.retrieved_authors" [value]="author"
@@ -342,12 +380,29 @@
             </mat-option>
         </mat-select>
         <mat-hint>{{hint}}</mat-hint>
-    </mat-form-field> 
+    </mat-form-field>  -->
 </ng-template>
 
 <!-- Template for the select text title mat-option field -->
 <ng-template #select_title let-column="column" let-hint="hint">   
-    <mat-form-field class="selection-form">
+    
+    <button mat-stroked-button
+        class="button-padding"
+        [matMenuTriggerFor]="title_selection">
+        {{ column.title }}
+    </button>
+    <mat-menu #title_selection="matMenu">
+        <ng-container *ngFor="let title of column.retrieved_titles">
+                <button mat-menu-item
+                    (click)="column.title = title.name"
+                    (click)="this.request_editors(column)">
+                        {{ title.name }}
+                </button>
+        </ng-container>
+    </mat-menu>    
+    
+    <!-- Deprecated since mat-form-field is so uncooperative now -->
+    <!-- <mat-form-field class="selection-form">
         <mat-label>Text</mat-label>
         <mat-select>
             <mat-option *ngFor="let title of column.retrieved_titles" [value]="title" 
@@ -357,12 +412,29 @@
             </mat-option>
         </mat-select>
         <mat-hint>{{hint}}</mat-hint>
-    </mat-form-field>
+    </mat-form-field> -->
 </ng-template>
 
 <!-- Template for the select editor mat-option field -->
 <ng-template #select_editor let-column="column" let-hint="hint">   
-    <mat-form-field class="selection-form">
+    
+    <button mat-stroked-button
+        class="button-padding" 
+        [matMenuTriggerFor]="editor_selection">
+        {{ column.editor }}
+    </button>
+    <mat-menu #editor_selection="matMenu">
+        <ng-container *ngFor="let editor of column.retrieved_editors">
+                <button mat-menu-item
+                    (click)="column.editor = editor.name"
+                    (click)="this.handle_editor_click(column)">
+                        {{ editor.name }}
+                </button>
+        </ng-container>
+    </mat-menu>          
+    
+    <!-- Deprecated since mat-form-field is so uncooperative now -->
+    <!-- <mat-form-field class="selection-form">
         <mat-label>Edition</mat-label>
         <ng-container *ngIf="column.name != 'playground'; else playground_editor_select">
             <mat-select>
@@ -375,7 +447,6 @@
                 </mat-option>
             </mat-select>
         </ng-container>
-        <!-- For playground, retrieve fragment names instead if directly loading an edition -->
         <ng-template #playground_editor_select>
           <mat-select>
             <mat-option 
@@ -389,7 +460,7 @@
         </ng-template>
 
         <mat-hint>{{hint}}</mat-hint>
-    </mat-form-field>
+    </mat-form-field> -->
 </ng-template>
        
 <!-- Template to show fragment content from the given fragment in a mat expansion panel -->

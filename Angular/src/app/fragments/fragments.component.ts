@@ -267,6 +267,23 @@ export class FragmentsComponent implements OnInit {
   }
 
   /**
+   * Function to handle what happens when an editor is selected in HTML.
+   * @param fragment selected by the user
+   * @author Ycreak
+   */
+  private handle_editor_click(column): void {
+    // If we are in the playground, we request fragment names. Else we request fragments.
+    if ( column.name == 'playground' ) {
+      this.request_fragment_names(column)
+    }
+    else{
+      this.request_fragments(column)
+    }
+  }
+
+
+
+  /**
    * Function to handle what happens when a fragment is selected in HTML.
    * @param fragment selected by the user
    * @author Ycreak
@@ -351,7 +368,7 @@ export class FragmentsComponent implements OnInit {
     this.column_identifier += 1;
 
     // Create new column with the appropriate name. TODO: create better identifiers than simple integers
-    let new_fragment_column = new Fragment_column(String(this.column_identifier),'', '', '', '');
+    let new_fragment_column = new Fragment_column(String(this.column_identifier),'', 'Author', 'Title', 'Editor');
     this.columns.push(new_fragment_column)    
     this.request_authors(new_fragment_column);
     // And update the connected columns list
