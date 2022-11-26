@@ -357,7 +357,10 @@
     <button mat-stroked-button 
         class="button-padding"
         [matMenuTriggerFor]="author_selection">
-        {{ column.author }}
+        <div>
+            <span style="vertical-align: middle">{{ column.author }}</span>
+            <mat-icon fontIcon="expand_more" style="float: right"></mat-icon>
+        </div>
     </button>
     <mat-menu #author_selection="matMenu">
     <ng-container *ngFor="let author of column.retrieved_authors">
@@ -389,7 +392,10 @@
     <button mat-stroked-button
         class="button-padding"
         [matMenuTriggerFor]="title_selection">
-        {{ column.title }}
+        <div>
+            <span style="vertical-align: middle">{{ column.title }}</span>
+            <mat-icon fontIcon="expand_more" style="float: right"></mat-icon>
+        </div>
     </button>
     <mat-menu #title_selection="matMenu">
         <ng-container *ngFor="let title of column.retrieved_titles">
@@ -421,7 +427,10 @@
     <button mat-stroked-button
         class="button-padding" 
         [matMenuTriggerFor]="editor_selection">
-        {{ column.editor }}
+        <div>
+            <span style="vertical-align: middle">{{ column.editor }}</span>
+            <mat-icon fontIcon="expand_more" style="float: right"></mat-icon>
+        </div>
     </button>
     <mat-menu #editor_selection="matMenu">
         <ng-container *ngFor="let editor of column.retrieved_editors">
