@@ -12,10 +12,11 @@
 <!-- Simple toolbar with all the different buttons and the title -->
 <mat-toolbar color="primary">
     <span style="width: fit-content; transform: translateY(-1px)">
-      <h3 class='navbar'>OSCC Dashboard for user {{this.auth_service.current_user_name}} ({{this.auth_service.current_user_role}})</h3></span>
+      <h3 class='navbar'>OSCC Dashboard for user {{this.auth_service.current_user_name}} ({{this.auth_service.current_user_role}})</h3>
+    </span>
     <span class="spacer"></span>
     <!-- <button mat-button class="btn" (click)="this.api.request_authors(this.selected_fragment_data)">RELOAD AUTHORS</button> -->
-    <button mat-button class="navbar button-padding" *ngIf="this.auth_service.current_user_role == 'teacher'" (click)="test('Navbar')">TEST</button>
+    <button mat-stroked-button class="navbar button-padding" *ngIf="this.auth_service.current_user_role == 'teacher'" (click)="test('Navbar')">TEST</button>
     <button mat-stroked-button class="navbar button-padding" routerLink="/fragments">FRAGMENTS</button>
 
 </mat-toolbar>
@@ -32,11 +33,6 @@
 </div>
 
 <!-- TAB GROUPS TO ENTER DATA -->
-
-
-<!-- <div>
-  <st-editor [(ngModel)]="content" [config]="WYSIWYG_editor"></st-editor>
-</div> -->
 
 <!-- FRAGMENT PANEL -->
 <div class="container-fluid">
@@ -116,7 +112,7 @@
       </mat-form-field>
   
       <mat-form-field>
-          <mat-label>Fragment</mat-label>
+          <mat-label>Select fragment</mat-label>
           <mat-select [(ngModel)]="this.selected_fragment_data.fragment_name" ngDefaultControl>
               <mat-option *ngFor="let fragment_name of this.selected_fragment_data.retrieved_fragment_names" [value]="fragment_name"
                 (click)="this.selected_fragment_data.fragment_name = fragment_name"

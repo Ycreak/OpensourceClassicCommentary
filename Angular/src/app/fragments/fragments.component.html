@@ -186,45 +186,46 @@
     <!-- Row to show the playground -->
     <hr>
 
-    <!-- <div class="div-padding-lg"></div> -->
     <div class="container-fluid playground-height-padding" *ngIf="playground_enabled">               
+        <!-- First we display all buttons to control the playground -->
         <div class="row">        
-
-            <!-- Possiblity to select an editor to begin with -->
-            <div class="col-2"> <ng-container *ngTemplateOutlet="select_author;context:{column: this.playground}"></ng-container> </div>
-            <div class="col-2"> <ng-container *ngTemplateOutlet="select_title;context:{column: this.playground}"></ng-container> </div>
-            <div class="col-2"> <ng-container *ngTemplateOutlet="select_editor;context:{column: this.playground}"></ng-container> </div>   
-            <div class="col-2">
+            <!-- The first row contains the edition/fragment selection -->
+            <div class="col-3"> <ng-container *ngTemplateOutlet="select_author;context:{column: this.playground}"></ng-container> </div>
+            <div class="col-3"> <ng-container *ngTemplateOutlet="select_title;context:{column: this.playground}"></ng-container> </div>
+            <div class="col-3"> <ng-container *ngTemplateOutlet="select_editor;context:{column: this.playground}"></ng-container> </div>   
+            
+            <div class="col-3">
                 <button mat-stroked-button 
                     class="button-padding"
                     [matMenuTriggerFor]="fragment_selection">
-                        {{ this.playground.fragment_name }}
+                    {{ this.playground.fragment_name }}
+                    <mat-icon fontIcon="expand_more" style="float: right"></mat-icon>
                 </button>
                 <mat-menu #fragment_selection="matMenu">
                     <ng-container *ngFor="let fragment_name of this.playground.fragment_names">
                         <button mat-menu-item
                             (click)="this.playground.fragment_name = fragment_name"
                             (click)="add_single_fragment_to_playground(this.playground, fragment_name)">
-                                {{ fragment_name }}
+                            {{ fragment_name }}
                         </button>
                     </ng-container>
                 </mat-menu>                               
-                
-                <!-- <mat-form-field class="select-form">
-                    <mat-label>Select fragment</mat-label>
-                    <mat-select>
-                        <mat-option *ngFor="let fragment_name of this.playground.fragment_names" [value]="fragment_name"
-                            (click)="add_single_fragment_to_playground(this.playground, fragment_name)">
-                            {{ fragment_name }} 
-                        </mat-option>
-                    </mat-select>
-                    <mat-hint>To add a single fragment</mat-hint>
-                </mat-form-field>   -->
             </div>
-            <div class="col-2"> <button mat-button (click)="this.request_fragments(this.playground)">Add full edition</button> </div>
-            <div class="col-2"> <button mat-button (click)="this.delete_clicked_item_from_playground(this.playground, 'fragment')">Delete clicked fragment</button> </div>
+        </div>
 
-            <!-- Possibility to add a little note -->
+        <div class="div-padding-sm"></div>
+
+        <div class="row">        
+            <!-- The second row contains all buttons to control the flow of fragments and notes -->
+            <div class="col-3"> <button mat-stroked-button (click)="this.request_fragments(this.playground)">Add selected edition</button> </div>
+            <div class="col-3"> <button mat-stroked-button color="accent" (click)="this.delete_clicked_item_from_playground(this.playground, 'fragment')">Delete clicked fragment</button> </div>
+            <div class="col-3"> <button mat-stroked-button color="accent" (click)="this.delete_clicked_item_from_playground(this.playground, 'note')">Delete clicked note</button> </div>
+            <div class="col-3"> <button mat-stroked-button color="warn" (click)="this.playground.fragments = []; this.playground.note_array = [];">Clear playground</button> </div>
+        </div>
+        
+        <div class="div-padding-lg"></div>
+        <!-- Possibility to add a little note -->
+        <div class="row">        
             <div mat-dialog-content class="col-6">
                 <mat-form-field class="input-form" style="--width: 100%;">
                     <input matInput placeholder="Add a note" ngDefaultControl [(ngModel)]='note'>
@@ -233,11 +234,7 @@
                     </button>
                     <mat-hint>To organise your edition</mat-hint>
                 </mat-form-field>               
-            </div>
-            <div class="col-2"> <button mat-button (click)="this.delete_clicked_item_from_playground(this.playground, 'note')">Delete clicked note</button> </div>
-            <div class="col-2"> <button mat-button (click)="this.playground.fragments = []; this.playground.note_array = [];">Clear playground</button> </div>
-            <!-- <div class="col-2"> <button mat-button (click)="this.playground.fragments = []; this.playground.note_array = [];">Retrieve commentary</button> </div> -->
-  
+            </div>  
         </div>
 
         <hr>
@@ -367,7 +364,13 @@
     <ng-container *ngFor="let author of column.retrieved_authors">
             <button mat-menu-item
                 (click)="column.author = author.name"
-                (click)="this.request_titles(column)">
+                (click)="this.request_titles(column)"
+                
+                (click)="column.title = 'Title'"
+                (click)="column.retrieved_titles = []"
+
+                (click)="column.editor = 'Editor'"
+                (click)="column.retrieved_editors = []">
                     {{ author.name }}
             </button>
     </ng-container>
@@ -402,7 +405,10 @@
         <ng-container *ngFor="let title of column.retrieved_titles">
                 <button mat-menu-item
                     (click)="column.title = title.name"
-                    (click)="this.request_editors(column)">
+                    (click)="this.request_editors(column)"
+                    
+                    (click)="column.editor = 'Editor'"
+                    (click)="column.retrieved_editors = []">
                         {{ title.name }}
                 </button>
         </ng-container>
