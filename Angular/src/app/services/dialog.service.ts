@@ -72,7 +72,6 @@ export class DialogService {
    */
   public open_settings_dialog(settings): Observable<string>{
     const dialogRef = this.dialog.open(SettingsDialog, {
-      disableClose: true, //FIXME: this is a hack. clicking outside should return the data to the user
       width: 'auto',
       height: 'auto',
       data: settings
