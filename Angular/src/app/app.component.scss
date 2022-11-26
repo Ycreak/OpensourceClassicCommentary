@@ -25,7 +25,9 @@ hr {
 }
 
 .spacer {
+    display: inline-flex;
     flex: 1 1 auto;
+    width: 1em;
 }
 
 /*
@@ -137,3 +139,9 @@ span.mat-button-focus-overlay {
 ::ng-deep div.settings-dialog-content {
     margin-bottom: 0.5em;
 }
+
+// Dialogs
+::ng-deep mat-dialog-container {
+    width: fit-content !important;
+    height: fit-content !important;
+   }
