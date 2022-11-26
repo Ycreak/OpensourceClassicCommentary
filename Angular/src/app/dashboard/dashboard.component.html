@@ -258,6 +258,7 @@
               <mat-label><b>Fragment translation</b></mat-label>
               <textarea matInput type="text" formControlName="translation" id="FT" [matKeyboard]="'OSCC'"></textarea>
             </mat-form-field>
+            <div class="spacer"></div>
             <button mat-button (click)="request_wysiwyg_dialog('translation')">Rich editor</button>
 
             <div class="div-padding-sm"></div>
@@ -266,6 +267,7 @@
               <mat-label><b>Fragment apparatus criticus</b></mat-label>
               <textarea matInput type="text" formControlName="apparatus" id="FA" [matKeyboard]="'OSCC'"></textarea>
             </mat-form-field>
+            <div class="spacer"></div>
             <button mat-button (click)="request_wysiwyg_dialog('apparatus')">Rich editor</button>
 
             <div class="div-padding-sm"></div>
@@ -274,6 +276,7 @@
               <mat-label><b>Fragment differences</b></mat-label>
               <textarea matInput type="text" formControlName="differences" id="FD" [matKeyboard]="'OSCC'"></textarea>
             </mat-form-field>
+            <div class="spacer"></div>
             <button mat-button (click)="request_wysiwyg_dialog('differences')">Rich editor</button>
 
             <div class="div-padding-sm"></div>
@@ -282,6 +285,7 @@
               <mat-label><b>Fragment commentary</b></mat-label>
               <textarea matInput type="text" formControlName="commentary" id="FC" [matKeyboard]="'OSCC'"></textarea>
             </mat-form-field>
+            <div class="spacer"></div>
             <button mat-button (click)="request_wysiwyg_dialog('commentary')">Rich editor</button>
 
             <div class="div-padding-sm"></div>
@@ -289,7 +293,8 @@
             <mat-form-field class="input-form-full-width">
               <mat-label><b>Fragment reconstruction</b></mat-label>
               <textarea matInput type="text" formControlName="reconstruction" id="FR" [matKeyboard]="'OSCC'"></textarea>
-            </mat-form-field> 
+            </mat-form-field>
+            <div class="spacer"></div> 
             <button mat-button (click)="request_wysiwyg_dialog('reconstruction')">Rich editor</button>
 
           </form>

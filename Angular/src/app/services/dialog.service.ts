@@ -53,9 +53,6 @@ export class DialogService {
   public open_wysiwyg_dialog(content): Observable<string>{
     
     const dialogRef = this.dialog.open(WYSIWYGDialog, {
-      disableClose: true, //FIXME: this is a hack. clicking outside should return the data to the user
-      width: '90%',
-      height: '75%',
       data: {
         content: content,
       }
