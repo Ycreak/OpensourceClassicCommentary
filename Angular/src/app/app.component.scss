@@ -107,3 +107,33 @@ span.mat-button-focus-overlay {
 .mat-mdc-progress-bar {
     height: 1vh !important;
 }
+
+/** Settings dialog header **/
+::ng-deep div.settings-dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-left: 1em;
+    color: white;
+    background-color: var(--bs-pink);
+}
+::ng-deep div.settings-dialog-header h2 {
+    font-size: 1.5em;
+}
+
+::ng-deep div.settings-dialog-header button {
+    display: inline-flex;
+} 
+
+// Disable ripple effect on autofocus
+::ng-deep div.settings-dialog-header button:focus { 
+    --mat-mdc-button-persistent-ripple-color: none;
+}
+// Reenables the effect on focus
+::ng-deep div.settings-dialog-header button:hover { 
+    --mat-mdc-button-persistent-ripple-color: black !important;
+}
+
+::ng-deep div.settings-dialog-content {
+    margin-bottom: 0.5em;
+}
