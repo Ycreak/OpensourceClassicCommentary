@@ -110,7 +110,17 @@ span.mat-button-focus-overlay {
     height: 1vh !important;
 }
 
-/** Settings dialog header **/
+/** Dialogs **/
+::ng-deep mat-dialog-container {
+    width: fit-content !important;
+    height: fit-content !important;
+   }
+
+::ng-deep div.force-dialog-padding {
+    padding: 20px 24px 20px 24px !important;
+}
+
+/* Settings dialog */
 ::ng-deep div.settings-dialog-header {
     display: flex;
     justify-content: space-between;
@@ -139,9 +149,3 @@ span.mat-button-focus-overlay {
 ::ng-deep div.settings-dialog-content {
     margin-bottom: 0.5em;
 }
-
-// Dialogs
-::ng-deep mat-dialog-container {
-    width: fit-content !important;
-    height: fit-content !important;
-   }
