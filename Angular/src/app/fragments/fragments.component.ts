@@ -506,9 +506,11 @@ export class FragmentsComponent implements OnInit {
    */
   public open_settings(): void {
     this.dialog.open_settings_dialog(this.oscc_settings).subscribe((result) => {
-      this.oscc_settings.dragging_disabled = result['dragging_disabled'];
-      this.oscc_settings.fragment_order_gradient = result['fragment_order_gradient'];
-      this.oscc_settings.auto_scroll_linked_fragments = result['auto_scroll_linked_fragments'];
+      if ( result ) {
+        this.oscc_settings.dragging_disabled = result['dragging_disabled'];
+        this.oscc_settings.fragment_order_gradient = result['fragment_order_gradient'];
+        this.oscc_settings.auto_scroll_linked_fragments = result['auto_scroll_linked_fragments'];
+      }
     });
   }
 
