@@ -351,14 +351,6 @@ export class FragmentsComponent implements OnInit {
   }
 
   /**
-   * Simple function to toggle the spinner
-   * @author Ycreak
-   */
-  public toggle_spinner(): void{
-    this.spinner = !this.spinner;
-  }
-
-  /**
    * This function adds a new column to the columns array
    * @author Ycreak
    */
@@ -721,7 +713,7 @@ export class FragmentsComponent implements OnInit {
    private retrieve_viewport_size(): number {
     try {
       return window.innerWidth
-    } catch (exceptionVar) {
+    } catch (e) {
       return 1100 // default-ish size
     }
   }
