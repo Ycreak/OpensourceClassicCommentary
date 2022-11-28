@@ -138,8 +138,13 @@
 <div class="container-fluid">
 
     <div class="row"> <!-- Row that contains the columns and commentary --> 
-        <div *ngFor="let column_to_display of this.columns" class="col overflow_column" [hidden]="!column_to_display.visible">
-                <ng-container [ngTemplateOutlet]='fragment_column_template' [ngTemplateOutletContext]="{given_column:column_to_display}"></ng-container>
+        <div *ngFor="let column_to_display of this.columns" 
+            class="col overflow_column" 
+            [hidden]="!column_to_display.visible" 
+            cdkScrollable>
+                <ng-container [ngTemplateOutlet]='fragment_column_template' 
+                    [ngTemplateOutletContext]="{given_column:column_to_display}">
+                </ng-container>
         </div>
 
         <!-- Column with commentary, shown if a fragment from the edition of reference is clicked -->
