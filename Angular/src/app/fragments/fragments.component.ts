@@ -487,8 +487,6 @@ export class FragmentsComponent implements OnInit {
    */
   public login(): void{
     const dialogRef = this.matdialog.open(LoginComponent, {
-      height: '60vh',
-      width: '40vw',
     });
   }
 
