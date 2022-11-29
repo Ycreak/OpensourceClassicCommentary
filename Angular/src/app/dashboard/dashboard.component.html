@@ -16,8 +16,8 @@
     </span>
     <span class="spacer"></span>
     <!-- <button mat-button class="btn" (click)="this.api.request_authors(this.selected_fragment_data)">RELOAD AUTHORS</button> -->
-    <button mat-stroked-button class="navbar button-padding" *ngIf="this.auth_service.current_user_role == 'teacher'" (click)="test('Navbar')">TEST</button>
-    <button mat-stroked-button class="navbar button-padding" routerLink="/fragments">FRAGMENTS</button>
+    <button mat-stroked-button class="navbar button-margin" *ngIf="this.auth_service.current_user_role == 'teacher'" (click)="test('Navbar')">TEST</button>
+    <button mat-stroked-button class="navbar button-margin" routerLink="/fragments">FRAGMENTS</button>
 
 </mat-toolbar>
 
@@ -128,11 +128,11 @@
 
       <hr>
       <!-- Buttons to submit fragment data -->
-      <button mat-stroked-button class="button-padding" color="primary" [disabled]="!fragment_form.valid" (click)="request_create_fragment(this.fragment_form)" 
+      <button mat-stroked-button class="button-margin" color="primary" [disabled]="!fragment_form.valid" (click)="request_create_fragment(this.fragment_form)" 
       *ngIf="this.auth_service.current_user_role == 'teacher' || this.auth_service.current_user_role == 'student'">Create Fragment</button>
-      <button mat-stroked-button class="button-padding" color="primary" [disabled]="!fragment_form.valid" (click)="request_revise_fragment(this.fragment_form)" 
+      <button mat-stroked-button class="button-margin" color="primary" [disabled]="!fragment_form.valid" (click)="request_revise_fragment(this.fragment_form)" 
       *ngIf="this.auth_service.current_user_role == 'teacher' || this.auth_service.current_user_role == 'student'">Save Changes</button>
-      <button mat-stroked-button class="button-padding" color="warn" [disabled]="!fragment_selected" (click)="request_delete_fragment(this.fragment_form)" 
+      <button mat-stroked-button class="button-margin" color="warn" [disabled]="!fragment_selected" (click)="request_delete_fragment(this.fragment_form)" 
       *ngIf="this.auth_service.current_user_role == 'teacher'">Delete Fragment</button>
 
       <hr>
@@ -769,8 +769,8 @@
                     <mat-label>New user role</mat-label>
                   </mat-form-field>
                   <br>
-                  <button class="button-padding" mat-stroked-button color="warn" (click)="request_delete_user(element)">Delete user</button>
-                  <button class="button-padding" mat-stroked-button color="primary" (click)="request_change_role(element)">Change role</button>    
+                  <button class="button-margin" mat-stroked-button color="warn" (click)="request_delete_user(element)">Delete user</button>
+                  <button class="button-margin" mat-stroked-button color="primary" (click)="request_change_role(element)">Change role</button>    
             
                 </div>
               

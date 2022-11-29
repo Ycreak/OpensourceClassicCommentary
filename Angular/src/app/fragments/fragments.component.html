@@ -33,7 +33,7 @@
     
     <button mat-stroked-button 
         *ngIf="!this.commentary_enabled; else commentary_disabled"
-        class="navbar button-padding" 
+        class="navbar button-margin" 
         (click)="this.toggle_commentary()">
             COMMENTARY
     </button>
@@ -41,7 +41,7 @@
     <ng-template #commentary_disabled>
         <button mat-flat-button 
         color="accent"
-        class="button-padding"
+        class="button-margin"
         (click)="this.toggle_commentary()">
             COMMENTARY
         </button>    
@@ -49,14 +49,14 @@
 
     <button mat-stroked-button 
         *ngIf="!this.playground_enabled; else playground_disabled"
-        class="navbar button-padding" 
+        class="navbar button-margin" 
         (click)="this.toggle_playground()">
             PLAYGROUND
     </button>
 
     <ng-template #playground_disabled>
         <button mat-flat-button 
-        class="button-padding"
+        class="button-margin"
         color="accent"
         (click)="this.toggle_playground()">
             PLAYGROUND
@@ -201,7 +201,8 @@
             
             <div class="col-3">
                 <button mat-stroked-button 
-                    class="button-padding"
+                    class="button-margin"
+                    class="button-margin"
                     [matMenuTriggerFor]="fragment_selection">
                     {{ this.playground.fragment_name }}
                     <mat-icon fontIcon="expand_more" style="float: right"></mat-icon>
@@ -358,7 +359,8 @@
 <ng-template #select_author let-column="column" let-hint="hint">  
 
     <button mat-stroked-button 
-        class="button-padding"
+        class="button-margin"
+        class="button-margin"
         [matMenuTriggerFor]="author_selection">
         <div>
             <span style="vertical-align: middle">{{ column.author }}</span>
@@ -399,7 +401,8 @@
 <ng-template #select_title let-column="column" let-hint="hint">   
     
     <button mat-stroked-button
-        class="button-padding"
+        class="button-margin"
+        class="button-margin"
         [matMenuTriggerFor]="title_selection">
         <div>
             <span style="vertical-align: middle">{{ column.title }}</span>
@@ -437,7 +440,8 @@
 <ng-template #select_editor let-column="column" let-hint="hint">   
     
     <button mat-stroked-button
-        class="button-padding" 
+        class="button-margin" 
+        class="button-margin" 
         [matMenuTriggerFor]="editor_selection">
         <div>
             <span style="vertical-align: middle">{{ column.editor }}</span>
