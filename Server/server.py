@@ -1,27 +1,51 @@
-# OSCC FLASK Server. Handles requests from the OSCC Angular Front end.
-# As of now is able to handle fragments and users.
+"""                       
+ ___  ___ _ ____   _____ _ __ _ __  _   _ 
+/ __|/ _ \ '__\ \ / / _ \ '__| '_ \| | | |
+\__ \  __/ |   \ V /  __/ |_ | |_) | |_| |
+|___/\___|_|    \_/ \___|_(_)| .__/ \__, |
+                             | |     __/ |
+                             |_|    |___/ 
+"""
 
-# Library Imports
-from flask import Flask, request
+# # # # # # 
+# OSCC FLASK Server. Handles requests from the OSCC Angular Front end
+#      -- As of now is able to handle fragments and users --  
+#                                                                       #
+#                        RUN INSTRUCTIONS                               #
+#   FLASK_APP=<filename>.py FLASK_ENV=development flask run --port 5003 #
+                                                              # # # # # #
+
+# TODO Token authentication between server and front-end
+# TODO Input sanitation
+# TODO Dont send passwords in plain text to the server
+
+# Library imports
+from flask import Flask
 from flask_cors import CORS
 from flask_restful import Api
-from flask_jsonpify import jsonify
+import logging
 
-import jsonpickle
+# Class imports
+import Server.config as conf
+from Server.couch import CouchAuthenticator
 
-# RUN INSTRUCTIONS
-# FLASK_APP=<filename>.py FLASK_ENV=development flask run --port 5002
-
+<<<<<<< Updated upstream
 # Class Impots
 from fragment_handling import Fragment_handler
 from user_handling import User_handler
 from Models.fragment import Fragment
 from Models.user import User
+=======
+from Server.endpoints.user import get_user, login_user, create_user, delete_user, update_user
+from Server.endpoints.fragment import get_author, get_title, get_editor, get_fragment, get_name, create_fragment, update_fragment, delete_fragment
+from Server.endpoints.fragment import link_fragment
+>>>>>>> Stashed changes
 
 app = Flask(__name__)
-api = Api(app) # TODO: Deprecated?
+api = Api(app)
 
 # Only allow requests from these specific origins
+<<<<<<< Updated upstream
 CORS(app, origins = ["http://localhost:4200", "https://oscc.lucdh.nl"])
 
 # Instantiate the fragment handler and user handler at server startup
@@ -153,8 +177,54 @@ def Create_simple_JSON_list(given_list, key):
 def ReqArg(arg):
     # Alias for the function below
     return request.args.get(arg, '')   
+=======
+CORS(app, origins=conf.TRUSTED_ORIGINS)
+
+# Initialize logging
+logging.basicConfig(filename=conf.LOG_FILE, level=logging.INFO)
+
+# Authenticate database server
+server = CouchAuthenticator()
+
+app.add_url_rule("/user/get", view_func=get_user, methods=["POST"])
+app.add_url_rule("/user/login", view_func=login_user, methods=["POST"])
+app.add_url_rule("/user/create", view_func=create_user, methods=["POST"])
+app.add_url_rule("/user/delete", view_func=delete_user, methods=["POST"])
+app.add_url_rule("/user/update", view_func=update_user, methods=["POST"])
+
+app.add_url_rule("/fragment/get/author", view_func=get_author, methods=["POST"])
+app.add_url_rule("/fragment/get/title", view_func=get_title, methods=["POST"])
+app.add_url_rule("/fragment/get/editor", view_func=get_editor, methods=["POST"])
+app.add_url_rule("/fragment/get", view_func=get_fragment, methods=["POST"])
+app.add_url_rule("/fragment/get/name", view_func=get_name, methods=["POST"])
+app.add_url_rule("/fragment/create", view_func=create_fragment, methods=["POST"])
+app.add_url_rule("/fragment/update", view_func=update_fragment, methods=["POST"])
+app.add_url_rule("/fragment/delete", view_func=delete_fragment, methods=["POST"])
+
+app.add_url_rule("/fragment/link", view_func=link_fragment, methods=["POST"])
+
+# @app.route("/automatic_fragment_linker", methods=['POST'])
+# def automatic_fragment_linker():
+#     # Route to allow for the creation of the given fragment
+#     response = frag_db.automatic_fragment_linker(Fragment(request.get_json()))
+#     return response  
+
+# @app.route("/revise_fragment", methods=['POST'])
+# def revise_fragment():
+#     # Route to allow for the revision of the given fragment
+#     received_fragment = Fragment(request.get_json())
+#     response = frag_db.revise_fragment(received_fragment)
+#     return response
+
+# @app.route("/delete_fragment", methods=['POST'])
+# def delete_fragment():
+#     # Route to allow for the deletion of the given fragment
+#     response = frag_db.delete_fragment(Fragment(request.get_json()))
+#     return response
+
+>>>>>>> Stashed changes
 
 # MAIN
-if __name__ == '__main__':
+if __name__ == '__main__': #TODO when dev exclude context
     context = ('/etc/letsencrypt/live/oscc.nolden.biz/cert.pem', '/etc/letsencrypt/live/oscc.nolden.biz/privkey.pem')
-    app.run(host='0.0.0.0', port=5003, ssl_context = context)
+    app.run(host='0.0.0.0', port=5003)

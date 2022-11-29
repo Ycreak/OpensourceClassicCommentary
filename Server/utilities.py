@@ -1,13 +1,22 @@
-# Utility functions
+"""
 
+<<<<<<< Updated upstream
 def Retrieve_data_from_db(db, selector, fields):
     """Function to retrieve data from the given database using a mongoDB search query
+=======
+       _   _ _ _ _   _                         
+      | | (_) (_) | (_)                        
+ _   _| |_ _| |_| |_ _  ___  ___   _ __  _   _ 
+| | | | __| | | | __| |/ _ \/ __| | '_ \| | | |
+| |_| | |_| | | | |_| |  __/\__ \_| |_) | |_| |
+ \__,_|\__|_|_|_|\__|_|\___||___(_) .__/ \__, |
+                                  | |     __/ |
+                                  |_|    |___/ 
+>>>>>>> Stashed changes
 
-    Args:
-        db (object): database object to be searched
-        selector (json): json object with data to be matched
-        fields (list): specification of fields to be returned (further filtering) 
+"""
 
+<<<<<<< Updated upstream
     Returns:
         [list]: of documents that fit the given search credentials 
     """
@@ -16,3 +25,33 @@ def Retrieve_data_from_db(db, selector, fields):
             'fields': fields,
             'limit': 1000
     })
+=======
+import hashlib, binascii, os, string
+from fuzzywuzzy import fuzz
+
+import Server.config as conf
+
+def verify_password(stored_pwd, provided_pwd) -> bool:
+    salt = stored_pwd[:64]
+    stored_pwd = stored_pwd[64:]
+    pwd_hash = hashlib.pbkdf2_hmac(conf.PWD_HASH_NAME, 
+                                   provided_pwd.encode('utf-8'), 
+                                   salt.encode('ascii'), 
+                                   conf.PWD_HASH_ITERATIONS)
+    pwd_hash = binascii.hexlify(pwd_hash).decode('ascii')
+    return pwd_hash == stored_pwd
+
+def hash_password(password) -> str:
+    salt = hashlib.sha256(os.urandom(60)).hexdigest().encode('ascii')
+    pwd_hash = hashlib.pbkdf2_hmac(conf.PWD_HASH_NAME, 
+                                   password.encode('utf-8'), 
+                                   salt, 
+                                   conf.PWD_HASH_ITERATIONS)
+    pwd_hash = binascii.hexlify(pwd_hash)
+    return (salt + pwd_hash).decode('ascii')
+
+def similarity(a, b):
+    a = a.translate(str.maketrans("", "", string.punctuation)).lower()
+    b = b.translate(str.maketrans("", "", string.punctuation)).lower()
+    return fuzz.token_sort_ratio(a,b)    
+>>>>>>> Stashed changes
