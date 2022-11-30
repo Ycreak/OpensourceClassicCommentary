@@ -12,6 +12,9 @@ Angular/.angular
 Server/env
 Server/__pycache__
 
+server_old/env
+server_old/__pycache__
+
 *.pyc
 
 Temp/
