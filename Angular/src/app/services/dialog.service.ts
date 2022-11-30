@@ -101,6 +101,7 @@ export class DialogService {
 @Component({
   selector: 'about-dialog',
   templateUrl: '../dialogs/about-dialog.html',
+  styleUrls: ['../dialogs/dialogs.scss'],
 })
 export class ShowAboutDialog {}
 
@@ -111,6 +112,7 @@ export class ShowAboutDialog {}
 @Component({
   selector: 'confirmation-dialog',
   templateUrl: '../dialogs/confirmation-dialog.html',
+  styleUrls: ['../dialogs/dialogs.scss'],
 })
 export class ConfirmationDialog {
   constructor(
@@ -129,6 +131,7 @@ export class ConfirmationDialog {
 @Component({
   selector: 'wysiwyg-dialog',
   templateUrl: '../dialogs/wysiwyg-dialog.html',
+  styleUrls: ['../dialogs/dialogs.scss'],
 })
 export class WYSIWYGDialog {
 
@@ -177,6 +180,7 @@ export class WYSIWYGDialog {
  @Component({
   selector: 'custom-dialog',
   templateUrl: '../dialogs/custom-dialog.html',
+  styleUrls: ['../dialogs/dialogs.scss'],
 })
 export class CustomDialog {
   constructor(
@@ -192,6 +196,7 @@ export class CustomDialog {
 @Component({
   selector: 'settings-dialog',
   templateUrl: '../dialogs/settings-dialog.html',
+  styleUrls: ['../dialogs/dialogs.scss'],
 })
 export class SettingsDialog {
   constructor(

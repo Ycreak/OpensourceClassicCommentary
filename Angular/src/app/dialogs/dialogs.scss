@@ -1,0 +1,39 @@
+/** Dialogs **/
+mat-dialog-container {
+    width: fit-content !important;
+    height: fit-content !important;
+   }
+
+div.force-dialog-padding {
+    padding: 20px 24px 20px 24px !important;
+}
+
+/* Settings dialog */
+div.settings-dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-left: 1em;
+    color: white;
+    background-color: var(--bs-pink);
+}
+div.settings-dialog-header h2 {
+    font-size: 1.5em;
+}
+
+div.settings-dialog-header button {
+    display: inline-flex;
+} 
+
+// Disable ripple effect on autofocus
+div.settings-dialog-header button:focus { 
+    --mat-mdc-button-persistent-ripple-color: none;
+}
+// Reenables the effect on focus
+div.settings-dialog-header button:hover { 
+    --mat-mdc-button-persistent-ripple-color: black !important;
+}
+
+div.settings-dialog-content {
+    margin-bottom: 0.5em;
+}
