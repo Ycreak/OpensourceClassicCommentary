@@ -11,6 +11,7 @@ Angular/.angular
 # Python
 Server/env
 Server/__pycache__
+Server/config.py
 
 server_old/env
 server_old/__pycache__
