@@ -67,9 +67,14 @@ span.mat-button-focus-overlay {
     width: inherit;
 }
 
-.button-padding {
+.button-margin {
     margin: 0.2em;
 } 
+
+.button-margin-extra {
+    margin-left: 10px;
+    margin-right: 10px;
+}
 
 /*
 .btn {
