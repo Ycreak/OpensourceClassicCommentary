@@ -175,7 +175,7 @@ export class ApiService {
   //TODO: what Observable type is a make_response?
   // Fragments
   public get_fragments(fragment: Fragment): Observable<Fragment[]> {
-    return this.http.post<Fragment[]>(this.FlaskURL + `fragments`, fragment, { observe: 'body', responseType: 'json'});
+    return this.http.post<Fragment[]>(this.FlaskURL + `fragment/get`, fragment, { observe: 'body', responseType: 'json'});
   }
   public get_fragment_content(fragment: Fragment): Observable<Fragment> {
     return this.http.post<Fragment>(this.FlaskURL + `fragment_content`, fragment, { observe: 'body', responseType: 'json'});

@@ -6,6 +6,6 @@ flask_jsonpify
 couchdb
 jsonpickle
 fuzzywuzzy
+python-Levenshtein
 logging
 pytest
-python-Levenshtein

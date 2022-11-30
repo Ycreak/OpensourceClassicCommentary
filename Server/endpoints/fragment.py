@@ -191,13 +191,9 @@ def link_fragment():
         for line in fragment.lines:
             for other in fragment_lst:
                 for other_line in other:
-
-
-
-    return "hello", 200
+                    return "hello", 200
 
 def update_fragment():
-
     return "", 200
 
 def delete_fragment():
