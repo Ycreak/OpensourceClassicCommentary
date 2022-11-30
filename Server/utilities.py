@@ -1,9 +1,5 @@
 """
 
-<<<<<<< Updated upstream
-def Retrieve_data_from_db(db, selector, fields):
-    """Function to retrieve data from the given database using a mongoDB search query
-=======
        _   _ _ _ _   _                         
       | | (_) (_) | (_)                        
  _   _| |_ _| |_| |_ _  ___  ___   _ __  _   _ 
@@ -12,20 +8,9 @@ def Retrieve_data_from_db(db, selector, fields):
  \__,_|\__|_|_|_|\__|_|\___||___(_) .__/ \__, |
                                   | |     __/ |
                                   |_|    |___/ 
->>>>>>> Stashed changes
 
 """
 
-<<<<<<< Updated upstream
-    Returns:
-        [list]: of documents that fit the given search credentials 
-    """
-    return db.find({
-            'selector': selector,
-            'fields': fields,
-            'limit': 1000 # Needs to be set explicitly. Default is 25 documents
-    })
-=======
 import hashlib, binascii, os, string
 from fuzzywuzzy import fuzz
 
@@ -54,4 +39,3 @@ def similarity(a, b):
     a = a.translate(str.maketrans("", "", string.punctuation)).lower()
     b = b.translate(str.maketrans("", "", string.punctuation)).lower()
     return fuzz.token_sort_ratio(a,b)    
->>>>>>> Stashed changes

@@ -181,12 +181,6 @@ class FragmentModel:
 # #     """    
 # #     def __init__(self, received_fragment):
     
-<<<<<<< Updated upstream
-        # Fragment meta data
-        if "_id" in received_fragment: 
-            assert isinstance(received_fragment['_id'], str)
-            self._id = received_fragment['_id']
-=======
 # #         print('#############################')
 # #         print(received_fragment['author'])
 
@@ -194,7 +188,6 @@ class FragmentModel:
 # #         if "id" in received_fragment: 
 # #             assert isinstance(received_fragment['id'], str)
 # #             self._id = received_fragment['id']
->>>>>>> Stashed changes
 
 # #         if "fragment_name" in received_fragment: 
 # #             assert isinstance(received_fragment['fragment_name'], str)
@@ -233,87 +226,6 @@ class FragmentModel:
 # #             assert isinstance(received_fragment['apparatus'], str)
 # #             self.apparatus = received_fragment['apparatus']
             
-<<<<<<< Updated upstream
-        if "commentary" in received_fragment: 
-            # assert isinstance(received_fragment['commentary'], str)
-            self.commentary = received_fragment['commentary']
-
-        if "reconstruction" in received_fragment: 
-            # assert isinstance(received_fragment['reconstruction'], str)
-            self.reconstruction = received_fragment['reconstruction']
-
-        if "context" in received_fragment: 
-            # assert isinstance(received_fragment['context'], list)
-            self.context = received_fragment['context']
-
-        if "lines" in received_fragment: 
-            # assert isinstance(received_fragment['lines'], list)
-            self.lines = received_fragment['lines']
-
-        # Fragment linking information
-        if "linked_fragments" in received_fragment: 
-            # assert isinstance(received_fragment['linked_fragments'], list)
-            # From Angular, we receive an JSON object (from the formbuilder)
-            # We must turn this into a set list again.
-            linked_fragment_list = []
-            for linked_fragment in received_fragment['linked_fragments']:
-                try:
-                    linked_fragment_list.append(linked_fragment['linked_fragment_id'])
-                except:
-                    pass
-            self.linked_fragments = list(set(linked_fragment_list)) # Angular needs a tissue for its issue
-
-        if "linked_bib_entries" in received_fragment: 
-            # assert isinstance(received_fragment['linked_bib_entries'], list)
-            # From Angular, we receive an JSON object (from the formbuilder)
-            # We must turn this into a set list again.
-            linked_bib_entries_list = []
-            for linked_bib_entry in received_fragment['linked_bib_entries']:
-                linked_bib_entries_list.append(linked_bib_entry['bib_id'])
-            self.linked_bib_entries = list(set(linked_bib_entries_list)) 
-
-    # Default fragment fields
-    fragment_id: str = ''
-    fragment_name: str = ''
-    author: str = ''
-    title: str = '' 
-    editor: str = '' 
-    translation: str = '' 
-    differences: str = '' 
-    apparatus: str = ''
-    commentary: str = '' 
-    reconstruction: str = '' 
-    status: str = ''
-    lock: str = ''
-    published: str = ''
-    context: list = [] 
-    lines: list = []
-    linked_fragments: list = []
-    linked_bib_entries: list = []
-
-    fragment_empty: dict = {
-        "fragment_name": "", 
-        "author": "",
-        "title": "",
-        "editor": "",
-        "translation": "",
-        "differences": "",
-        "apparatus": "",
-        "commentary": "",
-        "reconstruction":"",
-        "status": "",
-        "context":[
-        ],
-        "lines":[
-        ],
-        "linked_fragments":[
-        ],
-        "linked_bib_entries":[
-        ],
-        "lock": '',
-        "published": '',
-    }
-=======
 # #         if "commentary" in received_fragment: 
 # #             assert isinstance(received_fragment['commentary'], str)
 # #             self.commentary = received_fragment['commentary']
@@ -388,4 +300,3 @@ class FragmentModel:
 #         ],
 #         "lock": 0,
 #     }
->>>>>>> Stashed changes

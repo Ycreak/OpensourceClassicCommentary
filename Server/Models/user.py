@@ -1,5 +1,3 @@
-<<<<<<< Updated upstream
-=======
 """                                
                      _      _         __                              
                     | |    | |       / /                              
@@ -29,7 +27,6 @@ class Role(object):
     GUEST = "guest"
 
 @dataclass
->>>>>>> Stashed changes
 class User:
     id: str = None
     username: str = None
