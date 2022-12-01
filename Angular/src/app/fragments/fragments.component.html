@@ -162,17 +162,17 @@
             <ng-template #no_fragment_clicked><h4>Click a fragment to show its content.</h4></ng-template>
 
             <!-- Show banner if no commentary available -->
-            <!-- <div *ngIf="!this.fragment_has_content(this.current_fragment);" class="alert alert-info" role="alert">
+            <div *ngIf="!this.current_fragment.has_content();" class="alert alert-info" role="alert">
                 No content is available yet for this specific fragment.
-            </div> -->
+            </div>
             
             <!-- Show the commentary for the clicked fragment -->
-            <div *ngIf="this.fragment_has_content(this.current_fragment);">
+            <div *ngIf="this.current_fragment.has_content();">
                 <ng-container [ngTemplateOutlet]='commentary_column_template' [ngTemplateOutletContext]="{given_fragment:this.current_fragment}"></ng-container>
             </div>
            
             <div *ngFor="let linked_fragment of this.commentary_column.linked_fragments_content">
-                <div *ngIf="this.fragment_has_content(linked_fragment);">
+                <div *ngIf="linked_fragment.has_content();">
                     <h5>Linked commentary from {{linked_fragment.author}}, {{linked_fragment.title}}, 
                         {{linked_fragment.editor}}, fragment {{linked_fragment.fragment_name}}</h5>
                     <ng-container [ngTemplateOutlet]='commentary_column_template' [ngTemplateOutletContext]="{given_fragment:linked_fragment}"></ng-container>    

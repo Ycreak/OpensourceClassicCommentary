@@ -22,6 +22,7 @@ import { Introductions } from '../models/Introductions';
 
 import { Text_column } from '../models/Text_column';
 import * as internal from 'stream'; // TODO: What is this?
+import { DateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'app-fragments',
@@ -105,7 +106,7 @@ export class FragmentsComponent implements OnInit {
     this.commentary_column = new Fragment_column('255', '', '', '', '');
 
     // Create templates for the possible fragment columns
-    this.column1 = new Fragment_column('1', 'ETT', 'Ennius', 'Thyestes', 'TRF');
+    this.column1 = new Fragment_column('1', 'ETT', 'Ennius', 'Eumenides', 'TRF');
     // Push these to the columns array for later use in the HTML component
     this.columns.push(this.column1)
     // Request the fragments for the first column
@@ -113,8 +114,8 @@ export class FragmentsComponent implements OnInit {
     this.request_authors(this.column1)
     
     // And for the playground
-    this.playground = new Fragment_column('0', 'playground', 'Accius', 'Aegisthus', 'Dangel');
-    this.request_authors(this.playground)
+    // this.playground = new Fragment_column('0', 'playground', 'Accius', 'Aegisthus', 'Dangel');
+    // this.request_authors(this.playground)
     // this.request_fragments(this.playground);
 
     // Create an observable to check for the changing of window size
@@ -208,11 +209,20 @@ export class FragmentsComponent implements OnInit {
   private request_fragments(column: Fragment_column): void{
     this.utility.spinner_on();
     
+    // new Fragment(author=column.author, title=title, editor=editor, name=name)
     let api_data = this.utility.create_empty_fragment();
     api_data.author = column.author; api_data.title = column.title; api_data.editor = column.editor;
     
     this.api.get_fragments(api_data).subscribe(
-      fragment_list => { 
+      data => {
+        //TODO: can this be done automatically in the API?
+        let fragment_list = [];
+        for(let i in data){
+          let fragment = new Fragment()
+          fragment.set_fragment(data[i])
+          fragment_list.push(fragment)
+        }
+
         // Format the data just how we want it
         fragment_list = this.add_HTML_to_lines(fragment_list);
         fragment_list = fragment_list.sort(this.utility.sort_fragment_array_numerically);
@@ -235,6 +245,7 @@ export class FragmentsComponent implements OnInit {
           column.fragments = column.fragments.concat(fragment_list);
         }
         this.utility.spinner_off(); 
+        
       }
     );  
   }
@@ -302,25 +313,25 @@ export class FragmentsComponent implements OnInit {
 
         this.fragment_clicked = true;   
         this.current_fragment = fragment
-        // Request content from this fragment
-        this.request_fragment_content(fragment)
-        // this.request_fragment_content(this.commentary_column.clicked_fragment)
-  
+          
         // Reset the commentary column and its linked fragments
         this.commentary_column.linked_fragments_content = [];
   
+        /**
+         * TODO: migrate the linked fragment procedure to the new Flask interface
         // Now retrieve all linked fragments to show their content in the commentary column
         for(let i in fragment.linked_fragments){
           let linked_fragment = this.utility.create_empty_fragment()
           linked_fragment.fragment_id = fragment.linked_fragments[i]
           // Request the fragment
-          this.api.get_specific_fragment(linked_fragment).subscribe(
-            data => {
-              linked_fragment = data;
-              // and push it to the commentary column
-              this.commentary_column.linked_fragments_content.push(linked_fragment)
-              this.utility.spinner_off();
-            });
+          //TODO: migrate
+          // this.api.get_specific_fragment(linked_fragment).subscribe(
+          //   data => {
+          //     linked_fragment = data;
+          //     // and push it to the commentary column
+          //     this.commentary_column.linked_fragments_content.push(linked_fragment)
+          //     this.utility.spinner_off();
+          //   });
         }
         
         // The next part handles the colouring of clicked and referenced fragments.
@@ -329,7 +340,9 @@ export class FragmentsComponent implements OnInit {
         // Second, colour the clicked fragment
         fragment.colour = '#3F51B5';
         // Lastly, colour the linked fragments
-        this.colour_linked_fragments(fragment)
+        // TODO: migrate
+        // this.colour_linked_fragments(fragment)
+        */
 
         if(!from_playground && this.oscc_settings.auto_scroll_linked_fragments){ // Only scroll when not in playground
           this.scroll_linked_fragments(fragment)
@@ -563,7 +576,7 @@ export class FragmentsComponent implements OnInit {
    */  
   private test(thing): void{
     console.log('############ TESTING ############')
-    // console.log(this.commentary_column);
+    console.log(this.columns);
 
     // console.log(this.columns[thing.container.id])
     // console.log(this.columns[thing.previousContainer.id])
@@ -642,6 +655,7 @@ export class FragmentsComponent implements OnInit {
    * @author Ycreak
    */
    private add_HTML_to_lines(array: Fragment[]): Fragment[]{        
+    
     // For each element in the given array
     for(let fragment in array){
       // Loop through all fragments      

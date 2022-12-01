@@ -121,6 +121,34 @@ export class ApiService {
   }
 
   /**
+   * Given the author, title and editor, request the names of the fragments from the server.
+   * @param column Fragment_column object with all necessary data
+   * @author Ycreak
+   */
+  //  public request_fragments(column: Fragment_column): Observable<Fragment[]> {
+  //   this.utility.spinner_on()    
+    
+  //   let fragment_list = []
+
+  //   this.get_fragments(column).subscribe({
+      
+  //     next: (data) => {
+        
+  //       for ( let i in data ) {
+  //         let fragment = new Fragment()
+  //         fragment.set_fragment(data[i])
+  //         fragment_list.push(fragment)        
+  //       }
+  //       this.utility.spinner_off()
+  //       return fragment_list 
+  //     },
+  //     error: (err) => this.utility.handle_error_message(err)
+  //     }
+      
+  //     );
+  // }
+
+  /**
    * Requests a specific fragment from the database
    * @param column Fragment_column object with all necessary data
    * @author Ycreak CptVickers
@@ -178,8 +206,8 @@ export class ApiService {
   public get_editors(fragment: object): Observable<string[]> {
     return this.http.post<string[]>(this.FlaskURL + `fragment/get/editor`, fragment, { observe: 'body', responseType: 'json'});
   }
-  public get_fragments(fragment: Fragment): Observable<Fragment[]> {
-    return this.http.post<Fragment[]>(this.FlaskURL + `fragment/get`, fragment, { observe: 'body', responseType: 'json'});
+  public get_fragments(fragment: object): Observable<object[]> {
+    return this.http.post<object[]>(this.FlaskURL + `fragment/get`, fragment, { observe: 'body', responseType: 'json'});
   }
   public get_fragment_content(fragment: Fragment): Observable<Fragment> {
     return this.http.post<Fragment>(this.FlaskURL + `fragment_content`, fragment, { observe: 'body', responseType: 'json'});
