@@ -12,7 +12,7 @@
 #      -- As of now is able to handle fragments and users --  
 #                                                                       #
 #                        RUN INSTRUCTIONS                               #
-#   FLASK_APP=<filename>.py FLASK_ENV=development flask run --port 5003 #
+#   FLASK_APP=<filename>.py FLASK_DEBUG=1 flask run --port 5003         #
                                                               # # # # # #
 
 # TODO Token authentication between server and front-end
@@ -30,7 +30,7 @@ import Server.config as conf
 from Server.couch import CouchAuthenticator
 
 from Server.endpoints.user import get_user, login_user, create_user, delete_user, update_user
-from Server.endpoints.fragment import get_author, get_title, get_editor, get_fragment, get_name, create_fragment, update_fragment, delete_fragment
+from Server.endpoints.fragment import get_author, get_title, get_editor, get_fragment, get_fragment_name, create_fragment, update_fragment, delete_fragment
 from Server.endpoints.fragment import link_fragment
 
 app = Flask(__name__)
@@ -55,7 +55,7 @@ app.add_url_rule("/fragment/get/author", view_func=get_author, methods=["POST"])
 app.add_url_rule("/fragment/get/title", view_func=get_title, methods=["POST"])
 app.add_url_rule("/fragment/get/editor", view_func=get_editor, methods=["POST"])
 app.add_url_rule("/fragment/get", view_func=get_fragment, methods=["POST"])
-app.add_url_rule("/fragment/get/name", view_func=get_name, methods=["POST"])
+app.add_url_rule("/fragment/get/fragment_name", view_func=get_fragment_name, methods=["POST"])
 app.add_url_rule("/fragment/create", view_func=create_fragment, methods=["POST"])
 app.add_url_rule("/fragment/update", view_func=update_fragment, methods=["POST"])
 app.add_url_rule("/fragment/delete", view_func=delete_fragment, methods=["POST"])
