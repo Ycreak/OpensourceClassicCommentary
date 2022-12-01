@@ -287,15 +287,28 @@ export class UtilityService {
     return arr
   }
 
-  private get_offset( el ) {
-    var _x = 0;
-    var _y = 0;
-    while( el && !isNaN( el.offsetLeft ) && !isNaN( el.offsetTop ) ) {
-        _x += el.offsetLeft - el.scrollLeft;
-        _y += el.offsetTop - el.scrollTop;
-        el = el.offsetParent;
+  // private get_offset( el ) {
+  //   var _x = 0;
+  //   var _y = 0;
+  //   while( el && !isNaN( el.offsetLeft ) && !isNaN( el.offsetTop ) ) {
+  //       _x += el.offsetLeft - el.scrollLeft;
+  //       _y += el.offsetTop - el.scrollTop;
+  //       el = el.offsetParent;
+  //   }
+  //   return { top: _y, left: _x };
+  // }
+
+  /**
+   * Simple function that retrieves the viewport size
+   * @returns viewport size as integer
+   * @author Ycreak
+   */
+   public retrieve_viewport_size(): number {
+    try {
+      return window.innerWidth
+    } catch (e) {
+      return 1100 // default-ish size
     }
-    return { top: _y, left: _x };
   }
 
 }
