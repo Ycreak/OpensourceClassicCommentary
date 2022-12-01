@@ -94,7 +94,7 @@ def get_name():
     fragment_lst = fragments.filter(Fragment(author=author, title=title, editor=editor, name=name), sorted=True)
     if not fragment_lst:
         return make_response("Not found", 401)
-    return jsonify(list(set([frag.NAME for frag in fragment_lst]))), 200
+    return jsonify(list(set([frag.name for frag in fragment_lst]))), 200
 
 def get_fragment():
     author = None
