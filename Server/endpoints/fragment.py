@@ -50,7 +50,7 @@ def get_title():
     fragment_lst = fragments.filter(Fragment(author=author, title=title, editor=editor, name=name), sorted=True)
     if not fragment_lst:
         return make_response("Not found", 401)
-    return jsonify(list(set([frag.title for frag in fragment_lst]))), 200
+    return jsonify(sorted(set([frag.title for frag in fragment_lst]))), 200
 
 def get_editor():
     author = None
@@ -72,7 +72,7 @@ def get_editor():
     fragment_lst = fragments.filter(Fragment(author=author, title=title, editor=editor, name=name), sorted=True)
     if not fragment_lst:
         return make_response("Not found", 401)
-    return jsonify(list(set([frag.editor for frag in fragment_lst]))), 200
+    return jsonify(sorted(set([frag.editor for frag in fragment_lst]))), 200
 
 def get_name():
     author = None
