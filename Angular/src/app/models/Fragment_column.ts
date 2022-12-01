@@ -1,6 +1,7 @@
-import { Author } from './Author';
-import { Editor } from './Editor';
-import { Title } from './Title';
+// @deprecated
+// import { Author } from './Author';
+// import { Editor } from './Editor';
+// import { Title } from './Title';
 
 import { Fragment } from './Fragment';
 
@@ -37,9 +38,9 @@ export class Fragment_column
     fragments : Fragment[] = [];
     fragment_names : string[] = [];
 
-    retrieved_authors : Author[];
-    retrieved_titles : Title[];
-    retrieved_editors : Editor[];
+    retrieved_authors : string[];
+    retrieved_titles : string[];
+    retrieved_editors : string[];
     retrieved_fragment_names : string[];
 
     note_array : Array<string> = [];

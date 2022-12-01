@@ -151,7 +151,9 @@ export class FragmentsComponent implements OnInit {
    */
    private request_authors(column: Fragment_column): void{
     this.utility.spinner_on();
-    this.api.get_authors().subscribe(data => {
+    let api_data = this.utility.create_empty_fragment();
+
+    this.api.get_authors(api_data).subscribe(data => {
       this.server_down = false; //FIXME: needs to be handled properly
       // Enter this retrieved data in the correct column
       column.retrieved_authors = data;
@@ -165,8 +167,11 @@ export class FragmentsComponent implements OnInit {
    * @author Bors & Ycreak
    */
   private request_titles(column: Fragment_column): void{
+    //FIXME: we need to redesign angular now we have a good api
+    column.title = ''; column.editor = ''; column.fragment_name = '';
+    
     this.utility.spinner_on();
-    this.api.get_titles(column.author).subscribe(
+    this.api.get_titles(column).subscribe(
       data => {
         column.retrieved_titles = data; 
         this.utility.spinner_off(); 
@@ -180,8 +185,11 @@ export class FragmentsComponent implements OnInit {
    * @author Bors & Ycreak
    */
   private request_editors(column: Fragment_column): void{
+    //FIXME: we need to redesign angular now we have a good api
+    column.editor = ''; column.fragment_name = '';
+    
     this.utility.spinner_on();
-    this.api.get_editors(column.author, column.title).subscribe(
+    this.api.get_editors(column).subscribe(
       data => {
         column.retrieved_editors = data;
         this.utility.spinner_off(); 

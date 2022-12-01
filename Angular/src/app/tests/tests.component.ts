@@ -50,9 +50,11 @@ export class TestsComponent implements OnInit {
 
   public test_get_authors(): void{
     // Get authors check
-    this.api.get_authors().subscribe({
+    let api_data = this.utility.create_empty_fragment();
+
+    this.api.get_authors(api_data).subscribe({
       next: (authors) => {
-        if ( authors.some(el => el.name === 'Ennius') ) {
+        if ( authors.some(el => el === 'Ennius') ) {
           this.unit_tests.get_authors = true;
         }
       },
@@ -63,9 +65,12 @@ export class TestsComponent implements OnInit {
   }
   // Get titles check
   public test_get_titles(): void {
-    this.api.get_titles('Ennius').subscribe({
+    let api_data = this.utility.create_empty_fragment();
+    api_data.author = 'Ennius'
+
+    this.api.get_titles(api_data).subscribe({
       next: (titles) => {
-        if ( titles.some(el => el['name'] === 'Thyestes') ) {
+        if ( titles.some(el => el === 'Thyestes') ) {
           this.unit_tests.get_titles = true;
         }
       },
@@ -76,9 +81,12 @@ export class TestsComponent implements OnInit {
   }
   // Get editors check
   public test_get_editors(): void {
-    this.api.get_editors('Ennius', 'Thyestes').subscribe({
+    let api_data = this.utility.create_empty_fragment();
+    api_data.author = 'Ennius'; api_data.title = 'Thyestes'; 
+
+    this.api.get_editors(api_data).subscribe({
       next: (editors) => {
-        if ( editors.some(el => el['name'] === 'TRF') ) {
+        if ( editors.some(el => el === 'TRF') ) {
           this.unit_tests.get_editors = true;
         }
       },

@@ -370,7 +370,7 @@
     <mat-menu #author_selection="matMenu">
     <ng-container *ngFor="let author of column.retrieved_authors">
             <button mat-menu-item
-                (click)="column.author = author.name"
+                (click)="column.author = author"
                 (click)="this.request_titles(column)"
                 
                 (click)="column.title = 'Title'"
@@ -378,7 +378,7 @@
 
                 (click)="column.editor = 'Editor'"
                 (click)="column.retrieved_editors = []">
-                    {{ author.name }}
+                    {{ author }}
             </button>
     </ng-container>
     </mat-menu>
@@ -388,9 +388,9 @@
         <mat-label>Author</mat-label>
         <mat-select>
             <mat-option *ngFor="let author of column.retrieved_authors" [value]="author"
-                (click)="column.author = author.name"
+                (click)="column.author = author"
                 (click)="this.request_titles(column)">
-                {{ author.name }} 
+                {{ author }} 
             </mat-option>
         </mat-select>
         <mat-hint>{{hint}}</mat-hint>
@@ -412,12 +412,12 @@
     <mat-menu #title_selection="matMenu">
         <ng-container *ngFor="let title of column.retrieved_titles">
                 <button mat-menu-item
-                    (click)="column.title = title.name"
+                    (click)="column.title = title"
                     (click)="this.request_editors(column)"
                     
                     (click)="column.editor = 'Editor'"
                     (click)="column.retrieved_editors = []">
-                        {{ title.name }}
+                        {{ title }}
                 </button>
         </ng-container>
     </mat-menu>    
@@ -451,9 +451,9 @@
     <mat-menu #editor_selection="matMenu">
         <ng-container *ngFor="let editor of column.retrieved_editors">
                 <button mat-menu-item
-                    (click)="column.editor = editor.name"
+                    (click)="column.editor = editor"
                     (click)="this.handle_editor_click(column)">
-                        {{ editor.name }}
+                        {{ editor }}
                 </button>
         </ng-container>
     </mat-menu>          

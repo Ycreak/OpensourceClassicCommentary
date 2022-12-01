@@ -58,7 +58,7 @@ export class ApiService {
    */
   public request_authors(column: Fragment_column): void {
     this.utility.spinner_on();
-    this.get_authors().subscribe({
+    this.get_authors(column).subscribe({
       next: (data) => {
         column.retrieved_authors = data;
         this.utility.spinner_off();
@@ -75,12 +75,13 @@ export class ApiService {
    */
    public request_titles(column: Fragment_column): void {    
     this.utility.spinner_on()
-    this.get_titles(column.author).subscribe(
-      data => {
+    this.get_titles(column).subscribe({
+      next: (data) => {
         column.retrieved_titles = data;
         this.utility.spinner_off()
-      }
-    );
+      },
+      error: (err) => this.utility.handle_error_message(err)
+    });
   }
 
   /**
@@ -91,7 +92,7 @@ export class ApiService {
    */
      public request_editors(column: Fragment_column): void {
       this.utility.spinner_on()
-      this.get_editors(column.author, column.title).subscribe(
+      this.get_editors(column).subscribe(
         data => {
           column.retrieved_editors = data;
           this.utility.spinner_off()
@@ -141,9 +142,9 @@ export class ApiService {
 //  | |__| | |____   | |   
 //   \_____|______|  |_|                  
 
-  public get_authors(): Observable<Author[]> {
-    return this.http.get<Author[]>(this.FlaskURL + `authors`);
-  }
+  // public get_authors(): Observable<Author[]> {
+  //   return this.http.get<Author[]>(this.FlaskURL + `authors`);
+  // }
   public get_bibliography_authors(): Observable<JSON> {
     return this.http.get<JSON>(this.FlaskURL + `get_bibliography_authors`);
   }
@@ -152,12 +153,6 @@ export class ApiService {
   }
   public get_bibliography_from_id(_id): Observable<JSON> {
     return this.http.get<JSON>(this.FlaskURL + `get_bibliography_from_id?_id=${_id}`);
-  }
-  public get_titles(author: string): Observable<Title[]> {
-    return this.http.get<Title[]>(this.FlaskURL + `titles?author=${author}`);
-  }
-  public get_editors(author: string, title: string): Observable<Editor[]> {
-    return this.http.get<Editor[]>(this.FlaskURL + `editors?author=${author}&title=${title}`);
   }
   public get_text(titleID: number): Observable<any[]> {
     return this.http.get<any[]>(this.FlaskURL + `tlines?textID=${titleID}`);
@@ -174,6 +169,15 @@ export class ApiService {
 //  |_|     \____/|_____/   |_|   
   //TODO: what Observable type is a make_response?
   // Fragments
+  public get_authors(fragment: object): Observable<string[]> {
+    return this.http.post<string[]>(this.FlaskURL + `fragment/get/author`, fragment, { observe: 'body', responseType: 'json'});
+  }
+  public get_titles(fragment: object): Observable<string[]> {
+    return this.http.post<string[]>(this.FlaskURL + `fragment/get/title`, fragment, { observe: 'body', responseType: 'json'});
+  }
+  public get_editors(fragment: object): Observable<string[]> {
+    return this.http.post<string[]>(this.FlaskURL + `fragment/get/editor`, fragment, { observe: 'body', responseType: 'json'});
+  }
   public get_fragments(fragment: Fragment): Observable<Fragment[]> {
     return this.http.post<Fragment[]>(this.FlaskURL + `fragment/get`, fragment, { observe: 'body', responseType: 'json'});
   }

@@ -30,7 +30,8 @@ export class TextComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
-    this.api.get_authors().subscribe(data => this.authorsJSON = data);
+  
+    // this.api.get_authors().subscribe(data => this.authorsJSON = data);
     this.RequestText(1) // Retrieve Seneca's Thyestes by default
   }
 
@@ -39,13 +40,13 @@ export class TextComponent implements OnInit {
    * @param author whose titles are to be returned
    */
   public RequestBooks(author: string){
-    this.api.get_titles(author).subscribe(
-      data => {
-        this.booksJSON = data;
-        // this.currentBook = data[0].id; //FIXME: broken
-        this.currentBookTitle = data[0].title
-      }
-    );      
+    // this.api.get_titles(author).subscribe(
+    //   data => {
+    //     this.booksJSON = data;
+    //     // this.currentBook = data[0].id; //FIXME: broken
+    //     this.currentBookTitle = data[0].title
+    //   }
+    // );      
   }
 
   /**
