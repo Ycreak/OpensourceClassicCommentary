@@ -6,7 +6,7 @@ import Server.config as conf
 
 class FragmentField(object):
     ID = "_id"
-    FRAGMENT_NAME = "fragment_name"
+    NAME = "fragment_name"
     AUTHOR = "author"
     TITLE = "title"
     EDITOR = "editor"
@@ -24,7 +24,7 @@ class FragmentField(object):
 @dataclass
 class Fragment:
     id: str = None
-    fragment_name: str = None
+    name: str = None
     author: str = None
     title: str = None
     editor: str = None
@@ -49,8 +49,8 @@ class FragmentModel:
         result = list()
         for doc in frag_lst:
             fragment = Fragment(id=doc.id)
-            if FragmentField.FRAGMENT_NAME in doc:
-                fragment.fragment_name = doc[FragmentField.FRAGMENT_NAME]
+            if FragmentField.NAME in doc:
+                fragment.name = doc[FragmentField.NAME]
             if FragmentField.AUTHOR in doc:
                 fragment.author = doc[FragmentField.AUTHOR]
             if FragmentField.TITLE in doc:
@@ -87,15 +87,15 @@ class FragmentModel:
         })
         result = self.__get_fragments(result)
         if sorted:
-            result.sort(key=lambda Fragment: Fragment.fragment_name)
+            result.sort(key=lambda Fragment: Fragment.name)
         return result
         
     def filter(self, fragment, sorted=False):
         fragment = {key: value for key, value in fragment.__dict__.items() if value}
         if "id" in fragment:
             fragment[FragmentField.ID] = fragment.pop("id")
-        if "fragment_name" in fragment:
-            fragment[FragmentField.FRAGMENT_NAME] = fragment.pop("fragment_name")
+        if "name" in fragment:
+            fragment[FragmentField.NAME] = fragment.pop("name")
         mango = {
             "selector": fragment,
             "limit": conf.COUCH_LIMIT
@@ -110,7 +110,7 @@ class FragmentModel:
     def create(self, fragment):
         fragment = {key: value for key, value in fragment.__dict__.items() if value}
         fragment[FragmentField.ID] = fragment.pop("id") # MongoDB uses "_id" instead of "id"
-        fragment[FragmentField.FRAGMENT_NAME] = fragment.pop("fragment_name")
+        fragment[FragmentField.NAME] = fragment.pop("name")
         
         doc_id, _ = self.db.save(fragment)
         if not doc_id:

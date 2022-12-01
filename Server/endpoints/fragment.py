@@ -12,7 +12,7 @@ def get_author():
     author = None
     title = None
     editor = None
-    fragment_name = None
+    name = None
     try:
         if FragmentField.AUTHOR in request.get_json():
             author = request.get_json()[FragmentField.AUTHOR]
@@ -20,12 +20,12 @@ def get_author():
             title = request.get_json()[FragmentField.TITLE]
         if FragmentField.EDITOR in request.get_json():
             editor = request.get_json()[FragmentField.EDITOR]
-        if FragmentField.FRAGMENT_NAME in request.get_json():
-            fragment_name = request.get_json()[FragmentField.FRAGMENT_NAME]
+        if FragmentField.NAME in request.get_json():
+            name = request.get_json()[FragmentField.NAME]
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-    fragment_lst = fragments.filter(Fragment(author=author, title=title, editor=editor, fragment_name=fragment_name), sorted=True)
+    fragment_lst = fragments.filter(Fragment(author=author, title=title, editor=editor, name=name), sorted=True)
     if not fragment_lst:
         return make_response("Not found", 401)
     return jsonify(sorted(set([frag.author for frag in fragment_lst]))), 200
@@ -34,7 +34,7 @@ def get_title():
     author = None
     title = None
     editor = None
-    fragment_name = None
+    name = None
     try:
         if FragmentField.AUTHOR in request.get_json():
             author = request.get_json()[FragmentField.AUTHOR]
@@ -42,12 +42,12 @@ def get_title():
             title = request.get_json()[FragmentField.TITLE]
         if FragmentField.EDITOR in request.get_json():
             editor = request.get_json()[FragmentField.EDITOR]
-        if FragmentField.FRAGMENT_NAME in request.get_json():
-            fragment_name = request.get_json()[FragmentField.FRAGMENT_NAME]
+        if FragmentField.NAME in request.get_json():
+            name = request.get_json()[FragmentField.NAME]
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-    fragment_lst = fragments.filter(Fragment(author=author, title=title, editor=editor, fragment_name=fragment_name), sorted=True)
+    fragment_lst = fragments.filter(Fragment(author=author, title=title, editor=editor, name=name), sorted=True)
     if not fragment_lst:
         return make_response("Not found", 401)
     return jsonify(list(set([frag.title for frag in fragment_lst]))), 200
@@ -56,7 +56,7 @@ def get_editor():
     author = None
     title = None
     editor = None
-    fragment_name = None
+    name = None
     try:
         if FragmentField.AUTHOR in request.get_json():
             author = request.get_json()[FragmentField.AUTHOR]
@@ -64,21 +64,21 @@ def get_editor():
             title = request.get_json()[FragmentField.TITLE]
         if FragmentField.EDITOR in request.get_json():
             editor = request.get_json()[FragmentField.EDITOR]
-        if FragmentField.FRAGMENT_NAME in request.get_json():
-            fragment_name = request.get_json()[FragmentField.FRAGMENT_NAME]
+        if FragmentField.NAME in request.get_json():
+            name = request.get_json()[FragmentField.NAME]
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-    fragment_lst = fragments.filter(Fragment(author=author, title=title, editor=editor, fragment_name=fragment_name), sorted=True)
+    fragment_lst = fragments.filter(Fragment(author=author, title=title, editor=editor, name=name), sorted=True)
     if not fragment_lst:
         return make_response("Not found", 401)
     return jsonify(list(set([frag.editor for frag in fragment_lst]))), 200
 
-def get_fragment_name():
+def get_name():
     author = None
     title = None
     editor = None
-    fragment_name = None
+    name = None
     try:
         if FragmentField.AUTHOR in request.get_json():
             author = request.get_json()[FragmentField.AUTHOR]
@@ -86,21 +86,21 @@ def get_fragment_name():
             title = request.get_json()[FragmentField.TITLE]
         if FragmentField.EDITOR in request.get_json():
             editor = request.get_json()[FragmentField.EDITOR]
-        if FragmentField.FRAGMENT_NAME in request.get_json():
-            fragment_name = request.get_json()[FragmentField.FRAGMENT_NAME]
+        if FragmentField.NAME in request.get_json():
+            name = request.get_json()[FragmentField.NAME]
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-    fragment_lst = fragments.filter(Fragment(author=author, title=title, editor=editor, fragment_name=fragment_name), sorted=True)
+    fragment_lst = fragments.filter(Fragment(author=author, title=title, editor=editor, name=name), sorted=True)
     if not fragment_lst:
         return make_response("Not found", 401)
-    return jsonify(list(set([frag.FRAGMENT_NAME for frag in fragment_lst]))), 200
+    return jsonify(list(set([frag.NAME for frag in fragment_lst]))), 200
 
 def get_fragment():
     author = None
     title = None
     editor = None
-    fragment_name = None
+    name = None
     try:
         if FragmentField.AUTHOR in request.get_json():
             author = request.get_json()[FragmentField.AUTHOR]
@@ -108,13 +108,13 @@ def get_fragment():
             title = request.get_json()[FragmentField.TITLE]
         if FragmentField.EDITOR in request.get_json():
             editor = request.get_json()[FragmentField.EDITOR]
-        if FragmentField.FRAGMENT_NAME in request.get_json():
-            fragment_name = request.get_json()[FragmentField.FRAGMENT_NAME]
+        if FragmentField.NAME in request.get_json():
+            name = request.get_json()[FragmentField.NAME]
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
 
-    fragment_lst = fragments.filter(Fragment(author=author, title=title, editor=editor, fragment_name=fragment_name), sorted=True)
+    fragment_lst = fragments.filter(Fragment(author=author, title=title, editor=editor, name=name), sorted=True)
     if not fragment_lst:
         return make_response("Not found", 401)
     return jsonify(fragment_lst), 200
@@ -124,7 +124,7 @@ def create_fragment():
         author = request.get_json()[FragmentField.AUTHOR]
         title = request.get_json()[FragmentField.TITLE]
         editor = request.get_json()[FragmentField.EDITOR]
-        fragment_name = request.get_json()[FragmentField.FRAGMENT_NAME]
+        name = request.get_json()[FragmentField.NAME]
 
         status = None
         lock = None
@@ -161,11 +161,11 @@ def create_fragment():
         logging.error(e)
         return make_response("Unprocessable entity", 422)
     
-    if fragments.filter(Fragment(author=author, title=title, editor=editor, fragment_name=fragment_name)):
+    if fragments.filter(Fragment(author=author, title=title, editor=editor, name=name)):
         logging.error("create_fragment(): duplicate fragment")
         return make_response("Forbidden", 403)
 
-    fragment = fragments.create(Fragment(id=uuid4().hex, author=author, title=title, editor=editor, fragment_name=fragment_name, status=status,
+    fragment = fragments.create(Fragment(id=uuid4().hex, author=author, title=title, editor=editor, name=name, status=status,
                                          lock=lock, translation=translation, differences=differences, apparatus=apparatus, 
                                          commentary=commentary, reconstruction=reconstruction, context=context, lines=lines, 
                                          linked_fragments=linked_fragments))

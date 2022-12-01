@@ -61,7 +61,7 @@ class Bib_entry:
 
         # if "fragment_name" in received_fragment: 
         #     assert isinstance(received_fragment['fragment_name'], str)
-        #     self.fragment_name = received_fragment['fragment_name']
+        #     self.name = received_fragment['fragment_name']
 
             
         # if "editor" in received_fragment: 
