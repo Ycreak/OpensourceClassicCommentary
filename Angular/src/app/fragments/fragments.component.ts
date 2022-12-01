@@ -17,7 +17,7 @@ import { AuthService } from '../auth/auth.service';
 
 // Model imports
 import { Fragment } from '../models/Fragment';
-import { Fragment_column } from '../models/Fragment_column';
+import { Column } from '../models/Column';
 import { Introductions } from '../models/Introductions';
 
 import { Text_column } from '../models/Text_column';
@@ -66,15 +66,15 @@ export class FragmentsComponent implements OnInit {
   fragment_clicked: boolean = false; // Shows "click a fragment" banner at startup if nothing is yet selected
 
   // Object to store all column data: just an array with column data in the form of fragment columns
-  columns: Fragment_column[] = [];
+  columns: Column[] = [];
 
   // Data columns
-  column1: Fragment_column;
-  column2: Fragment_column;
-  column3: Fragment_column;
-  column4: Fragment_column;
-  playground: Fragment_column;
-  commentary_column: Fragment_column;
+  column1: Column;
+  column2: Column;
+  column3: Column;
+  column4: Column;
+  playground: Column;
+  commentary_column: Column;
 
   // We keep track of the number of columns to identify them
   column_identifier: number = 1;
@@ -98,34 +98,34 @@ export class FragmentsComponent implements OnInit {
 
   ngOnInit(): void {
     // Retrieve the window_size to correctly set the navbar size
-    this.window_size = this.retrieve_viewport_size();    
+    this.window_size = this.utility.retrieve_viewport_size();    
 
     // Create an empty current_fragment variable to be filled whenever the user clicks a fragment
     // Its data is shown in the commentary column and not used anywhere else
     this.current_fragment = this.utility.create_empty_fragment();
-    this.commentary_column = new Fragment_column('255', '', '', '', '');
+    this.commentary_column = new Column({column_id:'255'});
 
     // Create templates for the possible fragment columns
-    this.column1 = new Fragment_column('1', 'ETT', 'Ennius', 'Eumenides', 'TRF');
+    this.column1 = new Column({column_id:'1', author:'Ennius', title:'Thyestes', editor:'TRF'});
     // Push these to the columns array for later use in the HTML component
     this.columns.push(this.column1)
     // Request the fragments for the first column
     this.request_fragments(this.column1);
-    this.request_authors(this.column1)
+    this.api.request_authors(this.column1)
     
     // And for the playground
-    // this.playground = new Fragment_column('0', 'playground', 'Accius', 'Aegisthus', 'Dangel');
-    // this.request_authors(this.playground)
+    this.playground = new Column({column_id:'0', type:'playground'});
+    this.api.request_authors(this.playground)
     // this.request_fragments(this.playground);
 
     // Create an observable to check for the changing of window size
     this.window_resize_observable$ = fromEvent(window, 'resize')
     this.window_resize_subscription$ = this.window_resize_observable$.subscribe( evt => {
       // Find the window size. If it is too small, we will abbreviate the title to save space on the navbar
-      this.window_size = this.retrieve_viewport_size();    
+      this.window_size = this.utility.retrieve_viewport_size();    
     })
 
-    // this.column2 = new Fragment_column('2', 'ETR', 'Ennius', 'Thyestes', 'TRF');
+    // this.column2 = new Column('2', 'ETR', 'Ennius', 'Thyestes', 'TRF');
     // this.columns.push(this.column2);
     // this.request_authors(this.column2);
     // this.request_fragments(this.column2);
@@ -146,16 +146,15 @@ export class FragmentsComponent implements OnInit {
   //  |_|  \_\______\___\_\\____/|______|_____/   |_| |_____/  
   /**
    * Requests the API function for authors
-   * @param column: Fragment_column 
+   * @param column: Column 
    * @returns data -> column.retrieved_authors
    * @author Ycreak
    */
-   private request_authors(column: Fragment_column): void{
+   private request_authors(column: Column): void{
     this.utility.spinner_on();
-    let api_data = this.utility.create_empty_fragment();
 
-    this.api.get_authors(api_data).subscribe(data => {
-      this.server_down = false; //FIXME: needs to be handled properly
+    this.api.get_authors(new Fragment()).subscribe(
+      data => {
       // Enter this retrieved data in the correct column
       column.retrieved_authors = data;
       this.utility.spinner_off(); 
@@ -163,16 +162,13 @@ export class FragmentsComponent implements OnInit {
   }
 
   /** Requests the API function for titles given the author.
-   * @param column: Fragment_column 
+   * @param column: Column 
    * @returns data -> column.retrieved_authors
    * @author Bors & Ycreak
    */
-  private request_titles(column: Fragment_column): void{
-    //FIXME: we need to redesign angular now we have a good api
-    column.title = ''; column.editor = ''; column.fragment_name = '';
-    
+  private request_titles(column: Column): void{    
     this.utility.spinner_on();
-    this.api.get_titles(column).subscribe(
+    this.api.get_titles(new Fragment({author:column.author})).subscribe(
       data => {
         column.retrieved_titles = data; 
         this.utility.spinner_off(); 
@@ -181,16 +177,13 @@ export class FragmentsComponent implements OnInit {
   }
   /**
    * Requests the API function for editors given the author and title.
-   * @param column: Fragment_column
+   * @param column: Column
    * @returns data -> column.retrieved_editors 
    * @author Bors & Ycreak
    */
-  private request_editors(column: Fragment_column): void{
-    //FIXME: we need to redesign angular now we have a good api
-    column.editor = ''; column.fragment_name = '';
-    
+  private request_editors(column: Column): void{   
     this.utility.spinner_on();
-    this.api.get_editors(column).subscribe(
+    this.api.get_editors(new Fragment({author:column.author, title:column.title})).subscribe(
       data => {
         column.retrieved_editors = data;
         this.utility.spinner_off(); 
@@ -200,35 +193,25 @@ export class FragmentsComponent implements OnInit {
 
   /**
    * Requests the API function for fragments given the author, title and editor.
-   * @param column: Fragment_column
+   * @param column: Column
    * @returns Object with fragments that are sorted numerically and on their status. Also
    *          adds an HTML formatted string to the object for easy printing. Note that the
    *          new data is added to the corresponding field in the provided parameter
    * @author Bors & Ycreak
    */
-  private request_fragments(column: Fragment_column): void{
+  private request_fragments(column: Column): void{
     this.utility.spinner_on();
     
-    // new Fragment(author=column.author, title=title, editor=editor, name=name)
-    let api_data = this.utility.create_empty_fragment();
-    api_data.author = column.author; api_data.title = column.title; api_data.editor = column.editor;
-    
-    this.api.get_fragments(api_data).subscribe(
+    this.api.get_fragments(new Fragment({author:column.author, title:column.title, editor:column.editor})).subscribe(
       data => {
-        //TODO: can this be done automatically in the API?
-        let fragment_list = [];
-        for(let i in data){
-          let fragment = new Fragment()
-          fragment.set_fragment(data[i])
-          fragment_list.push(fragment)
-        }
-
+        //TODO: can this be done automatically within the API?
+        let fragment_list = this.api.convert_fragment_json_to_typescript(data);
         // Format the data just how we want it
         fragment_list = this.add_HTML_to_lines(fragment_list);
         fragment_list = fragment_list.sort(this.utility.sort_fragment_array_numerically);
         fragment_list = this.sort_fragments_on_status(fragment_list);
         // Store the formatted data at the correct place
-        if(column.name != 'playground'){
+        if(column.type != 'playground'){
           column.fragments = fragment_list;
           // Store the original order of the fragments in the column object
           column.orig_fragment_order = []; // Clear first
@@ -250,35 +233,16 @@ export class FragmentsComponent implements OnInit {
     );  
   }
 
-  /** 
-   * Requests the API function for all content corresponding to the given fragment id.
-   * The retrieved data will then be added to the given fragment (by reference) for displaying
-   * in the HTML frontend
-   * @param fragment_id 
-   * @returns fills all content variables with data. e.g. data -> this.f_commentary 
-   * @author Bors & Ycreak
-   */
-  private request_fragment_content(fragment: Fragment): void{   
-    this.utility.spinner_on();
-    this.api.get_fragment_content(fragment).subscribe(
-      data => {     
-        this.add_content_to_current_fragment(fragment, data);
-        this.utility.spinner_off(); 
-    });
-  }
+
 
   /**
    * Given the author, title and editor, request the names of the fragments from the server.
    * @param column that is to be filled with data
    * @author Ycreak
    */
-   public request_fragment_names(column: Fragment_column): void {
+   public request_fragment_names(column: Column): void {
     this.utility.spinner_on();
-    // Create api/fragment object to send to the server
-    let api_data = this.utility.create_empty_fragment();
-    api_data.author = column.author; api_data.title = column.title; api_data.editor = column.editor;
-
-    this.api.get_fragment_names(api_data).subscribe(
+    this.api.get_fragment_names(new Fragment({author:column.author, title:column.title, editor:column.editor})).subscribe(
       data => {
         column.fragment_names = data.sort(this.utility.sort_array_numerically);
         this.utility.spinner_off(); 
@@ -292,7 +256,7 @@ export class FragmentsComponent implements OnInit {
    */
   private handle_editor_click(column): void {
     // If we are in the playground, we request fragment names. Else we request fragments.
-    if ( column.name == 'playground' ) {
+    if ( column.type == 'playground' ) {
       this.request_fragment_names(column)
     }
     else{
@@ -381,9 +345,10 @@ export class FragmentsComponent implements OnInit {
     this.column_identifier += 1;
 
     // Create new column with the appropriate name. TODO: create better identifiers than simple integers
-    let new_fragment_column = new Fragment_column(String(this.column_identifier),'', 'Author', 'Title', 'Editor');
-    this.columns.push(new_fragment_column)    
-    this.request_authors(new_fragment_column);
+    let new_Column = new Column({column_id:String(this.column_identifier), author:'Accius', title:'Aegisthus', editor:'Dangel'});
+
+    this.columns.push(new_Column)    
+    this.api.request_authors(new_Column);
     // And update the connected columns list
     this.update_connected_columns_list()
   }
@@ -444,7 +409,7 @@ export class FragmentsComponent implements OnInit {
    * @param column column from which the deletion is to take place
    * @param item either a note or a fragment needs deletion
    */
-  public delete_clicked_item_from_playground(column: Fragment_column, item: string): void{
+  public delete_clicked_item_from_playground(column: Column, item: string): void{
     if(item == 'fragment'){
       const object_index = column.fragments.findIndex(object => {
         return object.fragment_id === column.clicked_fragment.fragment_id;
@@ -601,14 +566,14 @@ export class FragmentsComponent implements OnInit {
 
     // console.log(box)
 
-    // this.column2 = new Fragment_column(2, 'ETR', 'Ennius', 'Thyestes', 'Ribbeck');
+    // this.column2 = new Column(2, 'ETR', 'Ennius', 'Thyestes', 'Ribbeck');
     // this.columns.push(this.column2)
     // this.request_authors(this.column2)
     // this.request_fragments(this.column2);
     
     // this.update_connected_columns_list();
-    // this.column3 = new Fragment_column(3, 'ETJ', 'Ennius', 'Thyestes', 'Jocelyn');
-    // this.column4 = new Fragment_column(4, 'ETV', 'Ennius', 'Thyestes', 'Vahlen');    
+    // this.column3 = new Column(3, 'ETJ', 'Ennius', 'Thyestes', 'Jocelyn');
+    // this.column4 = new Column(4, 'ETV', 'Ennius', 'Thyestes', 'Vahlen');    
     
     // this.columns.push(this.column3)
     // this.columns.push(this.column4)
@@ -622,28 +587,6 @@ export class FragmentsComponent implements OnInit {
 
 
     console.log('############ ####### ############')
-  }
-
-    /**
-     * Function to check if the fragment has content
-     * @param fragment to be checked for content
-     * @returns bool true if the fragment has at least one content field that is not empty
-     * @author Ycreak
-     * TODO: i would like this function to be in Fragment.ts. Is that possible?
-     */
-     public fragment_has_content(fragment: Fragment){
-            
-      if( fragment.differences != '' || 
-          fragment.apparatus != '' ||
-          fragment.translation != '' ||
-          fragment.commentary != '' ||
-          fragment.reconstruction != ''
-      ){
-          return true;
-      }
-      else{
-          return false;
-      }
   }
 
   /**
@@ -694,51 +637,21 @@ export class FragmentsComponent implements OnInit {
   /**
    *
    */
-  private add_single_fragment_to_playground(column: Fragment_column, fragment_name): void{ // FIXME: Deprecated?
-
-    // First, retrieve the fragment from the database
-    let api_data = this.utility.create_empty_fragment();
-    api_data.author = column.author; api_data.title = column.title; api_data.editor = column.editor; api_data.fragment_name = fragment_name;
-    // Next, format the fragment and push it to the list
-    this.api.get_specific_fragment(api_data).subscribe(
-      fragment => {
+  private add_single_fragment_to_playground(column: Column, fragment_name): void{ // FIXME: Deprecated?
+    // format the fragment and push it to the list
+    this.api.get_fragments(new Fragment({author:column.author, title:column.title, editor:column.editor, fragment_name:column.fragment_name})).subscribe(
+      fragments => {
+        let fragment_list = this.api.convert_fragment_json_to_typescript(fragments);
         //FIXME: this could be more elegant. But the idea is that we need to add HTML. However,
         // the function add_HTML_to_lines expects a list. This list always has one element.
-        let html_fragment_list = this.add_HTML_to_lines([fragment]);
+        let html_fragment_list = this.add_HTML_to_lines([fragment_list[0]]);
         column.fragments.push(html_fragment_list[0])
       });
   }
 
-  /**
-   * Adds the JSON with fragment content retrieved from the server to the corresponding
-   * fields of our current_fragment object for viewing in the Commentary column in HTML.
-   * An entry should not be made if the received field is empty to prevent empty expansion panels
-   * @param fragment wich is to be filled with data from the server
-   * @param data which is received from the server
-   * @author Ycreak
-   */
-  private add_content_to_current_fragment(fragment: Fragment, data: Fragment): void{
-    for (let item of ['translation', 'differences', 'apparatus', 'commentary',
-                      'reconstruction', 'context', 'bibliography']) {       
-      if(data[item] != ''){ fragment[item] = data[item]}
-    }
-  }
+
 
   /**
-   * Simple function that retrieves the viewport size
-   * @returns viewport size as integer
-   * @author Ycreak
-   * @TODO: move to utilities
-   */
-   private retrieve_viewport_size(): number {
-    try {
-      return window.innerWidth
-    } catch (e) {
-      return 1100 // default-ish size
-    }
-  }
-
-    /**
    * Simple function that generates a gradient color for each
    * fragment in a fragment column.
    * This is to indicate the initial order of the fragments.

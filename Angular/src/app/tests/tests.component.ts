@@ -5,7 +5,7 @@ import { DialogService } from '../services/dialog.service';
 import { UtilityService } from '../utility.service';
 import { AuthService } from '../auth/auth.service';
 
-import { Fragment_column } from '../models/Fragment_column';
+import { Column } from '../models/Column';
 
 @Component({
   selector: 'app-tests',
@@ -19,7 +19,6 @@ export class TestsComponent implements OnInit {
     get_titles : false,
     get_editors : false,
     get_fragments : false,
-    get_fragment_content : false,
     get_specific_fragment : false,
     get_fragment_names : false,
     create_fragment : false,
@@ -42,7 +41,6 @@ export class TestsComponent implements OnInit {
     this.test_get_titles();
     this.test_get_editors();
     this.test_get_fragments();
-    this.test_get_fragment_content();
     this.test_get_specific_fragment();
     this.test_get_fragment_names();
     this.test_create_revise_delete_fragment();
@@ -104,23 +102,6 @@ export class TestsComponent implements OnInit {
       next: (fragments) => {
         if ( fragments.some(el => el['fragment_name'] === '132') ) {
           this.unit_tests.get_fragments = true;
-        }
-      },
-      error: (err) => {
-        this.utility.handle_error_message(err);
-      }  
-    });
-  }  
-  // Get fragments check
-  public test_get_fragment_content(): void {
-    let temp_fragment = this.utility.create_empty_fragment();
-    temp_fragment.fragment_id = 'e25dcbacaec84aecb0b1707d496cc740';
-    
-    this.api.get_fragment_content(temp_fragment).subscribe({
-      next: (fragment_content) => {
-
-        if (fragment_content['translation'] == 'but a sound strikes my ears with the beat of feet' ){
-          this.unit_tests.get_fragment_content = true;
         }
       },
       error: (err) => {

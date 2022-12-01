@@ -12,11 +12,11 @@ import { UtilityService } from './utility.service';
 
 // Model imports
 import { Fragment } from './models/Fragment';
-import { Fragment_column } from './models/Fragment_column';
+import { Column } from './models/Column';
 
-import { Author } from './models/Author';
-import { Editor } from './models/Editor';
-import { Title } from './models/Title';
+// import { Author } from './models/Author';
+// import { Editor } from './models/Editor';
+// import { Title } from './models/Title';
 import { User } from './models/User';
 
 @Injectable({
@@ -56,7 +56,7 @@ export class ApiService {
   /**
    * Requests all authors from the database. No parameters needed
    */
-  public request_authors(column: Fragment_column): void {
+  public request_authors(column: Column): void {
     this.utility.spinner_on();
     this.get_authors(column).subscribe({
       next: (data) => {
@@ -73,7 +73,7 @@ export class ApiService {
    * @param column Fragment_column object with all necessary data
    * @author Ycreak
    */
-   public request_titles(column: Fragment_column): void {    
+   public request_titles(column: Column): void {    
     this.utility.spinner_on()
     this.get_titles(column).subscribe({
       next: (data) => {
@@ -90,7 +90,7 @@ export class ApiService {
    * @param column Fragment_column object with all necessary data
    * @author Ycreak
    */
-     public request_editors(column: Fragment_column): void {
+     public request_editors(column: Column): void {
       this.utility.spinner_on()
       this.get_editors(column).subscribe(
         data => {
@@ -105,7 +105,7 @@ export class ApiService {
    * @param column Fragment_column object with all necessary data
    * @author Ycreak
    */
-   public request_fragment_names(column: Fragment_column): void {
+   public request_fragment_names(column: Column): void {
     this.utility.spinner_on()    
     // Create api/fragment object to send to the server
     let api_data = this.utility.create_empty_fragment();
@@ -122,17 +122,17 @@ export class ApiService {
 
   /**
    * Given the author, title and editor, request the names of the fragments from the server.
-   * @param column Fragment_column object with all necessary data
+   * @param column Column object with all necessary data
    * @author Ycreak
    */
-  //  public request_fragments(column: Fragment_column): Observable<Fragment[]> {
+  //  public request_fragments(fragment_list: object): Fragment[] {
   //   this.utility.spinner_on()    
     
-  //   let fragment_list = []
+  //   fragment_list = []
 
-  //   this.get_fragments(column).subscribe({
+  //   this.get_fragments(column).subscribe(
       
-  //     next: (data) => {
+  //     data => {
         
   //       for ( let i in data ) {
   //         let fragment = new Fragment()
@@ -141,52 +141,38 @@ export class ApiService {
   //       }
   //       this.utility.spinner_off()
   //       return fragment_list 
-  //     },
-  //     error: (err) => this.utility.handle_error_message(err)
   //     }
       
   //     );
   // }
+  /**
+   * Converts the JSON from the server to a Typescript object
+   * @author Ycreak
+   * @TODO: can this be done automatically without being invoked from fragment.component?
+   */
+  public convert_fragment_json_to_typescript( data ): Fragment[] {
+    let fragment_list = [];
+    for(let i in data){
+      let fragment = new Fragment()
+      fragment.set_fragment(data[i])
+      fragment_list.push(fragment)
+    }
+    return fragment_list;
+  }
+
 
   /**
    * Requests a specific fragment from the database
    * @param column Fragment_column object with all necessary data
    * @author Ycreak CptVickers
    */
-   public request_specific_fragment(column: Fragment_column): void {
+   public request_specific_fragment(column: Column): void {
     this.utility.spinner_off()
     this.get_specific_fragment(column).subscribe(
       fragment => {
         column.fragments = [fragment]
         this.utility.spinner_off()
       });
-  }
-
-
-//    _____ ______ _______ 
-//   / ____|  ____|__   __|
-//  | |  __| |__     | |   
-//  | | |_ |  __|    | |   
-//  | |__| | |____   | |   
-//   \_____|______|  |_|                  
-
-  // public get_authors(): Observable<Author[]> {
-  //   return this.http.get<Author[]>(this.FlaskURL + `authors`);
-  // }
-  public get_bibliography_authors(): Observable<JSON> {
-    return this.http.get<JSON>(this.FlaskURL + `get_bibliography_authors`);
-  }
-  public get_bibliography_from_author(author): Observable<JSON> {
-    return this.http.get<JSON>(this.FlaskURL + `get_bibliography_from_author?author=${author}`);
-  }
-  public get_bibliography_from_id(_id): Observable<JSON> {
-    return this.http.get<JSON>(this.FlaskURL + `get_bibliography_from_id?_id=${_id}`);
-  }
-  public get_text(titleID: number): Observable<any[]> {
-    return this.http.get<any[]>(this.FlaskURL + `tlines?textID=${titleID}`);
-  }
-  public get_text_commentary(textID: number, lineNumber: number): Observable<any[]> {
-    return this.http.get<any[]>(this.FlaskURL + `tcommentary?textID=${textID}&lineNumber=${lineNumber}`);
   }
 
 //   _____   ____   _____ _______ 
@@ -207,16 +193,16 @@ export class ApiService {
     return this.http.post<string[]>(this.FlaskURL + `fragment/get/editor`, fragment, { observe: 'body', responseType: 'json'});
   }
   public get_fragments(fragment: object): Observable<object[]> {
-    return this.http.post<object[]>(this.FlaskURL + `fragment/get`, fragment, { observe: 'body', responseType: 'json'});
+    return this.http.post<Fragment[]>(this.FlaskURL + `fragment/get`, fragment, { observe: 'body', responseType: 'json'});
   }
-  public get_fragment_content(fragment: Fragment): Observable<Fragment> {
-    return this.http.post<Fragment>(this.FlaskURL + `fragment_content`, fragment, { observe: 'body', responseType: 'json'});
-  }
+  // public get_fragment_content(fragment: Fragment): Observable<Fragment> {
+  //   return this.http.post<Fragment>(this.FlaskURL + `fragment_content`, fragment, { observe: 'body', responseType: 'json'});
+  // } @deprecated
   public get_specific_fragment(fragment: object): Observable<Fragment> {
     return this.http.post<Fragment>(this.FlaskURL + `complete_fragment`, fragment, { observe: 'body', responseType: 'json'});
   }
   public get_fragment_names(fragment: Fragment): Observable<string[]> {
-    return this.http.post<string[]>(this.FlaskURL + `fragments_names`, fragment, { observe: 'body', responseType: 'json'});
+    return this.http.post<string[]>(this.FlaskURL + `fragment/get/name`, fragment, { observe: 'body', responseType: 'json'});
   }  
   public create_fragment(fragment: any): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `create_fragment`, fragment, { observe: 'response', responseType: 'text' as 'json' });
@@ -264,6 +250,27 @@ export class ApiService {
   public scan_lines(lines: object): Observable<any> {
     return this.http.post<any>(this.NeuralURL + `scan_lines`, lines, { observe: 'body', responseType: 'json'});
   }
+
+  // public get_authors(): Observable<Author[]> {
+  //   return this.http.get<Author[]>(this.FlaskURL + `authors`);
+  // }
+  public get_bibliography_authors(): Observable<JSON> {
+    return this.http.get<JSON>(this.FlaskURL + `get_bibliography_authors`);
+  }
+  public get_bibliography_from_author(author): Observable<JSON> {
+    return this.http.get<JSON>(this.FlaskURL + `get_bibliography_from_author?author=${author}`);
+  }
+  public get_bibliography_from_id(_id): Observable<JSON> {
+    return this.http.get<JSON>(this.FlaskURL + `get_bibliography_from_id?_id=${_id}`);
+  }
+  public get_text(titleID: number): Observable<any[]> {
+    return this.http.get<any[]>(this.FlaskURL + `tlines?textID=${titleID}`);
+  }
+  public get_text_commentary(textID: number, lineNumber: number): Observable<any[]> {
+    return this.http.get<any[]>(this.FlaskURL + `tcommentary?textID=${textID}&lineNumber=${lineNumber}`);
+  }
+
+
 
 }
 

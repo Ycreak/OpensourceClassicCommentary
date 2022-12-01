@@ -51,17 +51,6 @@
         Get fragments
     </div>
 </ng-template>
-<!-- Get fragment content unit test -->
-<div *ngIf="this.unit_tests.get_fragment_content; else no_get_fragment_content">
-    <div class="alert alert-success" role="alert">
-        Get fragment_content
-    </div>
-</div>
-<ng-template #no_get_fragment_content>
-    <div class="alert alert-danger" role="alert">
-        Get fragment_content
-    </div>
-</ng-template>
 <!-- Get specific fragment unit test -->
 <div *ngIf="this.unit_tests.get_specific_fragment; else no_get_specific_fragment">
     <div class="alert alert-success" role="alert">

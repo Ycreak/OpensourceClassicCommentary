@@ -18,7 +18,7 @@ import { DialogService } from '../services/dialog.service';
 
 // Model imports 
 import { Fragment } from '../models/Fragment';
-import { Fragment_column } from '../models/Fragment_column';
+import { Column } from '../models/Column';
 
 import { User } from '../models/User';
 // import { shareReplay } from 'rxjs/operators';
@@ -180,8 +180,8 @@ export class DashboardComponent implements OnInit {
   loading_hint: Observable<unknown> // Loading hint animation
 
   // In this object all meta data is stored regarding the currently selected fragment
-  selected_fragment_data: Fragment_column;
-  linked_fragment_data: Fragment_column;
+  selected_fragment_data: Column;
+  linked_fragment_data: Column;
 
   // To convert a form to an object
   // this.converted_fragment_form = {...this.converted_fragment_form,...this.fragment_form.value}
@@ -207,8 +207,8 @@ export class DashboardComponent implements OnInit {
     this.request_users()
     
     // We will store all dashboard data in the following data object
-    this.selected_fragment_data = new Fragment_column('0', '', '', '', '');
-    this.linked_fragment_data = new Fragment_column('0', '', '', '', '');
+    this.selected_fragment_data = new Column();
+    this.linked_fragment_data = new Column();
 
     
     this.api.request_authors(this.selected_fragment_data);
@@ -421,7 +421,7 @@ export class DashboardComponent implements OnInit {
    * @param column Fragment_column object with all necessary data
    * @author Ycreak
    */
-   public add_referenced_fragment_to_Fragment_form(column: Fragment_column): void {
+   public add_referenced_fragment_to_Fragment_form(column: Column): void {
     this.api.get_specific_fragment(column).subscribe(
       fragment => {
         this.push_linked_fragments_to_fragment_form(fragment.fragment_id)
@@ -476,7 +476,7 @@ export class DashboardComponent implements OnInit {
    * @param column with all relevant data
    * @author Ycreak CptVickers
    */
-    public retrieve_requested_fragment(column: Fragment_column): void {
+    public retrieve_requested_fragment(column: Column): void {
       this.utility.toggle_spinner();
       // Reset the fragment_form to allow a clean insertion of the requested fragment
       this.reset_fragment_form();
@@ -596,7 +596,8 @@ export class DashboardComponent implements OnInit {
           next: (res) => {
             this.utility.handle_error_message(res);
             // Reset the fragment_data object and start anew.
-            this.selected_fragment_data = new Fragment_column('0', '', '', '', '');
+            this.selected_fragment_data = new Column();
+            
             this.api.request_authors(this.selected_fragment_data)
             // Lastly, reset the fragment form
             this.reset_fragment_form();
@@ -616,7 +617,7 @@ export class DashboardComponent implements OnInit {
    * @param column with all necessary data
    * @author CptVickers Ycreak
    */
-  public request_automatic_fragment_linker(column: Fragment_column): void {
+  public request_automatic_fragment_linker(column: Column): void {
     this.utility.spinner_on();
     
     let item_string = column.author + ', ' + column.title;

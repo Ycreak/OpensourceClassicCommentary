@@ -29,10 +29,16 @@ export class Fragment {
     // designates the css color of the fragment header
     colour: string = 'black';
     
-    constructor(){
-    
+    constructor ( fragment? : Partial<Fragment> ) {
+        // Allow the partial initialisation of a fragment object
+        Object.assign(this, fragment);
     }
 
+    /**
+     * Converts the JSON received from the server to a Typescript object
+     * @param fragment with JSON data received from the server
+     * @author Ycreak
+     */
     public set_fragment ( fragment ) {
 
         if ( 'id' in fragment ){ this.fragment_id = fragment['id'] } 
@@ -59,6 +65,7 @@ export class Fragment {
      * Returns true if the given fragment has one of its content fields filled
      * @param fragment to be investigated for content
      * @returns boolean whether content is present
+     * @author Ycreak
      */
     public has_content ( ) {
                 
@@ -75,32 +82,6 @@ export class Fragment {
         }
     }
 
-
-    // public fragment_id: string = '';
-    // public author: string = '';
-    // public title: string = '';
-    // public editor: string = '';
-    // public fragment_name: string = '';
-
-    // public translation: string = '';
-    // public differences: string = '';
-    // public apparatus: string = '';
-    // public commentary: string = '';
-    // public reconstruction: string = '';
-    // public context: Context[];
-
-    // public status: string = '';
-    // public lines: Line[] = [];
-    // public linked_fragments: string[] = [];
-
-    // public lock: string = '';
-    // public published: string = '';
-
-    // public bibliography: string[];
-
-
-    // deprecated
-    no_content: boolean = false;
     // deprecated
     fragment_link_found: boolean = false;
 
