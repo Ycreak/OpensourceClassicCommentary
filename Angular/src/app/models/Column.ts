@@ -44,6 +44,9 @@ export class Column
     // Whether to show or hide the column
     visible: boolean = true;
 
+    // Whether the column is newly created. If so, we show 'SELECT TEXT' button instead of the selected data
+    new_column : boolean = true;
+
     // Original order of the column fragments
     orig_fragment_order: string[] = [];
 }

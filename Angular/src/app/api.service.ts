@@ -58,7 +58,7 @@ export class ApiService {
    */
   public request_authors(column: Column): void {
     this.utility.spinner_on();
-    this.get_authors(column).subscribe({
+    this.get_authors(new Fragment({})).subscribe({
       next: (data) => {
         column.retrieved_authors = data;
         this.utility.spinner_off();
@@ -75,7 +75,7 @@ export class ApiService {
    */
    public request_titles(column: Column): void {    
     this.utility.spinner_on()
-    this.get_titles(column).subscribe({
+    this.get_titles(new Fragment({author:column.author, title:column.title})).subscribe({
       next: (data) => {
         column.retrieved_titles = data;
         this.utility.spinner_off()
@@ -92,7 +92,7 @@ export class ApiService {
    */
      public request_editors(column: Column): void {
       this.utility.spinner_on()
-      this.get_editors(column).subscribe(
+      this.get_editors(new Fragment({author:column.author, title:column.title, editor:column.editor})).subscribe(
         data => {
           column.retrieved_editors = data;
           this.utility.spinner_off()

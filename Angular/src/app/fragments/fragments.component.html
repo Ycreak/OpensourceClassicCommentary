@@ -103,11 +103,59 @@
             [(ngModel)]="column_to_display.visible">
         </mat-checkbox>
 
-        <!-- FIXME: This is in a button, because i cannot match the font properly -->
-        <button class='navbar' mat-button>
-            {{column_to_display.author}}-{{column_to_display.title}}-{{column_to_display.editor}} <sup *ngIf=column_to_display.edited>edited</sup>
-        </button>  
-        
+        <!-- Button to select the text -->
+        <button 
+            class='navbar' 
+            mat-button 
+            [matMenuTriggerFor]="menu_authors"
+            (click)="column_to_display.new_column = false">
+            
+            <ng-container *ngIf="column_to_display.new_column; else text_button_clicked">
+                Select Text
+            </ng-container>
+
+            <ng-template #text_button_clicked>
+                {{column_to_display.author}}-{{column_to_display.title}}-{{column_to_display.editor}} <sup *ngIf=column_to_display.edited>modified</sup>
+            </ng-template>
+        </button> 
+
+        <!-- Nested menu to select author - title - editor. -->
+        <mat-menu #menu_authors="matMenu">
+            <ng-container *ngFor="let author of column_to_display.retrieved_authors; let i = index">
+                <button 
+                    mat-menu-item 
+                    (menuOpened)="column_to_display.title = ''; column_to_display.editor = '';" 
+                    (menuOpened)="column_to_display.author = author" 
+                    (menuOpened)="this.api.request_titles(column_to_display)" 
+                    [matMenuTriggerFor]="menu_titles">
+                        {{author}}
+                </button>
+            </ng-container>
+        </mat-menu>
+
+        <mat-menu #menu_titles="matMenu">
+            <ng-container *ngFor="let title of column_to_display.retrieved_titles; let i = index">
+                <button 
+                    mat-menu-item 
+                    (menuOpened)="column_to_display.title = '';"
+                    (menuOpened)="column_to_display.title = title" 
+                    (menuOpened)="this.api.request_editors(column_to_display)" 
+                    [matMenuTriggerFor]="menu_editors">
+                    {{title}}
+                </button>
+            </ng-container>
+        </mat-menu>
+
+        <mat-menu #menu_editors="matMenu">
+            <ng-container *ngFor="let editor of column_to_display.retrieved_editors; let i = index">
+                <button mat-menu-item
+                    (click)="column_to_display.editor = editor"
+                    (click)="this.handle_editor_click(column_to_display)">
+                    {{editor}}
+                </button>
+            </ng-container>
+        </mat-menu>
+
         <!-- Buttons to close columns or to move columns to left and right -->
         <button mat-icon-button (click)="move_column(column_to_display.column_id, 'left')">
             <mat-icon>keyboard_arrow_left</mat-icon>
@@ -278,9 +326,10 @@
 <ng-template #fragment_column_template let-given_column="given_column" let-hint="hint">  
     
     <!-- <div class="row"> -->
+        <!--  
         <ng-container *ngTemplateOutlet="select_author;context:{column: given_column}"></ng-container>
         <ng-container *ngTemplateOutlet="select_title;context:{column: given_column}"></ng-container>
-        <ng-container *ngTemplateOutlet="select_editor;context:{column: given_column}"></ng-container>       
+        <ng-container *ngTemplateOutlet="select_editor;context:{column: given_column}"></ng-container>        -->
     <!-- </div> -->
 
     <div class="div-padding-sm"></div>
@@ -503,4 +552,50 @@
         </div>
     </mat-expansion-panel>
     <hr> <!-- And add a nice line to separate the fields -->
+</ng-template>
+
+<!-- Template to show fragment content from the given fragment in a mat expansion panel -->
+<ng-template #nested_author_title_editor_select let-column="column">   
+    <!-- Nested menu to select author - title - editor. -->
+    <mat-menu #menu_authors="matMenu">
+        <ng-container *ngFor="let author of column.retrieved_authors; let i = index">
+            <button 
+                mat-menu-item 
+                (menuOpened)="column.title = ''; column.editor = '';" 
+                (menuOpened)="column.author = author" 
+                (menuOpened)="this.api.request_titles(column)" 
+                [matMenuTriggerFor]="menu_titles">
+                    {{author}}
+            </button>
+        </ng-container>
+    </mat-menu>
+
+    <mat-menu #menu_titles="matMenu">
+        <ng-container *ngFor="let title of column.retrieved_titles; let i = index">
+            <button 
+                mat-menu-item 
+                (menuOpened)="column.title = '';"
+                (menuOpened)="column.title = title" 
+                (menuOpened)="this.api.request_editors(column)" 
+                [matMenuTriggerFor]="menu_editors">
+                {{title}}
+            </button>
+        </ng-container>
+    </mat-menu>
+
+    <mat-menu #menu_editors="matMenu">
+        <button
+            mat-menu-item
+            *ngIf="this.utility.spinner"
+            style="display: flex; justify-content: center; align-items: center">
+            <mat-spinner mode="indeterminate" diameter="24"></mat-spinner>
+        </button>
+        <ng-container *ngFor="let editor of column.retrieved_editors; let i = index">
+            <button mat-menu-item
+                (click)="column1.editor = editor"
+                (click)="this.handle_editor_click(column)">
+                {{editor}}
+            </button>
+        </ng-container>
+    </mat-menu>
 </ng-template>

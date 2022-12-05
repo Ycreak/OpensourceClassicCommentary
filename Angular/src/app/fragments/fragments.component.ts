@@ -88,6 +88,8 @@ export class FragmentsComponent implements OnInit {
   // Variable to keep track of the window width, used to scale the site for small displays
   window_size: number;
 
+
+  
   constructor(
     public api: ApiService,
     public utility: UtilityService,
@@ -111,7 +113,8 @@ export class FragmentsComponent implements OnInit {
     this.columns.push(this.column1)
     // Request the fragments for the first column
     this.request_fragments(this.column1);
-    this.api.request_authors(this.column1)
+    this.api.request_authors(this.column1);
+    // this.column1.author = 'Ennius'
     
     // And for the playground
     this.playground = new Column({column_id:'0', type:'playground'});
@@ -255,6 +258,7 @@ export class FragmentsComponent implements OnInit {
    * @author Ycreak
    */
   private handle_editor_click(column): void {
+    column.edited = false;
     // If we are in the playground, we request fragment names. Else we request fragments.
     if ( column.type == 'playground' ) {
       this.request_fragment_names(column)
@@ -345,7 +349,7 @@ export class FragmentsComponent implements OnInit {
     this.column_identifier += 1;
 
     // Create new column with the appropriate name. TODO: create better identifiers than simple integers
-    let new_Column = new Column({column_id:String(this.column_identifier), author:'Accius', title:'Aegisthus', editor:'Dangel'});
+    let new_Column = new Column({column_id:String(this.column_identifier)});
 
     this.columns.push(new_Column)    
     this.api.request_authors(new_Column);
@@ -539,9 +543,9 @@ export class FragmentsComponent implements OnInit {
    * Test function
    * @author Ycreak
    */  
-  private test(thing): void{
+  public test(thing): void{
     console.log('############ TESTING ############')
-    console.log(this.columns);
+    console.log(this.column1);
 
     // console.log(this.columns[thing.container.id])
     // console.log(this.columns[thing.previousContainer.id])
