@@ -15,7 +15,7 @@ then
 
 	tmux send-keys -t oscc_session:2 'cd Angular; ng serve --poll=3000 --port 4200' C-m
 	# split the third pane and start the angular and flask service
-	tmux send-keys -t oscc_session:3 'cd Server; source env/bin/activate.fish; FLASK_APP=server.py FLASK_ENV=development flask run --port 5003' C-m
+	tmux send-keys -t oscc_session:3 'cd Server; source env/bin/activate.fish; FLASK_APP=server.py FLASK_DEBUG=1 flask run --port 5003' C-m
 
 	# tmux split-window -h -t oscc_session:3
 	#tmux send-keys -t oscc_session:3.0 'cd Server; source env/bin/activate.fish; FLASK_APP=server.py FLASK_ENV=development flask run --port 5003' C-m
