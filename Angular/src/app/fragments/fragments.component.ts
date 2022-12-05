@@ -128,12 +128,12 @@ export class FragmentsComponent implements OnInit {
       this.window_size = this.utility.retrieve_viewport_size();    
     })
 
-    // this.column2 = new Column('2', 'ETR', 'Ennius', 'Thyestes', 'TRF');
-    // this.columns.push(this.column2);
-    // this.request_authors(this.column2);
-    // this.request_fragments(this.column2);
-    // this.column_identifier += 1;
-    // this.update_connected_columns_list();
+    this.column2 = new Column({column_id:'2', author:'Ennius', title:'Thyestes', editor:'Jocelyn'});
+    this.columns.push(this.column2)
+    this.request_fragments(this.column2);
+    this.api.request_authors(this.column2);
+    this.column_identifier += 1;
+    this.update_connected_columns_list();
 
   }
 
@@ -285,8 +285,6 @@ export class FragmentsComponent implements OnInit {
         // Reset the commentary column and its linked fragments
         this.commentary_column.linked_fragments_content = [];
   
-        /**
-         * TODO: migrate the linked fragment procedure to the new Flask interface
         // Now retrieve all linked fragments to show their content in the commentary column
         for(let i in fragment.linked_fragments){
           let linked_fragment = this.utility.create_empty_fragment()
@@ -308,10 +306,8 @@ export class FragmentsComponent implements OnInit {
         // Second, colour the clicked fragment
         fragment.colour = '#3F51B5';
         // Lastly, colour the linked fragments
-        // TODO: migrate
-        // this.colour_linked_fragments(fragment)
-        */
-
+        this.colour_linked_fragments(fragment)
+        
         if(!from_playground && this.oscc_settings.auto_scroll_linked_fragments){ // Only scroll when not in playground
           this.scroll_linked_fragments(fragment)
         }
@@ -453,7 +449,7 @@ export class FragmentsComponent implements OnInit {
    * @author Ycreak
    */
   private colour_linked_fragments(fragment: Fragment): void{
-    // Loop through all fragments the linked fragments
+    // Loop through all fragments the linked fragments    
     for(let i in fragment.linked_fragments){
       let linked_fragment_id = fragment.linked_fragments[i] 
 
