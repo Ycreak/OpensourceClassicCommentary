@@ -198,7 +198,7 @@ export class UtilityService {
    * @author Ycreak
    */
   public create_empty_user(): User {
-    return new User('', '', '');
+    return new User();
   }
 
   /**

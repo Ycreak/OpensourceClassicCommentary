@@ -1,0 +1,132 @@
+    <!-- BIBLIOGRAPHY PANEL -->
+    <mat-expansion-panel *ngIf="this.auth_service.is_logged_in" [expanded]="false">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Change bibliography data
+        </mat-panel-title>
+        <mat-panel-description>
+          Create, revise and delete bibliography entries.
+          <mat-icon>auto_stories</mat-icon>
+        </mat-panel-description>
+      </mat-expansion-panel-header>          
+    
+      <div class="alert alert-info" role="alert">
+        The OSCC has a build-in bibliography management system which is accessible to all users. Select the tab appropriate for your title and fill in all fields (without HTML formatting).
+        It can then be linked to a fragment using the <b>Change fragment data</b> panel. If you want to revise a source, use the Author search field below to find it in the database. 
+        Make sure you are in the correct tab before pressing the revise button. 
+      </div>
+
+      <!-- Buttons to submit fragment data -->
+      <button mat-stroked-button color="primary" [disabled]="!bibliography_form.valid" (click)="request_create_bibliography_entry(this.bibliography_form.value)" 
+      *ngIf="this.auth_service.current_user_role == 'teacher' || this.auth_service.current_user_role == 'student'">Create bibliography entry</button>
+      <button mat-stroked-button color="primary" [disabled]="!bibliography_form.valid" (click)="request_revise_bibliography_entry(this.bibliography_form.value)" 
+      *ngIf="this.auth_service.current_user_role == 'teacher' || this.auth_service.current_user_role == 'student'">Revise bibliography entry</button>
+      <button mat-stroked-button color="warn" [disabled]="!bib_entry_selected" (click)="request_delete_bibliography_entry(this.bibliography_form.value)" 
+          *ngIf="this.auth_service.current_user_role == 'teacher'">Delete bibliography entry</button>
+      <hr>
+      
+      <!-- Find the name of your author -->
+      <form class="example-form">
+        <mat-form-field class="example-full-width" appearance="fill">
+          <mat-label>Search an Author</mat-label>
+          <input type="text"
+                 placeholder="Type author name"
+                 aria-label="Author"
+                 matInput
+                 [formControl]="bibliography_author_selection_form"
+                 [matAutocomplete]="auto">
+                 <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                   <mat-option *ngFor="let option of bibliography_author_selection_form_filtered_options | async" [value]="option"
+                   (click)="this.request_bibliography_from_author(option)">
+                   {{option}}
+                  </mat-option>
+                </mat-autocomplete>
+          <mat-hint>Search for title to revise</mat-hint>                       
+        </mat-form-field>
+      </form>
+    
+      <mat-selection-list [multiple]="false">
+        <mat-list-option *ngFor="let bib_entry of retrieved_author_bibliography" [value]="bib_entry" 
+          (click)="this.handle_bib_entry_selection(bib_entry)"
+          (click)="this.bib_entry_selected = true">
+          {{bib_entry.author}}, {{bib_entry.title}}, {{bib_entry.year}}
+        </mat-list-option>
+      </mat-selection-list>
+
+      <hr>
+      
+      <mat-tab-group [selectedIndex]="bibliography_form_selected_type.value" (selectedTabChange)="on_bibliography_tab_change($event)">
+        <form [formGroup]="bibliography_form">
+          <mat-tab label="Book"><br>
+
+            <mat-form-field class="input-form-half">
+              <mat-label>Author</mat-label>
+              <input matInput type="text" formControlName="author"> <!--required> -->                    -->
+            </mat-form-field>
+          
+            <mat-form-field class="input-form-half">
+              <mat-label>Title</mat-label>
+              <input matInput type="text" formControlName="title"> <!--required> -->                       -->
+            </mat-form-field>
+            
+            <mat-form-field class="input-form-half">
+              <mat-label>Year</mat-label>
+              <input matInput type="text" formControlName="year"> <!--required> -->
+            </mat-form-field>
+            
+            <mat-form-field class="input-form-half">
+              <mat-label>Series</mat-label>
+              <input matInput type="text" formControlName="series"> <!--required> -->
+            </mat-form-field>
+
+            <mat-form-field class="input-form-half">
+              <mat-label>Number</mat-label>
+              <input matInput type="text" formControlName="number"> <!--required> -->
+            </mat-form-field>        
+
+            <mat-form-field class="input-form-half">
+              <mat-label>Location</mat-label>
+              <input matInput type="text" formControlName="location"> <!--required> -->
+            </mat-form-field>
+            
+            <mat-form-field class="input-form-half">
+              <mat-label>Edition</mat-label>
+              <input matInput type="text" formControlName="edition"> <!--required> -->
+            </mat-form-field>          
+          
+          </mat-tab>
+
+          <mat-tab label="Article"><br>
+            <mat-form-field class="input-form-half">
+              <mat-label>Author</mat-label>
+              <input matInput type="text" formControlName="author"> <!--required> -->
+            </mat-form-field>
+          
+            <mat-form-field class="input-form-half">
+              <mat-label>Title</mat-label>
+              <input matInput type="text" formControlName="title"> <!--required> -->
+            </mat-form-field>
+            
+            <mat-form-field class="input-form-half">
+              <mat-label>Year</mat-label>
+              <input matInput type="text" formControlName="year"> <!--required> -->
+            </mat-form-field>
+            
+            <mat-form-field class="input-form-half">
+              <mat-label>Journal</mat-label>
+              <input matInput type="text" formControlName="journal"> <!--required> -->
+            </mat-form-field>
+
+            <mat-form-field class="input-form-half">
+              <mat-label>Volume</mat-label>
+              <input matInput type="text" formControlName="volume"> <!--required> -->
+            </mat-form-field>        
+
+            <mat-form-field class="input-form-half">
+              <mat-label>Pages</mat-label>
+              <input matInput type="text" formControlName="pages"> <!--required> -->
+            </mat-form-field>            
+          </mat-tab>      
+        </form>
+      </mat-tab-group>
+    </mat-expansion-panel>

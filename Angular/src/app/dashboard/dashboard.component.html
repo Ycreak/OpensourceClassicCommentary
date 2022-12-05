@@ -54,18 +54,18 @@
       <mat-form-field>
         <mat-label>Select author</mat-label>
         <mat-select [(ngModel)]="this.selected_fragment_data.author" ngDefaultControl>
-            <mat-option *ngFor="let author of this.selected_fragment_data.retrieved_authors" [value]="author.name"
-              (click)="this.selected_fragment_data.author = author.name"
+            <mat-option *ngFor="let author of this.selected_fragment_data.retrieved_authors" [value]="author"
+              (click)="this.selected_fragment_data.author = author"
               
               (click)="this.selected_fragment_data.title = ''; this.selected_fragment_data.editor = ''; this.selected_fragment_data.fragment_name = '';"
               (click)="this.selected_fragment_data.retrieved_titles = []; this.selected_fragment_data.retrieved_editors = []; this.selected_fragment_data.retrieved_fragment_names = []"
               
               (click)="this.reset_fragment_form()"
-              (click)="this.update_form_field('fragment_form', 'author', author.name);"
+              (click)="this.update_form_field('fragment_form', 'author', author);"
 
               (click)="this.api.request_titles(selected_fragment_data)"
               (click)="this.fragment_selected = false;">
-                {{ author.name }} 
+                {{ author }} 
             </mat-option>
         </mat-select>  
       </mat-form-field> 
@@ -73,19 +73,19 @@
       <mat-form-field>
           <mat-label>Select text</mat-label>
           <mat-select [(ngModel)]="this.selected_fragment_data.title" ngDefaultControl>
-              <mat-option *ngFor="let title of this.selected_fragment_data.retrieved_titles" [value]="title.name" 
-                (click)="this.selected_fragment_data.selected_title = title.name"  
+              <mat-option *ngFor="let title of this.selected_fragment_data.retrieved_titles" [value]="title" 
+                (click)="this.selected_fragment_data.selected_title = title"  
                 
                 (click)="this.selected_fragment_data.selected_editor = ''; this.selected_fragment_data.selected_fragment = '';"
                 (click)="this.selected_fragment_data.retrieved_editors = []; this.selected_fragment_data.retrieved_fragment_names = []"
                 
                 (click)="this.reset_fragment_form()"
                 (click)="this.update_form_field('fragment_form', 'author', selected_fragment_data.author);"
-                (click)="this.update_form_field('fragment_form', 'title', title.name);"
+                (click)="this.update_form_field('fragment_form', 'title', title);"
 
                 (click)="this.api.request_editors(this.selected_fragment_data)"
                 (click)="this.fragment_selected = false;">
-                  {{ title.name }}                
+                  {{ title }}                
               </mat-option>
           </mat-select>
       </mat-form-field>
@@ -93,8 +93,8 @@
       <mat-form-field>
           <mat-label>Select edition</mat-label>
           <mat-select [(ngModel)]="this.selected_fragment_data.editor" ngDefaultControl>
-              <mat-option *ngFor="let editor of this.selected_fragment_data.retrieved_editors" [value]="editor.name"
-                  (click)="this.selected_fragment_data.editor = editor.name"
+              <mat-option *ngFor="let editor of this.selected_fragment_data.retrieved_editors" [value]="editor"
+                  (click)="this.selected_fragment_data.editor = editor"
 
                   (click)="this.selected_fragment_data.fragment_name = '';"
                   (click)="this.selected_fragment_data.retrieved_fragment_names = []"
@@ -102,11 +102,11 @@
                   (click)="this.reset_fragment_form()"
                   (click)="this.update_form_field('fragment_form', 'author', selected_fragment_data.author);"
                   (click)="this.update_form_field('fragment_form', 'title', selected_fragment_data.title);"
-                  (click)="this.update_form_field('fragment_form', 'editor', editor.name);"
+                  (click)="this.update_form_field('fragment_form', 'editor', editor);"
 
                   (click)="this.api.request_fragment_names(this.selected_fragment_data)"
                   (click)="this.fragment_selected = false;">
-                    {{ editor.name }}                     
+                    {{ editor }}                     
               </mat-option>
           </mat-select>
       </mat-form-field>
@@ -336,14 +336,14 @@
 
         </mat-tab>  <!-- end of the Fragment context tab -->
 
-        <mat-tab label="Fragment Bibliography"><br>
+        
+        <!-- <mat-tab label="Fragment Bibliography"><br>
 
           <div class="alert alert-info" role="alert">
             The OSCC has a build-in bibliography management system which is accessible to all users. Simply search for your author using the field below and press the appropriate title to add the source to your fragment.
             If your entry does not exist yet, create it using the <b>Change bibliography data</b> panel. Do not forget to press <b>Revise Fragment</b> to save changes.
           </div>
 
-          <!-- Find the name of your author -->
           <form class="example-form">
             <mat-form-field class="example-full-width" appearance="fill">
               <mat-label>Search an author</mat-label>
@@ -400,7 +400,7 @@
             </div>
           </div>
 
-        </mat-tab>  <!-- end of the Fragment bibliography tab -->
+        </mat-tab>  end of the Fragment bibliography tab -->
 
         <mat-tab *ngIf="this.auth_service.current_user_role == 'teacher'" label="Fragment References"><br>
 
@@ -416,11 +416,11 @@
             <mat-form-field class="input-form-custom" style="--max-width: 25%;">
               <mat-label>Select referenced author</mat-label>
               <mat-select [(ngModel)]="this.linked_fragment_data.author" ngDefaultControl>
-                  <mat-option *ngFor="let author of this.linked_fragment_data.retrieved_authors" [value]="author.name"
-                    (click)="this.linked_fragment_data.author = author.name"
+                  <mat-option *ngFor="let author of this.linked_fragment_data.retrieved_authors" [value]="author"
+                    (click)="this.linked_fragment_data.author = author"
                     (click)="this.linked_fragment_data.title = ''; this.linked_fragment_data.editor = ''; this.linked_fragment_data.fragment_name = '';"
                     (click)="this.api.request_titles(linked_fragment_data)">
-                      {{ author.name }} 
+                      {{ author }} 
                   </mat-option>
               </mat-select>  
             </mat-form-field> 
@@ -428,11 +428,11 @@
             <mat-form-field class="input-form-custom" style="--max-width: 25%;">
               <mat-label>Select referenced title</mat-label>
               <mat-select [(ngModel)]="this.linked_fragment_data.title" ngDefaultControl>
-                  <mat-option *ngFor="let title of this.linked_fragment_data.retrieved_titles" [value]="title.name"
-                    (click)="this.linked_fragment_data.title = title.name"
+                  <mat-option *ngFor="let title of this.linked_fragment_data.retrieved_titles" [value]="title"
+                    (click)="this.linked_fragment_data.title = title"
                     (click)="this.linked_fragment_data.editor = ''; this.linked_fragment_data.fragment_name = '';"
                     (click)="this.api.request_editors(linked_fragment_data)">
-                      {{ title.name }} 
+                      {{ title }} 
                   </mat-option>
               </mat-select>  
             </mat-form-field> 
@@ -440,11 +440,11 @@
             <mat-form-field class="input-form-custom" style="--max-width: 25%;">
               <mat-label>Select referenced editor</mat-label>
               <mat-select [(ngModel)]="this.linked_fragment_data.editor" ngDefaultControl [disabled]="!fragment_form.valid">
-                  <mat-option *ngFor="let editor of this.linked_fragment_data.retrieved_editors" [value]="editor.name"
-                    (click)="this.linked_fragment_data.editor = editor.name"
+                  <mat-option *ngFor="let editor of this.linked_fragment_data.retrieved_editors" [value]="editor"
+                    (click)="this.linked_fragment_data.editor = editor"
                     (click)="this.linked_fragment_data.fragment_name = '';"
                     (click)="this.api.request_fragment_names(linked_fragment_data)">
-                      {{ editor.name }} 
+                      {{ editor }} 
                   </mat-option>
               </mat-select>  
             </mat-form-field> 
@@ -541,141 +541,6 @@
 
     <hr>
     
-    <!-- BIBLIOGRAPHY PANEL -->
-    <mat-expansion-panel *ngIf="this.auth_service.is_logged_in" [expanded]="false">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          Change bibliography data
-        </mat-panel-title>
-        <mat-panel-description>
-          Create, revise and delete bibliography entries.
-          <mat-icon>auto_stories</mat-icon>
-        </mat-panel-description>
-      </mat-expansion-panel-header>          
-    
-      <div class="alert alert-info" role="alert">
-        The OSCC has a build-in bibliography management system which is accessible to all users. Select the tab appropriate for your title and fill in all fields (without HTML formatting).
-        It can then be linked to a fragment using the <b>Change fragment data</b> panel. If you want to revise a source, use the Author search field below to find it in the database. 
-        Make sure you are in the correct tab before pressing the revise button. 
-      </div>
-
-      <!-- Buttons to submit fragment data -->
-      <button mat-stroked-button color="primary" [disabled]="!bibliography_form.valid" (click)="request_create_bibliography_entry(this.bibliography_form.value)" 
-      *ngIf="this.auth_service.current_user_role == 'teacher' || this.auth_service.current_user_role == 'student'">Create bibliography entry</button>
-      <button mat-stroked-button color="primary" [disabled]="!bibliography_form.valid" (click)="request_revise_bibliography_entry(this.bibliography_form.value)" 
-      *ngIf="this.auth_service.current_user_role == 'teacher' || this.auth_service.current_user_role == 'student'">Revise bibliography entry</button>
-      <button mat-stroked-button color="warn" [disabled]="!bib_entry_selected" (click)="request_delete_bibliography_entry(this.bibliography_form.value)" 
-          *ngIf="this.auth_service.current_user_role == 'teacher'">Delete bibliography entry</button>
-      <hr>
-      
-      <!-- Find the name of your author -->
-      <form class="example-form">
-        <mat-form-field class="example-full-width" appearance="fill">
-          <mat-label>Search an Author</mat-label>
-          <input type="text"
-                 placeholder="Type author name"
-                 aria-label="Author"
-                 matInput
-                 [formControl]="bibliography_author_selection_form"
-                 [matAutocomplete]="auto">
-                 <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                   <mat-option *ngFor="let option of bibliography_author_selection_form_filtered_options | async" [value]="option"
-                   (click)="this.request_bibliography_from_author(option)">
-                   {{option}}
-                  </mat-option>
-                </mat-autocomplete>
-          <mat-hint>Search for title to revise</mat-hint>                       
-        </mat-form-field>
-      </form>
-    
-      <mat-selection-list [multiple]="false">
-        <mat-list-option *ngFor="let bib_entry of retrieved_author_bibliography" [value]="bib_entry" 
-          (click)="this.handle_bib_entry_selection(bib_entry)"
-          (click)="this.bib_entry_selected = true">
-          {{bib_entry.author}}, {{bib_entry.title}}, {{bib_entry.year}}
-        </mat-list-option>
-      </mat-selection-list>
-
-      <hr>
-      
-      <mat-tab-group [selectedIndex]="bibliography_form_selected_type.value" (selectedTabChange)="on_bibliography_tab_change($event)">
-        <form [formGroup]="bibliography_form">
-          <mat-tab label="Book"><br>
-
-            <mat-form-field class="input-form-half">
-              <mat-label>Author</mat-label>
-              <input matInput type="text" formControlName="author"> <!--required> -->                    -->
-            </mat-form-field>
-          
-            <mat-form-field class="input-form-half">
-              <mat-label>Title</mat-label>
-              <input matInput type="text" formControlName="title"> <!--required> -->                       -->
-            </mat-form-field>
-            
-            <mat-form-field class="input-form-half">
-              <mat-label>Year</mat-label>
-              <input matInput type="text" formControlName="year"> <!--required> -->
-            </mat-form-field>
-            
-            <mat-form-field class="input-form-half">
-              <mat-label>Series</mat-label>
-              <input matInput type="text" formControlName="series"> <!--required> -->
-            </mat-form-field>
-
-            <mat-form-field class="input-form-half">
-              <mat-label>Number</mat-label>
-              <input matInput type="text" formControlName="number"> <!--required> -->
-            </mat-form-field>        
-
-            <mat-form-field class="input-form-half">
-              <mat-label>Location</mat-label>
-              <input matInput type="text" formControlName="location"> <!--required> -->
-            </mat-form-field>
-            
-            <mat-form-field class="input-form-half">
-              <mat-label>Edition</mat-label>
-              <input matInput type="text" formControlName="edition"> <!--required> -->
-            </mat-form-field>          
-          
-          </mat-tab>
-
-          <mat-tab label="Article"><br>
-            <mat-form-field class="input-form-half">
-              <mat-label>Author</mat-label>
-              <input matInput type="text" formControlName="author"> <!--required> -->
-            </mat-form-field>
-          
-            <mat-form-field class="input-form-half">
-              <mat-label>Title</mat-label>
-              <input matInput type="text" formControlName="title"> <!--required> -->
-            </mat-form-field>
-            
-            <mat-form-field class="input-form-half">
-              <mat-label>Year</mat-label>
-              <input matInput type="text" formControlName="year"> <!--required> -->
-            </mat-form-field>
-            
-            <mat-form-field class="input-form-half">
-              <mat-label>Journal</mat-label>
-              <input matInput type="text" formControlName="journal"> <!--required> -->
-            </mat-form-field>
-
-            <mat-form-field class="input-form-half">
-              <mat-label>Volume</mat-label>
-              <input matInput type="text" formControlName="volume"> <!--required> -->
-            </mat-form-field>        
-
-            <mat-form-field class="input-form-half">
-              <mat-label>Pages</mat-label>
-              <input matInput type="text" formControlName="pages"> <!--required> -->
-            </mat-form-field>            
-          </mat-tab>      
-        </form>
-      </mat-tab-group>
-    </mat-expansion-panel>
-
-    <hr>
-
     <!-- Change user expansion panel -->
     <mat-expansion-panel *ngIf="this.auth_service.is_logged_in" [expanded]="true">
       <mat-expansion-panel-header>

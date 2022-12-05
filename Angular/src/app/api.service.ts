@@ -121,31 +121,6 @@ export class ApiService {
   }
 
   /**
-   * Given the author, title and editor, request the names of the fragments from the server.
-   * @param column Column object with all necessary data
-   * @author Ycreak
-   */
-  //  public request_fragments(fragment_list: object): Fragment[] {
-  //   this.utility.spinner_on()    
-    
-  //   fragment_list = []
-
-  //   this.get_fragments(column).subscribe(
-      
-  //     data => {
-        
-  //       for ( let i in data ) {
-  //         let fragment = new Fragment()
-  //         fragment.set_fragment(data[i])
-  //         fragment_list.push(fragment)        
-  //       }
-  //       this.utility.spinner_off()
-  //       return fragment_list 
-  //     }
-      
-  //     );
-  // }
-  /**
    * Converts the JSON from the server to a Typescript object
    * @author Ycreak
    * @TODO: can this be done automatically without being invoked from fragment.component?
@@ -161,19 +136,19 @@ export class ApiService {
   }
 
 
-  /**
-   * Requests a specific fragment from the database
-   * @param column Fragment_column object with all necessary data
-   * @author Ycreak CptVickers
-   */
-   public request_specific_fragment(column: Column): void {
-    this.utility.spinner_off()
-    this.get_specific_fragment(column).subscribe(
-      fragment => {
-        column.fragments = [fragment]
-        this.utility.spinner_off()
-      });
-  }
+  // /**
+  //  * Requests a specific fragment from the database
+  //  * @param column Fragment_column object with all necessary data
+  //  * @author Ycreak CptVickers
+  //  */
+  //  public request_specific_fragment(column: Column): void {
+  //   this.utility.spinner_off()
+  //   this.get_specific_fragment(column).subscribe(
+  //     fragment => {
+  //       column.fragments = [fragment]
+  //       this.utility.spinner_off()
+  //     });
+  // }
 
 //   _____   ____   _____ _______ 
 //  |  __ \ / __ \ / ____|__   __|
@@ -195,9 +170,6 @@ export class ApiService {
   public get_fragments(fragment: object): Observable<object[]> {
     return this.http.post<Fragment[]>(this.FlaskURL + `fragment/get`, fragment, { observe: 'body', responseType: 'json'});
   }
-  // public get_fragment_content(fragment: Fragment): Observable<Fragment> {
-  //   return this.http.post<Fragment>(this.FlaskURL + `fragment_content`, fragment, { observe: 'body', responseType: 'json'});
-  // } @deprecated
   public get_specific_fragment(fragment: object): Observable<Fragment> {
     return this.http.post<Fragment>(this.FlaskURL + `complete_fragment`, fragment, { observe: 'body', responseType: 'json'});
   }
@@ -205,36 +177,33 @@ export class ApiService {
     return this.http.post<string[]>(this.FlaskURL + `fragment/get/name`, fragment, { observe: 'body', responseType: 'json'});
   }  
   public create_fragment(fragment: any): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + `create_fragment`, fragment, { observe: 'response', responseType: 'text' as 'json' });
+    return this.http.post<any>(this.FlaskURL + `fragment/create`, fragment, { observe: 'response', responseType: 'text' as 'json' });
   } 
   public revise_fragment(fragment: any): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + `revise_fragment`, fragment, { observe: 'response', responseType: 'text' as 'json'  });
+    return this.http.post<any>(this.FlaskURL + `fragment/update`, fragment, { observe: 'response', responseType: 'text' as 'json'  });
   }
   public delete_fragment(fragment: any): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + `delete_fragment`, fragment, { observe: 'response', responseType: 'text' as 'json'  });
+    return this.http.post<any>(this.FlaskURL + `fragment/delete`, fragment, { observe: 'response', responseType: 'text' as 'json'  });
   }
   public automatic_fragment_linker(fragment: Fragment): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `automatic_fragment_linker`, fragment, { observe: 'response', responseType: 'text' as 'json'  });
   }
   // Users
   public get_users(user: User): Observable<User[]> {
-    return this.http.post<User[]>(this.FlaskURL + `retrieve_users`, user, { observe: 'body', responseType: 'json'});
+    return this.http.post<User[]>(this.FlaskURL + `user/get`, user, { observe: 'body', responseType: 'json'});
   }
   public login_user(user: User): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + `login_user`, user, { observe: 'response', responseType: 'text' as 'json' });
+    return this.http.post<any>(this.FlaskURL + `user/login`, user, { observe: 'response', responseType: 'text' as 'json' });
   }
   public create_user(user: User): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + `create_user`, user, { observe: 'response', responseType: 'text' as 'json'  });
+    return this.http.post<any>(this.FlaskURL + `user/create`, user, { observe: 'response', responseType: 'text' as 'json'  });
   }
   public delete_user(user: User): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + `delete_user`, user, { observe: 'response', responseType: 'text' as 'json'  });
+    return this.http.post<any>(this.FlaskURL + `user/delete`, user, { observe: 'response', responseType: 'text' as 'json'  });
   }
-  public user_change_password(user: User): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + `change_password`, user, { observe: 'response', responseType: 'text' as 'json'  });
+  public user_update(user: User): Observable<any> {
+    return this.http.post<any>(this.FlaskURL + `user/update`, user, { observe: 'response', responseType: 'text' as 'json'  });
   }
-  public user_change_role(user: User): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + `change_role`, user, { observe: 'response', responseType: 'text' as 'json'  });
-  }  
   // Bibliography
   public create_bibliography_entry(fragment: object): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `create_bibliography_entry`, fragment, { observe: 'response', responseType: 'text' as 'json' });

@@ -237,7 +237,7 @@ export class DashboardComponent implements OnInit {
    * @author Ycreak
    */
   public test(thing): void {
-    console.log(this.fragment_form.value)
+    console.log(this.retrieved_users)
   }
 
   /**
@@ -480,13 +480,13 @@ export class DashboardComponent implements OnInit {
       this.utility.toggle_spinner();
       // Reset the fragment_form to allow a clean insertion of the requested fragment
       this.reset_fragment_form();
-      // Create api/fragment object to send to the server      
-      let api_data = this.utility.create_empty_fragment();
-      api_data.author = column.author; api_data.title = column.title;
-      api_data.editor = column.editor; api_data.fragment_name = column.fragment_name;
 
-      this.api.get_specific_fragment(api_data).subscribe(
-        fragment => {
+      this.api.get_fragments(new Fragment({author:column.author, title:column.title, editor:column.editor, fragment_name:column.fragment_name})).subscribe(
+        data => {
+          
+          let fragment_list = this.api.convert_fragment_json_to_typescript(data);
+          let fragment = fragment_list[0]; // We only retrieved one single fragment
+
           this.convert_Fragment_to_fragment_form(fragment);
           // Also update the selection fields
           column.author = fragment.author;
@@ -706,10 +706,7 @@ export class DashboardComponent implements OnInit {
     this.dialog.open_confirmation_dialog('Are you sure you want to CHANGE the role of this user?', item_string).subscribe(result => {
       if (result) {
         this.utility.spinner_on();
-        let api_data = this.utility.create_empty_user();
-        api_data.username = user.username; api_data.role = user.role
-
-        this.api.user_change_role(api_data).subscribe({
+        this.api.user_update(new User({username:user.username, role:user.role})).subscribe({
           next: (res) => {
             this.utility.handle_error_message(res),
               this.request_users();
@@ -733,10 +730,7 @@ export class DashboardComponent implements OnInit {
        this.dialog.open_confirmation_dialog("Are you sure you want to CHANGE this user's password", username).subscribe(result => {
          if (result) {
           this.utility.spinner_on();
-          let api_data = this.utility.create_empty_user();
-          api_data.username = username; api_data.password = form.value.password1
-  
-          this.api.user_change_password(api_data).subscribe({
+          this.api.user_update(new User({username:username, password:form.value.password1})).subscribe({
             next: (res) => this.utility.handle_error_message(res), 
             error: (err) => this.utility.handle_error_message(err)
           }

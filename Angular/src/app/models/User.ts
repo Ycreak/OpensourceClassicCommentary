@@ -1,13 +1,13 @@
 export class User {
-    constructor(
-        public id: string,
-        public username: string,
-        public role: string,
-    ) {
+
+    constructor ( user? : Partial<User> ) {
+        // Allow the partial initialisation of a fragment object
+        Object.assign(this, user);
     }
 
-    public password: string;
-    // public new_password: string;
-    // public new_role: string;
+    username: string = '';
+    role: string = '';
+    password: string = '';
+
 }
 
