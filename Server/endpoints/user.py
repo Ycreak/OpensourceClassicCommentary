@@ -63,7 +63,7 @@ def create_user():
     if users.get(User(username=user.username)) != None:
         return make_response("Forbidden", 403)
 
-    user = users.create(User(id=uuid4().hex, username=user.username, password=util.hash_password(user.password)))
+    user = users.create(User(id=uuid4().hex, username=user.username, password=util.hash_password(user.password), role=Role.GUEST))
     if user == None:
         return make_response("Server error", 500)
 
