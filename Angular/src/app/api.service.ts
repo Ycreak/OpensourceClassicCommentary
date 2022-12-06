@@ -201,7 +201,7 @@ export class ApiService {
   public delete_user(user: User): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `user/delete`, user, { observe: 'response', responseType: 'text' as 'json'  });
   }
-  public user_update(user: User): Observable<any> {
+  public user_update(user: User | object): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `user/update`, user, { observe: 'response', responseType: 'text' as 'json'  });
   }
   // Bibliography

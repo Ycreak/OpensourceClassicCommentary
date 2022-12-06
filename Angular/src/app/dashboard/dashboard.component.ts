@@ -706,7 +706,8 @@ export class DashboardComponent implements OnInit {
     this.dialog.open_confirmation_dialog('Are you sure you want to CHANGE the role of this user?', item_string).subscribe(result => {
       if (result) {
         this.utility.spinner_on();
-        this.api.user_update(new User({username:user.username, role:user.role})).subscribe({
+        // We update the user role by providing the api with a username and the new role
+        this.api.user_update({username:user.username, role:user.role}).subscribe({
           next: (res) => {
             this.utility.handle_error_message(res),
               this.request_users();
@@ -730,7 +731,7 @@ export class DashboardComponent implements OnInit {
        this.dialog.open_confirmation_dialog("Are you sure you want to CHANGE this user's password", username).subscribe(result => {
          if (result) {
           this.utility.spinner_on();
-          this.api.user_update(new User({username:username, password:form.value.password1})).subscribe({
+          this.api.user_update({username:username, password:form.value.password1}).subscribe({
             next: (res) => this.utility.handle_error_message(res), 
             error: (err) => this.utility.handle_error_message(err)
           }
