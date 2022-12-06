@@ -1,3 +1,5 @@
+@use '@angular/material' as mat;
+
 /** Dialogs **/
 mat-dialog-container {
     width: fit-content !important;
@@ -15,7 +17,7 @@ div.settings-dialog-header {
     align-items: flex-end;
     padding-left: 1em;
     color: white;
-    background-color: var(--bs-pink);
+    background-color: mat.get_color_from_palette(mat.$pink-palette, 'A200');
 }
 div.settings-dialog-header h2 {
     font-size: 1.5em;
