@@ -286,18 +286,20 @@ export class FragmentsComponent implements OnInit {
         this.commentary_column.linked_fragments_content = [];
   
         // Now retrieve all linked fragments to show their content in the commentary column
-        for(let i in fragment.linked_fragments){
-          let linked_fragment = this.utility.create_empty_fragment()
-          linked_fragment.fragment_id = fragment.linked_fragments[i]
+        for(let i in fragment.linked_fragments){          
           // Request the fragment
-          //TODO: migrate
-          // this.api.get_specific_fragment(linked_fragment).subscribe(
-          //   data => {
-          //     linked_fragment = data;
-          //     // and push it to the commentary column
-          //     this.commentary_column.linked_fragments_content.push(linked_fragment)
-          //     this.utility.spinner_off();
-          //   });
+          this.api.get_fragments({
+            author : fragment.linked_fragments[i].author,
+            title : fragment.linked_fragments[i].title,
+            editor : fragment.linked_fragments[i].editor,
+            fragment_name : fragment.linked_fragments[i].name
+          }).subscribe(
+            data => {
+              let fragment = this.api.convert_fragment_json_to_typescript(data)
+              // and push it to the commentary column(only one fragment in the list, so push the first one)
+              this.commentary_column.linked_fragments_content.push(fragment[0]) 
+              this.utility.spinner_off();
+            });
         }
         
         // The next part handles the colouring of clicked and referenced fragments.
@@ -427,7 +429,7 @@ export class FragmentsComponent implements OnInit {
   public scroll_linked_fragments(fragment: Fragment){
 
     for(let i in fragment.linked_fragments){
-      let linked_fragment_id = fragment.linked_fragments[i] 
+      let linked_fragment_id = fragment.linked_fragments[i].linked_fragment_id 
 
       // Now, for each fragment that is linked, try to find it in the other columns
       for(let j in this.columns){
@@ -451,7 +453,7 @@ export class FragmentsComponent implements OnInit {
   private colour_linked_fragments(fragment: Fragment): void{
     // Loop through all fragments the linked fragments    
     for(let i in fragment.linked_fragments){
-      let linked_fragment_id = fragment.linked_fragments[i] 
+      let linked_fragment_id = fragment.linked_fragments[i].linked_fragment_id  
 
       // Now, for each fragment that is linked, try to find it in the other columns
       for(let j in this.columns){
@@ -541,7 +543,7 @@ export class FragmentsComponent implements OnInit {
    */  
   public test(thing): void{
     console.log('############ TESTING ############')
-    console.log(this.column1);
+    console.log(this.commentary_column);
 
     // console.log(this.columns[thing.container.id])
     // console.log(this.columns[thing.previousContainer.id])

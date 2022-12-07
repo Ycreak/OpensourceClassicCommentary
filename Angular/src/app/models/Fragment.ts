@@ -1,5 +1,6 @@
 import { Context } from './Context';
 import { Line } from './Line';
+import { Linked_fragment } from './Linked_fragment';
 
 /** This class represents a fragment and all its data fields */
 export class Fragment {
@@ -19,7 +20,7 @@ export class Fragment {
 
     status: string = '';
     lines: Line[] = [];
-    linked_fragments: string[] = [];
+    linked_fragments: Linked_fragment[] = [];
 
     lock: string = '';
     published: string = '';
