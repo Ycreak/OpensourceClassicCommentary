@@ -303,7 +303,12 @@ export class DashboardComponent implements OnInit {
     // Fill the linked fragment array
     for (let i in fragment.linked_fragments) {
       this.push_linked_fragments_to_fragment_form(
-        fragment.linked_fragments[i]);
+        fragment.linked_fragments[i].author,
+        fragment.linked_fragments[i].title,
+        fragment.linked_fragments[i].editor,
+        fragment.linked_fragments[i].name,
+        fragment.linked_fragments[i].linked_fragment_id,
+        );
     }
   }
 
@@ -386,9 +391,17 @@ export class DashboardComponent implements OnInit {
    * @param linked_fragment_id given id of the linked fragment
    * @author Ycreak
    */
-   public push_linked_fragments_to_fragment_form(linked_fragment_id: string): void {
+   public push_linked_fragments_to_fragment_form( author: string, 
+                                                  title: string, 
+                                                  editor: string, 
+                                                  name: string, 
+                                                  linked_fragment_id: string): void {
     // First, create a form group to represent a line
     let new_linked_fragment = new FormGroup({
+      author: new FormControl(author),
+      title: new FormControl(title),
+      editor: new FormControl(editor),
+      name: new FormControl(name),
       linked_fragment_id: new FormControl(linked_fragment_id),
     });
     // Next, push the created form group to the lines FormArray    
@@ -422,9 +435,15 @@ export class DashboardComponent implements OnInit {
    * @author Ycreak
    */
    public add_referenced_fragment_to_Fragment_form(column: Column): void {
-    this.api.get_specific_fragment(column).subscribe(
-      fragment => {
-        this.push_linked_fragments_to_fragment_form(fragment.fragment_id)
+    this.api.get_fragments(new Fragment({author:column.author, title:column.title, editor:column.editor, fragment_name: column.fragment_name})).subscribe(
+      data => {
+        let fragment = this.api.convert_fragment_json_to_typescript(data)[0]        
+        this.push_linked_fragments_to_fragment_form(fragment.author,
+                                                    fragment.title,
+                                                    fragment.editor,
+                                                    fragment.fragment_name,
+                                                    fragment.fragment_id)
+        console.log(fragment)
       });
   }
 

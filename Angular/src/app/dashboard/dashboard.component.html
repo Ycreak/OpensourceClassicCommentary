@@ -454,7 +454,8 @@
               <mat-select [(ngModel)]="this.linked_fragment_data.fragment_name" ngDefaultControl [disabled]="!fragment_form.valid">
                   <mat-option *ngFor="let fragment_name of this.linked_fragment_data.retrieved_fragment_names" [value]="fragment_name"
                     (click)="this.linked_fragment_data.fragment_name = fragment_name"
-                    (click)="this.add_referenced_fragment_to_Fragment_form(linked_fragment_data)">
+                    (click)="this.add_referenced_fragment_to_Fragment_form(linked_fragment_data)"
+                    >
                       {{ fragment_name }} 
                   </mat-option>
               </mat-select>  
@@ -467,12 +468,29 @@
             <div formArrayName="linked_fragments"
               *ngFor="let item of fragment_form.get('linked_fragments')['controls']; let i = index;">
               <div [formGroupName]="i">
-                <mat-form-field class="input-form-half">
-                  <mat-label>Linked fragment</mat-label>
-                  <input matInput type="text" formControlName="linked_fragment_id"> <!--required> -->
+                <mat-form-field>
+                  <mat-label>Author</mat-label>
+                  <input matInput disabled type="text" formControlName="author">
                 </mat-form-field>
-                <button mat-button (click)="remove_form_item_from_form_array('fragment_form', 'linked_fragments', i)"
-                  [disabled]="!this.linked_fragment_data.title">Delete this reference</button>
+
+                <mat-form-field>
+                  <mat-label>Title</mat-label>
+                  <input matInput disabled type="text" formControlName="title">
+                </mat-form-field>
+
+                <mat-form-field>
+                  <mat-label>Editor</mat-label>
+                  <input matInput disabled type="text" formControlName="editor">
+                </mat-form-field>
+
+                <mat-form-field>
+                  <mat-label>Fragment</mat-label>
+                  <input matInput disabled type="text" formControlName="name">
+                </mat-form-field>
+
+                <button mat-button (click)="remove_form_item_from_form_array('fragment_form', 'linked_fragments', i)">
+                  Delete this reference
+                </button>
               </div>
             </div>
           </form>
