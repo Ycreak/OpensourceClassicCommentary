@@ -1,10 +1,6 @@
-from models import *
-from temp import *
 import couchdb
-from uuid import uuid4
-import copy
 
-couch = couchdb.Server('http://admin:password@localhost:5984/')
+couch = couchdb.Server('http://admin:yVu4DES8qzajPCy@localhost:5984/')
 db = couch['fragments'] # existing       
 
 # new_fragment = fragment_empty
@@ -67,5 +63,46 @@ def migrate_fragments(item):
 ########
 # MAIN #
 ########
-add_field_to_fragments('lock', 0)
-# Print_all_documents()
+for id in db:
+
+    doc = db[id]
+
+    try:
+        
+        new_linked_fragments = []
+        # print(doc['_id'])
+        print(
+            doc['author'],
+            doc['title'],
+            doc['editor'], 
+            doc['fragment_name'],
+            doc['_id']
+            )
+        
+        for linked_fragment_id in doc['linked_fragments']:
+        
+            my_dict = {
+                'linked_fragment_id':linked_fragment_id, 
+                'author':db[linked_fragment_id]['author'],
+                'title':db[linked_fragment_id]['title'],
+                'editor':db[linked_fragment_id]['editor'],
+                'name':db[linked_fragment_id]['fragment_name'],
+            }
+
+            new_linked_fragments.append(my_dict)
+        
+
+        if new_linked_fragments:
+            # print(new_linked_fragments)
+            doc['linked_fragments'] = new_linked_fragments
+            doc_id, doc_rev = db.save(doc)
+        
+        # print(doc)
+
+        print('######################')
+
+    except:
+        pass
+
+
+    # print(doc)
