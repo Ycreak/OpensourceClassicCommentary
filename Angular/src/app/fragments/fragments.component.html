@@ -341,13 +341,14 @@
             [cdkDropListData]="given_column.fragments" 
             [cdkDropListConnectedTo]="connected_columns_list" 
             (cdkDropListDropped)="this.utility.drop($event)">
-            <div *ngFor="let fragment of given_column.fragments"> 
+            <div *ngFor="let fragment of given_column.fragments">
                 <div class="fragment-box" (click)="handle_fragment_click(fragment)" 
                     cdkDrag
                     [cdkDragDisabled]="this.oscc_settings.dragging_disabled"
                     (cdkDragDropped)="this.track_edited_columns($event)"
                     [attr.id]="fragment.fragment_id"
-                    [style.border-left-color]="this.generate_fragment_gradient_color(given_column.fragments.length, given_column.orig_fragment_order.indexOf(fragment.fragment_name))">
+                    [style.border-left-color]="this.generate_fragment_gradient_border_color(given_column.fragments.length, given_column.orig_fragment_order.indexOf(fragment.fragment_name))"
+                    [style.background-color]="this.generate_fragment_gradient_background_color(given_column.fragments.length, given_column.orig_fragment_order.indexOf(fragment.fragment_name))">
                     <div *ngIf="this.oscc_settings.show_headers">
                         <b [style.color]="fragment.colour">Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.title}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
                     </div>

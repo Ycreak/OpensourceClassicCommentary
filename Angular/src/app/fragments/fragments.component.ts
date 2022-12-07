@@ -652,8 +652,8 @@ export class FragmentsComponent implements OnInit {
 
 
   /**
-   * Simple function that generates a gradient color for each
-   * fragment in a fragment column.
+   * Simple function that generates a different left border color 
+   * for each fragment in a fragment column.
    * This is to indicate the initial order of the fragments.
    * 
    * Each fragment gets a color chosen from a set color
@@ -665,19 +665,54 @@ export class FragmentsComponent implements OnInit {
    * @author CptVickers
    */
 
-    public generate_fragment_gradient_color(n_fragments: number, fragment_index: number){
+    public generate_fragment_gradient_border_color(n_fragments: number, fragment_index: number){
+      console.log(this.oscc_settings.fragment_order_gradient);
       if (this.oscc_settings.fragment_order_gradient == true){
-        let max_hue: number = 360;
-        let min_hue: number = 0;
-        let max_hue_diff: number = 30;
+        let max_brightness: number = 100;
+        let min_brightness: number = 20;
+        let max_brightness_diff: number = 40;
   
-        let hue_step = (max_hue - min_hue)/n_fragments;
-        if (hue_step > max_hue_diff){
-          hue_step = max_hue_diff;
+        let brightness_step = (max_brightness - min_brightness)/n_fragments;
+        if (brightness_step > max_brightness_diff){
+          brightness_step = max_brightness_diff;
         }
-        let calculated_hue = min_hue+hue_step*fragment_index;
+        let calculated_brightness = min_brightness+brightness_step*fragment_index;
   
-        return `HSL(${calculated_hue}, 48%, 50%)`
+        return `HSL(0, 0%, ${calculated_brightness}%)`
+      }
+      else{
+        return 'transparent'
+      }
+    }
+
+  /**
+   * Simple function that generates a different background color 
+   * for each fragment in a fragment column.
+   * This is to indicate the initial order of the fragments.
+   * 
+   * Each fragment gets a color chosen from a set color
+   * brightness range, though two neighboring fragments can
+   * only have a set difference in brightness.
+   * @param n_fragments The total number of fragments in the column
+   * @param fragment_index The index of the current fragment
+   * @returns: Color as HSL value (presented as string)
+   * @author CptVickers
+   */
+
+    public generate_fragment_gradient_background_color(n_fragments: number, fragment_index: number){
+      console.log(this.oscc_settings.fragment_order_gradient);
+      if (this.oscc_settings.fragment_order_gradient == true){
+        let max_brightness: number = 100;
+        let min_brightness: number = 80;
+        let max_brightness_diff: number = 10;
+  
+        let brightness_step = (max_brightness - min_brightness)/n_fragments;
+        if (brightness_step > max_brightness_diff){
+          brightness_step = max_brightness_diff;
+        }
+        let calculated_brightness = min_brightness+brightness_step*fragment_index;
+  
+        return `HSL(0, 0%, ${calculated_brightness}%)`
       }
       else{
         return 'transparent'
