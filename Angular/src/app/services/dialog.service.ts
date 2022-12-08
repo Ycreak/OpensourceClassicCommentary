@@ -53,6 +53,7 @@ export class DialogService {
   public open_wysiwyg_dialog(content): Observable<string>{
     
     const dialogRef = this.dialog.open(WYSIWYGDialog, {
+      disableClose: true,
       data: {
         content: content,
       }
