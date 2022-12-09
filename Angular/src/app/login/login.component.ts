@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
 import { UntypedFormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Inject, Injectable } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
 
 // Component imports
 import { DialogService } from '../services/dialog.service';
@@ -10,6 +12,10 @@ import { ApiService } from '../api.service';
 import { UtilityService } from '../utility.service';
 
 import { User } from '../models/User';
+
+@Injectable({
+  providedIn: 'root'
+})
 
 @Component({
   selector: 'app-login',
@@ -60,6 +66,7 @@ export class LoginComponent implements OnInit {
     private api: ApiService,
     private utility: UtilityService,
     private dialog: DialogService,
+    public dialogRef: MatDialogRef<LoginComponent>,
     ) { }
 
   ngOnInit(): void {
@@ -77,8 +84,8 @@ export class LoginComponent implements OnInit {
       next: (res) => {
         // FIXME: this needs to be handled properly with Flask. Fix for the staging build
         this.auth_service.login_user(api_data);
-        this.login_form_expanded = false;
-        this.create_form_expanded = false;
+        this.utility.open_snackbar('Login successful') // FIXME: Would perhaps be nice to say hi to the user.
+        this.dialogRef.close(); // Close the login screen overlay
       },
       error: (err) => this.utility.handle_error_message(err),
     });
