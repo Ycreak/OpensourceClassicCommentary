@@ -5,7 +5,7 @@ import { Linked_fragment } from './Linked_fragment';
 /** This class represents a fragment and all its data fields */
 export class Fragment {
     
-    fragment_id: string = '';
+    _id: string = '';
     author: string = '';
     title: string = '';
     editor: string = '';
@@ -42,7 +42,7 @@ export class Fragment {
      */
     public set_fragment ( fragment ) {
 
-        if ( 'id' in fragment ){ this.fragment_id = fragment['id'] } 
+        if ( '_id' in fragment ){ this._id = fragment['_id'] } 
         if ( 'author' in fragment ){ this.author = fragment['author'] } 
         if ( 'title' in fragment ){ this.title = fragment['title'] } 
         if ( 'editor' in fragment ){ this.editor = fragment['editor'] } 

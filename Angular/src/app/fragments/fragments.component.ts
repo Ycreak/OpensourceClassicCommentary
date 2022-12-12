@@ -414,7 +414,7 @@ export class FragmentsComponent implements OnInit {
   public delete_clicked_item_from_playground(column: Column, item: string): void{
     if(item == 'fragment'){
       const object_index = column.fragments.findIndex(object => {
-        return object.fragment_id === column.clicked_fragment.fragment_id;
+        return object._id === column.clicked_fragment._id;
       });    
       column.fragments.splice(object_index, 1);
     }
@@ -434,11 +434,11 @@ export class FragmentsComponent implements OnInit {
       // Now, for each fragment that is linked, try to find it in the other columns
       for(let j in this.columns){
         // in each column, take a look in the fragments array to find the linked fragment
-        let corresponding_fragment = this.columns[j].fragments.find(i => i.fragment_id === linked_fragment_id);
+        let corresponding_fragment = this.columns[j].fragments.find(i => i._id === linked_fragment_id);
         // move to this fragment if found
         if(corresponding_fragment) {
           // Scroll to the corresponding element in the found column
-          const element = document.getElementById(corresponding_fragment.fragment_id);
+          const element = document.getElementById(corresponding_fragment._id);
           element.scrollIntoView({block: "nearest", behavior: "smooth"}); 
         }
       }    
@@ -458,12 +458,12 @@ export class FragmentsComponent implements OnInit {
       // Now, for each fragment that is linked, try to find it in the other columns
       for(let j in this.columns){
         // in each column, take a look in the fragments array to find the linked fragment
-        let corresponding_fragment = this.columns[j].fragments.find(i => i.fragment_id === linked_fragment_id);
+        let corresponding_fragment = this.columns[j].fragments.find(i => i._id === linked_fragment_id);
         // colour it if found
         if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
       }
       // Do the same for the playground
-      let corresponding_fragment = this.playground.fragments.find(i => i.fragment_id === linked_fragment_id);
+      let corresponding_fragment = this.playground.fragments.find(i => i._id === linked_fragment_id);
       // colour it if found
       if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
     }

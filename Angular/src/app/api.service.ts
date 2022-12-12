@@ -76,8 +76,6 @@ export class ApiService {
    public request_titles(column: Column): void {    
     this.utility.spinner_on()
 
-    console.log(column)
-
     this.get_titles(new Fragment({author:column.selected_fragment_author})).subscribe({
       next: (data) => {
         column.retrieved_titles = data;
@@ -123,7 +121,7 @@ export class ApiService {
    * @author Ycreak
    * @TODO: can this be done automatically without being invoked from fragment.component?
    */
-  public convert_fragment_json_to_typescript( data ): Fragment[] {
+  public convert_fragment_json_to_typescript( data ): Fragment[] {    
     let fragment_list = [];
     for(let i in data){
       let fragment = new Fragment()

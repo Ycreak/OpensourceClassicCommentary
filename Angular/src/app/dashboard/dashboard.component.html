@@ -117,7 +117,7 @@
               <mat-option *ngFor="let fragment_name of this.selected_fragment_data.retrieved_fragment_names" [value]="fragment_name"
                 (click)="this.selected_fragment_data.selected_fragment_name = fragment_name"
 
-                (click)="this.update_form_field('fragment_form', 'fragment_name', fragment_name);" 
+                (click)="this.update_form_field('fragment_form', 'name', fragment_name);" 
   
                 (click)="this.retrieve_requested_fragment(selected_fragment_data)"
                 (click)="this.fragment_selected = true">
@@ -143,17 +143,17 @@
         <mat-tab label="Fragment Meta Data"><br> 
           
           <div class="alert alert-info" role="alert">
-						To create a new fragment, please provide all meta data and press the <b>Create Fragment</b> button. The button wont activate before all meta data fields are filled in correctly. To then add content or make changes to your fragment, select yours using the drop down menus at the top and use the <b>Save Changes</b> button. <i>Nota bene</i>: the Create Fragment button will only send meta data to the server, truncating lines and other content.
+						To create a new fragment, please provide all meta data and press the <b>Create Fragment</b> button. The button wont activate before all meta data fields are filled in correctly.
           </div>
           <!-- Every mat tab has its own fragment_form call to keep each entity easily separated and organised -->
 
           <form [formGroup]="fragment_form">
             <mat-form-field class="input-form-full-width">
               <mat-label>Fragment name</mat-label>
-              <input required matInput type="text" formControlName="fragment_name"> <!--required> -->
+              <input required matInput type="text" formControlName="name"> <!--required> -->
               <mat-hint><b>Only</b> provide the number of the fragment</mat-hint>
-              <mat-error *ngIf="fragment_form.get('fragment_name').errors?.['required']">You must enter a value.</mat-error>  
-              <mat-error *ngIf="fragment_form.get('fragment_name').errors?.['pattern']">You entered disallowed characters.</mat-error>                  
+              <mat-error *ngIf="fragment_form.get('name').errors?.['required']">You must enter a value.</mat-error>  
+              <mat-error *ngIf="fragment_form.get('name').errors?.['pattern']">You entered disallowed characters.</mat-error>                  
             </mat-form-field>
             
             <div class="div-padding-sm"></div>
@@ -418,7 +418,7 @@
               <mat-select [(ngModel)]="this.linked_fragment_data.author" ngDefaultControl>
                   <mat-option *ngFor="let author of this.linked_fragment_data.retrieved_authors" [value]="author"
                     (click)="this.linked_fragment_data.author = author"
-                    (click)="this.linked_fragment_data.title = ''; this.linked_fragment_data.editor = ''; this.linked_fragment_data.fragment_name = '';"
+                    (click)="this.linked_fragment_data.title = ''; this.linked_fragment_data.editor = ''; this.linked_fragment_data.name = '';"
                     (click)="this.api.request_titles(linked_fragment_data)">
                       {{ author }} 
                   </mat-option>
@@ -430,7 +430,7 @@
               <mat-select [(ngModel)]="this.linked_fragment_data.title" ngDefaultControl>
                   <mat-option *ngFor="let title of this.linked_fragment_data.retrieved_titles" [value]="title"
                     (click)="this.linked_fragment_data.title = title"
-                    (click)="this.linked_fragment_data.editor = ''; this.linked_fragment_data.fragment_name = '';"
+                    (click)="this.linked_fragment_data.editor = ''; this.linked_fragment_data.name = '';"
                     (click)="this.api.request_editors(linked_fragment_data)">
                       {{ title }} 
                   </mat-option>
@@ -442,7 +442,7 @@
               <mat-select [(ngModel)]="this.linked_fragment_data.editor" ngDefaultControl [disabled]="!fragment_form.valid">
                   <mat-option *ngFor="let editor of this.linked_fragment_data.retrieved_editors" [value]="editor"
                     (click)="this.linked_fragment_data.editor = editor"
-                    (click)="this.linked_fragment_data.fragment_name = '';"
+                    (click)="this.linked_fragment_data.name = '';"
                     (click)="this.api.request_fragment_names(linked_fragment_data)">
                       {{ editor }} 
                   </mat-option>
@@ -451,9 +451,9 @@
 
             <mat-form-field class="input-form-custom" style="--max-width: 25%;">
               <mat-label>Select referenced fragment</mat-label>
-              <mat-select [(ngModel)]="this.linked_fragment_data.fragment_name" ngDefaultControl [disabled]="!fragment_form.valid">
+              <mat-select [(ngModel)]="this.linked_fragment_data.name" ngDefaultControl [disabled]="!fragment_form.valid">
                   <mat-option *ngFor="let fragment_name of this.linked_fragment_data.retrieved_fragment_names" [value]="fragment_name"
-                    (click)="this.linked_fragment_data.fragment_name = fragment_name"
+                    (click)="this.linked_fragment_data.name = fragment_name"
                     (click)="this.add_referenced_fragment_to_Fragment_form(linked_fragment_data)"
                     >
                       {{ fragment_name }} 

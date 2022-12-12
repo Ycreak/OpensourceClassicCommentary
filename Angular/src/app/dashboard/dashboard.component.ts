@@ -81,9 +81,9 @@ export class DashboardComponent implements OnInit {
    * and revision of fragments.
    */
   fragment_form = new FormGroup({
-    fragment_id: new FormControl(''),
+    _id: new FormControl(''),
 
-    fragment_name: new FormControl('', [
+    name: new FormControl('', [
       Validators.required,
       Validators.pattern('[0-9-_ ]*')
     ]), // numbers and "-" and "_" allowed.
@@ -271,14 +271,29 @@ export class DashboardComponent implements OnInit {
   }
 
   /**
+   * Converts the fragment_form (formgroup) to the Fragment object
+   * @param fragment_form to be converted
+   * @returns Fragment object
+   * @author Ycreak
+   */
+  private convert_fragment_form_to_Fragment(fragment_form: FormGroup): Fragment {
+    let new_fragment = new Fragment({})
+    new_fragment.set_fragment(fragment_form.value)
+    return new_fragment
+  }
+
+  /**
    * This function takes the Typescript Fragment object retrieved from the server and uses
    * its data fields to fill in the fragment_form. 
    * @param fragment Fragment object that is to be parsed into the fragment_form
    * @author Ycreak
    */
   public convert_Fragment_to_fragment_form(fragment: Fragment): void {
+    
+    console.log('fragment', fragment)
+    
     // This functions updates the fragment_form with the provided fragment
-    for (let item of ['fragment_id', 'fragment_name', 'author', 'title',
+    for (let item of ['_id', 'name', 'author', 'title',
                       'editor', 'translation', 'differences', 'commentary',
                       'apparatus', 'reconstruction', 'status', 'lock',
                       'published']) {
@@ -442,8 +457,8 @@ export class DashboardComponent implements OnInit {
                                                     fragment.title,
                                                     fragment.editor,
                                                     fragment.name,
-                                                    fragment.fragment_id)
-        console.log(fragment)
+                                                    fragment._id)
+        // console.log(fragment)
       });
   }
 
@@ -534,13 +549,16 @@ export class DashboardComponent implements OnInit {
       this.selected_fragment_data.selected_fragment_editor = fragment_form.value.editor;
       this.selected_fragment_data.selected_fragment_name = fragment_form.value.fragment_name;
 
-      let item_string = fragment_form.value.author + ', ' + fragment_form.value.title + ', ' + fragment_form.value.editor + ': ' + fragment_form.value.fragment_name
+      let item_string = fragment_form.value.author + ', ' + fragment_form.value.title + ', ' + fragment_form.value.editor + ': ' + fragment_form.value.name
 
       this.dialog.open_confirmation_dialog('Are you sure you want to REVISE this fragment?', item_string).subscribe(result => {
         if (result) {
           this.utility.spinner_on();
 
-          this.api.revise_fragment(fragment_form.value).subscribe({
+          let temp = this.convert_fragment_form_to_Fragment(fragment_form)
+          console.log('temp', temp)
+
+          this.api.revise_fragment(this.convert_fragment_form_to_Fragment(fragment_form)).subscribe({
             next: (res) => {
               this.utility.handle_error_message(res);
               this.fragment_selected = true;
@@ -563,7 +581,7 @@ export class DashboardComponent implements OnInit {
 
   /**
    * Given the fragment_form which represents a Fragment, this function requests the api to create a
-   * new fragment. NB: this only uses the provided meta data to create a new fragment.
+   * new fragment.
    * @param fragment_form which represents a Fragment, edited by the user in the dashboard
    * @author Ycreak
    */
@@ -572,14 +590,15 @@ export class DashboardComponent implements OnInit {
     this.selected_fragment_data.selected_fragment_author = fragment_form.value.author;
     this.selected_fragment_data.selected_fragment_title = fragment_form.value.title;
     this.selected_fragment_data.selected_fragment_editor = fragment_form.value.editor;
-    this.selected_fragment_data.selected_fragment_name = fragment_form.value.fragment_name;
+    this.selected_fragment_data.selected_fragment_name = fragment_form.value.name;
     
-    let item_string = fragment_form.value.author + ', ' + fragment_form.value.title + ', ' + fragment_form.value.editor + ': ' + fragment_form.value.fragment_name
+    let item_string = fragment_form.value.author + ', ' + fragment_form.value.title + ', ' + fragment_form.value.editor + ': ' + fragment_form.value.name
     
     this.dialog.open_confirmation_dialog('Are you sure you want to CREATE this fragment?', item_string).subscribe(result => {
       if (result) {
         this.utility.spinner_on();
-        this.api.create_fragment(fragment_form.value).subscribe({
+
+        this.api.create_fragment(this.convert_fragment_form_to_Fragment(fragment_form)).subscribe({
           next: (res) => {
             this.utility.handle_error_message(res);
             this.fragment_selected = true;
@@ -607,7 +626,7 @@ export class DashboardComponent implements OnInit {
    */
   public request_delete_fragment(fragment_form: FormGroup): void {
     
-    let item_string = fragment_form.value.author + ', ' + fragment_form.value.title + ', ' + fragment_form.value.editor + ': ' + fragment_form.value.fragment_name
+    let item_string = fragment_form.value.author + ', ' + fragment_form.value.title + ', ' + fragment_form.value.editor + ': ' + fragment_form.value.name
     
     this.dialog.open_confirmation_dialog('Are you sure you want to DELETE this fragment?', item_string).subscribe(result => {
       if (result) {
@@ -616,7 +635,7 @@ export class DashboardComponent implements OnInit {
           author:fragment_form.value.author, 
           title:fragment_form.value.title, 
           editor:fragment_form.value.editor, 
-          name:fragment_form.value.fragment_name
+          name:fragment_form.value.name
         }).subscribe({
           
           next: (res) => {

@@ -156,7 +156,7 @@ export class TestsComponent implements OnInit {
         
         this.api.get_specific_fragment(api_data).subscribe({
           next: (fragment) => {
-            api_data.fragment_id = fragment['fragment_id']
+            api_data._id = fragment['fragment_id']
             api_data.status = 'incertum'
             
             this.api.revise_fragment(api_data).subscribe({
