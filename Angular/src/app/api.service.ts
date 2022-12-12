@@ -75,7 +75,10 @@ export class ApiService {
    */
    public request_titles(column: Column): void {    
     this.utility.spinner_on()
-    this.get_titles(new Fragment({author:column.author, title:column.title})).subscribe({
+
+    console.log(column)
+
+    this.get_titles(new Fragment({author:column.selected_fragment_author})).subscribe({
       next: (data) => {
         column.retrieved_titles = data;
         this.utility.spinner_off()
@@ -92,7 +95,7 @@ export class ApiService {
    */
      public request_editors(column: Column): void {
       this.utility.spinner_on()
-      this.get_editors(new Fragment({author:column.author, title:column.title, editor:column.editor})).subscribe(
+      this.get_editors(new Fragment({author:column.selected_fragment_author, title:column.selected_fragment_title})).subscribe(
         data => {
           column.retrieved_editors = data;
           this.utility.spinner_off()
@@ -107,13 +110,8 @@ export class ApiService {
    */
    public request_fragment_names(column: Column): void {
     this.utility.spinner_on()    
-    // Create api/fragment object to send to the server
-    let api_data = this.utility.create_empty_fragment();
-    api_data.author = column.author; 
-    api_data.title = column.title; 
-    api_data.editor = column.editor;
 
-    this.get_fragment_names(api_data).subscribe(
+    this.get_fragment_names(new Fragment({author:column.selected_fragment_author, title:column.selected_fragment_title, editor:column.selected_fragment_editor})).subscribe(
       data => {
         column.retrieved_fragment_names = data.sort(this.utility.sort_array_numerically);
         this.utility.spinner_off()

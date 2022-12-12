@@ -108,7 +108,7 @@ export class FragmentsComponent implements OnInit {
     this.commentary_column = new Column({column_id:'255'});
 
     // Create templates for the possible fragment columns
-    this.column1 = new Column({column_id:'1', author:'Ennius', title:'Thyestes', editor:'TRF'});
+    this.column1 = new Column({column_id:'1', selected_fragment_author:'Ennius', selected_fragment_title:'Thyestes', selected_fragment_editor:'TRF'});
     // Push these to the columns array for later use in the HTML component
     this.columns.push(this.column1)
     // Request the fragments for the first column
@@ -128,12 +128,12 @@ export class FragmentsComponent implements OnInit {
       this.window_size = this.utility.retrieve_viewport_size();    
     })
 
-    this.column2 = new Column({column_id:'2', author:'Ennius', title:'Thyestes', editor:'Jocelyn'});
-    this.columns.push(this.column2)
-    this.request_fragments(this.column2);
-    this.api.request_authors(this.column2);
-    this.column_identifier += 1;
-    this.update_connected_columns_list();
+    // this.column2 = new Column({column_id:'2', author:'Ennius', title:'Thyestes', editor:'Jocelyn'});
+    // this.columns.push(this.column2)
+    // this.request_fragments(this.column2);
+    // this.api.request_authors(this.column2);
+    // this.column_identifier += 1;
+    // this.update_connected_columns_list();
 
   }
 
@@ -171,7 +171,7 @@ export class FragmentsComponent implements OnInit {
    */
   private request_titles(column: Column): void{    
     this.utility.spinner_on();
-    this.api.get_titles(new Fragment({author:column.author})).subscribe(
+    this.api.get_titles(new Fragment({author:column.selected_fragment_author})).subscribe(
       data => {
         column.retrieved_titles = data; 
         this.utility.spinner_off(); 
@@ -186,7 +186,7 @@ export class FragmentsComponent implements OnInit {
    */
   private request_editors(column: Column): void{   
     this.utility.spinner_on();
-    this.api.get_editors(new Fragment({author:column.author, title:column.title})).subscribe(
+    this.api.get_editors(new Fragment({author:column.selected_fragment_author, title:column.selected_fragment_title})).subscribe(
       data => {
         column.retrieved_editors = data;
         this.utility.spinner_off(); 
@@ -205,7 +205,7 @@ export class FragmentsComponent implements OnInit {
   private request_fragments(column: Column): void{
     this.utility.spinner_on();
     
-    this.api.get_fragments(new Fragment({author:column.author, title:column.title, editor:column.editor})).subscribe(
+    this.api.get_fragments(new Fragment({author:column.selected_fragment_author, title:column.selected_fragment_title, editor:column.selected_fragment_editor})).subscribe(
       data => {
         //TODO: can this be done automatically within the API?
         let fragment_list = this.api.convert_fragment_json_to_typescript(data);
@@ -219,7 +219,7 @@ export class FragmentsComponent implements OnInit {
           // Store the original order of the fragments in the column object
           column.orig_fragment_order = []; // Clear first
           for (let frag of fragment_list){
-            column.orig_fragment_order.push(frag.fragment_name);
+            column.orig_fragment_order.push(frag.name);
           }
           // Now check if the column already exists. If so, replace it with the new object.
           if(this.columns.length > 0){
@@ -245,7 +245,7 @@ export class FragmentsComponent implements OnInit {
    */
    public request_fragment_names(column: Column): void {
     this.utility.spinner_on();
-    this.api.get_fragment_names(new Fragment({author:column.author, title:column.title, editor:column.editor})).subscribe(
+    this.api.get_fragment_names(new Fragment({author:column.selected_fragment_author, title:column.selected_fragment_title, editor:column.selected_fragment_editor})).subscribe(
       data => {
         column.fragment_names = data.sort(this.utility.sort_array_numerically);
         this.utility.spinner_off(); 
@@ -292,7 +292,7 @@ export class FragmentsComponent implements OnInit {
             author : fragment.linked_fragments[i].author,
             title : fragment.linked_fragments[i].title,
             editor : fragment.linked_fragments[i].editor,
-            fragment_name : fragment.linked_fragments[i].name
+            name : fragment.linked_fragments[i].name
           }).subscribe(
             data => {
               let fragment = this.api.convert_fragment_json_to_typescript(data)
@@ -639,9 +639,9 @@ export class FragmentsComponent implements OnInit {
   /**
    *
    */
-  private add_single_fragment_to_playground(column: Column, fragment_name): void{ // FIXME: Deprecated?
+  private add_single_fragment_to_playground(column: Column): void{ // FIXME: Deprecated?
     // format the fragment and push it to the list
-    this.api.get_fragments(new Fragment({author:column.author, title:column.title, editor:column.editor, fragment_name:column.fragment_name})).subscribe(
+    this.api.get_fragments(new Fragment({author:column.selected_fragment_author, title:column.selected_fragment_title, editor:column.selected_fragment_editor, name:column.selected_fragment_name})).subscribe(
       fragments => {
         let fragment_list = this.api.convert_fragment_json_to_typescript(fragments);
         //FIXME: this could be more elegant. But the idea is that we need to add HTML. However,
@@ -668,7 +668,7 @@ export class FragmentsComponent implements OnInit {
    */
 
     public generate_fragment_gradient_border_color(n_fragments: number, fragment_index: number){
-      console.log(this.oscc_settings.fragment_order_gradient);
+      // console.log(this.oscc_settings.fragment_order_gradient);
       if (this.oscc_settings.fragment_order_gradient == true){
         let max_brightness: number = 100;
         let min_brightness: number = 20;
@@ -702,7 +702,7 @@ export class FragmentsComponent implements OnInit {
    */
 
     public generate_fragment_gradient_background_color(n_fragments: number, fragment_index: number){
-      console.log(this.oscc_settings.fragment_order_gradient);
+      // console.log(this.oscc_settings.fragment_order_gradient);
       if (this.oscc_settings.fragment_order_gradient == true){
         let max_brightness: number = 100;
         let min_brightness: number = 80;

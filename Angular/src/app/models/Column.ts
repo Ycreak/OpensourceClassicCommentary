@@ -18,10 +18,10 @@ export class Column
     column_id : string = ''; // has to be a string for cdkDrag
     type : string = ''; // denotes playground, commentary, text or fragment column
 
-    author : string = '';
-    title : string = '';
-    editor : string = '';
-    fragment_name : string = '';
+    selected_fragment_author : string = '';
+    selected_fragment_title : string = '';
+    selected_fragment_editor : string = '';
+    selected_fragment_name : string = '';
 
     fragments : Fragment[] = [];
     fragment_names : string[] = [];

@@ -435,13 +435,13 @@ export class DashboardComponent implements OnInit {
    * @author Ycreak
    */
    public add_referenced_fragment_to_Fragment_form(column: Column): void {
-    this.api.get_fragments(new Fragment({author:column.author, title:column.title, editor:column.editor, fragment_name: column.fragment_name})).subscribe(
+    this.api.get_fragments(new Fragment({author:column.selected_fragment_author, title:column.selected_fragment_title, editor:column.selected_fragment_editor, name: column.selected_fragment_name})).subscribe(
       data => {
         let fragment = this.api.convert_fragment_json_to_typescript(data)[0]        
         this.push_linked_fragments_to_fragment_form(fragment.author,
                                                     fragment.title,
                                                     fragment.editor,
-                                                    fragment.fragment_name,
+                                                    fragment.name,
                                                     fragment.fragment_id)
         console.log(fragment)
       });
@@ -500,7 +500,7 @@ export class DashboardComponent implements OnInit {
       // Reset the fragment_form to allow a clean insertion of the requested fragment
       this.reset_fragment_form();
 
-      this.api.get_fragments(new Fragment({author:column.author, title:column.title, editor:column.editor, fragment_name:column.fragment_name})).subscribe(
+      this.api.get_fragments(new Fragment({author:column.selected_fragment_author, title:column.selected_fragment_title, editor:column.selected_fragment_editor, name:column.selected_fragment_name})).subscribe(
         data => {
           
           let fragment_list = this.api.convert_fragment_json_to_typescript(data);
@@ -508,10 +508,10 @@ export class DashboardComponent implements OnInit {
 
           this.convert_Fragment_to_fragment_form(fragment);
           // Also update the selection fields
-          column.author = fragment.author;
-          column.title = fragment.title;
-          column.editor = fragment.editor;
-          column.fragment_name = fragment.fragment_name;
+          column.selected_fragment_author = fragment.author;
+          column.selected_fragment_title = fragment.title;
+          column.selected_fragment_editor = fragment.editor;
+          column.selected_fragment_name = fragment.name;
           this.utility.toggle_spinner();
         });
     }
@@ -528,10 +528,11 @@ export class DashboardComponent implements OnInit {
     }
     else {
       // Update the column information with the possibly updated values from the fragment_form
-      this.selected_fragment_data.author = fragment_form.value.author;
-      this.selected_fragment_data.title = fragment_form.value.title;
-      this.selected_fragment_data.editor = fragment_form.value.editor;
-      this.selected_fragment_data.fragment_name = fragment_form.value.fragment_name;
+      //FIXME: this needs refactoring
+      this.selected_fragment_data.selected_fragment_author = fragment_form.value.author;
+      this.selected_fragment_data.selected_fragment_title = fragment_form.value.title;
+      this.selected_fragment_data.selected_fragment_editor = fragment_form.value.editor;
+      this.selected_fragment_data.selected_fragment_name = fragment_form.value.fragment_name;
 
       let item_string = fragment_form.value.author + ', ' + fragment_form.value.title + ', ' + fragment_form.value.editor + ': ' + fragment_form.value.fragment_name
 
@@ -568,10 +569,10 @@ export class DashboardComponent implements OnInit {
    */
   public request_create_fragment(fragment_form: FormGroup): void {
     // Update the column information with the possibly updated values from the fragment_form
-    this.selected_fragment_data.author = fragment_form.value.author;
-    this.selected_fragment_data.title = fragment_form.value.title;
-    this.selected_fragment_data.editor = fragment_form.value.editor;
-    this.selected_fragment_data.fragment_name = fragment_form.value.fragment_name;
+    this.selected_fragment_data.selected_fragment_author = fragment_form.value.author;
+    this.selected_fragment_data.selected_fragment_title = fragment_form.value.title;
+    this.selected_fragment_data.selected_fragment_editor = fragment_form.value.editor;
+    this.selected_fragment_data.selected_fragment_name = fragment_form.value.fragment_name;
     
     let item_string = fragment_form.value.author + ', ' + fragment_form.value.title + ', ' + fragment_form.value.editor + ': ' + fragment_form.value.fragment_name
     
@@ -611,7 +612,13 @@ export class DashboardComponent implements OnInit {
     this.dialog.open_confirmation_dialog('Are you sure you want to DELETE this fragment?', item_string).subscribe(result => {
       if (result) {
         this.utility.spinner_on();
-        this.api.delete_fragment(fragment_form.value).subscribe({
+        this.api.delete_fragment({
+          author:fragment_form.value.author, 
+          title:fragment_form.value.title, 
+          editor:fragment_form.value.editor, 
+          name:fragment_form.value.fragment_name
+        }).subscribe({
+          
           next: (res) => {
             this.utility.handle_error_message(res);
             // Reset the fragment_data object and start anew.
@@ -639,9 +646,9 @@ export class DashboardComponent implements OnInit {
   public request_automatic_fragment_linker(column: Column): void {
     this.utility.spinner_on();
     
-    let item_string = column.author + ', ' + column.title;
+    let item_string = column.selected_fragment_author + ', ' + column.selected_fragment_title;
     let api_data = this.utility.create_empty_fragment(); 
-    api_data.author = column.author; api_data.title = column.title;
+    api_data.author = column.selected_fragment_author; api_data.title = column.selected_fragment_title;
 
     this.dialog.open_confirmation_dialog('Are you sure you want to LINK fragments from this text?', item_string).subscribe(result => {
       if (result) {

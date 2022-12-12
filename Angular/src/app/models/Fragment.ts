@@ -9,7 +9,7 @@ export class Fragment {
     author: string = '';
     title: string = '';
     editor: string = '';
-    fragment_name: string = '';
+    name: string = '';
 
     translation: string = '';
     differences: string = '';
@@ -46,7 +46,7 @@ export class Fragment {
         if ( 'author' in fragment ){ this.author = fragment['author'] } 
         if ( 'title' in fragment ){ this.title = fragment['title'] } 
         if ( 'editor' in fragment ){ this.editor = fragment['editor'] } 
-        if ( 'name' in fragment ){ this.fragment_name = fragment['name'] } 
+        if ( 'name' in fragment ){ this.name = fragment['name'] } 
         if ( 'translation' in fragment ){ this.translation = fragment['translation'] } 
         if ( 'differences' in fragment ){ this.differences = fragment['differences'] } 
         if ( 'apparatus' in fragment ){ this.apparatus = fragment['apparatus'] } 

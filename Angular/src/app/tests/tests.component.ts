@@ -113,7 +113,7 @@ export class TestsComponent implements OnInit {
   public test_get_specific_fragment(): void {
     let api_data = this.utility.create_empty_fragment();
     api_data.author = 'Ennius'; api_data.title = 'Thyestes'; api_data.editor = 'TRF';
-    api_data.fragment_name = '138'
+    api_data.name = '138'
   
     this.api.get_specific_fragment(api_data).subscribe({
       next: (fragment_content) => {
@@ -147,7 +147,7 @@ export class TestsComponent implements OnInit {
   public test_create_revise_delete_fragment(): void {
     let api_data = this.utility.create_empty_fragment();
     api_data.author = 'Ennius'; api_data.title = 'Thyestes'; api_data.editor = 'TRF';
-    api_data.fragment_name = '999'; api_data.status = 'certum'
+    api_data.name = '999'; api_data.status = 'certum'
   
     this.api.create_fragment(api_data).subscribe({
       next: (result) => {

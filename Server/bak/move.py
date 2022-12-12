@@ -63,46 +63,49 @@ def migrate_fragments(item):
 ########
 # MAIN #
 ########
-for id in db:
 
+"""
+Migration towards the new linked_fragments layout
+"""
+# for id in db:
+#     doc = db[id]
+#     try:
+#         new_linked_fragments = []
+#         print(
+#             doc['author'],
+#             doc['title'],
+#             doc['editor'], 
+#             doc['fragment_name'],
+#             doc['_id']
+#             )
+#         for linked_fragment_id in doc['linked_fragments']:
+#             my_dict = {
+#                 'linked_fragment_id':linked_fragment_id, 
+#                 'author':db[linked_fragment_id]['author'],
+#                 'title':db[linked_fragment_id]['title'],
+#                 'editor':db[linked_fragment_id]['editor'],
+#                 'name':db[linked_fragment_id]['fragment_name'],
+#             }
+#             new_linked_fragments.append(my_dict)
+
+#         if new_linked_fragments:
+#             doc['linked_fragments'] = new_linked_fragments
+#             doc_id, doc_rev = db.save(doc)
+#         print('######################')
+#     except:
+#         pass
+
+"""
+Rafactoring fragment_name to name
+"""
+for id in db:
     doc = db[id]
 
     try:
-        
-        new_linked_fragments = []
-        # print(doc['_id'])
-        print(
-            doc['author'],
-            doc['title'],
-            doc['editor'], 
-            doc['fragment_name'],
-            doc['_id']
-            )
-        
-        for linked_fragment_id in doc['linked_fragments']:
-        
-            my_dict = {
-                'linked_fragment_id':linked_fragment_id, 
-                'author':db[linked_fragment_id]['author'],
-                'title':db[linked_fragment_id]['title'],
-                'editor':db[linked_fragment_id]['editor'],
-                'name':db[linked_fragment_id]['fragment_name'],
-            }
-
-            new_linked_fragments.append(my_dict)
-        
-
-        if new_linked_fragments:
-            # print(new_linked_fragments)
-            doc['linked_fragments'] = new_linked_fragments
-            doc_id, doc_rev = db.save(doc)
-        
-        # print(doc)
-
-        print('######################')
-
+        print(doc['author'], doc['title'], doc['editor'], doc['_id'])
+        doc['name'] = doc.pop('fragment_name')
+        doc_id, doc_rev = db.save(doc)
     except:
         pass
 
-
-    # print(doc)
+    print('#####################')

@@ -53,11 +53,11 @@
       all types of unlogical user routes and inputs -->
       <mat-form-field>
         <mat-label>Select author</mat-label>
-        <mat-select [(ngModel)]="this.selected_fragment_data.author" ngDefaultControl>
+        <mat-select [(ngModel)]="this.selected_fragment_data.selected_fragment_author" ngDefaultControl>
             <mat-option *ngFor="let author of this.selected_fragment_data.retrieved_authors" [value]="author"
-              (click)="this.selected_fragment_data.author = author"
+              (click)="this.selected_fragment_data.selected_fragment_author = author"
               
-              (click)="this.selected_fragment_data.title = ''; this.selected_fragment_data.editor = ''; this.selected_fragment_data.fragment_name = '';"
+              (click)="this.selected_fragment_data.selected_fragment_title = ''; this.selected_fragment_data.selected_fragment_editor = ''; this.selected_fragment_data.selected_fragment_name = '';"
               (click)="this.selected_fragment_data.retrieved_titles = []; this.selected_fragment_data.retrieved_editors = []; this.selected_fragment_data.retrieved_fragment_names = []"
               
               (click)="this.reset_fragment_form()"
@@ -72,11 +72,11 @@
 
       <mat-form-field>
           <mat-label>Select text</mat-label>
-          <mat-select [(ngModel)]="this.selected_fragment_data.title" ngDefaultControl>
+          <mat-select [(ngModel)]="this.selected_fragment_data.selected_fragment_title" ngDefaultControl>
               <mat-option *ngFor="let title of this.selected_fragment_data.retrieved_titles" [value]="title" 
-                (click)="this.selected_fragment_data.selected_title = title"  
+                (click)="this.selected_fragment_data.selected_fragment_title = title"  
                 
-                (click)="this.selected_fragment_data.selected_editor = ''; this.selected_fragment_data.selected_fragment = '';"
+                (click)="this.selected_fragment_data.selected_fragment_editor = ''; this.selected_fragment_data.selected_fragment = '';"
                 (click)="this.selected_fragment_data.retrieved_editors = []; this.selected_fragment_data.retrieved_fragment_names = []"
                 
                 (click)="this.reset_fragment_form()"
@@ -92,11 +92,11 @@
   
       <mat-form-field>
           <mat-label>Select edition</mat-label>
-          <mat-select [(ngModel)]="this.selected_fragment_data.editor" ngDefaultControl>
+          <mat-select [(ngModel)]="this.selected_fragment_data.selected_fragment_editor" ngDefaultControl>
               <mat-option *ngFor="let editor of this.selected_fragment_data.retrieved_editors" [value]="editor"
-                  (click)="this.selected_fragment_data.editor = editor"
+                  (click)="this.selected_fragment_data.selected_fragment_editor = editor"
 
-                  (click)="this.selected_fragment_data.fragment_name = '';"
+                  (click)="this.selected_fragment_data.selected_fragment_name = '';"
                   (click)="this.selected_fragment_data.retrieved_fragment_names = []"
 
                   (click)="this.reset_fragment_form()"
@@ -113,9 +113,9 @@
   
       <mat-form-field>
           <mat-label>Select fragment</mat-label>
-          <mat-select [(ngModel)]="this.selected_fragment_data.fragment_name" ngDefaultControl>
+          <mat-select [(ngModel)]="this.selected_fragment_data.selected_fragment_name" ngDefaultControl>
               <mat-option *ngFor="let fragment_name of this.selected_fragment_data.retrieved_fragment_names" [value]="fragment_name"
-                (click)="this.selected_fragment_data.fragment_name = fragment_name"
+                (click)="this.selected_fragment_data.selected_fragment_name = fragment_name"
 
                 (click)="this.update_form_field('fragment_form', 'fragment_name', fragment_name);" 
   

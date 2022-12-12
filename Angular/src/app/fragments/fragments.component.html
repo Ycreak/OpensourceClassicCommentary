@@ -124,8 +124,8 @@
             <ng-container *ngFor="let author of column_to_display.retrieved_authors; let i = index">
                 <button 
                     mat-menu-item 
-                    (menuOpened)="column_to_display.title = ''; column_to_display.editor = '';" 
-                    (menuOpened)="column_to_display.author = author" 
+                    (menuOpened)="column_to_display.selected_fragment_title = ''; column_to_display.selected_fragment_editor = '';" 
+                    (menuOpened)="column_to_display.selected_fragment_author = author" 
                     (menuOpened)="this.api.request_titles(column_to_display)" 
                     [matMenuTriggerFor]="menu_titles">
                         {{author}}
@@ -137,8 +137,8 @@
             <ng-container *ngFor="let title of column_to_display.retrieved_titles; let i = index">
                 <button 
                     mat-menu-item 
-                    (menuOpened)="column_to_display.title = '';"
-                    (menuOpened)="column_to_display.title = title" 
+                    (menuOpened)="column_to_display.selected_fragment_title = '';"
+                    (menuOpened)="column_to_display.selected_fragment_title = title" 
                     (menuOpened)="this.api.request_editors(column_to_display)" 
                     [matMenuTriggerFor]="menu_editors">
                     {{title}}
@@ -149,7 +149,7 @@
         <mat-menu #menu_editors="matMenu">
             <ng-container *ngFor="let editor of column_to_display.retrieved_editors; let i = index">
                 <button mat-menu-item
-                    (click)="column_to_display.editor = editor"
+                    (click)="column_to_display.selected_fragment_editor = editor"
                     (click)="this.handle_editor_click(column_to_display)">
                     {{editor}}
                 </button>
@@ -204,7 +204,7 @@
                     <a class='a-void' (click)="this.request_introduction(this.current_fragment.author)">{{this.current_fragment.author}}</a>, <!-- Do not forget the comma and space -->
                     <a class='a-void' (click)="this.request_introduction(this.current_fragment.title)">{{this.current_fragment.title}}</a>, 
                     {{this.current_fragment.editor}}, 
-                    {{this.current_fragment.fragment_name}}
+                    {{this.current_fragment.name}}
                 </h5>
             </div>
             <ng-template #no_fragment_clicked><h5>Click a fragment to show its content.</h5></ng-template>
@@ -222,7 +222,7 @@
             <div *ngFor="let linked_fragment of this.commentary_column.linked_fragments_content">
                 <div *ngIf="linked_fragment.has_content();">
                     <h6>Linked commentary from {{linked_fragment.author}}, {{linked_fragment.title}}, 
-                        {{linked_fragment.editor}}, {{linked_fragment.fragment_name}}
+                        {{linked_fragment.editor}}, {{linked_fragment.name}}
                     </h6>
                     <ng-container [ngTemplateOutlet]='commentary_column_template' [ngTemplateOutletContext]="{given_fragment:linked_fragment}"></ng-container>    
                 </div>
@@ -253,7 +253,7 @@
                     class="button-margin"
                     class="button-margin"
                     [matMenuTriggerFor]="fragment_selection">
-                    {{ this.playground.fragment_name }}
+                    {{ this.playground.name }}
                     <mat-icon fontIcon="expand_more" style="float: right"></mat-icon>
                 </button>
                 <mat-menu #fragment_selection="matMenu">
@@ -308,7 +308,7 @@
             (click)="this.handle_fragment_click(fragment, true)"
             (click)="this.playground.clicked_fragment = fragment">
             
-            <div *ngIf="this.oscc_settings.show_headers"><b [style.color]="fragment.colour">Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.title}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i></div>
+            <div *ngIf="this.oscc_settings.show_headers"><b [style.color]="fragment.colour">Fragment {{fragment.name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.title}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i></div>
 
             <div *ngFor="let fragment_line of fragment.lines">           
                 <p *ngIf="this.oscc_settings.show_line_names; else no_line_names_playground" [innerHTML]="fragment_line.line_number + ': ' + fragment_line.text | safeHtml"></p>
@@ -348,10 +348,10 @@
                     [cdkDragDisabled]="this.oscc_settings.dragging_disabled"
                     (cdkDragDropped)="this.track_edited_columns($event)"
                     [attr.id]="fragment.fragment_id"
-                    [style.border-left-color]="this.generate_fragment_gradient_border_color(given_column.fragments.length, given_column.orig_fragment_order.indexOf(fragment.fragment_name))"
-                    [style.background-color]="this.generate_fragment_gradient_background_color(given_column.fragments.length, given_column.orig_fragment_order.indexOf(fragment.fragment_name))">
+                    [style.border-left-color]="this.generate_fragment_gradient_border_color(given_column.fragments.length, given_column.orig_fragment_order.indexOf(fragment.name))"
+                    [style.background-color]="this.generate_fragment_gradient_background_color(given_column.fragments.length, given_column.orig_fragment_order.indexOf(fragment.name))">
                     <div *ngIf="this.oscc_settings.show_headers">
-                        <b [style.color]="fragment.colour">Fragment {{fragment.fragment_name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.title}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
+                        <b [style.color]="fragment.colour">Fragment {{fragment.name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.title}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
                     </div>
                     <div *ngFor="let fragment_line of fragment.lines">      
                         <p *ngIf="this.oscc_settings.show_line_names; else no_line_names" [innerHTML]="fragment_line.line_number + ': ' + fragment_line.text | safeHtml"></p>
@@ -416,20 +416,20 @@
         class="button-margin"
         [matMenuTriggerFor]="author_selection">
         <div>
-            <span style="vertical-align: middle">{{ column.author }}</span>
+            <span style="vertical-align: middle">{{ column.selected_fragment_author }}</span>
             <mat-icon fontIcon="expand_more" style="float: right"></mat-icon>
         </div>
     </button>
     <mat-menu #author_selection="matMenu">
     <ng-container *ngFor="let author of column.retrieved_authors">
             <button mat-menu-item
-                (click)="column.author = author"
+                (click)="column.selected_fragment_author = author"
                 (click)="this.request_titles(column)"
                 
-                (click)="column.title = 'Title'"
+                (click)="column.selected_fragment_title = 'Title'"
                 (click)="column.retrieved_titles = []"
 
-                (click)="column.editor = 'Editor'"
+                (click)="column.selected_fragment_editor = 'Editor'"
                 (click)="column.retrieved_editors = []">
                     {{ author }}
             </button>
@@ -441,7 +441,7 @@
         <mat-label>Author</mat-label>
         <mat-select>
             <mat-option *ngFor="let author of column.retrieved_authors" [value]="author"
-                (click)="column.author = author"
+                (click)="column.selected_fragment_author = author"
                 (click)="this.request_titles(column)">
                 {{ author }} 
             </mat-option>
@@ -458,17 +458,17 @@
         class="button-margin"
         [matMenuTriggerFor]="title_selection">
         <div>
-            <span style="vertical-align: middle">{{ column.title }}</span>
+            <span style="vertical-align: middle">{{ column.selected_fragment_title }}</span>
             <mat-icon fontIcon="expand_more" style="float: right"></mat-icon>
         </div>
     </button>
     <mat-menu #title_selection="matMenu">
         <ng-container *ngFor="let title of column.retrieved_titles">
                 <button mat-menu-item
-                    (click)="column.title = title"
+                    (click)="column.selected_fragment_title = title"
                     (click)="this.request_editors(column)"
                     
-                    (click)="column.editor = 'Editor'"
+                    (click)="column.selected_fragment_editor = 'Editor'"
                     (click)="column.retrieved_editors = []">
                         {{ title }}
                 </button>
@@ -480,7 +480,7 @@
         <mat-label>Text</mat-label>
         <mat-select>
             <mat-option *ngFor="let title of column.retrieved_titles" [value]="title" 
-                (click)="column.title = title.name"
+                (click)="column.selected_fragment_title = title.name"
                 (click)="this.request_editors(column)">
                 {{ title.name }}                
             </mat-option>
@@ -497,14 +497,14 @@
         class="button-margin" 
         [matMenuTriggerFor]="editor_selection">
         <div>
-            <span style="vertical-align: middle">{{ column.editor }}</span>
+            <span style="vertical-align: middle">{{ column.selected_fragment_editor }}</span>
             <mat-icon fontIcon="expand_more" style="float: right"></mat-icon>
         </div>
     </button>
     <mat-menu #editor_selection="matMenu">
         <ng-container *ngFor="let editor of column.retrieved_editors">
                 <button mat-menu-item
-                    (click)="column.editor = editor"
+                    (click)="column.selected_fragment_editor = editor"
                     (click)="this.handle_editor_click(column)">
                         {{ editor }}
                 </button>
@@ -519,7 +519,7 @@
                 <mat-option 
                 *ngFor="let editor of column.retrieved_editors" 
                 [value]="editor"
-                (click)="column.editor = editor.name"
+                (click)="column.selected_fragment_editor = editor.name"
                 (click)="this.request_fragments(column)">
                 {{ editor.name }}                     
                 </mat-option>
@@ -530,7 +530,7 @@
             <mat-option 
               *ngFor="let editor of column.retrieved_editors" 
               [value]="editor"
-              (click)="column.editor = editor.name"
+              (click)="column.selected_fragment_editor = editor.name"
               (click)="this.request_fragment_names(column)">
               {{ editor.name }}                     
             </mat-option>
@@ -558,50 +558,4 @@
         </mat-expansion-panel>
         <hr> <!-- And add a nice line to separate the fields -->
     </ng-container>
-</ng-template>
-
-<!-- Template to show fragment content from the given fragment in a mat expansion panel -->
-<ng-template #nested_author_title_editor_select let-column="column">   
-    <!-- Nested menu to select author - title - editor. -->
-    <mat-menu #menu_authors="matMenu">
-        <ng-container *ngFor="let author of column.retrieved_authors; let i = index">
-            <button 
-                mat-menu-item 
-                (menuOpened)="column.title = ''; column.editor = '';" 
-                (menuOpened)="column.author = author" 
-                (menuOpened)="this.api.request_titles(column)" 
-                [matMenuTriggerFor]="menu_titles">
-                    {{author}}
-            </button>
-        </ng-container>
-    </mat-menu>
-
-    <mat-menu #menu_titles="matMenu">
-        <ng-container *ngFor="let title of column.retrieved_titles; let i = index">
-            <button 
-                mat-menu-item 
-                (menuOpened)="column.title = '';"
-                (menuOpened)="column.title = title" 
-                (menuOpened)="this.api.request_editors(column)" 
-                [matMenuTriggerFor]="menu_editors">
-                {{title}}
-            </button>
-        </ng-container>
-    </mat-menu>
-
-    <mat-menu #menu_editors="matMenu">
-        <button
-            mat-menu-item
-            *ngIf="this.utility.spinner"
-            style="display: flex; justify-content: center; align-items: center">
-            <mat-spinner mode="indeterminate" diameter="24"></mat-spinner>
-        </button>
-        <ng-container *ngFor="let editor of column.retrieved_editors; let i = index">
-            <button mat-menu-item
-                (click)="column1.editor = editor"
-                (click)="this.handle_editor_click(column)">
-                {{editor}}
-            </button>
-        </ng-container>
-    </mat-menu>
 </ng-template>

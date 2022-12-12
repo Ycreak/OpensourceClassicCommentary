@@ -28,8 +28,8 @@ export class UtilityService {
   public sort_fragment_array_numerically(a, b) {
     // Sort array via the number element given.
     // To allow fragments like '350-356' to be ordered.   
-    const A = Number(a.fragment_name.split("-", 1));
-    const B = Number(b.fragment_name.split("-", 1));
+    const A = Number(a.name.split("-", 1));
+    const B = Number(b.name.split("-", 1));
 
     let comparison = 0;
     if (A > B) {
