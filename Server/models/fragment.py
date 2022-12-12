@@ -6,7 +6,7 @@ import Server.config as conf
 
 class FragmentField(object):
     ID = "_id"
-    NAME = "fragment_name"
+    NAME = "name"
     AUTHOR = "author"
     TITLE = "title"
     EDITOR = "editor"
@@ -38,8 +38,6 @@ class Fragment:
     context: list = None
     lines: list = None
     linked_fragments: list = None
-
-
 
 class FragmentModel:
     def __init__(self, server):
@@ -118,23 +116,36 @@ class FragmentModel:
             return None
         return fragment
 
-#     def get(self, user):
-#         user = {key: value for key, value in user.__dict__.items() if value}
-#         mango = {
-#             "selector": user,
-#             "limit": conf.COUCH_LIMIT
-#         }
-#         result = self.db.find(mango)
-#         result = self.__get_users(result)
+    def delete(self, fragment):
         
-#         if result:
-#             if len(result) > 1:
-#                 logging.warning("get(): function returned more than 1 object!")
-#             return result[0]
-#         return None
+        fragment = self.get(fragment)
+    
+        if fragment == None:
+            logging.error("delete(): fragment could not be found")
+            return False
+        try:
+            doc = self.db[fragment.id]
+            self.db.delete(doc)
+            return True
+        except Exception as e:
+            logging.error(e)
+        return False
 
+    def get(self, fragment):
+        fragment = {key: value for key, value in fragment.__dict__.items() if value}
+        mango = {
+            "selector": fragment,
+            "limit": conf.COUCH_LIMIT
+        }
+        result = self.db.find(mango)
+        result = self.__get_fragments(result)
 
-        
+        if result:
+            if len(result) > 1:
+                logging.warning("get(): function returned more than 1 object!")
+            return result[0]
+        return None
+
 #     def get_or_create(self, user):
 #         result = self.get(user)
 #         if result is not None:
@@ -158,16 +169,3 @@ class FragmentModel:
 #             logging.error(e)
 #         return False
 
-#     def delete(self, user):
-#         user = self.get(user)
-        
-#         if user == None:
-#             logging.error("delete(): user could not be found")
-#             return False
-#         try:
-#             doc = self.db[user.id]
-#             self.db.delete(doc)
-#             return True
-#         except Exception as e:
-#             logging.error(e)
-#         return False

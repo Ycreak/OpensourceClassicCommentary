@@ -197,4 +197,20 @@ def update_fragment():
     return "", 200
 
 def delete_fragment():
-    return "", 200
+
+    try:
+        author = request.get_json()[FragmentField.AUTHOR]
+        title = request.get_json()[FragmentField.TITLE]
+        editor = request.get_json()[FragmentField.EDITOR]
+        name = request.get_json()[FragmentField.NAME]
+
+    except KeyError as e:
+        logging.error(e)
+        return make_response("Unprocessable entity", 422)
+
+    fragment = fragments.delete(Fragment(author=author, title=title, editor=editor, name=name))
+
+    if fragment:
+        return make_response("OK", 200)
+    else:
+        return make_response("Not found", 401)
