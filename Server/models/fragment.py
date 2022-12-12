@@ -23,7 +23,7 @@ class FragmentField(object):
 
 @dataclass
 class Fragment:
-    id: str = None
+    _id: str = None
     name: str = None
     author: str = None
     title: str = None
@@ -46,7 +46,7 @@ class FragmentModel:
     def __get_fragments(self, frag_lst):
         result = list()
         for doc in frag_lst:
-            fragment = Fragment(id=doc.id)
+            fragment = Fragment(_id=doc.id)
             if FragmentField.NAME in doc:
                 fragment.name = doc[FragmentField.NAME]
             if FragmentField.AUTHOR in doc:
@@ -90,10 +90,11 @@ class FragmentModel:
         
     def filter(self, fragment, sorted=False):
         fragment = {key: value for key, value in fragment.__dict__.items() if value}
-        if "id" in fragment:
-            fragment[FragmentField.ID] = fragment.pop("id")
-        if "name" in fragment:
-            fragment[FragmentField.NAME] = fragment.pop("name")
+        # @deprecated because of refactoring
+        # if "_id" in fragment: 
+        #     fragment[FragmentField.ID] = fragment.pop("_id")
+        # if "name" in fragment:
+        #     fragment[FragmentField.NAME] = fragment.pop("name")
         mango = {
             "selector": fragment,
             "limit": conf.COUCH_LIMIT
@@ -107,8 +108,9 @@ class FragmentModel:
 
     def create(self, fragment):
         fragment = {key: value for key, value in fragment.__dict__.items() if value}
-        fragment[FragmentField.ID] = fragment.pop("id") # MongoDB uses "_id" instead of "id"
-        fragment[FragmentField.NAME] = fragment.pop("name")
+        # @deprecated because of refactoring
+        # fragment[FragmentField.ID] = fragment.pop("_id") # MongoDB uses "_id" instead of "id"
+        # fragment[FragmentField.NAME] = fragment.pop("name")
         
         doc_id, _ = self.db.save(fragment)
         if not doc_id:
@@ -116,15 +118,33 @@ class FragmentModel:
             return None
         return fragment
 
+    def update(self, fragment):
+        # we update fragments via their _id, so no need for get.
+        # FIXME: is this correct BORS?
+        # fragment = self.get(fragment)
+
+        # if fragment == None:
+        #     logging.error("update(): fragment could not be found")
+        #     return False
+        try:
+            doc = self.db[fragment._id]
+            for key, value in asdict(fragment).items():
+                if value != None:
+                    doc[key] = value
+            self.db.save(doc)
+            return True
+        except Exception as e:
+            logging.error(e)
+        return False
+
     def delete(self, fragment):
-        
         fragment = self.get(fragment)
     
         if fragment == None:
             logging.error("delete(): fragment could not be found")
             return False
         try:
-            doc = self.db[fragment.id]
+            doc = self.db[fragment._id]
             self.db.delete(doc)
             return True
         except Exception as e:
