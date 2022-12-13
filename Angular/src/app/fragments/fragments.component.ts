@@ -1,10 +1,8 @@
 // Library imports
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog'; // Library used for interacting with the page
-import { TemplateRef, ViewChild } from '@angular/core'; // To allow dialog windows within the current window
 import { trigger, transition, style, animate } from '@angular/animations';
 import { fromEvent, Observable, Subscription } from "rxjs";
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 // Component imports
 import { LoginComponent } from '../login/login.component'
@@ -19,10 +17,6 @@ import { AuthService } from '../auth/auth.service';
 import { Fragment } from '../models/Fragment';
 import { Column } from '../models/Column';
 import { Introductions } from '../models/Introductions';
-
-import { Text_column } from '../models/Text_column';
-import * as internal from 'stream'; // TODO: What is this?
-import { DateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'app-fragments',
@@ -91,10 +85,10 @@ export class FragmentsComponent implements OnInit {
 
   
   constructor(
-    public api: ApiService,
-    public utility: UtilityService,
-		public auth_service: AuthService,
-    public dialog: DialogService,
+    protected api: ApiService,
+    protected utility: UtilityService,
+		protected auth_service: AuthService,
+    protected dialog: DialogService,
     private matdialog: MatDialog, 
     ) { }
 
@@ -243,7 +237,7 @@ export class FragmentsComponent implements OnInit {
    * @param column that is to be filled with data
    * @author Ycreak
    */
-   public request_fragment_names(column: Column): void {
+   private request_fragment_names(column: Column): void {
     this.utility.spinner_on();
     this.api.get_fragment_names(new Fragment({author:column.selected_fragment_author, title:column.selected_fragment_title, editor:column.selected_fragment_editor})).subscribe(
       data => {
@@ -341,8 +335,8 @@ export class FragmentsComponent implements OnInit {
    * This function adds a new column to the columns array
    * @author Ycreak
    */
-  public add_column(): void{
-    //TODO: shall we create a limit? like no more than 100,000 columns?
+  protected add_column(): void{
+    //TODO: shall we create a limit? like no more than 25 columns?
     // First, increment the column_identifier to create a new and unique id
     this.column_identifier += 1;
 
@@ -360,7 +354,7 @@ export class FragmentsComponent implements OnInit {
    * @param column_id of column that is to be closed
    * @author Ycreak
    */
-  public close_column(column_id): void{
+  private close_column(column_id): void{
     const object_index = this.columns.findIndex(object => {
       return object.column_id === column_id;
     });    
@@ -376,7 +370,7 @@ export class FragmentsComponent implements OnInit {
    * @param direction of movement
    * @author Ycreak
    */
-   public move_column(column_id, direction): void{
+   private move_column(column_id, direction): void{
     // First get the current index of the column we want to move
     const from_index = this.columns.findIndex(object => {
       return object.column_id === column_id;
@@ -399,7 +393,7 @@ export class FragmentsComponent implements OnInit {
    * This function creates a list of connected columns to allow dragging and dropping
    * @author Ycreak
    */
-  public update_connected_columns_list(): void{
+  private update_connected_columns_list(): void{
     this.connected_columns_list = [];
     for (let i of this.columns) {
       this.connected_columns_list.push(String(i.column_id));
@@ -411,7 +405,7 @@ export class FragmentsComponent implements OnInit {
    * @param column column from which the deletion is to take place
    * @param item either a note or a fragment needs deletion
    */
-  public delete_clicked_item_from_playground(column: Column, item: string): void{
+  private delete_clicked_item_from_playground(column: Column, item: string): void{
     if(item == 'fragment'){
       const object_index = column.fragments.findIndex(object => {
         return object._id === column.clicked_fragment._id;
@@ -426,11 +420,15 @@ export class FragmentsComponent implements OnInit {
     }
   }
 
-  public scroll_linked_fragments(fragment: Fragment){
-
+  /**
+   * Given the fragment, this function checks whether its linked fragments appear in the
+   * other opened columns. If so, the columns are scrolled to put the linked fragment in view
+   * @param fragment object with the linked_fragments field to be examined
+   * @author Ycreak
+   */
+  private scroll_linked_fragments(fragment: Fragment){
     for(let i in fragment.linked_fragments){
       let linked_fragment_id = fragment.linked_fragments[i].linked_fragment_id 
-
       // Now, for each fragment that is linked, try to find it in the other columns
       for(let j in this.columns){
         // in each column, take a look in the fragments array to find the linked fragment
@@ -541,7 +539,7 @@ export class FragmentsComponent implements OnInit {
    * Test function
    * @author Ycreak
    */  
-  public test(thing): void{
+  private test(thing): void{
     console.log('############ TESTING ############')
     console.log(this.commentary_column);
 
@@ -667,7 +665,7 @@ export class FragmentsComponent implements OnInit {
    * @author CptVickers
    */
 
-    public generate_fragment_gradient_border_color(n_fragments: number, fragment_index: number){
+    private generate_fragment_gradient_border_color(n_fragments: number, fragment_index: number){
       // console.log(this.oscc_settings.fragment_order_gradient);
       if (this.oscc_settings.fragment_order_gradient == true){
         let max_brightness: number = 100;
@@ -701,7 +699,7 @@ export class FragmentsComponent implements OnInit {
    * @author CptVickers
    */
 
-    public generate_fragment_gradient_background_color(n_fragments: number, fragment_index: number){
+    private generate_fragment_gradient_background_color(n_fragments: number, fragment_index: number){
       // console.log(this.oscc_settings.fragment_order_gradient);
       if (this.oscc_settings.fragment_order_gradient == true){
         let max_brightness: number = 100;
