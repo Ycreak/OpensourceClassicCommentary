@@ -130,22 +130,6 @@ export class ApiService {
     }
     return fragment_list;
   }
-
-
-  // /**
-  //  * Requests a specific fragment from the database
-  //  * @param column Fragment_column object with all necessary data
-  //  * @author Ycreak CptVickers
-  //  */
-  //  public request_specific_fragment(column: Column): void {
-  //   this.utility.spinner_off()
-  //   this.get_specific_fragment(column).subscribe(
-  //     fragment => {
-  //       column.fragments = [fragment]
-  //       this.utility.spinner_off()
-  //     });
-  // }
-
 //   _____   ____   _____ _______ 
 //  |  __ \ / __ \ / ____|__   __|
 //  | |__) | |  | | (___    | |   

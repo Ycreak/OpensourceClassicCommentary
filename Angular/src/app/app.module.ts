@@ -193,8 +193,7 @@ const appRoutes: Routes = [
       
     },
     // { 
-    //   provide: MAT_KEYBOARD_LAYOUTS, 
-    //   useValue: customLayouts 
+    //   provide: MatDialogRef, 
     // },
   ],
   bootstrap: [AppComponent]
