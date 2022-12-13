@@ -555,9 +555,6 @@ export class DashboardComponent implements OnInit {
         if (result) {
           this.utility.spinner_on();
 
-          let temp = this.convert_fragment_form_to_Fragment(fragment_form)
-          console.log('temp', temp)
-
           this.api.revise_fragment(this.convert_fragment_form_to_Fragment(fragment_form)).subscribe({
             next: (res) => {
               this.utility.handle_error_message(res);

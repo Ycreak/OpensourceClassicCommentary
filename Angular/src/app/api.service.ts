@@ -45,7 +45,7 @@ export class ApiService {
 
   /**
    * Getter function for public property network_status
-   * @return {boolean} network_status - Status indicating whether or not the server is
+   * @return boolean network_status - Status indicating whether or not the server is
    *                                    successfully returning requests
    * @author CptVickers
    */
@@ -166,10 +166,7 @@ export class ApiService {
   public get_fragments(fragment: object): Observable<object[]> {
     return this.http.post<Fragment[]>(this.FlaskURL + `fragment/get`, fragment, { observe: 'body', responseType: 'json'});
   }
-  public get_specific_fragment(fragment: object): Observable<Fragment> {
-    return this.http.post<Fragment>(this.FlaskURL + `complete_fragment`, fragment, { observe: 'body', responseType: 'json'});
-  }
-  public get_fragment_names(fragment: Fragment): Observable<string[]> {
+  public get_fragment_names(fragment: object): Observable<string[]> {
     return this.http.post<string[]>(this.FlaskURL + `fragment/get/name`, fragment, { observe: 'body', responseType: 'json'});
   }  
   public create_fragment(fragment: any): Observable<any> {
