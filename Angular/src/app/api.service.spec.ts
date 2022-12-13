@@ -12,8 +12,6 @@ import { defer } from 'rxjs';
 // import { TestBed } from '@angular/core/testing';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
-import { Author } from './models/Author';
-
 
 describe('ApiService', () => {
   let service: ApiService;
