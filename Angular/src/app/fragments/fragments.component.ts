@@ -142,53 +142,6 @@ export class FragmentsComponent implements OnInit {
   //  | | \ \| |___| |__| | |__| | |____ ____) |  | |  ____) |
   //  |_|  \_\______\___\_\\____/|______|_____/   |_| |_____/  
   /**
-   * Requests the API function for authors
-   * @param column: Column 
-   * @returns data -> column.retrieved_authors
-   * @author Ycreak
-   */
-   private request_authors(column: Column): void{
-    this.utility.spinner_on();
-
-    this.api.get_authors(new Fragment()).subscribe(
-      data => {
-      // Enter this retrieved data in the correct column
-      column.retrieved_authors = data;
-      this.utility.spinner_off(); 
-    });
-  }
-
-  /** Requests the API function for titles given the author.
-   * @param column: Column 
-   * @returns data -> column.retrieved_authors
-   * @author Bors & Ycreak
-   */
-  private request_titles(column: Column): void{    
-    this.utility.spinner_on();
-    this.api.get_titles(new Fragment({author:column.selected_fragment_author})).subscribe(
-      data => {
-        column.retrieved_titles = data; 
-        this.utility.spinner_off(); 
-      }
-    );      
-  }
-  /**
-   * Requests the API function for editors given the author and title.
-   * @param column: Column
-   * @returns data -> column.retrieved_editors 
-   * @author Bors & Ycreak
-   */
-  private request_editors(column: Column): void{   
-    this.utility.spinner_on();
-    this.api.get_editors(new Fragment({author:column.selected_fragment_author, title:column.selected_fragment_title})).subscribe(
-      data => {
-        column.retrieved_editors = data;
-        this.utility.spinner_off(); 
-      }
-    );
-  }
-
-  /**
    * Requests the API function for fragments given the author, title and editor.
    * @param column: Column
    * @returns Object with fragments that are sorted numerically and on their status. Also

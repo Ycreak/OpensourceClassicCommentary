@@ -3,20 +3,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
-import { FormGroup } from '@angular/forms';
-
 import { Observable, throwError } from 'rxjs';
-import { catchError, defaultIfEmpty, repeatWhen, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 
+// Service imports
 import { UtilityService } from './utility.service';
 
 // Model imports
 import { Fragment } from './models/Fragment';
 import { Column } from './models/Column';
-
-// import { Author } from './models/Author';
-// import { Editor } from './models/Editor';
-// import { Title } from './models/Title';
 import { User } from './models/User';
 
 @Injectable({
@@ -181,43 +176,10 @@ export class ApiService {
   public user_update(user: User | object): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `user/update`, user, { observe: 'response', responseType: 'text' as 'json'  });
   }
-  // Bibliography
-  public create_bibliography_entry(fragment: object): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + `create_bibliography_entry`, fragment, { observe: 'response', responseType: 'text' as 'json' });
-  } 
-  public revise_bibliography_entry(fragment: object): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + `revise_bibliography_entry`, fragment, { observe: 'response', responseType: 'text' as 'json'  });
-  }
-  public delete_bibliography_entry(fragment: object): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + `delete_bibliography_entry`, fragment, { observe: 'response', responseType: 'text' as 'json'  });
-  }
-
   // Neural networks part
   public scan_lines(lines: object): Observable<any> {
     return this.http.post<any>(this.NeuralURL + `scan_lines`, lines, { observe: 'body', responseType: 'json'});
   }
-
-  // public get_authors(): Observable<Author[]> {
-  //   return this.http.get<Author[]>(this.FlaskURL + `authors`);
-  // }
-  public get_bibliography_authors(): Observable<JSON> {
-    return this.http.get<JSON>(this.FlaskURL + `get_bibliography_authors`);
-  }
-  public get_bibliography_from_author(author): Observable<JSON> {
-    return this.http.get<JSON>(this.FlaskURL + `get_bibliography_from_author?author=${author}`);
-  }
-  public get_bibliography_from_id(_id): Observable<JSON> {
-    return this.http.get<JSON>(this.FlaskURL + `get_bibliography_from_id?_id=${_id}`);
-  }
-  public get_text(titleID: number): Observable<any[]> {
-    return this.http.get<any[]>(this.FlaskURL + `tlines?textID=${titleID}`);
-  }
-  public get_text_commentary(textID: number, lineNumber: number): Observable<any[]> {
-    return this.http.get<any[]>(this.FlaskURL + `tcommentary?textID=${textID}&lineNumber=${lineNumber}`);
-  }
-
-
-
 }
 
 // Interceptor for HTTP errors

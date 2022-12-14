@@ -425,7 +425,7 @@
     <ng-container *ngFor="let author of column.retrieved_authors">
             <button mat-menu-item
                 (click)="column.selected_fragment_author = author"
-                (click)="this.request_titles(column)"
+                (click)="this.api.request_titles(column)"
                 
                 (click)="column.selected_fragment_title = 'Title'"
                 (click)="column.retrieved_titles = []"
@@ -467,7 +467,7 @@
         <ng-container *ngFor="let title of column.retrieved_titles">
                 <button mat-menu-item
                     (click)="column.selected_fragment_title = title"
-                    (click)="this.request_editors(column)"
+                    (click)="this.api.request_editors(column)"
                     
                     (click)="column.selected_fragment_editor = 'Editor'"
                     (click)="column.retrieved_editors = []">
