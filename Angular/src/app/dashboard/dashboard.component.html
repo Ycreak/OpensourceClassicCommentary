@@ -325,7 +325,7 @@
 
                 <mat-form-field class="input-form-half">
                   <mat-label>Context text</mat-label>
-                  <input matInput type="text" formControlName="text" [matKeyboard]="'OSCC'"> <!--required> -->
+                  <textarea matInput type="text" formControlName="text"></textarea>
                 </mat-form-field>
 
                 <button mat-button (click)="request_wysiwyg_dialog('context', i)">Rich editor</button>
@@ -335,72 +335,6 @@
           </form>
 
         </mat-tab>  <!-- end of the Fragment context tab -->
-
-        
-        <!-- <mat-tab label="Fragment Bibliography"><br>
-
-          <div class="alert alert-info" role="alert">
-            The OSCC has a build-in bibliography management system which is accessible to all users. Simply search for your author using the field below and press the appropriate title to add the source to your fragment.
-            If your entry does not exist yet, create it using the <b>Change bibliography data</b> panel. Do not forget to press <b>Revise Fragment</b> to save changes.
-          </div>
-
-          <form class="example-form">
-            <mat-form-field class="example-full-width" appearance="fill">
-              <mat-label>Search an author</mat-label>
-              <input type="text"
-                    placeholder="Type author name"
-                    aria-label="Author"
-                    matInput
-                    [formControl]="bibliography_author_selection_form"
-                    [matAutocomplete]="auto">
-              <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                <mat-option *ngFor="let option of bibliography_author_selection_form_filtered_options | async" [value]="option"
-                (click)="this.request_bibliography_from_author(option)">
-                  {{option}}
-                </mat-option>
-              </mat-autocomplete>
-              <mat-hint>Found titles will be listed below</mat-hint>                       
-            </mat-form-field>
-          </form>
-        
-          <mat-selection-list [multiple]="false">
-            <mat-list-option *ngFor="let bib_entry of retrieved_author_bibliography" [value]="bib_entry" 
-              (click)="this.push_bibliography_reference(bib_entry)"
-              (click)="this.bib_entry_selected = true">
-              {{bib_entry.author}}, {{bib_entry.title}}, {{bib_entry.year}}
-            </mat-list-option>
-          </mat-selection-list>
-
-          <hr>
-
-          <div class="div-padding-lg"></div>
-
-          <div formArrayName="linked_bib_entries"
-          *ngFor="let item of fragment_form.get('linked_bib_entries')['controls']; let i = index;">
-          
-            <div [formGroupName]="i">
-
-              <mat-form-field class="input-form-small">
-                <mat-label>Author</mat-label>
-                <input matInput formControlName="author" readonly>
-              </mat-form-field>
-
-              <mat-form-field class="input-form-small">
-                <mat-label>Title</mat-label>
-                <input matInput type="text" formControlName="title" readonly>
-              </mat-form-field>
-              
-              <mat-form-field class="input-form-small">
-                <mat-label>Year</mat-label>
-                <input matInput type="text" formControlName="year" readonly>
-              </mat-form-field>                
-
-              <button mat-button (click)="Remove_form_item('linked_bib_entries', i)">Delete this source</button>
-
-            </div>
-          </div>
-
-        </mat-tab>  end of the Fragment bibliography tab -->
 
         <mat-tab *ngIf="this.auth_service.current_user_role == 'teacher'" label="Fragment References"><br>
 

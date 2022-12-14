@@ -170,7 +170,6 @@ export class DashboardComponent implements OnInit {
     this.api.request_authors(this.linked_fragment_data);
 
     // this.retrieve_requested_fragment('Ennius', 'Thyestes', 'TRF', '134')
-    // this.request_bibliography_authors()    
   }
 
   // initiate the table sorting and paginator
@@ -399,11 +398,13 @@ export class DashboardComponent implements OnInit {
     this.api.get_fragments(new Fragment({author:column.selected_fragment_author, title:column.selected_fragment_title, editor:column.selected_fragment_editor, name: column.selected_fragment_name})).subscribe(
       data => {
         let fragment = this.api.convert_fragment_json_to_typescript(data)[0]        
-        this.push_linked_fragments_to_fragment_form(fragment.author,
-                                                    fragment.title,
-                                                    fragment.editor,
-                                                    fragment.name,
-                                                    fragment._id)
+        this.push_linked_fragments_to_fragment_form(
+          fragment.author,
+          fragment.title,
+          fragment.editor,
+          fragment.name,
+          fragment._id
+        )
         // console.log(fragment)
       });
   }
@@ -493,7 +494,7 @@ export class DashboardComponent implements OnInit {
       this.selected_fragment_data.selected_fragment_author = fragment_form.value.author;
       this.selected_fragment_data.selected_fragment_title = fragment_form.value.title;
       this.selected_fragment_data.selected_fragment_editor = fragment_form.value.editor;
-      this.selected_fragment_data.selected_fragment_name = fragment_form.value.fragment_name;
+      this.selected_fragment_data.selected_fragment_name = fragment_form.value.name;
 
       let item_string = fragment_form.value.author + ', ' + fragment_form.value.title + ', ' + fragment_form.value.editor + ': ' + fragment_form.value.name
 
@@ -512,6 +513,8 @@ export class DashboardComponent implements OnInit {
               // After creation, refresh the list of fragment names so the new one appears directly
               this.api.request_fragment_names(this.selected_fragment_data);
               // Also, retrieve that revised fragment so we can continue editing!
+              
+              console.log(this.selected_fragment_data)
               this.retrieve_requested_fragment(this.selected_fragment_data);
               this.utility.spinner_off();
             },
