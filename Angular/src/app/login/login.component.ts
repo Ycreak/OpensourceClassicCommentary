@@ -74,17 +74,15 @@ export class LoginComponent implements OnInit {
 
   public submit_login(login_form): void {
     // Create a user session for the auth_service to fill in    
-    let api_data = this.utility.create_empty_user();
-    api_data.username = login_form.value.username; 
-    api_data.password = encodeURIComponent(login_form.value.password);
+    let user = new User({
+      username : login_form.value.username,
+      password : encodeURIComponent(login_form.value.password)
+    });
     
-    // console.log(api_data)
-
-    this.api.login_user(api_data).subscribe({
-      next: (res) => {
-        // FIXME: this needs to be handled properly with Flask. Fix for the staging build
-        this.auth_service.login_user(api_data);
-        this.utility.open_snackbar('Login successful') // FIXME: Would perhaps be nice to say hi to the user.
+    this.api.login_user(user).subscribe({
+      next: (approved_user) => {
+        this.auth_service.login_user(approved_user);
+        this.utility.open_snackbar('Login successful')
         this.dialogRef.close(); // Close the login screen overlay
       },
       error: (err) => this.utility.handle_error_message(err),

@@ -1,9 +1,17 @@
-<div mat-dialog-content>
-  <h3 class="center">Login to OSCC</h3>
-  <div class="div-padding-sm"></div>
+<div class="settings-dialog-header">
+  <h2>OSCC Login</h2>
+  <button mat-icon-button [mat-dialog-close]="null" [disableRipple]="true">
+    <mat-icon>clear</mat-icon>
+  </button>  
+</div>
+
+
+<div class="settings-dialog-content" mat-dialog-content>
+  <!-- <h3 class="center">Login to OSCC</h3>
+  <div class="div-padding-sm"></div> -->
   
   <!-- If the user is logged in, show this alert -->
-  <div class="alert alert-primary center" role="alert" *ngIf="this.auth_service.is_logged_in">Welcome! You are logged in! <br> Click anywhere outside this dialog to begin.</div>
+  <!-- <div class="alert alert-primary center" role="alert" *ngIf="this.auth_service.is_logged_in">Welcome! You are logged in! <br> Click anywhere outside this dialog to begin.</div> -->
   <div class="div-padding-lg"></div>
   
   <mat-accordion class="example-headers-align" multi>

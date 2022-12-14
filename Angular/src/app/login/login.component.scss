@@ -1,4 +1,7 @@
+@use '@angular/material' as mat;
 @import url('../app.component.scss');
+@import url('../dialogs/dialogs.scss');
+
 // Login component specific CSS. For more generic CSS, see ../app.component.scss.
   
   // .mat-form-field{

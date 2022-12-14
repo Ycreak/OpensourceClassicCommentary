@@ -162,10 +162,10 @@ export class ApiService {
   }
   // Users
   public get_users(user: User): Observable<User[]> {
-    return this.http.post<User[]>(this.FlaskURL + `user/get`, user, { observe: 'body', responseType: 'json'});
+    return this.http.post<User[]>(this.FlaskURL + `user/get`, user, { observe: 'body', responseType: 'json' });
   }
-  public login_user(user: User): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + `user/login`, user, { observe: 'response', responseType: 'text' as 'json' });
+  public login_user(user: User): Observable<User> {
+    return this.http.post<User>(this.FlaskURL + `user/login`, user, { observe: 'body', responseType: 'json' });
   }
   public create_user(user: User): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `user/create`, user, { observe: 'response', responseType: 'text' as 'json'  });
