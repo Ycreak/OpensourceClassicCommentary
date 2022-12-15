@@ -31,14 +31,14 @@
   
       <form [formGroup]="login_form" (ngSubmit)="submit_login(this.login_form)">
         <mat-form-field appearance="fill" class="input-form-full-width">
-          <mat-label>Enter your username</mat-label>
+          <mat-label>Enter username</mat-label>
           <input matInput required formControlName="username">
         </mat-form-field>
       
         <div class="div-padding-sm"></div>
       
         <mat-form-field appearance="fill" class="input-form-full-width">
-          <mat-label>Enter your password</mat-label>
+          <mat-label>Enter password</mat-label>
           <input matInput required [type]="hide_password ? 'password' : 'text'" formControlName="password">
         </mat-form-field>
       
@@ -62,7 +62,7 @@
   
       <form [formGroup]="create_form" (ngSubmit)="submit_create(this.create_form.value)">
         <mat-form-field appearance="fill" class="input-form-full-width">
-          <mat-label>Enter your username</mat-label>
+          <mat-label>Enter username</mat-label>
           <input matInput required formControlName="username">
           <!-- Check for errors sequentially and display only one at a time-->
           <mat-error *ngIf="create_form.get('username').errors; then u1"></mat-error>
@@ -74,7 +74,7 @@
         <div class="div-padding-sm"></div>
         
         <mat-form-field appearance="fill" class="input-form-full-width">
-          <mat-label>Enter your password</mat-label>
+          <mat-label>Enter password</mat-label>
           <input matInput required [type]="hide_password ? 'password' : 'text'" formControlName="password1">
           <!-- Check for errors sequentially and display only one at a time-->
           <mat-error *ngIf="create_form.get('password1').errors; then p1_1"></mat-error>
@@ -87,7 +87,7 @@
         <div class="div-padding-sm"></div>
         
         <mat-form-field appearance="fill" class="input-form-full-width">
-          <mat-label>Enter your password again</mat-label>
+          <mat-label>Enter password again</mat-label>
           <input matInput required [type]="hide_password ? 'password' : 'text'" formControlName="password2">
           <!-- Check for errors sequentially and display only one at a time-->
           <mat-error *ngIf="create_form.get('password2').errors; then p2_1"></mat-error>
