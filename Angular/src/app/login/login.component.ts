@@ -106,15 +106,17 @@ export class LoginComponent implements OnInit {
     if(form.password1 == form.password2){
       this.dialog.open_confirmation_dialog('Are you sure you want to CREATE this user?', form.username).subscribe(result => {
         if(result){
-          let api_data = this.utility.create_empty_user();
-          api_data.username = form.username; 
-          api_data.password = encodeURIComponent(form.password1);
-  
-          this.api.create_user(api_data).subscribe({
+          this.utility.spinner_on()
+          let user = new User({
+            username : form.username,
+            password : encodeURIComponent(form.password1)
+          });
+          this.api.create_user(user).subscribe({
             next: (res) => {
               this.utility.handle_error_message(res),
               this.login_form_expanded = false;
               this.create_form_expanded = false;
+              this.utility.spinner_off();
             },
             error: (err) => this.utility.handle_error_message(err)
           });
