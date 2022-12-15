@@ -62,9 +62,8 @@ export class LoginComponent implements OnInit {
   constructor(
     public auth_service: AuthService, 
     public router: Router,
-    private form_builder: UntypedFormBuilder,
     private api: ApiService,
-    private utility: UtilityService,
+    protected utility: UtilityService,
     private dialog: DialogService,
     public dialogRef: MatDialogRef<LoginComponent>,
     ) { }
@@ -74,6 +73,7 @@ export class LoginComponent implements OnInit {
 
   public submit_login(login_form): void {
     // Create a user session for the auth_service to fill in    
+    this.utility.spinner_on()
     let user = new User({
       username : login_form.value.username,
       password : encodeURIComponent(login_form.value.password)
@@ -84,6 +84,7 @@ export class LoginComponent implements OnInit {
         this.auth_service.login_user(approved_user);
         this.utility.open_snackbar('Login successful')
         this.dialogRef.close(); // Close the login screen overlay
+        this.utility.spinner_off()
       },
       error: (err) => this.utility.handle_error_message(err),
     });

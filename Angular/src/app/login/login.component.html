@@ -13,7 +13,8 @@
   <!-- If the user is logged in, show this alert -->
   <!-- <div class="alert alert-primary center" role="alert" *ngIf="this.auth_service.is_logged_in">Welcome! You are logged in! <br> Click anywhere outside this dialog to begin.</div> -->
   <div class="div-padding-lg"></div>
-  
+  <mat-progress-bar *ngIf="this.utility.spinner" mode="query"></mat-progress-bar>
+
   <mat-accordion class="example-headers-align" multi>
     <!-- Expansion panel for the login of an existing user -->
     <mat-expansion-panel [expanded]="login_form_expanded">
