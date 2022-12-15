@@ -106,6 +106,22 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   });
 
   /**
+   * This form is used to change the introduction texts for authors and authors+titles
+   */
+   author_title_introduction_form = new FormGroup({
+    author: new FormControl('', [
+      Validators.required,
+      Validators.pattern('[a-zA-Z ]*')
+    ]), // alpha characters allowed
+    title: new FormControl('', [
+      Validators.required,
+      Validators.pattern('[a-zA-Z ]*')
+    ]), // alpha characters allowed
+    author_introduction: new FormControl(''),
+    title_introduction: new FormControl(''),
+  });
+
+  /**
    * This form is used to change the password of the selected user.
    * After all validators, it will be parsed to a User object.
    */
@@ -129,6 +145,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   // In this object all meta data is stored regarding the currently selected fragment
   selected_fragment_data: Column;
   fragment_referencer: Column;
+  selected_introduction_data: Column;
 
   constructor(
     protected api: ApiService,
@@ -151,6 +168,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     });
     this.fragment_referencer = new Column({
       column_id: environment.referencer_id,
+    });
+    this.selected_introduction_data = new Column({
+      column_id: 1,  // TODO: This needs to have a certain value, but I'm not sure what.     
     });
   }
 
@@ -217,8 +237,16 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           context_array.controls[index].patchValue({ ['text']: result });
         }
       });
-    } else {
-      // The other content fields can be updated by just getting their content strings
+    }
+    else if (field == 'author_introduction' || field == 'title_introduction') {
+      const text = this.author_title_introduction_form.value[field];
+      this.dialog.open_wysiwyg_dialog(text).subscribe(result => {
+        if (result){ // Pass the accepted changes to the regular form field. 
+          this.author_title_introduction_form.patchValue({[field]: result});
+        }
+      })
+    }
+    else{ // The other content fields can be updated by just getting their content strings
       this.dialog.open_wysiwyg_dialog(this.fragment_form.value[field]).subscribe((result) => {
         if (result) {
           this.update_form_field('fragment_form', field, result);
@@ -443,6 +471,66 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.fragment_form.setControl('linked_fragments', new FormArray([]));
   }
 
+  /**
+   * Function to request the introduction text for a given author or author + title.
+   * @param column Column object with form data; contains selected author and title data.
+   * @author CptVickers
+   */
+  public request_introduction(column: Column): string {
+    let request: Observable<any>;
+    if (column.selected_fragment_author && !column.selected_fragment_title) {
+      request = this.api.get_author_introduction_text(column);
+    }
+    else if (column.selected_fragment_author && column.selected_fragment_title) {
+      request = this.api.get_title_introduction_text(column);
+    }
+    else {
+      throw Error("Error during introduction text retrieval: undefined author and/or title");
+    }
+
+    let result = '';
+    request.subscribe({
+      next: (data) => {
+        result += data;
+      },
+      error: (err) => {
+        result += err; // TODO: Which route do we use to display the errors?
+        this.api.handle_error_message(err);
+      }});
+    return result;
+  }
+
+  /**
+   * Function to save the introduction text for a given author or author + title.
+   * @param field Field indicating which introduction text to save: author introduction or title introduction.
+   * @returns A text message indicating success/failure.
+   * @author CptVickers
+   */
+  public request_save_introduction(field: string): string {
+    console.log(field)
+    let request: Observable<any>;
+    if (field != 'author' && field != 'title') {
+      throw Error(`Error: attempted to save introduction text for invalid field: ${field}`)
+    }
+    else if (field == 'author') {
+      request = this.api.set_author_introduction_text(this.author_title_introduction_form.value['author_introduction'])
+    }
+    else if (field == 'title') {
+      request = this.api.set_title_introduction_text(this.author_title_introduction_form.value['title_introduction'])
+    }
+
+    let result = '';
+    request.subscribe({
+      next: (data) => {
+        result += data;
+      },
+      error: (err) => {
+        result += err; // TODO: Which route do we use to display the errors?
+        this.api.handle_error_message(err);
+      }});
+    return result;
+  }
+  
   /**
    * Remove an item from a FormArray within a Form
    * @param form_name encapsulating form
