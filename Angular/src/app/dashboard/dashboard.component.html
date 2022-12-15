@@ -607,6 +607,89 @@
         </mat-tab>
         <!-- end of the Fragment lock tab -->
       </mat-tab-group>
+
+    </mat-expansion-panel>
+
+    <hr>
+
+    <!-- Change author/author+title introduction expansion panel -->
+    <mat-expansion-panel *ngIf="this.auth_service.current_user_role === 'teacher'" [expanded]="true">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Change author and title introductions
+        </mat-panel-title>
+        <mat-panel-description>
+          Create and edit descriptions for authors and associated titles
+          <mat-icon>assignment_ind</mat-icon>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <!-- Author and title selection boxes -->
+      <mat-form-field>
+        <mat-label>Select author</mat-label>
+        <mat-select [(ngModel)]="this.selected_introduction_data.selected_fragment_author" ngDefaultControl>
+          <mat-option *ngFor="let author of this.selected_introduction_data.retrieved_authors" [value]="author"
+            (click)="this.selected_introduction_data.selected_fragment_author = author;"
+            
+            (click)="this.selected_introduction_data.selected_fragment_title = '';"
+            (click)="this.selected_introduction_data.retrieved_titles = [];"
+            
+            (click)="this.reset_introduction_form()"
+            (click)="this.update_form_field('author_title_introduction_form', 'author', author);"
+
+            (click)="this.api.request_titles(selected_introduction_data)"
+            (click)="this.request_introduction(this.selected_introduction_data)"> 
+            {{ author }} 
+          </mat-option>
+        </mat-select>  
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Select title</mat-label>
+        <mat-select [(ngModel)]="this.selected_introduction_data.selected_fragment_title" ngDefaultControl>
+          <mat-option *ngFor="let title of this.selected_introduction_data.retrieved_titles" [value]="title" 
+            (click)="this.selected_introduction_data.selected_fragment_title = title"  
+            
+            (click)="this.reset_introduction_form()"
+            (click)="this.update_form_field('author_title_introduction_form', 'author', author);"
+            (click)="this.update_form_field('author_title_introduction_form', 'title', title);"
+
+            (click)="this.request_introduction(this.selected_introduction_data)">
+            {{ title }}   
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+    <!-- Introduction text with wysiwyg editor -->
+    <form [formGroup]="author_title_introduction_form">
+      <!-- Author introduction text field -->
+      <ng-container *ngIf="this.selected_introduction_data.selected_fragment_author">
+        <mat-form-field class="input-form-full-width">
+          <mat-label><b>Author introduction</b></mat-label>
+          <textarea matInput type="text" formControlName="author_introduction"></textarea>
+        </mat-form-field>
+
+        <br>
+        <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('author_introduction')">Rich editor</button>
+        <button mat-button class="button-margin-extra confirm-button" (click)="request_save_introduction('author')">Save Changes</button>
+        <div class="div-padding-lg"></div>
+        <div class="div-padding-sm"></div>
+      </ng-container>
+      
+      <!-- Title introduction text field -->
+      <ng-container *ngIf="this.selected_introduction_data.selected_fragment_title">
+        <mat-form-field class="input-form-full-width">
+          <mat-label><b>Title introduction</b></mat-label>
+          <textarea matInput type="text" formControlName="title_introduction"></textarea>
+        </mat-form-field>
+        
+        <br>
+        <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('title_introduction')">Rich editor</button>
+        <button mat-button class="button-margin-extra confirm-button" (click)="request_save_introduction('title')">Save Changes</button>
+        <div class="div-padding-lg"></div>
+        <div class="div-padding-sm"></div>
+      </ng-container>
+    </form>
+
     </mat-expansion-panel>
 
     <hr />

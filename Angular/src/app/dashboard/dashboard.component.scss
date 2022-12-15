@@ -28,9 +28,13 @@
   width: 90%; // I like the irony
 }
 
+/* Buttons */
 // Add padding between buttons
 mat-stroked-button {
   padding: 2em;
+}
+.confirm-button {
+  background-color: antiquewhite;
 }
 
 // Beautify the space between expansion panel header, description and icon
