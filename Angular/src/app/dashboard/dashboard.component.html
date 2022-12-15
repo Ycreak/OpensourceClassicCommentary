@@ -548,7 +548,7 @@
                   <hr>
                   <p>Change the password of the selected user here.</p>
                   <!-- TODO: it would be nice to use the user document id instead of their username to change passwords. -->
-                  <form [formGroup]="change_password_form" (ngSubmit)="request_change_password(change_password_form, element.username)">
+                  <form [formGroup]="change_password_form">
                     <mat-form-field class="input-form-half" appearance="fill">
                       <mat-label>Enter your password</mat-label>
                       <input matInput required [type]="hide ? 'password' : 'text'" formControlName="password1">
@@ -567,7 +567,11 @@
             
                     <div class="div-padding-sm"></div>
             
-                    <button mat-raised-button color="warn" type="submit" [disabled]="!change_password_form.valid">Change password</button>
+                    <button mat-raised-button color="warn" 
+                      (click)="request_change_password(change_password_form, element.username)" 
+                      [disabled]="!change_password_form.valid">
+                      Change password
+                    </button>
             
                   </form>
                 </div>
