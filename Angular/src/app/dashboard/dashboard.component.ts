@@ -148,6 +148,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   fragment_referencer: Column;
   selected_introduction_data: Column;
 
+  // This is used for prompting the 'must select author first' hint.
+  show_select_author_first_hint: boolean = false;
+
   constructor(
     protected api: ApiService,
     protected utility: UtilityService,
