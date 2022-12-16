@@ -434,10 +434,10 @@ export class ApiService {
     return this.http.post<string>(this.FlaskURL + 'get_title_introduction_text', column, {observe: 'body', responseType: 'json' });
   }
   public set_author_introduction_text(text: string): Observable<any> { // FIXME: Merge these two functions into one?
-    return this.http.post<any>(this.FlaskURL + 'set_author_introduction_text', text, {observe: 'body', responseType: 'json'});
+    return this.http.post<any>(this.FlaskURL + 'set_author_introduction_text', text, {observe: 'response', responseType: 'text' as 'json'});
   }
   public set_title_introduction_text(text: string): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + 'set_title_introduction_text', text, {observe: 'body', responseType: 'json'});
+    return this.http.post<any>(this.FlaskURL + 'set_title_introduction_text', text, {observe: 'response', responseType: 'text' as 'json'});
   }
   // Users
   public get_users(user: User): Observable<User[]> {
