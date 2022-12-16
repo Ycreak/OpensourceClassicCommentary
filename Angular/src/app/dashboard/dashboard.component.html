@@ -611,7 +611,7 @@
       <!-- Author and title selection boxes -->
       <mat-form-field>
         <mat-label>Select author</mat-label>
-        <mat-select [(ngModel)]="this.selected_introduction_data.selected_fragment_author" ngDefaultControl>
+        <mat-select [(ngModel)]="this.selected_introduction_data.selected_fragment_author" ngDefaultControl> <!-- FIXME: name 'selected_fragment_author' is perhaps confusing in this context. --> 
           <mat-option *ngFor="let author of this.selected_introduction_data.retrieved_authors" [value]="author"
             (click)="this.selected_introduction_data.selected_fragment_author = author;"
             
@@ -622,14 +622,17 @@
             (click)="this.update_form_field('author_title_introduction_form', 'author', author);"
 
             (click)="this.api.request_titles(selected_introduction_data)"
-            (click)="this.request_introduction(this.selected_introduction_data)"> 
+            (click)="this.request_introduction(this.selected_introduction_data)"
+            
+            (click)="this.show_select_author_first_hint = false;"> 
             {{ author }} 
           </mat-option>
         </mat-select>  
       </mat-form-field>
       <mat-form-field>
         <mat-label>Select title</mat-label>
-        <mat-select [(ngModel)]="this.selected_introduction_data.selected_fragment_title" ngDefaultControl>
+        <mat-select [(ngModel)]="this.selected_introduction_data.selected_fragment_title" 
+          ngDefaultControl (click)="this.show_select_author_first_hint= true;">
           <mat-option *ngFor="let title of this.selected_introduction_data.retrieved_titles" [value]="title" 
             (click)="this.selected_introduction_data.selected_fragment_title = title"  
             
@@ -642,6 +645,7 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+      <mat-error class="mat-error-inline" *ngIf="this.show_select_author_first_hint && !this.selected_introduction_data.selected_fragment_author">Please select an author first</mat-error>
 
     <!-- Introduction text with wysiwyg editor -->
     <form [formGroup]="author_title_introduction_form">
