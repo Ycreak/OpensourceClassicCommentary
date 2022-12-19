@@ -23,7 +23,7 @@ def get_user():
     if (user.role == Role.STUDENT) or (user.role == Role.GUEST):
         user.password = None
         user.id = None
-        return make_response(jsonify(user), 200)
+        return make_response(jsonify([user]), 200)
     elif user.role == Role.TEACHER:
         all_users = users.all(sorted=True)
         for i in all_users:
