@@ -3,9 +3,9 @@ import logging
 from flask_jsonpify import jsonify
 from uuid import uuid4
 
-from Server.couch import CouchAuthenticator
-import Server.utilities as util
-from Server.models.user import User, UserField, UserModel, Role
+from couch import CouchAuthenticator
+import utilities as util
+from models.user import User, UserField, UserModel, Role
 
 users = UserModel(CouchAuthenticator().couch)
 

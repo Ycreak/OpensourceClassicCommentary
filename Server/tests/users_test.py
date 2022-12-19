@@ -3,8 +3,8 @@ import pytest
 
 sys.path.append("../Server")
 
-from Server.couch import CouchAuthenticator
-from Server.models.user import User, UserModel
+from couch import CouchAuthenticator
+from models.user import User, UserModel
 
 #? No write operations here, because CouchDB can not rollback
 class TestUsers:

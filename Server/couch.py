@@ -12,7 +12,7 @@
 import couchdb
 import logging
 
-import Server.config as conf
+import config as conf
 
 class CouchAuthenticator:
     def __init__(self):

@@ -14,7 +14,7 @@
 import hashlib, binascii, os, string
 from fuzzywuzzy import fuzz
 
-import Server.config as conf
+import config as conf
 
 def verify_password(stored_pwd, provided_pwd) -> bool:
     salt = stored_pwd[:64]

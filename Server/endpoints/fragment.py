@@ -3,8 +3,8 @@ import logging
 from flask_jsonpify import jsonify
 from uuid import uuid4
 
-from Server.couch import CouchAuthenticator
-from Server.models.fragment import Fragment, FragmentModel, FragmentField
+from couch import CouchAuthenticator
+from models.fragment import Fragment, FragmentModel, FragmentField
 
 fragments = FragmentModel(CouchAuthenticator().couch)
 

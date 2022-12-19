@@ -12,7 +12,7 @@
 from dataclasses import dataclass, asdict
 import logging
 
-import Server.config as conf
+import config as conf
 
 class UserField(object):
     ID = "_id"

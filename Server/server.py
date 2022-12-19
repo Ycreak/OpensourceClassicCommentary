@@ -12,7 +12,7 @@
 #      -- As of now is able to handle fragments and users --  
 #                                                                       #
 #                        RUN INSTRUCTIONS                               #
-#   FLASK_APP=<filename>.py FLASK_DEBUG=1 flask run --port 5003         #
+#   python3 server.py                                                   #
                                                               # # # # # #
 
 # TODO Token authentication between server and front-end
@@ -26,12 +26,12 @@ from flask_restful import Api
 import logging
 
 # Class imports
-import Server.config as conf
-from Server.couch import CouchAuthenticator
+import config as conf
+from couch import CouchAuthenticator
 
-from Server.endpoints.user import get_user, login_user, create_user, delete_user, update_user
-from Server.endpoints.fragment import get_author, get_title, get_editor, get_fragment, get_name, create_fragment, update_fragment, delete_fragment
-from Server.endpoints.fragment import link_fragment
+from endpoints.user import get_user, login_user, create_user, delete_user, update_user
+from endpoints.fragment import get_author, get_title, get_editor, get_fragment, get_name, create_fragment, update_fragment, delete_fragment
+from endpoints.fragment import link_fragment
 
 app = Flask(__name__)
 api = Api(app)
@@ -83,6 +83,6 @@ app.add_url_rule("/fragment/link", view_func=link_fragment, methods=["POST"])
 
 
 # MAIN
-if __name__ == '__main__': #TODO when dev exclude context
-    context = ('/etc/letsencrypt/live/oscc.nolden.biz/cert.pem', '/etc/letsencrypt/live/oscc.nolden.biz/privkey.pem')
-    app.run(host='0.0.0.0', port=5003)
+if __name__ == '__main__':
+    # we run a debugging session whenever this file is invoked directly
+    app.run(host='0.0.0.0', port=5003, debug=True)
