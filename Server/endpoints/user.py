@@ -53,7 +53,9 @@ def login_user():
         return make_response("Server error", 500)
 
     if util.verify_password(stored_pwd=user.password, provided_pwd=password):
-        return make_response("OK", 200)
+        #FIXME: how do we want to handle this properly?
+        return make_response(jsonify({'username':user.username, 'role': user.role}), 200)
+        # return make_response("OK", 200)
     else:
         return make_response("Unauthorized", 403)
 
