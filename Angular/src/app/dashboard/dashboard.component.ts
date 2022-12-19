@@ -8,6 +8,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { ElementRef } from '@angular/core';
 
 // Component imports
 import { ApiService } from '../api.service';
@@ -19,6 +20,7 @@ import { DialogService } from '../services/dialog.service';
 import { Fragment } from '../models/Fragment';
 import { Column } from '../models/Column';
 import { User } from '../models/User';
+import { element } from 'protractor';
 
 @Component({
   selector: 'app-dashboard',
@@ -63,7 +65,7 @@ export class DashboardComponent implements OnInit {
   user_table_columns_to_display: string[] = ['username', 'role'];
   user_table_users: MatTableDataSource<User>;
   user_table_columns_to_displayWithExpand = [...this.user_table_columns_to_display, 'expand'];
-  user_table_expanded_element: User | null;
+  user_table_expanded_element: string | null;
 
   // List with users shown in the Table  
   retrieved_users: User[];
@@ -176,6 +178,7 @@ export class DashboardComponent implements OnInit {
   public ngAfterViewInit(): void {
     this.user_table_users.paginator = this.paginator;
     this.user_table_users.sort = this.matSort;
+    this.expand_user_table_row();
   }
 
   /**
@@ -316,13 +319,12 @@ export class DashboardComponent implements OnInit {
       
   /**
    * Function to allow automatic expansion of the current user in the users table
-   * @param element user table element that needs to be expanded
    * @author CptVickers
    */
-  protected expand_user_table_row(element: any): void {
-    if (element['username']) { // Check if element has the expected attributes
-      this.user_table_expanded_element = element
-    }
+  @ViewChild('userTableElement') elements:ElementRef;
+  protected expand_user_table_row(): void {
+    // Set the expanded user row to the user that is currently logged in.
+    this.user_table_expanded_element = this.auth_service.current_user_name;
   }
 
   /**
