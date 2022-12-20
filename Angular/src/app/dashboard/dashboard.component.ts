@@ -21,6 +21,7 @@ import { DialogService } from '@oscc/services/dialog.service';
 import { Fragment } from '@oscc/models/Fragment';
 import { Column } from '@oscc/models/Column';
 import { User } from '@oscc/models/User';
+import { Introduction_form } from '@oscc/models/Introduction_form';
 
 @Component({
   selector: 'app-dashboard',
@@ -109,7 +110,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   /**
    * This form is used to change the introduction texts for authors and authors+titles
    */
-   author_title_introduction_form = new FormGroup({
+   introduction_form_group = new FormGroup({
     author: new FormControl('', [
       Validators.required,
       Validators.pattern('[a-zA-Z ]*')
@@ -149,7 +150,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   selected_introduction_data: Column;
 
   // This is used for prompting the 'must select author first' hint.
-  show_select_author_first_hint: boolean = false;
+  show_select_author_first_hint = false;
 
   constructor(
     protected api: ApiService,
@@ -244,10 +245,10 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       });
     }
     else if (field == 'author_introduction' || field == 'title_introduction') {
-      const text = this.author_title_introduction_form.value[field];
+      const text = this.introduction_form_group[field];
       this.dialog.open_wysiwyg_dialog(text).subscribe(result => {
         if (result){ // Pass the accepted changes to the regular form field. 
-          this.author_title_introduction_form.patchValue({[field]: result});
+          this.introduction_form_group.patchValue({[field]: result});
         }
       })
     }
@@ -479,36 +480,22 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /**
    * Function to request the introduction text for a given author or author + title.
-   * @param column Column object with form data; contains selected author and title data.
+   * @param intro Introduction object with form data; contains selected author and title data.
    * @author CptVickers
    */
-  public request_introduction(column: Column): string {
-    let request: Observable<any>;
-    if (column.selected_fragment_author && !column.selected_fragment_title) {
-      request = this.api.get_author_introduction_text(column);
-    }
-    else if (column.selected_fragment_author && column.selected_fragment_title) {
-      request = this.api.get_title_introduction_text(column);
-    }
-    else {
-      throw Error("Error during introduction text retrieval: undefined author and/or title");
-    }
-
-    let result = '';
-    request.subscribe({
-      next: (data) => {
-        result += data;
-      },
-      error: (err) => {
-        result += err; // TODO: Which route do we use to display the errors?
-        this.api.handle_error_message(err);
-      }});
-    return result;
+  public request_introduction(intro: Introduction_form): void {
+    this.api.get_introduction_text(intro).subscribe(
+      data => {
+        intro.author_introduction_text = data['author_introduction_text'];
+        intro.title_introduction_text = data['title_introduction_text'];
+      }
+    )
   }
 
   /**
    * Function to save the introduction text for a given author or author + title.
-   * @param field Field indicating which introduction text to save: author introduction or title introduction.
+   * @param intro: Introduction object with form data; contains selected author and title data,
+   *               as well as the introduction text to be saved. 
    * @returns A text message indicating success/failure.
    * @author CptVickers
    */
@@ -519,10 +506,10 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       throw Error(`Error: attempted to save introduction text for invalid field: ${field}`)
     }
     else if (field == 'author') {
-      request = this.api.set_author_introduction_text(this.author_title_introduction_form.value['author_introduction'])
+      request = this.api.set_author_introduction_text(this.introduction_form_group['author_introduction'])
     }
     else if (field == 'title') {
-      request = this.api.set_title_introduction_text(this.author_title_introduction_form.value['title_introduction'])
+      request = this.api.set_title_introduction_text(this.introduction_form_group['title_introduction'])
     }
 
     let result = '';

@@ -14,6 +14,7 @@ import { UtilityService } from './utility.service';
 import { Fragment } from './models/Fragment';
 import { Column } from './models/Column';
 import { User } from './models/User';
+import { Introduction_form } from './models/Introduction_form';
 
 export interface fragment_key {
   author?: string;
@@ -427,17 +428,14 @@ export class ApiService {
       responseType: 'text' as 'json',
     });
   }
-  public get_author_introduction_text(column: Column): Observable<string> { // FIXME: Merge these two functions into one?
-    return this.http.post<string>(this.FlaskURL + 'get_author_introduction_text', column, {observe: 'body', responseType: 'json' });
+  public get_introduction_text(intro: Introduction_form): Observable<any> {
+    return this.http.post<any>(this.FlaskURL + 'get_introduction_text', intro, {observe: 'body', responseType: 'json' });
   }
-  public get_title_introduction_text(column: Column): Observable<string> {
-    return this.http.post<string>(this.FlaskURL + 'get_title_introduction_text', column, {observe: 'body', responseType: 'json' });
+  public set_author_introduction_text(intro: Introduction_form): Observable<any> {
+    return this.http.post<any>(this.FlaskURL + 'set_author_introduction_text', intro, {observe: 'response', responseType: 'text' as 'json'});
   }
-  public set_author_introduction_text(text: string): Observable<any> { // FIXME: Merge these two functions into one?
-    return this.http.post<any>(this.FlaskURL + 'set_author_introduction_text', text, {observe: 'response', responseType: 'text' as 'json'});
-  }
-  public set_title_introduction_text(text: string): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + 'set_title_introduction_text', text, {observe: 'response', responseType: 'text' as 'json'});
+  public set_title_introduction_text(intro: Introduction_form): Observable<any> {
+    return this.http.post<any>(this.FlaskURL + 'set_title_introduction_text', intro, {observe: 'response', responseType: 'text' as 'json'});
   }
   // Users
   public get_users(user: User): Observable<User[]> {
