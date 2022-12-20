@@ -15,7 +15,7 @@ import { ColumnHandlerService } from '@oscc/services/column-handler.service';
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
 import { Column } from '@oscc/models/Column';
-import { Introductions } from '@oscc/models/Introductions';
+import { Introduction_form } from '@oscc/models/Introduction_form';
 
 @Component({
   selector: 'app-fragments',
@@ -178,18 +178,6 @@ export class FragmentsComponent implements OnInit, OnDestroy {
       // colour it if found
       //if (corresponding_fragment) corresponding_fragment.colour = '#FF4081';
     }
-  }
-
-  /**
-   * This function opens the requested introduction in a dialog
-   * @param requested_introduction string containing the requested introduction
-   * @author Ycreak
-   * @TODO: this should be moved to the server
-   */
-  private request_introduction(requested_introduction: string): void {
-    const new_introduction = new Introductions();
-    const my_introduction = new_introduction.dict[requested_introduction];
-    this.dialog.open_custom_dialog(my_introduction);
   }
 
   /**
