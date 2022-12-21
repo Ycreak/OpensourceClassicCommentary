@@ -429,13 +429,13 @@ export class ApiService {
     });
   }
   public get_introduction_text(intro: Introduction_form): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + 'get_introduction_text', intro, {observe: 'body', responseType: 'json' });
+    return this.http.post<any>(this.FlaskURL + 'introduction/get_introduction_text', intro, {observe: 'body', responseType: 'json' });
   }
   public set_author_introduction_text(intro: Introduction_form): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + 'set_author_introduction_text', intro, {observe: 'response', responseType: 'text' as 'json'});
+    return this.http.post<any>(this.FlaskURL + 'introduction/set_author_introduction_text', intro, {observe: 'response', responseType: 'text' as 'json'});
   }
   public set_title_introduction_text(intro: Introduction_form): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + 'set_title_introduction_text', intro, {observe: 'response', responseType: 'text' as 'json'});
+    return this.http.post<any>(this.FlaskURL + 'introduction/set_title_introduction_text', intro, {observe: 'response', responseType: 'text' as 'json'});
   }
   // Users
   public get_users(user: User): Observable<User[]> {
