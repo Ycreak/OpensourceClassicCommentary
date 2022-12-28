@@ -37,6 +37,7 @@ The frontend is written with Angular and allows the user to interact with the fr
 To install and run the Angular component on your PC, make sure to have [NodeJS](https://nodejs.org/en/) and [NPM](https://www.npmjs.com/) installed on your machine. Next, navigate to the Angular folder and run the following commands in your terminal:
 
 ```console 
+sudo npm install -g @angular/cli
 npm install --save @angular/material @angular/cdk bootstrap jquery
 npm install
 ```
