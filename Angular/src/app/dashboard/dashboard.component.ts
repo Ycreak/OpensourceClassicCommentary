@@ -151,6 +151,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // This is used for prompting the 'must select author first' hint.
   show_select_author_first_hint = false;
+  // This is used for alerting the user that the introduction texts have been saved.
+  show_changes_saved_hint = false;
 
   constructor(
     protected api: ApiService,
@@ -520,6 +522,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     let result = '';
+
+
     request.subscribe({
       next: (data) => {
         result += data;
@@ -529,6 +533,17 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.api.handle_error_message(err);
       }});
     return result;
+  }
+
+  /**
+   * Function to reset the fragment form
+   * @author CptVickers
+   */
+  protected reset_introduction_form(): void {
+    // First, remove all data from the form
+    this.introduction_form_group.reset();
+    // Reset the saved changes hint
+    this.show_changes_saved_hint = false;
   }
   
   /**

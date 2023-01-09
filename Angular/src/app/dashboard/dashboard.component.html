@@ -634,7 +634,7 @@
             (click)="this.selected_introduction_data.selected_fragment_title = '';"
             (click)="this.selected_introduction_data.retrieved_titles = [];"
             
-            (click)="this.introduction_form_group.reset()"
+            (click)="this.reset_introduction_form()"
             (click)="this.update_form_field('introduction_form_group', 'author', author);"
             
             (click)="this.api.request_titles(selected_introduction_data)"
@@ -652,7 +652,7 @@
           <mat-option *ngFor="let title of this.selected_introduction_data.retrieved_titles" [value]="title" 
             (click)="this.selected_introduction_data.selected_fragment_title = title"  
             
-            (click)="this.introduction_form_group.reset()"
+            (click)="this.reset_introduction_form()"
             (click)="this.update_form_field('introduction_form_group', 'author', author);"
             (click)="this.update_form_field('introduction_form_group', 'title', title);"
 
@@ -684,6 +684,7 @@
       <!-- Save button-->
       <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('title_introduction_text')">Rich editor</button>
       <button mat-button class="button-margin-extra confirm-button" (click)="request_save_introduction(this.selected_introduction_data)">Save Changes</button>
+      <mat-label class="mat-label-inline" *ngIf="this.show_changes_saved_hint">Changes saved</mat-label>
       <div class="div-padding-lg"></div>
       <div class="div-padding-sm"></div>
     </form>
