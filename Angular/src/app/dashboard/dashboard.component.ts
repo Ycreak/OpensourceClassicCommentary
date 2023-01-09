@@ -110,7 +110,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   /**
    * This form is used to change the introduction texts for authors and authors+titles
    */
-   introduction_form_group = new FormGroup({
+  introduction_form_group = new FormGroup({
     author: new FormControl('', [
       Validators.required,
       Validators.pattern('[a-zA-Z ]*')
@@ -119,8 +119,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       Validators.required,
       Validators.pattern('[a-zA-Z ]*')
     ]), // alpha characters allowed
-    author_introduction: new FormControl(''),
-    title_introduction: new FormControl(''),
+    author_introduction_text: new FormControl(''),
+    title_introduction_text: new FormControl(''),
   });
 
   /**
@@ -486,8 +486,15 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   public request_introduction(intro: Introduction_form): void {
     this.api.get_introduction_text(intro).subscribe(
       data => {
-        intro.author_introduction_text = data['author_introduction_text'];
-        intro.title_introduction_text = data['title_introduction_text'];
+        if (data){
+          console.log(data)
+          // Store the received introduction data in the form
+          intro.author_introduction_text = data['author_introduction_text'];
+          intro.title_introduction_text = data['title_introduction_text'];
+          // Update the actual form field
+          this.update_form_field('introduction_form_group', 'author_introduction_text', data['author_introduction_text']);
+          this.update_form_field('introduction_form_group', 'title_introduction_text', data['title_introduction_text']);
+        }
       }
     )
   }
