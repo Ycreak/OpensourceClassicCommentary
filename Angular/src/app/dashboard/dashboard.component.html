@@ -613,14 +613,14 @@
         <mat-label>Select author</mat-label>
         <mat-select [(ngModel)]="this.selected_introduction_data.author" ngDefaultControl>
           <mat-option *ngFor="let author of this.selected_introduction_data.retrieved_authors" [value]="author"
-            (click)="this.selected_introduction_data.author = author;"
+            (click)="this.selected_introduction_data.selected_fragment_author = author;"
             
-            (click)="this.selected_introduction_data.title = '';"
+            (click)="this.selected_introduction_data.selected_fragment_title = '';"
             (click)="this.selected_introduction_data.retrieved_titles = [];"
             
-            (click)="this.reset_introduction_form()"
+            (click)="this.introduction_form_group.reset()"
             (click)="this.update_form_field('introduction_form_group', 'author', author);"
-
+            
             (click)="this.api.request_titles(selected_introduction_data)"
             (click)="this.request_introduction(this.selected_introduction_data)"
             
@@ -631,12 +631,12 @@
       </mat-form-field>
       <mat-form-field>
         <mat-label>Select title</mat-label>
-        <mat-select [(ngModel)]="this.selected_introduction_data.title" 
+        <mat-select [(ngModel)]="this.selected_introduction_data.selected_fragment_title" 
           ngDefaultControl (click)="this.show_select_author_first_hint= true;">
           <mat-option *ngFor="let title of this.selected_introduction_data.retrieved_titles" [value]="title" 
-            (click)="this.selected_introduction_data.title = title"  
+            (click)="this.selected_introduction_data.selected_fragment_title = title"  
             
-            (click)="this.reset_introduction_form()"
+            (click)="this.introduction_form_group.reset()"
             (click)="this.update_form_field('introduction_form_group', 'author', author);"
             (click)="this.update_form_field('introduction_form_group', 'title', title);"
 
@@ -645,38 +645,31 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-error class="mat-error-inline" *ngIf="this.show_select_author_first_hint && !this.selected_introduction_data.author">Please select an author first</mat-error>
+      <mat-error class="mat-error-inline" *ngIf="this.show_select_author_first_hint && !this.selected_introduction_data.selected_fragment_author">Please select an author first</mat-error>
 
     <!-- Introduction text with wysiwyg editor -->
-    <form [formGroup]="introduction_form_group
-    ">
+    <form [formGroup]="introduction_form_group">
       <!-- Author introduction text field -->
-      <ng-container *ngIf="this.selected_introduction_data.author">
+      <ng-container *ngIf="this.selected_introduction_data.selected_fragment_author">
         <mat-form-field class="input-form-full-width">
           <mat-label><b>Author introduction</b></mat-label>
-          <textarea matInput type="text" formControlName="author_introduction"></textarea>
+          <textarea matInput type="text" formControlName="author_introduction_text"></textarea>
         </mat-form-field>
-
-        <br>
-        <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('author_introduction')">Rich editor</button>
-        <button mat-button class="button-margin-extra confirm-button" (click)="request_save_introduction('author')">Save Changes</button>
-        <div class="div-padding-lg"></div>
-        <div class="div-padding-sm"></div>
       </ng-container>
       
       <!-- Title introduction text field -->
-      <ng-container *ngIf="this.selected_introduction_data.title">
+      <ng-container *ngIf="this.selected_introduction_data.selected_fragment_title">
         <mat-form-field class="input-form-full-width">
           <mat-label><b>Title introduction</b></mat-label>
-          <textarea matInput type="text" formControlName="title_introduction"></textarea>
+          <textarea matInput type="text" formControlName="title_introduction_text"></textarea>
         </mat-form-field>
-        
-        <br>
-        <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('title_introduction')">Rich editor</button>
-        <button mat-button class="button-margin-extra confirm-button" (click)="request_save_introduction('title')">Save Changes</button>
-        <div class="div-padding-lg"></div>
-        <div class="div-padding-sm"></div>
-      </ng-container>
+      </ng-container><br>
+      
+      <!-- Save button-->
+      <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('title_introduction_text')">Rich editor</button>
+      <button mat-button class="button-margin-extra confirm-button" (click)="request_save_introduction(this.selected_introduction_data)">Save Changes</button>
+      <div class="div-padding-lg"></div>
+      <div class="div-padding-sm"></div>
     </form>
 
     </mat-expansion-panel>
