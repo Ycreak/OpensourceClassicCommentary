@@ -1,12 +1,5 @@
 <!-- Import the stylesheet for the Material icons -->
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<!-- I think this can be removed. -->
-<!-- <script src="vendor/jquery/jquery.min.js"></script> -->
-<!-- <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script> -->
-
-
-<!-- Maybe we should get a local stylesheet? -->
-<!-- <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> -->
 
 <!-- Navigation bar -->
 <mat-toolbar color="primary">
@@ -202,7 +195,7 @@
         <!-- Column with commentary, shown if a fragment from the edition of reference is clicked -->
         <div *ngIf="commentary_enabled" class="col overflow_column">
             <!-- Show either fragment data or the fact that no fragment has been selected yet. -->
-            <div *ngIf="this.fragment_clicked; else no_fragment_clicked">
+            <div *ngIf="this.fragment_utilities.fragment_clicked; else no_fragment_clicked">
                 <!-- Fragment information -->
                 <h5>Selected 
                     <a class='a-void' (click)="this.request_introduction(this.current_fragment.author)">{{this.current_fragment.author}}</a>, <!-- Do not forget the comma and space -->
@@ -214,7 +207,7 @@
             <ng-template #no_fragment_clicked><h5>Click a fragment to show its content.</h5></ng-template>
 
             <!-- Show banner if no commentary available -->
-            <div *ngIf="!this.current_fragment.has_content() && this.fragment_clicked;" class="alert alert-info" role="alert">
+            <div *ngIf="!this.current_fragment.has_content() && this.fragment_utilities.fragment_clicked;" class="alert alert-info" role="alert">
                 No content is available yet for this specific fragment.
             </div>
             
@@ -264,7 +257,7 @@
                     <ng-container *ngFor="let fragment_name of this.playground_handler.playground.fragment_names">
                         <button mat-menu-item
                             (click)="this.playground_handler.playground.fragment_name = fragment_name"
-                            (click)="this.playground_hanlder.add_single_fragment(this.playground_handler.playground, fragment_name)">
+                            (click)="this.playground_handler.add_single_fragment(this.playground_handler.playground, fragment_name)">
                             {{ fragment_name }}
                         </button>
                     </ng-container>
@@ -352,8 +345,8 @@
                     [cdkDragDisabled]="this.settings.fragments.dragging_disabled"
                     (cdkDragDropped)="this.column_handler.track_edited_columns($event)"
                     [attr.id]="fragment.fragment_id"
-                    [style.border-left-color]="this.generate_fragment_gradient_border_color(given_column.fragments.length, given_column.orig_fragment_order.indexOf(fragment.name))"
-                    [style.background-color]="this.generate_fragment_gradient_background_color(given_column.fragments.length, given_column.orig_fragment_order.indexOf(fragment.name))">
+                    [style.border-left-color]="this.generate_fragment_gradient_border_color(given_column.fragments.length, given_column.original_fragment_order.indexOf(fragment.name))"
+                    [style.background-color]="this.generate_fragment_gradient_background_color(given_column.fragments.length, given_column.original_fragment_order.indexOf(fragment.name))">
                     <div *ngIf="this.settings.fragments.show_headers">
                         <b [style.color]="fragment.colour">Fragment {{fragment.name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.title}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
                     </div>

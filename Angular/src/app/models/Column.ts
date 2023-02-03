@@ -48,6 +48,6 @@ export class Column
     new_column : boolean = true;
 
     // Original order of the column fragments
-    orig_fragment_order: string[] = [];
+    original_fragment_order: string[] = [];
 }
 

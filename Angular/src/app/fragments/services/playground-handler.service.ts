@@ -9,6 +9,7 @@ import { Fragment } from '../../models/Fragment';
 
 import { ApiService } from '../../api.service';
 import { UtilityService } from '../../utility.service';
+import { FragmentUtilitiesService } from './fragment-utilities.service';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,7 @@ export class PlaygroundHandlerService {
   constructor(
     private api : ApiService,
     private utility : UtilityService,
+    private fragment_utilities : FragmentUtilitiesService,
   ) { 
 
     // And for the playground
@@ -34,6 +36,7 @@ export class PlaygroundHandlerService {
    * This function allows the playground to delete notes and fragements
    * @param column column from which the deletion is to take place
    * @param item either a note or a fragment needs deletion
+   * @author Ycreak
    */
   private delete_clicked_item_from_playground(column: Column, item: string): void{
     if(item == 'fragment'){
@@ -51,7 +54,8 @@ export class PlaygroundHandlerService {
   }
 
   /**
-   *
+   * @param column to which the fragment is to be added
+   * @author Ycreak
    */
   public add_single_fragment(column: Column): void {
     // format the fragment and push it to the list
@@ -65,8 +69,8 @@ export class PlaygroundHandlerService {
         let fragment_list = this.api.convert_fragment_json_to_typescript(fragments);
         //FIXME: this could be more elegant. But the idea is that we need to add HTML. However,
         // the function add_HTML_to_lines expects a list. This list always has one element.
-        // let html_fragment_list = this.add_HTML_to_lines([fragment_list[0]]);
-        // column.fragments.push(html_fragment_list[0])
+        let html_fragment_list = this.fragment_utilities.add_HTML_to_lines([fragment_list[0]]);
+        column.fragments.push(html_fragment_list[0])
       }
     );
   }

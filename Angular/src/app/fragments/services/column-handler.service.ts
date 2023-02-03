@@ -4,8 +4,8 @@
 import { Injectable } from '@angular/core';
 
 import { Column } from '../../models/Column';
-import { ApiService } from '../../api.service';
 
+import { ApiService } from '../../api.service';
 import { UtilityService } from '../../utility.service';
 
 @Injectable({

@@ -15,6 +15,7 @@ import { UtilityService } from '../utility.service';
 import { AuthService } from '../auth/auth.service';
 import { ColumnHandlerService } from './services/column-handler.service';
 import { PlaygroundHandlerService } from './services/playground-handler.service';
+import { FragmentUtilitiesService } from './services/fragment-utilities.service';
 
 // Model imports
 import { Fragment } from '../models/Fragment';
@@ -43,12 +44,12 @@ export class FragmentsComponent implements OnInit {
   // Toggle switches for the HTML columns/modes
   commentary_enabled: boolean = true;
   playground_enabled: boolean = false;
-  // Global Class Variables with text data corresponding to the front-end text fields.
-  current_fragment: Fragment; // Variable to store the clicked fragment and its data
-  fragment_clicked: boolean = false; // Shows "click a fragment" banner at startup if nothing is yet selected
 
   // Data columns
   commentary_column: Column;
+
+  current_fragment: Fragment; // Variable to store the clicked fragment and its data
+  fragment_clicked: boolean = false; // Shows "click a fragment" banner at startup if nothing is yet selected
 
   constructor(
     protected api: ApiService,
@@ -60,14 +61,15 @@ export class FragmentsComponent implements OnInit {
     private matdialog: MatDialog, 
     protected column_handler: ColumnHandlerService,
     protected playground_handler: PlaygroundHandlerService,
+    protected fragment_utilities: FragmentUtilitiesService,
   ) { }
 
   ngOnInit(): void {
     // Create an empty current_fragment variable to be filled whenever the user clicks a fragment
-    // Its data is shown in the commentary column and not used anywhere else
     this.current_fragment = new Fragment({});
+    // Create a commentary column (deprecated -> can be replaced by simple linked_fragments list)
     this.commentary_column = new Column({column_id:'255'});
-
+    // Create the first column and push it to the columns list
     this.column_handler.columns.push(
       new Column({
         column_id:'1', 
@@ -76,7 +78,6 @@ export class FragmentsComponent implements OnInit {
         selected_fragment_editor:'TRF'
       })
     );
-
     // Request data for this first/default column
     let first_column : Column = this.column_handler.columns.find(i => i.column_id === '1');
     this.request_fragments(first_column);
@@ -109,16 +110,16 @@ export class FragmentsComponent implements OnInit {
         //TODO: can this be done automatically within the API?
         let fragment_list = this.api.convert_fragment_json_to_typescript(data);
         // Format the data just how we want it
-        fragment_list = this.add_HTML_to_lines(fragment_list);
+        fragment_list = this.fragment_utilities.add_HTML_to_lines(fragment_list);
         fragment_list = fragment_list.sort(this.utility.sort_fragment_array_numerically);
-        fragment_list = this.sort_fragments_on_status(fragment_list);
+        fragment_list = this.fragment_utilities.sort_fragments_on_status(fragment_list);
         // Store the formatted data at the correct place
         if(column.type != 'playground'){
           column.fragments = fragment_list;
           // Store the original order of the fragments in the column object
-          column.orig_fragment_order = []; // Clear first
+          column.original_fragment_order = []; // Clear first
           for (let frag of fragment_list){
-            column.orig_fragment_order.push(frag.name);
+            column.original_fragment_order.push(frag.name);
           }
           // Now check if the column already exists. If so, replace it with the new object.
           if(this.column_handler.columns.length > 0){
@@ -135,21 +136,6 @@ export class FragmentsComponent implements OnInit {
   }
 
   /**
-   * Given the author, title and editor, request the names of the fragments from the server.
-   * @param column that is to be filled with data
-   * @author Ycreak
-   */
-  private request_fragment_names(column: Column): void {
-    this.utility.spinner_on();
-    this.api.get_fragment_names(new Fragment({author:column.selected_fragment_author, title:column.selected_fragment_title, editor:column.selected_fragment_editor})).subscribe(
-      data => {
-        column.fragment_names = data.sort(this.utility.sort_array_numerically);
-        this.utility.spinner_off(); 
-      }
-    );
-  }
-
-  /**
    * Function to handle what happens when an editor is selected in HTML.
    * @param fragment selected by the user
    * @author Ycreak
@@ -158,7 +144,7 @@ export class FragmentsComponent implements OnInit {
     column.edited = false;
     // If we are in the playground, we request fragment names. Else we request fragments.
     if ( column.type == 'playground' ) {
-      this.request_fragment_names(column)
+      this.fragment_utilities.request_fragment_names(column)
     }
     else{
       this.request_fragments(column)
@@ -174,7 +160,7 @@ export class FragmentsComponent implements OnInit {
     // If we are currently dragging a fragment in the playground, we do not want the click even to fire.
     if(!this.playground_handler.playground_dragging){
 
-      this.fragment_clicked = true;   
+      this.fragment_utilities.fragment_clicked = true;   
       this.current_fragment = fragment
         
       // Reset the commentary column and its linked fragments
@@ -191,7 +177,7 @@ export class FragmentsComponent implements OnInit {
         }).subscribe(
           data => {
             let fragment = this.api.convert_fragment_json_to_typescript(data)
-            // and push it to the commentary column(only one fragment in the list, so push the first one)
+            // and push it to the commentary column (only one fragment in the list, so push the first one)
             this.commentary_column.linked_fragments_content.push(fragment[0]) 
             this.utility.spinner_off();
           }
@@ -210,7 +196,7 @@ export class FragmentsComponent implements OnInit {
       this.colour_linked_fragments(fragment)
       // And scroll each column to the linked fragment if requested
       if(!from_playground && this.settings.fragments.auto_scroll_linked_fragments){ 
-        this.scroll_linked_fragments(fragment)
+        this.scroll_to_linked_fragments(fragment)
       }
     }
     else {
@@ -219,17 +205,13 @@ export class FragmentsComponent implements OnInit {
     }
   }
 
-
-
-
-
   /**
    * Given the fragment, this function checks whether its linked fragments appear in the
    * other opened columns. If so, the columns are scrolled to put the linked fragment in view
    * @param fragment object with the linked_fragments field to be examined
    * @author Ycreak
    */
-  private scroll_linked_fragments(fragment: Fragment){
+  private scroll_to_linked_fragments(fragment: Fragment){
     for(let i in fragment.linked_fragments){
       let linked_fragment_id = fragment.linked_fragments[i].linked_fragment_id 
       // Now, for each fragment that is linked, try to find it in the other columns
@@ -293,18 +275,6 @@ export class FragmentsComponent implements OnInit {
   }
 
   /**
-   * This function opens the requested introduction in a dialog
-   * @param requested_introduction string containing the requested introduction
-   * @author Ycreak
-   * @TODO: this should be moved to the server
-   */
-  private request_introduction(requested_introduction: string): void {
-    let new_introduction = new Introductions();
-    let my_introduction = new_introduction.dict[requested_introduction];
-    this.dialog.open_custom_dialog(my_introduction);
-  }
-
-  /**
    * Simple function to toggle the playground column
    * @author Ycreak
    */
@@ -321,53 +291,16 @@ export class FragmentsComponent implements OnInit {
   }
 
   /**
-   * This function adds HTML to the lines of the given array. At the moment,
-   * it converts white space encoding for every applicable line by looping through
-   * all elements in a fragment list.
-   * @param array with fragments as retrieved from the server
-   * @returns updated array with nice HTML formatting included
+   * This function opens the requested introduction in a dialog
+   * @param requested_introduction string containing the requested introduction
    * @author Ycreak
+   * @TODO: this should be moved to the server
    */
-   private add_HTML_to_lines(array: Fragment[]): Fragment[]{        
-    
-    // For each element in the given array
-    for(let fragment in array){
-      // Loop through all fragments      
-      let current_fragment = array[fragment]
-      for(let item in current_fragment.lines){
-        // Loop through all lines of current fragment
-        let line_text = current_fragment.lines[item].text;
-        line_text = this.utility.convert_whitespace_encoding(line_text)
-        // Now push the updated lines to the correct place
-        let updated_lines = {
-          'line_number': current_fragment.lines[item].line_number,
-          'text': line_text,
-        }
-        current_fragment.lines[item] = updated_lines;
-      }
-    }
-    return array
+  private request_introduction(requested_introduction: string): void {
+    let new_introduction = new Introductions();
+    let my_introduction = new_introduction.dict[requested_introduction];
+    this.dialog.open_custom_dialog(my_introduction);
   }
-
-  /**
-   * Sorts the given object of fragments on status. We want to display Certa, followed
-   * by Incerta and Adespota.
-   * @param fragments 
-   * @returns fragments in the order we want
-   * @author Ycreak
-   */    
-  private sort_fragments_on_status(fragments: Fragment[]): Fragment[]{
-    let normal = this.utility.filter_object_on_key(fragments, 'status', "Certum")
-    let incerta = this.utility.filter_object_on_key(fragments, 'status', 'Incertum')
-    let adesp = this.utility.filter_object_on_key(fragments, 'status', 'Adesp.')
-    // Concatenate in the order we want
-    fragments = normal.concat(incerta).concat(adesp)
-    return fragments
-  }
-  
-
-
-
 
   /**
    * Simple function that generates a different left border color 
