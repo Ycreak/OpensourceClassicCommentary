@@ -297,20 +297,6 @@ export class UtilityService {
   //   }
   //   return { top: _y, left: _x };
   // }
-
-  /**
-   * Simple function that retrieves the viewport size
-   * @returns viewport size as integer
-   * @author Ycreak
-   */
-   public retrieve_viewport_size(): number {
-    try {
-      return window.innerWidth
-    } catch (e) {
-      return 1100 // default-ish size
-    }
-  }
-
 }
 
 

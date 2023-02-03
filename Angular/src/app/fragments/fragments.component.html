@@ -12,7 +12,7 @@
 <mat-toolbar color="primary">
     <span style="width: fit-content; transform: translateY(-1px)">
         <h3 
-            *ngIf="this.window_size > 725; else small_title" 
+            *ngIf="this.window_watcher.size > 725; else small_title" 
             class='navbar'>
             Open Source Classics Commentary
         </h3>
@@ -66,7 +66,7 @@
     <button mat-stroked-button 
         class="navbar" 
         [matMenuTriggerFor]="menu">
-            <mat-icon *ngIf="this.window_size > 850" fontIcon="menu"></mat-icon>
+            <mat-icon *ngIf="this.window_watcher.size > 850" fontIcon="menu"></mat-icon>
             MENU
     </button>
 

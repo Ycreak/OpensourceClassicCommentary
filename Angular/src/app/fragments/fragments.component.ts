@@ -2,7 +2,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog'; // Library used for interacting with the page
 import { trigger, transition, style, animate } from '@angular/animations';
-import { fromEvent, Observable, Subscription } from "rxjs";
 
 // Component imports
 import { LoginComponent } from '../login/login.component'
@@ -11,6 +10,7 @@ import { LoginComponent } from '../login/login.component'
 import { ApiService } from '../api.service';
 import { DialogService } from '../services/dialog.service';
 import { SettingsService } from '../services/settings.service';
+import { WindowSizeWatcherService } from '../services/window-watcher.service';
 import { UtilityService } from '../utility.service';
 import { AuthService } from '../auth/auth.service';
 
@@ -38,17 +38,6 @@ import { Introductions } from '../models/Introductions';
 })
 export class FragmentsComponent implements OnInit {
 
-  window_resize_observable$: Observable<Event>
-  window_resize_subscription$: Subscription
-
-  //TODO: this should be system wide
-  // oscc_settings = { 
-  //   dragging_disabled : false, 
-  //   fragment_order_gradient : false,
-  //   auto_scroll_linked_fragments : false,
-  //   show_headers : true, 
-  //   show_line_names : true, 
-  // }; 
 
   // Toggle switches for the HTML columns/modes
   commentary_enabled: boolean = true;
@@ -61,7 +50,6 @@ export class FragmentsComponent implements OnInit {
 
   // Object to store all column data: just an array with column data in the form of fragment columns
   columns: Column[] = [];
-
   // Data columns (mostly for debugging)
   column1: Column;
   column2: Column;
@@ -72,31 +60,22 @@ export class FragmentsComponent implements OnInit {
 
   // We keep track of the number of columns to identify them
   column_identifier: number = 1;
-
   // List of connected columns to allow dragging and dropping between columns
   connected_columns_list: string[] = [];
-
   // Boolean to keep track if we are dragging or clicking a fragment within the playground
   playground_dragging: boolean;
-
-  // Variable to keep track of the window width, used to scale the site for small displays
-  window_size: number;
-
-
-  
+ 
   constructor(
     protected api: ApiService,
     protected utility: UtilityService,
 		protected auth_service: AuthService,
     protected dialog: DialogService,
     protected settings: SettingsService,
+    protected window_watcher: WindowSizeWatcherService,
     private matdialog: MatDialog, 
     ) { }
 
   ngOnInit(): void {
-    // Retrieve the window_size to correctly set the navbar size
-    this.window_size = this.utility.retrieve_viewport_size();    
-
     // Create an empty current_fragment variable to be filled whenever the user clicks a fragment
     // Its data is shown in the commentary column and not used anywhere else
     this.current_fragment = this.utility.create_empty_fragment();
@@ -116,13 +95,6 @@ export class FragmentsComponent implements OnInit {
     this.api.request_authors(this.playground)
     // this.request_fragments(this.playground);
 
-    // Create an observable to check for the changing of window size
-    this.window_resize_observable$ = fromEvent(window, 'resize')
-    this.window_resize_subscription$ = this.window_resize_observable$.subscribe( evt => {
-      // Find the window size. If it is too small, we will abbreviate the title to save space on the navbar
-      this.window_size = this.utility.retrieve_viewport_size();    
-    })
-
     // this.column2 = new Column({column_id:'2', author:'Ennius', title:'Thyestes', editor:'Jocelyn'});
     // this.columns.push(this.column2)
     // this.request_fragments(this.column2);
@@ -133,7 +105,7 @@ export class FragmentsComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.window_resize_subscription$.unsubscribe()
+    this.window_watcher.subscription$.unsubscribe()
   }
 
   //   _____  ______ ____  _    _ ______  _____ _______ _____ 
@@ -542,6 +514,8 @@ export class FragmentsComponent implements OnInit {
 
     console.log('############ ####### ############')
   }
+
+
 
   /**
    * This function adds HTML to the lines of the given array. At the moment,
