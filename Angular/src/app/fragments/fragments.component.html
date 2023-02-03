@@ -345,7 +345,6 @@
                     [cdkDragDisabled]="this.settings.fragments.dragging_disabled"
                     (cdkDragDropped)="this.column_handler.track_edited_columns($event)"
                     [attr.id]="fragment.fragment_id"
-                    [style.border-left-color]="this.generate_fragment_gradient_border_color(given_column.fragments.length, given_column.original_fragment_order.indexOf(fragment.name))"
                     [style.background-color]="this.generate_fragment_gradient_background_color(given_column.fragments.length, given_column.original_fragment_order.indexOf(fragment.name))">
                     <div *ngIf="this.settings.fragments.show_headers">
                         <b [style.color]="fragment.colour">Fragment {{fragment.name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.title}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
