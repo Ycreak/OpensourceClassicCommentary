@@ -13,6 +13,8 @@ import { SettingsService } from '../services/settings.service';
 import { WindowSizeWatcherService } from '../services/window-watcher.service';
 import { UtilityService } from '../utility.service';
 import { AuthService } from '../auth/auth.service';
+import { ColumnHandlerService } from './services/column-handler.service';
+import { PlaygroundHandlerService } from './services/playground-handler.service';
 
 // Model imports
 import { Fragment } from '../models/Fragment';
@@ -45,19 +47,9 @@ export class FragmentsComponent implements OnInit {
   current_fragment: Fragment; // Variable to store the clicked fragment and its data
   fragment_clicked: boolean = false; // Shows "click a fragment" banner at startup if nothing is yet selected
 
-  // Object to store all column data: just an array with column data in the form of fragment columns
-  columns: Column[] = [];
   // Data columns
-  playground: Column;
   commentary_column: Column;
 
-  // We keep track of the number of columns to identify them
-  column_identifier: number = 1;
-  // List of connected columns to allow dragging and dropping between columns
-  connected_columns_list: string[] = [];
-  // Boolean to keep track if we are dragging or clicking a fragment within the playground
-  playground_dragging: boolean;
- 
   constructor(
     protected api: ApiService,
     protected utility: UtilityService,
@@ -66,7 +58,9 @@ export class FragmentsComponent implements OnInit {
     protected settings: SettingsService,
     protected window_watcher: WindowSizeWatcherService,
     private matdialog: MatDialog, 
-    ) { }
+    protected column_handler: ColumnHandlerService,
+    protected playground_handler: PlaygroundHandlerService,
+  ) { }
 
   ngOnInit(): void {
     // Create an empty current_fragment variable to be filled whenever the user clicks a fragment
@@ -74,7 +68,7 @@ export class FragmentsComponent implements OnInit {
     this.current_fragment = new Fragment({});
     this.commentary_column = new Column({column_id:'255'});
 
-    this.columns.push(
+    this.column_handler.columns.push(
       new Column({
         column_id:'1', 
         selected_fragment_author:'Ennius', 
@@ -84,13 +78,9 @@ export class FragmentsComponent implements OnInit {
     );
 
     // Request data for this first/default column
-    let first_column : Column = this.columns.find(i => i.column_id === '1');
+    let first_column : Column = this.column_handler.columns.find(i => i.column_id === '1');
     this.request_fragments(first_column);
     this.api.request_authors(first_column);
-
-    // And for the playground
-    this.playground = new Column({column_id:'0', type:'playground'});
-    this.api.request_authors(this.playground)
   }
 
   ngOnDestroy() {
@@ -131,8 +121,8 @@ export class FragmentsComponent implements OnInit {
             column.orig_fragment_order.push(frag.name);
           }
           // Now check if the column already exists. If so, replace it with the new object.
-          if(this.columns.length > 0){
-            this.columns[this.columns.findIndex(i => i.column_id === column.column_id)] = column
+          if(this.column_handler.columns.length > 0){
+            this.column_handler.columns[this.column_handler.columns.findIndex(i => i.column_id === column.column_id)] = column
           }
         }
         else{
@@ -140,7 +130,6 @@ export class FragmentsComponent implements OnInit {
           column.fragments = column.fragments.concat(fragment_list);
         }
         this.utility.spinner_off(); 
-        
       }
     );  
   }
@@ -156,7 +145,8 @@ export class FragmentsComponent implements OnInit {
       data => {
         column.fragment_names = data.sort(this.utility.sort_array_numerically);
         this.utility.spinner_off(); 
-      });
+      }
+    );
   }
 
   /**
@@ -180,164 +170,58 @@ export class FragmentsComponent implements OnInit {
    * @param fragment selected by the user
    * @author Ycreak
    */
-   private handle_fragment_click(fragment: Fragment, from_playground: boolean = false): void{
-      // If we are currently dragging a fragment in the playground, we do not want the click even to fire.
-      if(!this.playground_dragging){
+  private handle_fragment_click(fragment: Fragment, from_playground: boolean = false): void{
+    // If we are currently dragging a fragment in the playground, we do not want the click even to fire.
+    if(!this.playground_handler.playground_dragging){
 
-        this.fragment_clicked = true;   
-        this.current_fragment = fragment
-          
-        // Reset the commentary column and its linked fragments
-        this.commentary_column.linked_fragments_content = [];
-  
-        // Now retrieve all linked fragments to show their content in the commentary column
-        for(let i in fragment.linked_fragments){          
-          // Request the fragment
-          this.api.get_fragments({
-            author : fragment.linked_fragments[i].author,
-            title : fragment.linked_fragments[i].title,
-            editor : fragment.linked_fragments[i].editor,
-            name : fragment.linked_fragments[i].name
-          }).subscribe(
-            data => {
-              let fragment = this.api.convert_fragment_json_to_typescript(data)
-              // and push it to the commentary column(only one fragment in the list, so push the first one)
-              this.commentary_column.linked_fragments_content.push(fragment[0]) 
-              this.utility.spinner_off();
-            });
-        }
+      this.fragment_clicked = true;   
+      this.current_fragment = fragment
         
-        // The next part handles the colouring of clicked and referenced fragments.
-        // First, restore all fragments to their original black colour when a new fragment is clicked
-        for ( let index in this.columns ) {
-          this.columns[index] = this.colour_fragments_black(this.columns[index])
-        }       
-        this.playground = this.colour_fragments_black(this.playground)
-        // Second, colour the clicked fragment
-        fragment.colour = '#3F51B5';
-        // Lastly, colour the linked fragments
-        this.colour_linked_fragments(fragment)
-        // And scroll each column to the linked fragment if requested
-        if(!from_playground && this.settings.fragments.auto_scroll_linked_fragments){ 
-          this.scroll_linked_fragments(fragment)
-        }
+      // Reset the commentary column and its linked fragments
+      this.commentary_column.linked_fragments_content = [];
+
+      // Now retrieve all linked fragments to show their content in the commentary column
+      for(let i in fragment.linked_fragments){          
+        // Request the fragment
+        this.api.get_fragments({
+          author : fragment.linked_fragments[i].author,
+          title : fragment.linked_fragments[i].title,
+          editor : fragment.linked_fragments[i].editor,
+          name : fragment.linked_fragments[i].name
+        }).subscribe(
+          data => {
+            let fragment = this.api.convert_fragment_json_to_typescript(data)
+            // and push it to the commentary column(only one fragment in the list, so push the first one)
+            this.commentary_column.linked_fragments_content.push(fragment[0]) 
+            this.utility.spinner_off();
+          }
+        );
       }
-      else {
-        // After a drag, make sure to set the dragging boolean on false again
-        this.playground_dragging = false;
+      
+      // The next part handles the colouring of clicked and referenced fragments.
+      // First, restore all fragments to their original black colour when a new fragment is clicked
+      for ( let index in this.column_handler.columns ) {
+        this.column_handler.columns[index] = this.column_handler.colour_fragments_black(this.column_handler.columns[index])
+      }       
+      this.playground_handler.playground = this.column_handler.colour_fragments_black(this.playground_handler.playground)
+      // Second, colour the clicked fragment
+      fragment.colour = '#3F51B5';
+      // Lastly, colour the linked fragments
+      this.colour_linked_fragments(fragment)
+      // And scroll each column to the linked fragment if requested
+      if(!from_playground && this.settings.fragments.auto_scroll_linked_fragments){ 
+        this.scroll_linked_fragments(fragment)
       }
-  }
-
-  /**
-   * Colours all fragment titles black
-   * @param columns: list of columns to be painted black
-   * @author Ycreak
-   */
-  // private colour_fragments_black(columns): Column[] {
-  //   for(let index in columns){
-  //     let fragment_array = columns[index].fragments
-  //     for(let fragment in fragment_array){
-  //       fragment_array[fragment].colour = 'black';
-  //     }       
-  //   }
-  //   return columns   
-  // }
-
-  private colour_fragments_black(column): Column {
-    for(let i in column.fragments){
-      column.fragments[i].colour = 'black';
     }
-    return column
-  }
-
-  /**
-   * This function adds a new column to the columns array
-   * @author Ycreak
-   */
-  protected add_column(): void{
-    //TODO: shall we create a limit? like no more than 25 columns?
-    // First, increment the column_identifier to create a new and unique id
-    this.column_identifier += 1;
-
-    // Create new column with the appropriate name. TODO: create better identifiers than simple integers
-    let new_Column = new Column({column_id:String(this.column_identifier)});
-
-    this.columns.push(new_Column)    
-    this.api.request_authors(new_Column);
-    // And update the connected columns list
-    this.update_connected_columns_list()
-  }
-
-  /**
-   * This function deletes a column from this.columns given its name
-   * @param column_id of column that is to be closed
-   * @author Ycreak
-   */
-  private close_column(column_id): void{
-    const object_index = this.columns.findIndex(object => {
-      return object.column_id === column_id;
-    });    
-    this.columns.splice(object_index, 1);
-    // And update the connected columns list
-    this.update_connected_columns_list()
-  }
-
-  /**
-   * This function moves a column inside this.columns to allow the user to move columns
-   * around on the frontend.
-   * @param column_id of column that is to be moved
-   * @param direction of movement
-   * @author Ycreak
-   */
-   private move_column(column_id, direction): void{
-    // First get the current index of the column we want to move
-    const from_index = this.columns.findIndex(object => {
-      return object.column_id === column_id;
-    });
-    // Next, generate the new index when the column would be moved
-    let to_index = 0;
-    if(direction == 'left'){
-      to_index = from_index - 1;
-    }
-    else{
-      to_index = from_index + 1;
-    }
-    // If this next location is valid, move the column to that location, otherwise do nothing
-    if (to_index >= 0 && to_index < this.columns.length){
-      this.columns = this.utility.move_element_in_array(this.columns, from_index, to_index)
+    else {
+      // After a drag, make sure to set the dragging boolean on false again
+      this.playground_handler.playground_dragging = false;
     }
   }
 
-  /**
-   * This function creates a list of connected columns to allow dragging and dropping
-   * @author Ycreak
-   */
-  private update_connected_columns_list(): void{
-    this.connected_columns_list = [];
-    for (let i of this.columns) {
-      this.connected_columns_list.push(String(i.column_id));
-    };
-  }
 
-  /**
-   * This function allows the playground to delete notes and fragements
-   * @param column column from which the deletion is to take place
-   * @param item either a note or a fragment needs deletion
-   */
-  private delete_clicked_item_from_playground(column: Column, item: string): void{
-    if(item == 'fragment'){
-      const object_index = column.fragments.findIndex(object => {
-        return object._id === column.clicked_fragment._id;
-      });    
-      column.fragments.splice(object_index, 1);
-    }
-    else{ // it is a note
-      const object_index = column.note_array.findIndex(object => {
-        return object === column.clicked_note;
-      });    
-      column.note_array.splice(object_index, 1);
-    }
-  }
+
+
 
   /**
    * Given the fragment, this function checks whether its linked fragments appear in the
@@ -349,9 +233,9 @@ export class FragmentsComponent implements OnInit {
     for(let i in fragment.linked_fragments){
       let linked_fragment_id = fragment.linked_fragments[i].linked_fragment_id 
       // Now, for each fragment that is linked, try to find it in the other columns
-      for(let j in this.columns){
+      for(let j in this.column_handler.columns){
         // in each column, take a look in the fragments array to find the linked fragment
-        let corresponding_fragment = this.columns[j].fragments.find(i => i._id === linked_fragment_id);
+        let corresponding_fragment = this.column_handler.columns[j].fragments.find(i => i._id === linked_fragment_id);
         // move to this fragment if found
         if(corresponding_fragment) {
           // Scroll to the corresponding element in the found column
@@ -371,16 +255,15 @@ export class FragmentsComponent implements OnInit {
     // Loop through all fragments the linked fragments    
     for(let i in fragment.linked_fragments){
       let linked_fragment_id = fragment.linked_fragments[i].linked_fragment_id  
-
       // Now, for each fragment that is linked, try to find it in the other columns
-      for(let j in this.columns){
+      for(let j in this.column_handler.columns){
         // in each column, take a look in the fragments array to find the linked fragment
-        let corresponding_fragment = this.columns[j].fragments.find(i => i._id === linked_fragment_id);
+        let corresponding_fragment = this.column_handler.columns[j].fragments.find(i => i._id === linked_fragment_id);
         // colour it if found
         if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
       }
       // Do the same for the playground
-      let corresponding_fragment = this.playground.fragments.find(i => i._id === linked_fragment_id);
+      let corresponding_fragment = this.playground_handler.playground.fragments.find(i => i._id === linked_fragment_id);
       // colour it if found
       if(corresponding_fragment) corresponding_fragment.colour = '#FF4081';
     }
@@ -407,23 +290,6 @@ export class FragmentsComponent implements OnInit {
         this.settings.fragments.auto_scroll_linked_fragments = result['auto_scroll_linked_fragments'];
       }
     });
-  }
-
-  /**
-   * We keep track of dragging and dropping within or between columns. If an edit occurs,
-   * we set the corresponding fragment_column boolean 'edited' to true.
-   * @param event containing the column identifiers of those that are edited
-   * @author Ycreak
-   * @TODO: what type is 'event'? CdkDragDrop<string[]> does not allow reading.
-   */
-  private track_edited_columns(event: any): void {    
-    // First, find the corresponding columns in this.columns using the column_id that is used
-    // in this.connected_columns_list used by cdkDrag (and encoded in event)
-    let edited_column_1 = this.columns.find(i => i.column_id === event.container.id);
-    let edited_column_2 = this.columns.find(i => i.column_id === event.previousContainer.id);
-    // Next, set the edited flag to true.
-    edited_column_1.edited = true;
-    edited_column_2.edited = true;
   }
 
   /**
@@ -499,20 +365,7 @@ export class FragmentsComponent implements OnInit {
     return fragments
   }
   
-  /**
-   *
-   */
-  private add_single_fragment_to_playground(column: Column): void{ // FIXME: Deprecated?
-    // format the fragment and push it to the list
-    this.api.get_fragments(new Fragment({author:column.selected_fragment_author, title:column.selected_fragment_title, editor:column.selected_fragment_editor, name:column.selected_fragment_name})).subscribe(
-      fragments => {
-        let fragment_list = this.api.convert_fragment_json_to_typescript(fragments);
-        //FIXME: this could be more elegant. But the idea is that we need to add HTML. However,
-        // the function add_HTML_to_lines expects a list. This list always has one element.
-        let html_fragment_list = this.add_HTML_to_lines([fragment_list[0]]);
-        column.fragments.push(html_fragment_list[0])
-      });
-  }
+
 
 
 

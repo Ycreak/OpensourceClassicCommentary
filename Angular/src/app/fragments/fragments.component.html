@@ -91,13 +91,13 @@
 <!-- Secondary toolbar to manage columns -->
 <mat-toolbar class="column-toolbar">    
     <div>
-        <button class='navbar' mat-button (click)="this.add_column()">
+        <button class='navbar' mat-button (click)="this.column_handler.add_new_column()">
             Add column
         </button>  
         | <!-- Separator-->
     </div>
      
-    <ng-container *ngFor="let column_to_display of this.columns">
+    <ng-container *ngFor="let column_to_display of this.column_handler.columns">
         <!-- Checkbox to hide and show columns -->
         <mat-checkbox
             ngDefaultControl [(ngModel)]="column_to_display.visible">
@@ -166,7 +166,10 @@
             <mat-icon>keyboard_arrow_right</mat-icon>
         </button>  
 
-        <button mat-icon-button (click)="close_column(column_to_display.column_id)">
+        <button 
+            mat-icon-button 
+            (click)="this.column_handler.close_column(column_to_display.column_id)"
+        >
             <mat-icon>clear</mat-icon>
         </button>  
 
@@ -187,7 +190,7 @@
 <div class="container-fluid">
 
     <div class="row"> <!-- Row that contains the columns and commentary --> 
-        <div *ngFor="let column_to_display of this.columns" 
+        <div *ngFor="let column_to_display of this.column_handler.columns" 
             class="col overflow_column" 
             [hidden]="!column_to_display.visible" 
             cdkScrollable>
@@ -245,23 +248,23 @@
         <!-- First we display all buttons to control the playground -->
         <div class="row">        
             <!-- The first row contains the edition/fragment selection -->
-            <div class="col-3"> <ng-container *ngTemplateOutlet="select_author;context:{column: this.playground}"></ng-container> </div>
-            <div class="col-3"> <ng-container *ngTemplateOutlet="select_title;context:{column: this.playground}"></ng-container> </div>
-            <div class="col-3"> <ng-container *ngTemplateOutlet="select_editor;context:{column: this.playground}"></ng-container> </div>   
+            <div class="col-3"> <ng-container *ngTemplateOutlet="select_author;context:{column: this.playground_handler.playground}"></ng-container> </div>
+            <div class="col-3"> <ng-container *ngTemplateOutlet="select_title;context:{column: this.playground_handler.playground}"></ng-container> </div>
+            <div class="col-3"> <ng-container *ngTemplateOutlet="select_editor;context:{column: this.playground_handler.playground}"></ng-container> </div>   
             
             <div class="col-3">
                 <button mat-stroked-button 
                     class="button-margin"
                     class="button-margin"
                     [matMenuTriggerFor]="fragment_selection">
-                    {{ this.playground.name }}
+                    {{ this.playground_handler.playground.name }}
                     <mat-icon fontIcon="expand_more" style="float: right"></mat-icon>
                 </button>
                 <mat-menu #fragment_selection="matMenu">
-                    <ng-container *ngFor="let fragment_name of this.playground.fragment_names">
+                    <ng-container *ngFor="let fragment_name of this.playground_handler.playground.fragment_names">
                         <button mat-menu-item
-                            (click)="this.playground.fragment_name = fragment_name"
-                            (click)="add_single_fragment_to_playground(this.playground, fragment_name)">
+                            (click)="this.playground_handler.playground.fragment_name = fragment_name"
+                            (click)="this.playground_hanlder.add_single_fragment(this.playground_handler.playground, fragment_name)">
                             {{ fragment_name }}
                         </button>
                     </ng-container>
@@ -273,10 +276,10 @@
 
         <div class="row">        
             <!-- The second row contains all buttons to control the flow of fragments and notes -->
-            <div class="col-3"> <button mat-stroked-button (click)="this.request_fragments(this.playground)">Add selected edition</button> </div>
-            <div class="col-3"> <button mat-stroked-button color="accent" (click)="this.delete_clicked_item_from_playground(this.playground, 'fragment')">Delete clicked fragment</button> </div>
-            <div class="col-3"> <button mat-stroked-button color="accent" (click)="this.delete_clicked_item_from_playground(this.playground, 'note')">Delete clicked note</button> </div>
-            <div class="col-3"> <button mat-stroked-button color="warn" (click)="this.playground.fragments = []; this.playground.note_array = [];">Clear playground</button> </div>
+            <div class="col-3"> <button mat-stroked-button (click)="this.request_fragments(this.playground_handler.playground)">Add selected edition</button> </div>
+            <div class="col-3"> <button mat-stroked-button color="accent" (click)="this.playground_handler.delete_clicked_item_from_playground(this.playground_handler.playground, 'fragment')">Delete clicked fragment</button> </div>
+            <div class="col-3"> <button mat-stroked-button color="accent" (click)="this.playground_handler.delete_clicked_item_from_playground(this.playground_handler.playground, 'note')">Delete clicked note</button> </div>
+            <div class="col-3"> <button mat-stroked-button color="warn" (click)="this.playground_handler.playground.fragments = []; this.playground_handler.playground.note_array = [];">Clear playground</button> </div>
         </div>
         
         <div class="div-padding-lg"></div>
@@ -285,7 +288,7 @@
             <div mat-dialog-content class="col-6">
                 <mat-form-field class="input-form" style="--width: 100%;">
                     <input matInput placeholder="Add a note" ngDefaultControl [(ngModel)]='note'>
-                    <button type="button" mat-icon-button matSuffix (click)="this.playground.note_array = this.utility.push_to_array(note, this.playground.note_array)">
+                    <button type="button" mat-icon-button matSuffix (click)="this.playground_handler.playground.note_array = this.utility.push_to_array(note, this.playground_handler.playground.note_array)">
                         <mat-icon>{{'add'}}</mat-icon>
                     </button>
                     <mat-hint>To organise your edition</mat-hint>
@@ -295,19 +298,19 @@
 
         <hr>
         <!-- For loop to print all the notes -->
-        <div *ngFor="let note of this.playground.note_array" class="note zlayer" style="--layer: 3;" (click)="this.playground.clicked_note = note" cdkDrag>
+        <div *ngFor="let note of this.playground_handler.playground.note_array" class="note zlayer" style="--layer: 3;" (click)="this.playground_handler.playground.clicked_note = note" cdkDrag>
             {{note}}
         </div>
         <!-- For loop to print all the base selected fragments -->
         <!-- Recording the clicked fragment allows us to delete it when pressing the delete button -->
         <!-- Also, keep track whether we are dragging or not. If we drag, we do not want the click event to fire -->
-        <div *ngFor="let fragment of this.playground.fragments" 
+        <div *ngFor="let fragment of this.playground_handler.playground.fragments" 
             class="playground zlayer" 
             style="--layer: 2;" 
             cdkDrag 
-            (cdkDragStarted)="this.playground_dragging = true"
+            (cdkDragStarted)="this.playground_handler.playground_dragging = true"
             (click)="this.handle_fragment_click(fragment, true)"
-            (click)="this.playground.clicked_fragment = fragment">
+            (click)="this.playground_handler.playground.clicked_fragment = fragment">
             
             <div *ngIf="this.settings.fragments.show_headers"><b [style.color]="fragment.colour">Fragment {{fragment.name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.title}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i></div>
 
@@ -341,13 +344,13 @@
         <!-- Columns are connected via the cdkDropListConnectedTo property. -->
         <div cdkDropList id="{{given_column.column_id}}" 
             [cdkDropListData]="given_column.fragments" 
-            [cdkDropListConnectedTo]="connected_columns_list" 
+            [cdkDropListConnectedTo]="this.column_handler.connected_columns_list" 
             (cdkDropListDropped)="this.utility.drop($event)">
             <div *ngFor="let fragment of given_column.fragments">
                 <div class="fragment-box" (click)="handle_fragment_click(fragment)" 
                     cdkDrag
                     [cdkDragDisabled]="this.settings.fragments.dragging_disabled"
-                    (cdkDragDropped)="this.track_edited_columns($event)"
+                    (cdkDragDropped)="this.column_handler.track_edited_columns($event)"
                     [attr.id]="fragment.fragment_id"
                     [style.border-left-color]="this.generate_fragment_gradient_border_color(given_column.fragments.length, given_column.orig_fragment_order.indexOf(fragment.name))"
                     [style.background-color]="this.generate_fragment_gradient_background_color(given_column.fragments.length, given_column.orig_fragment_order.indexOf(fragment.name))">
