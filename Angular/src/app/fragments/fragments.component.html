@@ -309,10 +309,10 @@
             (click)="this.handle_fragment_click(fragment, true)"
             (click)="this.playground.clicked_fragment = fragment">
             
-            <div *ngIf="this.oscc_settings.show_headers"><b [style.color]="fragment.colour">Fragment {{fragment.name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.title}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i></div>
+            <div *ngIf="this.settings.fragments.show_headers"><b [style.color]="fragment.colour">Fragment {{fragment.name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.title}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i></div>
 
             <div *ngFor="let fragment_line of fragment.lines">           
-                <p *ngIf="this.oscc_settings.show_line_names; else no_line_names_playground" [innerHTML]="fragment_line.line_number + ': ' + fragment_line.text | safeHtml"></p>
+                <p *ngIf="this.settings.fragments.show_line_names; else no_line_names_playground" [innerHTML]="fragment_line.line_number + ': ' + fragment_line.text | safeHtml"></p>
                 <ng-template #no_line_names_playground>
                     <!--safeHtml to allow whitespaces made by spans-->
                     <p [innerHTML]="fragment_line.text | safeHtml"></p>
@@ -346,16 +346,16 @@
             <div *ngFor="let fragment of given_column.fragments">
                 <div class="fragment-box" (click)="handle_fragment_click(fragment)" 
                     cdkDrag
-                    [cdkDragDisabled]="this.oscc_settings.dragging_disabled"
+                    [cdkDragDisabled]="this.settings.fragments.dragging_disabled"
                     (cdkDragDropped)="this.track_edited_columns($event)"
                     [attr.id]="fragment.fragment_id"
                     [style.border-left-color]="this.generate_fragment_gradient_border_color(given_column.fragments.length, given_column.orig_fragment_order.indexOf(fragment.name))"
                     [style.background-color]="this.generate_fragment_gradient_background_color(given_column.fragments.length, given_column.orig_fragment_order.indexOf(fragment.name))">
-                    <div *ngIf="this.oscc_settings.show_headers">
+                    <div *ngIf="this.settings.fragments.show_headers">
                         <b [style.color]="fragment.colour">Fragment {{fragment.name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.title}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
                     </div>
                     <div *ngFor="let fragment_line of fragment.lines">      
-                        <p *ngIf="this.oscc_settings.show_line_names; else no_line_names" [innerHTML]="fragment_line.line_number + ': ' + fragment_line.text | safeHtml"></p>
+                        <p *ngIf="this.settings.fragments.show_line_names; else no_line_names" [innerHTML]="fragment_line.line_number + ': ' + fragment_line.text | safeHtml"></p>
                         <ng-template #no_line_names>
                             <!--safeHtml to allow whitespaces made by spans-->
                             <p [innerHTML]="fragment_line.text | safeHtml"></p>

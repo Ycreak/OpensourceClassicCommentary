@@ -10,6 +10,7 @@ import { LoginComponent } from '../login/login.component'
 // Service imports
 import { ApiService } from '../api.service';
 import { DialogService } from '../services/dialog.service';
+import { SettingsService } from '../services/settings.service';
 import { UtilityService } from '../utility.service';
 import { AuthService } from '../auth/auth.service';
 
@@ -41,13 +42,13 @@ export class FragmentsComponent implements OnInit {
   window_resize_subscription$: Subscription
 
   //TODO: this should be system wide
-  oscc_settings = { 
-    dragging_disabled : false, 
-    fragment_order_gradient : false,
-    auto_scroll_linked_fragments : false,
-    show_headers : true, 
-    show_line_names : true, 
-  }; 
+  // oscc_settings = { 
+  //   dragging_disabled : false, 
+  //   fragment_order_gradient : false,
+  //   auto_scroll_linked_fragments : false,
+  //   show_headers : true, 
+  //   show_line_names : true, 
+  // }; 
 
   // Toggle switches for the HTML columns/modes
   commentary_enabled: boolean = true;
@@ -62,7 +63,7 @@ export class FragmentsComponent implements OnInit {
   // Object to store all column data: just an array with column data in the form of fragment columns
   columns: Column[] = [];
 
-  // Data columns
+  // Data columns (mostly for debugging)
   column1: Column;
   column2: Column;
   column3: Column;
@@ -89,6 +90,7 @@ export class FragmentsComponent implements OnInit {
     protected utility: UtilityService,
 		protected auth_service: AuthService,
     protected dialog: DialogService,
+    protected settings: SettingsService,
     private matdialog: MatDialog, 
     ) { }
 
@@ -257,7 +259,7 @@ export class FragmentsComponent implements OnInit {
         // Lastly, colour the linked fragments
         this.colour_linked_fragments(fragment)
         
-        if(!from_playground && this.oscc_settings.auto_scroll_linked_fragments){ // Only scroll when not in playground
+        if(!from_playground && this.settings.fragments.auto_scroll_linked_fragments){ // Only scroll when not in playground
           this.scroll_linked_fragments(fragment)
         }
       }
@@ -434,11 +436,11 @@ export class FragmentsComponent implements OnInit {
    * @author Ycreak
    */
   public open_settings(): void {
-    this.dialog.open_settings_dialog(this.oscc_settings).subscribe((result) => {
+    this.dialog.open_settings_dialog(this.settings.fragments).subscribe((result) => {
       if ( result ) {
-        this.oscc_settings.dragging_disabled = result['dragging_disabled'];
-        this.oscc_settings.fragment_order_gradient = result['fragment_order_gradient'];
-        this.oscc_settings.auto_scroll_linked_fragments = result['auto_scroll_linked_fragments'];
+        this.settings.fragments.dragging_disabled = result['dragging_disabled'];
+        this.settings.fragments.fragment_order_gradient = result['fragment_order_gradient'];
+        this.settings.fragments.auto_scroll_linked_fragments = result['auto_scroll_linked_fragments'];
       }
     });
   }
@@ -620,7 +622,7 @@ export class FragmentsComponent implements OnInit {
 
     private generate_fragment_gradient_border_color(n_fragments: number, fragment_index: number){
       // console.log(this.oscc_settings.fragment_order_gradient);
-      if (this.oscc_settings.fragment_order_gradient == true){
+      if (this.settings.fragments.fragment_order_gradient == true){
         let max_brightness: number = 100;
         let min_brightness: number = 20;
         let max_brightness_diff: number = 40;
@@ -654,7 +656,7 @@ export class FragmentsComponent implements OnInit {
 
     private generate_fragment_gradient_background_color(n_fragments: number, fragment_index: number){
       // console.log(this.oscc_settings.fragment_order_gradient);
-      if (this.oscc_settings.fragment_order_gradient == true){
+      if (this.settings.fragments.fragment_order_gradient == true){
         let max_brightness: number = 100;
         let min_brightness: number = 80;
         let max_brightness_diff: number = 10;
