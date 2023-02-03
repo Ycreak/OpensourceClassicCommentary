@@ -27,7 +27,7 @@
     <button mat-stroked-button 
         class="navbar" 
         *ngIf="this.auth_service.current_user_name == 'Lucus'"
-        (click)="test('0')">
+        (click)="this.utility.test('0')">
             TEST
     </button>
     

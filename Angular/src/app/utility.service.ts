@@ -278,6 +278,16 @@ export class UtilityService {
   //   }
   //   return { top: _y, left: _x };
   // }
+  /**
+   * Test function
+   * @author Ycreak
+   */  
+  private test(thing): void{
+    console.log('############ TESTING ############')
+    console.log(thing);
+    console.log('############ ####### ############')
+  }
+
 }
 
 
