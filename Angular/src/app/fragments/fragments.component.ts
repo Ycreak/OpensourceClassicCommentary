@@ -153,14 +153,12 @@ export class FragmentsComponent implements OnInit {
     );  
   }
 
-
-
   /**
    * Given the author, title and editor, request the names of the fragments from the server.
    * @param column that is to be filled with data
    * @author Ycreak
    */
-   private request_fragment_names(column: Column): void {
+  private request_fragment_names(column: Column): void {
     this.utility.spinner_on();
     this.api.get_fragment_names(new Fragment({author:column.selected_fragment_author, title:column.selected_fragment_title, editor:column.selected_fragment_editor})).subscribe(
       data => {
@@ -184,8 +182,6 @@ export class FragmentsComponent implements OnInit {
       this.request_fragments(column)
     }
   }
-
-
 
   /**
    * Function to handle what happens when a fragment is selected in HTML.
@@ -221,13 +217,16 @@ export class FragmentsComponent implements OnInit {
         
         // The next part handles the colouring of clicked and referenced fragments.
         // First, restore all fragments to their original black colour when a new fragment is clicked
-        this.colour_fragments_black()
+        for ( let index in this.columns ) {
+          this.columns[index] = this.colour_fragments_black(this.columns[index])
+        }       
+        this.playground = this.colour_fragments_black(this.playground)
         // Second, colour the clicked fragment
         fragment.colour = '#3F51B5';
         // Lastly, colour the linked fragments
         this.colour_linked_fragments(fragment)
-        
-        if(!from_playground && this.settings.fragments.auto_scroll_linked_fragments){ // Only scroll when not in playground
+        // And scroll each column to the linked fragment if requested
+        if(!from_playground && this.settings.fragments.auto_scroll_linked_fragments){ 
           this.scroll_linked_fragments(fragment)
         }
       }
@@ -239,19 +238,24 @@ export class FragmentsComponent implements OnInit {
 
   /**
    * Colours all fragment titles black
+   * @param columns: list of columns to be painted black
    * @author Ycreak
    */
-  private colour_fragments_black(): void{
-    for(let index in this.columns){
-      let fragment_array = this.columns[index].fragments
-      for(let fragment in fragment_array){
-        fragment_array[fragment].colour = 'black';
-      }       
+  // private colour_fragments_black(columns): Column[] {
+  //   for(let index in columns){
+  //     let fragment_array = columns[index].fragments
+  //     for(let fragment in fragment_array){
+  //       fragment_array[fragment].colour = 'black';
+  //     }       
+  //   }
+  //   return columns   
+  // }
+
+  private colour_fragments_black(column): Column {
+    for(let i in column.fragments){
+      column.fragments[i].colour = 'black';
     }
-		// Do the same for the playground
-    for(let i in this.playground.fragments){
-      this.playground.fragments[i].colour = 'black';
-    }   
+    return column
   }
 
   /**
@@ -457,62 +461,6 @@ export class FragmentsComponent implements OnInit {
   private toggle_commentary(): void {
     this.commentary_enabled = !this.commentary_enabled;
   }
-
-  /**
-   * Test function
-   * @author Ycreak
-   */  
-  private test(thing): void{
-    console.log('############ TESTING ############')
-    console.log(this.commentary_column);
-
-    // console.log(this.columns[thing.container.id])
-    // console.log(this.columns[thing.previousContainer.id])
-    // this.utility.spinner_on()
-    // console.log('coord X: ' + (thing.layerX - thing.offsetX))
-    // console.log('coord Y: ' + (thing.layerY - thing.offsetY))
-
-    // for (let i in this.playground.fragments){
-    //   let fragment_id = this.playground.fragments[i].fragment_id
-    //   let element = document.getElementById(fragment_id)
-    //   let rect = element.getBoundingClientRect();
-    //   console.log(fragment_id, rect.top, rect.right, rect.bottom, rect.left);
-    // }
-
-    
-
-    // let box = document.getElementById('233cabdf0f5144d78b82849c8aada6da')
-    // box.style.top = '358px';
-    // box.style.left = '808px';
-
-    // let x = this.get_offset( document.getElementById(thing) ); 
-
-    // console.log(box)
-
-    // this.column2 = new Column(2, 'ETR', 'Ennius', 'Thyestes', 'Ribbeck');
-    // this.columns.push(this.column2)
-    // this.request_authors(this.column2)
-    // this.request_fragments(this.column2);
-    
-    // this.update_connected_columns_list();
-    // this.column3 = new Column(3, 'ETJ', 'Ennius', 'Thyestes', 'Jocelyn');
-    // this.column4 = new Column(4, 'ETV', 'Ennius', 'Thyestes', 'Vahlen');    
-    
-    // this.columns.push(this.column3)
-    // this.columns.push(this.column4)
-
-    // this.request_authors(this.column3)
-    // this.request_authors(this.column4)
-
-
-    // this.request_fragments(this.column3);
-    // this.request_fragments(this.column4);
-
-
-    console.log('############ ####### ############')
-  }
-
-
 
   /**
    * This function adds HTML to the lines of the given array. At the moment,
