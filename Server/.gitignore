@@ -1,5 +1,6 @@
 # Project-specific
 server_credentials.py
+config.py
 
 #Folders
 server_backups
