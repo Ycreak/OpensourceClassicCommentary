@@ -47,11 +47,7 @@ export class FragmentsComponent implements OnInit {
 
   // Object to store all column data: just an array with column data in the form of fragment columns
   columns: Column[] = [];
-  // Data columns (mostly for debugging)
-  column1: Column;
-  column2: Column;
-  column3: Column;
-  column4: Column;
+  // Data columns
   playground: Column;
   commentary_column: Column;
 
@@ -78,27 +74,23 @@ export class FragmentsComponent implements OnInit {
     this.current_fragment = new Fragment({});
     this.commentary_column = new Column({column_id:'255'});
 
-    // Create templates for the possible fragment columns
-    this.column1 = new Column({column_id:'1', selected_fragment_author:'Ennius', selected_fragment_title:'Thyestes', selected_fragment_editor:'TRF'});
-    // Push these to the columns array for later use in the HTML component
-    this.columns.push(this.column1)
-    // Request the fragments for the first column
-    this.request_fragments(this.column1);
-    this.api.request_authors(this.column1);
-    // this.column1.author = 'Ennius'
-    
+    this.columns.push(
+      new Column({
+        column_id:'1', 
+        selected_fragment_author:'Ennius', 
+        selected_fragment_title:'Thyestes', 
+        selected_fragment_editor:'TRF'
+      })
+    );
+
+    // Request data for this first/default column
+    let first_column : Column = this.columns.find(i => i.column_id === '1');
+    this.request_fragments(first_column);
+    this.api.request_authors(first_column);
+
     // And for the playground
     this.playground = new Column({column_id:'0', type:'playground'});
     this.api.request_authors(this.playground)
-    // this.request_fragments(this.playground);
-
-    // this.column2 = new Column({column_id:'2', author:'Ennius', title:'Thyestes', editor:'Jocelyn'});
-    // this.columns.push(this.column2)
-    // this.request_fragments(this.column2);
-    // this.api.request_authors(this.column2);
-    // this.column_identifier += 1;
-    // this.update_connected_columns_list();
-
   }
 
   ngOnDestroy() {
