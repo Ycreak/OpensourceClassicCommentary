@@ -77,10 +77,6 @@
     <div mat-menu-item>V22.11.16</div>
 </mat-menu>
 
-<!-- Loading spinner to show data is being retrieved from the server -->
-<mat-toolbar *ngIf="this.utility.spinner === false" class="progress-toolbar"></mat-toolbar>
-<mat-progress-bar *ngIf="this.utility.spinner" mode="query"></mat-progress-bar>
-
 <!-- Secondary toolbar to manage columns -->
 <mat-toolbar class="column-toolbar">    
     <div>
@@ -171,6 +167,8 @@
     </ng-container>
 </mat-toolbar>
 
+<!-- Loading spinner to show data is being retrieved from the server -->
+<mat-progress-bar *ngIf="this.utility.spinner" mode="query"></mat-progress-bar>
 
 <div class="div-padding-sm"></div>
 
