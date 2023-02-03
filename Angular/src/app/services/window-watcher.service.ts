@@ -18,12 +18,23 @@ export class WindowSizeWatcherService {
   size: number;
 
   constructor() { 
+
+  }
+
+  /**
+   * Initialises the window watcher. Cannot be done in the constructor, as the page is not fully loaded then.
+   * @author Ycreak
+   */
+  public init(initial_size): void {
     // Create an observable to check for the changing of window size
+    this.size = initial_size;
     this.observable$ = fromEvent(window, 'resize')
-    this.subscription$ = this.observable$.subscribe( evt => {
-      // Find the window size. If it is too small, we will abbreviate the title to save space on the navbar
-      this.size = this.retrieve_viewport_size();    
-    })
+    this.subscription$ = this.observable$.subscribe( 
+      evt => {
+        // Find the window size. If it is too small, we will abbreviate the title to save space on the navbar
+        this.size = this.retrieve_viewport_size();
+      }
+    )
   }
 
   /**

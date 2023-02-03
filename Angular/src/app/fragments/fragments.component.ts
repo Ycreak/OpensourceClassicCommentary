@@ -65,6 +65,8 @@ export class FragmentsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    // Create the window watcher for mobile devices  
+    this.window_watcher.init(window.innerWidth);
     // Create an empty current_fragment variable to be filled whenever the user clicks a fragment
     this.current_fragment = new Fragment({});
     // Create a commentary column (deprecated -> can be replaced by simple linked_fragments list)
