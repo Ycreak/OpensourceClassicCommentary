@@ -54,7 +54,6 @@ export class FragmentsComponent implements OnInit {
   commentary_enabled: boolean = true;
   playground_enabled: boolean = false;
   // Booleans for HTML related items
-  spinner: boolean = false; // Boolean to toggle the spinner.
   server_down: boolean = true; // to indicate server failure
   // Global Class Variables with text data corresponding to the front-end text fields.
   current_fragment: Fragment; // Variable to store the clicked fragment and its data
