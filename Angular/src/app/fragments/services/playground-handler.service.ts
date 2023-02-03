@@ -38,7 +38,7 @@ export class PlaygroundHandlerService {
    * @param item either a note or a fragment needs deletion
    * @author Ycreak
    */
-  private delete_clicked_item_from_playground(column: Column, item: string): void{
+  public delete_clicked_item_from_playground(column: Column, item: string): void{
     if(item == 'fragment'){
       const object_index = column.fragments.findIndex(object => {
         return object._id === column.clicked_fragment._id;
