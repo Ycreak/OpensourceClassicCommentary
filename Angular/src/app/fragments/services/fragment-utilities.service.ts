@@ -8,6 +8,7 @@ import { Fragment } from '../../models/Fragment';
 
 import { ApiService } from '../../api.service';
 import { UtilityService } from '../../utility.service';
+import { SettingsService } from '../../services/settings.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,7 @@ export class FragmentUtilitiesService {
   constructor(
     private api : ApiService,
     private utility : UtilityService,
+    protected settings: SettingsService,
   ) { }
 
   /**
@@ -83,5 +85,38 @@ export class FragmentUtilitiesService {
     fragments = normal.concat(incerta).concat(adesp)
     return fragments
   }  
+
+  /**
+   * Simple function that generates a different background color 
+   * for each fragment in a fragment column.
+   * This is to indicate the initial order of the fragments.
+   * 
+   * Each fragment gets a color chosen from a set color
+   * brightness range, though two neighboring fragments can
+   * only have a set difference in brightness.
+   * @param n_fragments The total number of fragments in the column
+   * @param fragment_index The index of the current fragment
+   * @returns: Color as HSL value (presented as string)
+   * @author CptVickers
+   */
+  private generate_fragment_gradient_background_color(n_fragments: number, fragment_index: number){
+    // console.log(this.oscc_settings.fragment_order_gradient);
+    if (this.settings.fragments.fragment_order_gradient == true){
+      let max_brightness: number = 100;
+      let min_brightness: number = 80;
+      let max_brightness_diff: number = 10;
+
+      let brightness_step = (max_brightness - min_brightness)/n_fragments;
+      if (brightness_step > max_brightness_diff){
+        brightness_step = max_brightness_diff;
+      }
+      let calculated_brightness = min_brightness+brightness_step*fragment_index;
+
+      return `HSL(0, 0%, ${calculated_brightness}%)`
+    }
+    else{
+      return 'transparent'
+    }
+  }
 
 }
