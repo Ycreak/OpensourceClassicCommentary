@@ -38,12 +38,9 @@ import { Introductions } from '../models/Introductions';
 })
 export class FragmentsComponent implements OnInit {
 
-
   // Toggle switches for the HTML columns/modes
   commentary_enabled: boolean = true;
   playground_enabled: boolean = false;
-  // Booleans for HTML related items
-  server_down: boolean = true; // to indicate server failure
   // Global Class Variables with text data corresponding to the front-end text fields.
   current_fragment: Fragment; // Variable to store the clicked fragment and its data
   fragment_clicked: boolean = false; // Shows "click a fragment" banner at startup if nothing is yet selected
@@ -78,7 +75,7 @@ export class FragmentsComponent implements OnInit {
   ngOnInit(): void {
     // Create an empty current_fragment variable to be filled whenever the user clicks a fragment
     // Its data is shown in the commentary column and not used anywhere else
-    this.current_fragment = this.utility.create_empty_fragment();
+    this.current_fragment = new Fragment({});
     this.commentary_column = new Column({column_id:'255'});
 
     // Create templates for the possible fragment columns
