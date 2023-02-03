@@ -614,7 +614,7 @@ export class DashboardComponent implements OnInit {
     this.utility.spinner_on();
     
     let item_string = column.selected_fragment_author + ', ' + column.selected_fragment_title;
-    let api_data = this.utility.create_empty_fragment(); 
+    let api_data = new Fragment({}); 
     api_data.author = column.selected_fragment_author; api_data.title = column.selected_fragment_title;
 
     this.dialog.open_confirmation_dialog('Are you sure you want to LINK fragments from this text?', item_string).subscribe(result => {

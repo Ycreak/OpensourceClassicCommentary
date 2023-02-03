@@ -183,25 +183,6 @@ export class UtilityService {
   }
 
   /**
-   * Create an empty fragment to work with
-   * @returns Fragment object that is completely empty
-   * @author Ycreak
-   */
-  public create_empty_fragment(): Fragment {
-    //TODO: there should be a proper javascript way to do this
-    return new Fragment();
-  }
-
-  /**
-   * Create an empty user to work with
-   * @returns user object that is completely empty
-   * @author Ycreak
-   */
-  public create_empty_user(): User {
-    return new User();
-  }
-
-  /**
    * Function to push an item to an array
    * @param item to be pushed
    * @param array to be extended

@@ -60,7 +60,7 @@ export class TestsComponent implements OnInit {
   }
   // Get titles check
   public test_get_titles(): void {
-    let api_data = this.utility.create_empty_fragment();
+    let api_data = new Fragment({});
     api_data.author = 'Ennius'
 
     this.api.get_titles(api_data).subscribe({
