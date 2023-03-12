@@ -22,7 +22,6 @@
 </mat-toolbar>
 
 <!-- Loading spinner to show data is being retrieved from the server -->
-<mat-toolbar *ngIf="this.utility.spinner === false" class="progress-toolbar"></mat-toolbar>
 <mat-progress-bar *ngIf="this.utility.spinner" mode="query"></mat-progress-bar>
 
 <br>

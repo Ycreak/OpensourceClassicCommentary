@@ -76,7 +76,7 @@ export class ColumnHandlerService {
    * @param direction of movement
    * @author Ycreak
    */
-  private move_column(column_id, direction): void{
+  public move_column(column_id, direction): void{
     // First get the current index of the column we want to move
     const from_index = this.columns.findIndex(object => {
       return object.column_id === column_id;

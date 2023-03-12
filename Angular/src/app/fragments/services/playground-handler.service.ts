@@ -57,13 +57,13 @@ export class PlaygroundHandlerService {
    * @param column to which the fragment is to be added
    * @author Ycreak
    */
-  public add_single_fragment(column: Column): void {
+  public add_single_fragment(column: Column, fragment_name: string): void {
     // format the fragment and push it to the list
     this.api.get_fragments(new Fragment({
       author:column.selected_fragment_author,
       title:column.selected_fragment_title, 
       editor:column.selected_fragment_editor, 
-      name:column.selected_fragment_name
+      name:fragment_name
     })).subscribe(
       fragments => {
         let fragment_list = this.api.convert_fragment_json_to_typescript(fragments);

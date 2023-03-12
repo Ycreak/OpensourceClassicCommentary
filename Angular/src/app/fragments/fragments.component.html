@@ -74,7 +74,7 @@
     <button (click)="open_settings()" mat-menu-item>Settings</button>
     <button routerLink="/tests" mat-menu-item *ngIf="this.auth_service.is_logged_in">Unit Tests</button>
     <button (click)="this.dialog.open_about_dialog()" mat-menu-item>About</button>
-    <div mat-menu-item>V22.11.16</div>
+    <div mat-menu-item>V23.03.12</div>
 </mat-menu>
 
 <!-- Secondary toolbar to manage columns -->
@@ -114,9 +114,10 @@
             <ng-container *ngFor="let author of column_to_display.retrieved_authors; let i = index">
                 <button 
                     mat-menu-item 
+                    (menuOpened)="column_to_display.retrieved_titles = []; column_to_display.retrieved_editors = []"
                     (menuOpened)="column_to_display.selected_fragment_title = ''; column_to_display.selected_fragment_editor = '';" 
                     (menuOpened)="column_to_display.selected_fragment_author = author" 
-                    (menuOpened)="this.api.request_titles(column_to_display)" 
+                    (menuOpened)="column_to_display.retrieved_titles = column_to_display.get_titles(author)" 
                     [matMenuTriggerFor]="menu_titles">
                         {{author}}
                 </button>
@@ -127,9 +128,10 @@
             <ng-container *ngFor="let title of column_to_display.retrieved_titles; let i = index">
                 <button 
                     mat-menu-item 
+                    (menuOpened)="column_to_display.retrieved_editors = []"
                     (menuOpened)="column_to_display.selected_fragment_title = '';"
                     (menuOpened)="column_to_display.selected_fragment_title = title" 
-                    (menuOpened)="this.api.request_editors(column_to_display)" 
+                    (menuOpened)="column_to_display.retrieved_editors = column_to_display.get_editors(column_to_display.selected_fragment_author, title)" 
                     [matMenuTriggerFor]="menu_editors">
                     {{title}}
                 </button>
@@ -147,11 +149,11 @@
         </mat-menu>
 
         <!-- Buttons to close columns or to move columns to left and right -->
-        <button mat-icon-button (click)="move_column(column_to_display.column_id, 'left')">
+        <button mat-icon-button (click)="this.column_handler.move_column(column_to_display.column_id, 'left')">
             <mat-icon>keyboard_arrow_left</mat-icon>
         </button>  
 
-        <button mat-icon-button (click)="move_column(column_to_display.column_id, 'right')">
+        <button mat-icon-button (click)="this.column_handler.move_column(column_to_display.column_id, 'right')">
             <mat-icon>keyboard_arrow_right</mat-icon>
         </button>  
 
@@ -196,8 +198,11 @@
             <div *ngIf="this.fragment_utilities.fragment_clicked; else no_fragment_clicked">
                 <!-- Fragment information -->
                 <h5>Selected 
-                    <a class='a-void' (click)="this.request_introduction(this.current_fragment.author)">{{this.current_fragment.author}}</a>, <!-- Do not forget the comma and space -->
-                    <a class='a-void' (click)="this.request_introduction(this.current_fragment.title)">{{this.current_fragment.title}}</a>, 
+                    <!-- TODO: for next release -->
+                    <!-- <a class='a-void' (click)="this.request_introduction(this.current_fragment.author)">{{this.current_fragment.author}}</a>, Do not forget the comma and space -->
+                    <!-- <a class='a-void' (click)="this.request_introduction(this.current_fragment.title)">{{this.current_fragment.title}}</a>,  -->
+                    {{this.current_fragment.author}},
+                    {{this.current_fragment.title}},
                     {{this.current_fragment.editor}}, 
                     {{this.current_fragment.name}}
                 </h5>
@@ -230,7 +235,7 @@
 
 
     <!-- Loading spinner to show data is being retrieved from the server -->
-    <mat-toolbar *ngIf="this.utility.spinner === false" class="progress-toolbar-playground"></mat-toolbar>
+    <!-- <mat-toolbar *ngIf="this.utility.spinner === false" class="progress-toolbar-playground"></mat-toolbar> -->
     <mat-progress-bar *ngIf="this.utility.spinner" mode="query"></mat-progress-bar>
     <!-- Row to show the playground -->
     <hr>

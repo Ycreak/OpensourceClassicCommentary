@@ -72,14 +72,16 @@ export class FragmentsComponent implements OnInit {
     // Create a commentary column (deprecated -> can be replaced by simple linked_fragments list)
     this.commentary_column = new Column({column_id:'255'});
     // Create the first column and push it to the columns list
-    this.column_handler.columns.push(
-      new Column({
-        column_id:'1', 
-        selected_fragment_author:'Ennius', 
-        selected_fragment_title:'Thyestes', 
-        selected_fragment_editor:'TRF'
-      })
-    );
+    if (this.column_handler.columns.length < 1){
+      this.column_handler.columns.push(
+        new Column({
+          column_id:'1', 
+          selected_fragment_author:'Ennius', 
+          selected_fragment_title:'Thyestes', 
+          selected_fragment_editor:'TRF'
+        })
+      );
+    }
     // Request data for this first/default column
     let first_column : Column = this.column_handler.columns.find(i => i.column_id === '1');
     this.request_fragments(first_column);

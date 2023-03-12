@@ -1,7 +1,7 @@
 import couchdb
 
 couch = couchdb.Server('http://admin:yVu4DES8qzajPCy@localhost:5984/')
-db = couch['fragments'] # existing       
+db = couch['fragments_staging'] # existing       
 
 # new_fragment = fragment_empty
 

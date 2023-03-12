@@ -30,9 +30,9 @@ export class ApiService {
   // URL for production
   // FlaskURL: String = 'https://oscc.nolden.biz:5003/'; // For production (https)                                 
   // URL for staging
-  // FlaskURL: String = 'https://oscc.nolden.biz:5004/'; // For staging (https)                                 
+  FlaskURL: String = 'https://oscc.nolden.biz:5004/'; // For staging (https)                                 
   // URL for development
-  FlaskURL: String = 'http://localhost:5003/'; // For deployment (http! not https)                                 
+  // FlaskURL: String = 'http://localhost:5003/'; // For deployment (http! not https)                                 
 
   // NeuralURL: String = 'http://localhost:5002/'; 
   NeuralURL: String = 'https://oscc.nolden.biz:5002/'; 
