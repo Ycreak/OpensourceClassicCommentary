@@ -1,25 +1,22 @@
 /**
- * This service allows the size of windows to be watched. This is used to scale 
+ * This service allows the size of windows to be watched. This is used to scale
  * the interface for mobile devices or smaller screens in general.
  */
 
 import { Injectable } from '@angular/core';
-import { Observable, Subscription, fromEvent } from "rxjs";
+import { Observable, Subscription, fromEvent } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class WindowSizeWatcherService {
-
   // Watcher for window resizing. Used to scale for mobile devices
-  observable$: Observable<Event>
-  subscription$: Subscription
+  observable$: Observable<Event>;
+  subscription$: Subscription;
   // Variable to keep track of the window width, used to scale the site for small displays
   size: number;
 
-  constructor() { 
-
-  }
+  constructor() {}
 
   /**
    * Initialises the window watcher. Cannot be done in the constructor, as the page is not fully loaded then.
@@ -28,13 +25,11 @@ export class WindowSizeWatcherService {
   public init(initial_size): void {
     // Create an observable to check for the changing of window size
     this.size = initial_size;
-    this.observable$ = fromEvent(window, 'resize')
-    this.subscription$ = this.observable$.subscribe( 
-      evt => {
-        // Find the window size. If it is too small, we will abbreviate the title to save space on the navbar
-        this.size = this.retrieve_viewport_size();
-      }
-    )
+    this.observable$ = fromEvent(window, 'resize');
+    this.subscription$ = this.observable$.subscribe((evt) => {
+      // Find the window size. If it is too small, we will abbreviate the title to save space on the navbar
+      this.size = this.retrieve_viewport_size();
+    });
   }
 
   /**
@@ -44,9 +39,9 @@ export class WindowSizeWatcherService {
    */
   private retrieve_viewport_size(): number {
     try {
-      return window.innerWidth
+      return window.innerWidth;
     } catch (e) {
-      return 1100 // default-ish size
+      return 1100; // default-ish size
     }
   }
 }

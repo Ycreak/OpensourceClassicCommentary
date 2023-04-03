@@ -1,41 +1,41 @@
-@use '@angular/material' as mat;
+@use "@angular/material" as mat;
 
 /** Dialogs **/
 mat-dialog-container {
-    width: fit-content !important;
-    height: fit-content !important;
-   }
+  width: fit-content !important;
+  height: fit-content !important;
+}
 
 div.force-dialog-padding {
-    padding: 20px 24px 20px 24px !important;
+  padding: 20px 24px 20px 24px !important;
 }
 
 /* Dialog header */
 div.dialog-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    padding-left: 1em;
-    color: white;
-    background-color: mat.get_color_from_palette(mat.$pink-palette, 'A200');
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-left: 1em;
+  color: white;
+  background-color: mat.get_color_from_palette(mat.$pink-palette, "A200");
 }
 div.dialog-header h2 {
-    font-size: 1.5em;
+  font-size: 1.5em;
 }
 
 div.dialog-header button {
-    display: inline-flex;
-} 
+  display: inline-flex;
+}
 
 // Disable ripple effect on autofocus
-div.dialog-header button:focus { 
-    --mat-mdc-button-persistent-ripple-color: none;
+div.dialog-header button:focus {
+  --mat-mdc-button-persistent-ripple-color: none;
 }
 // Reenables the effect on focus
-div.dialog-header button:hover { 
-    --mat-mdc-button-persistent-ripple-color: black !important;
+div.dialog-header button:hover {
+  --mat-mdc-button-persistent-ripple-color: black !important;
 }
 
 div.dialog-content {
-    margin-bottom: 0.5em;
+  margin-bottom: 0.5em;
 }

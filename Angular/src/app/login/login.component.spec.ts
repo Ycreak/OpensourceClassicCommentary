@@ -9,13 +9,12 @@ describe('LoginComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ LoginComponent ],
+      declarations: [LoginComponent],
       providers: [
-        {provide: MatDialogRef, useValue: {}},
-        {provide: MAT_DIALOG_DATA, useValue: []},
-    ],
-    })
-    .compileComponents();
+        { provide: MatDialogRef, useValue: {} },
+        { provide: MAT_DIALOG_DATA, useValue: [] },
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {

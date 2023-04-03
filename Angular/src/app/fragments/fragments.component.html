@@ -1,172 +1,153 @@
 <!-- Import the stylesheet for the Material icons -->
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 
 <!-- Navigation bar -->
 <mat-toolbar color="primary">
-    <span style="width: fit-content; transform: translateY(-1px)">
-        <h3 
-            *ngIf="this.window_watcher.size > 725; else small_title" 
-            class='navbar'>
-            Open Source Classics Commentary
-        </h3>
-    </span>
+  <span style="width: fit-content; transform: translateY(-1px)">
+    <h3 *ngIf="this.window_watcher.size > 725; else small_title" class="navbar">Open Source Classics Commentary</h3>
+  </span>
 
-    <ng-template #small_title>
-        <h3 class='navbar'>OSCC</h3>
-    </ng-template>
+  <ng-template #small_title>
+    <h3 class="navbar">OSCC</h3>
+  </ng-template>
 
-    <span class="spacer"></span>
-    
-    <button mat-stroked-button 
-        class="navbar" 
-        *ngIf="this.auth_service.current_user_name == 'Lucus'"
-        (click)="this.utility.test('0')">
-            TEST
-    </button>
-    
-    <button mat-stroked-button 
-        *ngIf="!this.commentary_enabled; else commentary_disabled"
-        class="navbar button-margin" 
-        (click)="this.toggle_commentary()">
-            COMMENTARY
-    </button>
+  <span class="spacer"></span>
 
-    <ng-template #commentary_disabled>
-        <button mat-flat-button 
-        color="accent"
-        class="button-margin"
-        (click)="this.toggle_commentary()">
-            COMMENTARY
-        </button>    
-    </ng-template>
+  <button
+    mat-stroked-button
+    class="navbar"
+    *ngIf="this.auth_service.current_user_name == 'Lucus'"
+    (click)="this.utility.test('0')">
+    TEST
+  </button>
 
-    <button mat-stroked-button 
-        *ngIf="!this.playground_enabled; else playground_disabled"
-        class="navbar button-margin" 
-        (click)="this.toggle_playground()">
-            PLAYGROUND
-    </button>
+  <button
+    mat-stroked-button
+    *ngIf="!this.commentary_enabled; else commentary_disabled"
+    class="navbar button-margin"
+    (click)="this.toggle_commentary()">
+    COMMENTARY
+  </button>
 
-    <ng-template #playground_disabled>
-        <button mat-flat-button 
-        class="button-margin"
-        color="accent"
-        (click)="this.toggle_playground()">
-            PLAYGROUND
-        </button>    
-    </ng-template>
+  <ng-template #commentary_disabled>
+    <button mat-flat-button color="accent" class="button-margin" (click)="this.toggle_commentary()">COMMENTARY</button>
+  </ng-template>
 
-    <button mat-stroked-button 
-        class="navbar" 
-        [matMenuTriggerFor]="menu">
-            <mat-icon *ngIf="this.window_watcher.size > 850" fontIcon="menu"></mat-icon>
-            MENU
-    </button>
+  <button
+    mat-stroked-button
+    *ngIf="!this.playground_enabled; else playground_disabled"
+    class="navbar button-margin"
+    (click)="this.toggle_playground()">
+    PLAYGROUND
+  </button>
 
+  <ng-template #playground_disabled>
+    <button mat-flat-button class="button-margin" color="accent" (click)="this.toggle_playground()">PLAYGROUND</button>
+  </ng-template>
+
+  <button mat-stroked-button class="navbar" [matMenuTriggerFor]="menu">
+    <mat-icon *ngIf="this.window_watcher.size > 850" fontIcon="menu"></mat-icon>
+    MENU
+  </button>
 </mat-toolbar>
 
 <!-- Navigation bar menu -->
 <mat-menu #menu="matMenu">
-    <button (click)="login()" mat-menu-item>Login</button>
-    <button mat-menu-item routerLink="/dashboard" *ngIf="this.auth_service.is_logged_in">Dashboard</button>
-    <button mat-menu-item routerLink="/scansion" *ngIf="this.auth_service.is_logged_in">Scansion</button>
-    <a href="https://github.com/Ycreak/OpensourceClassicCommentary/" target='_blank' mat-menu-item>Documentation</a>
-    <button (click)="open_settings()" mat-menu-item>Settings</button>
-    <button routerLink="/tests" mat-menu-item *ngIf="this.auth_service.is_logged_in">Unit Tests</button>
-    <button (click)="this.dialog.open_about_dialog()" mat-menu-item>About</button>
-    <div mat-menu-item>V23.03.12</div>
+  <button (click)="login()" mat-menu-item>Login</button>
+  <button mat-menu-item routerLink="/dashboard" *ngIf="this.auth_service.is_logged_in">Dashboard</button>
+  <button mat-menu-item routerLink="/scansion" *ngIf="this.auth_service.is_logged_in">Scansion</button>
+  <a href="https://github.com/Ycreak/OpensourceClassicCommentary/" target="_blank" mat-menu-item>Documentation</a>
+  <button (click)="open_settings()" mat-menu-item>Settings</button>
+  <button routerLink="/tests" mat-menu-item *ngIf="this.auth_service.is_logged_in">Unit Tests</button>
+  <button (click)="this.dialog.open_about_dialog()" mat-menu-item>About</button>
+  <div mat-menu-item>V23.03.12</div>
 </mat-menu>
 
 <!-- Secondary toolbar to manage columns -->
-<mat-toolbar class="column-toolbar">    
-    <div>
-        <button class='navbar' mat-button (click)="this.column_handler.add_new_column()">
-            Add column
-        </button>  
-        | <!-- Separator-->
-    </div>
-     
-    <ng-container *ngFor="let column_to_display of this.column_handler.columns">
-        <!-- Checkbox to hide and show columns -->
-        <mat-checkbox
-            ngDefaultControl [(ngModel)]="column_to_display.visible">
-        </mat-checkbox>
+<mat-toolbar class="column-toolbar">
+  <div>
+    <button class="navbar" mat-button (click)="this.column_handler.add_new_column()">Add column</button>
+    |
+    <!-- Separator-->
+  </div>
 
-        <!-- Button to select the text -->
-        <button 
-            class='navbar' 
-            mat-button 
-            [matMenuTriggerFor]="menu_authors"
-            (click)="column_to_display.new_column = false">
-            
-            <ng-container *ngIf="column_to_display.new_column; else text_button_clicked">
-                Select Text
-            </ng-container>
+  <ng-container *ngFor="let column_to_display of this.column_handler.columns">
+    <!-- Checkbox to hide and show columns -->
+    <mat-checkbox ngDefaultControl [(ngModel)]="column_to_display.visible"> </mat-checkbox>
 
-            <ng-template #text_button_clicked>
-                {{column_to_display.selected_fragment_author}}-{{column_to_display.selected_fragment_title}}-{{column_to_display.selected_fragment_editor}}
-                <sup *ngIf=column_to_display.edited>altered</sup>
-            </ng-template>
-        </button> 
+    <!-- Button to select the text -->
+    <button class="navbar" mat-button [matMenuTriggerFor]="menu_authors" (click)="column_to_display.new_column = false">
+      <ng-container *ngIf="column_to_display.new_column; else text_button_clicked"> Select Text </ng-container>
 
-        <!-- Nested menu to select author - title - editor. -->
-        <mat-menu #menu_authors="matMenu">
-            <ng-container *ngFor="let author of column_to_display.retrieved_authors; let i = index">
-                <button 
-                    mat-menu-item 
-                    (menuOpened)="column_to_display.retrieved_titles = []; column_to_display.retrieved_editors = []"
-                    (menuOpened)="column_to_display.selected_fragment_title = ''; column_to_display.selected_fragment_editor = '';" 
-                    (menuOpened)="column_to_display.selected_fragment_author = author" 
-                    (menuOpened)="column_to_display.retrieved_titles = column_to_display.get_titles(author)" 
-                    [matMenuTriggerFor]="menu_titles">
-                        {{author}}
-                </button>
-            </ng-container>
-        </mat-menu>
+      <ng-template #text_button_clicked>
+        {{ column_to_display.selected_fragment_author }}-{{ column_to_display.selected_fragment_title }}-{{
+          column_to_display.selected_fragment_editor
+        }}
+        <sup *ngIf="column_to_display.edited">altered</sup>
+      </ng-template>
+    </button>
 
-        <mat-menu #menu_titles="matMenu">
-            <ng-container *ngFor="let title of column_to_display.retrieved_titles; let i = index">
-                <button 
-                    mat-menu-item 
-                    (menuOpened)="column_to_display.retrieved_editors = []"
-                    (menuOpened)="column_to_display.selected_fragment_title = '';"
-                    (menuOpened)="column_to_display.selected_fragment_title = title" 
-                    (menuOpened)="column_to_display.retrieved_editors = column_to_display.get_editors(column_to_display.selected_fragment_author, title)" 
-                    [matMenuTriggerFor]="menu_editors">
-                    {{title}}
-                </button>
-            </ng-container>
-        </mat-menu>
+    <!-- Nested menu to select author - title - editor. -->
+    <mat-menu #menu_authors="matMenu">
+      <ng-container *ngFor="let author of column_to_display.retrieved_authors; let i = index">
+        <button
+          mat-menu-item
+          (menuOpened)="column_to_display.retrieved_titles = []; column_to_display.retrieved_editors = []"
+          (menuOpened)="column_to_display.selected_fragment_title = ''; column_to_display.selected_fragment_editor = ''"
+          (menuOpened)="column_to_display.selected_fragment_author = author"
+          (menuOpened)="column_to_display.retrieved_titles = column_to_display.get_titles(author)"
+          [matMenuTriggerFor]="menu_titles">
+          {{ author }}
+        </button>
+      </ng-container>
+    </mat-menu>
 
-        <mat-menu #menu_editors="matMenu">
-            <ng-container *ngFor="let editor of column_to_display.retrieved_editors; let i = index">
-                <button mat-menu-item
-                    (click)="column_to_display.selected_fragment_editor = editor"
-                    (click)="this.handle_editor_click(column_to_display)">
-                    {{editor}}
-                </button>
-            </ng-container>
-        </mat-menu>
+    <mat-menu #menu_titles="matMenu">
+      <ng-container *ngFor="let title of column_to_display.retrieved_titles; let i = index">
+        <button
+          mat-menu-item
+          (menuOpened)="column_to_display.retrieved_editors = []"
+          (menuOpened)="column_to_display.selected_fragment_title = ''"
+          (menuOpened)="column_to_display.selected_fragment_title = title"
+          (menuOpened)="
+            column_to_display.retrieved_editors = column_to_display.get_editors(
+              column_to_display.selected_fragment_author,
+              title
+            )
+          "
+          [matMenuTriggerFor]="menu_editors">
+          {{ title }}
+        </button>
+      </ng-container>
+    </mat-menu>
 
-        <!-- Buttons to close columns or to move columns to left and right -->
-        <button mat-icon-button (click)="this.column_handler.move_column(column_to_display.column_id, 'left')">
-            <mat-icon>keyboard_arrow_left</mat-icon>
-        </button>  
+    <mat-menu #menu_editors="matMenu">
+      <ng-container *ngFor="let editor of column_to_display.retrieved_editors; let i = index">
+        <button
+          mat-menu-item
+          (click)="column_to_display.selected_fragment_editor = editor"
+          (click)="this.handle_editor_click(column_to_display)">
+          {{ editor }}
+        </button>
+      </ng-container>
+    </mat-menu>
 
-        <button mat-icon-button (click)="this.column_handler.move_column(column_to_display.column_id, 'right')">
-            <mat-icon>keyboard_arrow_right</mat-icon>
-        </button>  
+    <!-- Buttons to close columns or to move columns to left and right -->
+    <button mat-icon-button (click)="this.column_handler.move_column(column_to_display.column_id, 'left')">
+      <mat-icon>keyboard_arrow_left</mat-icon>
+    </button>
 
-        <button 
-            mat-icon-button 
-            (click)="this.column_handler.close_column(column_to_display.column_id)"
-        >
-            <mat-icon>clear</mat-icon>
-        </button>  
+    <button mat-icon-button (click)="this.column_handler.move_column(column_to_display.column_id, 'right')">
+      <mat-icon>keyboard_arrow_right</mat-icon>
+    </button>
 
-        | <!-- Separator-->
+    <button mat-icon-button (click)="this.column_handler.close_column(column_to_display.column_id)">
+      <mat-icon>clear</mat-icon>
+    </button>
 
-    </ng-container>
+    |
+    <!-- Separator-->
+  </ng-container>
 </mat-toolbar>
 
 <!-- Loading spinner to show data is being retrieved from the server -->
@@ -176,267 +157,366 @@
 
 <!-- Display for if server is down -->
 <div *ngIf="this.api.get_network_status() === false" class="alert alert-warning" role="alert" @fadeSlideInOut>
-    Your client cannot connect to the server. Please check if you have the latest version of your browser installed. Furthermore, secured networks like DUWO and Leiden University are known to cause problems. Also, please click <u><a href="https://oscc.lucdh.nl">the following URL</a></u> for the best results. Please contact the administrators if problems are still occuring.
+  Your client cannot connect to the server. Please check if you have the latest version of your browser installed.
+  Furthermore, secured networks like DUWO and Leiden University are known to cause problems. Also, please click
+  <u><a href="https://oscc.lucdh.nl">the following URL</a></u> for the best results. Please contact the administrators
+  if problems are still occuring.
 </div>
 
 <!-- Container for the page. One row per item (commentary, playground, multiplayer, etc.) -->
 <div class="container-fluid">
+  <div class="row">
+    <!-- Row that contains the columns and commentary -->
+    <div
+      *ngFor="let column_to_display of this.column_handler.columns"
+      class="col overflow_column"
+      [hidden]="!column_to_display.visible"
+      cdkScrollable>
+      <ng-container
+        [ngTemplateOutlet]="fragment_column_template"
+        [ngTemplateOutletContext]="{ given_column: column_to_display }">
+      </ng-container>
+    </div>
 
-    <div class="row"> <!-- Row that contains the columns and commentary --> 
-        <div *ngFor="let column_to_display of this.column_handler.columns" 
-            class="col overflow_column" 
-            [hidden]="!column_to_display.visible" 
-            cdkScrollable>
-                <ng-container [ngTemplateOutlet]='fragment_column_template' 
-                    [ngTemplateOutletContext]="{given_column:column_to_display}">
-                </ng-container>
+    <!-- Column with commentary, shown if a fragment from the edition of reference is clicked -->
+    <div *ngIf="commentary_enabled" class="col overflow_column">
+      <!-- Show either fragment data or the fact that no fragment has been selected yet. -->
+      <div *ngIf="this.fragment_utilities.fragment_clicked; else no_fragment_clicked">
+        <!-- Fragment information -->
+        <h5>
+          Selected
+          <!-- TODO: for next release -->
+          <!-- <a class='a-void' (click)="this.request_introduction(this.current_fragment.author)">{{this.current_fragment.author}}</a>, Do not forget the comma and space -->
+          <!-- <a class='a-void' (click)="this.request_introduction(this.current_fragment.title)">{{this.current_fragment.title}}</a>,  -->
+          {{ this.current_fragment.author }}, {{ this.current_fragment.title }}, {{ this.current_fragment.editor }},
+          {{ this.current_fragment.name }}
+        </h5>
+      </div>
+      <ng-template #no_fragment_clicked><h5>Click a fragment to show its content.</h5></ng-template>
+
+      <!-- Show banner if no commentary available -->
+      <div
+        *ngIf="!this.current_fragment.has_content() && this.fragment_utilities.fragment_clicked"
+        class="alert alert-info"
+        role="alert">
+        No content is available yet for this specific fragment.
+      </div>
+
+      <!-- Show the commentary for the clicked fragment -->
+      <div *ngIf="this.current_fragment.has_content()">
+        <ng-container
+          [ngTemplateOutlet]="commentary_column_template"
+          [ngTemplateOutletContext]="{ given_fragment: this.current_fragment }"></ng-container>
+      </div>
+
+      <div *ngFor="let linked_fragment of this.commentary_column.linked_fragments_content">
+        <div *ngIf="linked_fragment.has_content()">
+          <h6>
+            Linked commentary from {{ linked_fragment.author }}, {{ linked_fragment.title }},
+            {{ linked_fragment.editor }}, {{ linked_fragment.name }}
+          </h6>
+          <ng-container
+            [ngTemplateOutlet]="commentary_column_template"
+            [ngTemplateOutletContext]="{ given_fragment: linked_fragment }"></ng-container>
         </div>
+      </div>
+    </div>
+    <!-- <hr> -->
+  </div>
+  <!-- This closes the first row. Other items will be put under this row -->
 
-        <!-- Column with commentary, shown if a fragment from the edition of reference is clicked -->
-        <div *ngIf="commentary_enabled" class="col overflow_column">
-            <!-- Show either fragment data or the fact that no fragment has been selected yet. -->
-            <div *ngIf="this.fragment_utilities.fragment_clicked; else no_fragment_clicked">
-                <!-- Fragment information -->
-                <h5>Selected 
-                    <!-- TODO: for next release -->
-                    <!-- <a class='a-void' (click)="this.request_introduction(this.current_fragment.author)">{{this.current_fragment.author}}</a>, Do not forget the comma and space -->
-                    <!-- <a class='a-void' (click)="this.request_introduction(this.current_fragment.title)">{{this.current_fragment.title}}</a>,  -->
-                    {{this.current_fragment.author}},
-                    {{this.current_fragment.title}},
-                    {{this.current_fragment.editor}}, 
-                    {{this.current_fragment.name}}
-                </h5>
-            </div>
-            <ng-template #no_fragment_clicked><h5>Click a fragment to show its content.</h5></ng-template>
+  <!-- Loading spinner to show data is being retrieved from the server -->
+  <!-- <mat-toolbar *ngIf="this.utility.spinner === false" class="progress-toolbar-playground"></mat-toolbar> -->
+  <mat-progress-bar *ngIf="this.utility.spinner" mode="query"></mat-progress-bar>
+  <!-- Row to show the playground -->
+  <hr />
 
-            <!-- Show banner if no commentary available -->
-            <div *ngIf="!this.current_fragment.has_content() && this.fragment_utilities.fragment_clicked;" class="alert alert-info" role="alert">
-                No content is available yet for this specific fragment.
-            </div>
-            
-            <!-- Show the commentary for the clicked fragment -->
-            <div *ngIf="this.current_fragment.has_content();">
-                <ng-container [ngTemplateOutlet]='commentary_column_template' [ngTemplateOutletContext]="{given_fragment:this.current_fragment}"></ng-container>
-            </div>
-           
-            <div *ngFor="let linked_fragment of this.commentary_column.linked_fragments_content">
-                <div *ngIf="linked_fragment.has_content();">
-                    <h6>Linked commentary from {{linked_fragment.author}}, {{linked_fragment.title}}, 
-                        {{linked_fragment.editor}}, {{linked_fragment.name}}
-                    </h6>
-                    <ng-container [ngTemplateOutlet]='commentary_column_template' [ngTemplateOutletContext]="{given_fragment:linked_fragment}"></ng-container>    
-                </div>
-            </div>
+  <div class="container-fluid playground-height-padding" *ngIf="playground_enabled">
+    <!-- First we display all buttons to control the playground -->
+    <div class="row">
+      <!-- The first row contains the edition/fragment selection -->
+      <div class="col-3">
+        <ng-container
+          *ngTemplateOutlet="select_author; context: { column: this.playground_handler.playground }"></ng-container>
+      </div>
+      <div class="col-3">
+        <ng-container
+          *ngTemplateOutlet="select_title; context: { column: this.playground_handler.playground }"></ng-container>
+      </div>
+      <div class="col-3">
+        <ng-container
+          *ngTemplateOutlet="select_editor; context: { column: this.playground_handler.playground }"></ng-container>
+      </div>
 
-        </div>
-        <!-- <hr> -->
-    </div> <!-- This closes the first row. Other items will be put under this row -->
-    
+      <div class="col-3">
+        <button mat-stroked-button class="button-margin" class="button-margin" [matMenuTriggerFor]="fragment_selection">
+          {{ this.playground_handler.playground.name }}
+          <mat-icon fontIcon="expand_more" style="float: right"></mat-icon>
+        </button>
+        <mat-menu #fragment_selection="matMenu">
+          <ng-container *ngFor="let fragment_name of this.playground_handler.playground.fragment_names">
+            <button
+              mat-menu-item
+              (click)="this.playground_handler.playground.fragment_name = fragment_name"
+              (click)="this.playground_handler.add_single_fragment(this.playground_handler.playground, fragment_name)">
+              {{ fragment_name }}
+            </button>
+          </ng-container>
+        </mat-menu>
+      </div>
+    </div>
 
+    <div class="div-padding-sm"></div>
 
-    <!-- Loading spinner to show data is being retrieved from the server -->
-    <!-- <mat-toolbar *ngIf="this.utility.spinner === false" class="progress-toolbar-playground"></mat-toolbar> -->
-    <mat-progress-bar *ngIf="this.utility.spinner" mode="query"></mat-progress-bar>
-    <!-- Row to show the playground -->
-    <hr>
+    <div class="row">
+      <!-- The second row contains all buttons to control the flow of fragments and notes -->
+      <div class="col-3">
+        <button mat-stroked-button (click)="this.request_fragments(this.playground_handler.playground)">
+          Add selected edition
+        </button>
+      </div>
+      <div class="col-3">
+        <button
+          mat-stroked-button
+          color="accent"
+          (click)="
+            this.playground_handler.delete_clicked_item_from_playground(this.playground_handler.playground, 'fragment')
+          ">
+          Delete clicked fragment
+        </button>
+      </div>
+      <div class="col-3">
+        <button
+          mat-stroked-button
+          color="accent"
+          (click)="
+            this.playground_handler.delete_clicked_item_from_playground(this.playground_handler.playground, 'note')
+          ">
+          Delete clicked note
+        </button>
+      </div>
+      <div class="col-3">
+        <button
+          mat-stroked-button
+          color="warn"
+          (click)="
+            this.playground_handler.playground.fragments = []; this.playground_handler.playground.note_array = []
+          ">
+          Clear playground
+        </button>
+      </div>
+    </div>
 
-    <div class="container-fluid playground-height-padding" *ngIf="playground_enabled">               
-        <!-- First we display all buttons to control the playground -->
-        <div class="row">        
-            <!-- The first row contains the edition/fragment selection -->
-            <div class="col-3"> <ng-container *ngTemplateOutlet="select_author;context:{column: this.playground_handler.playground}"></ng-container> </div>
-            <div class="col-3"> <ng-container *ngTemplateOutlet="select_title;context:{column: this.playground_handler.playground}"></ng-container> </div>
-            <div class="col-3"> <ng-container *ngTemplateOutlet="select_editor;context:{column: this.playground_handler.playground}"></ng-container> </div>   
-            
-            <div class="col-3">
-                <button mat-stroked-button 
-                    class="button-margin"
-                    class="button-margin"
-                    [matMenuTriggerFor]="fragment_selection">
-                    {{ this.playground_handler.playground.name }}
-                    <mat-icon fontIcon="expand_more" style="float: right"></mat-icon>
-                </button>
-                <mat-menu #fragment_selection="matMenu">
-                    <ng-container *ngFor="let fragment_name of this.playground_handler.playground.fragment_names">
-                        <button mat-menu-item
-                            (click)="this.playground_handler.playground.fragment_name = fragment_name"
-                            (click)="this.playground_handler.add_single_fragment(this.playground_handler.playground, fragment_name)">
-                            {{ fragment_name }}
-                        </button>
-                    </ng-container>
-                </mat-menu>                               
-            </div>
-        </div>
+    <div class="div-padding-lg"></div>
+    <!-- Possibility to add a little note -->
+    <div class="row">
+      <div mat-dialog-content class="col-6">
+        <mat-form-field class="input-form" style="--width: 100%">
+          <input matInput placeholder="Add a note" ngDefaultControl [(ngModel)]="note" />
+          <button
+            type="button"
+            mat-icon-button
+            matSuffix
+            (click)="
+              this.playground_handler.playground.note_array = this.utility.push_to_array(
+                note,
+                this.playground_handler.playground.note_array
+              )
+            ">
+            <mat-icon>{{ "add" }}</mat-icon>
+          </button>
+          <mat-hint>To organise your edition</mat-hint>
+        </mat-form-field>
+      </div>
+    </div>
 
-        <div class="div-padding-sm"></div>
+    <hr />
+    <!-- For loop to print all the notes -->
+    <div
+      *ngFor="let note of this.playground_handler.playground.note_array"
+      class="note zlayer"
+      style="--layer: 3"
+      (click)="this.playground_handler.playground.clicked_note = note"
+      cdkDrag>
+      {{ note }}
+    </div>
+    <!-- For loop to print all the base selected fragments -->
+    <!-- Recording the clicked fragment allows us to delete it when pressing the delete button -->
+    <!-- Also, keep track whether we are dragging or not. If we drag, we do not want the click event to fire -->
+    <div
+      *ngFor="let fragment of this.playground_handler.playground.fragments"
+      class="playground zlayer"
+      style="--layer: 2"
+      cdkDrag
+      (cdkDragStarted)="this.playground_handler.playground_dragging = true"
+      (click)="this.handle_fragment_click(fragment, true)"
+      (click)="this.playground_handler.playground.clicked_fragment = fragment">
+      <div *ngIf="this.settings.fragments.show_headers">
+        <b [style.color]="fragment.colour">Fragment {{ fragment.name }} </b> &nbsp;
+        <sup>{{ fragment.author }}, {{ fragment.title }}, {{ fragment.editor }}</sup> &nbsp;
+        <i>{{ fragment.status }}</i>
+      </div>
 
-        <div class="row">        
-            <!-- The second row contains all buttons to control the flow of fragments and notes -->
-            <div class="col-3"> <button mat-stroked-button (click)="this.request_fragments(this.playground_handler.playground)">Add selected edition</button> </div>
-            <div class="col-3"> <button mat-stroked-button color="accent" (click)="this.playground_handler.delete_clicked_item_from_playground(this.playground_handler.playground, 'fragment')">Delete clicked fragment</button> </div>
-            <div class="col-3"> <button mat-stroked-button color="accent" (click)="this.playground_handler.delete_clicked_item_from_playground(this.playground_handler.playground, 'note')">Delete clicked note</button> </div>
-            <div class="col-3"> <button mat-stroked-button color="warn" (click)="this.playground_handler.playground.fragments = []; this.playground_handler.playground.note_array = [];">Clear playground</button> </div>
-        </div>
-        
-        <div class="div-padding-lg"></div>
-        <!-- Possibility to add a little note -->
-        <div class="row">        
-            <div mat-dialog-content class="col-6">
-                <mat-form-field class="input-form" style="--width: 100%;">
-                    <input matInput placeholder="Add a note" ngDefaultControl [(ngModel)]='note'>
-                    <button type="button" mat-icon-button matSuffix (click)="this.playground_handler.playground.note_array = this.utility.push_to_array(note, this.playground_handler.playground.note_array)">
-                        <mat-icon>{{'add'}}</mat-icon>
-                    </button>
-                    <mat-hint>To organise your edition</mat-hint>
-                </mat-form-field>               
-            </div>  
-        </div>
-
-        <hr>
-        <!-- For loop to print all the notes -->
-        <div *ngFor="let note of this.playground_handler.playground.note_array" class="note zlayer" style="--layer: 3;" (click)="this.playground_handler.playground.clicked_note = note" cdkDrag>
-            {{note}}
-        </div>
-        <!-- For loop to print all the base selected fragments -->
-        <!-- Recording the clicked fragment allows us to delete it when pressing the delete button -->
-        <!-- Also, keep track whether we are dragging or not. If we drag, we do not want the click event to fire -->
-        <div *ngFor="let fragment of this.playground_handler.playground.fragments" 
-            class="playground zlayer" 
-            style="--layer: 2;" 
-            cdkDrag 
-            (cdkDragStarted)="this.playground_handler.playground_dragging = true"
-            (click)="this.handle_fragment_click(fragment, true)"
-            (click)="this.playground_handler.playground.clicked_fragment = fragment">
-            
-            <div *ngIf="this.settings.fragments.show_headers"><b [style.color]="fragment.colour">Fragment {{fragment.name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.title}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i></div>
-
-            <div *ngFor="let fragment_line of fragment.lines">           
-                <p *ngIf="this.settings.fragments.show_line_names; else no_line_names_playground" [innerHTML]="fragment_line.line_number + ': ' + fragment_line.text | safeHtml"></p>
-                <ng-template #no_line_names_playground>
-                    <!--safeHtml to allow whitespaces made by spans-->
-                    <p [innerHTML]="fragment_line.text | safeHtml"></p>
-                </ng-template>
-            </div> 
-        </div>
-    </div> <!-- Closes the row -->
+      <div *ngFor="let fragment_line of fragment.lines">
+        <p
+          *ngIf="this.settings.fragments.show_line_names; else no_line_names_playground"
+          [innerHTML]="fragment_line.line_number + ': ' + fragment_line.text | safeHtml"></p>
+        <ng-template #no_line_names_playground>
+          <!--safeHtml to allow whitespaces made by spans-->
+          <p [innerHTML]="fragment_line.text | safeHtml"></p>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+  <!-- Closes the row -->
 </div>
 
 <!-- TEMPLATES -->
 
 <!-- Template for a fragment column -->
-<ng-template #fragment_column_template let-given_column="given_column" let-hint="hint">  
-    
-    <!-- <div class="row"> -->
-        <!--  
+<ng-template #fragment_column_template let-given_column="given_column" let-hint="hint">
+  <!-- <div class="row"> -->
+  <!--  
         <ng-container *ngTemplateOutlet="select_author;context:{column: given_column}"></ng-container>
         <ng-container *ngTemplateOutlet="select_title;context:{column: given_column}"></ng-container>
         <ng-container *ngTemplateOutlet="select_editor;context:{column: given_column}"></ng-container>        -->
-    <!-- </div> -->
+  <!-- </div> -->
 
-    <div class="div-padding-sm"></div>
+  <div class="div-padding-sm"></div>
 
-    <!-- Fragments loop to display all fragments of the chosen edition of reference -->
-    <div class="row">
-        <!-- Columns are connected via the cdkDropListConnectedTo property. -->
-        <div cdkDropList id="{{given_column.column_id}}" 
-            [cdkDropListData]="given_column.fragments" 
-            [cdkDropListConnectedTo]="this.column_handler.connected_columns_list" 
-            (cdkDropListDropped)="this.utility.drop($event)">
-            <div *ngFor="let fragment of given_column.fragments">
-                <div class="fragment-box" (click)="handle_fragment_click(fragment)" 
-                    cdkDrag
-                    [cdkDragDisabled]="this.settings.fragments.dragging_disabled"
-                    (cdkDragDropped)="this.column_handler.track_edited_columns($event)"
-                    [attr.id]="fragment.fragment_id"
-                    [style.background-color]="this.fragment_utilities.generate_fragment_gradient_background_color(given_column.fragments.length, given_column.original_fragment_order.indexOf(fragment.name))">
-                    <div *ngIf="this.settings.fragments.show_headers">
-                        <b [style.color]="fragment.colour">Fragment {{fragment.name}} </b> &nbsp; <sup>{{fragment.author}}, {{fragment.title}}, {{fragment.editor}}</sup> &nbsp; <i>{{fragment.status}}</i>
-                    </div>
-                    <div *ngFor="let fragment_line of fragment.lines">      
-                        <p *ngIf="this.settings.fragments.show_line_names; else no_line_names" [innerHTML]="fragment_line.line_number + ': ' + fragment_line.text | safeHtml"></p>
-                        <ng-template #no_line_names>
-                            <!--safeHtml to allow whitespaces made by spans-->
-                            <p [innerHTML]="fragment_line.text | safeHtml"></p>
-                        </ng-template>
-                    </div>  
-                </div>
-            </div>
-        </div> 
+  <!-- Fragments loop to display all fragments of the chosen edition of reference -->
+  <div class="row">
+    <!-- Columns are connected via the cdkDropListConnectedTo property. -->
+    <div
+      cdkDropList
+      id="{{ given_column.column_id }}"
+      [cdkDropListData]="given_column.fragments"
+      [cdkDropListConnectedTo]="this.column_handler.connected_columns_list"
+      (cdkDropListDropped)="this.utility.drop($event)">
+      <div *ngFor="let fragment of given_column.fragments">
+        <div
+          class="fragment-box"
+          (click)="handle_fragment_click(fragment)"
+          cdkDrag
+          [cdkDragDisabled]="this.settings.fragments.dragging_disabled"
+          (cdkDragDropped)="this.column_handler.track_edited_columns($event)"
+          [attr.id]="fragment.fragment_id"
+          [style.background-color]="
+            this.fragment_utilities.generate_fragment_gradient_background_color(
+              given_column.fragments.length,
+              given_column.original_fragment_order.indexOf(fragment.name)
+            )
+          ">
+          <div *ngIf="this.settings.fragments.show_headers">
+            <b [style.color]="fragment.colour">Fragment {{ fragment.name }} </b> &nbsp;
+            <sup>{{ fragment.author }}, {{ fragment.title }}, {{ fragment.editor }}</sup> &nbsp;
+            <i>{{ fragment.status }}</i>
+          </div>
+          <div *ngFor="let fragment_line of fragment.lines">
+            <p
+              *ngIf="this.settings.fragments.show_line_names; else no_line_names"
+              [innerHTML]="fragment_line.line_number + ': ' + fragment_line.text | safeHtml"></p>
+            <ng-template #no_line_names>
+              <!--safeHtml to allow whitespaces made by spans-->
+              <p [innerHTML]="fragment_line.text | safeHtml"></p>
+            </ng-template>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </ng-template>
 
-<ng-template #commentary_column_template let-given_fragment="given_fragment">  
+<ng-template #commentary_column_template let-given_fragment="given_fragment">
+  <ng-container
+    *ngTemplateOutlet="
+      show_fragment_content;
+      context: { current_fragment_content: given_fragment.translation, title: 'Fragment Translation' }
+    ">
+  </ng-container>
+  <!-- Show the translation of the fragment -->
 
-    <ng-container *ngTemplateOutlet="show_fragment_content;
-        context:{current_fragment_content: given_fragment.translation, title:'Fragment Translation'}">
-    </ng-container> <!-- Show the translation of the fragment -->           
+  <ng-container
+    *ngTemplateOutlet="
+      show_fragment_content;
+      context: { current_fragment_content: given_fragment.apparatus, title: 'Apparatus Criticus' }
+    ">
+  </ng-container>
+  <!-- Show the apparatus criticus of the fragment -->
 
-    <ng-container *ngTemplateOutlet="show_fragment_content;
-        context:{current_fragment_content: given_fragment.apparatus, title:'Apparatus Criticus'}">
-    </ng-container> <!-- Show the apparatus criticus of the fragment -->
+  <ng-container
+    *ngTemplateOutlet="
+      show_fragment_content;
+      context: { current_fragment_content: given_fragment.differences, title: 'Editorial Differences' }
+    ">
+  </ng-container>
+  <!-- Show the fragment differences -->
 
-    <ng-container *ngTemplateOutlet="show_fragment_content;
-        context:{current_fragment_content: given_fragment.differences, title:'Editorial Differences'}">
-    </ng-container> <!-- Show the fragment differences -->
+  <ng-container *ngIf="!this.utility.is_empty_array(given_fragment.context)">
+    <div *ngFor="let current_context of given_fragment.context">
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <b>Citation Context</b>
+          </mat-panel-title>
+          <div>
+            {{ current_context.author }} <i>{{ current_context.location }}</i>
+          </div>
+          <div class="div-padding-sm"></div>
+        </mat-expansion-panel-header>
+        <div class="mat-expansion-panel-content">
+          <div class="mat-expansion-panel-body">
+            <div [innerHTML]="current_context.text"></div>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </div>
+    <hr />
+    <!-- Show all context items for the selected fragment -->
+  </ng-container>
 
-    <ng-container *ngIf="!this.utility.is_empty_array(given_fragment.context)">
-        <div *ngFor="let current_context of given_fragment.context">
-            <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        <b>Citation Context</b>
-                    </mat-panel-title>
-                    <div>{{current_context.author}} <i>{{current_context.location}}</i></div><div class="div-padding-sm"></div>
-                </mat-expansion-panel-header>
-                <div class="mat-expansion-panel-content">
-                    <div class="mat-expansion-panel-body">
-                        <div [innerHTML]="current_context.text"></div>
-                    </div>
-                </div>
-            </mat-expansion-panel>
-        </div><hr> <!-- Show all context items for the selected fragment -->
-    </ng-container>
+  <ng-container
+    *ngTemplateOutlet="
+      show_fragment_content;
+      context: { current_fragment_content: given_fragment.commentary, title: 'Fragment Commentary' }
+    ">
+  </ng-container>
+  <!-- Show the fragment commentary -->
 
-    <ng-container 
-        *ngTemplateOutlet="show_fragment_content;context:{current_fragment_content: given_fragment.commentary, title:'Fragment Commentary'}">
-    </ng-container> <!-- Show the fragment commentary -->
-
-    <ng-container 
-        *ngTemplateOutlet="show_fragment_content;context:{current_fragment_content: given_fragment.reconstruction, title:'Fragment Reconstruction'}">
-    </ng-container> <!-- Show the fragment reconstruction -->
-
+  <ng-container
+    *ngTemplateOutlet="
+      show_fragment_content;
+      context: { current_fragment_content: given_fragment.reconstruction, title: 'Fragment Reconstruction' }
+    ">
+  </ng-container>
+  <!-- Show the fragment reconstruction -->
 </ng-template>
 
 <!-- Template for the select author mat-option field -->
-<ng-template #select_author let-column="column" let-hint="hint">  
-
-    <button mat-stroked-button 
-        class="button-margin"
-        class="button-margin"
-        [matMenuTriggerFor]="author_selection">
-        <div>
-            <span style="vertical-align: middle">{{ column.selected_fragment_author }}</span>
-            <mat-icon fontIcon="expand_more" style="float: right"></mat-icon>
-        </div>
-    </button>
-    <mat-menu #author_selection="matMenu">
+<ng-template #select_author let-column="column" let-hint="hint">
+  <button mat-stroked-button class="button-margin" class="button-margin" [matMenuTriggerFor]="author_selection">
+    <div>
+      <span style="vertical-align: middle">{{ column.selected_fragment_author }}</span>
+      <mat-icon fontIcon="expand_more" style="float: right"></mat-icon>
+    </div>
+  </button>
+  <mat-menu #author_selection="matMenu">
     <ng-container *ngFor="let author of column.retrieved_authors">
-            <button mat-menu-item
-                (click)="column.selected_fragment_author = author"
-                (click)="this.api.request_titles(column)"
-                
-                (click)="column.selected_fragment_title = 'Title'"
-                (click)="column.retrieved_titles = []"
-
-                (click)="column.selected_fragment_editor = 'Editor'"
-                (click)="column.retrieved_editors = []">
-                    {{ author }}
-            </button>
+      <button
+        mat-menu-item
+        (click)="column.selected_fragment_author = author"
+        (click)="this.api.request_titles(column)"
+        (click)="column.selected_fragment_title = 'Title'"
+        (click)="column.retrieved_titles = []"
+        (click)="column.selected_fragment_editor = 'Editor'"
+        (click)="column.retrieved_editors = []">
+        {{ author }}
+      </button>
     </ng-container>
-    </mat-menu>
+  </mat-menu>
 
-    <!-- Deprecated since mat-form-field is so uncooperative now -->
-    <!-- <mat-form-field class="selection-form" appearance="outline">
+  <!-- Deprecated since mat-form-field is so uncooperative now -->
+  <!-- <mat-form-field class="selection-form" appearance="outline">
         <mat-label>Author</mat-label>
         <mat-select>
             <mat-option *ngFor="let author of column.retrieved_authors" [value]="author"
@@ -450,32 +530,28 @@
 </ng-template>
 
 <!-- Template for the select text title mat-option field -->
-<ng-template #select_title let-column="column" let-hint="hint">   
-    
-    <button mat-stroked-button
-        class="button-margin"
-        class="button-margin"
-        [matMenuTriggerFor]="title_selection">
-        <div>
-            <span style="vertical-align: middle">{{ column.selected_fragment_title }}</span>
-            <mat-icon fontIcon="expand_more" style="float: right"></mat-icon>
-        </div>
-    </button>
-    <mat-menu #title_selection="matMenu">
-        <ng-container *ngFor="let title of column.retrieved_titles">
-                <button mat-menu-item
-                    (click)="column.selected_fragment_title = title"
-                    (click)="this.api.request_editors(column)"
-                    
-                    (click)="column.selected_fragment_editor = 'Editor'"
-                    (click)="column.retrieved_editors = []">
-                        {{ title }}
-                </button>
-        </ng-container>
-    </mat-menu>    
-    
-    <!-- Deprecated since mat-form-field is so uncooperative now -->
-    <!-- <mat-form-field class="selection-form">
+<ng-template #select_title let-column="column" let-hint="hint">
+  <button mat-stroked-button class="button-margin" class="button-margin" [matMenuTriggerFor]="title_selection">
+    <div>
+      <span style="vertical-align: middle">{{ column.selected_fragment_title }}</span>
+      <mat-icon fontIcon="expand_more" style="float: right"></mat-icon>
+    </div>
+  </button>
+  <mat-menu #title_selection="matMenu">
+    <ng-container *ngFor="let title of column.retrieved_titles">
+      <button
+        mat-menu-item
+        (click)="column.selected_fragment_title = title"
+        (click)="this.api.request_editors(column)"
+        (click)="column.selected_fragment_editor = 'Editor'"
+        (click)="column.retrieved_editors = []">
+        {{ title }}
+      </button>
+    </ng-container>
+  </mat-menu>
+
+  <!-- Deprecated since mat-form-field is so uncooperative now -->
+  <!-- <mat-form-field class="selection-form">
         <mat-label>Text</mat-label>
         <mat-select>
             <mat-option *ngFor="let title of column.retrieved_titles" [value]="title" 
@@ -489,29 +565,26 @@
 </ng-template>
 
 <!-- Template for the select editor mat-option field -->
-<ng-template #select_editor let-column="column" let-hint="hint">   
-    
-    <button mat-stroked-button
-        class="button-margin" 
-        class="button-margin" 
-        [matMenuTriggerFor]="editor_selection">
-        <div>
-            <span style="vertical-align: middle">{{ column.selected_fragment_editor }}</span>
-            <mat-icon fontIcon="expand_more" style="float: right"></mat-icon>
-        </div>
-    </button>
-    <mat-menu #editor_selection="matMenu">
-        <ng-container *ngFor="let editor of column.retrieved_editors">
-                <button mat-menu-item
-                    (click)="column.selected_fragment_editor = editor"
-                    (click)="this.handle_editor_click(column)">
-                        {{ editor }}
-                </button>
-        </ng-container>
-    </mat-menu>          
-    
-    <!-- Deprecated since mat-form-field is so uncooperative now -->
-    <!-- <mat-form-field class="selection-form">
+<ng-template #select_editor let-column="column" let-hint="hint">
+  <button mat-stroked-button class="button-margin" class="button-margin" [matMenuTriggerFor]="editor_selection">
+    <div>
+      <span style="vertical-align: middle">{{ column.selected_fragment_editor }}</span>
+      <mat-icon fontIcon="expand_more" style="float: right"></mat-icon>
+    </div>
+  </button>
+  <mat-menu #editor_selection="matMenu">
+    <ng-container *ngFor="let editor of column.retrieved_editors">
+      <button
+        mat-menu-item
+        (click)="column.selected_fragment_editor = editor"
+        (click)="this.handle_editor_click(column)">
+        {{ editor }}
+      </button>
+    </ng-container>
+  </mat-menu>
+
+  <!-- Deprecated since mat-form-field is so uncooperative now -->
+  <!-- <mat-form-field class="selection-form">
         <mat-label>Edition</mat-label>
         <ng-container *ngIf="column.name != 'playground'; else playground_editor_select">
             <mat-select>
@@ -539,22 +612,24 @@
         <mat-hint>{{hint}}</mat-hint>
     </mat-form-field> -->
 </ng-template>
-       
+
 <!-- Template to show fragment content from the given fragment in a mat expansion panel -->
-<ng-template #show_fragment_content let-current_fragment_content="current_fragment_content" let-title="title">   
-    <ng-container *ngIf="current_fragment_content != ''"> <!-- do not generate fields if content is empty -->
-        <mat-expansion-panel *ngIf="current_fragment_content">
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    <b>{{title}}</b>
-                </mat-panel-title>
-            </mat-expansion-panel-header>
-            <div class="mat-expansion-panel-content">
-                <div class="mat-expansion-panel-body">
-                    <div [innerHTML]="current_fragment_content"></div>
-                </div>
-            </div>
-        </mat-expansion-panel>
-        <hr> <!-- And add a nice line to separate the fields -->
-    </ng-container>
+<ng-template #show_fragment_content let-current_fragment_content="current_fragment_content" let-title="title">
+  <ng-container *ngIf="current_fragment_content != ''">
+    <!-- do not generate fields if content is empty -->
+    <mat-expansion-panel *ngIf="current_fragment_content">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <b>{{ title }}</b>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div class="mat-expansion-panel-content">
+        <div class="mat-expansion-panel-body">
+          <div [innerHTML]="current_fragment_content"></div>
+        </div>
+      </div>
+    </mat-expansion-panel>
+    <hr />
+    <!-- And add a nice line to separate the fields -->
+  </ng-container>
 </ng-template>

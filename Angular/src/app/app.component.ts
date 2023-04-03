@@ -9,27 +9,23 @@ import { ApiService } from './api.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
   title = 'OpenSourceClassicCommentary';
 
-  constructor(private api: ApiService) {
-
-  }
+  constructor(private api: ApiService) {}
   ngOnInit(): void {
     /*
       Here the basic usage of the api methods (the data logging is just for testing)
     */
-
     // Unit tests
     // this.api.get_authors().subscribe(data => {
     //   if (data.find(e => e.name === 'Ennius')){
     //     console.log('Get authors failed')
     //   }
     // }
-    // ) 
-
+    // )
     // this.api.GetReferencerID(134, 1, 6).subscribe(data => console.log(data));
     // this.api.GetFragments(6).subscribe(data => console.log(data));
     // this.api.GetAuthors().subscribe(data => console.log(data));
@@ -42,7 +38,6 @@ export class AppComponent {
     // this.api.GetApparatus(8).subscribe(data => console.log(data));
     // this.api.GetReconstruction(5).subscribe(data => console.log(data));
     // this.api.GetBooks(7).subscribe(data => console.log(data));
-
     // POST/DELETE/EDIT METHODS
     // this.api.CreateAuthor(new Author(55, 'Job Zwaag')).subscribe();
     // this.api.DeleteAuthor('Job Zwaag').subscribe();

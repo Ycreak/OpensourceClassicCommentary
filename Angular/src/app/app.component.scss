@@ -1,32 +1,37 @@
 /* GENERAL CSS STYLING */
-body, h1, h2, h3 {
-    font-family: "Raleway", sans-serif;
+body,
+h1,
+h2,
+h3 {
+  font-family: "Raleway", sans-serif;
 }
 
-h4, h5, h6 {
-    font-family: "Roboto"; 
-    padding: 0.5em;
+h4,
+h5,
+h6 {
+  font-family: "Roboto";
+  padding: 0.5em;
 }
 
 hr {
-    border : 0;
-    border-top : 1px solid #eee;
-    margin : 20px 0;
-    box-sizing : content-box;
-    height : 0;
-    overflow : visible
-  }
+  border: 0;
+  border-top: 1px solid #eee;
+  margin: 20px 0;
+  box-sizing: content-box;
+  height: 0;
+  overflow: visible;
+}
 
 /* HTML Elements */
 .overflow_column {
-    height: 100vh;
-    overflow: scroll;
+  height: 100vh;
+  overflow: scroll;
 }
 
 .spacer {
-    display: inline-flex;
-    flex: 1 1 auto;
-    width: 1em;
+  display: inline-flex;
+  flex: 1 1 auto;
+  width: 1em;
 }
 
 /*
@@ -37,17 +42,17 @@ div {
 
 // TODO: we can merge these div-padding functions with a variable for the padding amount
 .div-padding {
-    padding: 1em;
+  padding: 1em;
 }
 
 .div-padding-sm {
-    padding: 0.2em;
+  padding: 0.2em;
 }
 
 .div-padding-lg {
-    padding: 0.5em;
+  padding: 0.5em;
 }
-  
+
 /**
 // .checkbox{
 //     background-color: #3F51B5;
@@ -58,21 +63,21 @@ div {
 **/
 
 .navbar {
-    color: white !important;
-  }
+  color: white !important;
+}
 
 /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
 span.mat-button-focus-overlay {
-    width: inherit;
+  width: inherit;
 }
 
 .button-margin {
-    margin: 0.2em;
-} 
+  margin: 0.2em;
+}
 
 .button-margin-extra {
-    margin-left: 10px;
-    margin-right: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 /*
@@ -87,22 +92,22 @@ span.mat-button-focus-overlay {
 
 /** MATERIAL **/
 .mat-mdc-list-item:hover {
-    background-color: #6495ED;
+  background-color: #6495ed;
 }
-  
+
 .mat-mdc-form-field {
-    padding-left: 1em;
-    width: auto;
-    size: 100%;
+  padding-left: 1em;
+  width: auto;
+  size: 100%;
 }
-  
+
 .mat-expansion-panel-header {
-    flex: 1 1 auto;
+  flex: 1 1 auto;
 }
 
 /* Input form related CSS */
-.input-form-full-width { 
-    width: 90%;
+.input-form-full-width {
+  width: 90%;
 }
 
 /*

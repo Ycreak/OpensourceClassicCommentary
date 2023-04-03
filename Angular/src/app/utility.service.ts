@@ -1,35 +1,31 @@
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import {CdkDragDrop, moveItemInArray, transferArrayItem, CdkDragEnd} from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray, transferArrayItem, CdkDragEnd } from '@angular/cdk/drag-drop';
 
-// Model imports 
+// Model imports
 import { Fragment } from './models/Fragment';
 import { User } from './models/User';
 import { Observable } from 'rxjs';
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UtilityService {
-
   spinner: boolean = false;
 
-  constructor(
-    private snackBar: MatSnackBar,
-  ) { }
+  constructor(private snackBar: MatSnackBar) {}
 
   /** Sorts array numerically on fragment number
-  * @param boolean called from array
-  * @param field on which to perform the comparison
-  * @returns sorted array.
-  * @author Ycreak
-  */ 
+   * @param boolean called from array
+   * @param field on which to perform the comparison
+   * @returns sorted array.
+   * @author Ycreak
+   */
   public sort_fragment_array_numerically(a, b) {
     // Sort array via the number element given.
-    // To allow fragments like '350-356' to be ordered.   
-    const A = Number(a.name.split("-", 1));
-    const B = Number(b.name.split("-", 1));
+    // To allow fragments like '350-356' to be ordered.
+    const A = Number(a.name.split('-', 1));
+    const B = Number(b.name.split('-', 1));
 
     let comparison = 0;
     if (A > B) {
@@ -41,16 +37,16 @@ export class UtilityService {
   }
 
   /** Sorts array numerically
-  * @param boolean called from array
-  * @param field on which to perform the comparison
-  * @returns sorted array.
-  * @author Ycreak
-  */ 
-   public sort_array_numerically(a, b) {
+   * @param boolean called from array
+   * @param field on which to perform the comparison
+   * @returns sorted array.
+   * @author Ycreak
+   */
+  public sort_array_numerically(a, b) {
     // Sort array via the number element given.
     // To allow fragments like '350-356' to be ordered.
-    const A = Number(a.split("-", 1));
-    const B = Number(b.split("-", 1));
+    const A = Number(a.split('-', 1));
+    const B = Number(b.split('-', 1));
 
     let comparison = 0;
     if (A > B) {
@@ -61,25 +57,24 @@ export class UtilityService {
     return comparison;
   }
 
-
   /**
    * Takes a string and looks for whitespace decoding. Converts it to html spans
    * @param string that needs whitespaces converted to html spans
    * @returns string with whitespaces converted to html spans
    * @author Ycreak
    */
-  public convert_whitespace_encoding(string: string): string{
+  public convert_whitespace_encoding(string: string): string {
     // Find fish hooks with number in between.
     const matches = string.match(/<(\d+)>/);
     // If found, replace it with the correct whitespace number
     if (matches) {
-        console.log(matches);
-        // Create a span with the number of indents we want. Character level.
-        // matches[0] contains including fish hooks, matches[1] only number
-        let replacement = '<span style="padding-left:' + matches[1] + 'ch;"></span>'
-        string = string.replace(matches[0], replacement);       
-    }  
-    return string
+      console.log(matches);
+      // Create a span with the number of indents we want. Character level.
+      // matches[0] contains including fish hooks, matches[1] only number
+      let replacement = '<span style="padding-left:' + matches[1] + 'ch;"></span>';
+      string = string.replace(matches[0], replacement);
+    }
+    return string;
   }
 
   /**
@@ -90,21 +85,21 @@ export class UtilityService {
    * @returns the filtered array
    * @author Ycreak
    */
-  public filter_object_on_key(array, key, value): Array<any>{
-    let filtered_array = array.filter(obj => {
+  public filter_object_on_key(array, key, value): Array<any> {
+    let filtered_array = array.filter((obj) => {
       return obj[key] === value;
-    })
-    return filtered_array    
-  } 
+    });
+    return filtered_array;
+  }
 
   /**
    * Opens Material popup window with the given message
    * @param message information that is showed in the popup
    * @author Ycreak
    */
-  public open_snackbar(message): void{
+  public open_snackbar(message): void {
     this.snackBar.open(message, 'Close', {
-      duration: 5000
+      duration: 5000,
     });
   }
 
@@ -115,59 +110,58 @@ export class UtilityService {
    */
   public handle_error_message(err): void {
     let output = '';
-    
-    console.log(err)
 
-    if (err.ok){
+    console.log(err);
+
+    if (err.ok) {
       output = err.status + ': ' + err.body;
-    }
-    else{
+    } else {
       output = err.status + ': ' + err.error;
-    }    
+    }
     this.open_snackbar(output);
-    this.spinner_off()
+    this.spinner_off();
   }
 
   /**
    * Function that adds a subscribable loading hint to the dashboard component
    * @author CptVickers
    */
-   public get_loading_hint(): Observable<string> {
+  public get_loading_hint(): Observable<string> {
     let loading_hint = new Observable<string>((subscriber) => {
       function f() {
-        subscriber.next("Loading data");
-        setTimeout(function() {subscriber.next("Loading data.")}, 500);
-        setTimeout(function() {subscriber.next("Loading data..")}, 1000);
-        setTimeout(function() {subscriber.next("Loading data...")}, 1500);
+        subscriber.next('Loading data');
+        setTimeout(function () {
+          subscriber.next('Loading data.');
+        }, 500);
+        setTimeout(function () {
+          subscriber.next('Loading data..');
+        }, 1000);
+        setTimeout(function () {
+          subscriber.next('Loading data...');
+        }, 1500);
       }
       f();
       const loading_hint_generator = setInterval(f, 2000);
       return function unsubscribe() {
         clearInterval(loading_hint_generator);
         subscriber.complete();
-      }
-    })
-    return loading_hint
+      };
+    });
+    return loading_hint;
   }
-  
+
   /**
    * Allows a fragment to be moved and dropped to create a custom ordering
    * @param event what happens to the column
    * @author Ycreak
    */
   public drop(event: CdkDragDrop<string[]>) {
-    
     // console.log(event)
-    
+
     if (event.container === event.previousContainer) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
-      transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex,
-      );
+      transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
     }
   }
 
@@ -189,7 +183,7 @@ export class UtilityService {
    * @returns new array with item pushed
    * @author Ycreak
    */
-  public push_to_array(item, array): Array<any>{
+  public push_to_array(item, array): Array<any> {
     array.push(item);
     return array;
   }
@@ -200,7 +194,7 @@ export class UtilityService {
    * @returns new array with item popped
    * @author Ycreak
    */
-  public pop_array(array){
+  public pop_array(array) {
     let _ = array.pop();
     return array;
   }
@@ -212,28 +206,26 @@ export class UtilityService {
    * @returns whether obj is an empty json object
    * @author Ycreak, ppbors // Nani?
    */
-   public is_empty(obj: JSON): boolean {
+  public is_empty(obj: JSON): boolean {
     for (var prop in obj) {
-      if (obj.hasOwnProperty(prop))
-        return false;
+      if (obj.hasOwnProperty(prop)) return false;
     }
     return true;
   }
 
   public is_empty_array(array): boolean {
-    if(Array.isArray(array) && array.length){
+    if (Array.isArray(array) && array.length) {
       return false;
-    }
-    else{
+    } else {
       return true;
     }
-  }  
+  }
 
   /**
    * Simple function to toggle the spinner
    * @author Ycreak
    */
-  public toggle_spinner(): void{
+  public toggle_spinner(): void {
     this.spinner = !this.spinner;
   }
 
@@ -241,7 +233,7 @@ export class UtilityService {
    * Simple function to toggle the spinner
    * @author Ycreak
    */
-  public spinner_on(): void{
+  public spinner_on(): void {
     this.spinner = true;
   }
 
@@ -249,8 +241,8 @@ export class UtilityService {
    * Simple function to toggle the spinner
    * @author Ycreak
    */
-     public spinner_off(): void{
-      this.spinner = false;
+  public spinner_off(): void {
+    this.spinner = false;
   }
 
   /**
@@ -265,7 +257,7 @@ export class UtilityService {
     var element = arr[from_index];
     arr.splice(from_index, 1);
     arr.splice(to_index, 0, element);
-    return arr
+    return arr;
   }
 
   // private get_offset( el ) {
@@ -281,13 +273,10 @@ export class UtilityService {
   /**
    * Test function
    * @author Ycreak
-   */  
-  private test(thing): void{
-    console.log('############ TESTING ############')
+   */
+  private test(thing): void {
+    console.log('############ TESTING ############');
     console.log(thing);
-    console.log('############ ####### ############')
+    console.log('############ ####### ############');
   }
-
 }
-
-

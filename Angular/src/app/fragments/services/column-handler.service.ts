@@ -9,10 +9,9 @@ import { ApiService } from '../../api.service';
 import { UtilityService } from '../../utility.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ColumnHandlerService {
-
   // We keep track of the number of columns to identify them
   column_identifier: number = 1;
   // List of connected columns to allow dragging and dropping between columns
@@ -21,10 +20,7 @@ export class ColumnHandlerService {
   // Object to store all column data: just an array with column data in the form of fragment columns
   columns: Column[] = [];
 
-  constructor(
-    private api : ApiService,
-    private utility : UtilityService,
-  ) { }
+  constructor(private api: ApiService, private utility: UtilityService) {}
 
   /**
    * Colours all fragment titles black
@@ -32,10 +28,10 @@ export class ColumnHandlerService {
    * @author Ycreak
    */
   public colour_fragments_black(column): Column {
-    for(let i in column.fragments){
+    for (let i in column.fragments) {
       column.fragments[i].colour = 'black';
     }
-    return column
+    return column;
   }
 
   /**
@@ -47,12 +43,12 @@ export class ColumnHandlerService {
     // First, increment the column_identifier to create a new and unique id
     this.column_identifier += 1;
     // Create new column with the appropriate name. TODO: create better identifiers than simple integers
-    let new_column = new Column( { column_id : String( this.column_identifier ) } );
-    this.columns.push(new_column)    
+    let new_column = new Column({ column_id: String(this.column_identifier) });
+    this.columns.push(new_column);
     // Request authors for this new column
     this.api.request_authors(new_column);
     // And update the connected columns list
-    this.connected_columns_list = this.update_connected_columns_list(this.columns)
+    this.connected_columns_list = this.update_connected_columns_list(this.columns);
   }
 
   /**
@@ -60,15 +56,15 @@ export class ColumnHandlerService {
    * @param column_id of column that is to be closed
    * @author Ycreak
    */
-  public close_column(column_id : string): void {
-    const object_index = this.columns.findIndex(object => {
+  public close_column(column_id: string): void {
+    const object_index = this.columns.findIndex((object) => {
       return object.column_id === column_id;
-    });    
+    });
     this.columns.splice(object_index, 1);
     // And update the connected columns list
-    this.connected_columns_list = this.update_connected_columns_list(this.columns)
+    this.connected_columns_list = this.update_connected_columns_list(this.columns);
   }
-  
+
   /**
    * This function moves a column inside this.columns to allow the user to move columns
    * around on the frontend.
@@ -76,22 +72,21 @@ export class ColumnHandlerService {
    * @param direction of movement
    * @author Ycreak
    */
-  public move_column(column_id, direction): void{
+  public move_column(column_id, direction): void {
     // First get the current index of the column we want to move
-    const from_index = this.columns.findIndex(object => {
+    const from_index = this.columns.findIndex((object) => {
       return object.column_id === column_id;
     });
     // Next, generate the new index when the column would be moved
     let to_index = 0;
-    if(direction == 'left'){
+    if (direction == 'left') {
       to_index = from_index - 1;
-    }
-    else{
+    } else {
       to_index = from_index + 1;
     }
     // If this next location is valid, move the column to that location, otherwise do nothing
-    if (to_index >= 0 && to_index < this.columns.length){
-      this.columns = this.utility.move_element_in_array(this.columns, from_index, to_index)
+    if (to_index >= 0 && to_index < this.columns.length) {
+      this.columns = this.utility.move_element_in_array(this.columns, from_index, to_index);
     }
   }
 
@@ -102,11 +97,11 @@ export class ColumnHandlerService {
    * @author Ycreak
    * @TODO: what type is 'event'? CdkDragDrop<string[]> does not allow reading.
    */
-  private track_edited_columns(event: any): void {    
+  private track_edited_columns(event: any): void {
     // First, find the corresponding columns in this.columns using the column_id that is used
     // in this.connected_columns_list used by cdkDrag (and encoded in event)
-    let edited_column_1 = this.columns.find(i => i.column_id === event.container.id);
-    let edited_column_2 = this.columns.find(i => i.column_id === event.previousContainer.id);
+    let edited_column_1 = this.columns.find((i) => i.column_id === event.container.id);
+    let edited_column_2 = this.columns.find((i) => i.column_id === event.previousContainer.id);
     // Next, set the edited flag to true.
     edited_column_1.edited = true;
     edited_column_2.edited = true;
@@ -116,14 +111,11 @@ export class ColumnHandlerService {
    * This function creates a list of connected columns to allow dragging and dropping
    * @author Ycreak
    */
-  private update_connected_columns_list(columns : Column[]): string[] {
-    let connected_columns_list : string[] = [];
+  private update_connected_columns_list(columns: Column[]): string[] {
+    let connected_columns_list: string[] = [];
     for (let i of columns) {
       connected_columns_list.push(String(i.column_id));
-    };
-    return connected_columns_list
+    }
+    return connected_columns_list;
   }
-  
-
-
 }

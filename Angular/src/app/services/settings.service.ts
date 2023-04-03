@@ -7,18 +7,16 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SettingsService {
+  fragments = {
+    dragging_disabled: false,
+    fragment_order_gradient: false,
+    auto_scroll_linked_fragments: false,
+    show_headers: true,
+    show_line_names: true,
+  };
 
-  fragments = { 
-    dragging_disabled : false, 
-    fragment_order_gradient : false,
-    auto_scroll_linked_fragments : false,
-    show_headers : true, 
-    show_line_names : true, 
-  }; 
-
-  constructor() { 
-  }
+  constructor() {}
 }

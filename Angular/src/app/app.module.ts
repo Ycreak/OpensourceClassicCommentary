@@ -1,26 +1,26 @@
-//      ___           ___           ___           ___     
-//     /  /\         /  /\         /  /\         /  /\    
-//    /  /::\       /  /:/_       /  /:/        /  /:/    
-//   /  /:/\:\     /  /:/ /\     /  /:/        /  /:/     
-//  /  /:/  \:\   /  /:/ /::\   /  /:/  ___   /  /:/  ___ 
+//      ___           ___           ___           ___
+//     /  /\         /  /\         /  /\         /  /\
+//    /  /::\       /  /:/_       /  /:/        /  /:/
+//   /  /:/\:\     /  /:/ /\     /  /:/        /  /:/
+//  /  /:/  \:\   /  /:/ /::\   /  /:/  ___   /  /:/  ___
 // /__/:/ \__\:\ /__/:/ /:/\:\ /__/:/  /  /\ /__/:/  /  /\
 // \  \:\ /  /:/ \  \:\/:/~/:/ \  \:\ /  /:/ \  \:\ /  /:/
-//  \  \:\  /:/   \  \::/ /:/   \  \:\  /:/   \  \:\  /:/ 
-//   \  \:\/:/     \__\/ /:/     \  \:\/:/     \  \:\/:/  
-//    \  \::/        /__/:/       \  \::/       \  \::/   
-//     \__\/         \__\/         \__\/         \__\/    
-//  _   _       _     _            
-// | \ | | ___ | | __| | ___ _ __  
-// |  \| |/ _ \| |/ _` |/ _ \ '_ \ 
+//  \  \:\  /:/   \  \::/ /:/   \  \:\  /:/   \  \:\  /:/
+//   \  \:\/:/     \__\/ /:/     \  \:\/:/     \  \:\/:/
+//    \  \::/        /__/:/       \  \::/       \  \::/
+//     \__\/         \__\/         \__\/         \__\/
+//  _   _       _     _
+// | \ | | ___ | | __| | ___ _ __
+// |  \| |/ _ \| |/ _` |/ _ \ '_ \
 // | |\  | (_) | | (_| |  __/ | | |
 // |_| \_|\___/|_|\__,_|\___|_| |_|
-//                                
-//  ____                 
-// | __ )  ___  _ __ ___ 
+//
+//  ____
+// | __ )  ___  _ __ ___
 // |  _ \ / _ \| '__/ __|
 // | |_) | (_) | |  \__ \
 // |____/ \___/|_|  |___/
-                      
+
 // Library Imports
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -53,34 +53,34 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorInterceptor } from './api.service';
 
 // Material Imports
-import {MatFormFieldModule} from '@angular/material/form-field'; 
-import {MatSelectModule} from '@angular/material/select'; 
-import {MatSortModule} from '@angular/material/sort';
-import {MatListModule} from '@angular/material/list'; 
-import {MatProgressBarModule} from '@angular/material/progress-bar'; 
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'; 
-import {MatExpansionModule} from '@angular/material/expansion';
-import {MatTabsModule} from '@angular/material/tabs';  
-import {MatDialogModule} from '@angular/material/dialog'; 
-import {MatMenuModule} from '@angular/material/menu';
-import {MatInputModule} from '@angular/material/input';
-import {MatButtonModule} from '@angular/material/button';
-import {MatToolbarModule} from '@angular/material/toolbar'; 
-import {MatSnackBarModule} from '@angular/material/snack-bar';
-import {MatSlideToggleModule} from '@angular/material/slide-toggle'; 
-import {MatCheckboxModule} from '@angular/material/checkbox';
-import {MatRadioModule} from '@angular/material/radio';  
-import {MatIconModule} from '@angular/material/icon'; 
-import {MatTooltipModule} from '@angular/material/tooltip'; 
-import {MatTableModule} from '@angular/material/table'; 
-import {MatGridListModule} from '@angular/material/grid-list'; 
-import {MatAutocompleteModule} from '@angular/material/autocomplete';
-import {MatButtonToggleModule} from '@angular/material/button-toggle';
-import {MatPaginatorModule} from '@angular/material/paginator'; 
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSortModule } from '@angular/material/sort';
+import { MatListModule } from '@angular/material/list';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTableModule } from '@angular/material/table';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatPaginatorModule } from '@angular/material/paginator';
 // Allows copying to clipboard
-import {ClipboardModule} from '@angular/cdk/clipboard';
-import { QuillModule } from 'ngx-quill'
-// import { TextComponent } from './text/text.component'; 
+import { ClipboardModule } from '@angular/cdk/clipboard';
+import { QuillModule } from 'ngx-quill';
+// import { TextComponent } from './text/text.component';
 
 // Allows a virtual keyboard
 // import { IKeyboardLayouts, keyboardLayouts, MAT_KEYBOARD_LAYOUTS, MatKeyboardModule } from '@efaps/angular-onscreen-material-keyboard';
@@ -90,6 +90,7 @@ import { QuillModule } from 'ngx-quill'
 import { environment } from '../environments/environment';
 import { ScansionComponent } from './scansion/scansion.component';
 import { TestsComponent } from './tests/tests.component';
+import { PlaygroundComponent } from './playground/playground.component';
 
 // Virtual Keyboard Layout
 // const customLayouts: IKeyboardLayouts = {
@@ -105,7 +106,7 @@ import { TestsComponent } from './tests/tests.component';
 //         ['-', '-'],
 //         ['⏑', '⏑'],
 //         ['⏓', '⏒'],
-//         ['⏕', '⏔'],  
+//         ['⏕', '⏔'],
 //       ]
 //     ],
 //     'lang': ['OSCC']
@@ -114,14 +115,14 @@ import { TestsComponent } from './tests/tests.component';
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
-  {path: '', component: FragmentsComponent},
-  {path: 'fragments', component: FragmentsComponent},
+  { path: '', component: FragmentsComponent },
+  { path: 'fragments', component: FragmentsComponent },
   // {path: 'text', component: TextComponent},
-  {path: 'tests', component: TestsComponent, canActivate: [AuthGuard]},
-  {path: 'scansion', component: ScansionComponent, canActivate: [AuthGuard]},
-  {path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
-  {path: '**', redirectTo: ''}
-]
+  { path: 'tests', component: TestsComponent, canActivate: [AuthGuard] },
+  { path: 'scansion', component: ScansionComponent, canActivate: [AuthGuard] },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
+  { path: '**', redirectTo: '' },
+];
 
 @NgModule({
   declarations: [
@@ -138,8 +139,9 @@ const appRoutes: Routes = [
     SettingsDialog,
     CustomDialog,
     TestsComponent,
+    PlaygroundComponent,
     // DialogContentComponent,
-    ],
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -190,13 +192,12 @@ const appRoutes: Routes = [
       provide: HTTP_INTERCEPTORS,
       useClass: HttpErrorInterceptor,
       multi: true,
-      
     },
-    // { 
-    //   provide: MatDialogRef, 
+    // {
+    //   provide: MatDialogRef,
     // },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
-export class PipesModule { }
+export class AppModule {}
+export class PipesModule {}
