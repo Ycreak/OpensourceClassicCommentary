@@ -74,6 +74,11 @@ npx prettier --check .
 npx prettier --write .
 ```
 
+To run ESLint:
+```console
+npm run lint
+```
+
 ### Dependencies
 The project aims at using as few dependencies as possible. At the moment, the following dependencies are used:
 + angular-onscreen-material-keyboard : ^0.4.0
