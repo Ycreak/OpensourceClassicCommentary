@@ -60,6 +60,20 @@ ncu -u
 npm install
 ```
 
+The project also uses Prettier and ESLint for better code practises and easier cooperation between programmers.
+
+```console
+npm install --save-dev --save-exact prettier
+
+
+```
+
+To run Prettier:
+```console
+npx prettier --check .
+npx prettier --write .
+```
+
 ### Dependencies
 The project aims at using as few dependencies as possible. At the moment, the following dependencies are used:
 + angular-onscreen-material-keyboard : ^0.4.0
