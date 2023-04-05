@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, ReplaySubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 // Service imports
@@ -33,6 +33,9 @@ export class ApiService {
 
   // NeuralURL: String = 'http://localhost:5002/';
   NeuralURL: String = 'https://oscc.nolden.biz:5002/';
+
+  public new_fragment_alert = new ReplaySubject(0);
+
 
   /**
    * Getter function for public property network_status
