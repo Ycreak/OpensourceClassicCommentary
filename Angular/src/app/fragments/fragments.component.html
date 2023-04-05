@@ -93,8 +93,8 @@
         <button
           mat-menu-item
           (menuOpened)="column_to_display.retrieved_titles = []; column_to_display.retrieved_editors = []"
-          (menuOpened)="column_to_display.selected_fragment_title = ''; column_to_display.selected_fragment_editor = ''"
-          (menuOpened)="column_to_display.selected_fragment_author = author"
+          (menuOpened)="column_to_display.title = ''; column_to_display.editor = ''"
+          (menuOpened)="column_to_display.author = author"
           (menuOpened)="column_to_display.retrieved_titles = column_to_display.get_titles(author)"
           [matMenuTriggerFor]="menu_titles">
           {{ author }}
@@ -107,11 +107,11 @@
         <button
           mat-menu-item
           (menuOpened)="column_to_display.retrieved_editors = []"
-          (menuOpened)="column_to_display.selected_fragment_title = ''"
-          (menuOpened)="column_to_display.selected_fragment_title = title"
+          (menuOpened)="column_to_display.title = ''"
+          (menuOpened)="column_to_display.title = title"
           (menuOpened)="
             column_to_display.retrieved_editors = column_to_display.get_editors(
-              column_to_display.selected_fragment_author,
+              column_to_display.author,
               title
             )
           "
@@ -125,7 +125,7 @@
       <ng-container *ngFor="let editor of column_to_display.retrieved_editors; let i = index">
         <button
           mat-menu-item
-          (click)="column_to_display.selected_fragment_editor = editor"
+          (click)="column_to_display.editor = editor"
           (click)="this.handle_editor_click(column_to_display)">
           {{ editor }}
         </button>

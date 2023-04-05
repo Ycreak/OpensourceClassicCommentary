@@ -117,7 +117,7 @@ import { OverviewComponent } from './overview/overview.component';
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
-  { path: '', component: FragmentsComponent },
+  { path: '', component: OverviewComponent },
   { path: 'fragments', component: FragmentsComponent },
   // {path: 'text', component: TextComponent},
   { path: 'tests', component: TestsComponent, canActivate: [AuthGuard] },

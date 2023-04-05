@@ -1,5 +1,5 @@
 // Library imports
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog'; // Library used for interacting with the page
 import { trigger, transition, style, animate } from '@angular/animations';
 import { environment } from '@src/environments/environment';
@@ -38,7 +38,7 @@ import { Introductions } from '@oscc/models/Introductions';
     ]),
   ],
 })
-export class FragmentsComponent implements OnInit {
+export class FragmentsComponent implements OnInit, AfterViewInit {
   // Toggle switches for the HTML columns/modes
   commentary_enabled: boolean = true;
   playground_enabled: boolean = false;
@@ -48,6 +48,14 @@ export class FragmentsComponent implements OnInit {
 
   current_fragment: Fragment; // Variable to store the clicked fragment and its data
   fragment_clicked: boolean = false; // Shows "click a fragment" banner at startup if nothing is yet selected
+
+  private authors_subscription: any;
+  private titles_subscription: any;
+  private editors_subscription: any;
+  private fragments_subscription: any;
+  private fragment_names_subscription: any;
+
+  private current_column_id: string = '1';
 
   constructor(
     protected api: ApiService,
@@ -60,7 +68,7 @@ export class FragmentsComponent implements OnInit {
     protected column_handler: ColumnHandlerService,
     protected playground_handler: PlaygroundHandlerService,
     protected fragment_utilities: FragmentUtilitiesService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     // Create the window watcher for mobile devices
@@ -84,10 +92,59 @@ export class FragmentsComponent implements OnInit {
     let first_column: Column = this.column_handler.columns.find((i) => i.column_id === '1');
     this.request_fragments(first_column);
     this.api.request_authors(first_column);
+
+    this.api.request_authors2();
+    this.api.request_titles2('Ennius');
+    this.api.request_editors2('Ennius', 'Thyestes');
+    this.api.request_fragment_names2('Ennius', 'Thyestes', 'TRF');
+
+    this.api.request_fragments('Ennius', 'Thyestes', 'TRF');
+
+
+  }
+
+  ngAfterViewInit() {
+    // this.authors_subscription = this.api.new_authors_alert.subscribe(() => {
+    //   console.log('authors', this.api.authors);
+    // });
+
+    // this.titles_subscription = this.api.new_titles_alert.subscribe(() => {
+    //   console.log('titles', this.api.titles);
+    // });
+
+    // this.editors_subscription = this.api.new_editors_alert.subscribe(() => {
+    //   console.log('editors', this.api.editors);
+    // });
+
+    // this.fragment_names_subscription = this.api.new_fragment_names_alert.subscribe(() => {
+    //   console.log('fragment_names', this.api.fragment_names);
+    // });
+
+    /** Handle what happens when new fragments arrive */
+    this.fragments_subscription = this.api.new_fragments_alert.subscribe(() => {
+      let fragments = this.api.fragments;
+
+      fragments = this.fragment_utilities.add_HTML_to_lines(fragments);
+      fragments = fragments.sort(this.utility.sort_fragment_array_numerically);
+      fragments = this.fragment_utilities.sort_fragments_on_status(fragments);
+
+      const updated_column = this.column_handler.columns.find((x) => x.column_id == this.current_column_id);
+      
+      updated_column.fragments = this.api.fragments;
+      console.log('columns', updated_column);
+
+    });
+
   }
 
   ngOnDestroy() {
     this.window_watcher.subscription$.unsubscribe();
+    this.authors_subscription.unsubscribe();
+    this.titles_subscription.unsubscribe();
+    this.editors_subscription.unsubscribe();
+    this.fragment_names_subscription.unsubscribe();
+    this.fragments_subscription.unsubscribe();
+
   }
 
   //   _____  ______ ____  _    _ ______  _____ _______ _____
@@ -149,14 +206,16 @@ export class FragmentsComponent implements OnInit {
    * @param fragment selected by the user
    * @author Ycreak
    */
-  private handle_editor_click(column): void {
+  protected handle_editor_click(column): void {
+    this.current_column_id = column.column_id;
+    this.api.request_fragments(column.author, column.title, column.editor);
     column.edited = false;
     // If we are in the playground, we request fragment names. Else we request fragments.
-    if (column.type == 'playground') {
-      this.fragment_utilities.request_fragment_names(column);
-    } else {
-      this.request_fragments(column);
-    }
+    // if (column.type == 'playground') {
+    //   this.fragment_utilities.request_fragment_names(column);
+    // } else {
+    //   this.request_fragments(column);
+    // }
   }
 
   /**

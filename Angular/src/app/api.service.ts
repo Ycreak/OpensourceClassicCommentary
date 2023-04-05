@@ -14,6 +14,29 @@ import { Fragment } from './models/Fragment';
 import { Column } from './models/Column';
 import { User } from './models/User';
 
+export interface fragment_key {
+  author?: string;
+  title?: string;
+  editor?: string;
+  name?: string;
+}
+
+export interface author {
+  name: string;
+}
+
+export interface title {
+  name: string;
+}
+
+export interface editor {
+  name: string;
+}
+
+export interface fragment_name {
+  name: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -23,6 +46,12 @@ export class ApiService {
   constructor(private http: HttpClient, private utility: UtilityService) {
     this.network_status = true; // Assumed online until HttpErrorResponse is received.
   }
+
+  public authors: author[] = [];
+  public titles: title[] = [];
+  public editors: editor[] = [];
+  public fragment_names: fragment_name[] = [];
+  public fragments: Fragment[] = [];
 
   // URL for production
   // FlaskURL: String = 'https://oscc.nolden.biz:5003/'; // For production (https)
@@ -35,7 +64,92 @@ export class ApiService {
   NeuralURL: String = 'https://oscc.nolden.biz:5002/';
 
   public new_fragment_alert = new ReplaySubject(0);
+  public new_authors_alert = new ReplaySubject(0);
+  public new_titles_alert = new ReplaySubject(0);
+  public new_editors_alert = new ReplaySubject(0);
+  public new_fragments_alert = new ReplaySubject(0);
+  public new_fragment_names_alert = new ReplaySubject(0);
 
+  private create_fragment_key(author?: string, title?: string, editor?: string, name?: string): fragment_key {
+    const key: fragment_key = {};
+    if (author) { key.author = author };
+    if (title) { key.title = title };
+    if (editor) { key.editor = editor };
+    if (name) { key.name = name };
+    return key;
+  }
+
+  public request_authors2(): void {
+    this.authors = [];
+    const key = this.create_fragment_key();
+    this.get_authors(key).subscribe({
+      next: (data) => {
+        data.forEach((value) => {
+          this.authors.push({ name: value } as author);
+        });
+        this.new_authors_alert.next(1);
+      },
+      error: (err) => this.utility.handle_error_message(err),
+    });
+  }
+
+  public request_titles2(author: string): void {
+    this.titles = [];
+    const key = this.create_fragment_key(author = author);
+    this.get_titles(key).subscribe({
+      next: (data) => {
+        data.forEach((value) => {
+          this.titles.push({ name: value } as title);
+        });
+        this.new_titles_alert.next(1);
+      },
+      error: (err) => this.utility.handle_error_message(err),
+    });
+  }
+
+  public request_editors2(author: string, title: string): void {
+    this.editors = [];
+    const key = this.create_fragment_key(author = author, title = title);
+    this.get_editors(key).subscribe({
+      next: (data) => {
+        data.forEach((value) => {
+          this.editors.push({ name: value } as editor);
+        });
+        this.new_editors_alert.next(1);
+      },
+      error: (err) => this.utility.handle_error_message(err),
+    });
+  }
+
+  public request_fragment_names2(author: string, title: string, editor: string): void {
+    this.fragment_names = [];
+    const key = this.create_fragment_key(author = author, title = title, editor = editor);
+    this.get_fragment_names(key).subscribe({
+      next: (data) => {
+        data.forEach((value) => {
+          this.fragment_names.push({ name: value } as fragment_name);
+        });
+        this.new_fragment_names_alert.next(1);
+      },
+      error: (err) => this.utility.handle_error_message(err),
+    });
+  }
+
+  public request_fragments(author: string, title: string, editor: string): void {
+    this.fragments = [];
+    const key = this.create_fragment_key(author = author, title = title, editor = editor);
+    this.get_fragments(key).subscribe({
+      next: (data) => {
+        data.forEach((value) => {
+          let fragment = new Fragment();
+          fragment.set_fragment(value);
+          this.fragments.push(fragment);
+        });        
+        this.new_fragments_alert.next(1);
+      },
+      error: (err) => this.utility.handle_error_message(err),
+    });
+  }
 
   /**
    * Getter function for public property network_status
@@ -225,7 +339,7 @@ export class ApiService {
 // Interceptor for HTTP errors
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor {
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService) { }
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
       tap({

@@ -13,6 +13,10 @@ export class Column {
     Object.assign(this, column);
   }
 
+  author: string;
+  title: string;
+  editor: string;
+
   text_cache: any = text_cache;
 
   column_id: string = ''; // has to be a string for cdkDrag
