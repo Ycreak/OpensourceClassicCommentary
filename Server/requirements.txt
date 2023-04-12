@@ -7,5 +7,5 @@ couchdb
 jsonpickle
 fuzzywuzzy
 python-Levenshtein
-logging
 pytest
+wheel
