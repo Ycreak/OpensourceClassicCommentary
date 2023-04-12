@@ -6,21 +6,19 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 
-
 describe('TextComponent', () => {
   let component: TextComponent;
   let fixture: ComponentFixture<TextComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TextComponent ],
+      declarations: [TextComponent],
       imports: [
         HttpClientTestingModule,
         MatSnackBarModule,
         // MatDialogModule,
       ],
-    })
-    .compileComponents();
+    }).compileComponents();
   });
 
   beforeEach(() => {

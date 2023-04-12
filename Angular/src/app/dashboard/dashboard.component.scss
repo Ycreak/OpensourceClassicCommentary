@@ -1,4 +1,4 @@
-@import url('../app.component.scss');
+@import url("../app.component.scss");
 // Dashboard component specific CSS. For more generic CSS, see ../app.component.scss.
 
 // Input form CSS
@@ -8,7 +8,7 @@
   /* width: 100%; */
 }
 
-.input-form-custom{
+.input-form-custom {
   max-width: var(--max-width);
 }
 
@@ -24,7 +24,7 @@
   // width: auto;
 }
 
-.input-form-full-width { 
+.input-form-full-width {
   width: 90%; // I like the irony
 }
 
@@ -41,9 +41,9 @@ mat-stroked-button {
   align-items: center;
   margin-left: 8px;
 }
-  
+
 // Allow the element to be padded on its left side
-.padding-left{
+.padding-left {
   padding-left: 1em;
 }
 
@@ -51,8 +51,9 @@ mat-stroked-button {
 table {
   width: 100%;
 }
-   
-td, th {
+
+td,
+th {
   width: 25%;
 }
 
@@ -94,4 +95,3 @@ tr.table-element-row:not(.table-expanded-row):active {
 ::ng-deep div.ql-toolbar button.symbol-button.symbol-button-alt {
   transform: translateY(-0.3em);
 }
-

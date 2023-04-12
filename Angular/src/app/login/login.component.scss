@@ -1,20 +1,20 @@
-@use '../app.component.scss';
-@use '../dialogs/dialogs.scss';
+@use "../app.component.scss";
+@use "../dialogs/dialogs.scss";
 
 // Login component specific CSS. For more generic CSS, see ../app.component.scss.
-  
-  // .mat-form-field{
-  //   padding-left: 1em;
-  //   width: auto;
-  //   size: 100%;
-  // }
-    
-  .mat-expansion-panel-header{
-    /* height: 100%; */
-    flex: 1 1 auto;
-  }
-  
-  .input-form-full-width {
-    width: auto;
-    padding: 0.2em;
-  }
+
+// .mat-form-field{
+//   padding-left: 1em;
+//   width: auto;
+//   size: 100%;
+// }
+
+.mat-expansion-panel-header {
+  /* height: 100%; */
+  flex: 1 1 auto;
+}
+
+.input-form-full-width {
+  width: auto;
+  padding: 0.2em;
+}

@@ -9,14 +9,14 @@ import { AuthService } from './auth.service';
 export class AuthGuard implements CanActivate {
   constructor(private authService: AuthService, private router: Router) {}
 
-  canActivate(
-    next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): boolean {
+  canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     return this.checkLogin(state.url);
   }
 
   checkLogin(url: string): boolean {
-    if (this.authService.is_logged_in) { return true; }
+    if (this.authService.is_logged_in) {
+      return true;
+    }
     this.authService.redirectUrl = url;
 
     this.router.navigate(['/login']);

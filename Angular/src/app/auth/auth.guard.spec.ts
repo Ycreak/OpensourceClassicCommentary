@@ -9,9 +9,7 @@ describe('AuthGuard', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        MatSnackBarModule,
-      ],  
+      imports: [MatSnackBarModule],
     });
     guard = TestBed.inject(AuthGuard);
   });

@@ -4,38 +4,37 @@
   <h2>OSCC Settings</h2>
   <button mat-icon-button [mat-dialog-close]="null" [disableRipple]="true">
     <mat-icon>clear</mat-icon>
-  </button>  
+  </button>
 </div>
 
 <div class="dialog-content" mat-dialog-content>
   <!-- <br> -->
-  
+
   <p>
     <mat-slide-toggle [(ngModel)]="data.dragging_disabled">Disable fragment dragging</mat-slide-toggle>
   </p>
-  
-  <br>
-  
+
+  <br />
+
   <p>
     <mat-slide-toggle [(ngModel)]="data.fragment_order_gradient">Show fragment order gradient</mat-slide-toggle>
   </p>
-  
-  <br>
-  
+
+  <br />
+
   <p>
     <mat-slide-toggle [(ngModel)]="data.auto_scroll_linked_fragments">Auto scroll to linked fragments</mat-slide-toggle>
   </p>
 
-  <br>
+  <br />
 
   <p>
     <mat-slide-toggle [(ngModel)]="data.show_headers">Show fragments headers</mat-slide-toggle>
   </p>
-  
-  <br>
+
+  <br />
 
   <p>
     <mat-slide-toggle [(ngModel)]="data.show_line_names">Show fragment line names</mat-slide-toggle>
   </p>
-
 </div>

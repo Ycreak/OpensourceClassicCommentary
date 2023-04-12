@@ -8,39 +8,31 @@ import { UntypedFormBuilder, FormControl, UntypedFormGroup, Validators, FormArra
 @Component({
   selector: 'app-scansion',
   templateUrl: './scansion.component.html',
-  styleUrls: ['./scansion.component.scss']
+  styleUrls: ['./scansion.component.scss'],
 })
 export class ScansionComponent implements OnInit {
-
   // Forms
   line_form: UntypedFormGroup = this.formBuilder.group({
     lines: '',
   });
 
-  spinner : boolean = false;
+  spinner: boolean = false;
 
-  neural_data : object; // object
+  neural_data: object; // object
 
-  constructor(
-    private api: ApiService,
-    private formBuilder: UntypedFormBuilder,
-    public utility: UtilityService,
-  ) { }
+  constructor(private api: ApiService, private formBuilder: UntypedFormBuilder, public utility: UtilityService) {}
 
+  ngOnInit(): void {}
 
-  ngOnInit(): void {
-
-  }
-
-  public scan_lines(given_lines){
-    this.utility.spinner_on()
-    this.api.scan_lines({given_lines}).subscribe({
+  public scan_lines(given_lines) {
+    this.utility.spinner_on();
+    this.api.scan_lines({ given_lines }).subscribe({
       next: (data) => {
         this.neural_data = data;
         console.log(data);
-        this.utility.spinner_off()
+        this.utility.spinner_off();
       },
-      error: (err) => this.utility.handle_error_message(err) 
+      error: (err) => this.utility.handle_error_message(err),
     });
   }
 
@@ -51,7 +43,4 @@ export class ScansionComponent implements OnInit {
   //   },
   //   error: (err) => this.utility.handle_error_message(err)
   // });
-
-
-
 }

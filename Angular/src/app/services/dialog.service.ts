@@ -7,13 +7,10 @@ import { Observable } from 'rxjs';
  */
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DialogService {
-
-  constructor(
-    private dialog: MatDialog, 
-  ) { }
+  constructor(private dialog: MatDialog) {}
 
   /**
    * Function to open the about dialog
@@ -22,7 +19,7 @@ export class DialogService {
   public open_about_dialog(): void {
     const dialogRef = this.dialog.open(ShowAboutDialog, {
       autoFocus: false, // To allow scrolling in the dialog
-      maxHeight: '90vh' //you can adjust the value as per your view
+      maxHeight: '90vh', //you can adjust the value as per your view
     });
   }
 
@@ -32,14 +29,14 @@ export class DialogService {
    * @param item the item that is about to change
    * @author Ycreak
    */
-  public open_confirmation_dialog(message, item): Observable<boolean>{
+  public open_confirmation_dialog(message, item): Observable<boolean> {
     const dialogRef = this.dialog.open(ConfirmationDialog, {
       width: 'auto',
       data: {
         message: message,
         item: item,
-      }
-    });  
+      },
+    });
     return dialogRef.afterClosed(); // Returns observable.
   }
 
@@ -50,14 +47,13 @@ export class DialogService {
    * @returns content that is edited by the editor
    * @author Ycreak
    */
-  public open_wysiwyg_dialog(content): Observable<string>{
-    
+  public open_wysiwyg_dialog(content): Observable<string> {
     const dialogRef = this.dialog.open(WYSIWYGDialog, {
       disableClose: true,
       data: {
         content: content,
-      }
-    });  
+      },
+    });
     return dialogRef.afterClosed(); // Returns observable.
   }
 
@@ -68,12 +64,12 @@ export class DialogService {
    * @author Ycreak
    * TODO: have a close button that discards changes?
    */
-  public open_settings_dialog(settings): Observable<string>{
+  public open_settings_dialog(settings): Observable<string> {
     const dialogRef = this.dialog.open(SettingsDialog, {
       width: 'auto',
       height: 'auto',
-      data: settings
-    });  
+      data: settings,
+    });
     return dialogRef.afterClosed(); // Returns observable.
   }
 
@@ -82,18 +78,15 @@ export class DialogService {
    * @param content that is to be shown
    * @author Ycreak
    */
-   public open_custom_dialog(content): void {
+  public open_custom_dialog(content): void {
     const dialogRef = this.dialog.open(CustomDialog, {
       width: '90%',
       height: '75%',
       data: {
         content: content,
-      }
-    });  
+      },
+    });
   }
-
-
-
 }
 
 /**
@@ -107,7 +100,7 @@ export class DialogService {
 export class ShowAboutDialog {}
 
 /**
- * Class to show a confirmation dialog when needed. 
+ * Class to show a confirmation dialog when needed.
  * Shows whatever data is given via the public variable 'data'
  */
 @Component({
@@ -116,17 +109,15 @@ export class ShowAboutDialog {}
   styleUrls: ['../dialogs/dialogs.scss'],
 })
 export class ConfirmationDialog {
-  constructor(
-    public dialogRef: MatDialogRef<ConfirmationDialog>,
-    @Inject(MAT_DIALOG_DATA) public data) { }
-    
-    onNoClick(): void {
-      this.dialogRef.close();
-    }
+  constructor(public dialogRef: MatDialogRef<ConfirmationDialog>, @Inject(MAT_DIALOG_DATA) public data) {}
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
 }
 
 /**
- * Class to show the rich text editor dialog. 
+ * Class to show the rich text editor dialog.
  * The provided 'data' is shown inside this editor.
  */
 @Component({
@@ -135,11 +126,7 @@ export class ConfirmationDialog {
   styleUrls: ['../dialogs/dialogs.scss'],
 })
 export class WYSIWYGDialog {
-
-  constructor(
-    public dialogRef: MatDialogRef<WYSIWYGDialog>,
-    @Inject(MAT_DIALOG_DATA) public data) { 
-  }
+  constructor(public dialogRef: MatDialogRef<WYSIWYGDialog>, @Inject(MAT_DIALOG_DATA) public data) {}
 
   editor_instance; // allows communication with the editor
 
@@ -158,16 +145,14 @@ export class WYSIWYGDialog {
         this.editor_instance.insertText(range.index, symbol, true, 'user');
         //FIXME: the next line makes sure ngModel is updated. This is a bug with the ngx-quill package
         this.editor_instance.insertText(range.index, '', 'user');
-      } 
-      else {
-        // if there is a selection, insert symbol before and after selection        
-        if (symbol == '⟨' || symbol == '⟩'){
+      } else {
+        // if there is a selection, insert symbol before and after selection
+        if (symbol == '⟨' || symbol == '⟩') {
           this.editor_instance.insertText(range.index, '⟨', 'user');
-          this.editor_instance.insertText((range.index + range.length + 1), '⟩', 'user');
-        }
-        else{
+          this.editor_instance.insertText(range.index + range.length + 1, '⟩', 'user');
+        } else {
           this.editor_instance.insertText(range.index, symbol, 'user');
-          this.editor_instance.insertText((range.index + range.length + 1), symbol, 'user');
+          this.editor_instance.insertText(range.index + range.length + 1, symbol, 'user');
         }
       }
     }
@@ -175,23 +160,20 @@ export class WYSIWYGDialog {
 }
 
 /**
- * Class to show a dialog with the provided content. 
+ * Class to show a dialog with the provided content.
  * The provided 'data' is shown inside this editor.
  */
- @Component({
+@Component({
   selector: 'custom-dialog',
   templateUrl: '../dialogs/custom-dialog.html',
   styleUrls: ['../dialogs/dialogs.scss'],
 })
 export class CustomDialog {
-  constructor(
-    public dialogRef: MatDialogRef<CustomDialog>,
-    @Inject(MAT_DIALOG_DATA) public data) { 
-  }
+  constructor(public dialogRef: MatDialogRef<CustomDialog>, @Inject(MAT_DIALOG_DATA) public data) {}
 }
 
 /**
- * Class to show the settings dialog. 
+ * Class to show the settings dialog.
  * The provided 'data' is used to communicate the settings.
  */
 @Component({
@@ -200,8 +182,5 @@ export class CustomDialog {
   styleUrls: ['../dialogs/dialogs.scss'],
 })
 export class SettingsDialog {
-  constructor(
-    public dialogRef: MatDialogRef<SettingsDialog>,
-    @Inject(MAT_DIALOG_DATA) public data) { 
-  }
+  constructor(public dialogRef: MatDialogRef<SettingsDialog>, @Inject(MAT_DIALOG_DATA) public data) {}
 }

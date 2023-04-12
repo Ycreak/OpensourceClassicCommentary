@@ -1,8 +1,6 @@
-export class Text
-{
-    id: number;
-    book: number;
-    lineNumber: number;
-    lineContent: string;
-
+export class Text {
+  id: number;
+  book: number;
+  lineNumber: number;
+  lineContent: string;
 }

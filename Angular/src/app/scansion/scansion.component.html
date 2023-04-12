@@ -2,19 +2,19 @@
 <script src="vendor/jquery/jquery.min.js"></script>
 <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway" />
 
 <!-- Maybe we should get a local stylesheet? -->
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
 
 <!-- Simple toolbar with all the different buttons and the title -->
 <mat-toolbar color="primary">
-    <h3 class='h3-title'>Latin Scansion with Neural Networks</h3>
-    <!-- <button mat-button class="btn" routerLink="/fragments">OSCC</button> -->
-    <span class="spacer"></span>
-    <!-- <button mat-button class="btn" (click)="this.api.request_authors(this.selected_fragment_data)">RELOAD AUTHORS</button> -->
-    <button mat-button class="btn" routerLink="/fragments">FRAGMENTS</button>
+  <h3 class="h3-title">Latin Scansion with Neural Networks</h3>
+  <!-- <button mat-button class="btn" routerLink="/fragments">OSCC</button> -->
+  <span class="spacer"></span>
+  <!-- <button mat-button class="btn" (click)="this.api.request_authors(this.selected_fragment_data)">RELOAD AUTHORS</button> -->
+  <button mat-button class="btn" routerLink="/fragments">FRAGMENTS</button>
   <!-- <mat-checkbox class="btn" [(ngModel)]="syllabified" ngDefaultControl>SYLLABIFIED</mat-checkbox> -->
 
   <!-- <mat-radio-group [(ngModel)]="network_type" ngDefaultControl>
@@ -22,62 +22,58 @@
     <mat-radio-button value="LSTM">LSTM</mat-radio-button>
     <mat-radio-button value="CRF">CRF</mat-radio-button>
   </mat-radio-group> -->
-    
-
 </mat-toolbar>
 
 <!-- Loading spinner to show data is being retrieved from the server -->
 <mat-toolbar *ngIf="this.utility.spinner === false" class="progress-toolbar"></mat-toolbar>
 <mat-progress-bar *ngIf="this.utility.spinner" mode="query"></mat-progress-bar>
 
+<br />
 
-<br>
-
-
-
-<div class="center"><p><b>Input your lines below, separated by a carriage return (enter).</b></p></div>
+<div class="center">
+  <p><b>Input your lines below, separated by a carriage return (enter).</b></p>
+</div>
 
 <form [formGroup]="line_form" class="lines-form">
-
   <mat-form-field class="full-width raleway" appearance="fill">
-    <textarea matInput formControlName="lines" placeholder="e.g. Arma virumque cano" class='center'></textarea>
+    <textarea matInput formControlName="lines" placeholder="e.g. Arma virumque cano" class="center"></textarea>
   </mat-form-field>
 </form>
 
-<button mat-raised-button color="primary" class='lines-form' (click)="scan_lines(line_form.value.lines)">Scan lines</button>
+<button mat-raised-button color="primary" class="lines-form" (click)="scan_lines(line_form.value.lines)">
+  Scan lines
+</button>
 
-<hr>
+<hr />
 
 <!-- <div class="center"><p><b>The confidence of the network for the given label is denoted by the float in the last row (score between 0 and 1).</b></p></div> -->
-<div class="center"><p><b>After syllabifying your lines, the neural network scanned them as follows:</b></p></div>
+<div class="center">
+  <p><b>After syllabifying your lines, the neural network scanned them as follows:</b></p>
+</div>
 
-<div class='div-padding-left-right' *ngFor="let sentence of this.neural_data">
-  <hr>
-  <i>{{sentence.original_line}}</i>
-  
-  <mat-grid-list cols="{{sentence.length}}" rowHeight="1em">
-    <mat-grid-tile
-        *ngFor="let syllable of sentence.syllables"
-        
-        [colspan]="1"
-        [rowspan]="2"
-        [style.background]="'#DDDDDD'">
-      <b>{{syllable}}</b>
-      
-    </mat-grid-tile>
-  </mat-grid-list>  
+<div class="div-padding-left-right" *ngFor="let sentence of this.neural_data">
+  <hr />
+  <i>{{ sentence.original_line }}</i>
 
-  <mat-grid-list cols="{{sentence.length}}" rowHeight="1em">
+  <mat-grid-list cols="{{ sentence.length }}" rowHeight="1em">
     <mat-grid-tile
-        *ngFor="let prediction of sentence.predicted"
-        
-        [colspan]="1"
-        [rowspan]="2"
-        [style.background]="'lightgreen'">
-      <b>{{prediction}}</b>
-      
+      *ngFor="let syllable of sentence.syllables"
+      [colspan]="1"
+      [rowspan]="2"
+      [style.background]="'#DDDDDD'">
+      <b>{{ syllable }}</b>
     </mat-grid-tile>
-  </mat-grid-list>  
+  </mat-grid-list>
+
+  <mat-grid-list cols="{{ sentence.length }}" rowHeight="1em">
+    <mat-grid-tile
+      *ngFor="let prediction of sentence.predicted"
+      [colspan]="1"
+      [rowspan]="2"
+      [style.background]="'lightgreen'">
+      <b>{{ prediction }}</b>
+    </mat-grid-tile>
+  </mat-grid-list>
 
   <!-- <mat-grid-list cols="{{sentence.length}}" rowHeight="1em">
     <mat-grid-tile
@@ -91,4 +87,3 @@
     </mat-grid-tile>
   </mat-grid-list>   -->
 </div>
- 
