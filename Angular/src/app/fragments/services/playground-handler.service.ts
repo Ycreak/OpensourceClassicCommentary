@@ -27,7 +27,7 @@ export class PlaygroundHandlerService {
   ) {
     // And for the playground
     this.playground = new Column({ column_id: '0', type: 'playground' });
-    this.api.request_authors(this.playground);
+    this.api.request_authors2(this.playground);
   }
 
   /**

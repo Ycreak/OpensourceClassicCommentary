@@ -54,6 +54,16 @@ export class Column {
   // Original order of the column fragments
   original_fragment_order: string[] = [];
 
+  private get_authors(): object {
+    let filtered_objects = this.text_cache['cache'];
+    let author_list = new Set(
+      filtered_objects.map(function (el) {
+        return el.author;
+      })
+    );
+    return author_list;
+  }
+
   private get_titles(author: string): object {
     let filtered_objects = this.text_cache['cache'].filter((x) => x.author == author);
     let title_list = new Set(

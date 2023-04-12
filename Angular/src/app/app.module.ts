@@ -197,9 +197,9 @@ const appRoutes: Routes = [
       useClass: HttpErrorInterceptor,
       multi: true,
     },
-    // {
-    //   provide: MatDialogRef,
-    // },
+    {
+      provide: FragmentsComponent,
+    },
   ],
   bootstrap: [AppComponent],
 })

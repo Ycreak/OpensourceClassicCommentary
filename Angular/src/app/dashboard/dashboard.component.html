@@ -15,7 +15,7 @@
     </h3>
   </span>
   <span class="spacer"></span>
-  <!-- <button mat-button class="btn" (click)="this.api.request_authors(this.selected_fragment_data)">RELOAD AUTHORS</button> -->
+  <!-- <button mat-button class="btn" (click)="this.api.request_authors2(this.selected_fragment_data)">RELOAD AUTHORS</button> -->
   <button
     mat-stroked-button
     class="navbar button-margin"
@@ -77,7 +77,7 @@
             "
             (click)="this.reset_fragment_form()"
             (click)="this.update_form_field('fragment_form', 'author', author)"
-            (click)="this.api.request_titles(selected_fragment_data)"
+            (click)="this.api.request_titles2(selected_fragment_data)"
             (click)="this.fragment_selected = false">
             {{ author }}
           </mat-option>
@@ -122,7 +122,7 @@
             (click)="this.update_form_field('fragment_form', 'author', selected_fragment_data.author)"
             (click)="this.update_form_field('fragment_form', 'title', selected_fragment_data.title)"
             (click)="this.update_form_field('fragment_form', 'editor', editor)"
-            (click)="this.api.request_fragment_names(this.selected_fragment_data)"
+            (click)="this.api.request_fragment_names2(this.selected_fragment_data)"
             (click)="this.fragment_selected = false">
             {{ editor }}
           </mat-option>
@@ -432,7 +432,7 @@
                     this.linked_fragment_data.editor = '';
                     this.linked_fragment_data.name = ''
                   "
-                  (click)="this.api.request_titles(linked_fragment_data)">
+                  (click)="this.api.request_titles2(linked_fragment_data)">
                   {{ author }}
                 </mat-option>
               </mat-select>
@@ -446,7 +446,7 @@
                   [value]="title"
                   (click)="this.linked_fragment_data.title = title"
                   (click)="this.linked_fragment_data.editor = ''; this.linked_fragment_data.name = ''"
-                  (click)="this.api.request_editors(linked_fragment_data)">
+                  (click)="this.api.request_editors2(linked_fragment_data)">
                   {{ title }}
                 </mat-option>
               </mat-select>
@@ -463,7 +463,7 @@
                   [value]="editor"
                   (click)="this.linked_fragment_data.editor = editor"
                   (click)="this.linked_fragment_data.name = ''"
-                  (click)="this.api.request_fragment_names(linked_fragment_data)">
+                  (click)="this.api.request_fragment_names2(linked_fragment_data)">
                   {{ editor }}
                 </mat-option>
               </mat-select>

@@ -141,8 +141,8 @@ export class DashboardComponent implements OnInit {
     this.selected_fragment_data = new Column();
     this.linked_fragment_data = new Column();
 
-    this.api.request_authors(this.selected_fragment_data);
-    this.api.request_authors(this.linked_fragment_data);
+    this.api.request_authors2(this.selected_fragment_data);
+    this.api.request_authors2(this.linked_fragment_data);
 
     // this.retrieve_requested_fragment('Ennius', 'Thyestes', 'TRF', '134')
   }
@@ -513,11 +513,11 @@ export class DashboardComponent implements OnInit {
                 this.utility.handle_error_message(res);
                 this.fragment_selected = true;
                 // It might be possible we have created a new author, title or editor. Retrieve the lists again
-                this.api.request_authors(this.selected_fragment_data);
-                this.api.request_titles(this.selected_fragment_data);
-                this.api.request_editors(this.selected_fragment_data);
+                this.api.request_authors2(this.selected_fragment_data);
+                this.api.request_titles2(this.selected_fragment_data);
+                this.api.request_editors2(this.selected_fragment_data);
                 // After creation, refresh the list of fragment names so the new one appears directly
-                this.api.request_fragment_names(this.selected_fragment_data);
+                this.api.request_fragment_names2(this.selected_fragment_data);
                 // Also, retrieve that revised fragment so we can continue editing!
 
                 console.log(this.selected_fragment_data);
@@ -564,11 +564,11 @@ export class DashboardComponent implements OnInit {
               this.utility.handle_error_message(res);
               this.fragment_selected = true;
               // It might be possible we have created a new author, title or editor. Retrieve the lists again
-              this.api.request_authors(this.selected_fragment_data);
-              this.api.request_titles(this.selected_fragment_data);
-              this.api.request_editors(this.selected_fragment_data);
+              this.api.request_authors2(this.selected_fragment_data);
+              this.api.request_titles2(this.selected_fragment_data);
+              this.api.request_editors2(this.selected_fragment_data);
               // After creation, refresh the list of fragment names so the new one appears directly
-              this.api.request_fragment_names(this.selected_fragment_data);
+              this.api.request_fragment_names2(this.selected_fragment_data);
               // Also, retrieve that revised fragment so we can continue editing!
               this.retrieve_requested_fragment(this.selected_fragment_data);
               this.utility.spinner_off();
@@ -613,7 +613,7 @@ export class DashboardComponent implements OnInit {
                 // Reset the fragment_data object and start anew.
                 this.selected_fragment_data = new Column();
 
-                this.api.request_authors(this.selected_fragment_data);
+                this.api.request_authors2(this.selected_fragment_data);
                 // Lastly, reset the fragment form
                 this.reset_fragment_form();
                 this.fragment_selected = false;

@@ -46,7 +46,7 @@ export class ColumnHandlerService {
     let new_column = new Column({ column_id: String(this.column_identifier) });
     this.columns.push(new_column);
     // Request authors for this new column
-    this.api.request_authors(new_column);
+    this.api.request_authors2(new_column);
     // And update the connected columns list
     this.connected_columns_list = this.update_connected_columns_list(this.columns);
   }

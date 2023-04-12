@@ -11,6 +11,9 @@ import { SettingsService } from '@oscc/services/settings.service';
 import { WindowSizeWatcherService } from '@oscc/services/window-watcher.service';
 import { UtilityService } from '@oscc/utility.service';
 import { AuthService } from '@oscc/auth/auth.service';
+
+import { FragmentsComponent } from '@oscc/fragments/fragments.component';
+
 // import { ColumnHandlerService } from './services/column-handler.service';
 // import { PlaygroundHandlerService } from './services/playground-handler.service';
 // import { FragmentUtilitiesService } from './services/fragment-utilities.service';
@@ -24,6 +27,8 @@ import { AuthService } from '@oscc/auth/auth.service';
 export class OverviewComponent implements OnInit {
 
   private authors_subscription: any;
+  // public hero = 'hello';
+
 
   constructor(
     protected api: ApiService,
@@ -36,12 +41,12 @@ export class OverviewComponent implements OnInit {
     // protected column_handler: ColumnHandlerService,
     // protected playground_handler: PlaygroundHandlerService,
     // protected fragment_utilities: FragmentUtilitiesService
+    protected fragments: FragmentsComponent
   ) { }
 
   ngOnInit(): void {
-    console.log('hello')
+    console.log('hello', this.fragments.playground_enabled)
     // this.api.request_authors2();
-
   }
 
   // ngAfterViewInit() {

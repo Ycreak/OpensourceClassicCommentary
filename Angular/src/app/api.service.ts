@@ -52,6 +52,7 @@ export class ApiService {
   public editors: editor[] = [];
   public fragment_names: fragment_name[] = [];
   public fragments: Fragment[] = [];
+  public fragment_key: fragment_key = {}; 
 
   // URL for production
   // FlaskURL: String = 'https://oscc.nolden.biz:5003/'; // For production (https)
@@ -79,10 +80,10 @@ export class ApiService {
     return key;
   }
 
-  public request_authors2(): void {
+  public request_authors(): void {
     this.authors = [];
-    const key = this.create_fragment_key();
-    this.get_authors(key).subscribe({
+    this.fragment_key = this.create_fragment_key();
+    this.get_authors(this.fragment_key).subscribe({
       next: (data) => {
         data.forEach((value) => {
           this.authors.push({ name: value } as author);
@@ -93,10 +94,10 @@ export class ApiService {
     });
   }
 
-  public request_titles2(author: string): void {
+  public request_titles(author: string): void {
     this.titles = [];
-    const key = this.create_fragment_key(author = author);
-    this.get_titles(key).subscribe({
+    this.fragment_key = this.create_fragment_key(author = author);
+    this.get_titles(this.fragment_key).subscribe({
       next: (data) => {
         data.forEach((value) => {
           this.titles.push({ name: value } as title);
@@ -107,10 +108,10 @@ export class ApiService {
     });
   }
 
-  public request_editors2(author: string, title: string): void {
+  public request_editors(author: string, title: string): void {
     this.editors = [];
-    const key = this.create_fragment_key(author = author, title = title);
-    this.get_editors(key).subscribe({
+    this.fragment_key = this.create_fragment_key(author = author, title = title);
+    this.get_editors(this.fragment_key).subscribe({
       next: (data) => {
         data.forEach((value) => {
           this.editors.push({ name: value } as editor);
@@ -121,10 +122,10 @@ export class ApiService {
     });
   }
 
-  public request_fragment_names2(author: string, title: string, editor: string): void {
+  public request_fragment_names(author: string, title: string, editor: string): void {
     this.fragment_names = [];
-    const key = this.create_fragment_key(author = author, title = title, editor = editor);
-    this.get_fragment_names(key).subscribe({
+    this.fragment_key = this.create_fragment_key(author = author, title = title, editor = editor);
+    this.get_fragment_names(this.fragment_key).subscribe({
       next: (data) => {
         data.forEach((value) => {
           this.fragment_names.push({ name: value } as fragment_name);
@@ -137,8 +138,8 @@ export class ApiService {
 
   public request_fragments(author: string, title: string, editor: string): void {
     this.fragments = [];
-    const key = this.create_fragment_key(author = author, title = title, editor = editor);
-    this.get_fragments(key).subscribe({
+    this.fragment_key = this.create_fragment_key(author = author, title = title, editor = editor);
+    this.get_fragments(this.fragment_key).subscribe({
       next: (data) => {
         data.forEach((value) => {
           let fragment = new Fragment();
@@ -164,7 +165,7 @@ export class ApiService {
   /**
    * Requests all authors from the database. No parameters needed
    */
-  public request_authors(column: Column): void {
+  public request_authors2(column: Column): void {
     this.utility.spinner_on();
     this.get_authors(new Fragment({})).subscribe({
       next: (data) => {
@@ -181,7 +182,7 @@ export class ApiService {
    * @param column Fragment_column object with all necessary data
    * @author Ycreak
    */
-  public request_titles(column: Column): void {
+  public request_titles2(column: Column): void {
     this.utility.spinner_on();
 
     this.get_titles(new Fragment({ author: column.selected_fragment_author })).subscribe({
@@ -199,7 +200,7 @@ export class ApiService {
    * @param column Fragment_column object with all necessary data
    * @author Ycreak
    */
-  public request_editors(column: Column): void {
+  public request_editors2(column: Column): void {
     this.utility.spinner_on();
     this.get_editors(
       new Fragment({ author: column.selected_fragment_author, title: column.selected_fragment_title })
@@ -214,7 +215,7 @@ export class ApiService {
    * @param column Fragment_column object with all necessary data
    * @author Ycreak
    */
-  public request_fragment_names(column: Column): void {
+  public request_fragment_names2(column: Column): void {
     this.utility.spinner_on();
 
     this.get_fragment_names(

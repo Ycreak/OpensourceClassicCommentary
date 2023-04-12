@@ -11,7 +11,7 @@ import { LoginComponent } from '@oscc/login/login.component';
 import { ApiService } from '@oscc/api.service';
 import { DialogService } from '@oscc/services/dialog.service';
 import { SettingsService } from '@oscc/services/settings.service';
-import { WindowSizeWatcherService } from '@oscc/services/window-watcher.service';
+// import { WindowSizeWatcherService } from '@oscc/services/window-watcher.service';
 import { UtilityService } from '@oscc/utility.service';
 import { AuthService } from '@oscc/auth/auth.service';
 import { ColumnHandlerService } from './services/column-handler.service';
@@ -46,7 +46,7 @@ export class FragmentsComponent implements OnInit, AfterViewInit {
   // Data columns
   commentary_column: Column;
 
-  current_fragment: Fragment; // Variable to store the clicked fragment and its data
+  public current_fragment: Fragment; // Variable to store the clicked fragment and its data
   fragment_clicked: boolean = false; // Shows "click a fragment" banner at startup if nothing is yet selected
 
   private authors_subscription: any;
@@ -55,15 +55,13 @@ export class FragmentsComponent implements OnInit, AfterViewInit {
   private fragments_subscription: any;
   private fragment_names_subscription: any;
 
-  private current_column_id: string = '1';
-
   constructor(
     protected api: ApiService,
     protected utility: UtilityService,
     protected auth_service: AuthService,
     protected dialog: DialogService,
     protected settings: SettingsService,
-    protected window_watcher: WindowSizeWatcherService,
+    // protected window_watcher: WindowSizeWatcherService,
     private matdialog: MatDialog,
     protected column_handler: ColumnHandlerService,
     protected playground_handler: PlaygroundHandlerService,
@@ -72,7 +70,7 @@ export class FragmentsComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     // Create the window watcher for mobile devices
-    this.window_watcher.init(window.innerWidth);
+    // this.window_watcher.init(window.innerWidth);
     // Create an empty current_fragment variable to be filled whenever the user clicks a fragment
     this.current_fragment = new Fragment({});
     // Create a commentary column (deprecated -> can be replaced by simple linked_fragments list)
@@ -81,26 +79,13 @@ export class FragmentsComponent implements OnInit, AfterViewInit {
     if (this.column_handler.columns.length < 1) {
       this.column_handler.columns.push(
         new Column({
-          column_id: '1',
-          selected_fragment_author: 'Ennius',
-          selected_fragment_title: 'Thyestes',
-          selected_fragment_editor: 'TRF',
+          author: 'Ennius',
+          title: 'Thyestes',
+          editor: 'TRF',
         })
       );
     }
-    // Request data for this first/default column
-    let first_column: Column = this.column_handler.columns.find((i) => i.column_id === '1');
-    this.request_fragments(first_column);
-    this.api.request_authors(first_column);
-
-    this.api.request_authors2();
-    this.api.request_titles2('Ennius');
-    this.api.request_editors2('Ennius', 'Thyestes');
-    this.api.request_fragment_names2('Ennius', 'Thyestes', 'TRF');
-
     this.api.request_fragments('Ennius', 'Thyestes', 'TRF');
-
-
   }
 
   ngAfterViewInit() {
@@ -123,99 +108,34 @@ export class FragmentsComponent implements OnInit, AfterViewInit {
     /** Handle what happens when new fragments arrive */
     this.fragments_subscription = this.api.new_fragments_alert.subscribe(() => {
       let fragments = this.api.fragments;
-
+      // A new list of fragments has arrived. Use the fragment key to find the corresponding column
+      const column = this.column_handler.columns.find((x) => 
+        x.author == this.api.fragment_key.author &&
+        x.title == this.api.fragment_key.title &&
+        x.editor == this.api.fragment_key.editor
+      );
+      // Prepare the fragments for publication
       fragments = this.fragment_utilities.add_HTML_to_lines(fragments);
       fragments = fragments.sort(this.utility.sort_fragment_array_numerically);
       fragments = this.fragment_utilities.sort_fragments_on_status(fragments);
 
-      const updated_column = this.column_handler.columns.find((x) => x.column_id == this.current_column_id);
-      
-      updated_column.fragments = this.api.fragments;
-      console.log('columns', updated_column);
-
+      column.fragments = fragments;
+      console.log('column', column);
     });
 
   }
 
   ngOnDestroy() {
-    this.window_watcher.subscription$.unsubscribe();
+    // this.window_watcher.subscription$.unsubscribe();
     this.authors_subscription.unsubscribe();
     this.titles_subscription.unsubscribe();
     this.editors_subscription.unsubscribe();
     this.fragment_names_subscription.unsubscribe();
     this.fragments_subscription.unsubscribe();
-
   }
 
-  //   _____  ______ ____  _    _ ______  _____ _______ _____
-  //  |  __ \|  ____/ __ \| |  | |  ____|/ ____|__   __/ ____|
-  //  | |__) | |__ | |  | | |  | | |__  | (___    | | | (___
-  //  |  _  /|  __|| |  | | |  | |  __|  \___ \   | |  \___ \
-  //  | | \ \| |___| |__| | |__| | |____ ____) |  | |  ____) |
-  //  |_|  \_\______\___\_\\____/|______|_____/   |_| |_____/
-  /**
-   * Requests the API function for fragments given the author, title and editor.
-   * @param column: Column
-   * @returns Object with fragments that are sorted numerically and on their status. Also
-   *          adds an HTML formatted string to the object for easy printing. Note that the
-   *          new data is added to the corresponding field in the provided parameter
-   * @author Bors & Ycreak
-   */
-  private request_fragments(column: Column): void {
-    this.utility.spinner_on();
+  protected request_commentary(fragment: Fragment): void {
 
-    this.api
-      .get_fragments(
-        new Fragment({
-          author: column.selected_fragment_author,
-          title: column.selected_fragment_title,
-          editor: column.selected_fragment_editor,
-        })
-      )
-      .subscribe((data) => {
-        //TODO: can this be done automatically within the API?
-        let fragment_list = this.api.convert_fragment_json_to_typescript(data);
-        // Format the data just how we want it
-        fragment_list = this.fragment_utilities.add_HTML_to_lines(fragment_list);
-        fragment_list = fragment_list.sort(this.utility.sort_fragment_array_numerically);
-        fragment_list = this.fragment_utilities.sort_fragments_on_status(fragment_list);
-        // Store the formatted data at the correct place
-        if (column.type != 'playground') {
-          column.fragments = fragment_list;
-          // Store the original order of the fragments in the column object
-          column.original_fragment_order = []; // Clear first
-          for (let frag of fragment_list) {
-            column.original_fragment_order.push(frag.name);
-          }
-          // Now check if the column already exists. If so, replace it with the new object.
-          if (this.column_handler.columns.length > 0) {
-            this.column_handler.columns[
-              this.column_handler.columns.findIndex((i) => i.column_id === column.column_id)
-            ] = column;
-          }
-        } else {
-          // In the case of the playground, we want to add the new edition to our playground
-          column.fragments = column.fragments.concat(fragment_list);
-        }
-        this.utility.spinner_off();
-      });
-  }
-
-  /**
-   * Function to handle what happens when an editor is selected in HTML.
-   * @param fragment selected by the user
-   * @author Ycreak
-   */
-  protected handle_editor_click(column): void {
-    this.current_column_id = column.column_id;
-    this.api.request_fragments(column.author, column.title, column.editor);
-    column.edited = false;
-    // If we are in the playground, we request fragment names. Else we request fragments.
-    // if (column.type == 'playground') {
-    //   this.fragment_utilities.request_fragment_names(column);
-    // } else {
-    //   this.request_fragments(column);
-    // }
   }
 
   /**
@@ -223,11 +143,13 @@ export class FragmentsComponent implements OnInit, AfterViewInit {
    * @param fragment selected by the user
    * @author Ycreak
    */
-  private handle_fragment_click(fragment: Fragment, from_playground: boolean = false): void {
+  protected handle_fragment_click(fragment: Fragment, from_playground: boolean = false): void {
     // If we are currently dragging a fragment in the playground, we do not want the click even to fire.
     if (!this.playground_handler.playground_dragging) {
       this.fragment_utilities.fragment_clicked = true;
       this.current_fragment = fragment;
+
+      console.log('frag', this.current_fragment)
 
       // Reset the commentary column and its linked fragments
       this.commentary_column.linked_fragments_content = [];
