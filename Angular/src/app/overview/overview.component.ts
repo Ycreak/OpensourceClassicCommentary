@@ -15,37 +15,32 @@ import { AuthService } from '@oscc/auth/auth.service';
 import { FragmentsComponent } from '@oscc/fragments/fragments.component';
 
 // import { ColumnHandlerService } from './services/column-handler.service';
-// import { PlaygroundHandlerService } from './services/playground-handler.service';
-// import { FragmentUtilitiesService } from './services/fragment-utilities.service';
-
 
 @Component({
   selector: 'app-overview',
   templateUrl: './overview.component.html',
-  styleUrls: ['./overview.component.scss']
+  styleUrls: ['./overview.component.scss'],
 })
 export class OverviewComponent implements OnInit {
-
-  private authors_subscription: any;
-  // public hero = 'hello';
-
+  protected commentary_enabled = true;
+  protected playground_enabled = true;
 
   constructor(
     protected api: ApiService,
     // protected utility: UtilityService,
     protected auth_service: AuthService,
-    // protected dialog: DialogService,
-    // protected settings: SettingsService,
+    protected dialog: DialogService,
+    protected settings: SettingsService,
     protected window_watcher: WindowSizeWatcherService,
     // private matdialog: MatDialog,
     // protected column_handler: ColumnHandlerService,
-    // protected playground_handler: PlaygroundHandlerService,
-    // protected fragment_utilities: FragmentUtilitiesService
     protected fragments: FragmentsComponent
-  ) { }
+  ) {}
 
   ngOnInit(): void {
-    console.log('hello', this.fragments.playground_enabled)
+    // Create the window watcher for mobile devices
+    this.window_watcher.init(window.innerWidth);
+    //console.log('hello', this.fragments.playground_enabled)
     // this.api.request_authors2();
   }
 
@@ -55,9 +50,36 @@ export class OverviewComponent implements OnInit {
   //   });
   // }
 
-  // ngOnDestroy() {
-  //   this.window_watcher.subscription$.unsubscribe();
-  //   this.authors_subscription.unsubscribe();
-  // }
+  ngOnDestroy() {
+    this.window_watcher.subscription$.unsubscribe();
+  }
 
+  /**
+   * Simple function to toggle the commentary column
+   * @author Ycreak
+   */
+  protected toggle_commentary(): void {
+    this.commentary_enabled = !this.commentary_enabled;
+  }
+  /**
+   * Simple function to toggle the playground column
+   * @author Ycreak
+   */
+  protected toggle_playground(): void {
+    this.playground_enabled = !this.playground_enabled;
+  }
+
+  /**
+   * Function to handle the settings dialog. Will save changes via the oscc_settings object
+   * @author Ycreak
+   */
+  public open_settings(): void {
+    this.dialog.open_settings_dialog(this.settings.fragments).subscribe((result) => {
+      if (result) {
+        this.settings.fragments.dragging_disabled = result['dragging_disabled'];
+        this.settings.fragments.fragment_order_gradient = result['fragment_order_gradient'];
+        this.settings.fragments.auto_scroll_linked_fragments = result['auto_scroll_linked_fragments'];
+      }
+    });
+  }
 }

@@ -1,68 +1,6 @@
 <!-- Import the stylesheet for the Material icons -->
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 
-<!-- Navigation bar -->
-<!-- <mat-toolbar color="primary">
-  <span style="width: fit-content; transform: translateY(-1px)">
-    <h3 *ngIf="this.window_watcher.size > 725; else small_title" class="navbar">Open Source Classics Commentary</h3>
-  </span>
-
-  <ng-template #small_title>
-    <h3 class="navbar">OSCC</h3>
-  </ng-template>
-
-  <span class="spacer"></span>
-
-  <button
-    mat-stroked-button
-    class="navbar"
-    *ngIf="this.auth_service.current_user_name == 'Lucus'"
-    (click)="this.utility.test('0')">
-    TEST
-  </button>
-
-  <button
-    mat-stroked-button
-    *ngIf="!this.commentary_enabled; else commentary_disabled"
-    class="navbar button-margin"
-    (click)="this.toggle_commentary()">
-    COMMENTARY
-  </button>
-
-  <ng-template #commentary_disabled>
-    <button mat-flat-button color="accent" class="button-margin" (click)="this.toggle_commentary()">COMMENTARY</button>
-  </ng-template>
-
-  <button
-    mat-stroked-button
-    *ngIf="!this.playground_enabled; else playground_disabled"
-    class="navbar button-margin"
-    (click)="this.toggle_playground()">
-    PLAYGROUND
-  </button>
-
-  <ng-template #playground_disabled>
-    <button mat-flat-button class="button-margin" color="accent" (click)="this.toggle_playground()">PLAYGROUND</button>
-  </ng-template>
-
-  <button mat-stroked-button class="navbar" [matMenuTriggerFor]="menu">
-    <mat-icon *ngIf="this.window_watcher.size > 850" fontIcon="menu"></mat-icon>
-    MENU
-  </button>
-</mat-toolbar> -->
-
-<!-- Navigation bar menu -->
-<!-- <mat-menu #menu="matMenu">
-  <button (click)="login()" mat-menu-item>Login</button>
-  <button mat-menu-item routerLink="/dashboard" *ngIf="this.auth_service.is_logged_in">Dashboard</button>
-  <button mat-menu-item routerLink="/scansion" *ngIf="this.auth_service.is_logged_in">Scansion</button>
-  <a href="https://github.com/Ycreak/OpensourceClassicCommentary/" target="_blank" mat-menu-item>Documentation</a>
-  <button (click)="open_settings()" mat-menu-item>Settings</button>
-  <button routerLink="/tests" mat-menu-item *ngIf="this.auth_service.is_logged_in">Unit Tests</button>
-  <button (click)="this.dialog.open_about_dialog()" mat-menu-item>About</button>
-  <div mat-menu-item>V23.03.12</div>
-</mat-menu> -->
-
 <!-- Secondary toolbar to manage columns -->
 <mat-toolbar class="column-toolbar">
   <div>
@@ -80,9 +18,7 @@
       <ng-container *ngIf="column_to_display.new_column; else text_button_clicked"> Select Text </ng-container>
 
       <ng-template #text_button_clicked>
-        {{ column_to_display.author }}-{{ column_to_display.title }}-{{
-        column_to_display.editor
-        }}
+        {{ column_to_display.author }}-{{ column_to_display.title }}-{{ column_to_display.editor }}
         <sup *ngIf="column_to_display.edited">altered</sup>
       </ng-template>
     </button>
@@ -90,7 +26,8 @@
     <!-- Nested menu to select author - title - editor. -->
     <mat-menu #menu_authors="matMenu">
       <ng-container *ngFor="let author of column_to_display.get_authors(); let i = index">
-        <button mat-menu-item
+        <button
+          mat-menu-item
           (menuOpened)="column_to_display.retrieved_titles = []; column_to_display.retrieved_editors = []"
           (menuOpened)="column_to_display.title = ''; column_to_display.editor = ''"
           (menuOpened)="column_to_display.author = author"
@@ -103,13 +40,15 @@
 
     <mat-menu #menu_titles="matMenu">
       <ng-container *ngFor="let title of column_to_display.retrieved_titles; let i = index">
-        <button mat-menu-item (menuOpened)="column_to_display.retrieved_editors = []"
-          (menuOpened)="column_to_display.title = ''" (menuOpened)="column_to_display.title = title" (menuOpened)="
-            column_to_display.retrieved_editors = column_to_display.get_editors(
-              column_to_display.author,
-              title
-            )
-          " [matMenuTriggerFor]="menu_editors">
+        <button
+          mat-menu-item
+          (menuOpened)="column_to_display.retrieved_editors = []"
+          (menuOpened)="column_to_display.title = ''"
+          (menuOpened)="column_to_display.title = title"
+          (menuOpened)="
+            column_to_display.retrieved_editors = column_to_display.get_editors(column_to_display.author, title)
+          "
+          [matMenuTriggerFor]="menu_editors">
           {{ title }}
         </button>
       </ng-container>
@@ -117,8 +56,12 @@
 
     <mat-menu #menu_editors="matMenu">
       <ng-container *ngFor="let editor of column_to_display.retrieved_editors; let i = index">
-        <button mat-menu-item (click)="column_to_display.editor = editor"
-          (click)="this.api.request_fragments(column_to_display.author, column_to_display.title, column_to_display.editor)">
+        <button
+          mat-menu-item
+          (click)="column_to_display.editor = editor"
+          (click)="
+            this.api.request_fragments(column_to_display.author, column_to_display.title, column_to_display.editor)
+          ">
           {{ editor }}
         </button>
       </ng-container>
@@ -158,18 +101,22 @@
 <!-- Container for the page. One row per item (commentary, playground, multiplayer, etc.) -->
 <div class="container-fluid">
   <div class="row">
-
     <!-- Row that contains the columns and commentary -->
-    <div *ngFor="let column_to_display of this.column_handler.columns" class="col overflow_column"
-      [hidden]="!column_to_display.visible" cdkScrollable>
-      <ng-container [ngTemplateOutlet]="fragment_column_template"
+    <div
+      *ngFor="let column_to_display of this.column_handler.columns"
+      class="col overflow_column"
+      [hidden]="!column_to_display.visible"
+      cdkScrollable>
+      <ng-container
+        [ngTemplateOutlet]="fragment_column_template"
         [ngTemplateOutletContext]="{ given_column: column_to_display }">
       </ng-container>
     </div>
 
     <!-- Column with commentary, shown if a fragment is clicked -->
-    <div class="col overflow_column">
-      <app-commentary [current_fragment]="this.current_fragment"></app-commentary>
+    <div class="col overflow_column" *ngIf="this.commentary_enabled">
+      <app-commentary [current_fragment]="this.current_fragment" [fragment_clicked]="this.fragment_clicked">
+      </app-commentary>
     </div>
     <!-- <hr> -->
   </div>
@@ -182,15 +129,23 @@
   <!-- Fragments loop to display all fragments of the chosen edition of reference -->
   <div class="row">
     <!-- Columns are connected via the cdkDropListConnectedTo property. -->
-    <div cdkDropList id="{{ given_column.column_id }}" [cdkDropListData]="given_column.fragments"
+    <div
+      cdkDropList
+      id="{{ given_column.column_id }}"
+      [cdkDropListData]="given_column.fragments"
       [cdkDropListConnectedTo]="this.column_handler.connected_columns_list"
       (cdkDropListDropped)="this.utility.drop($event)">
       <div *ngFor="let fragment of given_column.fragments">
-        <div class="fragment-box" (click)="request_commentary(fragment)" (click)="handle_fragment_click(fragment)"
-          cdkDrag [cdkDragDisabled]="this.settings.fragments.dragging_disabled"
-          (cdkDragDropped)="this.column_handler.track_edited_columns($event)" [attr.id]="fragment.fragment_id"
+        <div
+          class="fragment-box"
+          (click)="request_commentary(fragment)"
+          (click)="handle_fragment_click(fragment)"
+          cdkDrag
+          [cdkDragDisabled]="this.settings.fragments.dragging_disabled"
+          (cdkDragDropped)="this.column_handler.track_edited_columns($event)"
+          [attr.id]="fragment.fragment_id"
           [style.background-color]="
-            this.fragment_utilities.generate_fragment_gradient_background_color(
+            this.generate_fragment_gradient_background_color(
               given_column.fragments.length,
               given_column.original_fragment_order.indexOf(fragment.name)
             )
@@ -201,7 +156,8 @@
             <i>{{ fragment.status }}</i>
           </div>
           <div *ngFor="let fragment_line of fragment.lines">
-            <p *ngIf="this.settings.fragments.show_line_names; else no_line_names"
+            <p
+              *ngIf="this.settings.fragments.show_line_names; else no_line_names"
               [innerHTML]="fragment_line.line_number + ': ' + fragment_line.text | safeHtml"></p>
             <ng-template #no_line_names>
               <!--safeHtml to allow whitespaces made by spans-->

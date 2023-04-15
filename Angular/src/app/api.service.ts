@@ -52,7 +52,7 @@ export class ApiService {
   public editors: editor[] = [];
   public fragment_names: fragment_name[] = [];
   public fragments: Fragment[] = [];
-  public fragment_key: fragment_key = {}; 
+  public fragment_key: fragment_key = {};
 
   // URL for production
   // FlaskURL: String = 'https://oscc.nolden.biz:5003/'; // For production (https)
@@ -73,10 +73,18 @@ export class ApiService {
 
   private create_fragment_key(author?: string, title?: string, editor?: string, name?: string): fragment_key {
     const key: fragment_key = {};
-    if (author) { key.author = author };
-    if (title) { key.title = title };
-    if (editor) { key.editor = editor };
-    if (name) { key.name = name };
+    if (author) {
+      key.author = author;
+    }
+    if (title) {
+      key.title = title;
+    }
+    if (editor) {
+      key.editor = editor;
+    }
+    if (name) {
+      key.name = name;
+    }
     return key;
   }
 
@@ -96,7 +104,7 @@ export class ApiService {
 
   public request_titles(author: string): void {
     this.titles = [];
-    this.fragment_key = this.create_fragment_key(author = author);
+    this.fragment_key = this.create_fragment_key((author = author));
     this.get_titles(this.fragment_key).subscribe({
       next: (data) => {
         data.forEach((value) => {
@@ -110,7 +118,7 @@ export class ApiService {
 
   public request_editors(author: string, title: string): void {
     this.editors = [];
-    this.fragment_key = this.create_fragment_key(author = author, title = title);
+    this.fragment_key = this.create_fragment_key((author = author), (title = title));
     this.get_editors(this.fragment_key).subscribe({
       next: (data) => {
         data.forEach((value) => {
@@ -124,7 +132,7 @@ export class ApiService {
 
   public request_fragment_names(author: string, title: string, editor: string): void {
     this.fragment_names = [];
-    this.fragment_key = this.create_fragment_key(author = author, title = title, editor = editor);
+    this.fragment_key = this.create_fragment_key((author = author), (title = title), (editor = editor));
     this.get_fragment_names(this.fragment_key).subscribe({
       next: (data) => {
         data.forEach((value) => {
@@ -136,16 +144,19 @@ export class ApiService {
     });
   }
 
-  public request_fragments(author: string, title: string, editor: string): void {
+  public request_fragments(author: string, title: string, editor: string, name?: string): void {
     this.fragments = [];
-    this.fragment_key = this.create_fragment_key(author = author, title = title, editor = editor);
+    this.fragment_key = this.create_fragment_key((author = author), (title = title), (editor = editor));
+    if (name) {
+      this.fragment_key.name = name;
+    }
     this.get_fragments(this.fragment_key).subscribe({
       next: (data) => {
         data.forEach((value) => {
           let fragment = new Fragment();
           fragment.set_fragment(value);
           this.fragments.push(fragment);
-        });        
+        });
         this.new_fragments_alert.next(1);
       },
       error: (err) => this.utility.handle_error_message(err),
@@ -340,7 +351,7 @@ export class ApiService {
 // Interceptor for HTTP errors
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor {
-  constructor(private api: ApiService) { }
+  constructor(private api: ApiService) {}
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
       tap({

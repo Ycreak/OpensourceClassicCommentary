@@ -3,10 +3,10 @@
  */
 import { Injectable } from '@angular/core';
 
-import { Column } from '../../models/Column';
+import { Column } from '@oscc/models/Column';
 
-import { ApiService } from '../../api.service';
-import { UtilityService } from '../../utility.service';
+import { ApiService } from '@oscc/api.service';
+import { UtilityService } from '@oscc/utility.service';
 
 @Injectable({
   providedIn: 'root',

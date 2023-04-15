@@ -1,5 +1,5 @@
 // Library imports
-import { Component, OnInit, AfterViewInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog'; // Library used for interacting with the page
 import { trigger, transition, style, animate } from '@angular/animations';
 import { environment } from '@src/environments/environment';
@@ -11,12 +11,9 @@ import { LoginComponent } from '@oscc/login/login.component';
 import { ApiService } from '@oscc/api.service';
 import { DialogService } from '@oscc/services/dialog.service';
 import { SettingsService } from '@oscc/services/settings.service';
-// import { WindowSizeWatcherService } from '@oscc/services/window-watcher.service';
 import { UtilityService } from '@oscc/utility.service';
 import { AuthService } from '@oscc/auth/auth.service';
-import { ColumnHandlerService } from './services/column-handler.service';
-import { PlaygroundHandlerService } from './services/playground-handler.service';
-import { FragmentUtilitiesService } from './services/fragment-utilities.service';
+import { ColumnHandlerService } from '@oscc/services/column-handler.service';
 
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
@@ -39,21 +36,15 @@ import { Introductions } from '@oscc/models/Introductions';
   ],
 })
 export class FragmentsComponent implements OnInit, AfterViewInit {
-  // Toggle switches for the HTML columns/modes
-  commentary_enabled: boolean = true;
-  playground_enabled: boolean = false;
-
-  // Data columns
-  commentary_column: Column;
+  @Input() commentary_enabled!: boolean;
 
   public current_fragment: Fragment; // Variable to store the clicked fragment and its data
   fragment_clicked: boolean = false; // Shows "click a fragment" banner at startup if nothing is yet selected
 
-  private authors_subscription: any;
-  private titles_subscription: any;
-  private editors_subscription: any;
+  // Subscription variables
   private fragments_subscription: any;
-  private fragment_names_subscription: any;
+
+  private playground_dragging = false; //TODO
 
   constructor(
     protected api: ApiService,
@@ -61,20 +52,15 @@ export class FragmentsComponent implements OnInit, AfterViewInit {
     protected auth_service: AuthService,
     protected dialog: DialogService,
     protected settings: SettingsService,
-    // protected window_watcher: WindowSizeWatcherService,
     private matdialog: MatDialog,
-    protected column_handler: ColumnHandlerService,
-    protected playground_handler: PlaygroundHandlerService,
-    protected fragment_utilities: FragmentUtilitiesService
-  ) { }
+    protected column_handler: ColumnHandlerService
+  ) {}
 
   ngOnInit(): void {
-    // Create the window watcher for mobile devices
-    // this.window_watcher.init(window.innerWidth);
     // Create an empty current_fragment variable to be filled whenever the user clicks a fragment
     this.current_fragment = new Fragment({});
     // Create a commentary column (deprecated -> can be replaced by simple linked_fragments list)
-    this.commentary_column = new Column({ column_id: '255' });
+    //this.commentary_column = new Column({ column_id: '255' });
     // Create the first column and push it to the columns list
     if (this.column_handler.columns.length < 1) {
       this.column_handler.columns.push(
@@ -86,56 +72,32 @@ export class FragmentsComponent implements OnInit, AfterViewInit {
       );
     }
     this.api.request_fragments('Ennius', 'Thyestes', 'TRF');
+    //this.request_introduction(this.commentary_column);
   }
 
   ngAfterViewInit() {
-    // this.authors_subscription = this.api.new_authors_alert.subscribe(() => {
-    //   console.log('authors', this.api.authors);
-    // });
-
-    // this.titles_subscription = this.api.new_titles_alert.subscribe(() => {
-    //   console.log('titles', this.api.titles);
-    // });
-
-    // this.editors_subscription = this.api.new_editors_alert.subscribe(() => {
-    //   console.log('editors', this.api.editors);
-    // });
-
-    // this.fragment_names_subscription = this.api.new_fragment_names_alert.subscribe(() => {
-    //   console.log('fragment_names', this.api.fragment_names);
-    // });
-
     /** Handle what happens when new fragments arrive */
     this.fragments_subscription = this.api.new_fragments_alert.subscribe(() => {
       let fragments = this.api.fragments;
       // A new list of fragments has arrived. Use the fragment key to find the corresponding column
-      const column = this.column_handler.columns.find((x) => 
-        x.author == this.api.fragment_key.author &&
-        x.title == this.api.fragment_key.title &&
-        x.editor == this.api.fragment_key.editor
+      const column = this.column_handler.columns.find(
+        (x) =>
+          x.author == this.api.fragment_key.author &&
+          x.title == this.api.fragment_key.title &&
+          x.editor == this.api.fragment_key.editor
       );
       // Prepare the fragments for publication
-      fragments = this.fragment_utilities.add_HTML_to_lines(fragments);
+      fragments = this.add_HTML_to_lines(fragments);
       fragments = fragments.sort(this.utility.sort_fragment_array_numerically);
-      fragments = this.fragment_utilities.sort_fragments_on_status(fragments);
+      fragments = this.sort_fragments_on_status(fragments);
 
       column.fragments = fragments;
       console.log('column', column);
     });
-
   }
 
   ngOnDestroy() {
-    // this.window_watcher.subscription$.unsubscribe();
-    this.authors_subscription.unsubscribe();
-    this.titles_subscription.unsubscribe();
-    this.editors_subscription.unsubscribe();
-    this.fragment_names_subscription.unsubscribe();
     this.fragments_subscription.unsubscribe();
-  }
-
-  protected request_commentary(fragment: Fragment): void {
-
   }
 
   /**
@@ -145,14 +107,14 @@ export class FragmentsComponent implements OnInit, AfterViewInit {
    */
   protected handle_fragment_click(fragment: Fragment, from_playground: boolean = false): void {
     // If we are currently dragging a fragment in the playground, we do not want the click even to fire.
-    if (!this.playground_handler.playground_dragging) {
-      this.fragment_utilities.fragment_clicked = true;
+    if (!this.playground_dragging) {
+      this.fragment_clicked = true;
       this.current_fragment = fragment;
 
-      console.log('frag', this.current_fragment)
+      console.log('frag', this.current_fragment);
 
       // Reset the commentary column and its linked fragments
-      this.commentary_column.linked_fragments_content = [];
+      //this.commentary_column.linked_fragments_content = [];
 
       // Now retrieve all linked fragments to show their content in the commentary column
       for (let i in fragment.linked_fragments) {
@@ -167,7 +129,7 @@ export class FragmentsComponent implements OnInit, AfterViewInit {
           .subscribe((data) => {
             let fragment = this.api.convert_fragment_json_to_typescript(data);
             // and push it to the commentary column (only one fragment in the list, so push the first one)
-            this.commentary_column.linked_fragments_content.push(fragment[0]);
+            //this.commentary_column.linked_fragments_content.push(fragment[0]);
             this.utility.spinner_off();
           });
       }
@@ -179,9 +141,9 @@ export class FragmentsComponent implements OnInit, AfterViewInit {
           this.column_handler.columns[index]
         );
       }
-      this.playground_handler.playground = this.column_handler.colour_fragments_black(
-        this.playground_handler.playground
-      );
+      //TODO: this.playground_handler.playground = this.column_handler.colour_fragments_black(
+      //this.playground_handler.playground
+      //);
       // Second, colour the clicked fragment
       fragment.colour = '#3F51B5';
       // Lastly, colour the linked fragments
@@ -192,7 +154,7 @@ export class FragmentsComponent implements OnInit, AfterViewInit {
       }
     } else {
       // After a drag, make sure to set the dragging boolean on false again
-      this.playground_handler.playground_dragging = false;
+      this.playground_dragging = false;
     }
   }
 
@@ -235,12 +197,12 @@ export class FragmentsComponent implements OnInit, AfterViewInit {
         // colour it if found
         if (corresponding_fragment) corresponding_fragment.colour = '#FF4081';
       }
-      // Do the same for the playground
-      let corresponding_fragment = this.playground_handler.playground.fragments.find(
-        (i) => i._id === linked_fragment_id
-      );
+      // Do the same for the playground TODO:
+      //let corresponding_fragment = this.playground_handler.playground.fragments.find(
+      //(i) => i._id === linked_fragment_id
+      //);
       // colour it if found
-      if (corresponding_fragment) corresponding_fragment.colour = '#FF4081';
+      //if (corresponding_fragment) corresponding_fragment.colour = '#FF4081';
     }
   }
 
@@ -267,22 +229,6 @@ export class FragmentsComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Simple function to toggle the playground column
-   * @author Ycreak
-   */
-  private toggle_playground(): void {
-    this.playground_enabled = !this.playground_enabled;
-  }
-
-  /**
-   * Simple function to toggle the commentary column
-   * @author Ycreak
-   */
-  private toggle_commentary(): void {
-    this.commentary_enabled = !this.commentary_enabled;
-  }
-
-  /**
    * This function opens the requested introduction in a dialog
    * @param requested_introduction string containing the requested introduction
    * @author Ycreak
@@ -292,5 +238,102 @@ export class FragmentsComponent implements OnInit, AfterViewInit {
     let new_introduction = new Introductions();
     let my_introduction = new_introduction.dict[requested_introduction];
     this.dialog.open_custom_dialog(my_introduction);
+  }
+
+  /**
+   * This function adds HTML to the lines of the given array. At the moment,
+   * it converts white space encoding for every applicable line by looping through
+   * all elements in a fragment list.
+   * @param array with fragments as retrieved from the server
+   * @returns updated array with nice HTML formatting included
+   * @author Ycreak
+   */
+  public add_HTML_to_lines(array: Fragment[]): Fragment[] {
+    // For each element in the given array
+    for (let fragment in array) {
+      // Loop through all fragments
+      let current_fragment = array[fragment];
+      for (let item in current_fragment.lines) {
+        // Loop through all lines of current fragment
+        let line_text = current_fragment.lines[item].text;
+        line_text = this.utility.convert_whitespace_encoding(line_text);
+        // Now push the updated lines to the correct place
+        let updated_lines = {
+          line_number: current_fragment.lines[item].line_number,
+          text: line_text,
+        };
+        current_fragment.lines[item] = updated_lines;
+      }
+    }
+    return array;
+  }
+
+  /**
+   * Given the author, title and editor, request the names of the fragments from the server.
+   * @param column that is to be filled with data
+   * @author Ycreak
+   */
+  public request_fragment_names(column: Column): void {
+    this.utility.spinner_on();
+    this.api
+      .get_fragment_names(
+        new Fragment({
+          author: column.selected_fragment_author,
+          title: column.selected_fragment_title,
+          editor: column.selected_fragment_editor,
+        })
+      )
+      .subscribe((data) => {
+        column.fragment_names = data.sort(this.utility.sort_array_numerically);
+        this.utility.spinner_off();
+      });
+  }
+
+  /**
+   * Sorts the given object of fragments on status. We want to display Certa, followed
+   * by Incerta and Adespota.
+   * @param fragments
+   * @returns fragments in the order we want
+   * @author Ycreak
+   */
+  public sort_fragments_on_status(fragments: Fragment[]): Fragment[] {
+    let normal = this.utility.filter_object_on_key(fragments, 'status', 'Certum');
+    let incerta = this.utility.filter_object_on_key(fragments, 'status', 'Incertum');
+    let adesp = this.utility.filter_object_on_key(fragments, 'status', 'Adesp.');
+    // Concatenate in the order we want
+    fragments = normal.concat(incerta).concat(adesp);
+    return fragments;
+  }
+
+  /**
+   * Simple function that generates a different background color
+   * for each fragment in a fragment column.
+   * This is to indicate the initial order of the fragments.
+   *
+   * Each fragment gets a color chosen from a set color
+   * brightness range, though two neighboring fragments can
+   * only have a set difference in brightness.
+   * @param n_fragments The total number of fragments in the column
+   * @param fragment_index The index of the current fragment
+   * @returns: Color as HSL value (presented as string)
+   * @author CptVickers
+   */
+  private generate_fragment_gradient_background_color(n_fragments: number, fragment_index: number) {
+    // console.log(this.oscc_settings.fragment_order_gradient);
+    if (this.settings.fragments.fragment_order_gradient == true) {
+      let max_brightness: number = 100;
+      let min_brightness: number = 80;
+      let max_brightness_diff: number = 10;
+
+      let brightness_step = (max_brightness - min_brightness) / n_fragments;
+      if (brightness_step > max_brightness_diff) {
+        brightness_step = max_brightness_diff;
+      }
+      let calculated_brightness = min_brightness + brightness_step * fragment_index;
+
+      return `HSL(0, 0%, ${calculated_brightness}%)`;
+    } else {
+      return 'transparent';
+    }
   }
 }

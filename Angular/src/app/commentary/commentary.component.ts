@@ -9,22 +9,13 @@ import { UtilityService } from '@oscc/utility.service';
 @Component({
   selector: 'app-commentary',
   templateUrl: './commentary.component.html',
-  styleUrls: ['./commentary.component.scss']
+  styleUrls: ['./commentary.component.scss'],
 })
 export class CommentaryComponent implements OnInit {
-
   @Input() current_fragment!: Fragment;
+  @Input() fragment_clicked!: boolean;
 
-  constructor(    
-    protected utility: UtilityService,
-    ){ }
+  constructor(protected utility: UtilityService) {}
 
-  ngOnInit(): void {
-    console.log(this.current_fragment)
-  }
-
-  test(){
-    console.log(this.current_fragment)
-  }
-
+  ngOnInit(): void {}
 }

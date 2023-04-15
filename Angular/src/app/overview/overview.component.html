@@ -1,64 +1,64 @@
-
 <!-- Navigation bar -->
 <mat-toolbar color="primary">
-    <span style="width: fit-content; transform: translateY(-1px)">
-      <h3 *ngIf="this.window_watcher.size > 725; else small_title" class="navbar">Open Source Classics Commentary</h3>
-    </span>
-  
-    <ng-template #small_title>
-      <h3 class="navbar">OSCC</h3>
-    </ng-template>
-  
-    <span class="spacer"></span>
-  
-    <!-- <button
-      mat-stroked-button
-      class="navbar"
-      *ngIf="this.auth_service.current_user_name == 'Lucus'"
-      (click)="this.utility.test('0')">
-      TEST
-    </button> -->
-  
-    <!-- <button
-      mat-stroked-button
-      *ngIf="!this.commentary_enabled; else commentary_disabled"
-      class="navbar button-margin"
-      (click)="this.toggle_commentary()">
-      COMMENTARY
-    </button> -->
-  
-    <!-- <ng-template #commentary_disabled>
-      <button mat-flat-button color="accent" class="button-margin" (click)="this.toggle_commentary()">COMMENTARY</button>
-    </ng-template> -->
-  
-    <!-- <button
-      mat-stroked-button
-      *ngIf="!this.playground_enabled; else playground_disabled"
-      class="navbar button-margin"
-      (click)="this.toggle_playground()">
-      PLAYGROUND
-    </button> -->
-  
-    <!-- <ng-template #playground_disabled>
-      <button mat-flat-button class="button-margin" color="accent" (click)="this.toggle_playground()">PLAYGROUND</button>
-    </ng-template> -->
-  
-    <button mat-stroked-button class="navbar" [matMenuTriggerFor]="menu">
-      <mat-icon *ngIf="this.window_watcher.size > 850" fontIcon="menu"></mat-icon>
-      MENU
-    </button>
-  </mat-toolbar>
-  
-  <!-- Navigation bar menu -->
-  <mat-menu #menu="matMenu">
-    <!-- <button (click)="login()" mat-menu-item>Login</button> -->
-    <button mat-menu-item routerLink="/dashboard" *ngIf="this.auth_service.is_logged_in">Dashboard</button>
-    <button mat-menu-item routerLink="/scansion" *ngIf="this.auth_service.is_logged_in">Scansion</button>
-    <a href="https://github.com/Ycreak/OpensourceClassicCommentary/" target="_blank" mat-menu-item>Documentation</a>
-    <!-- <button (click)="open_settings()" mat-menu-item>Settings</button> -->
-    <button routerLink="/tests" mat-menu-item *ngIf="this.auth_service.is_logged_in">Unit Tests</button>
-    <!-- <button (click)="this.dialog.open_about_dialog()" mat-menu-item>About</button> -->
-    <div mat-menu-item>V23.03.12</div>
-  </mat-menu>
+  <span style="width: fit-content; transform: translateY(-1px)">
+    <h3 *ngIf="this.window_watcher.size > 725; else small_title" class="navbar">Open Source Classics Commentary</h3>
+  </span>
 
-  <app-fragments></app-fragments>
+  <ng-template #small_title>
+    <h3 class="navbar">OSCC</h3>
+  </ng-template>
+
+  <span class="spacer"></span>
+
+  <button
+    mat-stroked-button
+    class="navbar"
+    *ngIf="this.auth_service.current_user_name == 'Lucus'"
+    (click)="this.utility.test('0')">
+    TEST
+  </button>
+
+  <button
+    mat-stroked-button
+    *ngIf="!this.commentary_enabled; else commentary_disabled"
+    class="navbar button-margin"
+    (click)="this.toggle_commentary()">
+    COMMENTARY
+  </button>
+
+  <ng-template #commentary_disabled>
+    <button mat-flat-button color="accent" class="button-margin" (click)="this.toggle_commentary()">COMMENTARY</button>
+  </ng-template>
+
+  <button
+    mat-stroked-button
+    *ngIf="!this.playground_enabled; else playground_disabled"
+    class="navbar button-margin"
+    (click)="this.toggle_playground()">
+    PLAYGROUND
+  </button>
+
+  <ng-template #playground_disabled>
+    <button mat-flat-button class="button-margin" color="accent" (click)="this.toggle_playground()">PLAYGROUND</button>
+  </ng-template>
+
+  <button mat-stroked-button class="navbar" [matMenuTriggerFor]="menu">
+    <mat-icon *ngIf="this.window_watcher.size > 850" fontIcon="menu"></mat-icon>
+    MENU
+  </button>
+</mat-toolbar>
+
+<!-- Navigation bar menu -->
+<mat-menu #menu="matMenu">
+  <!-- <button (click)="login()" mat-menu-item>Login</button> -->
+  <button mat-menu-item routerLink="/dashboard" *ngIf="this.auth_service.is_logged_in">Dashboard</button>
+  <button mat-menu-item routerLink="/scansion" *ngIf="this.auth_service.is_logged_in">Scansion</button>
+  <a href="https://github.com/Ycreak/OpensourceClassicCommentary/" target="_blank" mat-menu-item>Documentation</a>
+  <button (click)="open_settings()" mat-menu-item>Settings</button>
+  <button routerLink="/tests" mat-menu-item *ngIf="this.auth_service.is_logged_in">Unit Tests</button>
+  <!-- <button (click)="this.dialog.open_about_dialog()" mat-menu-item>About</button> -->
+  <div mat-menu-item>V23.03.12</div>
+</mat-menu>
+
+<!--<app-fragments [commentary_enabled]="this.commentary_enabled"></app-fragments>-->
+<app-playground *ngIf="this.playground_enabled"></app-playground>
