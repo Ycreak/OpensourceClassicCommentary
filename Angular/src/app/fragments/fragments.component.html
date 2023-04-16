@@ -5,25 +5,16 @@
 <ng-template #column_toolbar let-column_to_display="given_column">
 <!--<ng-template #commentary_column_template let-given_fragment="given_fragment">-->
   <mat-toolbar class="column-toolbar">
-  <div>
-    <button class="navbar" mat-button (click)="this.column_handler.add_new_column()">Add column</button>
-    |
-    <!-- Separator-->
-  </div>
 
   <!--<ng-container *ngFor="let column_to_display of this.column_handler.columns">-->
     <!-- Checkbox to hide and show columns -->
-    <mat-checkbox ngDefaultControl [(ngModel)]="column_to_display.visible"> </mat-checkbox>
+    <!--<mat-checkbox ngDefaultControl [(ngModel)]="column_to_display.visible"> </mat-checkbox>-->
 
     <!-- Button to select the text -->
-    <button class="navbar" mat-button [matMenuTriggerFor]="menu_authors" (click)="column_to_display.new_column = false">
-      <ng-container *ngIf="column_to_display.new_column; else text_button_clicked"> Select Text </ng-container>
-
-      <ng-template #text_button_clicked>
-        {{ column_to_display.author }}-{{ column_to_display.title }}-{{ column_to_display.editor }}
-        <sup *ngIf="column_to_display.edited">altered</sup>
-      </ng-template>
+    <button mat-button [matMenuTriggerFor]="menu_authors" (click)="column_to_display.new_column = false">
+      Select text
     </button>
+
 
     <!-- Nested menu to select author - title - editor. -->
     <mat-menu #menu_authors="matMenu">
@@ -82,7 +73,7 @@
       <mat-icon>clear</mat-icon>
     </button>
 
-    |
+    
     <!-- Separator-->
   <!--</ng-container>-->
 </mat-toolbar>
@@ -93,8 +84,15 @@
 <!--<mat-progress-bar *ngIf="this.api.spinner" mode="query"></mat-progress-bar>-->
 
 <!-- Container for the page. One row per item (commentary, playground, multiplayer, etc.) -->
-<!--<div class="container-fluid">-->
-  <!--<div class="row">-->
+  <mat-toolbar class="column-toolbar2">
+    <div>
+      <button class="navbar" mat-button (click)="this.column_handler.add_new_column()">Add column</button>
+    </div>
+  </mat-toolbar>
+    <mat-progress-bar mode="query" *ngIf="this.api.spinner"></mat-progress-bar>
+
+    <div class="container-fluid">
+  <div class="row">
     <!-- Row that contains the columns and commentary -->
     <div
       *ngFor="let column_to_display of this.column_handler.columns"
@@ -107,15 +105,8 @@
       </ng-container>
     </div>
 
-    <!-- Column with commentary, shown if a fragment is clicked -->
-    <!--<div class="col overflow_column" *ngIf="this.commentary_enabled">-->
-      <!--<app-commentary [current_fragment]="this.current_fragment" [fragment_clicked]="this.fragment_clicked">-->
-      <!--</app-commentary>-->
-    <!--</div>-->
-     <!--<hr> -->
-  <!--</div>-->
-  <!-- Closes the row -->
-<!--</div>-->
+    </div>
+  </div>
 
 <!-- Template for a fragment column -->
 <ng-template #fragment_column_template let-given_column="given_column" let-hint="hint">

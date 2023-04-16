@@ -19,7 +19,7 @@ import { LoginComponent } from '@oscc/login/login.component';
 
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
-// import { ColumnHandlerService } from './services/column-handler.service';
+ import { ColumnHandlerService } from '@oscc/services/column-handler.service';
 
 @Component({
   selector: 'app-overview',
@@ -32,6 +32,7 @@ export class OverviewComponent implements OnInit {
 
   protected current_fragment: Fragment;
 
+  protected temp = 'col-2';
 
   constructor(
     protected api: ApiService,
@@ -41,7 +42,7 @@ export class OverviewComponent implements OnInit {
     protected settings: SettingsService,
     protected window_watcher: WindowSizeWatcherService,
      private matdialog: MatDialog,
-    // protected column_handler: ColumnHandlerService,
+     protected column_handler: ColumnHandlerService,
     protected fragments: FragmentsComponent
   ) {}
 

@@ -3,7 +3,7 @@
   <div class="row">
     <div class="col-3">
       <!-- Button to select the text -->
-      <button class="navbar" mat-button [matMenuTriggerFor]="menu_authors" (click)="this.playground.new_column = false">
+      <button mat-button [matMenuTriggerFor]="menu_authors" (click)="this.playground.new_column = false">
         <ng-container *ngIf="this.playground.new_column; else text_button_clicked"> Select Text </ng-container>
 
         <ng-template #text_button_clicked>

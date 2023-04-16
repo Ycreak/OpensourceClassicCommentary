@@ -119,7 +119,8 @@
   max-height: 30px;
   // min-height: 30px;
   background: #9fa8da;
-  color: white;
+  color: black;
+  outline: 2px solid black;
 
   // display : inline-block;
   // // align-items : center;
@@ -127,4 +128,9 @@
   // vertical-align: top !important;
 
   // align-items: center;
+}
+.column-toolbar2 {
+  max-height: 30px;
+  background: #9fa1fe;
+  color: white;
 }

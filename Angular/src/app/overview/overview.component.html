@@ -22,12 +22,18 @@
     mat-stroked-button
     *ngIf="!this.commentary_enabled; else commentary_disabled"
     class="navbar button-margin"
-    (click)="this.toggle_commentary()">
+    (click)="this.toggle_commentary()"
+      (click)="drawer.toggle()"                                           
+    >
     COMMENTARY
   </button>
 
   <ng-template #commentary_disabled>
-    <button mat-flat-button color="accent" class="button-margin" (click)="this.toggle_commentary()">COMMENTARY</button>
+    <button mat-flat-button color="accent" class="button-margin" 
+      (click)="this.toggle_commentary()"
+      (click)="drawer.toggle()"                                           
+      >
+      COMMENTARY</button>
   </ng-template>
 
   <button
@@ -61,33 +67,26 @@
 </mat-menu>
 
 <!-- Display for if server is down -->
-<!-- TODO: move to overview component -->
-<!--<div *ngIf="this.api.get_network_status() === false" class="alert alert-warning" role="alert" @fadeSlideInOut>-->
-  <!--Your client cannot connect to the server. Please check if you have the latest version of your browser installed.-->
-  <!--Furthermore, secured networks like DUWO and Leiden University are known to cause problems. Also, please click-->
-  <!--<u><a href="https://oscc.lucdh.nl">the following URL</a></u> for the best results. Please contact the administrators-->
-  <!--if problems are still occuring.-->
-<!--</div>-->
-
-<div class="container-fluid">
-  <div class="row">
-    <!-- Row that contains the columns and commentary -->
-     <!--<div class="col overflow_column">-->
-    <app-fragments (fragment_clicked2)="this.current_fragment = $event"></app-fragments>
-     <!--</div>-->
-
-     <!--Column with commentary, shown if a fragment is clicked -->
-     <div class="col overflow_column">
-      <app-commentary [current_fragment]="this.current_fragment">
-      </app-commentary>
-    </div>
-     <div class="col overflow_column">
-       i am a column
-    </div>
-
-     <hr> 
-  </div>
-  <!-- Closes the row -->
+<div *ngIf="this.api.get_network_status() === false" class="alert alert-warning" role="alert" @fadeSlideInOut>
+  Your client cannot connect to the server. Please check if you have the latest version of your browser installed.
+  Furthermore, secured networks like DUWO and Leiden University are known to cause problems. Also, please click
+  <u><a href="https://oscc.lucdh.nl">the following URL</a></u> for the best results. Please contact the administrators
+  if problems are still occuring.
 </div>
-<!--<app-commentary [current_fragment]="this.current_fragment"></app-commentary>-->
-<app-playground *ngIf="this.playground_enabled"></app-playground>
+
+<div>
+  <mat-drawer-container class="example-container" autosize>
+    <div class="example-sidenav-content">
+      <app-fragments (fragment_clicked2)="this.current_fragment = $event"></app-fragments>
+    </div>
+    <hr>
+
+    <mat-drawer #drawer class="example-sidenav" mode="side" position="end" opened="true">
+      <div style="padding:0.5em">
+        <app-commentary [current_fragment]="this.current_fragment"></app-commentary>
+      </div>
+    </mat-drawer>
+  </mat-drawer-container>
+  <hr />
+    <app-playground *ngIf="this.playground_enabled"></app-playground>
+</div>
