@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
@@ -13,9 +13,18 @@ import { UtilityService } from '@oscc/utility.service';
 })
 export class CommentaryComponent implements OnInit {
   @Input() current_fragment!: Fragment;
-  @Input() fragment_clicked!: boolean;
+  //@Input() fragment_clicked!: boolean;
+
+  protected fragment_clicked = false;
 
   constructor(protected utility: UtilityService) {}
 
   ngOnInit(): void {}
+
+  ngOnChanges(changes: SimpleChanges) {
+    // If the input fragment changes, we will note that a fragment has been clicked
+    if (changes.current_fragment.currentValue.author != ""){
+      this.fragment_clicked = true;
+    }
+  }
 }

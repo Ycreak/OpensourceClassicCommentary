@@ -38,7 +38,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit(): void {
     this.playground = new Column({ column_id: '0', type: 'playground' });
-    this.api.request_authors();
+    //this.api.request_authors();
   }
 
   ngAfterViewInit() {
@@ -63,6 +63,45 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   protected request_fragments(temp: any) {}
+
+  /**
+   * Function to handle what happens when a fragment is selected in HTML.
+   * @param fragment selected by the user
+   * @author Ycreak
+   */
+  protected handle_fragment_click(fragment: Fragment, from_playground: boolean = false): void {
+    // If we are currently dragging a fragment in the playground, we do not want the click even to fire.
+    if (!this.playground_dragging) {
+      //this.fragment_clicked = true;
+      //this.current_fragment = fragment;
+
+      //console.log('frag', this.current_fragment);
+
+      // The next part handles the colouring of clicked and referenced fragments.
+      // First, restore all fragments to their original black colour when a new fragment is clicked
+      for (let index in this.column_handler.columns) {
+        this.column_handler.columns[index] = this.column_handler.colour_fragments_black(
+          this.column_handler.columns[index]
+        );
+      }
+      //TODO: this.playground_handler.playground = this.column_handler.colour_fragments_black(
+      //this.playground_handler.playground
+      //);
+      // Second, colour the clicked fragment
+      fragment.colour = '#3F51B5';
+      // Lastly, colour the linked fragments
+      //this.colour_linked_fragments(fragment);
+      // And scroll each column to the linked fragment if requested
+    } else {
+      // After a drag, make sure to set the dragging boolean on false again
+      this.playground_dragging = false;
+    }
+  }
+
+
+
+
+
   /**
    * This function allows the playground to delete notes and fragements
    * @param column column from which the deletion is to take place

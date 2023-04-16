@@ -1,5 +1,6 @@
 // Library imports
 import { Component, OnInit, Input, AfterViewInit, ViewEncapsulation } from '@angular/core';
+import { Output, EventEmitter } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog'; // Library used for interacting with the page
 import { trigger, transition, style, animate } from '@angular/animations';
 import { environment } from '@src/environments/environment';
@@ -36,7 +37,8 @@ import { Introductions } from '@oscc/models/Introductions';
   ],
 })
 export class FragmentsComponent implements OnInit, AfterViewInit {
-  @Input() commentary_enabled!: boolean;
+  //@Input() commentary_enabled!: boolean;
+  @Output() fragment_clicked2 = new EventEmitter<Fragment>();
 
   public current_fragment: Fragment; // Variable to store the clicked fragment and its data
   fragment_clicked: boolean = false; // Shows "click a fragment" banner at startup if nothing is yet selected
@@ -92,7 +94,6 @@ export class FragmentsComponent implements OnInit, AfterViewInit {
       fragments = this.sort_fragments_on_status(fragments);
 
       column.fragments = fragments;
-      console.log('column', column);
     });
   }
 
@@ -106,12 +107,11 @@ export class FragmentsComponent implements OnInit, AfterViewInit {
    * @author Ycreak
    */
   protected handle_fragment_click(fragment: Fragment, from_playground: boolean = false): void {
+    this.fragment_clicked2.emit(fragment);
     // If we are currently dragging a fragment in the playground, we do not want the click even to fire.
     if (!this.playground_dragging) {
       this.fragment_clicked = true;
       this.current_fragment = fragment;
-
-      console.log('frag', this.current_fragment);
 
       // Reset the commentary column and its linked fragments
       //this.commentary_column.linked_fragments_content = [];
@@ -206,13 +206,6 @@ export class FragmentsComponent implements OnInit, AfterViewInit {
     }
   }
 
-  /**
-   * Function to handle the login dialog
-   * @author Ycreak
-   */
-  public login(): void {
-    const dialogRef = this.matdialog.open(LoginComponent, {});
-  }
 
   /**
    * Function to handle the settings dialog. Will save changes via the oscc_settings object

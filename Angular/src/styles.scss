@@ -11,3 +11,7 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+.overflow_column {
+  height: 100vh;
+  overflow: scroll;
+}

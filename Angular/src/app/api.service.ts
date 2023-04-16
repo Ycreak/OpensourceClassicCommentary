@@ -42,6 +42,7 @@ export interface fragment_name {
 })
 export class ApiService {
   network_status: boolean; // Indicates if server is reachable or not
+  spinner: boolean;
 
   constructor(private http: HttpClient, private utility: UtilityService) {
     this.network_status = true; // Assumed online until HttpErrorResponse is received.
@@ -145,6 +146,7 @@ export class ApiService {
   }
 
   public request_fragments(author: string, title: string, editor: string, name?: string): void {
+    this.spinner_on();
     this.fragments = [];
     this.fragment_key = this.create_fragment_key((author = author), (title = title), (editor = editor));
     if (name) {
@@ -158,6 +160,7 @@ export class ApiService {
           this.fragments.push(fragment);
         });
         this.new_fragments_alert.next(1);
+        this.spinner_off();
       },
       error: (err) => this.utility.handle_error_message(err),
     });
@@ -346,6 +349,25 @@ export class ApiService {
   public scan_lines(lines: object): Observable<any> {
     return this.http.post<any>(this.NeuralURL + `scan_lines`, lines, { observe: 'body', responseType: 'json' });
   }
+
+  /**
+   * Simple function to toggle the spinner
+   * @author Ycreak
+   */
+  public spinner_on(): void {
+    this.spinner = true;
+  }
+
+  /**
+   * Simple function to toggle the spinner
+   * @author Ycreak
+   */
+  public spinner_off(): void {
+    this.spinner = false;
+  }
+
+
+
 }
 
 // Interceptor for HTTP errors

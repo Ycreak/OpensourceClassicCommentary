@@ -1,5 +1,4 @@
 <!-- <div *ngIf="commentary_enabled" class="col overflow_column"> TODO: -->
-<div class="col overflow_column">
   <!-- Show either fragment data or the fact that no fragment has been selected yet. -->
   <div *ngIf="this.fragment_clicked; else no_fragment_clicked">
     <!-- Fragment information -->
@@ -38,7 +37,6 @@
                 [ngTemplateOutletContext]="{ given_fragment: linked_fragment }"></ng-container>
         </div>
     </div> -->
-</div>
 
 <!-- Template for commentary column -->
 <ng-template #commentary_column_template let-given_fragment="given_fragment">

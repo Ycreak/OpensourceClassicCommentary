@@ -14,6 +14,11 @@ import { AuthService } from '@oscc/auth/auth.service';
 
 import { FragmentsComponent } from '@oscc/fragments/fragments.component';
 
+// Component imports
+import { LoginComponent } from '@oscc/login/login.component';
+
+// Model imports
+import { Fragment } from '@oscc/models/Fragment';
 // import { ColumnHandlerService } from './services/column-handler.service';
 
 @Component({
@@ -25,6 +30,9 @@ export class OverviewComponent implements OnInit {
   protected commentary_enabled = true;
   protected playground_enabled = true;
 
+  protected current_fragment: Fragment;
+
+
   constructor(
     protected api: ApiService,
     // protected utility: UtilityService,
@@ -32,7 +40,7 @@ export class OverviewComponent implements OnInit {
     protected dialog: DialogService,
     protected settings: SettingsService,
     protected window_watcher: WindowSizeWatcherService,
-    // private matdialog: MatDialog,
+     private matdialog: MatDialog,
     // protected column_handler: ColumnHandlerService,
     protected fragments: FragmentsComponent
   ) {}
@@ -42,6 +50,7 @@ export class OverviewComponent implements OnInit {
     this.window_watcher.init(window.innerWidth);
     //console.log('hello', this.fragments.playground_enabled)
     // this.api.request_authors2();
+    this.current_fragment = new Fragment({});
   }
 
   // ngAfterViewInit() {
@@ -52,6 +61,10 @@ export class OverviewComponent implements OnInit {
 
   ngOnDestroy() {
     this.window_watcher.subscription$.unsubscribe();
+  }
+
+  test(item){
+    console.log('hi', item)
   }
 
   /**
@@ -81,5 +94,13 @@ export class OverviewComponent implements OnInit {
         this.settings.fragments.auto_scroll_linked_fragments = result['auto_scroll_linked_fragments'];
       }
     });
+  }
+  
+  /**
+   * Function to handle the login dialog
+   * @author Ycreak
+   */
+  public login(): void {
+    const dialogRef = this.matdialog.open(LoginComponent, {});
   }
 }

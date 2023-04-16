@@ -2,14 +2,16 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 
 <!-- Secondary toolbar to manage columns -->
-<mat-toolbar class="column-toolbar">
+<ng-template #column_toolbar let-column_to_display="given_column">
+<!--<ng-template #commentary_column_template let-given_fragment="given_fragment">-->
+  <mat-toolbar class="column-toolbar">
   <div>
     <button class="navbar" mat-button (click)="this.column_handler.add_new_column()">Add column</button>
     |
     <!-- Separator-->
   </div>
 
-  <ng-container *ngFor="let column_to_display of this.column_handler.columns">
+  <!--<ng-container *ngFor="let column_to_display of this.column_handler.columns">-->
     <!-- Checkbox to hide and show columns -->
     <mat-checkbox ngDefaultControl [(ngModel)]="column_to_display.visible"> </mat-checkbox>
 
@@ -82,25 +84,17 @@
 
     |
     <!-- Separator-->
-  </ng-container>
+  <!--</ng-container>-->
 </mat-toolbar>
+</ng-template>
+<!--<div class="div-padding-sm"></div>-->
 
 <!-- Loading spinner to show data is being retrieved from the server -->
-<mat-progress-bar *ngIf="this.utility.spinner" mode="query"></mat-progress-bar>
-
-<div class="div-padding-sm"></div>
-
-<!-- Display for if server is down -->
-<div *ngIf="this.api.get_network_status() === false" class="alert alert-warning" role="alert" @fadeSlideInOut>
-  Your client cannot connect to the server. Please check if you have the latest version of your browser installed.
-  Furthermore, secured networks like DUWO and Leiden University are known to cause problems. Also, please click
-  <u><a href="https://oscc.lucdh.nl">the following URL</a></u> for the best results. Please contact the administrators
-  if problems are still occuring.
-</div>
+<!--<mat-progress-bar *ngIf="this.api.spinner" mode="query"></mat-progress-bar>-->
 
 <!-- Container for the page. One row per item (commentary, playground, multiplayer, etc.) -->
-<div class="container-fluid">
-  <div class="row">
+<!--<div class="container-fluid">-->
+  <!--<div class="row">-->
     <!-- Row that contains the columns and commentary -->
     <div
       *ngFor="let column_to_display of this.column_handler.columns"
@@ -114,20 +108,22 @@
     </div>
 
     <!-- Column with commentary, shown if a fragment is clicked -->
-    <div class="col overflow_column" *ngIf="this.commentary_enabled">
-      <app-commentary [current_fragment]="this.current_fragment" [fragment_clicked]="this.fragment_clicked">
-      </app-commentary>
-    </div>
-    <!-- <hr> -->
-  </div>
+    <!--<div class="col overflow_column" *ngIf="this.commentary_enabled">-->
+      <!--<app-commentary [current_fragment]="this.current_fragment" [fragment_clicked]="this.fragment_clicked">-->
+      <!--</app-commentary>-->
+    <!--</div>-->
+     <!--<hr> -->
+  <!--</div>-->
   <!-- Closes the row -->
-</div>
+<!--</div>-->
 
 <!-- Template for a fragment column -->
 <ng-template #fragment_column_template let-given_column="given_column" let-hint="hint">
-  <div class="div-padding-sm"></div>
+    <ng-container
+      [ngTemplateOutlet]="column_toolbar"
+      [ngTemplateOutletContext]="{ given_column: given_column }"></ng-container>
   <!-- Fragments loop to display all fragments of the chosen edition of reference -->
-  <div class="row">
+  <!--<div class="row">-->
     <!-- Columns are connected via the cdkDropListConnectedTo property. -->
     <div
       cdkDropList
@@ -138,7 +134,6 @@
       <div *ngFor="let fragment of given_column.fragments">
         <div
           class="fragment-box"
-          (click)="request_commentary(fragment)"
           (click)="handle_fragment_click(fragment)"
           cdkDrag
           [cdkDragDisabled]="this.settings.fragments.dragging_disabled"
@@ -165,7 +160,7 @@
             </ng-template>
           </div>
         </div>
-      </div>
+      <!--</div>-->
     </div>
   </div>
 </ng-template>
