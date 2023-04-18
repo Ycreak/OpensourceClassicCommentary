@@ -117,19 +117,11 @@
 
 .column-toolbar {
   max-height: 30px;
-  // min-height: 30px;
-  background: #9fa8da;
-  color: black;
-  outline: 2px solid black;
-
-  // display : inline-block;
-  // // align-items : center;
-
-  // vertical-align: top !important;
-
-  // align-items: center;
+  color: white;
+  // outline: 1px solid black;
+  background: #9fa1fe;
 }
-.column-toolbar2 {
+.main-column-toolbar {
   max-height: 30px;
   background: #9fa1fe;
   color: white;

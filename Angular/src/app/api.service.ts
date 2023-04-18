@@ -145,7 +145,7 @@ export class ApiService {
     });
   }
 
-  public request_fragments(author: string, title: string, editor: string, name?: string): void {
+  public request_fragments(column_id: number, author: string, title: string, editor: string, name?: string): void {
     this.spinner_on();
     this.fragments = [];
     this.fragment_key = this.create_fragment_key((author = author), (title = title), (editor = editor));
@@ -159,7 +159,7 @@ export class ApiService {
           fragment.set_fragment(value);
           this.fragments.push(fragment);
         });
-        this.new_fragments_alert.next(1);
+        this.new_fragments_alert.next(column_id);
         this.spinner_off();
       },
       error: (err) => this.utility.handle_error_message(err),

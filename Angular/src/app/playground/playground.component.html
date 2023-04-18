@@ -36,7 +36,7 @@
     <div class="col-3">
       <button
         mat-stroked-button
-        (click)="this.api.request_fragments(this.playground.author, this.playground.title, this.playground.editor)"
+        (click)="this.api.request_fragments(this.playground.column_id, this.playground.author, this.playground.title, this.playground.editor)"
         (click)="this.single_fragment_requested = false">
         Add selected edition
       </button>

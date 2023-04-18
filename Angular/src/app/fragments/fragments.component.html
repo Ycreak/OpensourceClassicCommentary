@@ -53,7 +53,7 @@
           mat-menu-item
           (click)="column_to_display.editor = editor"
           (click)="
-            this.api.request_fragments(column_to_display.author, column_to_display.title, column_to_display.editor)
+            this.api.request_fragments(column_to_display.column_id, column_to_display.author, column_to_display.title, column_to_display.editor)
           ">
           {{ editor }}
         </button>
@@ -84,9 +84,9 @@
 <!--<mat-progress-bar *ngIf="this.api.spinner" mode="query"></mat-progress-bar>-->
 
 <!-- Container for the page. One row per item (commentary, playground, multiplayer, etc.) -->
-  <mat-toolbar class="column-toolbar2">
+  <mat-toolbar class="main-column-toolbar">
     <div>
-      <button class="navbar" mat-button (click)="this.column_handler.add_new_column()">Add column</button>
+      <button class="navbar" mat-button (click)="this.column_handler.add_new_column('fragment')">Add column</button>
     </div>
   </mat-toolbar>
     <mat-progress-bar mode="query" *ngIf="this.api.spinner"></mat-progress-bar>

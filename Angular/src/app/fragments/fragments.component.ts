@@ -56,7 +56,7 @@ export class FragmentsComponent implements OnInit, AfterViewInit {
     protected settings: SettingsService,
     private matdialog: MatDialog,
     protected column_handler: ColumnHandlerService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     // Create an empty current_fragment variable to be filled whenever the user clicks a fragment
@@ -67,33 +67,35 @@ export class FragmentsComponent implements OnInit, AfterViewInit {
     if (this.column_handler.columns.length < 1) {
       this.column_handler.columns.push(
         new Column({
+          column_id: 1,
           author: 'Ennius',
           title: 'Thyestes',
           editor: 'TRF',
         })
       );
     }
-    this.api.request_fragments('Ennius', 'Thyestes', 'TRF');
+    this.api.request_fragments(1, 'Ennius', 'Thyestes', 'TRF');
     //this.request_introduction(this.commentary_column);
   }
 
   ngAfterViewInit() {
     /** Handle what happens when new fragments arrive */
-    this.fragments_subscription = this.api.new_fragments_alert.subscribe(() => {
+    this.fragments_subscription = this.api.new_fragments_alert.subscribe((column_id) => {
       let fragments = this.api.fragments;
-      // A new list of fragments has arrived. Use the fragment key to find the corresponding column
+      // A new list of fragments has arrived. Use the column identifier to find the corresponding column
       const column = this.column_handler.columns.find(
         (x) =>
-          x.author == this.api.fragment_key.author &&
-          x.title == this.api.fragment_key.title &&
-          x.editor == this.api.fragment_key.editor
+          x.column_id == column_id
       );
-      // Prepare the fragments for publication
-      fragments = this.add_HTML_to_lines(fragments);
-      fragments = fragments.sort(this.utility.sort_fragment_array_numerically);
-      fragments = this.sort_fragments_on_status(fragments);
+      if (column) {
+        // Prepare the fragments for publication
+        fragments = this.add_HTML_to_lines(fragments);
+        fragments = fragments.sort(this.utility.sort_fragment_array_numerically);
+        fragments = this.sort_fragments_on_status(fragments);
 
-      column.fragments = fragments;
+        column.fragments = fragments;
+      }
+
     });
   }
 

@@ -20,7 +20,7 @@ export class Column {
 
   text_cache: any = text_cache;
 
-  column_id: string = ''; // has to be a string for cdkDrag
+  column_id: number; // has to be a string for cdkDrag
   type: string = ''; // denotes playground, commentary, text or fragment column
 
   selected_fragment_author: string = '';

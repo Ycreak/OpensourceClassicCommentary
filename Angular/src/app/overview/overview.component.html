@@ -88,5 +88,8 @@
     </mat-drawer>
   </mat-drawer-container>
   <hr />
-    <app-playground *ngIf="this.playground_enabled"></app-playground>
+    <app-playground 
+      *ngIf="this.playground_enabled"
+      (fragment_clicked)="this.current_fragment = $event"
+      ></app-playground>
 </div>

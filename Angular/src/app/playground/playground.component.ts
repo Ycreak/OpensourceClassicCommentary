@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { Output, EventEmitter } from '@angular/core';
 import { ColumnHandlerService } from '@oscc/services/column-handler.service';
 import { ApiService } from '@oscc/api.service';
 
@@ -16,6 +17,8 @@ import { Column } from '@oscc/models/Column';
   styleUrls: ['./playground.component.scss'],
 })
 export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
+  @Output() fragment_clicked = new EventEmitter<Fragment>();
+
   // Playground column that keeps all data related to said playground
   playground: Column;
   // Boolean to keep track if we are dragging or clicking a fragment within the playground
@@ -37,22 +40,22 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    this.playground = new Column({ column_id: '0', type: 'playground' });
-    //this.api.request_authors();
+    this.playground = new Column({ column_id: 0, type: 'playground' });
   }
 
   ngAfterViewInit() {
     /** Handle what happens when new fragments arrive */
-    this.fragments_subscription = this.api.new_fragments_alert.subscribe(() => {
-      console.log('new fragments!'); //let fragments = this.api.fragments;
-      if (this.single_fragment_requested) {
-        this.playground.fragments.concat(this.api.fragments);
-      } else {
-        this.playground.fragments = this.api.fragments;
+    this.fragments_subscription = this.api.new_fragments_alert.subscribe((column_id) => {
+      if(column_id == 0){
+        if (this.single_fragment_requested) {
+          this.playground.fragments.push(this.api.fragments[0]);
+        } else {
+          this.playground.fragments = this.api.fragments;
+        }
       }
     });
+    /** Handle what happens when new fragment names arrive */
     this.fragment_names_subscription = this.api.new_fragment_names_alert.subscribe(() => {
-      console.log('new fragment names!');
       this.playground.fragment_names = this.api.fragment_names;
     });
   }
@@ -62,8 +65,6 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
     this.fragment_names_subscription.unsubscribe();
   }
 
-  protected request_fragments(temp: any) {}
-
   /**
    * Function to handle what happens when a fragment is selected in HTML.
    * @param fragment selected by the user
@@ -72,11 +73,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
   protected handle_fragment_click(fragment: Fragment, from_playground: boolean = false): void {
     // If we are currently dragging a fragment in the playground, we do not want the click even to fire.
     if (!this.playground_dragging) {
-      //this.fragment_clicked = true;
-      //this.current_fragment = fragment;
-
-      //console.log('frag', this.current_fragment);
-
+      this.fragment_clicked.emit(fragment);
       // The next part handles the colouring of clicked and referenced fragments.
       // First, restore all fragments to their original black colour when a new fragment is clicked
       for (let index in this.column_handler.columns) {
@@ -84,23 +81,17 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
           this.column_handler.columns[index]
         );
       }
-      //TODO: this.playground_handler.playground = this.column_handler.colour_fragments_black(
-      //this.playground_handler.playground
-      //);
+      //TODO: 
+      this.playground = this.column_handler.colour_fragments_black(this.playground);
       // Second, colour the clicked fragment
       fragment.colour = '#3F51B5';
       // Lastly, colour the linked fragments
-      //this.colour_linked_fragments(fragment);
-      // And scroll each column to the linked fragment if requested
+      // this.colour_linked_fragments(fragment);
     } else {
       // After a drag, make sure to set the dragging boolean on false again
       this.playground_dragging = false;
     }
   }
-
-
-
-
 
   /**
    * This function allows the playground to delete notes and fragements
@@ -130,22 +121,12 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
   public add_single_fragment(column: Column, fragment_name: string): void {
     this.single_fragment_requested = true;
     // format the fragment and push it to the list
-    this.api
-      .get_fragments(
-        new Fragment({
-          author: column.selected_fragment_author,
-          title: column.selected_fragment_title,
-          editor: column.selected_fragment_editor,
-          name: fragment_name,
-        })
-      )
-      .subscribe((fragments) => {
-        let fragment_list = this.api.convert_fragment_json_to_typescript(fragments);
-        //FIXME: this could be more elegant. But the idea is that we need to add HTML. However,
-        // the function add_HTML_to_lines expects a list. This list always has one element.
-        //TODO: let html_fragment_list = this.fragment_utilities.add_HTML_to_lines([fragment_list[0]]);
-        //column.fragments.push(html_fragment_list[0]);
-        column.fragments.push(fragment_list[0]);
-      });
+    this.api.request_fragments(
+      column.column_id,
+      column.author,
+      column.title,
+      column.editor,
+      fragment_name
+    );
   }
 }
