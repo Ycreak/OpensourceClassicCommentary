@@ -46,7 +46,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
   ngAfterViewInit() {
     /** Handle what happens when new fragments arrive */
     this.fragments_subscription = this.api.new_fragments_alert.subscribe((column_id) => {
-      if(column_id == 0){
+      if (column_id == 0) {
         if (this.single_fragment_requested) {
           this.playground.fragments.push(this.api.fragments[0]);
         } else {
@@ -55,8 +55,10 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     });
     /** Handle what happens when new fragment names arrive */
-    this.fragment_names_subscription = this.api.new_fragment_names_alert.subscribe(() => {
-      this.playground.fragment_names = this.api.fragment_names;
+    this.fragment_names_subscription = this.api.new_fragment_names_alert.subscribe((column_id) => {
+      if (column_id == 0) {
+        this.playground.fragment_names = this.api.fragment_names;
+      }
     });
   }
 
@@ -81,7 +83,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
           this.column_handler.columns[index]
         );
       }
-      //TODO: 
+      //TODO:
       this.playground = this.column_handler.colour_fragments_black(this.playground);
       // Second, colour the clicked fragment
       fragment.colour = '#3F51B5';
@@ -121,12 +123,6 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
   public add_single_fragment(column: Column, fragment_name: string): void {
     this.single_fragment_requested = true;
     // format the fragment and push it to the list
-    this.api.request_fragments(
-      column.column_id,
-      column.author,
-      column.title,
-      column.editor,
-      fragment_name
-    );
+    this.api.request_fragments(column.column_id, column.author, column.title, column.editor, fragment_name);
   }
 }

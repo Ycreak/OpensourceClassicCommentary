@@ -53,6 +53,8 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+  private fragment_names_subscription: any;
+
   hide: boolean = true; // Whether to hide passwords in the material form fields
 
   // We only allow the delete fragment button if one is actually selected.
@@ -138,7 +140,7 @@ export class DashboardComponent implements OnInit {
     this.request_users();
 
     // We will store all dashboard data in the following data object
-    this.selected_fragment_data = new Column();
+    this.selected_fragment_data = new Column({ column_id: 255 });
     this.linked_fragment_data = new Column();
 
     this.api.request_authors2(this.selected_fragment_data);
@@ -152,6 +154,13 @@ export class DashboardComponent implements OnInit {
     this.user_table_users.paginator = this.paginator;
     this.user_table_users.sort = this.matSort;
     this.expand_user_table_row();
+
+    /** Handle what happens when new fragment names arrive */
+    this.fragment_names_subscription = this.api.new_fragment_names_alert.subscribe((column_id) => {
+      if (column_id == 255) {
+        this.selected_fragment_data.fragment_names = this.api.fragment_names;
+      }
+    });
   }
 
   /**
@@ -456,10 +465,10 @@ export class DashboardComponent implements OnInit {
     this.api
       .get_fragments(
         new Fragment({
-          author: column.selected_fragment_author,
-          title: column.selected_fragment_title,
-          editor: column.selected_fragment_editor,
-          name: column.selected_fragment_name,
+          author: column.author,
+          title: column.title,
+          editor: column.editor,
+          name: column.name,
         })
       )
       .subscribe((data) => {
@@ -468,10 +477,10 @@ export class DashboardComponent implements OnInit {
 
         this.convert_Fragment_to_fragment_form(fragment);
         // Also update the selection fields
-        column.selected_fragment_author = fragment.author;
-        column.selected_fragment_title = fragment.title;
-        column.selected_fragment_editor = fragment.editor;
-        column.selected_fragment_name = fragment.name;
+        column.author = fragment.author;
+        column.title = fragment.title;
+        column.editor = fragment.editor;
+        column.name = fragment.name;
         this.utility.toggle_spinner();
       });
   }
@@ -506,7 +515,7 @@ export class DashboardComponent implements OnInit {
         .open_confirmation_dialog('Are you sure you want to REVISE this fragment?', item_string)
         .subscribe((result) => {
           if (result) {
-            this.utility.spinner_on();
+            this.api.spinner_on();
 
             this.api.revise_fragment(this.convert_fragment_form_to_Fragment(fragment_form)).subscribe({
               next: (res) => {
@@ -522,7 +531,7 @@ export class DashboardComponent implements OnInit {
 
                 console.log(this.selected_fragment_data);
                 this.retrieve_requested_fragment(this.selected_fragment_data);
-                this.utility.spinner_off();
+                this.api.spinner_off();
               },
               error: (err) => this.utility.handle_error_message(err),
             });
@@ -557,7 +566,7 @@ export class DashboardComponent implements OnInit {
       .open_confirmation_dialog('Are you sure you want to CREATE this fragment?', item_string)
       .subscribe((result) => {
         if (result) {
-          this.utility.spinner_on();
+          this.api.spinner_on();
 
           this.api.create_fragment(this.convert_fragment_form_to_Fragment(fragment_form)).subscribe({
             next: (res) => {
@@ -571,7 +580,7 @@ export class DashboardComponent implements OnInit {
               this.api.request_fragment_names2(this.selected_fragment_data);
               // Also, retrieve that revised fragment so we can continue editing!
               this.retrieve_requested_fragment(this.selected_fragment_data);
-              this.utility.spinner_off();
+              this.api.spinner_off();
             },
             error: (err) => this.utility.handle_error_message(err),
           });
@@ -599,7 +608,7 @@ export class DashboardComponent implements OnInit {
       .open_confirmation_dialog('Are you sure you want to DELETE this fragment?', item_string)
       .subscribe((result) => {
         if (result) {
-          this.utility.spinner_on();
+          this.api.spinner_on();
           this.api
             .delete_fragment({
               author: fragment_form.value.author,
@@ -617,7 +626,7 @@ export class DashboardComponent implements OnInit {
                 // Lastly, reset the fragment form
                 this.reset_fragment_form();
                 this.fragment_selected = false;
-                this.utility.spinner_off();
+                this.api.spinner_off();
               },
               error: (err) => this.utility.handle_error_message(err),
             });
@@ -633,7 +642,7 @@ export class DashboardComponent implements OnInit {
    * @author CptVickers Ycreak
    */
   protected request_automatic_fragment_linker(column: Column): void {
-    this.utility.spinner_on();
+    this.api.spinner_on();
 
     let item_string = column.selected_fragment_author + ', ' + column.selected_fragment_title;
     let api_data = new Fragment({});
@@ -647,7 +656,7 @@ export class DashboardComponent implements OnInit {
           this.api.automatic_fragment_linker(api_data).subscribe({
             next: (res) => {
               this.utility.handle_error_message(res);
-              this.utility.spinner_off();
+              this.api.spinner_off();
             },
             error: (err) => {
               this.utility.handle_error_message(err);
@@ -668,7 +677,7 @@ export class DashboardComponent implements OnInit {
    * @author Ycreak
    */
   private request_users() {
-    this.utility.spinner_on();
+    this.api.spinner_on();
     // We will provide the api with the currently logged in user to check its privileges
     let user = new User({
       username: this.auth_service.current_user_name,
@@ -683,7 +692,7 @@ export class DashboardComponent implements OnInit {
         this.user_table_users.paginator = this.paginator;
         this.user_table_users.sort = this.table_sort;
         this.table_data_loaded = true;
-        this.utility.spinner_off();
+        this.api.spinner_off();
       },
       error: (err) => this.utility.handle_error_message(err),
     });
@@ -696,7 +705,7 @@ export class DashboardComponent implements OnInit {
    * @author Ycreak
    */
   protected request_create_user(form_results) {
-    this.utility.spinner_on();
+    this.api.spinner_on();
     this.dialog
       .open_confirmation_dialog('Are you sure you want to CREATE this user?', form_results.new_user)
       .subscribe((result) => {
@@ -727,7 +736,7 @@ export class DashboardComponent implements OnInit {
       .open_confirmation_dialog('Are you sure you want to CHANGE the role of this user?', item_string)
       .subscribe((result) => {
         if (result) {
-          this.utility.spinner_on();
+          this.api.spinner_on();
           // We update the user role by providing the api with a username and the new role
           this.api.user_update({ username: user.username, role: user.role }).subscribe({
             next: (res) => {
@@ -752,7 +761,7 @@ export class DashboardComponent implements OnInit {
         .open_confirmation_dialog("Are you sure you want to CHANGE this user's password", username)
         .subscribe((result) => {
           if (result) {
-            this.utility.spinner_on();
+            this.api.spinner_on();
             this.api.user_update({ username: username, password: form.value.password1 }).subscribe({
               next: (res) => this.utility.handle_error_message(res),
               error: (err) => this.utility.handle_error_message(err),
@@ -774,7 +783,7 @@ export class DashboardComponent implements OnInit {
       .open_confirmation_dialog('Are you sure you want to DELETE this user?', user.username)
       .subscribe((result) => {
         if (result) {
-          this.utility.spinner_on();
+          this.api.spinner_on();
           this.api.delete_user(user).subscribe({
             next: (res) => {
               this.utility.handle_error_message(res), this.request_users();

@@ -1,3 +1,4 @@
+import { Title } from '@angular/platform-browser';
 import { Fragment } from './Fragment';
 import text_cache from './text_cache.json';
 

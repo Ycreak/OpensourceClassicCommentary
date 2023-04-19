@@ -77,7 +77,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatPaginatorModule } from '@angular/material/paginator';
- import {MatSidenavModule} from '@angular/material/sidenav'; 
+import { MatSidenavModule } from '@angular/material/sidenav';
 // Allows copying to clipboard
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { QuillModule } from 'ngx-quill';

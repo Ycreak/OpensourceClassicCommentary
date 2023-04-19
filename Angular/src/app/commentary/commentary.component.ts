@@ -23,7 +23,7 @@ export class CommentaryComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges) {
     // If the input fragment changes, we will note that a fragment has been clicked
-    if (changes.current_fragment.currentValue.author != ""){
+    if (changes.current_fragment.currentValue.author != '') {
       this.fragment_clicked = true;
     }
   }

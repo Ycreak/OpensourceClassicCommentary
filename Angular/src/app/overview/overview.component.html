@@ -23,17 +23,19 @@
     *ngIf="!this.commentary_enabled; else commentary_disabled"
     class="navbar button-margin"
     (click)="this.toggle_commentary()"
-      (click)="drawer.toggle()"                                           
-    >
+    (click)="drawer.toggle()">
     COMMENTARY
   </button>
 
   <ng-template #commentary_disabled>
-    <button mat-flat-button color="accent" class="button-margin" 
+    <button
+      mat-flat-button
+      color="accent"
+      class="button-margin"
       (click)="this.toggle_commentary()"
-      (click)="drawer.toggle()"                                           
-      >
-      COMMENTARY</button>
+      (click)="drawer.toggle()">
+      COMMENTARY
+    </button>
   </ng-template>
 
   <button
@@ -56,13 +58,13 @@
 
 <!-- Navigation bar menu -->
 <mat-menu #menu="matMenu">
-   <button (click)="login()" mat-menu-item>Login</button> 
+  <button (click)="login()" mat-menu-item>Login</button>
   <button mat-menu-item routerLink="/dashboard" *ngIf="this.auth_service.is_logged_in">Dashboard</button>
   <button mat-menu-item routerLink="/scansion" *ngIf="this.auth_service.is_logged_in">Scansion</button>
   <a href="https://github.com/Ycreak/OpensourceClassicCommentary/" target="_blank" mat-menu-item>Documentation</a>
   <button (click)="open_settings()" mat-menu-item>Settings</button>
   <button routerLink="/tests" mat-menu-item *ngIf="this.auth_service.is_logged_in">Unit Tests</button>
- <button (click)="this.dialog.open_about_dialog()" mat-menu-item>About</button> 
+  <button (click)="this.dialog.open_about_dialog()" mat-menu-item>About</button>
   <div mat-menu-item>V23.03.12</div>
 </mat-menu>
 
@@ -79,17 +81,14 @@
     <div class="example-sidenav-content">
       <app-fragments (fragment_clicked2)="this.current_fragment = $event"></app-fragments>
     </div>
-    <hr>
+    <hr />
 
     <mat-drawer #drawer class="example-sidenav" mode="side" position="end" opened="true">
-      <div style="padding:0.5em">
+      <div style="padding: 0.5em">
         <app-commentary [current_fragment]="this.current_fragment"></app-commentary>
       </div>
     </mat-drawer>
   </mat-drawer-container>
   <hr />
-    <app-playground 
-      *ngIf="this.playground_enabled"
-      (fragment_clicked)="this.current_fragment = $event"
-      ></app-playground>
+  <app-playground *ngIf="this.playground_enabled" (fragment_clicked)="this.current_fragment = $event"></app-playground>
 </div>

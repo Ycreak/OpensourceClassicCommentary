@@ -19,7 +19,7 @@ import { LoginComponent } from '@oscc/login/login.component';
 
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
- import { ColumnHandlerService } from '@oscc/services/column-handler.service';
+import { ColumnHandlerService } from '@oscc/services/column-handler.service';
 
 @Component({
   selector: 'app-overview',
@@ -41,8 +41,8 @@ export class OverviewComponent implements OnInit {
     protected dialog: DialogService,
     protected settings: SettingsService,
     protected window_watcher: WindowSizeWatcherService,
-     private matdialog: MatDialog,
-     protected column_handler: ColumnHandlerService,
+    private matdialog: MatDialog,
+    protected column_handler: ColumnHandlerService,
     protected fragments: FragmentsComponent
   ) {}
 
@@ -64,8 +64,8 @@ export class OverviewComponent implements OnInit {
     this.window_watcher.subscription$.unsubscribe();
   }
 
-  test(item){
-    console.log('hi', item)
+  test(item) {
+    console.log('hi', item);
   }
 
   /**
@@ -96,7 +96,7 @@ export class OverviewComponent implements OnInit {
       }
     });
   }
-  
+
   /**
    * Function to handle the login dialog
    * @author Ycreak

@@ -3,15 +3,12 @@
 
 <!-- Secondary toolbar to manage columns -->
 <ng-template #column_toolbar let-column_to_display="given_column">
-<!--<ng-template #commentary_column_template let-given_fragment="given_fragment">-->
+  <!--<ng-template #commentary_column_template let-given_fragment="given_fragment">-->
   <mat-toolbar class="column-toolbar">
-
-
     <!-- Button to select the text -->
     <button mat-button [matMenuTriggerFor]="menu_authors" (click)="column_to_display.new_column = false">
       Select text
     </button>
-
 
     <!-- Nested menu to select author - title - editor. -->
     <mat-menu #menu_authors="matMenu">
@@ -51,7 +48,12 @@
           (click)="column_to_display.editor = editor"
           (click)="column_to_display.edited = false"
           (click)="
-            this.api.request_fragments(column_to_display.column_id, column_to_display.author, column_to_display.title, column_to_display.editor)
+            this.api.request_fragments(
+              column_to_display.column_id,
+              column_to_display.author,
+              column_to_display.title,
+              column_to_display.editor
+            )
           ">
           {{ editor }}
         </button>
@@ -71,31 +73,30 @@
       <mat-icon>clear</mat-icon>
     </button>
 
-    
     <!-- Separator-->
-  <!--</ng-container>-->
-</mat-toolbar>
+    <!--</ng-container>-->
+  </mat-toolbar>
 </ng-template>
 
 <!-- Container for the page. One row per item (commentary, playground, multiplayer, etc.) -->
-  <mat-toolbar class="main-column-toolbar">
-    <div>
-      <button class="navbar" mat-button (click)="this.column_handler.add_new_column('fragment')">Add column</button>
-    </div> |
+<mat-toolbar class="main-column-toolbar">
+  <div>
+    <button class="navbar" mat-button (click)="this.column_handler.add_new_column('fragment')">Add column</button>
+  </div>
+  |
 
-    <ng-container *ngFor="let column_to_display of this.column_handler.columns">
-      <mat-checkbox ngDefaultControl [(ngModel)]="column_to_display.visible">
-        <div style="color:white">
-          {{column_to_display.author}}-{{column_to_display.title}}-{{column_to_display.editor}}
-          <sup *ngIf="column_to_display.edited">altered</sup>
-        </div> 
-      </mat-checkbox> 
-    </ng-container>
+  <ng-container *ngFor="let column_to_display of this.column_handler.columns">
+    <mat-checkbox ngDefaultControl [(ngModel)]="column_to_display.visible">
+      <div style="color: white">
+        {{ column_to_display.author }}-{{ column_to_display.title }}-{{ column_to_display.editor }}
+        <sup *ngIf="column_to_display.edited">altered</sup>
+      </div>
+    </mat-checkbox>
+  </ng-container>
+</mat-toolbar>
+<mat-progress-bar mode="query" *ngIf="this.api.spinner"></mat-progress-bar>
 
-  </mat-toolbar>
-    <mat-progress-bar mode="query" *ngIf="this.api.spinner"></mat-progress-bar>
-
-    <div class="container-fluid">
+<div class="container-fluid">
   <div class="row">
     <!-- Row that contains the columns and commentary -->
     <div
@@ -108,53 +109,52 @@
         [ngTemplateOutletContext]="{ given_column: column_to_display }">
       </ng-container>
     </div>
-
-    </div>
   </div>
+</div>
 
 <!-- Template for a fragment column -->
 <ng-template #fragment_column_template let-given_column="given_column" let-hint="hint">
-    <ng-container
-      [ngTemplateOutlet]="column_toolbar"
-      [ngTemplateOutletContext]="{ given_column: given_column }"></ng-container>
+  <ng-container
+    [ngTemplateOutlet]="column_toolbar"
+    [ngTemplateOutletContext]="{ given_column: given_column }"></ng-container>
   <!-- Fragments loop to display all fragments of the chosen edition of reference -->
   <!--<div class="row">-->
-    <!-- Columns are connected via the cdkDropListConnectedTo property. -->
-    <div
-      cdkDropList
-      id="{{ given_column.column_id }}"
-      [cdkDropListData]="given_column.fragments"
-      [cdkDropListConnectedTo]="this.column_handler.connected_columns_list"
-      (cdkDropListDropped)="this.utility.drop($event)">
-      <div *ngFor="let fragment of given_column.fragments">
-        <div
-          class="fragment-box"
-          (click)="handle_fragment_click(fragment)"
-          cdkDrag
-          [cdkDragDisabled]="this.settings.fragments.dragging_disabled"
-          (cdkDragDropped)="this.column_handler.track_edited_columns($event)"
-          [attr.id]="fragment.fragment_id"
-          [style.background-color]="
-            this.generate_fragment_gradient_background_color(
-              given_column.fragments.length,
-              given_column.original_fragment_order.indexOf(fragment.name)
-            )
-          ">
-          <div *ngIf="this.settings.fragments.show_headers">
-            <b [style.color]="fragment.colour">Fragment {{ fragment.name }} </b> &nbsp;
-            <sup>{{ fragment.author }}, {{ fragment.title }}, {{ fragment.editor }}</sup> &nbsp;
-            <i>{{ fragment.status }}</i>
-          </div>
-          <div *ngFor="let fragment_line of fragment.lines">
-            <p
-              *ngIf="this.settings.fragments.show_line_names; else no_line_names"
-              [innerHTML]="fragment_line.line_number + ': ' + fragment_line.text | safeHtml"></p>
-            <ng-template #no_line_names>
-              <!--safeHtml to allow whitespaces made by spans-->
-              <p [innerHTML]="fragment_line.text | safeHtml"></p>
-            </ng-template>
-          </div>
+  <!-- Columns are connected via the cdkDropListConnectedTo property. -->
+  <div
+    cdkDropList
+    id="{{ given_column.column_id }}"
+    [cdkDropListData]="given_column.fragments"
+    [cdkDropListConnectedTo]="this.column_handler.connected_columns_list"
+    (cdkDropListDropped)="this.utility.drop($event)">
+    <div *ngFor="let fragment of given_column.fragments">
+      <div
+        class="fragment-box"
+        (click)="handle_fragment_click(fragment)"
+        cdkDrag
+        [cdkDragDisabled]="this.settings.fragments.dragging_disabled"
+        (cdkDragDropped)="this.column_handler.track_edited_columns($event)"
+        [attr.id]="fragment.fragment_id"
+        [style.background-color]="
+          this.generate_fragment_gradient_background_color(
+            given_column.fragments.length,
+            given_column.original_fragment_order.indexOf(fragment.name)
+          )
+        ">
+        <div *ngIf="this.settings.fragments.show_headers">
+          <b [style.color]="fragment.colour">Fragment {{ fragment.name }} </b> &nbsp;
+          <sup>{{ fragment.author }}, {{ fragment.title }}, {{ fragment.editor }}</sup> &nbsp;
+          <i>{{ fragment.status }}</i>
         </div>
+        <div *ngFor="let fragment_line of fragment.lines">
+          <p
+            *ngIf="this.settings.fragments.show_line_names; else no_line_names"
+            [innerHTML]="fragment_line.line_number + ': ' + fragment_line.text | safeHtml"></p>
+          <ng-template #no_line_names>
+            <!--safeHtml to allow whitespaces made by spans-->
+            <p [innerHTML]="fragment_line.text | safeHtml"></p>
+          </ng-template>
+        </div>
+      </div>
       <!--</div>-->
     </div>
   </div>

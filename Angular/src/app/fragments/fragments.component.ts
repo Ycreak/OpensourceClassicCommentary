@@ -56,7 +56,7 @@ export class FragmentsComponent implements OnInit, AfterViewInit {
     protected settings: SettingsService,
     private matdialog: MatDialog,
     protected column_handler: ColumnHandlerService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     // Create an empty current_fragment variable to be filled whenever the user clicks a fragment
@@ -83,10 +83,7 @@ export class FragmentsComponent implements OnInit, AfterViewInit {
     this.fragments_subscription = this.api.new_fragments_alert.subscribe((column_id) => {
       let fragments = this.api.fragments;
       // A new list of fragments has arrived. Use the column identifier to find the corresponding column
-      const column = this.column_handler.columns.find(
-        (x) =>
-          x.column_id == column_id
-      );
+      const column = this.column_handler.columns.find((x) => x.column_id == column_id);
       if (column) {
         // Prepare the fragments for publication
         fragments = this.add_HTML_to_lines(fragments);
@@ -95,7 +92,6 @@ export class FragmentsComponent implements OnInit, AfterViewInit {
 
         column.fragments = fragments;
       }
-
     });
   }
 
@@ -207,7 +203,6 @@ export class FragmentsComponent implements OnInit, AfterViewInit {
       //if (corresponding_fragment) corresponding_fragment.colour = '#FF4081';
     }
   }
-
 
   /**
    * Function to handle the settings dialog. Will save changes via the oscc_settings object
