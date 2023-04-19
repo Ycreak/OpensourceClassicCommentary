@@ -6,9 +6,6 @@
 <!--<ng-template #commentary_column_template let-given_fragment="given_fragment">-->
   <mat-toolbar class="column-toolbar">
 
-  <!--<ng-container *ngFor="let column_to_display of this.column_handler.columns">-->
-    <!-- Checkbox to hide and show columns -->
-    <!--<mat-checkbox ngDefaultControl [(ngModel)]="column_to_display.visible"> </mat-checkbox>-->
 
     <!-- Button to select the text -->
     <button mat-button [matMenuTriggerFor]="menu_authors" (click)="column_to_display.new_column = false">
@@ -52,6 +49,7 @@
         <button
           mat-menu-item
           (click)="column_to_display.editor = editor"
+          (click)="column_to_display.edited = false"
           (click)="
             this.api.request_fragments(column_to_display.column_id, column_to_display.author, column_to_display.title, column_to_display.editor)
           ">
@@ -78,16 +76,22 @@
   <!--</ng-container>-->
 </mat-toolbar>
 </ng-template>
-<!--<div class="div-padding-sm"></div>-->
-
-<!-- Loading spinner to show data is being retrieved from the server -->
-<!--<mat-progress-bar *ngIf="this.api.spinner" mode="query"></mat-progress-bar>-->
 
 <!-- Container for the page. One row per item (commentary, playground, multiplayer, etc.) -->
   <mat-toolbar class="main-column-toolbar">
     <div>
       <button class="navbar" mat-button (click)="this.column_handler.add_new_column('fragment')">Add column</button>
-    </div>
+    </div> |
+
+    <ng-container *ngFor="let column_to_display of this.column_handler.columns">
+      <mat-checkbox ngDefaultControl [(ngModel)]="column_to_display.visible">
+        <div style="color:white">
+          {{column_to_display.author}}-{{column_to_display.title}}-{{column_to_display.editor}}
+          <sup *ngIf="column_to_display.edited">altered</sup>
+        </div> 
+      </mat-checkbox> 
+    </ng-container>
+
   </mat-toolbar>
     <mat-progress-bar mode="query" *ngIf="this.api.spinner"></mat-progress-bar>
 

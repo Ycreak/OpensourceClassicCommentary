@@ -80,20 +80,6 @@
   width: var(--width);
 }
 
-// .progress-toolbar-playground{ //TODO: this could use some inheritance
-//   height: 1vh !important;
-//   background: white;
-// }
-
-/* Navbar CSS */
-// .mat-checkbox-layout {
-//   margin-bottom: 0;
-// }
-
-// .mat-checkbox-label {
-//   width: fit-content;
-// }
-
 // Text component
 ::ng-deep .mat-line {
   word-wrap: break-word !important;
@@ -124,5 +110,6 @@
 .main-column-toolbar {
   max-height: 30px;
   background: #9fa1fe;
+  border-bottom: 0.1em solid #3F51B5;
   color: white;
 }

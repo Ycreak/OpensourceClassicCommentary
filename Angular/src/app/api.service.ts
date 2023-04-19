@@ -132,6 +132,7 @@ export class ApiService {
   }
 
   public request_fragment_names(author: string, title: string, editor: string): void {
+    this.spinner_on();
     this.fragment_names = [];
     this.fragment_key = this.create_fragment_key((author = author), (title = title), (editor = editor));
     this.get_fragment_names(this.fragment_key).subscribe({
@@ -139,7 +140,9 @@ export class ApiService {
         data.forEach((value) => {
           this.fragment_names.push({ name: value } as fragment_name);
         });
+        this.fragment_names = this.fragment_names.sort(this.utility.sort_fragment_array_numerically);
         this.new_fragment_names_alert.next(1);
+        this.spinner_off();
       },
       error: (err) => this.utility.handle_error_message(err),
     });

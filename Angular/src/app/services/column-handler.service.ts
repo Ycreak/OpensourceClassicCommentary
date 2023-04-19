@@ -95,11 +95,11 @@ export class ColumnHandlerService {
    * @author Ycreak
    * @TODO: what type is 'event'? CdkDragDrop<string[]> does not allow reading.
    */
-  private track_edited_columns(event: any): void {
+  public track_edited_columns(event: any): void {
     // First, find the corresponding columns in this.columns using the column_id that is used
     // in this.connected_columns_list used by cdkDrag (and encoded in event)
-    let edited_column_1 = this.columns.find((i) => i.column_id === event.container.id);
-    let edited_column_2 = this.columns.find((i) => i.column_id === event.previousContainer.id);
+    const edited_column_1 = this.columns.find((i) => i.column_id === Number(event.container.id));
+    const edited_column_2 = this.columns.find((i) => i.column_id === Number(event.previousContainer.id));
     // Next, set the edited flag to true.
     edited_column_1.edited = true;
     edited_column_2.edited = true;
