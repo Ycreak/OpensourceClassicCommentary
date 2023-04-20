@@ -169,6 +169,21 @@ export class ApiService {
     });
   }
 
+  public request_create_fragment(fragment: Fragment, column_id?: number): void {
+    this.spinner_on();
+    this.create_fragment(fragment).subscribe({
+      next: (data) => {
+        this.utility.handle_error_message(data);
+        if (column_id) {
+          this.request_fragment_names(column_id, fragment.author, fragment.title, fragment.editor); 
+          this.request_fragments(column_id, fragment.author, fragment.title, fragment.editor, fragment.name);
+        }
+        this.spinner_off();
+      },
+      error: (err) => this.utility.handle_error_message(err),
+    });
+  }
+
   /**
    * Getter function for public property network_status
    * @return boolean network_status - Status indicating whether or not the server is

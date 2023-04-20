@@ -1,4 +1,6 @@
 export const environment = {
+  dashboard_id: 255, 
+  playground_id: 0,
   production: true,
   firebase: {
     apiKey: 'AIzaSyC1D1PH6p1xvOzK6CBWwM1IdWyIiXsGBd4',

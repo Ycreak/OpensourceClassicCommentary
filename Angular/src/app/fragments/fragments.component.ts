@@ -259,27 +259,6 @@ export class FragmentsComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Given the author, title and editor, request the names of the fragments from the server.
-   * @param column that is to be filled with data
-   * @author Ycreak
-   */
-  public request_fragment_names(column: Column): void {
-    this.utility.spinner_on();
-    this.api
-      .get_fragment_names(
-        new Fragment({
-          author: column.selected_fragment_author,
-          title: column.selected_fragment_title,
-          editor: column.selected_fragment_editor,
-        })
-      )
-      .subscribe((data) => {
-        column.fragment_names = data.sort(this.utility.sort_array_numerically);
-        this.utility.spinner_off();
-      });
-  }
-
-  /**
    * Sorts the given object of fragments on status. We want to display Certa, followed
    * by Incerta and Adespota.
    * @param fragments

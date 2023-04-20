@@ -3,6 +3,8 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
+  dashboard_id: 255, 
+  playground_id: 0,
   production: false,
   firebase: {
     apiKey: 'AIzaSyC1D1PH6p1xvOzK6CBWwM1IdWyIiXsGBd4',

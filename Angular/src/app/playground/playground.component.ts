@@ -2,6 +2,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { Output, EventEmitter } from '@angular/core';
 import { ColumnHandlerService } from '@oscc/services/column-handler.service';
 import { ApiService } from '@oscc/api.service';
+import { environment } from '@src/environments/environment';
 
 // Service imports
 import { UtilityService } from '@oscc/utility.service';
@@ -40,13 +41,13 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    this.playground = new Column({ column_id: 0, type: 'playground' });
+    this.playground = new Column({ column_id: environment.playground_id, type: 'playground' });
   }
 
   ngAfterViewInit() {
     /** Handle what happens when new fragments arrive */
     this.fragments_subscription = this.api.new_fragments_alert.subscribe((column_id) => {
-      if (column_id == 0) {
+      if (column_id == environment.playground_id) {
         if (this.single_fragment_requested) {
           this.playground.fragments.push(this.api.fragments[0]);
         } else {
@@ -56,7 +57,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
     });
     /** Handle what happens when new fragment names arrive */
     this.fragment_names_subscription = this.api.new_fragment_names_alert.subscribe((column_id) => {
-      if (column_id == 0) {
+      if (column_id == environment.playground_id) {
         this.playground.fragment_names = this.api.fragment_names;
       }
     });

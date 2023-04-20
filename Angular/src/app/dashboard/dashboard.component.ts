@@ -1,5 +1,5 @@
 // Library imports
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UntypedFormBuilder, FormControl, FormGroup, FormArray } from '@angular/forms';
@@ -9,6 +9,7 @@ import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ElementRef } from '@angular/core';
+import { environment } from '@src/environments/environment';
 
 // Component imports
 import { ApiService } from '@oscc/api.service';
@@ -41,7 +42,7 @@ import { User } from '@oscc/models/User';
     ]),
   ],
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   // For the user table
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) matSort: MatSort;
@@ -54,6 +55,7 @@ export class DashboardComponent implements OnInit {
   }
 
   private fragment_names_subscription: any;
+  private fragments_subscription: any;
 
   hide: boolean = true; // Whether to hide passwords in the material form fields
 
@@ -140,7 +142,7 @@ export class DashboardComponent implements OnInit {
     this.request_users();
 
     // We will store all dashboard data in the following data object
-    this.selected_fragment_data = new Column({ column_id: 255 });
+    this.selected_fragment_data = new Column({ column_id: environment.dashboard_id });
     this.linked_fragment_data = new Column();
 
     this.api.request_authors2(this.selected_fragment_data);
@@ -157,10 +159,27 @@ export class DashboardComponent implements OnInit {
 
     /** Handle what happens when new fragment names arrive */
     this.fragment_names_subscription = this.api.new_fragment_names_alert.subscribe((column_id) => {
-      if (column_id == 255) {
+      if (column_id == environment.dashboard_id) {
         this.selected_fragment_data.fragment_names = this.api.fragment_names;
       }
     });
+
+    /** Handle what happens when new fragments arrive */
+    this.fragments_subscription = this.api.new_fragments_alert.subscribe((column_id) => {
+      if (column_id == environment.dashboard_id) {
+        this.convert_Fragment_to_fragment_form(this.api.fragments[0]);
+        // Set the data for the drop down menus
+        this.selected_fragment_data.author = this.fragment_form.value.author;
+        this.selected_fragment_data.title = this.fragment_form.value.title;
+        this.selected_fragment_data.editor = this.fragment_form.value.editor;
+        this.selected_fragment_data.name = this.fragment_form.value.name;
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.fragments_subscription.unsubscribe();
+    this.fragment_names_subscription.unsubscribe();
   }
 
   /**
@@ -547,13 +566,8 @@ export class DashboardComponent implements OnInit {
    * @author Ycreak
    */
   protected request_create_fragment(fragment_form: FormGroup): void {
-    // Update the column information with the possibly updated values from the fragment_form
-    this.selected_fragment_data.selected_fragment_author = fragment_form.value.author;
-    this.selected_fragment_data.selected_fragment_title = fragment_form.value.title;
-    this.selected_fragment_data.selected_fragment_editor = fragment_form.value.editor;
-    this.selected_fragment_data.selected_fragment_name = fragment_form.value.name;
 
-    let item_string =
+    const item_string =
       fragment_form.value.author +
       ', ' +
       fragment_form.value.title +
@@ -566,24 +580,12 @@ export class DashboardComponent implements OnInit {
       .open_confirmation_dialog('Are you sure you want to CREATE this fragment?', item_string)
       .subscribe((result) => {
         if (result) {
-          this.api.spinner_on();
-
-          this.api.create_fragment(this.convert_fragment_form_to_Fragment(fragment_form)).subscribe({
-            next: (res) => {
-              this.utility.handle_error_message(res);
-              this.fragment_selected = true;
-              // It might be possible we have created a new author, title or editor. Retrieve the lists again
-              this.api.request_authors2(this.selected_fragment_data);
-              this.api.request_titles2(this.selected_fragment_data);
-              this.api.request_editors2(this.selected_fragment_data);
-              // After creation, refresh the list of fragment names so the new one appears directly
-              this.api.request_fragment_names2(this.selected_fragment_data);
-              // Also, retrieve that revised fragment so we can continue editing!
-              this.retrieve_requested_fragment(this.selected_fragment_data);
-              this.api.spinner_off();
-            },
-            error: (err) => this.utility.handle_error_message(err),
-          });
+          const fragment = this.convert_fragment_form_to_Fragment(fragment_form);
+          this.api.request_create_fragment(fragment, environment.dashboard_id);
+          this.fragment_selected = true;
+          this.reset_fragment_form();
+          // It might be possible we have created a new author, title or editor. Retrieve the lists again
+          // TODO: retrieve author-title-editor blob
         }
       });
   }
