@@ -8,6 +8,11 @@ from models.fragment import Fragment, FragmentModel, FragmentField
 
 fragments = FragmentModel(CouchAuthenticator().couch)
 
+def get_list_display():
+    fragment_lst = fragments.all()
+    fragment_lst = [(x.author, x.title, x.editor) for x in fragment_lst]
+    return jsonify(sorted(list(set(fragment_lst))))
+
 def get_author():
     author = None
     title = None
