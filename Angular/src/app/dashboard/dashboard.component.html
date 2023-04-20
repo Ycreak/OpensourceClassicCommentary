@@ -73,7 +73,7 @@
             (click)="
               this.selected_fragment_data.retrieved_titles = [];
               this.selected_fragment_data.retrieved_editors = [];
-              this.selected_fragment_data.retrieved_fragment_names = []
+              this.selected_fragment_data.fragment_names = [] //FIXME: perhaps retrieved_fragment_names is more clear than fragment_names?
             "
             (click)="this.selected_fragment_data.retrieved_titles = this.selected_fragment_data.get_titles(author)"
             (click)="this.reset_fragment_form()"
@@ -94,7 +94,7 @@
             (click)="this.selected_fragment_data.editor = ''; this.selected_fragment_data.name = ''"
             (click)="
               this.selected_fragment_data.retrieved_editors = [];
-              this.selected_fragment_data.retrieved_fragment_names = []
+              this.selected_fragment_data.fragment_names = []
             "
             (click)="this.reset_fragment_form()"
             (click)="this.update_form_field('fragment_form', 'author', selected_fragment_data.author)"
@@ -119,7 +119,7 @@
             [value]="editor"
             (click)="this.selected_fragment_data.editor = editor"
             (click)="this.selected_fragment_data.name = ''"
-            (click)="this.selected_fragment_data.retrieved_fragment_names = []"
+            (click)="this.selected_fragment_data.fragment_names = []"
             (click)="this.reset_fragment_form()"
             (click)="this.update_form_field('fragment_form', 'author', selected_fragment_data.author)"
             (click)="this.update_form_field('fragment_form', 'title', selected_fragment_data.title)"
