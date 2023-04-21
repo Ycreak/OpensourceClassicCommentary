@@ -175,8 +175,44 @@ export class ApiService {
       next: (data) => {
         this.utility.handle_error_message(data);
         if (column_id) {
-          this.request_fragment_names(column_id, fragment.author, fragment.title, fragment.editor); 
+          this.request_fragment_names(column_id, fragment.author, fragment.title, fragment.editor);
           this.request_fragments(column_id, fragment.author, fragment.title, fragment.editor, fragment.name);
+        }
+        this.spinner_off();
+      },
+      error: (err) => this.utility.handle_error_message(err),
+    });
+  }
+
+  public request_revise_fragment(fragment: Fragment, column_id?: number): void {
+    this.spinner_on();
+    this.revise_fragment(fragment).subscribe({
+      next: (data) => {
+        this.utility.handle_error_message(data);
+        if (column_id) {
+          this.request_fragment_names(column_id, fragment.author, fragment.title, fragment.editor);
+          this.request_fragments(column_id, fragment.author, fragment.title, fragment.editor, fragment.name);
+        }
+        this.spinner_off();
+      },
+      error: (err) => this.utility.handle_error_message(err),
+    });
+  }
+
+  public request_delete_fragment(
+    author: string,
+    title: string,
+    editor: string,
+    name: string,
+    column_id?: number
+  ): void {
+    this.spinner_on();
+    this.fragment_key = this.create_fragment_key((author = author), (title = title), (editor = editor), (name = name));
+    this.delete_fragment(this.fragment_key).subscribe({
+      next: (data) => {
+        this.utility.handle_error_message(data);
+        if (column_id) {
+          this.request_fragment_names(column_id, author, title, editor);
         }
         this.spinner_off();
       },

@@ -73,7 +73,8 @@
             (click)="
               this.selected_fragment_data.retrieved_titles = [];
               this.selected_fragment_data.retrieved_editors = [];
-              this.selected_fragment_data.fragment_names = [] //FIXME: perhaps retrieved_fragment_names is more clear than fragment_names?
+              this.selected_fragment_data.fragment_names =
+                [] //FIXME: perhaps retrieved_fragment_names is more clear than fragment_names?
             "
             (click)="this.selected_fragment_data.retrieved_titles = this.selected_fragment_data.get_titles(author)"
             (click)="this.reset_fragment_form()"
@@ -93,8 +94,7 @@
             (click)="this.selected_fragment_data.title = title"
             (click)="this.selected_fragment_data.editor = ''; this.selected_fragment_data.name = ''"
             (click)="
-              this.selected_fragment_data.retrieved_editors = [];
-              this.selected_fragment_data.fragment_names = []
+              this.selected_fragment_data.retrieved_editors = []; this.selected_fragment_data.fragment_names = []
             "
             (click)="this.reset_fragment_form()"
             (click)="this.update_form_field('fragment_form', 'author', selected_fragment_data.author)"
@@ -146,7 +146,15 @@
             [value]="fragment_name.name"
             (click)="this.selected_fragment_data.name = fragment_name.name"
             (click)="this.update_form_field('fragment_form', 'name', fragment_name.name)"
-            (click)="this.retrieve_requested_fragment(selected_fragment_data)"
+            (click)="
+              this.api.request_fragments(
+                255,
+                selected_fragment_data.author,
+                selected_fragment_data.title,
+                selected_fragment_data.editor,
+                selected_fragment_data.name
+              )
+            "
             (click)="this.fragment_selected = true">
             {{ fragment_name.name }}
           </mat-option>
@@ -372,8 +380,7 @@
         <mat-tab label="Fragment Context"
           ><br />
           <!-- This piece of code allows users to create fragment contexts by providing a location, author and text. 
-                Contexts can be dynamically created using the Add New Context button. This will create a new form group per context, which will
-                be pushed to the Context FormArray within fragment_form. -->
+                Contexts can be dynamically created using the Add New Context button. This will create a new form group per context, which will be pushed to the Context FormArray within fragment_form. -->
           <div class="alert alert-info" role="alert">
             Press the <b>Add Fragment Context</b> for each context author. Entries from the same work may be separated
             or added to the same field.
@@ -427,74 +434,73 @@
           </div>
 
           <hr />
-          <!-- TODO: the width of the input forms should be large enough to show the full text of the fields -->
+
           <div class="row">
             <mat-form-field class="input-form-custom" style="--max-width: 25%">
               <mat-label>Select referenced author</mat-label>
-              <mat-select [(ngModel)]="this.linked_fragment_data.author" ngDefaultControl>
+              <mat-select [(ngModel)]="this.fragment_referencer.author" ngDefaultControl>
                 <mat-option
-                  *ngFor="let author of this.linked_fragment_data.retrieved_authors"
+                  *ngFor="let author of this.fragment_referencer.get_authors()"
                   [value]="author"
-                  (click)="this.linked_fragment_data.author = author"
                   (click)="
-                    this.linked_fragment_data.title = '';
-                    this.linked_fragment_data.editor = '';
-                    this.linked_fragment_data.name = ''
-                  "
-                  (click)="this.api.request_titles2(linked_fragment_data)">
+                    this.fragment_referencer.title = '';
+                    this.fragment_referencer.editor = '';
+                    this.fragment_referencer.name = ''
+                  ">
                   {{ author }}
                 </mat-option>
               </mat-select>
             </mat-form-field>
 
-            <mat-form-field class="input-form-custom" style="--max-width: 25%">
+            <mat-form-field class="input-form-custom" style="--width: 25%">
               <mat-label>Select referenced title</mat-label>
-              <mat-select [(ngModel)]="this.linked_fragment_data.title" ngDefaultControl>
+              <mat-select [(ngModel)]="this.fragment_referencer.title" ngDefaultControl>
                 <mat-option
-                  *ngFor="let title of this.linked_fragment_data.retrieved_titles"
+                  *ngFor="let title of this.fragment_referencer.get_titles(this.fragment_referencer.author)"
                   [value]="title"
-                  (click)="this.linked_fragment_data.title = title"
-                  (click)="this.linked_fragment_data.editor = ''; this.linked_fragment_data.name = ''"
-                  (click)="this.api.request_editors2(linked_fragment_data)">
+                  (click)="this.fragment_referencer.editor = ''; this.fragment_referencer.name = ''">
                   {{ title }}
                 </mat-option>
               </mat-select>
             </mat-form-field>
 
-            <mat-form-field class="input-form-custom" style="--max-width: 25%">
+            <mat-form-field class="input-form-custom" style="--width: 25%">
               <mat-label>Select referenced editor</mat-label>
-              <mat-select
-                [(ngModel)]="this.linked_fragment_data.editor"
-                ngDefaultControl
-                [disabled]="!fragment_form.valid">
+              <mat-select [(ngModel)]="this.fragment_referencer.editor" ngDefaultControl>
                 <mat-option
-                  *ngFor="let editor of this.linked_fragment_data.retrieved_editors"
+                  *ngFor="
+                    let editor of this.fragment_referencer.get_editors(
+                      this.fragment_referencer.author,
+                      this.fragment_referencer.title
+                    )
+                  "
                   [value]="editor"
-                  (click)="this.linked_fragment_data.editor = editor"
-                  (click)="this.linked_fragment_data.name = ''"
-                  (click)="this.api.request_fragment_names2(linked_fragment_data)">
+                  (click)="
+                    this.fragment_referencer.name = '';
+                    this.api.request_fragment_names(
+                      this.fragment_referencer.column_id,
+                      this.fragment_referencer.author,
+                      this.fragment_referencer.title,
+                      this.fragment_referencer.editor
+                    )
+                  ">
                   {{ editor }}
                 </mat-option>
               </mat-select>
             </mat-form-field>
 
-            <mat-form-field class="input-form-custom" style="--max-width: 25%">
-              <mat-label>Select referenced fragment</mat-label>
-              <mat-select
-                [(ngModel)]="this.linked_fragment_data.name"
-                ngDefaultControl
-                [disabled]="!fragment_form.valid">
+            <mat-form-field class="input-form-custom" style="--width: 25%">
+              <mat-label>Select referenced name</mat-label>
+              <mat-select [(ngModel)]="this.fragment_referencer.name" ngDefaultControl>
                 <mat-option
-                  *ngFor="let fragment_name of this.linked_fragment_data.retrieved_fragment_names"
-                  [value]="fragment_name"
-                  (click)="this.linked_fragment_data.name = fragment_name"
-                  (click)="this.add_referenced_fragment_to_Fragment_form(linked_fragment_data)">
-                  {{ fragment_name }}
+                  *ngFor="let name of this.fragment_referencer.fragment_names"
+                  [value]="name.name"
+                  (click)="this.add_referenced_fragment_to_Fragment_form(this.fragment_referencer)">
+                  {{ name.name }}
                 </mat-option>
               </mat-select>
             </mat-form-field>
           </div>
-          <!-- When clicking the last form field, add the fragment to the FormArray -->
 
           <form [formGroup]="fragment_form">
             <div class="div-padding-lg"></div>
@@ -542,9 +548,9 @@
           <button
             mat-stroked-button
             color="primary"
-            (click)="request_automatic_fragment_linker(linked_fragment_data)"
+            (click)="this.request_automatic_fragment_linker(fragment_referencer)"
             (click)="this.spinner_active = false"
-            [disabled]="linked_fragment_data.title == ''"
+            [disabled]="this.fragment_referencer.title == ''"
             *ngIf="this.auth_service.current_user_role == 'teacher'">
             Automatically link fragments
           </button>
