@@ -77,6 +77,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSidenavModule } from '@angular/material/sidenav';
 // Allows copying to clipboard
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { QuillModule } from 'ngx-quill';
@@ -117,7 +118,7 @@ import { OverviewComponent } from './overview/overview.component';
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
-  { path: '', component: FragmentsComponent },
+  { path: '', component: OverviewComponent },
   { path: 'fragments', component: FragmentsComponent },
   // {path: 'text', component: TextComponent},
   { path: 'tests', component: TestsComponent, canActivate: [AuthGuard] },
@@ -184,6 +185,7 @@ const appRoutes: Routes = [
     MatAutocompleteModule,
     MatButtonToggleModule,
     MatPaginatorModule,
+    MatSidenavModule,
     // To allow the drag and drop
     DragDropModule,
     ClipboardModule,
@@ -197,9 +199,9 @@ const appRoutes: Routes = [
       useClass: HttpErrorInterceptor,
       multi: true,
     },
-    // {
-    //   provide: MatDialogRef,
-    // },
+    {
+      provide: FragmentsComponent,
+    },
   ],
   bootstrap: [AppComponent],
 })

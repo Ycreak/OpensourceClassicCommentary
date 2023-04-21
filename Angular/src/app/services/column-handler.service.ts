@@ -3,10 +3,10 @@
  */
 import { Injectable } from '@angular/core';
 
-import { Column } from '../../models/Column';
+import { Column } from '@oscc/models/Column';
 
-import { ApiService } from '../../api.service';
-import { UtilityService } from '../../utility.service';
+import { ApiService } from '@oscc/api.service';
+import { UtilityService } from '@oscc/utility.service';
 
 @Injectable({
   providedIn: 'root',
@@ -38,15 +38,13 @@ export class ColumnHandlerService {
    * This function adds a new column to the columns array
    * @author Ycreak
    */
-  public add_new_column(): void {
+  public add_new_column(column_type: string): void {
     //TODO: shall we create a limit? like no more than 25 columns?
     // First, increment the column_identifier to create a new and unique id
     this.column_identifier += 1;
     // Create new column with the appropriate name. TODO: create better identifiers than simple integers
-    let new_column = new Column({ column_id: String(this.column_identifier) });
+    let new_column = new Column({ column_id: this.column_identifier, type: column_type });
     this.columns.push(new_column);
-    // Request authors for this new column
-    this.api.request_authors(new_column);
     // And update the connected columns list
     this.connected_columns_list = this.update_connected_columns_list(this.columns);
   }
@@ -56,7 +54,7 @@ export class ColumnHandlerService {
    * @param column_id of column that is to be closed
    * @author Ycreak
    */
-  public close_column(column_id: string): void {
+  public close_column(column_id: number): void {
     const object_index = this.columns.findIndex((object) => {
       return object.column_id === column_id;
     });
@@ -97,11 +95,11 @@ export class ColumnHandlerService {
    * @author Ycreak
    * @TODO: what type is 'event'? CdkDragDrop<string[]> does not allow reading.
    */
-  private track_edited_columns(event: any): void {
+  public track_edited_columns(event: any): void {
     // First, find the corresponding columns in this.columns using the column_id that is used
     // in this.connected_columns_list used by cdkDrag (and encoded in event)
-    let edited_column_1 = this.columns.find((i) => i.column_id === event.container.id);
-    let edited_column_2 = this.columns.find((i) => i.column_id === event.previousContainer.id);
+    const edited_column_1 = this.columns.find((i) => i.column_id === Number(event.container.id));
+    const edited_column_2 = this.columns.find((i) => i.column_id === Number(event.previousContainer.id));
     // Next, set the edited flag to true.
     edited_column_1.edited = true;
     edited_column_2.edited = true;

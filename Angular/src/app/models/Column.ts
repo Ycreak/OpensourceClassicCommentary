@@ -1,3 +1,4 @@
+import { Title } from '@angular/platform-browser';
 import { Fragment } from './Fragment';
 import text_cache from './text_cache.json';
 
@@ -13,9 +14,14 @@ export class Column {
     Object.assign(this, column);
   }
 
+  author: string;
+  title: string;
+  editor: string;
+  name: string;
+
   text_cache: any = text_cache;
 
-  column_id: string = ''; // has to be a string for cdkDrag
+  column_id: number; // has to be a string for cdkDrag
   type: string = ''; // denotes playground, commentary, text or fragment column
 
   selected_fragment_author: string = '';
@@ -24,7 +30,7 @@ export class Column {
   selected_fragment_name: string = '';
 
   fragments: Fragment[] = [];
-  fragment_names: string[] = [];
+  fragment_names: any[] = [];
 
   retrieved_authors: string[] = [];
   retrieved_titles: string[] = [];
@@ -50,7 +56,17 @@ export class Column {
   // Original order of the column fragments
   original_fragment_order: string[] = [];
 
-  private get_titles(author: string): object {
+  public get_authors(): object {
+    let filtered_objects = this.text_cache['cache'];
+    let author_list = new Set(
+      filtered_objects.map(function (el) {
+        return el.author;
+      })
+    );
+    return author_list;
+  }
+
+  public get_titles(author: string): object {
     let filtered_objects = this.text_cache['cache'].filter((x) => x.author == author);
     let title_list = new Set(
       filtered_objects.map(function (el) {
@@ -60,7 +76,7 @@ export class Column {
     return title_list;
   }
 
-  private get_editors(author: string, title: string): object {
+  public get_editors(author: string, title: string): object {
     let filtered_objects = this.text_cache['cache'].filter((x) => x.author == author && x.title == title);
     let editor_list = new Set(
       filtered_objects.map(function (el) {

@@ -14,15 +14,46 @@ import { Fragment } from './models/Fragment';
 import { Column } from './models/Column';
 import { User } from './models/User';
 
+export interface fragment_key {
+  author?: string;
+  title?: string;
+  editor?: string;
+  name?: string;
+}
+
+export interface author {
+  name: string;
+}
+
+export interface title {
+  name: string;
+}
+
+export interface editor {
+  name: string;
+}
+
+export interface fragment_name {
+  name: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
   network_status: boolean; // Indicates if server is reachable or not
+  spinner: boolean;
 
   constructor(private http: HttpClient, private utility: UtilityService) {
     this.network_status = true; // Assumed online until HttpErrorResponse is received.
   }
+
+  public authors: author[] = [];
+  public titles: title[] = [];
+  public editors: editor[] = [];
+  public fragment_names: fragment_name[] = [];
+  public fragments: Fragment[] = [];
+  public fragment_key: fragment_key = {};
 
   // URL for production
   // FlaskURL: String = 'https://oscc.nolden.biz:5003/'; // For production (https)
@@ -35,7 +66,159 @@ export class ApiService {
   NeuralURL: String = 'https://oscc.nolden.biz:5002/';
 
   public new_fragment_alert = new ReplaySubject(0);
+  public new_authors_alert = new ReplaySubject(0);
+  public new_titles_alert = new ReplaySubject(0);
+  public new_editors_alert = new ReplaySubject(0);
+  public new_fragments_alert = new ReplaySubject(0);
+  public new_fragment_names_alert = new ReplaySubject(0);
 
+  private create_fragment_key(author?: string, title?: string, editor?: string, name?: string): fragment_key {
+    const key: fragment_key = {};
+    if (author) {
+      key.author = author;
+    }
+    if (title) {
+      key.title = title;
+    }
+    if (editor) {
+      key.editor = editor;
+    }
+    if (name) {
+      key.name = name;
+    }
+    return key;
+  }
+
+  public request_authors(): void {
+    this.authors = [];
+    this.fragment_key = this.create_fragment_key();
+    this.get_authors(this.fragment_key).subscribe({
+      next: (data) => {
+        data.forEach((value) => {
+          this.authors.push({ name: value } as author);
+        });
+        this.new_authors_alert.next(1);
+      },
+      error: (err) => this.utility.handle_error_message(err),
+    });
+  }
+
+  public request_titles(author: string): void {
+    this.titles = [];
+    this.fragment_key = this.create_fragment_key((author = author));
+    this.get_titles(this.fragment_key).subscribe({
+      next: (data) => {
+        data.forEach((value) => {
+          this.titles.push({ name: value } as title);
+        });
+        this.new_titles_alert.next(1);
+      },
+      error: (err) => this.utility.handle_error_message(err),
+    });
+  }
+
+  public request_editors(author: string, title: string): void {
+    this.editors = [];
+    this.fragment_key = this.create_fragment_key((author = author), (title = title));
+    this.get_editors(this.fragment_key).subscribe({
+      next: (data) => {
+        data.forEach((value) => {
+          this.editors.push({ name: value } as editor);
+        });
+        this.new_editors_alert.next(1);
+      },
+      error: (err) => this.utility.handle_error_message(err),
+    });
+  }
+
+  public request_fragment_names(column_id: number, author: string, title: string, editor: string): void {
+    this.spinner_on();
+    this.fragment_names = [];
+    this.fragment_key = this.create_fragment_key((author = author), (title = title), (editor = editor));
+    this.get_fragment_names(this.fragment_key).subscribe({
+      next: (data) => {
+        data.forEach((value) => {
+          this.fragment_names.push({ name: value } as fragment_name);
+        });
+        this.fragment_names = this.fragment_names.sort(this.utility.sort_fragment_array_numerically);
+        this.new_fragment_names_alert.next(column_id);
+        this.spinner_off();
+      },
+      error: (err) => this.utility.handle_error_message(err),
+    });
+  }
+
+  public request_fragments(column_id: number, author: string, title: string, editor: string, name?: string): void {
+    this.spinner_on();
+    this.fragments = [];
+    this.fragment_key = this.create_fragment_key((author = author), (title = title), (editor = editor));
+    if (name) {
+      this.fragment_key.name = name;
+    }
+    this.get_fragments(this.fragment_key).subscribe({
+      next: (data) => {
+        data.forEach((value) => {
+          let fragment = new Fragment();
+          fragment.set_fragment(value);
+          this.fragments.push(fragment);
+        });
+        this.new_fragments_alert.next(column_id);
+        this.spinner_off();
+      },
+      error: (err) => this.utility.handle_error_message(err),
+    });
+  }
+
+  public request_create_fragment(fragment: Fragment, column_id?: number): void {
+    this.spinner_on();
+    this.create_fragment(fragment).subscribe({
+      next: (data) => {
+        this.utility.handle_error_message(data);
+        if (column_id) {
+          this.request_fragment_names(column_id, fragment.author, fragment.title, fragment.editor);
+          this.request_fragments(column_id, fragment.author, fragment.title, fragment.editor, fragment.name);
+        }
+        this.spinner_off();
+      },
+      error: (err) => this.utility.handle_error_message(err),
+    });
+  }
+
+  public request_revise_fragment(fragment: Fragment, column_id?: number): void {
+    this.spinner_on();
+    this.revise_fragment(fragment).subscribe({
+      next: (data) => {
+        this.utility.handle_error_message(data);
+        if (column_id) {
+          this.request_fragment_names(column_id, fragment.author, fragment.title, fragment.editor);
+          this.request_fragments(column_id, fragment.author, fragment.title, fragment.editor, fragment.name);
+        }
+        this.spinner_off();
+      },
+      error: (err) => this.utility.handle_error_message(err),
+    });
+  }
+
+  public request_delete_fragment(
+    author: string,
+    title: string,
+    editor: string,
+    name: string,
+    column_id?: number
+  ): void {
+    this.spinner_on();
+    this.fragment_key = this.create_fragment_key((author = author), (title = title), (editor = editor), (name = name));
+    this.delete_fragment(this.fragment_key).subscribe({
+      next: (data) => {
+        this.utility.handle_error_message(data);
+        if (column_id) {
+          this.request_fragment_names(column_id, author, title, editor);
+        }
+        this.spinner_off();
+      },
+      error: (err) => this.utility.handle_error_message(err),
+    });
+  }
 
   /**
    * Getter function for public property network_status
@@ -50,7 +233,7 @@ export class ApiService {
   /**
    * Requests all authors from the database. No parameters needed
    */
-  public request_authors(column: Column): void {
+  public request_authors2(column: Column): void {
     this.utility.spinner_on();
     this.get_authors(new Fragment({})).subscribe({
       next: (data) => {
@@ -67,7 +250,7 @@ export class ApiService {
    * @param column Fragment_column object with all necessary data
    * @author Ycreak
    */
-  public request_titles(column: Column): void {
+  public request_titles2(column: Column): void {
     this.utility.spinner_on();
 
     this.get_titles(new Fragment({ author: column.selected_fragment_author })).subscribe({
@@ -85,7 +268,7 @@ export class ApiService {
    * @param column Fragment_column object with all necessary data
    * @author Ycreak
    */
-  public request_editors(column: Column): void {
+  public request_editors2(column: Column): void {
     this.utility.spinner_on();
     this.get_editors(
       new Fragment({ author: column.selected_fragment_author, title: column.selected_fragment_title })
@@ -100,7 +283,7 @@ export class ApiService {
    * @param column Fragment_column object with all necessary data
    * @author Ycreak
    */
-  public request_fragment_names(column: Column): void {
+  public request_fragment_names2(column: Column): void {
     this.utility.spinner_on();
 
     this.get_fragment_names(
@@ -219,6 +402,22 @@ export class ApiService {
   // Neural networks part
   public scan_lines(lines: object): Observable<any> {
     return this.http.post<any>(this.NeuralURL + `scan_lines`, lines, { observe: 'body', responseType: 'json' });
+  }
+
+  /**
+   * Simple function to toggle the spinner
+   * @author Ycreak
+   */
+  public spinner_on(): void {
+    this.spinner = true;
+  }
+
+  /**
+   * Simple function to toggle the spinner
+   * @author Ycreak
+   */
+  public spinner_off(): void {
+    this.spinner = false;
   }
 }
 

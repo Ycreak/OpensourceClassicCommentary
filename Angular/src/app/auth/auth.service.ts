@@ -12,13 +12,13 @@ export class AuthService {
   redirectUrl: string;
 
   // For release
-  is_logged_in = false;
-  current_user_name: string = '';
-  current_user_role: string = '';
+  //is_logged_in = false;
+  //current_user_name: string = '';
+  //current_user_role: string = '';
 
-  // is_logged_in = true;
-  // current_user_name: string = 'Lucus';
-  // current_user_role: string = 'teacher';
+  is_logged_in = true;
+  current_user_name: string = 'Lucus';
+  current_user_role: string = 'teacher';
 
   magic_phrase: string = 'Naevius';
 

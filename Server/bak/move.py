@@ -67,45 +67,49 @@ def migrate_fragments(item):
 """
 Migration towards the new linked_fragments layout
 """
-# for id in db:
-#     doc = db[id]
-#     try:
-#         new_linked_fragments = []
-#         print(
-#             doc['author'],
-#             doc['title'],
-#             doc['editor'], 
-#             doc['fragment_name'],
-#             doc['_id']
-#             )
-#         for linked_fragment_id in doc['linked_fragments']:
-#             my_dict = {
-#                 'linked_fragment_id':linked_fragment_id, 
-#                 'author':db[linked_fragment_id]['author'],
-#                 'title':db[linked_fragment_id]['title'],
-#                 'editor':db[linked_fragment_id]['editor'],
-#                 'name':db[linked_fragment_id]['fragment_name'],
-#             }
-#             new_linked_fragments.append(my_dict)
+def refactor_fragment_link():
+    for id in db:
+        doc = db[id]
+        try:
+            new_linked_fragments = []
+            print(
+                doc['author'],
+                doc['title'],
+                doc['editor'], 
+                doc['fragment_name'],
+                doc['_id']
+                )
+            for linked_fragment_id in doc['linked_fragments']:
+                my_dict = {
+                    'linked_fragment_id':linked_fragment_id, 
+                    'author':db[linked_fragment_id]['author'],
+                    'title':db[linked_fragment_id]['title'],
+                    'editor':db[linked_fragment_id]['editor'],
+                    'name':db[linked_fragment_id]['fragment_name'],
+                }
+                new_linked_fragments.append(my_dict)
 
-#         if new_linked_fragments:
-#             doc['linked_fragments'] = new_linked_fragments
-#             doc_id, doc_rev = db.save(doc)
-#         print('######################')
-#     except:
-#         pass
+            if new_linked_fragments:
+                doc['linked_fragments'] = new_linked_fragments
+                doc_id, doc_rev = db.save(doc)
+            print('######################')
+        except:
+            pass
 
 """
 Rafactoring fragment_name to name
 """
-for id in db:
-    doc = db[id]
+def refactor_fragment_name():
+    for id in db:
+        doc = db[id]
 
-    try:
-        print(doc['author'], doc['title'], doc['editor'], doc['_id'])
-        doc['name'] = doc.pop('fragment_name')
-        doc_id, doc_rev = db.save(doc)
-    except:
-        pass
+        try:
+            print(doc['author'], doc['title'], doc['editor'], doc['_id'])
+            doc['name'] = doc.pop('fragment_name')
+            doc_id, doc_rev = db.save(doc)
+        except:
+            pass
 
-    print('#####################')
+        print('#####################')
+
+refactor_fragment_name()
