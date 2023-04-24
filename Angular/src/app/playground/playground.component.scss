@@ -52,3 +52,11 @@
 .playground-height-padding {
   min-height: 150ch;
 }
+
+button.button-dashed-background {
+  background-position: 10px 0, 10px 0, 0 0, 0 0;
+    background-repeat: repeat;
+    opacity: 0.8;
+    background: repeating-linear-gradient( -65deg, #fff7e0, #fff7e0 12px, #ffffff 5px, #ffffff 25px );
+    border-color: rgba(0,0,0,0.12);
+}
