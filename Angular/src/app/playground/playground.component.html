@@ -2,9 +2,9 @@
   <mat-progress-bar mode="query" *ngIf="this.api.spinner"></mat-progress-bar>
   <!-- First we display all buttons to control the playground -->
   <div class="row">
-    <div class="col-3">
+    <div class="playground-button-container col-3">
       <!-- Button to select the text -->
-      <button mat-button [matMenuTriggerFor]="menu_authors" (click)="this.playground.new_column = false">
+      <button mat-stroked-button class="playground-select-text-button playground-button button-margin" [matMenuTriggerFor]="menu_authors" (click)="this.playground.new_column = false">
         <ng-container *ngIf="this.playground.new_column; else text_button_clicked"> Select Text </ng-container>
 
         <ng-template #text_button_clicked>
@@ -13,10 +13,10 @@
         </ng-template>
       </button>
     </div>
-    <div class="col-3">
-      <button mat-stroked-button class="button-margin" class="button-margin" [matMenuTriggerFor]="fragment_selection">
+    <div class="playground-button-container col-3">
+      <button mat-stroked-button class="playground-button button-margin" [matMenuTriggerFor]="fragment_selection">
         {{ this.playground.name }}
-        <mat-icon fontIcon="expand_more" style="float: right"></mat-icon>
+        <mat-icon class="mat-icon-realigned" fontIcon="expand_more" style="float: right"></mat-icon>
       </button>
       <mat-menu #fragment_selection="matMenu">
         <ng-container *ngFor="let fragment_name of this.playground.fragment_names">
@@ -30,13 +30,13 @@
       </mat-menu>
     </div>
   </div>
-  <div class="div-padding-sm"></div>
+  <div class="div-padding-lg"></div>
 
   <div class="row">
     <!-- The second row contains all buttons to control the flow of fragments and notes -->
-    <div class="col-3">
+    <div class="playground-button-container col-3">
       <button
-        mat-stroked-button
+        mat-stroked-button class="playground-button button-margin"
         (click)="
           this.api.request_fragments(
             this.playground.column_id,
@@ -49,24 +49,25 @@
         Add all fragments from selected edition
       </button>
     </div>
-    <div class="col-3">
+    <div class="playground-button-container col-3">
       <button
-        mat-stroked-button
+        mat-stroked-button class="playground-button button-margin"
         color="accent"
         (click)="this.delete_clicked_item_from_playground(this.playground, 'fragment')">
         Delete fragment
       </button>
     </div>
-    <div class="col-3">
+    <div class="playground-button-container col-3">
       <button
-        mat-stroked-button
+        mat-stroked-button class="playground-button button-margin"
         color="accent"
         (click)="this.delete_clicked_item_from_playground(this.playground, 'note')">
         Delete note
       </button>
     </div>
-    <div class="col-3">
-      <button mat-stroked-button class="button-dashed-background" color="warn" (click)="this.playground.fragments = []; this.playground.note_array = []">
+    <div class="playground-button-container col-3">
+      <button mat-stroked-button class="button-dashed-background playground-button button-margin" color="warn"
+       (click)="this.playground.fragments = []; this.playground.note_array = []">
         Clear playground
       </button>
     </div>
@@ -76,7 +77,7 @@
   <!-- Possibility to add a little note -->
   <div class="row">
     <div mat-dialog-content class="col-6">
-      <mat-form-field class="input-form" style="--width: 100%">
+      <mat-form-field class="playground-mat-form-field input-form" style="--width: 100%">
         <input matInput placeholder="Add a note" ngDefaultControl [(ngModel)]="note" />
         <button
           type="button"

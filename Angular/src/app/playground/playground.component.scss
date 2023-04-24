@@ -60,3 +60,31 @@ button.button-dashed-background {
     background: repeating-linear-gradient( -65deg, #fff7e0, #fff7e0 12px, #ffffff 5px, #ffffff 25px );
     border-color: rgba(0,0,0,0.12);
 }
+
+.button-margin {
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+.playground-button-container {
+  padding-right: 0px;
+  width: fit-content;
+}
+
+.playground-button {
+  white-space: nowrap;
+  min-width: 0px;
+}
+
+.playground-select-text-button {
+  background-color: #f5f5f5;
+}
+
+.playground-mat-form-field {
+  padding-left: 0px;
+}
+
+.mat-icon-realigned {
+  margin-left: 0px;
+  margin-right: 0px;
+}
