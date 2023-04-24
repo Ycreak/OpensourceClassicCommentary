@@ -78,7 +78,8 @@
   <div class="row">
     <div mat-dialog-content class="col-6">
       <mat-form-field class="playground-mat-form-field input-form" style="--width: 100%">
-        <input matInput placeholder="Add a note" ngDefaultControl [(ngModel)]="note" />
+        <input matInput placeholder="Add a note" ngDefaultControl [(ngModel)]="note"
+          (keydown.enter)="this.playground.note_array = this.utility.push_to_array(note, this.playground.note_array)" />
         <button
           type="button"
           mat-icon-button
