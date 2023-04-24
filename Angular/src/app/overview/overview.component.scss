@@ -11,13 +11,13 @@
 
 .example-sidenav-content {
   //display: flex;
-  height: 100vh;
+  height: 100%;
   //align-items: center;
   //justify-content: center;
 }
 
 .example-sidenav {
-  height: 100vh;
+  height: 100%;
   overflow: scroll;
   max-width: 50vw;
   width: 50vw;

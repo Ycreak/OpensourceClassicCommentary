@@ -28,6 +28,11 @@
 //   width: inherit;
 // }
 
+// Styling for the container element
+ng-template {
+  height: 100%;
+}
+
 // To show a little hand on <a> elements without href but with click events
 .a-void {
   cursor: pointer;
