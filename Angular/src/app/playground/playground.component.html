@@ -46,7 +46,7 @@
           )
         "
         (click)="this.single_fragment_requested = false">
-        Add selected edition
+        Add all fragments from selected edition
       </button>
     </div>
     <div class="col-3">
@@ -54,7 +54,7 @@
         mat-stroked-button
         color="accent"
         (click)="this.delete_clicked_item_from_playground(this.playground, 'fragment')">
-        Delete clicked fragment
+        Delete fragment
       </button>
     </div>
     <div class="col-3">
@@ -62,7 +62,7 @@
         mat-stroked-button
         color="accent"
         (click)="this.delete_clicked_item_from_playground(this.playground, 'note')">
-        Delete clicked note
+        Delete note
       </button>
     </div>
     <div class="col-3">
@@ -85,7 +85,7 @@
           (click)="this.playground.note_array = this.utility.push_to_array(note, this.playground.note_array)">
           <mat-icon>{{ "add" }}</mat-icon>
         </button>
-        <mat-hint>To organise your edition</mat-hint>
+        <mat-hint>To organise your playground</mat-hint>
       </mat-form-field>
     </div>
   </div>
