@@ -28,6 +28,7 @@ import { ColumnHandlerService } from '@oscc/services/column-handler.service';
 })
 export class OverviewComponent implements OnInit {
   protected commentary_enabled = true;
+  protected commentary_is_reduced_size = false;
   protected playground_enabled = true;
 
   protected current_fragment: Fragment;
@@ -75,6 +76,16 @@ export class OverviewComponent implements OnInit {
   protected toggle_commentary(): void {
     this.commentary_enabled = !this.commentary_enabled;
   }
+
+  /**
+   * Simple function to toggle the commentary column size
+   * @author CptVickers
+   */
+  protected toggle_commentary_size(): void {
+    this.commentary_is_reduced_size = !this.commentary_is_reduced_size;
+  }
+
+
   /**
    * Simple function to toggle the playground column
    * @author Ycreak
@@ -82,6 +93,8 @@ export class OverviewComponent implements OnInit {
   protected toggle_playground(): void {
     this.playground_enabled = !this.playground_enabled;
   }
+
+  
 
   /**
    * Function to handle the settings dialog. Will save changes via the oscc_settings object

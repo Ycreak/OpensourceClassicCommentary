@@ -81,10 +81,16 @@
     <div class="example-sidenav-content">
       <app-fragments (fragment_clicked2)="this.current_fragment = $event"></app-fragments>
     </div>
-
-    <mat-drawer #drawer class="example-sidenav" mode="side" position="end" opened="true">
-      <div style="padding: 0.5em">
-        <app-commentary [current_fragment]="this.current_fragment"></app-commentary>
+    
+    <mat-drawer #drawer class="example-sidenav" [ngStyle]="{'width': this.commentary_is_reduced_size ? '30vw' : '50vw'}" mode="side" position="end" opened="true">
+      <div class="example-sidenav-inner">
+        <button class="commentary-drawer-size-toggle-button"
+        (click)="this.toggle_commentary_size()">
+          <mat-icon [fontIcon]="this.commentary_is_reduced_size ? 'keyboard_arrow_left' : 'keyboard_arrow_right'"></mat-icon>
+        </button>
+        <div style="padding: 0.5em">
+          <app-commentary [current_fragment]="this.current_fragment"></app-commentary>
+        </div>
       </div>
     </mat-drawer>
   </mat-drawer-container>
