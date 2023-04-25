@@ -89,6 +89,23 @@ button.button-dashed-background {
   margin-right: 0px;
 }
 
+hr.playground-divider-top {
+  border-top: medium solid lightgray;
+  margin-bottom: 0px;
+  opacity: 1;
+}
+
 .playground-divider {
   border-top: 2px solid lightgray;
+}
+
+.playground-title {
+  font-family: 'Roboto condensed', 'Arial', sans-serif;
+  font-size: 1.75rem;
+  transform: translate(0px, -11px);
+  color: lightgray;
+  text-align: right;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  width: 100%;
 }
