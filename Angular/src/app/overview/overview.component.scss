@@ -16,20 +16,33 @@ $toolbar-height: 64px;
 }
 
 //.example-container {
-//width: 100vh;
-//height: 100vh;
-//}
-
-.example-sidenav-content {
-  //display: flex;
-  height: 100%;
-  //align-items: center;
-  //justify-content: center;
-}
-
+  //width: 100vh;
+  //height: 100vh;
+  //}
+  
+  .example-sidenav-content {
+    //display: flex;
+    height: 100%;
+    //align-items: center;
+    //justify-content: center;
+  }
+  
 .example-sidenav {
   height: 100%;
   overflow: scroll;
   max-width: 50vw;
   width: 50vw;
+  transition: width 0.75s ease-in-out;
+}
+
+.example-sidenav-inner {
+  display:flex;
+  height: 100%;
+}
+
+.commentary-drawer-size-toggle-button {
+  display: inline-flex;
+  align-items: center;
+  border: 2px groove #f73f7f57;
+  padding: 0px;
 }
