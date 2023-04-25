@@ -1,7 +1,18 @@
+/* Root variables */
+$toolbar-height: 64px;
+
 /* HTML Elements */
 .overflow_column {
   height: 100vh;
   overflow: scroll;
+}
+
+.mat-toolbar {
+  height: $toolbar-height;
+}
+
+.example-container {
+  max-height: calc(100vh - $toolbar-height);
 }
 
 //.example-container {
