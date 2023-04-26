@@ -59,6 +59,7 @@ export class FragmentsComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
+    this.api.request_authors_titles_editors_blob();
     // Create an empty current_fragment variable to be filled whenever the user clicks a fragment
     this.current_fragment = new Fragment({});
     // Create a commentary column (deprecated -> can be replaced by simple linked_fragments list)
@@ -82,6 +83,7 @@ export class FragmentsComponent implements OnInit, AfterViewInit {
     /** Handle what happens when new fragments arrive */
     this.fragments_subscription = this.api.new_fragments_alert.subscribe((column_id) => {
       let fragments = this.api.fragments;
+      console.log(fragments);
       // A new list of fragments has arrived. Use the column identifier to find the corresponding column
       const column = this.column_handler.columns.find((x) => x.column_id == column_id);
       if (column) {

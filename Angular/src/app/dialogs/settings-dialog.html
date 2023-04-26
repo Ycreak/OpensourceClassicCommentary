@@ -23,12 +23,6 @@
   <br />
 
   <p>
-    <mat-slide-toggle [(ngModel)]="data.auto_scroll_linked_fragments">Auto scroll to linked fragments</mat-slide-toggle>
-  </p>
-
-  <br />
-
-  <p>
     <mat-slide-toggle [(ngModel)]="data.show_headers">Show fragments headers</mat-slide-toggle>
   </p>
 
@@ -37,4 +31,21 @@
   <p>
     <mat-slide-toggle [(ngModel)]="data.show_line_names">Show fragment line names</mat-slide-toggle>
   </p>
+
+  <br />
+
+  <p>
+    <mat-slide-toggle [(ngModel)]="data.auto_scroll_linked_fragments">Auto scroll to linked fragments</mat-slide-toggle>
+  </p>
+
+  <hr />
+
+  <p>Change size of the commentary window</p>
+  <div class="center">
+    <mat-slider min="20" max="80" step="10" value="50" discrete color="accent">
+      <input matSliderThumb [(ngModel)]="data.commentary_size" />
+    </mat-slider>
+  </div>
+
+  <br />
 </div>

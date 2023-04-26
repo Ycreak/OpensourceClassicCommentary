@@ -6,6 +6,10 @@ export const environment = {
   dashboard_id: 255, 
   referencer_id: 256, 
   playground_id: 0,
+  flask_api: 'https://oscc.nolden.biz:5004/',
+  is_logged_in: true,
+  current_user_name: 'Lucus',
+  current_user_role: 'teacher',
   production: false,
   firebase: {
     apiKey: 'AIzaSyC1D1PH6p1xvOzK6CBWwM1IdWyIiXsGBd4',

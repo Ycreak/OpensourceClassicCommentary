@@ -16,6 +16,7 @@ export class SettingsService {
     auto_scroll_linked_fragments: false,
     show_headers: true,
     show_line_names: true,
+    commentary_size: 40,
   };
 
   constructor() {}

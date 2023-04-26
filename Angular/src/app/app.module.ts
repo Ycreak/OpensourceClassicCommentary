@@ -78,6 +78,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSliderModule } from '@angular/material/slider';
 // Allows copying to clipboard
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { QuillModule } from 'ngx-quill';
@@ -186,6 +187,7 @@ const appRoutes: Routes = [
     MatButtonToggleModule,
     MatPaginatorModule,
     MatSidenavModule,
+    MatSliderModule,
     // To allow the drag and drop
     DragDropModule,
     ClipboardModule,
