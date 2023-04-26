@@ -33,8 +33,6 @@ export class OverviewComponent implements OnInit {
 
   protected current_fragment: Fragment;
 
-  protected temp = 'col-2';
-
   constructor(
     protected api: ApiService,
     // protected utility: UtilityService,
@@ -50,23 +48,24 @@ export class OverviewComponent implements OnInit {
   ngOnInit(): void {
     // Create the window watcher for mobile devices
     this.window_watcher.init(window.innerWidth);
-    //console.log('hello', this.fragments.playground_enabled)
-    // this.api.request_authors2();
     this.current_fragment = new Fragment({});
   }
-
-  // ngAfterViewInit() {
-  //   this.authors_subscription = this.api.new_authors_alert.subscribe(() => {
-  //     console.log('authors', this.api.authors);
-  //   });
-  // }
 
   ngOnDestroy() {
     this.window_watcher.subscription$.unsubscribe();
   }
 
-  test(item) {
+  test(item?: any) {
     console.log('hi', item);
+  }
+
+  /**
+   * Returns the size of the commentary window in (css style) percentage.
+   * @returns number%
+   * @author Ycreak
+   */
+  protected get_drawer_size(): string {
+    return `${this.settings.fragments.commentary_size}%`;
   }
 
   /**
@@ -85,7 +84,6 @@ export class OverviewComponent implements OnInit {
     this.commentary_is_reduced_size = !this.commentary_is_reduced_size;
   }
 
-
   /**
    * Simple function to toggle the playground column
    * @author Ycreak
@@ -93,8 +91,6 @@ export class OverviewComponent implements OnInit {
   protected toggle_playground(): void {
     this.playground_enabled = !this.playground_enabled;
   }
-
-  
 
   /**
    * Function to handle the settings dialog. Will save changes via the oscc_settings object

@@ -14,7 +14,7 @@
     mat-stroked-button
     class="navbar"
     *ngIf="this.auth_service.current_user_name == 'Lucus'"
-    (click)="this.utility.test('0')">
+    (click)="this.test('0')">
     TEST
   </button>
 
@@ -77,20 +77,22 @@
 </div>
 
 <div>
-  <mat-drawer-container class="example-container" autosize>
-    <div class="example-sidenav-content">
-      <app-fragments (fragment_clicked2)="this.current_fragment = $event"></app-fragments>
+  <mat-drawer-container class="drawer-container" autosize>
+    <div class="overview-sidenav-content">
+      <app-fragments (fragment_clicked2)="this.current_fragment = $event"> </app-fragments>
     </div>
-    
-    <mat-drawer #drawer class="example-sidenav" [ngStyle]="{'width': this.commentary_is_reduced_size ? '30vw' : '50vw'}" mode="side" position="end" opened="true">
-      <div class="example-sidenav-inner">
-        <button class="commentary-drawer-size-toggle-button"
-        (click)="this.toggle_commentary_size()">
-          <mat-icon [fontIcon]="this.commentary_is_reduced_size ? 'keyboard_arrow_left' : 'keyboard_arrow_right'"></mat-icon>
-        </button>
-        <div style="padding: 0.5em">
-          <app-commentary [current_fragment]="this.current_fragment"></app-commentary>
-        </div>
+
+    <hr />
+
+    <mat-drawer
+      #drawer
+      class="overview-sidenav"
+      [ngStyle]="{ width: this.get_drawer_size() }"
+      mode="side"
+      position="end"
+      opened="true">
+      <div style="padding: 0.5em">
+        <app-commentary [current_fragment]="this.current_fragment"> </app-commentary>
       </div>
     </mat-drawer>
   </mat-drawer-container>

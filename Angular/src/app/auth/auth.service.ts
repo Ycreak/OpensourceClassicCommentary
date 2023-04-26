@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { User } from '../models/User';
+import { environment } from '@src/environments/environment';
 
 import { UtilityService } from '../utility.service';
 
@@ -11,18 +12,13 @@ export class AuthService {
 
   redirectUrl: string;
 
-  // For release
-  //is_logged_in = false;
-  //current_user_name: string = '';
-  //current_user_role: string = '';
-
-  is_logged_in = true;
-  current_user_name: string = 'Lucus';
-  current_user_role: string = 'teacher';
+  is_logged_in = environment.is_logged_in;
+  current_user_name: string = environment.current_user_name;
+  current_user_role: string = environment.current_user_role;
 
   magic_phrase: string = 'Naevius';
 
-  public login_user(user) {
+  public login_user(user: any) {
     // Getting here means the server approved login
     this.current_user_name = user.username;
     this.current_user_role = user.role;

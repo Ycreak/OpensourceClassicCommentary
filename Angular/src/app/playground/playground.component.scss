@@ -55,10 +55,10 @@
 
 button.button-dashed-background {
   background-position: 10px 0, 10px 0, 0 0, 0 0;
-    background-repeat: repeat;
-    opacity: 0.8;
-    background: repeating-linear-gradient( -65deg, #fff7e0, #fff7e0 12px, #ffffff 5px, #ffffff 25px );
-    border-color: rgba(0,0,0,0.12);
+  background-repeat: repeat;
+  opacity: 0.8;
+  background: repeating-linear-gradient(-65deg, #fff7e0, #fff7e0 12px, #ffffff 5px, #ffffff 25px);
+  border-color: rgba(0, 0, 0, 0.12);
 }
 
 .button-margin {
@@ -100,7 +100,7 @@ hr.playground-divider-top {
 }
 
 .playground-title {
-  font-family: 'Roboto condensed', 'Arial', sans-serif;
+  font-family: "Roboto condensed", "Arial", sans-serif;
   font-size: 1.75rem;
   transform: translate(0px, -11px);
   color: lightgray;

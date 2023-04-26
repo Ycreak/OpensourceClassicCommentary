@@ -5,6 +5,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
 import { Observable, throwError, ReplaySubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { environment } from '@src/environments/environment';
 
 // Service imports
 import { UtilityService } from './utility.service';
@@ -19,6 +20,12 @@ export interface fragment_key {
   title?: string;
   editor?: string;
   name?: string;
+}
+
+export interface text_blob {
+  author: string;
+  title: string;
+  editor: string;
 }
 
 export interface author {
@@ -55,13 +62,9 @@ export class ApiService {
   public fragments: Fragment[] = [];
   public fragment_key: fragment_key = {};
 
-  // URL for production
-  // FlaskURL: String = 'https://oscc.nolden.biz:5003/'; // For production (https)
-  // URL for staging
-  FlaskURL: String = 'https://oscc.nolden.biz:5004/'; // For staging (https)
-  // URL for development
-  // FlaskURL: String = 'http://localhost:5003/'; // For deployment (http! not https)
+  public author_title_editor_blob: any = [];
 
+  FlaskURL: String = environment.flask_api;
   // NeuralURL: String = 'http://localhost:5002/';
   NeuralURL: String = 'https://oscc.nolden.biz:5002/';
 
@@ -87,6 +90,22 @@ export class ApiService {
       key.name = name;
     }
     return key;
+  }
+
+  public request_authors_titles_editors_blob(): void {
+    this.author_title_editor_blob = [];
+    this.get_authors_titles_editors_blob().subscribe({
+      next: (data) => {
+        data.forEach((value: any) => {
+          this.author_title_editor_blob.push({
+            author: value[0],
+            title: value[1],
+            editor: value[2],
+          } as text_blob);
+        });
+      },
+      error: (err) => this.utility.handle_error_message(err),
+    });
   }
 
   public request_authors(): void {
@@ -174,6 +193,7 @@ export class ApiService {
     this.create_fragment(fragment).subscribe({
       next: (data) => {
         this.utility.handle_error_message(data);
+        this.request_authors_titles_editors_blob();
         if (column_id) {
           this.request_fragment_names(column_id, fragment.author, fragment.title, fragment.editor);
           this.request_fragments(column_id, fragment.author, fragment.title, fragment.editor, fragment.name);
@@ -189,6 +209,7 @@ export class ApiService {
     this.revise_fragment(fragment).subscribe({
       next: (data) => {
         this.utility.handle_error_message(data);
+        this.request_authors_titles_editors_blob();
         if (column_id) {
           this.request_fragment_names(column_id, fragment.author, fragment.title, fragment.editor);
           this.request_fragments(column_id, fragment.author, fragment.title, fragment.editor, fragment.name);
@@ -211,6 +232,7 @@ export class ApiService {
     this.delete_fragment(this.fragment_key).subscribe({
       next: (data) => {
         this.utility.handle_error_message(data);
+        this.request_authors_titles_editors_blob();
         if (column_id) {
           this.request_fragment_names(column_id, author, title, editor);
         }
@@ -346,6 +368,12 @@ export class ApiService {
   }
   public get_fragment_names(fragment: object): Observable<string[]> {
     return this.http.post<string[]>(this.FlaskURL + `fragment/get/name`, fragment, {
+      observe: 'body',
+      responseType: 'json',
+    });
+  }
+  public get_authors_titles_editors_blob(): Observable<string[]> {
+    return this.http.post<string[]>(this.FlaskURL + `fragment/get/list_display`, {
       observe: 'body',
       responseType: 'json',
     });

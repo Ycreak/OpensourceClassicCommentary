@@ -145,8 +145,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.request_users();
 
     // We will store all dashboard data in the following data object
-    this.selected_fragment_data = new Column({ column_id: environment.dashboard_id });
-    this.fragment_referencer = new Column({ column_id: environment.referencer_id });
+    this.selected_fragment_data = new Column({
+      column_id: environment.dashboard_id,
+    });
+    this.fragment_referencer = new Column({
+      column_id: environment.referencer_id,
+    });
   }
 
   // initiate the table sorting and paginator
@@ -542,6 +546,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .subscribe((result) => {
         if (result) {
           const fragment = this.convert_fragment_form_to_Fragment(fragment_form);
+          this.reset_fragment_form();
           this.api.request_delete_fragment(
             fragment.author,
             fragment.title,
@@ -550,7 +555,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             environment.dashboard_id
           );
           this.fragment_selected = false;
-          this.reset_fragment_form();
         }
       });
   }
