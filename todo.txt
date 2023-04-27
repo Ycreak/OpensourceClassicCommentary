@@ -3,7 +3,7 @@ Create dummy fragments for new texts
 Duplicate fragments created? :O
 Nonius Stylesheet?
 We should work with Fragment_doc_id instead of Author, Text, Edition, Fragment
-Temp 2
+Temp 3
 BIBLIOGRAPHY
 
 bibtex entries opslaan in de database
