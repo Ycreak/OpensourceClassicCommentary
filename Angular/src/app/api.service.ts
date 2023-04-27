@@ -108,6 +108,36 @@ export class ApiService {
     });
   }
 
+  public get_author_list(): object {
+    let filtered_objects = this.author_title_editor_blob;
+    let author_list = new Set(
+      filtered_objects.map(function (el: any) {
+        return el.author;
+      })
+    );
+    return author_list;
+  }
+
+  public get_title_list(author: string): object {
+    let filtered_objects = this.author_title_editor_blob.filter((x: any) => x.author == author);
+    let title_list = new Set(
+      filtered_objects.map(function (el: any) {
+        return el.title;
+      })
+    );
+    return title_list;
+  }
+
+  public get_editor_list(author: string, title: string): object {
+    let filtered_objects = this.author_title_editor_blob.filter((x: any) => x.author == author && x.title == title);
+    let editor_list = new Set(
+      filtered_objects.map(function (el: any) {
+        return el.editor;
+      })
+    );
+    return editor_list;
+  }
+
   public request_authors(): void {
     this.authors = [];
     this.fragment_key = this.create_fragment_key();

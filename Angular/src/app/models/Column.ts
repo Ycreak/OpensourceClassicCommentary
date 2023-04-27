@@ -56,33 +56,33 @@ export class Column {
   // Original order of the column fragments
   original_fragment_order: string[] = [];
 
-  public get_authors(): object {
-    let filtered_objects = this.text_cache['cache'];
-    let author_list = new Set(
-      filtered_objects.map(function (el) {
-        return el.author;
-      })
-    );
-    return author_list;
-  }
+  //public get_authors(): object {
+  //let filtered_objects = this.text_cache['cache'];
+  //let author_list = new Set(
+  //filtered_objects.map(function (el) {
+  //return el.author;
+  //})
+  //);
+  //return author_list;
+  //}
 
-  public get_titles(author: string): object {
-    let filtered_objects = this.text_cache['cache'].filter((x) => x.author == author);
-    let title_list = new Set(
-      filtered_objects.map(function (el) {
-        return el.title;
-      })
-    );
-    return title_list;
-  }
+  //public get_titles(author: string): object {
+  //let filtered_objects = this.text_cache['cache'].filter((x) => x.author == author);
+  //let title_list = new Set(
+  //filtered_objects.map(function (el) {
+  //return el.title;
+  //})
+  //);
+  //return title_list;
+  //}
 
-  public get_editors(author: string, title: string): object {
-    let filtered_objects = this.text_cache['cache'].filter((x) => x.author == author && x.title == title);
-    let editor_list = new Set(
-      filtered_objects.map(function (el) {
-        return el.editor;
-      })
-    );
-    return editor_list;
-  }
+  //public get_editors(author: string, title: string): object {
+  //let filtered_objects = this.text_cache['cache'].filter((x) => x.author == author && x.title == title);
+  //let editor_list = new Set(
+  //filtered_objects.map(function (el) {
+  //return el.editor;
+  //})
+  //);
+  //return editor_list;
+  //}
 }

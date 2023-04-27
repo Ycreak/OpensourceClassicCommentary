@@ -62,7 +62,7 @@
         <mat-label>Select author</mat-label>
         <mat-select [(ngModel)]="this.selected_fragment_data.author" ngDefaultControl>
           <mat-option
-            *ngFor="let author of this.selected_fragment_data.get_authors()"
+            *ngFor="let author of this.api.get_author_list()"
             [value]="author"
             (click)="this.selected_fragment_data.author = author"
             (click)="
@@ -76,7 +76,7 @@
               this.selected_fragment_data.fragment_names =
                 [] //FIXME: perhaps retrieved_fragment_names is more clear than fragment_names?
             "
-            (click)="this.selected_fragment_data.retrieved_titles = this.selected_fragment_data.get_titles(author)"
+            (click)="this.selected_fragment_data.retrieved_titles = this.api.get_title_list(author)"
             (click)="this.reset_fragment_form()"
             (click)="this.update_form_field('fragment_form', 'author', author)"
             (click)="this.fragment_selected = false">
@@ -100,7 +100,7 @@
             (click)="this.update_form_field('fragment_form', 'author', selected_fragment_data.author)"
             (click)="this.update_form_field('fragment_form', 'title', title)"
             (click)="
-              this.selected_fragment_data.retrieved_editors = this.selected_fragment_data.get_editors(
+              this.selected_fragment_data.retrieved_editors = this.api.get_editor_list(
                 this.selected_fragment_data.author,
                 title
               )
@@ -440,7 +440,7 @@
               <mat-label>Select referenced author</mat-label>
               <mat-select [(ngModel)]="this.fragment_referencer.author" ngDefaultControl>
                 <mat-option
-                  *ngFor="let author of this.fragment_referencer.get_authors()"
+                  *ngFor="let author of this.api.get_author_list()"
                   [value]="author"
                   (click)="
                     this.fragment_referencer.title = '';
@@ -456,7 +456,7 @@
               <mat-label>Select referenced title</mat-label>
               <mat-select [(ngModel)]="this.fragment_referencer.title" ngDefaultControl>
                 <mat-option
-                  *ngFor="let title of this.fragment_referencer.get_titles(this.fragment_referencer.author)"
+                  *ngFor="let title of this.api.get_title_list(this.fragment_referencer.author)"
                   [value]="title"
                   (click)="this.fragment_referencer.editor = ''; this.fragment_referencer.name = ''">
                   {{ title }}
@@ -469,7 +469,7 @@
               <mat-select [(ngModel)]="this.fragment_referencer.editor" ngDefaultControl>
                 <mat-option
                   *ngFor="
-                    let editor of this.fragment_referencer.get_editors(
+                    let editor of this.api.get_editor_list(
                       this.fragment_referencer.author,
                       this.fragment_referencer.title
                     )
