@@ -9,6 +9,10 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./Angular/
+
 
     strategy:
       matrix:
@@ -17,13 +21,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - run: cd Angular
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-        cache-dependency-path: Angular/package-lock.json
 
     - run: npm ci
     - run: npm run build --if-present
