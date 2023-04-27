@@ -59,9 +59,10 @@ export class TextComponent implements OnInit {
    * @param title whose text is to be retrieved
    */
   public RequestText(title: number) {
-    this.api.get_text(title).subscribe((data) => {
-      this.T_Text = data;
-    });
+    console.log('test')
+    //this.api.get_text(title).subscribe((data) => {
+      //this.T_Text = data;
+    //});
   }
 
   /**
@@ -71,9 +72,9 @@ export class TextComponent implements OnInit {
   public RequestCommentary(lineNumber: number) {
     this.selectedLine = lineNumber;
 
-    this.api.get_text_commentary(this.currentBook, lineNumber).subscribe((data) => {
-      this.T_TextCommentary = data;
-    });
+    //this.api.get_text_commentary(this.currentBook, lineNumber).subscribe((data) => {
+      //this.T_TextCommentary = data;
+    //});
   }
 
   /**

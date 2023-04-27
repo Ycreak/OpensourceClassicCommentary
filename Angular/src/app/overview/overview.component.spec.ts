@@ -16,6 +16,10 @@ describe('OverviewComponent', () => {
     fixture.detectChanges();
   });
 
+  afterEach(() => {
+     component.ngOnDestroy();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });

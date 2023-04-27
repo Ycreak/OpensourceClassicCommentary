@@ -12,14 +12,15 @@ import { UtilityService } from '@oscc/utility.service';
   styleUrls: ['./commentary.component.scss'],
 })
 export class CommentaryComponent implements OnInit {
-  @Input() current_fragment!: Fragment;
-  //@Input() fragment_clicked!: boolean;
+  @Input() current_fragment: Fragment;
 
   protected fragment_clicked = false;
 
   constructor(protected utility: UtilityService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.current_fragment = new Fragment({});
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     // If the input fragment changes, we will note that a fragment has been clicked

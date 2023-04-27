@@ -117,22 +117,22 @@ export class FragmentsComponent implements OnInit, AfterViewInit {
       //this.commentary_column.linked_fragments_content = [];
 
       // Now retrieve all linked fragments to show their content in the commentary column
-      for (let i in fragment.linked_fragments) {
-        // Request the fragment
-        this.api
-          .get_fragments({
-            author: fragment.linked_fragments[i].author,
-            title: fragment.linked_fragments[i].title,
-            editor: fragment.linked_fragments[i].editor,
-            name: fragment.linked_fragments[i].name,
-          })
-          .subscribe((data) => {
-            let fragment = this.api.convert_fragment_json_to_typescript(data);
-            // and push it to the commentary column (only one fragment in the list, so push the first one)
-            //this.commentary_column.linked_fragments_content.push(fragment[0]);
-            this.utility.spinner_off();
-          });
-      }
+      //for (let i in fragment.linked_fragments) {
+        //// Request the fragment
+        //this.api
+          //.get_fragments({
+            //author: fragment.linked_fragments[i].author,
+            //title: fragment.linked_fragments[i].title,
+            //editor: fragment.linked_fragments[i].editor,
+            //name: fragment.linked_fragments[i].name,
+          //})
+          //.subscribe((data) => {
+            //let fragment = this.api.convert_fragment_json_to_typescript(data);
+            //// and push it to the commentary column (only one fragment in the list, so push the first one)
+            ////this.commentary_column.linked_fragments_content.push(fragment[0]);
+            //this.utility.spinner_off();
+          //});
+      //}
 
       // The next part handles the colouring of clicked and referenced fragments.
       // First, restore all fragments to their original black colour when a new fragment is clicked

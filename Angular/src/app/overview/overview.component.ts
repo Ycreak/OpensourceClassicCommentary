@@ -1,5 +1,5 @@
 // Library imports
-import { Component, OnInit, AfterViewInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog'; // Library used for interacting with the page
 import { trigger, transition, style, animate } from '@angular/animations';
 import { environment } from '@src/environments/environment';
@@ -25,8 +25,9 @@ import { ColumnHandlerService } from '@oscc/services/column-handler.service';
   selector: 'app-overview',
   templateUrl: './overview.component.html',
   styleUrls: ['./overview.component.scss'],
+  providers: [ FragmentsComponent ]
 })
-export class OverviewComponent implements OnInit {
+export class OverviewComponent implements OnInit, OnDestroy {
   protected commentary_enabled = true;
   protected commentary_is_reduced_size = false;
   protected playground_enabled = true;
@@ -52,7 +53,9 @@ export class OverviewComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.window_watcher.subscription$.unsubscribe();
+    if(this.window_watcher.subscription$){
+      this.window_watcher.subscription$.unsubscribe();
+    }
   }
 
   test(item?: any) {
