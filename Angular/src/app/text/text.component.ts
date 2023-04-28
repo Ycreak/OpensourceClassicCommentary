@@ -60,7 +60,7 @@ export class TextComponent implements OnInit {
    */
   public RequestText(title: number) {
     //this.api.get_text(title).subscribe((data) => {
-      //this.T_Text = data;
+    //this.T_Text = data;
     //});
   }
 
@@ -72,7 +72,7 @@ export class TextComponent implements OnInit {
     this.selectedLine = lineNumber;
 
     //this.api.get_text_commentary(this.currentBook, lineNumber).subscribe((data) => {
-      //this.T_TextCommentary = data;
+    //this.T_TextCommentary = data;
     //});
   }
 

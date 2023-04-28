@@ -15,13 +15,12 @@ export class CommentaryComponent implements OnInit {
   @Input() current_fragment: Fragment;
   //@Input() fragment_clicked!: boolean;
 
-
   protected fragment_clicked = false;
 
   constructor(protected utility: UtilityService) {}
 
   ngOnInit(): void {
-    this.current_fragment = new Fragment({})
+    this.current_fragment = new Fragment({});
   }
 
   ngOnChanges(changes: SimpleChanges) {
