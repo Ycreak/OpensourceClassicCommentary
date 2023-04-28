@@ -30,6 +30,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NgxSimpleTextEditorModule } from 'ngx-simple-text-editor';
+import { environment } from '../environments/environment';
 
 // Component Imports
 import { AppRoutingModule } from './app-routing.module';
@@ -45,9 +46,6 @@ import { ConfirmationDialog } from './services/dialog.service';
 import { WYSIWYGDialog } from './services/dialog.service';
 import { SettingsDialog } from './services/dialog.service';
 import { CustomDialog } from './services/dialog.service';
-
-// import { Multiplayer } from './fragments/fragments.component';
-// Directives
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorInterceptor } from './api.service';
@@ -82,40 +80,13 @@ import { MatSliderModule } from '@angular/material/slider';
 // Allows copying to clipboard
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { QuillModule } from 'ngx-quill';
-// import { TextComponent } from './text/text.component';
-
-// Allows a virtual keyboard
-// import { IKeyboardLayouts, keyboardLayouts, MAT_KEYBOARD_LAYOUTS, MatKeyboardModule } from '@efaps/angular-onscreen-material-keyboard';
 
 // Allows communication with firebase
-// import { AngularFireModule } from '@angular/fire';
-import { environment } from '../environments/environment';
 import { ScansionComponent } from './scansion/scansion.component';
 import { TestsComponent } from './tests/tests.component';
 import { PlaygroundComponent } from './playground/playground.component';
 import { CommentaryComponent } from './commentary/commentary.component';
 import { OverviewComponent } from './overview/overview.component';
-
-// Virtual Keyboard Layout
-// const customLayouts: IKeyboardLayouts = {
-//   ...keyboardLayouts,
-//   'OSCCLayout': {
-//     'name': 'OSCCLayout',
-//     'keys': [
-//       [
-//         ['⟨', '⟨'],
-//         ['⟩', '⟩'],
-//         ['†', '†'],
-//         ['×', '×'],
-//         ['-', '-'],
-//         ['⏑', '⏑'],
-//         ['⏓', '⏒'],
-//         ['⏕', '⏔'],
-//       ]
-//     ],
-//     'lang': ['OSCC']
-//   }
-// };
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
@@ -135,9 +106,7 @@ const appRoutes: Routes = [
     SafeHtmlPipe,
     DashboardComponent,
     LoginComponent,
-    // TextComponent,
     ScansionComponent,
-    // Multiplayer,
     ConfirmationDialog,
     WYSIWYGDialog,
     SettingsDialog,
@@ -146,7 +115,6 @@ const appRoutes: Routes = [
     PlaygroundComponent,
     CommentaryComponent,
     OverviewComponent,
-    // DialogContentComponent,
   ],
   imports: [
     BrowserModule,
@@ -154,7 +122,6 @@ const appRoutes: Routes = [
     HttpClientModule,
     RouterModule.forRoot(appRoutes, {}),
     QuillModule.forRoot(), // rich text editor
-    // Multiplayer,
     NgxSimpleTextEditorModule,
 
     FormsModule,
