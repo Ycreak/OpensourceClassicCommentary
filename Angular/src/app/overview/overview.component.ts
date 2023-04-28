@@ -25,6 +25,7 @@ import { ColumnHandlerService } from '@oscc/services/column-handler.service';
   selector: 'app-overview',
   templateUrl: './overview.component.html',
   styleUrls: ['./overview.component.scss'],
+  providers: [ FragmentsComponent ]
 })
 export class OverviewComponent implements OnInit {
   protected commentary_enabled = true;

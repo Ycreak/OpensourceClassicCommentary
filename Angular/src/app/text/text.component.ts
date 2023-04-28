@@ -12,11 +12,11 @@ import { TemplateRef, ViewChild } from '@angular/core';
 })
 export class TextComponent implements OnInit {
   @ViewChild('CallBookSelect') CallBookSelect: TemplateRef<any>;
-  authorsJSON;
-  booksJSON;
+  authorsJSON: any;
+  booksJSON: any;
   // Components that hold the text and commentary
-  T_Text;
-  T_TextCommentary;
+  T_Text: any;
+  T_TextCommentary: any;
   // Currently selected book and line
   currentBook: number = 1;
   currentBookTitle: string;
@@ -59,9 +59,9 @@ export class TextComponent implements OnInit {
    * @param title whose text is to be retrieved
    */
   public RequestText(title: number) {
-    this.api.get_text(title).subscribe((data) => {
-      this.T_Text = data;
-    });
+    //this.api.get_text(title).subscribe((data) => {
+      //this.T_Text = data;
+    //});
   }
 
   /**
@@ -71,9 +71,9 @@ export class TextComponent implements OnInit {
   public RequestCommentary(lineNumber: number) {
     this.selectedLine = lineNumber;
 
-    this.api.get_text_commentary(this.currentBook, lineNumber).subscribe((data) => {
-      this.T_TextCommentary = data;
-    });
+    //this.api.get_text_commentary(this.currentBook, lineNumber).subscribe((data) => {
+      //this.T_TextCommentary = data;
+    //});
   }
 
   /**
