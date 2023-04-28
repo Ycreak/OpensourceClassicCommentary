@@ -108,8 +108,8 @@ export class ApiService {
   }
 
   public get_author_list(): object {
-    let filtered_objects = this.author_title_editor_blob;
-    let author_list = new Set(
+    const filtered_objects = this.author_title_editor_blob;
+    const author_list = new Set(
       filtered_objects.map(function (el: any) {
         return el.author;
       })
@@ -118,8 +118,8 @@ export class ApiService {
   }
 
   public get_title_list(author: string): object {
-    let filtered_objects = this.author_title_editor_blob.filter((x: any) => x.author == author);
-    let title_list = new Set(
+    const filtered_objects = this.author_title_editor_blob.filter((x: any) => x.author == author);
+    const title_list = new Set(
       filtered_objects.map(function (el: any) {
         return el.title;
       })
@@ -128,8 +128,8 @@ export class ApiService {
   }
 
   public get_editor_list(author: string, title: string): object {
-    let filtered_objects = this.author_title_editor_blob.filter((x: any) => x.author == author && x.title == title);
-    let editor_list = new Set(
+    const filtered_objects = this.author_title_editor_blob.filter((x: any) => x.author == author && x.title == title);
+    const editor_list = new Set(
       filtered_objects.map(function (el: any) {
         return el.editor;
       })
