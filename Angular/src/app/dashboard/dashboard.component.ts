@@ -31,13 +31,6 @@ import { Fragment } from '../models/Fragment';
 //import { Reconstruction } from '../models/Reconstruction';
 //import { Bibliography } from '../models/Bibliography';
 
-// Third party imports
-// NPM Library. Hopefully not soon deprecated
-import insertTextAtCursor from 'insert-text-at-cursor';
-
-// npm i angular-onscreen-material-keyboard
-import { IKeyboardLayouts, keyboardLayouts, MAT_KEYBOARD_LAYOUTS, MatKeyboardModule } from 'angular-onscreen-material-keyboard';
-
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
