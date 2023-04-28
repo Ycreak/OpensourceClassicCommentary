@@ -4,7 +4,7 @@ export class User {
     Object.assign(this, user);
   }
 
-  username: string = '';
-  role: string = '';
-  password: string = '';
+  username = '';
+  role = '';
+  password = '';
 }

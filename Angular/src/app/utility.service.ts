@@ -1,18 +1,12 @@
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { CdkDragDrop, moveItemInArray, transferArrayItem, CdkDragEnd } from '@angular/cdk/drag-drop';
-
-// Model imports
-import { Fragment } from './models/Fragment';
-import { User } from './models/User';
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UtilityService {
-  spinner: boolean = false;
-
   constructor(private snackBar: MatSnackBar) {}
 
   /** Sorts array numerically on fragment number
@@ -21,7 +15,7 @@ export class UtilityService {
    * @returns sorted array.
    * @author Ycreak
    */
-  public sort_fragment_array_numerically(a, b) {
+  public sort_fragment_array_numerically(a: any, b: any) {
     // Sort array via the number element given.
     // To allow fragments like '350-356' to be ordered.
     const A = Number(a.name.split('-', 1));
@@ -71,7 +65,7 @@ export class UtilityService {
       console.log(matches);
       // Create a span with the number of indents we want. Character level.
       // matches[0] contains including fish hooks, matches[1] only number
-      let replacement = '<span style="padding-left:' + matches[1] + 'ch;"></span>';
+      const replacement = '<span style="padding-left:' + matches[1] + 'ch;"></span>';
       string = string.replace(matches[0], replacement);
     }
     return string;
@@ -86,7 +80,7 @@ export class UtilityService {
    * @author Ycreak
    */
   public filter_object_on_key(array, key, value): Array<any> {
-    let filtered_array = array.filter((obj) => {
+    const filtered_array = array.filter((obj) => {
       return obj[key] === value;
     });
     return filtered_array;
@@ -119,7 +113,6 @@ export class UtilityService {
       output = err.status + ': ' + err.error;
     }
     this.open_snackbar(output);
-    this.spinner_off();
   }
 
   /**
@@ -127,7 +120,7 @@ export class UtilityService {
    * @author CptVickers
    */
   public get_loading_hint(): Observable<string> {
-    let loading_hint = new Observable<string>((subscriber) => {
+    const loading_hint = new Observable<string>((subscriber) => {
       function f() {
         subscriber.next('Loading data');
         setTimeout(function () {
@@ -195,22 +188,8 @@ export class UtilityService {
    * @author Ycreak
    */
   public pop_array(array) {
-    let _ = array.pop();
+    const _ = array.pop();
     return array;
-  }
-
-  /// TEXT COMPONENT
-  /**
-   * Check if a json object is actually empty
-   * @param obj -- json object to be checked
-   * @returns whether obj is an empty json object
-   * @author Ycreak, ppbors // Nani?
-   */
-  public is_empty(obj: JSON): boolean {
-    for (var prop in obj) {
-      if (obj.hasOwnProperty(prop)) return false;
-    }
-    return true;
   }
 
   public is_empty_array(array): boolean {
@@ -222,30 +201,6 @@ export class UtilityService {
   }
 
   /**
-   * Simple function to toggle the spinner
-   * @author Ycreak
-   */
-  public toggle_spinner(): void {
-    this.spinner = !this.spinner;
-  }
-
-  /**
-   * Simple function to toggle the spinner
-   * @author Ycreak
-   */
-  public spinner_on(): void {
-    this.spinner = true;
-  }
-
-  /**
-   * Simple function to toggle the spinner
-   * @author Ycreak
-   */
-  public spinner_off(): void {
-    this.spinner = false;
-  }
-
-  /**
    * This function moves an element within an array from the given location to the given new location
    * @param arr in which the moving should be done
    * @param from_index element's index that is to be moved
@@ -254,7 +209,7 @@ export class UtilityService {
    * @author Ycreak
    */
   public move_element_in_array(arr, from_index, to_index): Array<any> {
-    var element = arr[from_index];
+    const element = arr[from_index];
     arr.splice(from_index, 1);
     arr.splice(to_index, 0, element);
     return arr;

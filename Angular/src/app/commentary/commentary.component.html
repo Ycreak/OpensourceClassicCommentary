@@ -106,7 +106,7 @@
 
 <!-- Template to show fragment content from the given fragment in a mat expansion panel -->
 <ng-template #show_fragment_content let-current_fragment_content="current_fragment_content" let-title="title">
-  <ng-container *ngIf="current_fragment_content != ''">
+  <ng-container *ngIf="current_fragment_content !== ''">
     <!-- do not generate fields if content is empty -->
     <mat-expansion-panel *ngIf="current_fragment_content">
       <mat-expansion-panel-header>

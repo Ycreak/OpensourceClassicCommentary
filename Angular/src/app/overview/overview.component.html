@@ -13,7 +13,7 @@
   <button
     mat-stroked-button
     class="navbar"
-    *ngIf="this.auth_service.current_user_name == 'Lucus'"
+    *ngIf="this.auth_service.current_user_name === 'Lucus'"
     (click)="this.test('0')">
     TEST
   </button>
@@ -63,9 +63,8 @@
   <button mat-menu-item routerLink="/scansion" *ngIf="this.auth_service.is_logged_in">Scansion</button>
   <a href="https://github.com/Ycreak/OpensourceClassicCommentary/" target="_blank" mat-menu-item>Documentation</a>
   <button (click)="open_settings()" mat-menu-item>Settings</button>
-  <button routerLink="/tests" mat-menu-item *ngIf="this.auth_service.is_logged_in">Unit Tests</button>
   <button (click)="this.dialog.open_about_dialog()" mat-menu-item>About</button>
-  <div mat-menu-item>V23.03.12</div>
+  <div mat-menu-item>V23.04.27</div>
 </mat-menu>
 
 <!-- Display for if server is down -->

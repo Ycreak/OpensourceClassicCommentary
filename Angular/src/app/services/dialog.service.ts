@@ -17,7 +17,7 @@ export class DialogService {
    * @author Ycreak
    */
   public open_about_dialog(): void {
-    const dialogRef = this.dialog.open(ShowAboutDialog, {
+    const dialogRef = this.dialog.open(ShowAboutDialogComponent, {
       autoFocus: false, // To allow scrolling in the dialog
       maxHeight: '90vh', //you can adjust the value as per your view
     });
@@ -30,7 +30,7 @@ export class DialogService {
    * @author Ycreak
    */
   public open_confirmation_dialog(message, item): Observable<boolean> {
-    const dialogRef = this.dialog.open(ConfirmationDialog, {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: 'auto',
       data: {
         message: message,
@@ -48,7 +48,7 @@ export class DialogService {
    * @author Ycreak
    */
   public open_wysiwyg_dialog(content): Observable<string> {
-    const dialogRef = this.dialog.open(WYSIWYGDialog, {
+    const dialogRef = this.dialog.open(WYSIWYGDialogComponent, {
       disableClose: true,
       data: {
         content: content,
@@ -65,7 +65,7 @@ export class DialogService {
    * TODO: have a close button that discards changes?
    */
   public open_settings_dialog(settings): Observable<string> {
-    const dialogRef = this.dialog.open(SettingsDialog, {
+    const dialogRef = this.dialog.open(SettingsDialogComponent, {
       width: 'auto',
       height: 'auto',
       data: settings,
@@ -79,7 +79,7 @@ export class DialogService {
    * @author Ycreak
    */
   public open_custom_dialog(content): void {
-    const dialogRef = this.dialog.open(CustomDialog, {
+    const dialogRef = this.dialog.open(CustomDialogComponent, {
       width: '90%',
       height: '75%',
       data: {
@@ -93,23 +93,23 @@ export class DialogService {
  * Class to show the about dialogs
  */
 @Component({
-  selector: 'about-dialog',
+  selector: 'app-about-dialog',
   templateUrl: '../dialogs/about-dialog.html',
   styleUrls: ['../dialogs/dialogs.scss'],
 })
-export class ShowAboutDialog {}
+export class ShowAboutDialogComponent {}
 
 /**
  * Class to show a confirmation dialog when needed.
  * Shows whatever data is given via the public variable 'data'
  */
 @Component({
-  selector: 'confirmation-dialog',
+  selector: 'app-confirmation-dialog',
   templateUrl: '../dialogs/confirmation-dialog.html',
   styleUrls: ['../dialogs/dialogs.scss'],
 })
-export class ConfirmationDialog {
-  constructor(public dialogRef: MatDialogRef<ConfirmationDialog>, @Inject(MAT_DIALOG_DATA) public data) {}
+export class ConfirmationDialogComponent {
+  constructor(public dialogRef: MatDialogRef<ConfirmationDialogComponent>, @Inject(MAT_DIALOG_DATA) public data) {}
 
   onNoClick(): void {
     this.dialogRef.close();
@@ -121,14 +121,14 @@ export class ConfirmationDialog {
  * The provided 'data' is shown inside this editor.
  */
 @Component({
-  selector: 'wysiwyg-dialog',
+  selector: 'app-wysiwyg-dialog',
   templateUrl: '../dialogs/wysiwyg-dialog.html',
   styleUrls: ['../dialogs/dialogs.scss'],
 })
-export class WYSIWYGDialog {
-  constructor(public dialogRef: MatDialogRef<WYSIWYGDialog>, @Inject(MAT_DIALOG_DATA) public data) {}
+export class WYSIWYGDialogComponent {
+  constructor(public dialogRef: MatDialogRef<WYSIWYGDialogComponent>, @Inject(MAT_DIALOG_DATA) public data) {}
 
-  editor_instance; // allows communication with the editor
+  editor_instance: any; // allows communication with the editor
 
   /**
    * This function inserts the given symbol in the desired manner in the rich text editor.
@@ -138,7 +138,7 @@ export class WYSIWYGDialog {
    * @author Ycreak
    */
   public add_symbol(symbol: string): void {
-    let range = this.editor_instance.getSelection();
+    const range = this.editor_instance.getSelection();
     if (range) {
       if (range.length == 0) {
         // insert the symbol at the cursor location
@@ -164,12 +164,12 @@ export class WYSIWYGDialog {
  * The provided 'data' is shown inside this editor.
  */
 @Component({
-  selector: 'custom-dialog',
+  selector: 'app-custom-dialog',
   templateUrl: '../dialogs/custom-dialog.html',
   styleUrls: ['../dialogs/dialogs.scss'],
 })
-export class CustomDialog {
-  constructor(public dialogRef: MatDialogRef<CustomDialog>, @Inject(MAT_DIALOG_DATA) public data) {}
+export class CustomDialogComponent {
+  constructor(public dialogRef: MatDialogRef<CustomDialogComponent>, @Inject(MAT_DIALOG_DATA) public data) {}
 }
 
 /**
@@ -177,10 +177,10 @@ export class CustomDialog {
  * The provided 'data' is used to communicate the settings.
  */
 @Component({
-  selector: 'settings-dialog',
+  selector: 'app-settings-dialog',
   templateUrl: '../dialogs/settings-dialog.html',
   styleUrls: ['../dialogs/dialogs.scss'],
 })
-export class SettingsDialog {
-  constructor(public dialogRef: MatDialogRef<SettingsDialog>, @Inject(MAT_DIALOG_DATA) public data) {}
+export class SettingsDialogComponent {
+  constructor(public dialogRef: MatDialogRef<SettingsDialogComponent>, @Inject(MAT_DIALOG_DATA) public data) {}
 }

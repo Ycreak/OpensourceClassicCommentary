@@ -19,7 +19,7 @@
   <button
     mat-stroked-button
     class="navbar button-margin"
-    *ngIf="this.auth_service.current_user_role == 'teacher'"
+    *ngIf="this.auth_service.current_user_role === 'teacher'"
     (click)="test('Navbar')">
     TEST
   </button>
@@ -46,7 +46,7 @@
   <mat-accordion multi>
     <!-- Change fragment expansion panel -->
     <mat-expansion-panel
-      *ngIf="this.auth_service.current_user_role == 'teacher' || this.auth_service.current_user_role == 'student'"
+      *ngIf="this.auth_service.current_user_role === 'teacher' || this.auth_service.current_user_role === 'student'"
       [expanded]="true">
       <mat-expansion-panel-header>
         <mat-panel-title> Change fragment data </mat-panel-title>
@@ -62,7 +62,7 @@
         <mat-label>Select author</mat-label>
         <mat-select [(ngModel)]="this.selected_fragment_data.author" ngDefaultControl>
           <mat-option
-            *ngFor="let author of this.selected_fragment_data.get_authors()"
+            *ngFor="let author of this.api.get_author_list()"
             [value]="author"
             (click)="this.selected_fragment_data.author = author"
             (click)="
@@ -76,7 +76,7 @@
               this.selected_fragment_data.fragment_names =
                 [] //FIXME: perhaps retrieved_fragment_names is more clear than fragment_names?
             "
-            (click)="this.selected_fragment_data.retrieved_titles = this.selected_fragment_data.get_titles(author)"
+            (click)="this.selected_fragment_data.retrieved_titles = this.api.get_title_list(author)"
             (click)="this.reset_fragment_form()"
             (click)="this.update_form_field('fragment_form', 'author', author)"
             (click)="this.fragment_selected = false">
@@ -100,7 +100,7 @@
             (click)="this.update_form_field('fragment_form', 'author', selected_fragment_data.author)"
             (click)="this.update_form_field('fragment_form', 'title', title)"
             (click)="
-              this.selected_fragment_data.retrieved_editors = this.selected_fragment_data.get_editors(
+              this.selected_fragment_data.retrieved_editors = this.api.get_editor_list(
                 this.selected_fragment_data.author,
                 title
               )
@@ -169,7 +169,7 @@
         color="primary"
         [disabled]="!fragment_form.valid"
         (click)="request_create_fragment(this.fragment_form)"
-        *ngIf="this.auth_service.current_user_role == 'teacher' || this.auth_service.current_user_role == 'student'">
+        *ngIf="this.auth_service.current_user_role === 'teacher' || this.auth_service.current_user_role === 'student'">
         Create Fragment
       </button>
       <button
@@ -178,7 +178,7 @@
         color="primary"
         [disabled]="!fragment_form.valid"
         (click)="request_revise_fragment(this.fragment_form)"
-        *ngIf="this.auth_service.current_user_role == 'teacher' || this.auth_service.current_user_role == 'student'">
+        *ngIf="this.auth_service.current_user_role === 'teacher' || this.auth_service.current_user_role === 'student'">
         Save Changes
       </button>
       <button
@@ -187,7 +187,7 @@
         color="warn"
         [disabled]="!fragment_selected"
         (click)="request_delete_fragment(this.fragment_form)"
-        *ngIf="this.auth_service.current_user_role == 'teacher'">
+        *ngIf="this.auth_service.current_user_role === 'teacher'">
         Delete Fragment
       </button>
 
@@ -422,7 +422,7 @@
         </mat-tab>
         <!-- end of the Fragment context tab -->
 
-        <mat-tab *ngIf="this.auth_service.current_user_role == 'teacher'" label="Fragment References"
+        <mat-tab *ngIf="this.auth_service.current_user_role === 'teacher'" label="Fragment References"
           ><br />
 
           <div class="alert alert-info" role="alert">
@@ -440,7 +440,7 @@
               <mat-label>Select referenced author</mat-label>
               <mat-select [(ngModel)]="this.fragment_referencer.author" ngDefaultControl>
                 <mat-option
-                  *ngFor="let author of this.fragment_referencer.get_authors()"
+                  *ngFor="let author of this.api.get_author_list()"
                   [value]="author"
                   (click)="
                     this.fragment_referencer.title = '';
@@ -456,7 +456,7 @@
               <mat-label>Select referenced title</mat-label>
               <mat-select [(ngModel)]="this.fragment_referencer.title" ngDefaultControl>
                 <mat-option
-                  *ngFor="let title of this.fragment_referencer.get_titles(this.fragment_referencer.author)"
+                  *ngFor="let title of this.api.get_title_list(this.fragment_referencer.author)"
                   [value]="title"
                   (click)="this.fragment_referencer.editor = ''; this.fragment_referencer.name = ''">
                   {{ title }}
@@ -469,7 +469,7 @@
               <mat-select [(ngModel)]="this.fragment_referencer.editor" ngDefaultControl>
                 <mat-option
                   *ngFor="
-                    let editor of this.fragment_referencer.get_editors(
+                    let editor of this.api.get_editor_list(
                       this.fragment_referencer.author,
                       this.fragment_referencer.title
                     )
@@ -550,14 +550,14 @@
             color="primary"
             (click)="this.request_automatic_fragment_linker(fragment_referencer)"
             (click)="this.spinner_active = false"
-            [disabled]="this.fragment_referencer.title == ''"
-            *ngIf="this.auth_service.current_user_role == 'teacher'">
+            [disabled]="this.fragment_referencer.title === ''"
+            *ngIf="this.auth_service.current_user_role === 'teacher'">
             Automatically link fragments
           </button>
         </mat-tab>
         <!-- end of the Fragment referencer tab -->
 
-        <mat-tab label="Fragment Access" *ngIf="this.auth_service.current_user_role == 'teacher'"
+        <mat-tab label="Fragment Access" *ngIf="this.auth_service.current_user_role === 'teacher'"
           ><br />
           <!-- This tab changes the fragment access. It has to parts. A lock function which disallows change and publish function
           which allows the fragment to show up on the frontend -->
@@ -700,7 +700,7 @@
                 <!-- Area to change the user data -->
                 <div
                   class="table-element-description table-expansion-panel-subcontainer"
-                  *ngIf="this.auth_service.current_user_role == 'teacher'">
+                  *ngIf="this.auth_service.current_user_role === 'teacher'">
                   <hr />
                   <p>Change the role of the selected user here.</p>
                   <mat-form-field appearance="fill">
@@ -763,7 +763,7 @@
       <hr />
 
       <!-- form to allow admins to create new users -->
-      <div *ngIf="this.auth_service.current_user_role == 'teacher'">
+      <div *ngIf="this.auth_service.current_user_role === 'teacher'">
         <form [formGroup]="create_new_user_form" (ngSubmit)="request_create_user(create_new_user_form.value)">
           <mat-form-field class="input-form-half" appearance="fill">
             <mat-label>Provide the name of a new user</mat-label>
