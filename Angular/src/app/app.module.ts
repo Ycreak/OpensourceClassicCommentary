@@ -70,41 +70,9 @@ import {MatGridListModule} from '@angular/material/grid-list';
 // Allows copying to clipboard
 import {ClipboardModule} from '@angular/cdk/clipboard';
 import { TextComponent } from './text/text.component'; 
-// Allows a virtual keyboard
-import { IKeyboardLayouts, keyboardLayouts, MAT_KEYBOARD_LAYOUTS, MatKeyboardModule } from 'angular-onscreen-material-keyboard';
 // Allows communication with firebase
-import { AngularFireModule } from '@angular/fire';
 import { environment } from '../environments/environment';
 import { ScansionComponent } from './scansion/scansion.component';
-
-// Virtual Keyboard Layout
-const customLayouts: IKeyboardLayouts = {
-  ...keyboardLayouts,
-  'OSCCLayout': {
-    'name': 'OSCCLayout',
-    'keys': [
-      [
-        ['<b>', '</b>'],
-        ['<i>', '</i>'],
-        ['<p>', '</p>'],
-        ['<sub>', '</sub>'],
-        ['<sup>', '</sup>'],
-        ['<span>', '</span>'],      
-      ],
-      [
-        ['⟨', '⟨'],
-        ['⟩', '⟩'],
-        ['†', '†'],
-        [' ×', ' ×'],
-        [' -', ' -'],
-        [' ⏑', ' ⏑'],
-        [' ⏓', ' ⏒'],
-        [' ⏕', ' ⏔'],  
-      ]
-    ],
-    'lang': ['OSCC']
-  }
-};
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
@@ -165,9 +133,6 @@ const appRoutes: Routes = [
     // To allow the drag and drop
     DragDropModule,
     ClipboardModule,
-    MatKeyboardModule,
-
-    AngularFireModule.initializeApp(environment.firebase),
   ],
   providers: [
     {
@@ -175,10 +140,6 @@ const appRoutes: Routes = [
       useClass: HttpErrorInterceptor,
       multi: true,
       
-    },
-    { 
-      provide: MAT_KEYBOARD_LAYOUTS, 
-      useValue: customLayouts 
     },
   ],
   bootstrap: [AppComponent]
