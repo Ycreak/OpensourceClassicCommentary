@@ -117,7 +117,7 @@ export class FragmentsComponent implements OnInit, AfterViewInit, OnDestroy {
       //this.commentary_column.linked_fragments_content = [];
 
       // Now retrieve all linked fragments to show their content in the commentary column
-      //for (const i in fragment.linked_fragments) {
+      //for (let i in fragment.linked_fragments) {
       //// Request the fragment
       //this.api
       //.get_fragments({
@@ -127,9 +127,10 @@ export class FragmentsComponent implements OnInit, AfterViewInit, OnDestroy {
       //name: fragment.linked_fragments[i].name,
       //})
       //.subscribe((data) => {
-      //const fragment = this.api.convert_fragment_json_to_typescript(data);
+      //let fragment = this.api.convert_fragment_json_to_typescript(data);
       //// and push it to the commentary column (only one fragment in the list, so push the first one)
       ////this.commentary_column.linked_fragments_content.push(fragment[0]);
+      //this.utility.spinner_off();
       //});
       //}
 

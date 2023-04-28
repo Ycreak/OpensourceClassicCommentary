@@ -9,7 +9,7 @@ else
 	echo "Nox already mounted"
 fi
 
-rm -rfv /mnt/nox/var/www/oscc/* && cd Angular && ng build && cp -rv dist/OpenSourceClassicCommentary/* /mnt/nox/var/www/oscc/;
+rm -rfv /mnt/nox/var/www/oscc/* && cd Angular && ng build --configuration=production && cp -rv dist/OpenSourceClassicCommentary/* /mnt/nox/var/www/oscc/;
 
 
 

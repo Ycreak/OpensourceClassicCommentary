@@ -13,7 +13,6 @@ import { UtilityService } from '@oscc/utility.service';
 })
 export class CommentaryComponent implements OnInit, OnChanges {
   @Input() current_fragment: Fragment;
-  //@Input() fragment_clicked!: boolean;
 
   protected fragment_clicked = false;
 

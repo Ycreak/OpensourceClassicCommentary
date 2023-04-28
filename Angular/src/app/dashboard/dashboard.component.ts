@@ -142,6 +142,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit(): void {
     this.loading_hint = this.utility.get_loading_hint(); // Initialize the loading hint
+    this.api.request_authors_titles_editors_blob();
     this.request_users();
 
     // We will store all dashboard data in the following data object

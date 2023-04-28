@@ -1,4 +1,5 @@
 // Library imports
+
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog'; // Library used for interacting with the page
 //import { environment } from '@src/environments/environment';
@@ -52,7 +53,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.window_watcher.subscription$.unsubscribe();
+    if (this.window_watcher.subscription$) {
+      this.window_watcher.subscription$.unsubscribe();
+    }
   }
 
   test(item?: any) {

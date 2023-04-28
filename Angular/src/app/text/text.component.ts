@@ -72,7 +72,6 @@ export class TextComponent implements OnInit {
    */
   public RequestCommentary(lineNumber: number) {
     this.selectedLine = lineNumber;
-
     //this.api.get_text_commentary(this.currentBook, lineNumber).subscribe((data) => {
     //this.T_TextCommentary = data;
     //});
