@@ -282,7 +282,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         fragment.linked_fragments[i].author,
         fragment.linked_fragments[i].title,
         fragment.linked_fragments[i].editor,
-        fragment.linked_fragments[i].name,
+        fragment.linked_fragments[i].name
         //fragment.linked_fragments[i].linked_fragment_id
       );
     }
