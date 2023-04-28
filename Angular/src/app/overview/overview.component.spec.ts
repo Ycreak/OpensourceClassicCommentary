@@ -19,7 +19,7 @@ describe('OverviewComponent', () => {
   });
 
   afterEach(() => {
-     component.ngOnDestroy();
+    component.ngOnDestroy();
   });
 
   it('should create', () => {

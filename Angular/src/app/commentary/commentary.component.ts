@@ -11,10 +11,8 @@ import { UtilityService } from '@oscc/utility.service';
   templateUrl: './commentary.component.html',
   styleUrls: ['./commentary.component.scss'],
 })
-
 export class CommentaryComponent implements OnInit, OnChanges {
   @Input() current_fragment: Fragment;
-
 
   protected fragment_clicked = false;
 

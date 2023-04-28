@@ -25,7 +25,7 @@ import { ColumnHandlerService } from '@oscc/services/column-handler.service';
   selector: 'app-overview',
   templateUrl: './overview.component.html',
   styleUrls: ['./overview.component.scss'],
-  providers: [ FragmentsComponent ]
+  providers: [FragmentsComponent],
 })
 export class OverviewComponent implements OnInit, OnDestroy {
   protected commentary_enabled = true;
@@ -53,7 +53,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if(this.window_watcher.subscription$){
+    if (this.window_watcher.subscription$) {
       this.window_watcher.subscription$.unsubscribe();
     }
   }
