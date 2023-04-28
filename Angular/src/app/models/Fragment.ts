@@ -4,30 +4,30 @@ import { Linked_fragment } from './Linked_fragment';
 
 /** This class represents a fragment and all its data fields */
 export class Fragment {
-  _id: string = '';
-  author: string = '';
-  title: string = '';
-  editor: string = '';
-  name: string = '';
+  _id = '';
+  author = '';
+  title = '';
+  editor = '';
+  name = '';
 
-  translation: string = '';
-  differences: string = '';
-  apparatus: string = '';
-  commentary: string = '';
-  reconstruction: string = '';
+  translation = '';
+  differences = '';
+  apparatus = '';
+  commentary = '';
+  reconstruction = '';
   context: Context[];
 
-  status: string = '';
+  status = '';
   lines: Line[] = [];
   linked_fragments: Linked_fragment[] = [];
 
-  lock: string = '';
-  published: string = '';
+  lock = '';
+  published = '';
 
   bibliography: string[];
 
   // designates the css color of the fragment header
-  colour: string = 'black';
+  colour = 'black';
 
   constructor(fragment?: Partial<Fragment>) {
     // Allow the partial initialisation of a fragment object
@@ -114,5 +114,5 @@ export class Fragment {
   }
 
   // deprecated
-  fragment_link_found: boolean = false;
+  fragment_link_found = false;
 }

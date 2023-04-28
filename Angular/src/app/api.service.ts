@@ -64,9 +64,8 @@ export class ApiService {
 
   public author_title_editor_blob: any = [];
 
-  FlaskURL: String = environment.flask_api;
-  // NeuralURL: String = 'http://localhost:5002/';
-  NeuralURL: String = 'https://oscc.nolden.biz:5002/';
+  FlaskURL: string = environment.flask_api;
+  NeuralURL: 'https://oscc.nolden.biz:5002/';
 
   public new_fragment_alert = new ReplaySubject(0);
   public new_authors_alert = new ReplaySubject(0);
@@ -154,7 +153,7 @@ export class ApiService {
 
   public request_titles(author: string): void {
     this.titles = [];
-    this.fragment_key = this.create_fragment_key((author = author));
+    this.fragment_key = this.create_fragment_key(author);
     this.get_titles(this.fragment_key).subscribe({
       next: (data) => {
         data.forEach((value) => {
@@ -168,7 +167,7 @@ export class ApiService {
 
   public request_editors(author: string, title: string): void {
     this.editors = [];
-    this.fragment_key = this.create_fragment_key((author = author), (title = title));
+    this.fragment_key = this.create_fragment_key(author, title);
     this.get_editors(this.fragment_key).subscribe({
       next: (data) => {
         data.forEach((value) => {
@@ -183,7 +182,7 @@ export class ApiService {
   public request_fragment_names(column_id: number, author: string, title: string, editor: string): void {
     this.spinner_on();
     this.fragment_names = [];
-    this.fragment_key = this.create_fragment_key((author = author), (title = title), (editor = editor));
+    this.fragment_key = this.create_fragment_key(author, title, editor);
     this.get_fragment_names(this.fragment_key).subscribe({
       next: (data) => {
         data.forEach((value) => {
@@ -200,14 +199,14 @@ export class ApiService {
   public request_fragments(column_id: number, author: string, title: string, editor: string, name?: string): void {
     this.spinner_on();
     this.fragments = [];
-    this.fragment_key = this.create_fragment_key((author = author), (title = title), (editor = editor));
+    this.fragment_key = this.create_fragment_key(author, title, editor);
     if (name) {
       this.fragment_key.name = name;
     }
     this.get_fragments(this.fragment_key).subscribe({
       next: (data) => {
         data.forEach((value) => {
-          let fragment = new Fragment();
+          const fragment = new Fragment();
           fragment.set_fragment(value);
           this.fragments.push(fragment);
         });
@@ -258,7 +257,7 @@ export class ApiService {
     column_id?: number
   ): void {
     this.spinner_on();
-    this.fragment_key = this.create_fragment_key((author = author), (title = title), (editor = editor), (name = name));
+    this.fragment_key = this.create_fragment_key(author, title, editor, name);
     this.delete_fragment(this.fragment_key).subscribe({
       next: (data) => {
         this.utility.handle_error_message(data);
@@ -286,11 +285,9 @@ export class ApiService {
    * Requests all authors from the database. No parameters needed
    */
   public request_authors2(column: Column): void {
-    this.utility.spinner_on();
     this.get_authors(new Fragment({})).subscribe({
       next: (data) => {
         column.retrieved_authors = data;
-        this.utility.spinner_off();
       },
       error: (err) => this.utility.handle_error_message(err),
     });
@@ -303,12 +300,9 @@ export class ApiService {
    * @author Ycreak
    */
   public request_titles2(column: Column): void {
-    this.utility.spinner_on();
-
     this.get_titles(new Fragment({ author: column.selected_fragment_author })).subscribe({
       next: (data) => {
         column.retrieved_titles = data;
-        this.utility.spinner_off();
       },
       error: (err) => this.utility.handle_error_message(err),
     });
@@ -321,12 +315,10 @@ export class ApiService {
    * @author Ycreak
    */
   public request_editors2(column: Column): void {
-    this.utility.spinner_on();
     this.get_editors(
       new Fragment({ author: column.selected_fragment_author, title: column.selected_fragment_title })
     ).subscribe((data) => {
       column.retrieved_editors = data;
-      this.utility.spinner_off();
     });
   }
 
@@ -336,8 +328,6 @@ export class ApiService {
    * @author Ycreak
    */
   public request_fragment_names2(column: Column): void {
-    this.utility.spinner_on();
-
     this.get_fragment_names(
       new Fragment({
         author: column.selected_fragment_author,
@@ -346,7 +336,6 @@ export class ApiService {
       })
     ).subscribe((data) => {
       column.retrieved_fragment_names = data.sort(this.utility.sort_array_numerically);
-      this.utility.spinner_off();
     });
   }
 
@@ -355,10 +344,10 @@ export class ApiService {
    * @author Ycreak
    * @TODO: can this be done automatically without being invoked from fragment.component?
    */
-  public convert_fragment_json_to_typescript(data): Fragment[] {
-    let fragment_list = [];
-    for (let i in data) {
-      let fragment = new Fragment();
+  public convert_fragment_json_to_typescript(data: any): Fragment[] {
+    const fragment_list = [];
+    for (const i in data) {
+      const fragment = new Fragment();
       fragment.set_fragment(data[i]);
       fragment_list.push(fragment);
     }
@@ -488,6 +477,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
       tap({
         next: (res) => {
           this.api.network_status = true; // Set network status to true on successful response
+          console.debug(res);
         },
         error: (err) => {
           if (err instanceof HttpErrorResponse) {

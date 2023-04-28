@@ -10,7 +10,9 @@ describe('OverviewComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [OverviewComponent],
     }).compileComponents();
+  });
 
+  beforeEach(() => {
     fixture = TestBed.createComponent(OverviewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

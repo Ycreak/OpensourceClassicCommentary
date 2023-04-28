@@ -82,15 +82,15 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   public add_HTML_to_lines(array: Fragment[]): Fragment[] {
     // For each element in the given array
-    for (let fragment in array) {
+    for (const fragment in array) {
       // Loop through all fragments
-      let current_fragment = array[fragment];
-      for (let item in current_fragment.lines) {
+      const current_fragment = array[fragment];
+      for (const item in current_fragment.lines) {
         // Loop through all lines of current fragment
         let line_text = current_fragment.lines[item].text;
         line_text = this.utility.convert_whitespace_encoding(line_text);
         // Now push the updated lines to the correct place
-        let updated_lines = {
+        const updated_lines = {
           line_number: current_fragment.lines[item].line_number,
           text: line_text,
         };
@@ -105,13 +105,13 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param fragment selected by the user
    * @author Ycreak
    */
-  protected handle_fragment_click(fragment: Fragment, from_playground: boolean = false): void {
+  protected handle_fragment_click(fragment: Fragment): void {
     // If we are currently dragging a fragment in the playground, we do not want the click even to fire.
     if (!this.playground_dragging) {
       this.fragment_clicked.emit(fragment);
       // The next part handles the colouring of clicked and referenced fragments.
       // First, restore all fragments to their original black colour when a new fragment is clicked
-      for (let index in this.column_handler.columns) {
+      for (const index in this.column_handler.columns) {
         this.column_handler.columns[index] = this.column_handler.colour_fragments_black(
           this.column_handler.columns[index]
         );

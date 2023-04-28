@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api.service';
 import { UtilityService } from '../utility.service';
 
-import { UntypedFormBuilder, FormControl, UntypedFormGroup, Validators, FormArray } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-scansion',
@@ -16,21 +16,23 @@ export class ScansionComponent implements OnInit {
     lines: '',
   });
 
-  spinner: boolean = false;
+  spinner = false;
 
   neural_data: object; // object
 
-  constructor(private api: ApiService, private formBuilder: UntypedFormBuilder, public utility: UtilityService) {}
+  constructor(protected api: ApiService, private formBuilder: UntypedFormBuilder, public utility: UtilityService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    console.log('scansion');
+  }
 
   public scan_lines(given_lines) {
-    this.utility.spinner_on();
+    this.api.spinner_on();
     this.api.scan_lines({ given_lines }).subscribe({
       next: (data) => {
         this.neural_data = data;
         console.log(data);
-        this.utility.spinner_off();
+        this.api.spinner_off();
       },
       error: (err) => this.utility.handle_error_message(err),
     });
@@ -39,7 +41,7 @@ export class ScansionComponent implements OnInit {
   // this.get_authors().subscribe({
   //   next: (data) => {
   //     column.retrieved_authors = data;
-  //     this.utility.spinner_off();
+  //     this.api.spinner_off();
   //   },
   //   error: (err) => this.utility.handle_error_message(err)
   // });

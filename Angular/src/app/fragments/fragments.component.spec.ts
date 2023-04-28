@@ -21,12 +21,4 @@ describe('FragmentsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  let fragment_lst = [
-    { name: '1', status: 'Adespoton' },
-    { name: '1', status: 'Certum' },
-    { name: '1', status: 'Incertum' },
-  ];
-
-  // sort_fragments_on_status
 });

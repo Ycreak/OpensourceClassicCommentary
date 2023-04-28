@@ -1,15 +1,15 @@
 // Library imports
-import { Component, OnInit, OnDestroy, AfterViewInit, ViewEncapsulation } from '@angular/core';
+
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog'; // Library used for interacting with the page
-import { trigger, transition, style, animate } from '@angular/animations';
-import { environment } from '@src/environments/environment';
+//import { environment } from '@src/environments/environment';
 
 // Service imports
 import { ApiService } from '@oscc/api.service';
 import { DialogService } from '@oscc/services/dialog.service';
 import { SettingsService } from '@oscc/services/settings.service';
 import { WindowSizeWatcherService } from '@oscc/services/window-watcher.service';
-import { UtilityService } from '@oscc/utility.service';
+//import { UtilityService } from '@oscc/utility.service';
 import { AuthService } from '@oscc/auth/auth.service';
 
 import { FragmentsComponent } from '@oscc/fragments/fragments.component';

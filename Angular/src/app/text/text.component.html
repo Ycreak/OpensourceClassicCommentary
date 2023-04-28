@@ -57,7 +57,7 @@
               <b>{{ line.lineContent }}</b>
             </h5></a
           >
-          <a *ngIf="line.lineNumber != null" matLine (click)="RequestCommentary(line.lineNumber)"
+          <a *ngIf="line.lineNumber !== null" matLine (click)="RequestCommentary(line.lineNumber)"
             ><b>{{ line.lineNumber }}:</b> {{ line.lineContent }}</a
           >
         </mat-list-item>
@@ -74,10 +74,10 @@
           <mat-expansion-panel [expanded]="IsWithinScope(commentary.lineStart)">
             <!-- Regelnummer -->
             <mat-expansion-panel-header>
-              <mat-panel-title *ngIf="commentary.lineStart == commentary.lineEnd">
+              <mat-panel-title *ngIf="commentary.lineStart === commentary.lineEnd">
                 Line {{ commentary.lineStart }}
               </mat-panel-title>
-              <mat-panel-title *ngIf="commentary.lineStart != commentary.lineEnd">
+              <mat-panel-title *ngIf="commentary.lineStart !== commentary.lineEnd">
                 Lines {{ commentary.lineStart }}-{{ commentary.lineEnd }}
               </mat-panel-title>
               <!-- Woorden in kwestie -->

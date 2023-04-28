@@ -8,6 +8,5 @@ import { Component } from '@angular/core';
 export class AppComponent {
   title = 'OpenSourceClassicCommentary';
 
-  constructor() {}
-  ngOnInit(): void {}
+  //constructor() {}
 }
