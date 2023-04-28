@@ -13,7 +13,7 @@ import { UtilityService } from '@oscc/utility.service';
 })
 export class ColumnHandlerService {
   // We keep track of the number of columns to identify them
-  column_identifier: number = 1;
+  column_identifier = 1;
   // List of connected columns to allow dragging and dropping between columns
   connected_columns_list: string[] = [];
 
@@ -28,7 +28,7 @@ export class ColumnHandlerService {
    * @author Ycreak
    */
   public colour_fragments_black(column): Column {
-    for (let i in column.fragments) {
+    for (const i in column.fragments) {
       column.fragments[i].colour = 'black';
     }
     return column;
@@ -43,7 +43,7 @@ export class ColumnHandlerService {
     // First, increment the column_identifier to create a new and unique id
     this.column_identifier += 1;
     // Create new column with the appropriate name. TODO: create better identifiers than simple integers
-    let new_column = new Column({ column_id: this.column_identifier, type: column_type });
+    const new_column = new Column({ column_id: this.column_identifier, type: column_type });
     this.columns.push(new_column);
     // And update the connected columns list
     this.connected_columns_list = this.update_connected_columns_list(this.columns);
@@ -110,8 +110,8 @@ export class ColumnHandlerService {
    * @author Ycreak
    */
   private update_connected_columns_list(columns: Column[]): string[] {
-    let connected_columns_list: string[] = [];
-    for (let i of columns) {
+    const connected_columns_list: string[] = [];
+    for (const i of columns) {
       connected_columns_list.push(String(i.column_id));
     }
     return connected_columns_list;

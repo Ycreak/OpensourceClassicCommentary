@@ -30,7 +30,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NgxSimpleTextEditorModule } from 'ngx-simple-text-editor';
-import { environment } from '../environments/environment';
+//import { environment } from '../environments/environment';
 
 // Component Imports
 import { AppRoutingModule } from './app-routing.module';
@@ -42,10 +42,10 @@ import { AuthGuard } from './auth/auth.guard';
 import { SafeHtmlPipe } from './pipes/safeHtml.pipe';
 // import { SafeHtmlPipe } from './fragments/fragments.component';
 
-import { ConfirmationDialog } from './services/dialog.service';
-import { WYSIWYGDialog } from './services/dialog.service';
-import { SettingsDialog } from './services/dialog.service';
-import { CustomDialog } from './services/dialog.service';
+import { ConfirmationDialogComponent } from './services/dialog.service';
+import { WYSIWYGDialogComponent } from './services/dialog.service';
+import { SettingsDialogComponent } from './services/dialog.service';
+import { CustomDialogComponent } from './services/dialog.service';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorInterceptor } from './api.service';
@@ -83,7 +83,6 @@ import { QuillModule } from 'ngx-quill';
 
 // Allows communication with firebase
 import { ScansionComponent } from './scansion/scansion.component';
-import { TestsComponent } from './tests/tests.component';
 import { PlaygroundComponent } from './playground/playground.component';
 import { CommentaryComponent } from './commentary/commentary.component';
 import { OverviewComponent } from './overview/overview.component';
@@ -93,7 +92,6 @@ const appRoutes: Routes = [
   { path: '', component: OverviewComponent },
   { path: 'fragments', component: FragmentsComponent },
   // {path: 'text', component: TextComponent},
-  { path: 'tests', component: TestsComponent, canActivate: [AuthGuard] },
   { path: 'scansion', component: ScansionComponent, canActivate: [AuthGuard] },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '' },
@@ -107,11 +105,10 @@ const appRoutes: Routes = [
     DashboardComponent,
     LoginComponent,
     ScansionComponent,
-    ConfirmationDialog,
-    WYSIWYGDialog,
-    SettingsDialog,
-    CustomDialog,
-    TestsComponent,
+    ConfirmationDialogComponent,
+    WYSIWYGDialogComponent,
+    SettingsDialogComponent,
+    CustomDialogComponent,
     PlaygroundComponent,
     CommentaryComponent,
     OverviewComponent,

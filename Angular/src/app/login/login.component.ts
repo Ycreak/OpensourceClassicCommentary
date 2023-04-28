@@ -1,9 +1,9 @@
 // Library imports
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { AuthService } from '@oscc/auth/auth.service';
 import { Router } from '@angular/router';
-import { UntypedFormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Inject, Injectable } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Injectable } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 
 // Component imports
@@ -21,10 +21,10 @@ import { User } from '@oscc/models/User';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
   hide_password = true; // password hiding in dialog
-  login_form_expanded: boolean = true; // to toggle user login form field
-  create_form_expanded: boolean = false; // to toggle the user create form field
+  login_form_expanded = true; // to toggle user login form field
+  create_form_expanded = false; // to toggle the user create form field
 
   // Form used to login existing user
   login_form = new FormGroup({
@@ -57,18 +57,16 @@ export class LoginComponent implements OnInit {
   constructor(
     public auth_service: AuthService,
     public router: Router,
-    private api: ApiService,
+    protected api: ApiService,
     protected utility: UtilityService,
     private dialog: DialogService,
     public dialogRef: MatDialogRef<LoginComponent>
   ) {}
 
-  ngOnInit(): void {}
-
   public submit_login(login_form): void {
     // Create a user session for the auth_service to fill in
-    this.utility.spinner_on();
-    let user = new User({
+    this.api.spinner_on();
+    const user = new User({
       username: login_form.value.username,
       password: encodeURIComponent(login_form.value.password),
     });
@@ -78,7 +76,7 @@ export class LoginComponent implements OnInit {
         this.auth_service.login_user(approved_user);
         this.utility.open_snackbar('Login successful');
         this.dialogRef.close(); // Close the login screen overlay
-        this.utility.spinner_off();
+        this.api.spinner_off();
       },
       error: (err) => this.utility.handle_error_message(err),
     });
@@ -102,8 +100,8 @@ export class LoginComponent implements OnInit {
         .open_confirmation_dialog('Are you sure you want to CREATE this user?', form.username)
         .subscribe((result) => {
           if (result) {
-            this.utility.spinner_on();
-            let user = new User({
+            this.api.spinner_on();
+            const user = new User({
               username: form.username,
               password: encodeURIComponent(form.password1),
             });
@@ -111,7 +109,7 @@ export class LoginComponent implements OnInit {
               next: (res) => {
                 this.utility.handle_error_message(res), (this.login_form_expanded = false);
                 this.create_form_expanded = false;
-                this.utility.spinner_off();
+                this.api.spinner_off();
               },
               error: (err) => this.utility.handle_error_message(err),
             });

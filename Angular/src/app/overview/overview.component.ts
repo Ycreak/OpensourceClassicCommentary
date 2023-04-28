@@ -1,15 +1,14 @@
 // Library imports
-import { Component, OnInit, AfterViewInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog'; // Library used for interacting with the page
-import { trigger, transition, style, animate } from '@angular/animations';
-import { environment } from '@src/environments/environment';
+//import { environment } from '@src/environments/environment';
 
 // Service imports
 import { ApiService } from '@oscc/api.service';
 import { DialogService } from '@oscc/services/dialog.service';
 import { SettingsService } from '@oscc/services/settings.service';
 import { WindowSizeWatcherService } from '@oscc/services/window-watcher.service';
-import { UtilityService } from '@oscc/utility.service';
+//import { UtilityService } from '@oscc/utility.service';
 import { AuthService } from '@oscc/auth/auth.service';
 
 import { FragmentsComponent } from '@oscc/fragments/fragments.component';
@@ -27,7 +26,7 @@ import { ColumnHandlerService } from '@oscc/services/column-handler.service';
   styleUrls: ['./overview.component.scss'],
   providers: [FragmentsComponent],
 })
-export class OverviewComponent implements OnInit {
+export class OverviewComponent implements OnInit, OnDestroy {
   protected commentary_enabled = true;
   protected commentary_is_reduced_size = false;
   protected playground_enabled = true;

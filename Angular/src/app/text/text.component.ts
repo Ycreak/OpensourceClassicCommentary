@@ -18,7 +18,7 @@ export class TextComponent implements OnInit {
   T_Text: any;
   T_TextCommentary: any;
   // Currently selected book and line
-  currentBook: number = 1;
+  currentBook = 1;
   currentBookTitle: string;
   selectedLine: number;
   constructor(
@@ -38,6 +38,7 @@ export class TextComponent implements OnInit {
    * @param author whose titles are to be returned
    */
   public RequestBooks(author: string) {
+    console.log(author);
     // this.api.get_titles(author).subscribe(
     //   data => {
     //     this.booksJSON = data;
@@ -51,7 +52,7 @@ export class TextComponent implements OnInit {
    * Opens the dialog to select a text
    */
   public OpenBookSelect() {
-    let dialogRef = this.dialog.open(this.CallBookSelect);
+    //let dialogRef = this.dialog.open(this.CallBookSelect);
   }
 
   /**
@@ -59,6 +60,7 @@ export class TextComponent implements OnInit {
    * @param title whose text is to be retrieved
    */
   public RequestText(title: number) {
+    console.log(title);
     //this.api.get_text(title).subscribe((data) => {
     //this.T_Text = data;
     //});

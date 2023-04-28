@@ -1,4 +1,3 @@
-import { Title } from '@angular/platform-browser';
 import { Fragment } from './Fragment';
 import text_cache from './text_cache.json';
 
@@ -22,12 +21,12 @@ export class Column {
   text_cache: any = text_cache;
 
   column_id: number; // has to be a string for cdkDrag
-  type: string = ''; // denotes playground, commentary, text or fragment column
+  type = ''; // denotes playground, commentary, text or fragment column
 
-  selected_fragment_author: string = '';
-  selected_fragment_title: string = '';
-  selected_fragment_editor: string = '';
-  selected_fragment_name: string = '';
+  selected_fragment_author = '';
+  selected_fragment_title = '';
+  selected_fragment_editor = '';
+  selected_fragment_name = '';
 
   fragments: Fragment[] = [];
   fragment_names: any[] = [];
@@ -45,20 +44,20 @@ export class Column {
   clicked_note: string;
 
   // Boolean to keep track whether a column has seen a user edit
-  edited: boolean = false;
+  edited = false;
 
   // Whether to show or hide the column
-  visible: boolean = true;
+  visible = true;
 
   // Whether the column is newly created. If so, we show 'SELECT TEXT' button instead of the selected data
-  new_column: boolean = true;
+  new_column = true;
 
   // Original order of the column fragments
   original_fragment_order: string[] = [];
 
   public get_authors(): object {
-    let filtered_objects = this.text_cache['cache'];
-    let author_list = new Set(
+    const filtered_objects = this.text_cache['cache'];
+    const author_list = new Set(
       filtered_objects.map(function (el) {
         return el.author;
       })
@@ -67,8 +66,8 @@ export class Column {
   }
 
   public get_titles(author: string): object {
-    let filtered_objects = this.text_cache['cache'].filter((x) => x.author == author);
-    let title_list = new Set(
+    const filtered_objects = this.text_cache['cache'].filter((x) => x.author == author);
+    const title_list = new Set(
       filtered_objects.map(function (el) {
         return el.title;
       })
@@ -77,8 +76,8 @@ export class Column {
   }
 
   public get_editors(author: string, title: string): object {
-    let filtered_objects = this.text_cache['cache'].filter((x) => x.author == author && x.title == title);
-    let editor_list = new Set(
+    const filtered_objects = this.text_cache['cache'].filter((x) => x.author == author && x.title == title);
+    const editor_list = new Set(
       filtered_objects.map(function (el) {
         return el.editor;
       })

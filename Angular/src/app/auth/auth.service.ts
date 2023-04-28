@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { User } from '../models/User';
 import { environment } from '@src/environments/environment';
 
 import { UtilityService } from '../utility.service';
@@ -16,7 +15,7 @@ export class AuthService {
   current_user_name: string = environment.current_user_name;
   current_user_role: string = environment.current_user_role;
 
-  magic_phrase: string = 'Naevius';
+  magic_phrase = 'Naevius';
 
   public login_user(user: any) {
     // Getting here means the server approved login

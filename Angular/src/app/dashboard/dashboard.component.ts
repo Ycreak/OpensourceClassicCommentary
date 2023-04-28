@@ -1,5 +1,5 @@
 // Library imports
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 import { FormControl, FormGroup, FormArray } from '@angular/forms';
@@ -42,7 +42,7 @@ import { User } from '@oscc/models/User';
     ]),
   ],
 })
-export class DashboardComponent implements OnInit, OnDestroy {
+export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   // For the user table
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) matSort: MatSort;
@@ -63,10 +63,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private fragment_names_subscription: any;
   private fragments_subscription: any;
 
-  hide: boolean = true; // Whether to hide passwords in the material form fields
+  hide = true; // Whether to hide passwords in the material form fields
 
   // We only allow the delete fragment button if one is actually selected.
-  fragment_selected: boolean = false;
+  fragment_selected = false;
 
   // User table specific variables
   user_table_columns_to_display: string[] = ['username', 'role'];
@@ -123,7 +123,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     new_password: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z0-9-_]*')]),
   });
 
-  table_data_loaded: boolean = false; // Returns true if the table has loaded its data
+  table_data_loaded = false; // Returns true if the table has loaded its data
   loading_hint: Observable<unknown>; // Loading hint animation
 
   // In this object all meta data is stored regarding the currently selected fragment
@@ -154,7 +154,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   // initiate the table sorting and paginator
-  public ngAfterViewInit(): void {
+  ngAfterViewInit(): void {
     this.user_table_users.paginator = this.paginator;
     this.user_table_users.sort = this.matSort;
     this.expand_user_table_row();
@@ -192,7 +192,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * @author Ycreak
    */
   public test(thing): void {
-    console.log(this.retrieved_users);
+    console.log(this.retrieved_users, thing);
   }
 
   /**
@@ -203,16 +203,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * @param field from fragment_form which is to be send and updated
    * @author Ycreak
    */
-  protected request_wysiwyg_dialog(field: string, index: number = 0): void {
+  protected request_wysiwyg_dialog(field: string, index = 0): void {
     if (field == 'context') {
       // For the context, retrieve the context text field from the fragment form and pass that to the dialog
-      let form_array_field = this.fragment_form.value.context[index].text;
+      const form_array_field = this.fragment_form.value.context[index].text;
       this.dialog.open_wysiwyg_dialog(form_array_field).subscribe((result) => {
         if (result) {
           // Result will only be provided when the user has acceped the changes
           // Now update the correct field. This is done by getting the FormArray and patching the correct
           // FormGroup within this array. This is to ensure dynamic updating on the frontend
-          let context_array = this.fragment_form.controls['context'] as FormArray;
+          const context_array = this.fragment_form.controls['context'] as FormArray;
           context_array.controls[index].patchValue({ ['text']: result });
         }
       });
@@ -233,7 +233,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * @author Ycreak
    */
   private convert_fragment_form_to_Fragment(fragment_form: FormGroup): Fragment {
-    let new_fragment = new Fragment({});
+    const new_fragment = new Fragment({});
     new_fragment.set_fragment(fragment_form.value);
     return new_fragment;
   }
@@ -246,7 +246,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
    */
   private convert_Fragment_to_fragment_form(fragment: Fragment): void {
     // This functions updates the fragment_form with the provided fragment
-    for (let item of [
+    for (const item of [
       '_id',
       'name',
       'author',
@@ -265,7 +265,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     // Fill the fragment context array
-    for (let i in fragment.context) {
+    for (const i in fragment.context) {
       this.push_fragment_context_to_fragment_form(
         fragment.context[i].author,
         fragment.context[i].location,
@@ -273,11 +273,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
       );
     }
     // Fill the fragment lines array
-    for (let i in fragment.lines) {
+    for (const i in fragment.lines) {
       this.push_fragment_line_to_fragment_form(fragment.lines[i].line_number, fragment.lines[i].text);
     }
     // Fill the linked fragment array
-    for (let i in fragment.linked_fragments) {
+    for (const i in fragment.linked_fragments) {
       this.push_linked_fragments_to_fragment_form(
         fragment.linked_fragments[i].author,
         fragment.linked_fragments[i].title,
@@ -349,12 +349,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
    */
   protected push_fragment_line_to_fragment_form(line_number: string, text: string): void {
     // First, create a form group to represent a line
-    let new_line = new FormGroup({
+    const new_line = new FormGroup({
       line_number: new FormControl(line_number),
       text: new FormControl(text),
     });
     // Next, push the created form group to the lines FormArray
-    let fragment_lines_array = this.fragment_form.get('lines') as FormArray;
+    const fragment_lines_array = this.fragment_form.get('lines') as FormArray;
     fragment_lines_array.push(new_line);
   }
 
@@ -368,8 +368,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     author: string,
     title: string,
     editor: string,
-    name: string,
-    linked_fragment_id?: string
+    name: string
+    //linked_fragment_id?: string
   ): void {
     // First, create a form group to represent a line
     const new_linked_fragment = new FormGroup({
@@ -394,13 +394,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
    */
   private push_fragment_context_to_fragment_form(_author: string, _location: string, _text: string): void {
     // First, create a form group to represent a context
-    let new_context = new FormGroup({
+    const new_context = new FormGroup({
       author: new FormControl(_author),
       location: new FormControl(_location),
       text: new FormControl(_text),
     });
     // Next, push the created form group to the context FormArray
-    let fragment_context_array = this.fragment_form.get('context') as FormArray;
+    const fragment_context_array = this.fragment_form.get('context') as FormArray;
     fragment_context_array.push(new_context);
   }
 
@@ -450,7 +450,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * @author Ycreak
    */
   protected remove_form_item_from_form_array(form_name: string, target: string, index: number): void {
-    let form_array_in_question = this[form_name].get(target) as FormArray;
+    const form_array_in_question = this[form_name].get(target) as FormArray;
     form_array_in_question.removeAt(index);
   }
 
@@ -569,8 +569,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   protected request_automatic_fragment_linker(column: Column): void {
     this.api.spinner_on();
 
-    let item_string = column.selected_fragment_author + ', ' + column.selected_fragment_title;
-    let api_data = new Fragment({});
+    const item_string = column.selected_fragment_author + ', ' + column.selected_fragment_title;
+    const api_data = new Fragment({});
     api_data.author = column.selected_fragment_author;
     api_data.title = column.selected_fragment_title;
 
@@ -604,7 +604,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private request_users() {
     this.api.spinner_on();
     // We will provide the api with the currently logged in user to check its privileges
-    let user = new User({
+    const user = new User({
       username: this.auth_service.current_user_name,
       role: this.auth_service.current_user_role,
     });
@@ -635,7 +635,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .open_confirmation_dialog('Are you sure you want to CREATE this user?', form_results.new_user)
       .subscribe((result) => {
         if (result) {
-          let user = new User({
+          const user = new User({
             username: form_results.new_user,
             password: form_results.new_password,
           });
@@ -656,7 +656,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * @author Ycreak
    */
   protected request_change_role(user: any) {
-    let item_string = user.username + ', ' + user.role;
+    const item_string = user.username + ', ' + user.role;
     this.dialog
       .open_confirmation_dialog('Are you sure you want to CHANGE the role of this user?', item_string)
       .subscribe((result) => {

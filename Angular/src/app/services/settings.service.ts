@@ -19,5 +19,5 @@ export class SettingsService {
     commentary_size: 40,
   };
 
-  constructor() {}
+  //constructor() {}
 }
