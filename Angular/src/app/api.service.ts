@@ -452,7 +452,7 @@ export class ApiService {
   public scan_lines(lines: object): Observable<any> {
     return this.http.post<any>(this.NeuralURL + `scan_lines`, lines, { observe: 'body', responseType: 'json' });
   }
-  
+
   /**
    * Function to handle the error err. Calls Snackbar to show it on screen
    * @param err the generated error

@@ -95,7 +95,7 @@ export class FragmentsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if(this.fragments_subscription){
+    if (this.fragments_subscription) {
       this.fragments_subscription.unsubscribe();
     }
   }

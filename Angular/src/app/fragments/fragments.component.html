@@ -6,7 +6,11 @@
   <!--<ng-template #commentary_column_template let-given_fragment="given_fragment">-->
   <mat-toolbar class="column-toolbar">
     <!-- Button to select the text -->
-    <button style="color:white" mat-button [matMenuTriggerFor]="menu_authors" (click)="column_to_display.new_column = false">
+    <button
+      style="color: white"
+      mat-button
+      [matMenuTriggerFor]="menu_authors"
+      (click)="column_to_display.new_column = false">
       Select text
     </button>
 

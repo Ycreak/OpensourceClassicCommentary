@@ -7,9 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class UtilityService {
-  constructor(
-    private snackBar: MatSnackBar
-  ) {}
+  constructor(private snackBar: MatSnackBar) {}
 
   /** Sorts array numerically on fragment number
    * @param boolean called from array
