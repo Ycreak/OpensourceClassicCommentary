@@ -92,6 +92,7 @@ export class ApiService {
   }
 
   public request_authors_titles_editors_blob(): void {
+    this.spinner_on();
     this.author_title_editor_blob = [];
     this.get_authors_titles_editors_blob().subscribe({
       next: (data) => {
@@ -102,8 +103,9 @@ export class ApiService {
             editor: value[2],
           } as text_blob);
         });
+        this.spinner_off();
       },
-      error: (err) => this.utility.handle_error_message(err),
+      error: (err) => this.handle_error_message(err),
     });
   }
 
@@ -147,7 +149,7 @@ export class ApiService {
         });
         this.new_authors_alert.next(1);
       },
-      error: (err) => this.utility.handle_error_message(err),
+      error: (err) => this.handle_error_message(err),
     });
   }
 
@@ -161,7 +163,7 @@ export class ApiService {
         });
         this.new_titles_alert.next(1);
       },
-      error: (err) => this.utility.handle_error_message(err),
+      error: (err) => this.handle_error_message(err),
     });
   }
 
@@ -175,7 +177,7 @@ export class ApiService {
         });
         this.new_editors_alert.next(1);
       },
-      error: (err) => this.utility.handle_error_message(err),
+      error: (err) => this.handle_error_message(err),
     });
   }
 
@@ -192,7 +194,7 @@ export class ApiService {
         this.new_fragment_names_alert.next(column_id);
         this.spinner_off();
       },
-      error: (err) => this.utility.handle_error_message(err),
+      error: (err) => this.handle_error_message(err),
     });
   }
 
@@ -213,7 +215,7 @@ export class ApiService {
         this.new_fragments_alert.next(column_id);
         this.spinner_off();
       },
-      error: (err) => this.utility.handle_error_message(err),
+      error: (err) => this.handle_error_message(err),
     });
   }
 
@@ -221,7 +223,7 @@ export class ApiService {
     this.spinner_on();
     this.create_fragment(fragment).subscribe({
       next: (data) => {
-        this.utility.handle_error_message(data);
+        this.handle_error_message(data);
         this.request_authors_titles_editors_blob();
         if (column_id) {
           this.request_fragment_names(column_id, fragment.author, fragment.title, fragment.editor);
@@ -229,7 +231,7 @@ export class ApiService {
         }
         this.spinner_off();
       },
-      error: (err) => this.utility.handle_error_message(err),
+      error: (err) => this.handle_error_message(err),
     });
   }
 
@@ -237,7 +239,7 @@ export class ApiService {
     this.spinner_on();
     this.revise_fragment(fragment).subscribe({
       next: (data) => {
-        this.utility.handle_error_message(data);
+        this.handle_error_message(data);
         this.request_authors_titles_editors_blob();
         if (column_id) {
           this.request_fragment_names(column_id, fragment.author, fragment.title, fragment.editor);
@@ -245,7 +247,7 @@ export class ApiService {
         }
         this.spinner_off();
       },
-      error: (err) => this.utility.handle_error_message(err),
+      error: (err) => this.handle_error_message(err),
     });
   }
 
@@ -260,14 +262,14 @@ export class ApiService {
     this.fragment_key = this.create_fragment_key(author, title, editor, name);
     this.delete_fragment(this.fragment_key).subscribe({
       next: (data) => {
-        this.utility.handle_error_message(data);
+        this.handle_error_message(data);
         this.request_authors_titles_editors_blob();
         if (column_id) {
           this.request_fragment_names(column_id, author, title, editor);
         }
         this.spinner_off();
       },
-      error: (err) => this.utility.handle_error_message(err),
+      error: (err) => this.handle_error_message(err),
     });
   }
 
@@ -289,7 +291,7 @@ export class ApiService {
       next: (data) => {
         column.retrieved_authors = data;
       },
-      error: (err) => this.utility.handle_error_message(err),
+      error: (err) => this.handle_error_message(err),
     });
   }
 
@@ -304,7 +306,7 @@ export class ApiService {
       next: (data) => {
         column.retrieved_titles = data;
       },
-      error: (err) => this.utility.handle_error_message(err),
+      error: (err) => this.handle_error_message(err),
     });
   }
 
@@ -449,6 +451,25 @@ export class ApiService {
   // Neural networks part
   public scan_lines(lines: object): Observable<any> {
     return this.http.post<any>(this.NeuralURL + `scan_lines`, lines, { observe: 'body', responseType: 'json' });
+  }
+  
+  /**
+   * Function to handle the error err. Calls Snackbar to show it on screen
+   * @param err the generated error
+   * @author Ycreak
+   */
+  public handle_error_message(err: any): void {
+    this.spinner_off();
+    let output = '';
+
+    console.log(err);
+
+    if (err.ok) {
+      output = err.status + ': ' + err.body;
+    } else {
+      output = err.status + ': ' + err.error;
+    }
+    this.utility.open_snackbar(output);
   }
 
   /**

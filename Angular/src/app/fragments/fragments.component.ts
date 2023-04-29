@@ -37,7 +37,6 @@ import { Introductions } from '@oscc/models/Introductions';
   ],
 })
 export class FragmentsComponent implements OnInit, AfterViewInit, OnDestroy {
-  //@Input() commentary_enabled!: boolean;
   @Output() fragment_clicked2 = new EventEmitter<Fragment>();
 
   public current_fragment: Fragment; // Variable to store the clicked fragment and its data
@@ -45,8 +44,6 @@ export class FragmentsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Subscription variables
   private fragments_subscription: any;
-
-  private playground_dragging = false; //TODO
 
   constructor(
     protected api: ApiService,
@@ -98,7 +95,9 @@ export class FragmentsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.fragments_subscription.unsubscribe();
+    if(this.fragments_subscription){
+      this.fragments_subscription.unsubscribe();
+    }
   }
 
   /**
@@ -109,52 +108,23 @@ export class FragmentsComponent implements OnInit, AfterViewInit, OnDestroy {
   protected handle_fragment_click(fragment: Fragment): void {
     this.fragment_clicked2.emit(fragment);
     // If we are currently dragging a fragment in the playground, we do not want the click even to fire.
-    if (!this.playground_dragging) {
-      this.fragment_clicked = true;
-      this.current_fragment = fragment;
+    this.fragment_clicked = true;
+    this.current_fragment = fragment;
 
-      // Reset the commentary column and its linked fragments
-      //this.commentary_column.linked_fragments_content = [];
-
-      // Now retrieve all linked fragments to show their content in the commentary column
-      //for (let i in fragment.linked_fragments) {
-      //// Request the fragment
-      //this.api
-      //.get_fragments({
-      //author: fragment.linked_fragments[i].author,
-      //title: fragment.linked_fragments[i].title,
-      //editor: fragment.linked_fragments[i].editor,
-      //name: fragment.linked_fragments[i].name,
-      //})
-      //.subscribe((data) => {
-      //let fragment = this.api.convert_fragment_json_to_typescript(data);
-      //// and push it to the commentary column (only one fragment in the list, so push the first one)
-      ////this.commentary_column.linked_fragments_content.push(fragment[0]);
-      //this.utility.spinner_off();
-      //});
-      //}
-
-      // The next part handles the colouring of clicked and referenced fragments.
-      // First, restore all fragments to their original black colour when a new fragment is clicked
-      for (const index in this.column_handler.columns) {
-        this.column_handler.columns[index] = this.column_handler.colour_fragments_black(
-          this.column_handler.columns[index]
-        );
-      }
-      //TODO: this.playground_handler.playground = this.column_handler.colour_fragments_black(
-      //this.playground_handler.playground
-      //);
-      // Second, colour the clicked fragment
-      fragment.colour = '#3F51B5';
-      // Lastly, colour the linked fragments
-      this.colour_linked_fragments(fragment);
-      // And scroll each column to the linked fragment if requested
-      if (this.settings.fragments.auto_scroll_linked_fragments) {
-        this.scroll_to_linked_fragments(fragment);
-      }
-    } else {
-      // After a drag, make sure to set the dragging boolean on false again
-      this.playground_dragging = false;
+    // The next part handles the colouring of clicked and referenced fragments.
+    // First, restore all fragments to their original black colour when a new fragment is clicked
+    for (const index in this.column_handler.columns) {
+      this.column_handler.columns[index] = this.column_handler.colour_fragments_black(
+        this.column_handler.columns[index]
+      );
+    }
+    // Second, colour the clicked fragment
+    fragment.colour = '#3F51B5';
+    // Lastly, colour the linked fragments
+    this.colour_linked_fragments(fragment);
+    // And scroll each column to the linked fragment if requested
+    if (this.settings.fragments.auto_scroll_linked_fragments) {
+      this.scroll_to_linked_fragments(fragment);
     }
   }
 

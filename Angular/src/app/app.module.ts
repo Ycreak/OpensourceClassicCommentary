@@ -91,6 +91,7 @@ import { OverviewComponent } from './overview/overview.component';
 const appRoutes: Routes = [
   { path: '', component: OverviewComponent },
   { path: 'fragments', component: FragmentsComponent },
+  { path: 'playground', component: PlaygroundComponent },
   // {path: 'text', component: TextComponent},
   { path: 'scansion', component: ScansionComponent, canActivate: [AuthGuard] },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },

@@ -7,7 +7,9 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class UtilityService {
-  constructor(private snackBar: MatSnackBar) {}
+  constructor(
+    private snackBar: MatSnackBar
+  ) {}
 
   /** Sorts array numerically on fragment number
    * @param boolean called from array
@@ -95,24 +97,6 @@ export class UtilityService {
     this.snackBar.open(message, 'Close', {
       duration: 5000,
     });
-  }
-
-  /**
-   * Function to handle the error err. Calls Snackbar to show it on screen
-   * @param err the generated error
-   * @author Ycreak
-   */
-  public handle_error_message(err): void {
-    let output = '';
-
-    console.log(err);
-
-    if (err.ok) {
-      output = err.status + ': ' + err.body;
-    } else {
-      output = err.status + ': ' + err.error;
-    }
-    this.open_snackbar(output);
   }
 
   /**
