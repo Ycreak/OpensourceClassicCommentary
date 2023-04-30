@@ -78,7 +78,7 @@ export class LoginComponent {
         this.dialogRef.close(); // Close the login screen overlay
         this.api.spinner_off();
       },
-      error: (err) => this.utility.handle_error_message(err),
+      error: (err) => this.api.handle_error_message(err),
     });
   }
 
@@ -107,11 +107,11 @@ export class LoginComponent {
             });
             this.api.create_user(user).subscribe({
               next: (res) => {
-                this.utility.handle_error_message(res), (this.login_form_expanded = false);
+                this.api.handle_error_message(res), (this.login_form_expanded = false);
                 this.create_form_expanded = false;
                 this.api.spinner_off();
               },
-              error: (err) => this.utility.handle_error_message(err),
+              error: (err) => this.api.handle_error_message(err),
             });
           }
         });
