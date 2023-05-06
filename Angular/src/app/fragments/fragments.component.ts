@@ -219,6 +219,11 @@ export class FragmentsComponent implements OnInit, AfterViewInit, OnDestroy {
     for (const fragment in array) {
       // Loop through all fragments
       const current_fragment = array[fragment];
+      // replaces the summary tag with summary CSS
+      current_fragment.apparatus = current_fragment.apparatus.replace(
+        /\[summary\]([\s\S]*?)\[\/summary\]/gm,
+        '<div class="summary">$1</div>'
+      );
       for (const item in current_fragment.lines) {
         // Loop through all lines of current fragment
         let line_text = current_fragment.lines[item].text;

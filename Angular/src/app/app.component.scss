@@ -172,3 +172,9 @@ span.mat-button-focus-overlay {
   max-width: 100%;
   /* width: 100%; */
 }
+
+/* Creates an outline, with a padding based on a summary block */
+.summary {
+  outline: 1px solid black;
+  padding: 5px;
+}
