@@ -4,13 +4,23 @@
  * the dashboard.
  */
 
-import { Injectable } from '@angular/core';
+import { Injectable} from '@angular/core';
+
+
+export interface FragmentsSettings {
+  dragging_disabled: boolean;
+  fragment_order_gradient: boolean;
+  auto_scroll_linked_fragments: boolean;
+  show_headers: boolean;
+  show_line_names: boolean;
+  commentary_size: number;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class SettingsService {
-  fragments = {
+  fragments: FragmentsSettings = {
     dragging_disabled: false,
     fragment_order_gradient: false,
     auto_scroll_linked_fragments: false,
