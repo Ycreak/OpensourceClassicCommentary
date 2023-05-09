@@ -11,31 +11,31 @@
   <!-- <br> -->
 
   <p>
-    <mat-slide-toggle [(ngModel)]="data.dragging_disabled">Disable fragment dragging</mat-slide-toggle>
+    <mat-slide-toggle [(ngModel)]="data.dragging_disabled" (change)="localstorage.saveData('dragging_disabled', data.dragging_disabled)">Disable fragment dragging</mat-slide-toggle>
   </p>
 
   <br />
 
   <p>
-    <mat-slide-toggle [(ngModel)]="data.fragment_order_gradient">Show fragment order gradient</mat-slide-toggle>
+    <mat-slide-toggle [(ngModel)]="data.fragment_order_gradient"(change)="localstorage.saveData('fragment_order_gradient', data.fragment_order_gradient)">Show fragment order gradient</mat-slide-toggle>
   </p>
 
   <br />
 
   <p>
-    <mat-slide-toggle [(ngModel)]="data.show_headers">Show fragments headers</mat-slide-toggle>
+    <mat-slide-toggle [(ngModel)]="data.show_headers" (change)="localstorage.saveData('show_headers', data.show_headers)">Show fragments headers</mat-slide-toggle>
   </p>
 
   <br />
 
   <p>
-    <mat-slide-toggle [(ngModel)]="data.show_line_names">Show fragment line names</mat-slide-toggle>
+    <mat-slide-toggle [(ngModel)]="data.show_line_names"(change)="localstorage.saveData('show_line_names', data.show_line_names)">Show fragment line names</mat-slide-toggle>
   </p>
 
   <br />
 
   <p>
-    <mat-slide-toggle [(ngModel)]="data.auto_scroll_linked_fragments">Auto scroll to linked fragments</mat-slide-toggle>
+    <mat-slide-toggle [(ngModel)]="data.auto_scroll_linked_fragments"(change)="localstorage.saveData('auto_scroll_linked_fragments', data.auto_scroll_linked_fragments)">Auto scroll to linked fragments</mat-slide-toggle>
   </p>
 
   <hr />
@@ -43,7 +43,7 @@
   <p>Change size of the commentary window</p>
   <div class="center">
     <mat-slider min="20" max="80" step="10" value="50" discrete color="accent">
-      <input matSliderThumb [(ngModel)]="data.commentary_size" />
+      <input matSliderThumb [(ngModel)]="data.commentary_size" (change)="localstorage.saveData('commentary_size', data.commentary_size)"/>
     </mat-slider>
   </div>
 
