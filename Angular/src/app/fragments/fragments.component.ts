@@ -90,6 +90,12 @@ export class FragmentsComponent implements OnInit, AfterViewInit, OnDestroy {
         fragments = this.sort_fragments_on_status(fragments);
 
         column.fragments = fragments;
+
+        // Store the original order of the fragments in the column object
+        column.orig_fragment_order = []; // Clear first
+        for (let frag of fragment_list) {
+          column.orig_fragment_order.push(frag.fragment_name);
+        }
       }
     });
   }
@@ -280,5 +286,33 @@ export class FragmentsComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       return 'transparent';
     }
+  }
+
+  /**
+   * Simple function that generates a gradient color for each
+   * fragment in a fragment column.
+   * This is to indicate the initial order of the fragments.
+   *
+   * Each fragment gets a color chosen from a set color
+   * brightness range, though two neighboring fragments can
+   * only have a set difference in brightness.
+   * @param n_fragments The total number of fragments in the column
+   * @param fragment_index The index of the current fragment
+   * @returns: Color as HSL value (presented as string)
+   * @author CptVickers
+   */
+
+  public generate_fragment_gradient_color(n_fragments: number, fragment_index: number) {
+    let max_brightness: number = 95;
+    let min_brightness: number = 20;
+    let max_brightness_diff: number = 30;
+
+    let brightness_step = (max_brightness - min_brightness) / n_fragments;
+    if (brightness_step > max_brightness_diff) {
+      brightness_step = max_brightness_diff;
+    }
+    let calculated_brightness = min_brightness + brightness_step * fragment_index;
+
+    return `HSL(231, 48%, ${calculated_brightness}%)`;
   }
 }
