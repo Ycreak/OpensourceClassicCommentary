@@ -1,6 +1,6 @@
 // Library imports
 
-import { Component, OnInit, OnDestroy} from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog'; // Library used for interacting with the page
 //import { environment } from '@src/environments/environment';
 
@@ -129,10 +129,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
   private load_settings(): void {
     // Load all the fragments settings
     for (const setting in this.settings.fragments) {
-      (this.settings.fragments as any)[setting as keyof FragmentsSettings] = (this.localstorage.getData(setting));
+      (this.settings.fragments as any)[setting as keyof FragmentsSettings] = this.localstorage.getData(setting);
     }
 
     // Load all the settings for other components here once they exist
-
   }
 }

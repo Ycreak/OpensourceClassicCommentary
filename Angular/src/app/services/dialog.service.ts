@@ -183,5 +183,9 @@ export class CustomDialogComponent {
   styleUrls: ['../dialogs/dialogs.scss'],
 })
 export class SettingsDialogComponent {
-  constructor(public dialogRef: MatDialogRef<SettingsDialogComponent>, public localstorage: LocalStorageService, @Inject(MAT_DIALOG_DATA) public data) {}
+  constructor(
+    public dialogRef: MatDialogRef<SettingsDialogComponent>,
+    public localstorage: LocalStorageService,
+    @Inject(MAT_DIALOG_DATA) public data
+  ) {}
 }

@@ -7,7 +7,7 @@ export class LocalStorageService {
   constructor() {}
 
   public saveData(key: string, value: string): void {
-    console.log("save func called!", key, value)
+    console.log('save func called!', key, value);
     localStorage.setItem(key, value);
   }
 
