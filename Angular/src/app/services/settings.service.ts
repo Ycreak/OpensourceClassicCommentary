@@ -4,8 +4,7 @@
  * the dashboard.
  */
 
-import { Injectable} from '@angular/core';
-
+import { Injectable } from '@angular/core';
 
 export interface FragmentsSettings {
   dragging_disabled: boolean;
