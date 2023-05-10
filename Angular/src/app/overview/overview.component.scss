@@ -1,0 +1,28 @@
+/* Root variables */
+$toolbar-height: 64px;
+
+/* HTML Elements */
+.overflow_column {
+  height: 100vh;
+  overflow: scroll;
+}
+
+.mat-toolbar {
+  height: $toolbar-height;
+}
+
+.drawer-container {
+  width: 100%;
+  max-height: calc(100vh - $toolbar-height);
+  height: 100vh;
+}
+
+.overview-sidenav-content {
+  height: 100%;
+}
+
+.overview-sidenav {
+  height: 100vh;
+  overflow: scroll;
+  transition: width 0.75s ease-in-out;
+}

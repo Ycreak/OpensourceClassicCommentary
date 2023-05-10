@@ -1,8 +1,110 @@
-table, th, td {
-    border: 1px solid black;
-    border-collapse: collapse;
-  }
+@import url("../app.component.scss");
 
-  th, td {
-    padding: 15px;
+table,
+th,
+td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 15px;
+}
+
+p {
+  font-family: "Raleway", sans-serif;
+}
+
+.raleway {
+  font-family: "Raleway", sans-serif;
+}
+
+.div-rounded-corners {
+  border-radius: 25px;
+  border: 0.5ch solid #000;
+  padding: 10px;
+  // width: auto;
+  // height: auto;
+}
+
+.div-padding-left-right {
+  padding-left: 10ch;
+  padding-right: 10ch;
+}
+
+.third-size {
+  width: 20vw;
+}
+
+.center-div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.lines-form {
+  // min-width: 150px;
+  // max-width: 500px;
+  // width: 100%;
+
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  min-width: 40vw;
+  max-width: 60%;
+  width: auto;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.center {
+  text-align: center;
+  // border: 3px solid green;
+}
+
+// .mat-radio-button-label {
+//   margin-bottom: 0;
+// }
+
+// .mat-radio-button-label {
+//   width: fit-content;
+// }
+
+.topnav-right {
+  float: right;
+}
+
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+/* TODO(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.*/
+mat-radio-group {
+  font-family: "Raleway", sans-serif;
+  font-size: small;
+}
+
+.mat-mdc-radio-button ~ .mat-radio-button {
+  margin-left: 1ch;
+}
+
+.btn {
+  background-color: #3f51b5;
+  color: #fffffc;
+  font-family: "Arial";
+  font-size: 13px;
+
+  &:hover {
+    background-color: #5363bd;
+
+    color: white;
   }
+}
+
+/* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
+.mat-checkbox-layout {
+  margin-bottom: 0;
+}

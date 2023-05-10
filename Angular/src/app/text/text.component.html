@@ -1,94 +1,98 @@
 <!-- I think this can be removed. -->
 <script src="vendor/jquery/jquery.min.js"></script>
 <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway" />
 
 <!-- Maybe we should get a local stylesheet? -->
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
 
 <!-- Simple toolbar with all the different buttons and the title -->
 <mat-toolbar color="primary">
-    <span><h3 class='h3-title'>Open Source Classics Commentary</h3></span>
-    <span class="spacer"></span>
-    <!-- <button mat-button class="btn" (click)="OpenBookSelect()">CHANGE TEXT</button> -->
-    <button mat-button class="btn" routerLink="/fragments">FRAGMENTS</button>
-    <!-- <button mat-button class="btn" [matMenuTriggerFor]="menu">MENU</button> -->
+  <span><h3 class="h3-title">Open Source Classics Commentary</h3></span>
+  <span class="spacer"></span>
+  <!-- <button mat-button class="btn" (click)="OpenBookSelect()">CHANGE TEXT</button> -->
+  <button mat-button class="btn" routerLink="/fragments">FRAGMENTS</button>
+  <!-- <button mat-button class="btn" [matMenuTriggerFor]="menu">MENU</button> -->
 </mat-toolbar>
 <!-- Small menu for the toolbar -->
 <mat-menu #menu="matMenu">
-    <button routerLink="/fragments" mat-menu-item>Fragments</button>
-    <!-- <button (click)="OpenAbout()" mat-menu-item>About</button> -->
+  <button routerLink="/fragments" mat-menu-item>Fragments</button>
+  <!-- <button (click)="OpenAbout()" mat-menu-item>About</button> -->
 </mat-menu>
 
-<!-- Author and Book select dialog -->
-<ng-template #CallBookSelect>   
-  <h3>Select an author and a book to display.</h3>
-  <hr>
+<!-- Author and title select dialog -->
+<ng-template #CallBookSelect>
+  <h3>Select an author and a title to display.</h3>
+  <hr />
   <mat-form-field>
-      <mat-label>Select author</mat-label>
-      <mat-select>
-      <mat-option *ngFor="let author of this.authorsJSON" [value]="author" 
-          (click)="this.RequestBooks(author.id)">
-          {{ author.name }} 
+    <mat-label>Select author</mat-label>
+    <mat-select>
+      <mat-option *ngFor="let author of this.authorsJSON" [value]="author" (click)="this.RequestBooks(author.id)">
+        {{ author.name }}
       </mat-option>
-      </mat-select>  
-  </mat-form-field> 
-  
+    </mat-select>
+  </mat-form-field>
+
   <mat-form-field>
-      <mat-label>Select book</mat-label>
-      <mat-select>
-      <mat-option *ngFor="let book of this.booksJSON" [value]="book" 
-          (click)="RequestText(book.id)">
-          {{ book.title }}                
+    <mat-label>Select title</mat-label>
+    <mat-select>
+      <mat-option *ngFor="let book of this.booksJSON" [value]="book" (click)="RequestText(book.id)">
+        {{ book.title }}
       </mat-option>
-      </mat-select>
-  </mat-form-field>    
+    </mat-select>
+  </mat-form-field>
 </ng-template>
 
 <!-- Container for the page: one row, two columns. Column Left has the text, Column Right the commentary. -->
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-sm overflowColumn">
-          <mat-nav-list class="neat-lines">
-            <h3>{{currentBookTitle}}</h3>
-            <mat-list-item *ngFor="let line of this.T_Text">
-              <a *ngIf="line.lineNumber === null"><h5><b>{{ line.lineContent }}</b></h5></a>
-              <a *ngIf="line.lineNumber != null" matLine (click)="RequestCommentary(line.lineNumber)"><b>{{ line.lineNumber }}:</b> {{ line.lineContent }}</a>
-            </mat-list-item>
-          </mat-nav-list>
-      </div>
-      
-      <div class="col-sm">
-        <div class="col-sm anyClass">
-          <br>
-          <!-- Empty Entry -->
-          <div *ngIf="CheckEmptyBlock(this.T_TextCommentary)">No entry found.</div>
-          <!-- Valid Entry -->
-          <div *ngFor="let commentary of this.T_TextCommentary">
-            <mat-expansion-panel [expanded]="IsWithinScope(commentary.lineStart)">
-              <!-- Regelnummer -->
-              <mat-expansion-panel-header>
-                <mat-panel-title *ngIf="commentary.lineStart == commentary.lineEnd">
-                  Line {{commentary.lineStart}} 
-                </mat-panel-title>
-                <mat-panel-title *ngIf="commentary.lineStart != commentary.lineEnd">
-                    Lines {{commentary.lineStart}}-{{commentary.lineEnd}}
-                </mat-panel-title>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm overflow_column">
+      <mat-nav-list class="neat-lines">
+        //FIXME: mat-nav-list is not a known element?
+        <h3>{{ currentBookTitle }}</h3>
+        <mat-list-item *ngFor="let line of this.T_Text">
+          <a *ngIf="line.lineNumber === null"
+            ><h5>
+              <b>{{ line.lineContent }}</b>
+            </h5></a
+          >
+          <a *ngIf="line.lineNumber !== null" matLine (click)="RequestCommentary(line.lineNumber)"
+            ><b>{{ line.lineNumber }}:</b> {{ line.lineContent }}</a
+          >
+        </mat-list-item>
+      </mat-nav-list>
+    </div>
+
+    <div class="col-sm">
+      <div class="col-sm anyClass">
+        <br />
+        <!-- Empty Entry -->
+        <div *ngIf="utility.is_empty(this.T_TextCommentary)">No entry found.</div>
+        <!-- Valid Entry -->
+        <div *ngFor="let commentary of this.T_TextCommentary">
+          <mat-expansion-panel [expanded]="IsWithinScope(commentary.lineStart)">
+            <!-- Regelnummer -->
+            <mat-expansion-panel-header>
+              <mat-panel-title *ngIf="commentary.lineStart === commentary.lineEnd">
+                Line {{ commentary.lineStart }}
+              </mat-panel-title>
+              <mat-panel-title *ngIf="commentary.lineStart !== commentary.lineEnd">
+                Lines {{ commentary.lineStart }}-{{ commentary.lineEnd }}
+              </mat-panel-title>
               <!-- Woorden in kwestie -->
-                <b>{{commentary.relevantWords}}</b> <div class="div-padding-sm"></div>
-              </mat-expansion-panel-header>
-              <!-- Commentaar zelf met opmaak -->
-              <div class="mat-expansion-panel-content">
-                <div class="mat-expansion-panel-body">
-                    <div [innerHTML]="commentary.commentary"></div>
-                </div>
+              <b>{{ commentary.relevantWords }}</b>
+              <div class="div-padding-sm"></div>
+            </mat-expansion-panel-header>
+            <!-- Commentaar zelf met opmaak -->
+            <div class="mat-expansion-panel-content">
+              <div class="mat-expansion-panel-body">
+                <div [innerHTML]="commentary.commentary"></div>
               </div>
-            </mat-expansion-panel>
-          </div>
+            </div>
+          </mat-expansion-panel>
         </div>
-
       </div>
-
+    </div>
   </div>
 </div>

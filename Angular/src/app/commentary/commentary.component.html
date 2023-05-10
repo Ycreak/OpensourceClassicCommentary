@@ -1,0 +1,126 @@
+<!-- <div *ngIf="commentary_enabled" class="col overflow_column"> TODO: -->
+<!-- Show either fragment data or the fact that no fragment has been selected yet. -->
+<div *ngIf="this.fragment_clicked; else no_fragment_clicked">
+  <!-- Fragment information -->
+  <h5>
+    Selected
+    <!-- TODO: for next release -->
+    <!-- <a class='a-void' (click)="this.request_introduction(this.current_fragment.author)">{{this.current_fragment.author}}</a>, Do not forget the comma and space -->
+    <!-- <a class='a-void' (click)="this.request_introduction(this.current_fragment.title)">{{this.current_fragment.title}}</a>,  -->
+    {{ this.current_fragment.author }}, {{ this.current_fragment.title }}, {{ this.current_fragment.editor }},
+    {{ this.current_fragment.name }}
+  </h5>
+</div>
+<ng-template #no_fragment_clicked>
+  <h5>Click a fragment to show its content.</h5>
+</ng-template>
+
+<!-- Show banner if no commentary available -->
+<div *ngIf="!this.current_fragment.has_content() && this.fragment_clicked" class="alert alert-info" role="alert">
+  No content is available yet for this specific fragment.
+</div>
+
+<!-- Show the commentary for the clicked fragment -->
+<div *ngIf="this.current_fragment.has_content()">
+  <ng-container
+    [ngTemplateOutlet]="commentary_column_template"
+    [ngTemplateOutletContext]="{ given_fragment: this.current_fragment }"></ng-container>
+</div>
+
+<!-- TODO: <div *ngFor="let linked_fragment of this.commentary_column.linked_fragments_content">
+        <div *ngIf="linked_fragment.has_content()">
+            <h6>
+                Linked commentary from {{ linked_fragment.author }}, {{ linked_fragment.title }},
+                {{ linked_fragment.editor }}, {{ linked_fragment.name }}
+            </h6>
+            <ng-container [ngTemplateOutlet]="commentary_column_template"
+                [ngTemplateOutletContext]="{ given_fragment: linked_fragment }"></ng-container>
+        </div>
+    </div> -->
+
+<!-- Template for commentary column -->
+<ng-template #commentary_column_template let-given_fragment="given_fragment">
+  <ng-container
+    *ngTemplateOutlet="
+      show_fragment_content;
+      context: { current_fragment_content: given_fragment.translation, title: 'Fragment Translation' }
+    ">
+  </ng-container>
+  <!-- Show the translation of the fragment -->
+
+  <ng-container
+    *ngTemplateOutlet="
+      show_fragment_content;
+      context: { current_fragment_content: given_fragment.apparatus, title: 'Apparatus Criticus' }
+    ">
+  </ng-container>
+  <!-- Show the apparatus criticus of the fragment -->
+
+  <ng-container
+    *ngTemplateOutlet="
+      show_fragment_content;
+      context: { current_fragment_content: given_fragment.differences, title: 'Editorial Differences' }
+    ">
+  </ng-container>
+  <!-- Show the fragment differences -->
+
+  <ng-container *ngIf="!this.utility.is_empty_array(given_fragment.context)">
+    <div *ngFor="let current_context of given_fragment.context">
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <b>Citation Context</b>
+          </mat-panel-title>
+          <div>
+            {{ current_context.author }} <i>{{ current_context.location }}</i>
+          </div>
+          <div class="div-padding-sm"></div>
+        </mat-expansion-panel-header>
+        <div class="mat-expansion-panel-content">
+          <div class="mat-expansion-panel-body">
+            <div [innerHTML]="current_context.text"></div>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </div>
+    <hr />
+    <!-- Show all context items for the selected fragment -->
+  </ng-container>
+
+  <ng-container
+    *ngTemplateOutlet="
+      show_fragment_content;
+      context: { current_fragment_content: given_fragment.commentary, title: 'Fragment Commentary' }
+    ">
+  </ng-container>
+  <!-- Show the fragment commentary -->
+
+  <ng-container
+    *ngTemplateOutlet="
+      show_fragment_content;
+      context: { current_fragment_content: given_fragment.reconstruction, title: 'Fragment Reconstruction' }
+    ">
+  </ng-container>
+  <!-- Show the fragment reconstruction -->
+</ng-template>
+
+<!-- Template to show fragment content from the given fragment in a mat expansion panel -->
+<ng-template #show_fragment_content let-current_fragment_content="current_fragment_content" let-title="title">
+  <ng-container *ngIf="current_fragment_content !== ''">
+    <!-- do not generate fields if content is empty -->
+    <mat-expansion-panel *ngIf="current_fragment_content">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <b>{{ title }}</b>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div class="mat-expansion-panel-content">
+        <div class="mat-expansion-panel-body">
+          <div [innerHTML]="current_fragment_content"></div>
+        </div>
+      </div>
+    </mat-expansion-panel>
+    <hr />
+    <!-- And add a nice line to separate the fields -->
+  </ng-container>
+</ng-template>

@@ -6,3 +6,6 @@ flask_jsonpify
 couchdb
 jsonpickle
 fuzzywuzzy
+python-Levenshtein
+pytest
+wheel

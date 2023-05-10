@@ -1,109 +1,174 @@
+@use "@angular/material" as mat;
 /* GENERAL CSS STYLING */
-body, h1, h2, h3, h4, h5 {
-    font-family: "Raleway", sans-serif;
+body,
+h1,
+h2,
+h3 {
+  font-family: "Raleway", sans-serif;
 }
 
-.h3-title {
-    color: white;
+h4,
+h5,
+h6 {
+  font-family: "Roboto";
+  padding: 0.5em;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid #eee;
+  margin: 20px 0;
+  box-sizing: content-box;
+  height: 0;
+  overflow: visible;
 }
 
 /* HTML Elements */
-.overflowColumn {
-    height: 90vh;
-    overflow-y: scroll;
-}
-
-/* HTML Elements */
-.overflow_scroll {
-    overflow-y: scroll;
-}
-
-div {
-    word-wrap: break-word;
-}
-
-.div-padding {
-    padding: 1em;
-}
-
-.div-padding-sm {
-    padding: 0.2em;
-}
-
-.div-padding-lg {
-    padding: 0.5em;
-}
-
-.navbar {
-    background-color: #3F51B5;
-}
-  
-.checkbox{
-    background-color: #3F51B5;
-    color: #FFFFFC;
-    font-family: 'Arial';
-    font-size: 13px;
-}
-
-span {
-    width: 2em;
-}
-
-button {
-    margin: 0.2em;
-  } 
-
-.btn {
-    background-color: #3F51B5;
-    color: #FFFFFC;
-    font-family: 'Arial';
-    font-size: 13px;
-   
-    &:hover {
-      background-color: #5363BD;
-  
-      color: white;
-    }
-}
-
-.center {
-    text-align: center;
+.overflow_column {
+  height: 100vh;
+  overflow: scroll;
 }
 
 .spacer {
-    flex: 1 1 auto;
+  display: inline-flex;
+  flex: 1 1 auto;
+  width: 1em;
 }
 
-/** MODALS **/
-.bibList {
-    height: auto;
-    width: 100%;
+/*
+div {
+    word-wrap: break-word;
 }
+*/
+
+.div-padding {
+  padding: 1em;
+}
+
+.div-padding-sm {
+  padding: 0.2em;
+}
+
+.div-padding-lg {
+  padding: 0.5em;
+}
+
+/**
+// .checkbox{
+//     background-color: #3F51B5;
+//     color: #FFFFFC;
+//     font-family: 'Arial';
+//     font-size: 13px;
+// }
+**/
+
+.navbar {
+  color: white !important;
+}
+
+/* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
+span.mat-button-focus-overlay {
+  width: inherit;
+}
+
+.button-margin {
+  margin: 0.2em;
+}
+
+.button-margin-extra {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+/*
+.btn {
+    color: white;
+}
+
+// button.btn:hover {
+//     color: white
+// }
+*/
 
 /** MATERIAL **/
-.mat-list-item:hover {
-    background-color: #6495ED;
+.mat-mdc-list-item:hover {
+  background-color: #6495ed;
 }
-  
-.mat-form-field {
-    padding-left: 1em;
-    width: auto;
-    size: 100%;
+
+.mat-mdc-form-field {
+  padding-left: 1em;
+  width: auto;
+  size: 100%;
 }
-  
+
 .mat-expansion-panel-header {
-    flex: 1 1 auto;
+  flex: 1 1 auto;
 }
 
-.tab { 
-    display:inline-block; 
-    margin-left: 5em; 
+/* Input form related CSS */
+.input-form-full-width {
+  width: 90%;
 }
 
-.mat-tooltip {
-    font-size: 1.5rem !important;
-  }
+/*
+.progress-toolbar{
+    height: 1vh !important;
+    background: #3F51B5;
+}
 
-.input-form-full-width { 
-    width: 100%;
+.mat-mdc-progress-bar {
+    height: 1vh !important;
+}
+*/
+
+.a-void {
+  cursor: pointer;
+  color: black;
+}
+
+/* Fragment and commentary column related CSS */
+
+/* CDK Drag 'n Drop CSS */
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-overlay-connected-position-bounding-box {
+  z-index: 99999 !important;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.fragment-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.input-form {
+  width: var(--width);
+}
+
+/* Playground related CSS */
+
+::ng-deep .mat-line {
+  word-wrap: break-word !important;
+  white-space: pre-wrap !important;
+}
+
+::ng-deep .mat-mdc-list .mat-mdc-list-item {
+  height: initial !important;
+}
+
+.neat-lines .mat-mdc-list-item {
+  height: auto;
+  width: 100%;
+}
+
+.selection-form {
+  min-width: 25%;
+  max-width: 100%;
+  /* width: 100%; */
 }

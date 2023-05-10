@@ -1,11 +1,15 @@
-// @import "~bootstrap/dist/css/bootstrap.css";
-@import url('../app.component.scss');
+@import url("../app.component.scss");
+// Dashboard component specific CSS. For more generic CSS, see ../app.component.scss.
 
-// Dashboard specific
+// Input form CSS
 .input-form {
   min-width: 50%;
   max-width: 90%;
   /* width: 100%; */
+}
+
+.input-form-custom {
+  max-width: var(--max-width);
 }
 
 .input-form-small {
@@ -20,114 +24,74 @@
   // width: auto;
 }
 
-.input-form-full-width { 
+.input-form-full-width {
   width: 90%; // I like the irony
 }
 
-/* This assumes only 5 buttons exist. */
-.select-form {
-  width: 20%;
+// Add padding between buttons
+mat-stroked-button {
+  padding: 2em;
 }
 
+// Beautify the space between expansion panel header, description and icon
+.mat-expansion-panel-header-title,
+.mat-expansion-panel-header-description {
+  flex-basis: 0;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 8px;
+}
 
-  /* MAT LIST CSS */ //DEPRECATED
-  // .mat-form-field {
-  //   padding-left: 1em;
-  //   // height: 5em;
-  //   // size: 80%;
-  //   max-width: 100%;
-  // }
+// Allow the element to be padded on its left side
+.padding-left {
+  padding-left: 1em;
+}
 
-  mat-stroked-button {
-    padding: 2em;
-  }
+// Table specific CSS
+table {
+  width: 100%;
+}
 
-  .mat-radio-button {
-    // margin: 1em 1em 1em 1em;
-    padding: 1em;
-    // display: flex;
-    // align-content: center;
-    // align-items: center;
-  }
-  
-  // .radio-section {
-  //   display: flex;
-  //   align-content: center;
-  //   align-items: center;
-  //   height: 60px;
-  // }
-  
-  // .radio-margin {
-  //   margin: 0 10px;
-  // }
-  
-  
-  // .example-h2 {
-  //   margin: 10px;
-  // }
-  
-  // .example-section {
-  //   display: flex;
-  //   align-content: center;
-  //   align-items: center;
-  //   height: 60px;
-  // }
-  
-  // .example-margin {
-  //   margin: 0 10px;
-  // }
+td,
+th {
+  width: 25%;
+}
 
-  .example-action-buttons {
-    padding-bottom: 20px;
-  }
-  
-  .example-headers-align .mat-expansion-panel-header-title,
-  .example-headers-align .mat-expansion-panel-header-description {
-    flex-basis: 0;
-  }
-  
-  .example-headers-align .mat-expansion-panel-header-description {
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .example-headers-align .mat-form-field + .mat-form-field {
-    margin-left: 8px;
-  }
+tr.table-detail-row {
+  height: 0;
+}
 
-  section {
-    display: table;
-  }
-  
-  .example-label {
-    display: table-cell;
-    font-size: 14px;
-    margin-left: 8px;
-    min-width: 120px;
-  }
-  
-  .example-button-row {
-    display: table-cell;
-    width: 490px;
-  }
-  
-  .example-button-row .mat-button-base {
-    margin: 8px 8px 8px 0;
-  }
-  
-  .example-flex-container {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-  }
-  
-  .example-button-container {
-    display: flex;
-    justify-content: center;
-    width: 120px;
-  }
+tr.table-element-row:not(.table-expanded-row):hover {
+  background: whitesmoke;
+}
 
+tr.table-element-row:not(.table-expanded-row):active {
+  background: #efefef;
+}
 
-  .padding-left{
-    padding-left: 1em;
-  }
+.table-element-row td {
+  border-bottom-width: 0;
+}
+
+.table-element-detail {
+  overflow: hidden;
+  display: flex;
+}
+
+.table-element-description {
+  padding: 16px;
+}
+
+.table-element-description-attribution {
+  opacity: 0.5;
+}
+
+// Wysiwyg-editor
+::ng-deep div.ql-toolbar button.symbol-button {
+  transform: translateY(-0.2em);
+}
+
+// Wysiwyg-editor
+::ng-deep div.ql-toolbar button.symbol-button.symbol-button-alt {
+  transform: translateY(-0.3em);
+}

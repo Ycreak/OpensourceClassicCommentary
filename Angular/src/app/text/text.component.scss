@@ -1,17 +1,17 @@
-@import url('../app.component.scss');
+@import url("../app.component.scss");
 
 /* GENERAL CSS STYLING */
-::ng-deep .mat-line{
+::ng-deep .mat-line {
   word-wrap: break-word !important;
   white-space: pre-wrap !important;
 }
 
-::ng-deep  .mat-list .mat-list-item{
-  height:initial!important;
+::ng-deep .mat-mdc-list .mat-mdc-list-item {
+  height: initial !important;
 }
 
 /* STYLE CSS */
-.neat-lines .mat-list-item {
+.neat-lines .mat-mdc-list-item {
   height: auto;
   width: 100%;
 }

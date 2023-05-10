@@ -1,506 +1,722 @@
-// Core system components
-import { Component, OnInit} from '@angular/core';
-import {Inject} from '@angular/core';
+// Library imports
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import { ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
+import { FormControl, FormGroup, FormArray } from '@angular/forms';
+import { Validators } from '@angular/forms';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort, Sort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { ElementRef } from '@angular/core';
+import { environment } from '@src/environments/environment';
 
-// Service and utility imports
-import { ApiService } from '../api.service';
-import { UtilityService } from '../utility.service';
-import { AuthService } from '../auth/auth.service';
-import { DialogService } from '../services/dialog.service';
+// Component imports
+import { ApiService } from '@oscc/api.service';
+import { UtilityService } from '@oscc/utility.service';
+import { AuthService } from '@oscc/auth/auth.service';
+import { DialogService } from '@oscc/services/dialog.service';
 
-// To allow the use of forms
-import { FormBuilder } from '@angular/forms';
-import { ReactiveFormsModule, FormControl, FormGroup, Validators, FormArray } from '@angular/forms';
-
-import {MatButtonModule} from '@angular/material/button';
-
-// Mat imports
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
-
-// Model imports to send to the API. 
-//import { Author } from '../models/Author';
-//import { Editor } from '../models/Editor';
-//import { Book } from '../models/Book';
-import { Fragment } from '../models/Fragment';
-//import { Context } from '../models/Context';
-//import { Translation } from '../models/Translation';
-//import { Apparatus } from '../models/Apparatus';
-//import { Differences } from '../models/Differences';
-//import { Commentary } from '../models/Commentary';
-//import { Reconstruction } from '../models/Reconstruction';
-//import { Bibliography } from '../models/Bibliography';
-
-// Third party imports
-// NPM Library. Hopefully not soon deprecated
-import insertTextAtCursor from 'insert-text-at-cursor';
-
-// npm i angular-onscreen-material-keyboard
-import { IKeyboardLayouts, keyboardLayouts, MAT_KEYBOARD_LAYOUTS, MatKeyboardModule } from 'angular-onscreen-material-keyboard';
+// Model imports
+import { Fragment } from '@oscc/models/Fragment';
+import { Column } from '@oscc/models/Column';
+import { User } from '@oscc/models/User';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  styleUrls: ['./dashboard.component.scss'],
+  animations: [
+    // For the User table
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+    trigger('fadeSlideInOut', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(10px)' }),
+        animate('500ms', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+      transition(':leave', [animate('500ms', style({ opacity: 0, transform: 'translateY(10px)' }))]),
+    ]),
+  ],
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
+  // For the user table
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) matSort: MatSort;
+  private table_sort: any;
+  @ViewChild(MatSort) set content(content: Element) {
+    this.table_sort = content;
+    if (this.table_sort) {
+      this.user_table_users.sort = this.table_sort;
+    }
+  }
 
-  selected_author : string = '';
-  selected_book : string = '';
-  selected_editor : string = '';
-  selected_fragment : string;
+  // Fragment referencer variables
+  protected referenced_author = '';
+  protected referenced_title = '';
+  protected referenced_editor = '';
+  protected referenced_name = '';
 
-  retrieved_authors : object;
-  retrieved_books : object;
-  retrieved_editors : object;
+  private fragment_names_subscription: any;
+  private fragments_subscription: any;
 
-  retrieved_fragment : object;
-  retrieved_fragments : object;
-  retrieved_fragment_numbers : object;
+  hide = true; // Whether to hide passwords in the material form fields
 
-  fragmentForm: FormGroup;
+  // We only allow the delete fragment button if one is actually selected.
+  fragment_selected = false;
 
-  possible_status = ['normal', 'incertum', 'adesp.']
+  // User table specific variables
+  user_table_columns_to_display: string[] = ['username', 'role'];
+  user_table_users: MatTableDataSource<User>;
+  user_table_columns_to_displayWithExpand = [...this.user_table_columns_to_display, 'expand'];
+  user_table_expanded_element: string | null;
 
-  pointer_editor : string;
+  // List with users shown in the Table
+  retrieved_users: User[];
 
-  spinner_active : boolean = false;
-
-  // User dashboard
-  isChecked = false;
-  temp = ''
-  hide : boolean = true;
-  change_password_form = this.formBuilder.group({
-    password1: '',
-    password2: '',
+  /**
+   * This form represents the Fragment class. It is built in stages by all the fragment tabs on the HTML.
+   * After all validators, it will be parsed to a Fragment object. It is used in the Dashboard for the creation
+   * and revision of fragments.
+   */
+  fragment_form = new FormGroup({
+    _id: new FormControl(''),
+    name: new FormControl('', [Validators.required, Validators.pattern('[0-9-_ ]*')]), // numbers and "-" and "_" allowed.
+    author: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
+    title: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
+    editor: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
+    translation: new FormControl(''),
+    differences: new FormControl(''),
+    commentary: new FormControl(''),
+    apparatus: new FormControl(''),
+    reconstruction: new FormControl(''),
+    // This array is dynamically filled by the function push_fragment_context_to_fragment_form().
+    // It will contain multiple FormGroups per context, containing an author, location and text.
+    context: new FormArray([]),
+    // This array is dynamically filled by the function push_fragment_line_to_fragment_form().
+    // It will contain multiple FormGroups per line, containing a line_number and line_text.
+    lines: new FormArray([]),
+    linked_fragments: new FormArray([]),
+    status: new FormControl('', Validators.required),
+    published: new FormControl(''),
+    lock: new FormControl(''),
   });
 
-  retrieved_users : object;
-  selected_user : string = '';
-  user_selected : boolean = false; // controls user deletion button
-  new_user : string = '';
-  new_user_password : string = '';
+  /**
+   * This form is used to change the password of the selected user.
+   * After all validators, it will be parsed to a User object.
+   */
+  change_password_form = new FormGroup({
+    password1: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z0-9-_]*')]),
+    password2: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z0-9-_]*')]),
+  });
 
-  // Whether a fragment is selected
-  fragment_selected : boolean = false;
-  allow_fragment_creation = false;
+  /**
+   * This form is used to change the password of the selected user.
+   * After all validators, it will be parsed to a User object.
+   */
+  create_new_user_form = new FormGroup({
+    new_user: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z0-9-_]*')]),
+    new_password: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z0-9-_]*')]),
+  });
+
+  table_data_loaded = false; // Returns true if the table has loaded its data
+  loading_hint: Observable<unknown>; // Loading hint animation
+
+  // In this object all meta data is stored regarding the currently selected fragment
+  selected_fragment_data: Column;
+  fragment_referencer: Column;
 
   constructor(
-    private api: ApiService,
-    private utility: UtilityService,
-    public dialog: DialogService,
-    private formBuilder: FormBuilder,
-    public authService: AuthService,
-    ) {}
-  /**
-   * On Init, we just load the list of authors. From here, selection is started
-   */
+    protected api: ApiService,
+    protected utility: UtilityService,
+    protected dialog: DialogService,
+    protected auth_service: AuthService
+  ) {
+    // Assign the data to the data source for the table to render
+    this.user_table_users = new MatTableDataSource(this.retrieved_users);
+  }
+
   ngOnInit(): void {
-    this.RequestAuthors()
-    // this.Request_users()
-    // Initialise the fragment form. TODO: can we do this somewhere else?
-    this.fragmentForm = this.formBuilder.group({
-      _id: '',
-      fragment_name: '', //['', Validators.required],
-      author: '',
-      title: '',
-      editor: '',
-      translation: '',
-      differences: '',
-      commentary: '',
-      apparatus: '',
-      reconstruction: '',
-      context: this.formBuilder.array([ ]),
-      lines: this.formBuilder.array([ ]),
-      linked_fragments: this.formBuilder.array([ ]),
-      status: '',
-      lock: 0,
+    this.loading_hint = this.utility.get_loading_hint(); // Initialize the loading hint
+    this.api.request_authors_titles_editors_blob();
+    this.request_users();
+
+    // We will store all dashboard data in the following data object
+    this.selected_fragment_data = new Column({
+      column_id: environment.dashboard_id,
     });
+    this.fragment_referencer = new Column({
+      column_id: environment.referencer_id,
+    });
+  }
+
+  // initiate the table sorting and paginator
+  ngAfterViewInit(): void {
+    this.user_table_users.paginator = this.paginator;
+    this.user_table_users.sort = this.matSort;
+    this.expand_user_table_row();
+
+    /** Handle what happens when new fragment names arrive */
+    this.fragment_names_subscription = this.api.new_fragment_names_alert.subscribe((column_id) => {
+      if (column_id == environment.dashboard_id) {
+        this.selected_fragment_data.fragment_names = this.api.fragment_names;
+      } else if (column_id == environment.referencer_id) {
+        this.fragment_referencer.fragment_names = this.api.fragment_names;
+      }
+    });
+
+    /** Handle what happens when new fragments arrive */
+    this.fragments_subscription = this.api.new_fragments_alert.subscribe((column_id) => {
+      if (column_id == environment.dashboard_id) {
+        this.convert_Fragment_to_fragment_form(this.api.fragments[0]);
+        // Set the data for the drop down menus
+        this.selected_fragment_data.author = this.fragment_form.value.author;
+        this.selected_fragment_data.title = this.fragment_form.value.title;
+        this.selected_fragment_data.editor = this.fragment_form.value.editor;
+        this.selected_fragment_data.name = this.fragment_form.value.name;
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.fragments_subscription.unsubscribe();
+    this.fragment_names_subscription.unsubscribe();
   }
 
   /**
    * Simple test function, can be used for whatever
    * @param thing item to be printed
+   * @author Ycreak
    */
-  public Test(thing){
-    console.log(thing)
-    // console.log(this.retrieved_fragment)
-    
-    // let current_fragment = new Fragment({});
-
-    // current_fragment.author = 'Ennius'
-    // current_fragment.title = 'Thyestes'
-
-    // console.log(current_fragment)
-
-    // this.Request_automatic_fragment_linker(current_fragment)
-
-
+  public test(thing): void {
+    console.log(this.retrieved_users, thing);
   }
 
-  public Retrieve_fragment_numbers(fragments){    
-    let number_list = []
-
-    for(let fragment in fragments){
-      number_list.push(fragments[fragment].fragment_name)
-    }
-    // Sort the list and return it
-    number_list.sort(this.utility.SortNumeric);
-
-    return number_list
-  }
-
-  public Retrieve_requested_fragment(fragments, fragment_number, update_content_form){
-    let fragment_id = ''
-
-    console.log(update_content_form)
-
-    for(let fragment in fragments){
-      if(fragments[fragment].fragment_name == fragment_number){
-        fragment_id = fragments[fragment].id
-      }
-    }
-    // Now, get this fragment from the server
-    this.api.Get_specific_fragment(fragment_id).subscribe(
-      data => { 
-        this.retrieved_fragment = data;
-        
-        if(update_content_form){
-          this.Update_content_form(this.retrieved_fragment); // Dirty hack, need proper design
-          this.selected_fragment = fragment_number;
+  /**
+   * This function requests a wysiwyg dialog to handle data updating to the fragment_form.
+   * It functions by providing the field of fragment_form which is to be updated by the editor.
+   * The dialog is called provided the config of the editor and the string to be edited. An edited string
+   * is returned by the dialog service
+   * @param field from fragment_form which is to be send and updated
+   * @author Ycreak
+   */
+  protected request_wysiwyg_dialog(field: string, index = 0): void {
+    if (field == 'context') {
+      // For the context, retrieve the context text field from the fragment form and pass that to the dialog
+      const form_array_field = this.fragment_form.value.context[index].text;
+      this.dialog.open_wysiwyg_dialog(form_array_field).subscribe((result) => {
+        if (result) {
+          // Result will only be provided when the user has acceped the changes
+          // Now update the correct field. This is done by getting the FormArray and patching the correct
+          // FormGroup within this array. This is to ensure dynamic updating on the frontend
+          const context_array = this.fragment_form.controls['context'] as FormArray;
+          context_array.controls[index].patchValue({ ['text']: result });
         }
-        else {
-          // We are doing references (this is so bad) (because of the overlapping selection fields)
-          this.Push_fragment_link(data['author'], data['title'], data['editor'], data['fragment_name'], data['_id'])
-        }  
-    });
+      });
+    } else {
+      // The other content fields can be updated by just getting their content strings
+      this.dialog.open_wysiwyg_dialog(this.fragment_form.value[field]).subscribe((result) => {
+        if (result) {
+          this.update_form_field('fragment_form', field, result);
+        }
+      });
+    }
   }
 
-  public Clean_fragment_content(){
-    // Clears context and lines
-    this.Clear_fields()
-
-    this.UpdateForm('fragmentForm','translation', '');
-    this.UpdateForm('fragmentForm','differences', '');
-    this.UpdateForm('fragmentForm','commentary', '');
-    this.UpdateForm('fragmentForm','apparatus', '');
-    this.UpdateForm('fragmentForm','reconstruction', '');
+  /**
+   * Converts the fragment_form (formgroup) to the Fragment object
+   * @param fragment_form to be converted
+   * @returns Fragment object
+   * @author Ycreak
+   */
+  private convert_fragment_form_to_Fragment(fragment_form: FormGroup): Fragment {
+    const new_fragment = new Fragment({});
+    new_fragment.set_fragment(fragment_form.value);
+    return new_fragment;
   }
 
-  public Update_content_form(fragment){
-    // This functions updates the fragmentForm with the provided fragment
-    // FIXME: This should be done using a for loop
-    this.UpdateForm('fragmentForm','_id', fragment._id);
-    this.UpdateForm('fragmentForm','fragment_name', fragment.fragment_name);
-    this.UpdateForm('fragmentForm','author', fragment.author);
-    this.UpdateForm('fragmentForm','title', fragment.title);
-    this.UpdateForm('fragmentForm','editor', fragment.editor);
-    this.UpdateForm('fragmentForm','translation', fragment.translation);
-    this.UpdateForm('fragmentForm','differences', fragment.differences);
-    this.UpdateForm('fragmentForm','commentary', fragment.commentary);
-    this.UpdateForm('fragmentForm','apparatus', fragment.apparatus);
-    this.UpdateForm('fragmentForm','reconstruction', fragment.reconstruction);
-    this.UpdateForm('fragmentForm','status', fragment.status);
-    this.UpdateForm('fragmentForm','lock', fragment.lock);
+  /**
+   * This function takes the Typescript Fragment object retrieved from the server and uses
+   * its data fields to fill in the fragment_form.
+   * @param fragment Fragment object that is to be parsed into the fragment_form
+   * @author Ycreak
+   */
+  private convert_Fragment_to_fragment_form(fragment: Fragment): void {
+    // This functions updates the fragment_form with the provided fragment
+    for (const item of [
+      '_id',
+      'name',
+      'author',
+      'title',
+      'editor',
+      'translation',
+      'differences',
+      'commentary',
+      'apparatus',
+      'reconstruction',
+      'status',
+      'lock',
+      'published',
+    ]) {
+      this.update_form_field('fragment_form', item, fragment[item]);
+    }
 
     // Fill the fragment context array
-    for (let item in fragment.context){
-      let items = this.fragmentForm.get('context') as FormArray;
-      items.push(
-        this.formBuilder.group({
-          author: fragment.context[item].author,
-          location: fragment.context[item].location,
-          text: fragment.context[item].text,
-        })
+    for (const i in fragment.context) {
+      this.push_fragment_context_to_fragment_form(
+        fragment.context[i].author,
+        fragment.context[i].location,
+        fragment.context[i].text
       );
     }
     // Fill the fragment lines array
-    for (let item in fragment.lines){
-      let items = this.fragmentForm.get('lines') as FormArray;
-      items.push(
-        this.formBuilder.group({
-          'line_number': fragment.lines[item].line_number,
-          'text': fragment.lines[item].text,
-        })
-      );
+    for (const i in fragment.lines) {
+      this.push_fragment_line_to_fragment_form(fragment.lines[i].line_number, fragment.lines[i].text);
     }
     // Fill the linked fragment array
-    for (let item in fragment.linked_fragments){
-      let items = this.fragmentForm.get('linked_fragments') as FormArray;
-      items.push(
-        this.formBuilder.group({
-          author: fragment.linked_fragments[item].author,
-          title: fragment.linked_fragments[item].title,
-          editor: fragment.linked_fragments[item].editor,
-          fragment_name: fragment.linked_fragments[item].fragment_name,
-          fragment_id: fragment.linked_fragments[item].fragment_id,
-        })
+    for (const i in fragment.linked_fragments) {
+      this.push_linked_fragments_to_fragment_form(
+        fragment.linked_fragments[i].author,
+        fragment.linked_fragments[i].title,
+        fragment.linked_fragments[i].editor,
+        fragment.linked_fragments[i].name
+        //fragment.linked_fragments[i].linked_fragment_id
       );
     }
   }
 
-  public Push_fragment_line(line_number, text){
-    let fragment_lines = this.fragmentForm.get('lines') as FormArray;
-    fragment_lines.push(
-      this.formBuilder.group({
-        line_number: line_number,
-        text: text,
-      })
+  /**
+   * Function to allow the User table to be filtered indifferently of field
+   * @param event that triggered the filtering process
+   * @author Ycreak
+   */
+  protected apply_user_table_filter(event: Event): void {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.user_table_users.filter = filterValue.trim().toLowerCase();
+
+    if (this.user_table_users.paginator) {
+      this.user_table_users.paginator.firstPage();
+    }
+  }
+
+  /**
+   * Function to allow sorting of the User table
+   * @param sort object that carries the sorting instructions provided by the Sort event
+   * @author CptVickers
+   */
+  protected sort_user_table(sort: Sort): void {
+    const data = this.user_table_users.data.slice();
+    if (!sort.active || sort.direction === '') {
+      this.user_table_users.data = data;
+      return;
+    }
+
+    this.user_table_users.data = data.sort((a, b) => {
+      const isAsc = sort.direction === 'asc';
+      switch (sort.active) {
+        case 'username':
+          return compare(a.username, b.username, isAsc);
+        case 'role':
+          return compare(a.role, b.role, isAsc);
+        default:
+          return 0;
+      }
+      function compare(a: number | string, b: number | string, isAsc: boolean) {
+        return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+      }
+    });
+  }
+
+  /**
+   * Function to allow automatic expansion of the current user in the users table
+   * @author CptVickers
+   */
+  @ViewChild('userTableElement') elements: ElementRef;
+  protected expand_user_table_row(): void {
+    // Set the expanded user row to the user that is currently logged in.
+    this.user_table_expanded_element = this.auth_service.current_user_name;
+  }
+
+  /**
+   * This function creates a form group containing a single line of a fragment and pushes
+   * it to the fragment_form, specifically to the lines FormArray.
+   * @param line_number given number of the fragment
+   * @param text with string containing the lines content
+   * @author Ycreak
+   */
+  protected push_fragment_line_to_fragment_form(line_number: string, text: string): void {
+    // First, create a form group to represent a line
+    const new_line = new FormGroup({
+      line_number: new FormControl(line_number),
+      text: new FormControl(text),
+    });
+    // Next, push the created form group to the lines FormArray
+    const fragment_lines_array = this.fragment_form.get('lines') as FormArray;
+    fragment_lines_array.push(new_line);
+  }
+
+  /**
+   * This function creates a form group containing a single linked fragment and pushes
+   * it to the fragment_form, specifically to the linked_fragment FormArray.
+   * @param linked_fragment_id given id of the linked fragment
+   * @author Ycreak
+   */
+  private push_linked_fragments_to_fragment_form(
+    author: string,
+    title: string,
+    editor: string,
+    name: string
+    //linked_fragment_id?: string
+  ): void {
+    // First, create a form group to represent a line
+    const new_linked_fragment = new FormGroup({
+      author: new FormControl(author),
+      title: new FormControl(title),
+      editor: new FormControl(editor),
+      name: new FormControl(name),
+      //linked_fragment_id: new FormControl(linked_fragment_id),
+    });
+    // Next, push the created form group to the lines FormArray
+    const linked_fragments_array = this.fragment_form.get('linked_fragments') as FormArray;
+    linked_fragments_array.push(new_linked_fragment);
+  }
+
+  /**
+   * This function creates a form group containing a single context of a fragment and pushes
+   * it to the fragment_form, specifically to the context FormArray.
+   * @param author author of the given context
+   * @param location location in which the context appears
+   * @param text text of the actual context in which the fragment appears
+   * @author Ycreak
+   */
+  private push_fragment_context_to_fragment_form(_author: string, _location: string, _text: string): void {
+    // First, create a form group to represent a context
+    const new_context = new FormGroup({
+      author: new FormControl(_author),
+      location: new FormControl(_location),
+      text: new FormControl(_text),
+    });
+    // Next, push the created form group to the context FormArray
+    const fragment_context_array = this.fragment_form.get('context') as FormArray;
+    fragment_context_array.push(new_context);
+  }
+
+  /**
+   * Pushes the id of the referenced fragment to the Fragment_form
+   * @param column Fragment_column object with all necessary data
+   * @author Ycreak
+   */
+  protected add_referenced_fragment_to_Fragment_form(referencer_column: Column): void {
+    this.push_linked_fragments_to_fragment_form(
+      referencer_column.author,
+      referencer_column.title,
+      referencer_column.editor,
+      referencer_column.name
     );
   }
 
-  public Push_fragment_context(author, location, text){
-    let fragment_context = this.fragmentForm.get('context') as FormArray;
-    fragment_context.push(
-      this.formBuilder.group({
-        author: author,
-        location: location,
-        text: text,
-      })
-    );
-  }
-
-  public Push_fragment_link(author, title, editor ,fragment_name, fragment_id){
-    let fragment_link = this.fragmentForm.get('linked_fragments') as FormArray;
-    fragment_link.push(
-      this.formBuilder.group({
-        author: author,
-        title: title,
-        editor: editor,
-        fragment_name: fragment_name,
-        fragment_id: fragment_id,
-      })
-    );    
-  }  
-  // FORM RELATED FUNCTIONS
   /**
    * Updates a value of a key in the given form
    * @param form what form is to be updated
    * @param key what field is to be updated
    * @param value what value is to be written
+   * @author Ycreak
    */
-  public UpdateForm(form, key, value) {
-    this[form].patchValue({[key]: value});
+  protected update_form_field(form: string, key: string, value: string): void {
+    this[form].patchValue({ [key]: value });
   }
-
-  public Reset_form(){
-    this.fragmentForm.reset();
-    this.Clear_fields();
-  }
-
-  public Clear_fields(){
-    let context = this.fragmentForm.get('context') as FormArray
-    let lines = this.fragmentForm.get('lines') as FormArray
-    let linked_fragments = this.fragmentForm.get('linked_fragments') as FormArray
-
-    context.clear()
-    lines.clear()
-    linked_fragments.clear()
-  }
-
-
-  public Remove_form_item(target: string, index: number) {
-    let items = this.fragmentForm.get(target) as FormArray;
-    items.removeAt(index);
-  }
-
-  public Request_fragment_lock(form){
-    
-    let lock_status = (form.lock ? 1 : 0);
-        
-    this.api.Update_fragment_lock({'_id': form._id, 'lock': lock_status}).subscribe(
-      res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
-    );  
-  }
-
-//   _____  ______ ____  _    _ ______  _____ _______ _____ 
-//  |  __ \|  ____/ __ \| |  | |  ____|/ ____|__   __/ ____|
-//  | |__) | |__ | |  | | |  | | |__  | (___    | | | (___  
-//  |  _  /|  __|| |  | | |  | |  __|  \___ \   | |  \___ \ 
-//  | | \ \| |___| |__| | |__| | |____ ____) |  | |  ____) |
-//  |_|  \_\______\___\_\\____/|______|_____/   |_| |_____/                                                    
 
   /**
-   * Requests all authors from the database. No parameters needed
+   * Function to reset the fragment form
+   * @author Ycreak
    */
-  public RequestAuthors(){
-    this.api.GetAuthors().subscribe(
-      data => this.retrieved_authors = data,
-      err => this.utility.HandleErrorMessage(err),
-    );      
+  protected reset_fragment_form(): void {
+    // First, remove all data from the form
+    this.fragment_form.reset();
+    // Second, remove the controls created for the FormArrays
+    this.fragment_form.setControl('context', new FormArray([]));
+    this.fragment_form.setControl('lines', new FormArray([]));
+    this.fragment_form.setControl('linked_fragments', new FormArray([]));
   }
 
-  public RequestBooks(author: string){
-    this.api.GetBooks(author).subscribe(
-      data => {
-        this.retrieved_books = data;
-      }
-    );      
+  /**
+   * Remove an item from a FormArray within a Form
+   * @param form_name encapsulating form
+   * @param target FormArray from which to delete an item
+   * @param index number of the item we want to delete
+   * @author Ycreak
+   */
+  protected remove_form_item_from_form_array(form_name: string, target: string, index: number): void {
+    const form_array_in_question = this[form_name].get(target) as FormArray;
+    form_array_in_question.removeAt(index);
   }
 
-  public RequestEditors(author: string, book: string){
-    this.api.GetEditors(author, book).subscribe(
-      data => {
-        this.retrieved_editors = data;
-      }
-    );
-  }
+  //   _____  ______ ____  _    _ ______  _____ _______ _____
+  //  |  __ \|  ____/ __ \| |  | |  ____|/ ____|__   __/ ____|
+  //  | |__) | |__ | |  | | |  | | |__  | (___    | | | (___
+  //  |  _  /|  __|| |  | | |  | |  __|  \___ \   | |  \___ \
+  //  | | \ \| |___| |__| | |__| | |____ ____) |  | |  ____) |
+  //  |_|  \_\______\___\_\\____/|______|_____/   |_| |_____/
 
-  public Request_fragments(author: string, book: string, editor: string){
-    this.api.GetFragments(author, book, editor).subscribe(
-      data => { 
-        this.retrieved_fragments = data;
-        this.retrieved_fragment_numbers = this.Retrieve_fragment_numbers(data);
-      });  
-  }
-
-  public Request_revise_fragment(fragment){
+  /**
+   * This function requests the api to revise the fragment given the fragment_form.
+   * @param fragment_form which represents a Fragment, edited by the user in the dashboard
+   * @author Ycreak
+   */
+  protected request_revise_fragment(fragment_form: FormGroup): void {
     // If the fragment is locked and the user is not a teacher, we will not allow this operation.
-        
-    if(fragment.lock && !this.authService.is_teacher){
-      this.utility.OpenSnackbar('This fragment is locked.')
-    }
-    else{
-      let item_string = fragment.author + ', ' +  fragment.title + ', ' + fragment.editor + ': ' + fragment.fragment_name
+    if (fragment_form.value.lock == 'locked' && this.auth_service.current_user_role != 'teacher') {
+      this.utility.open_snackbar('This fragment is locked.');
+    } else {
+      const item_string =
+        fragment_form.value.author +
+        ', ' +
+        fragment_form.value.title +
+        ', ' +
+        fragment_form.value.editor +
+        ': ' +
+        fragment_form.value.name;
 
-      this.dialog.OpenConfirmationDialog('Are you sure you want to REVISE this fragment?', item_string).subscribe(result => {
-        if(result){
-          this.api.Revise_fragment(fragment).subscribe(
-            res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
-          );
+      this.dialog
+        .open_confirmation_dialog('Are you sure you want to SAVE CHANGES to this fragment?', item_string)
+        .subscribe((result) => {
+          if (result) {
+            const fragment = this.convert_fragment_form_to_Fragment(fragment_form);
+            this.api.request_revise_fragment(fragment, environment.dashboard_id);
+            this.fragment_selected = true;
+            this.reset_fragment_form();
+            // It might be possible we have created a new author, title or editor. Retrieve the lists again
+            // TODO: retrieve author-title-editor blob
+          }
+        });
+    }
+  }
+
+  /**
+   * Given the fragment_form which represents a Fragment, this function requests the api to create a
+   * new fragment.
+   * @param fragment_form which represents a Fragment, edited by the user in the dashboard
+   * @author Ycreak
+   */
+  protected request_create_fragment(fragment_form: FormGroup): void {
+    const item_string =
+      fragment_form.value.author +
+      ', ' +
+      fragment_form.value.title +
+      ', ' +
+      fragment_form.value.editor +
+      ': ' +
+      fragment_form.value.name;
+
+    this.dialog
+      .open_confirmation_dialog('Are you sure you want to CREATE this fragment?', item_string)
+      .subscribe((result) => {
+        if (result) {
+          const fragment = this.convert_fragment_form_to_Fragment(fragment_form);
+          this.api.request_create_fragment(fragment, environment.dashboard_id);
+          this.fragment_selected = true;
+          this.reset_fragment_form();
+          // It might be possible we have created a new author, title or editor. Retrieve the lists again
+          // TODO: retrieve author-title-editor blob
         }
       });
-      this.Reset_form();
-    }
   }
 
-  public Request_create_fragment(fragment){
-    let item_string = fragment.author + ', ' +  fragment.title + ', ' + fragment.editor + ': ' + fragment.fragment_name
+  /**
+   * Given the fragment_form which represents a Fragment, this function requests the api to delete the
+   * selected fragment. This is done via its id.
+   * @param fragment_form which represents a Fragment, edited by the user in the dashboard
+   * @author Ycreak
+   */
+  protected request_delete_fragment(fragment_form: FormGroup): void {
+    const item_string =
+      fragment_form.value.author +
+      ', ' +
+      fragment_form.value.title +
+      ', ' +
+      fragment_form.value.editor +
+      ': ' +
+      fragment_form.value.name;
 
-    this.dialog.OpenConfirmationDialog('Are you sure you want to CREATE this fragment?', item_string).subscribe(result => {
-      if(result){
-        this.api.Create_fragment(fragment).subscribe(
-          res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
-        );
-      }
-    });
-    // Now reset form and request the fragments again
-    this.Reset_form();
-    this.Request_fragments(this.selected_author, this.selected_book, this.selected_editor);
-  }
-
-  public Request_delete_fragment(fragment){
-    let item_string = fragment.author + ', ' +  fragment.title + ', ' + fragment.editor + ': ' + fragment.fragment_name
-    
-    this.dialog.OpenConfirmationDialog('Are you sure you want to DELETE this fragment?', item_string).subscribe(result => {
-      if(result){
-        this.api.Delete_fragment({'_id':fragment._id}).subscribe(
-          res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
-        );
-      }
-    });
-    // Now reset form and request the fragments again
-    this.Reset_form();
-    this.Request_fragments(this.selected_author, this.selected_book, this.selected_editor);
-  }
-
-  public Request_automatic_fragment_linker(author, title){
-    
-    let item_string = author + ', ' +  title;
-    
-    let fragment = new Fragment({});
-    fragment.author = author;
-    fragment.title = title;
-
-    this.dialog.OpenConfirmationDialog('Are you sure you want to LINK fragments from this text?', item_string).subscribe(result => {
-      if(result){
-        this.spinner_active = true;
-        this.api.Automatic_fragment_linker(fragment).subscribe(
-          res => {
-            this.utility.HandleErrorMessage(res),
-            this.spinner_active = false;
-          }, 
-          err => {
-            this.utility.HandleErrorMessage(err),
-            this.spinner_active = false;
-          },
-        );
-      }
-    });
-  }
-
-  // USER DASHBOARD
-  public Request_change_password(form){
-    if(form.password1 == form.password2){
-      this.dialog.OpenConfirmationDialog('Are you sure you want to CHANGE your password', this.authService.logged_user).subscribe(result => {
-        if(result){
-          this.api.User_change_password({'username':this.authService.logged_user,'new_password':form.password1}).subscribe(
-            res => this.utility.HandleErrorMessage(res), err => this.utility.HandleErrorMessage(err)
+    this.dialog
+      .open_confirmation_dialog('Are you sure you want to DELETE this fragment?', item_string)
+      .subscribe((result) => {
+        if (result) {
+          const fragment = this.convert_fragment_form_to_Fragment(fragment_form);
+          this.reset_fragment_form();
+          this.api.request_delete_fragment(
+            fragment.author,
+            fragment.title,
+            fragment.editor,
+            fragment.name,
+            environment.dashboard_id
           );
+          this.fragment_selected = false;
         }
       });
-    }
-    else{
-      this.utility.OpenSnackbar('Passwords do not match.');
-    }
   }
 
-  public Request_users(){
-    this.api.Get_users().subscribe(
-      data => this.retrieved_users = data,
-      err => this.utility.HandleErrorMessage(err),
-    );      
-  }
+  /**
+   * This function requests the server to link all similar fragments from a given author and title.
+   * Linking between authors or titles is only possible manually. Linking is based on similarity and
+   * done via the fuzzywuzzy library. See the function within the server for more information.
+   * @param column with all necessary data
+   * @author CptVickers Ycreak
+   */
+  protected request_automatic_fragment_linker(column: Column): void {
+    this.api.spinner_on();
 
-  public Request_create_user(new_user, new_password){
+    const item_string = column.selected_fragment_author + ', ' + column.selected_fragment_title;
+    const api_data = new Fragment({});
+    api_data.author = column.selected_fragment_author;
+    api_data.title = column.selected_fragment_title;
 
-    if(new_user == '' || new_password == ''){
-      this.utility.OpenSnackbar('Please provide proper details');
-    }
-    else{
-      this.dialog.OpenConfirmationDialog('Are you sure you want to CREATE this user?', new_user).subscribe(result => {
-        if(result){
-          this.api.Create_user({'username':new_user,'password':new_password}).subscribe(
-            res => {
-              this.utility.HandleErrorMessage(res),
-              this.Request_users();
+    this.dialog
+      .open_confirmation_dialog('Are you sure you want to LINK fragments from this text?', item_string)
+      .subscribe((result) => {
+        if (result) {
+          this.api.automatic_fragment_linker(api_data).subscribe({
+            next: (res) => {
+              this.api.handle_error_message(res);
+              this.api.spinner_off();
             },
-            err => this.utility.HandleErrorMessage(err)
-          );
+            error: (err) => {
+              this.api.handle_error_message(err);
+            },
+          });
         }
       });
+  }
+
+  //////////////////////////////////////
+  // USER RELATED DASHBOARD FUNCTIONS //
+  //////////////////////////////////////
+
+  /**
+   * This function requests users from the server based on the role of the logged in user.
+   * If a user is student, only the student will be retrieved. For teachers, all students will
+   * be retrieved in addition to themselves. Administrators will receive all users.
+   * @author Ycreak
+   */
+  private request_users() {
+    this.api.spinner_on();
+    // We will provide the api with the currently logged in user to check its privileges
+    const user = new User({
+      username: this.auth_service.current_user_name,
+      role: this.auth_service.current_user_role,
+    });
+    this.api.get_users(user).subscribe({
+      next: (data) => {
+        this.retrieved_users = data;
+        //FIXME: this should be handled somewhere else, preferably by a listener
+        // Rebuild the table that displays the users
+        this.user_table_users = new MatTableDataSource(this.retrieved_users);
+        this.user_table_users.paginator = this.paginator;
+        this.user_table_users.sort = this.table_sort;
+        this.table_data_loaded = true;
+        this.api.spinner_off();
+      },
+      error: (err) => this.api.handle_error_message(err),
+    });
+  }
+
+  /**
+   * This function requests the API to create a new user given the form. With a username and
+   * provided password a new user is requested from the server.
+   * @param form_results containing data of the form
+   * @author Ycreak
+   */
+  protected request_create_user(form_results: any) {
+    this.api.spinner_on();
+    this.dialog
+      .open_confirmation_dialog('Are you sure you want to CREATE this user?', form_results.new_user)
+      .subscribe((result) => {
+        if (result) {
+          const user = new User({
+            username: form_results.new_user,
+            password: form_results.new_password,
+          });
+          this.api.create_user(user).subscribe({
+            next: (res) => {
+              this.api.handle_error_message(res), this.request_users();
+            },
+            error: (err) => this.api.handle_error_message(err),
+          });
+        }
+      });
+  }
+
+  /**
+   * This function requests the changing of the role of a user.
+   * @param user object of the user who's role is to change
+   * @param role new role to be given to the user
+   * @author Ycreak
+   */
+  protected request_change_role(user: any) {
+    const item_string = user.username + ', ' + user.role;
+    this.dialog
+      .open_confirmation_dialog('Are you sure you want to CHANGE the role of this user?', item_string)
+      .subscribe((result) => {
+        if (result) {
+          this.api.spinner_on();
+          // We update the user role by providing the api with a username and the new role
+          this.api.user_update({ username: user.username, role: user.role }).subscribe({
+            next: (res) => {
+              this.api.handle_error_message(res), this.request_users();
+            },
+            error: (err) => this.api.handle_error_message(err),
+          });
+        }
+      });
+  }
+
+  /**
+   * This function requests the changing of the selected user's password. If the dialog is succesful,
+   * communication with the server is started. If the passwords do not match, the snackbar is invoked.
+   * @param form change_password form with new passwords
+   * @param username of the currently selected user in the table
+   * @author Ycreak
+   */
+  protected request_change_password(form: FormGroup, username: string): void {
+    if (form.value.password1 == form.value.password2) {
+      this.dialog
+        .open_confirmation_dialog("Are you sure you want to CHANGE this user's password", username)
+        .subscribe((result) => {
+          if (result) {
+            this.api.spinner_on();
+            this.api.user_update({ username: username, password: form.value.password1 }).subscribe({
+              next: (res) => this.api.handle_error_message(res),
+              error: (err) => this.api.handle_error_message(err),
+            });
+          }
+        });
+    } else {
+      this.utility.open_snackbar('Passwords do not match.');
     }
   }
 
-  public Request_change_role(user, role){
-    let item_string = user + ', ' + role;
-    this.dialog.OpenConfirmationDialog('Are you sure you want to CHANGE the role of this user?', item_string).subscribe(result => {
-      if(result){
-        this.api.User_change_role({'username':user,'new_role':role}).subscribe(
-          res => {
-            this.utility.HandleErrorMessage(res),
-            this.Request_users();
-          },
-          err => this.utility.HandleErrorMessage(err)
-        );
-      }
-    });
+  /**
+   * This function requests the api to delete a user given their username
+   * @param username name of the user who's account is to be deleted
+   * @author Ycreak
+   */
+  protected request_delete_user(user: any): void {
+    this.dialog
+      .open_confirmation_dialog('Are you sure you want to DELETE this user?', user.username)
+      .subscribe((result) => {
+        if (result) {
+          this.api.spinner_on();
+          this.api.delete_user(user).subscribe({
+            next: (res) => {
+              this.api.handle_error_message(res), this.request_users();
+            },
+            error: (err) => this.api.handle_error_message(err),
+          });
+        }
+      });
   }
-
-  public Request_delete_user(username){
-    this.dialog.OpenConfirmationDialog('Are you sure you want to DELETE this user?', username).subscribe(result => {
-      if(result){
-        this.api.Delete_user({'username':username}).subscribe(
-          res => {
-            this.utility.HandleErrorMessage(res),
-            this.Request_users();
-            this.user_selected = false;
-          },
-          err => this.utility.HandleErrorMessage(err)
-        );
-      }
-    });
-  }
-
-
 }

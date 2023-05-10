@@ -1,21 +1,47 @@
-@import url('../app.component.scss');
- /* DISPLAYING OF FRAGMENTS */
+@use "@angular/material" as mat;
 
-.fragment-list {
-  width: auto;
-  max-width: 100%;
-  min-height: auto;
-  display: block;
-  background: white;
-  // border-radius: 4px;
-  overflow: hidden;
-  // padding: 10px 5px 0px 5px;
+@import url("../app.component.scss");
+// Fragments component specific CSS. For more generic CSS, see ../app.component.scss.
+
+// @include mat.checkbox-density(1);
+// @include mat.mat-checkbox-label {
+//   color: white;
+// }
+
+/* Toolbar/header CSS */
+// Alignment
+// mat-checkbox.btn label span.mat-checkbox-inner-container {
+//   width: 28px;
+// }
+
+// mat-checkbox.btn label span.mat-checkbox-label {
+//   width: fit-content;
+// }
+
+// Hide checkmark
+// mat-checkbox.btn label span span svg {
+//   display: none
+// }
+
+// // Onclick ripple effect
+// button.btn span.mat-ripple {
+//   width: inherit;
+// }
+
+// Styling for the container element
+ng-template {
+  height: 100%;
 }
 
-.fragment-box-div{
-  border-bottom: solid 1px #ccc;
+// To show a little hand on <a> elements without href but with click events
+.a-void {
+  cursor: pointer;
+  color: black;
 }
 
+/* Fragment and commentary column related CSS */
+
+// Box in which the fragment is shown. Created by the for-loop in Fragment Column.
 .fragment-box {
   padding: 10px 5px 0px 5px;
   border-bottom: solid 1px #ccc;
@@ -30,7 +56,7 @@
   font-size: 14px;
 
   &:hover {
-    background: #eee;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 10%) inset;
     cursor: pointer;
   }
 }
@@ -50,160 +76,49 @@
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-// .fragment-box:last-child {
-//   border: none;
-// }
-
 .fragment-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-.input-form{
+// For the notes in the playground
+.input-form {
+  width: var(--width);
+}
+
+// Text component
+::ng-deep .mat-line {
+  word-wrap: break-word !important;
+  white-space: pre-wrap !important;
+}
+
+::ng-deep .mat-mdc-list .mat-mdc-list-item {
+  height: initial !important;
+}
+
+.neat-lines .mat-mdc-list-item {
+  height: auto;
   width: 100%;
 }
 
-.input-form-wide{
-  width: 100%;
-}
-
-.note {
-  // width: auto;
-  // height: auto;
-  border: solid 1px rgb(0, 0, 0);
-  padding: .5em;
-  color: rgba(0, 0, 0, 0.87);
-  cursor: move;
-  display: inline-block;
-  justify-content: center;
-  // align-items: center;
-  text-align: center;
-  background: #fff;
-  border-radius: 4px;
-  position: absolute;
-  // z-index: 2;
-  transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
-  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
-              0 2px 2px 0 rgba(0, 0, 0, 0.14),
-              0 1px 5px 0 rgba(0, 0, 0, 0.12);
-}
-
-.note:active {
-  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-              0 8px 10px 1px rgba(0, 0, 0, 0.14),
-              0 3px 14px 2px rgba(0, 0, 0, 0.12);
-}
-
-// Playground CSS
-.playground {
-  // border: solid 1px #ccc;
-  color: rgba(0, 0, 0, 0.87);
-  cursor: move;
-  display: inline-block;
-  justify-content: center;
-  // align-items: center;
-  text-align: center;
-  // background: #fff;
-  border-radius: 4px;
-  position: absolute; // Absolute causes all items to be on top of eachother
-  // z-index: 1;
-  // transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
-  // box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
-  //             0 2px 2px 0 rgba(0, 0, 0, 0.14),
-  //             0 1px 5px 0 rgba(0, 0, 0, 0.12);
-}
-
-.playground:active {
-  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-              0 8px 10px 1px rgba(0, 0, 0, 0.14),
-              0 3px 14px 2px rgba(0, 0, 0, 0.12);
-}
-
-.zlayer2{
-  z-index: 2;
-}
-
-.zlayer3{
-  z-index: 3;
-}
-
-// MULTIPLAYER CSS
-.multiplayer-container {
-  // width: 30%;
+.selection-form {
+  min-width: 25%;
   max-width: 100%;
-  margin: 0 25px 25px 0;
-  display: inline-block;
-  vertical-align: top;
+  /* width: 100%; */
 }
 
-.multiplayer-list {
-  border: solid 1px #ccc;
-  min-height: 60px;
-  background: white;
-  border-radius: 4px;
-  overflow: hidden;
-  display: block;
+.toolbar-text {
+  color: white;
 }
 
-.divNote {
-  text-align: center;
-  color: #3F51B5;
+.column-toolbar {
+  max-height: 30px;
+  color: white;
+  // outline: 1px solid black;
+  background: #9fa1fe;
 }
-
-.span1 {
-  padding-left: 20ch;
-}
-
-.example-box {
-  padding: 20px 10px;
-  border-bottom: solid 1px #ccc;
-  color: rgba(0, 0, 0, 0.87);
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  box-sizing: border-box;
-  cursor: move;
-  background: white;
-  font-size: 14px;
-}
-
-.cdk-drag-preview {
-  box-sizing: border-box;
-  border-radius: 4px;
-  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-              0 8px 10px 1px rgba(0, 0, 0, 0.14),
-              0 3px 14px 2px rgba(0, 0, 0, 0.12);
-}
-
-.cdk-drag-placeholder {
-  opacity: 0;
-}
-
-.cdk-drag-animating {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
-.example-box:last-child {
-  border: none;
-}
-
-.example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
-.mat-checkbox-layout {
-  margin-bottom: 0;
-}
-
-.mat-checkbox-label {
-  width: fit-content;
-}
-
-.red{
-  color: #3F51B5;
-  background: #eee;
-}
-
-.height-padding{
-  min-height: 150ch;
+.main-column-toolbar {
+  max-height: 30px;
+  background: #9fa1fe;
+  border-bottom: 0.1em solid #3f51b5;
+  color: white;
 }

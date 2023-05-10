@@ -2,60 +2,38 @@ import { Component, OnInit } from '@angular/core';
 
 import { ApiService } from '../api.service';
 
-
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-scansion',
   templateUrl: './scansion.component.html',
-  styleUrls: ['./scansion.component.scss']
+  styleUrls: ['./scansion.component.scss'],
 })
 export class ScansionComponent implements OnInit {
+  // Forms
+  line_form: UntypedFormGroup = this.formBuilder.group({
+    lines: '',
+  });
 
-  line_number : number = 1;
-  book_number : number = 1;
+  spinner = false;
 
-  neural_data : any = {}; // object
+  neural_data: object; // object
 
-  expected = [];
-  predicted = [];
-  syllables = [];
-  correct_list = [];
-  confidence = [];
-  labels_expected = [];
-  labels_predicted = [];
-
-  similarity : number = 0;
-
-  constructor(
-    private api: ApiService,
-
-  ) { }
-
+  constructor(protected api: ApiService, private formBuilder: UntypedFormBuilder) {}
 
   ngOnInit(): void {
-
-    // this.RequestEditors(this.currentBook);
-    this.Request_neural_data(this.book_number, this.line_number);
-    // this.neural = data.expected;
-    // this.predicted = data.predicted;
-    // this.similarity = data.similarity;
-  }
-  
-  public async Request_neural_data(book_number: number, line_number: number){
-    // Should be fixed
-    this.neural_data = await this.api.Get_neural_data(this.book_number, this.line_number);
-    
-    this.syllables = this.neural_data.syllables;
-    this.expected = this.neural_data.expected;
-    // this.predicted = this.neural_data.predicted;
-    // this.similarity = this.neural_data.similarity;
-    // this.correct_list = this.neural_data.correct_list;
-    // this.confidence = this.neural_data.confidence;
-    // this.labels_predicted = this.neural_data.labels_predicted;
-    // this.labels_expected = this.neural_data.labels_expected;
-
-    // console.log(data);
-    // return data
+    console.log('scansion');
   }
 
+  public scan_lines(given_lines: any) {
+    this.api.spinner_on();
+    this.api.scan_lines({ given_lines }).subscribe({
+      next: (data) => {
+        this.neural_data = data;
+        console.log(data);
+        this.api.spinner_off();
+      },
+      error: (err) => this.api.handle_error_message(err),
+    });
+  }
 }

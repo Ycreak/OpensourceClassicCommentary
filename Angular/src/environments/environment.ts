@@ -3,16 +3,23 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
+  dashboard_id: 255, 
+  referencer_id: 256, 
+  playground_id: 0,
+  flask_api: 'https://oscc.nolden.biz:5004/',
+  is_logged_in: true,
+  current_user_name: 'Lucus',
+  current_user_role: 'teacher',
   production: false,
   firebase: {
-    apiKey: "AIzaSyC1D1PH6p1xvOzK6CBWwM1IdWyIiXsGBd4",
-    authDomain: "oscc-4c70c.firebaseapp.com",
-    databaseURL: "https://oscc-4c70c.firebaseio.com",
-    projectId: "oscc-4c70c",
-    storageBucket: "oscc-4c70c.appspot.com",
-    messagingSenderId: "454080481044",
-    appId: "1:454080481044:web:90e431e9a49abac872e401",
-    measurementId: "G-JWE82D6XRQ"
+    apiKey: 'AIzaSyC1D1PH6p1xvOzK6CBWwM1IdWyIiXsGBd4',
+    authDomain: 'oscc-4c70c.firebaseapp.com',
+    databaseURL: 'https://oscc-4c70c.firebaseio.com',
+    projectId: 'oscc-4c70c',
+    storageBucket: 'oscc-4c70c.appspot.com',
+    messagingSenderId: '454080481044',
+    appId: '1:454080481044:web:90e431e9a49abac872e401',
+    measurementId: 'G-JWE82D6XRQ',
   },
 };
 
@@ -23,6 +30,4 @@ export const environment = {
  * This import should be commented out in production mode because it will have a negative impact
  * on performance if an error is thrown.
  */
-// import 'zone.js/dist/zone-error';  // Included with Angular CLI.
-
-
+// import 'zone.js/plugins/zone-error';  // Included with Angular CLI.

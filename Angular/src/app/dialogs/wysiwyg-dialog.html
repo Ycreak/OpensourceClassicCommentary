@@ -1,0 +1,41 @@
+<!-- This dialog calls the st-editor, which allows WYSIWYG editing of the given string, which is encoded in data.content.
+The configuration for the editor is given via data.config. When accept is clicked, the updated data is returned to the caller
+in plain HTML. -->
+<div mat-dialog-content>
+  <quill-editor [(ngModel)]="data.content" (onEditorCreated)="this.editor_instance = $event">
+    <div quill-editor-toolbar>
+      <!-- Add a bold and italics buttons -->
+      <button class="ql-bold"></button>
+      <button class="ql-italic"></button>
+      <!-- Our home made divider -->
+      <div style="display: inline; float: left; cursor: default">&nbsp; &nbsp;</div>
+      <!-- Add subscript and superscript buttons -->
+      <button class="ql-script" value="sub"></button>
+      <button class="ql-script" value="super"></button>
+      <div style="display: inline; float: left; cursor: default">&nbsp; &nbsp;</div>
+      <!-- Add list buttons -->
+      <button class="ql-list" value="ordered"></button>
+      <button class="ql-list" value="bullet"></button>
+      <div style="display: inline; float: left; cursor: default">&nbsp; &nbsp;</div>
+      <!-- Add clean formatting button -->
+      <button class="ql-clean"></button>
+      <div style="display: inline; float: left; cursor: default">&nbsp; &nbsp;</div>
+      <!-- Add custom buttons -->
+      <button class="symbol-button symbol-button-alt" (click)="add_symbol('⟨')">⟨</button>
+      <button class="symbol-button symbol-button-alt" (click)="add_symbol('⟩')">⟩</button>
+      <button class="symbol-button symbol-button-alt" (click)="add_symbol('†')">†</button>
+      <div style="display: inline; float: left; cursor: default">&nbsp; &nbsp;</div>
+      <button class="symbol-button" (click)="add_symbol('×')">×</button>
+      <button class="symbol-button" (click)="add_symbol('-')">-</button>
+      <button class="symbol-button" (click)="add_symbol('⏑')">⏑</button>
+      <button class="symbol-button" (click)="add_symbol('⏓')">⏓</button>
+      <button class="symbol-button" (click)="add_symbol('⏒')">⏒</button>
+      <button class="symbol-button" (click)="add_symbol('⏕')">⏕</button>
+      <button class="symbol-button" (click)="add_symbol('⏔')">⏔</button>
+    </div>
+  </quill-editor>
+
+  <br />
+  <button mat-button [mat-dialog-close]="data.content">Accept</button>
+  <button mat-button [mat-dialog-close]="null">Cancel</button>
+</div>

@@ -1,204 +1,514 @@
+// Library imports
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
+import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
+import { Observable, throwError, ReplaySubject } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { environment } from '@src/environments/environment';
 
-import { Observable } from 'rxjs';
-import { throwError } from 'rxjs';
-import { catchError, retry } from 'rxjs/operators';
+// Service imports
+import { UtilityService } from './utility.service';
 
+// Model imports
 import { Fragment } from './models/Fragment';
-import { Author } from './models/Author';
-import { Editor } from './models/Editor';
-import { Bibliography } from './models/Bibliography';
-import { Context } from './models/Context';
-import { Book } from './models/Book';
-import { Reconstruction } from './models/Reconstruction';
-import { Apparatus } from './models/Apparatus';
-import { Translation } from './models/Translation';
-import { Differences } from './models/Differences';
-import { Commentary } from './models/Commentary';
-import { Text } from './models/Text';
-import { TextCommentary } from './models/TextCommentary';
+import { Column } from './models/Column';
+import { User } from './models/User';
 
+export interface fragment_key {
+  author?: string;
+  title?: string;
+  editor?: string;
+  name?: string;
+}
 
-import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpResponse,
-        } from '@angular/common/http';
-// import 'rxjs/add/operator/catch';
-// import 'rxjs/add/observable/of';
-// import 'rxjs/add/observable/empty';
-// import 'rxjs/add/operator/retry'; // don't forget the imports
+export interface text_blob {
+  author: string;
+  title: string;
+  editor: string;
+}
 
-import { EMPTY, of } from 'rxjs';
+export interface author {
+  name: string;
+}
+
+export interface title {
+  name: string;
+}
+
+export interface editor {
+  name: string;
+}
+
+export interface fragment_name {
+  name: string;
+}
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ApiService {
+  network_status: boolean; // Indicates if server is reachable or not
+  spinner: boolean;
 
-  constructor(private http: HttpClient) { }
-
-  // ApiUrl: String = 'http://localhost:5000/';
-  ApiUrl: String = 'http://oscc.nolden.biz:5000/'; // For deployment
-  // CREA 4
-  FlaskURL: String = 'https://oscc.nolden.biz:5003/'; // For production (http! not https)                                 
-  // FlaskURL: String = 'http://localhost:5003/'; // For deployment (http! not https)                                 
-
-  NeuralURL: String = 'https://oscc.nolden.biz:5002/'; // For deployment (http! not https)                                 
-  // NeuralURL: String = 'http://localhost:5002/'; // For deployment (http! not https)                                 
-
-
-//   _____ ______ _______ 
-//   / ____|  ____|__   __|
-//  | |  __| |__     | |   
-//  | | |_ |  __|    | |   
-//  | |__| | |____   | |   
-//   \_____|______|  |_|   
-                                    
-  /**
-  * ... ... ...
-  * @param bookID
-  * @returns
-  * @author Ycreak, ppbors
-  */
-  GetFragments(author: string, book: string, editor: string): Observable<JSON> {
-    return this.http.get<JSON>(this.FlaskURL + `fragments?author=${author}&book=${book}&editor=${editor}`);
+  constructor(private http: HttpClient, private utility: UtilityService) {
+    this.network_status = true; // Assumed online until HttpErrorResponse is received.
   }
 
-  public Get_fragment_content(fragment_id: string): Observable<any> {
-    return this.http.get<any>(this.FlaskURL + `fragment_content?fragment_id=${fragment_id}`);
+  public authors: author[] = [];
+  public titles: title[] = [];
+  public editors: editor[] = [];
+  public fragment_names: fragment_name[] = [];
+  public fragments: Fragment[] = [];
+  public fragment_key: fragment_key = {};
+
+  public author_title_editor_blob: any = [];
+
+  FlaskURL: string = environment.flask_api;
+  NeuralURL: 'https://oscc.nolden.biz:5002/';
+
+  public new_fragment_alert = new ReplaySubject(0);
+  public new_authors_alert = new ReplaySubject(0);
+  public new_titles_alert = new ReplaySubject(0);
+  public new_editors_alert = new ReplaySubject(0);
+  public new_fragments_alert = new ReplaySubject(0);
+  public new_fragment_names_alert = new ReplaySubject(0);
+
+  private create_fragment_key(author?: string, title?: string, editor?: string, name?: string): fragment_key {
+    const key: fragment_key = {};
+    if (author) {
+      key.author = author;
+    }
+    if (title) {
+      key.title = title;
+    }
+    if (editor) {
+      key.editor = editor;
+    }
+    if (name) {
+      key.name = name;
+    }
+    return key;
   }
 
-  // Create_fragment(fragment: object): Observable<any> {
-  //   return this.http.post<any>(this.FlaskURL + `create_fragment`, fragment, { observe: 'response', responseType: 'text' as 'json' });
-  // } 
-
-
-
-  /**
-  * ... ... ...
-  * @param bookID
-  * @returns
-  * @author Ycreak, ppbors
-  */
- Get_specific_fragment(fragment_id: string): Observable<Fragment[]> {
-  return this.http.get<Fragment[]>(this.FlaskURL + `complete_fragment?fragment_id=${fragment_id}`);
-}
-
-  /**
-  * ... ... ...
-  * @returns
-  * @author Ycreak, ppbors
-  */
-  GetAuthors(): Observable<Author[]> {
-    return this.http.get<Author[]>(this.FlaskURL + `authors`);
+  public request_authors_titles_editors_blob(): void {
+    this.spinner_on();
+    this.author_title_editor_blob = [];
+    this.get_authors_titles_editors_blob().subscribe({
+      next: (data) => {
+        data.forEach((value: any) => {
+          this.author_title_editor_blob.push({
+            author: value[0],
+            title: value[1],
+            editor: value[2],
+          } as text_blob);
+        });
+        this.spinner_off();
+      },
+      error: (err) => this.handle_error_message(err),
+    });
   }
 
-  /**
-  * ... ... ...
-  * @param authorID
-  * @returns
-  * @author Ycreak, ppbors
-  */
- GetBooks(author: string): Observable<Book[]> {
-  return this.http.get<Book[]>(this.FlaskURL + `books?author=${author}`);
-}
-
-  /**
-  * ... ... ...
-  * @param bookID
-  * @returns
-  * @author Ycreak, ppbors
-  */
-  GetEditors(author: string, book: string): Observable<Editor[]> {
-    return this.http.get<Editor[]>(this.FlaskURL + `editors?author=${author}&book=${book}`);
-  }
-
-  Get_users(): Observable<any> {
-    return this.http.get<any>(this.FlaskURL + `retrieve_users`);
-  }
-
-  /**
-  * ... ... ...
-  * @param bookID
-  * @returns
-  * @author Ycreak, ppbors
-  */
-  GetText(bookID: number): Observable<Text[]> {
-    return this.http.get<Text[]>(this.ApiUrl + `tlines?textID=${bookID}`);
-  }
-
-  GetTextCommentary(textID: number, lineNumber: number): Observable<TextCommentary[]> {
-    return this.http.get<TextCommentary[]>(this.ApiUrl + `tcommentary?textID=${textID}&lineNumber=${lineNumber}`); //FIXME: needs to be TCommentary
-  }
-
-//   _____   ____   _____ _______ 
-//  |  __ \ / __ \ / ____|__   __|
-//  | |__) | |  | | (___    | |   
-//  |  ___/| |  | |\___ \   | |   
-//  | |    | |__| |____) |  | |   
-//  |_|     \____/|_____/   |_|   
-
-  Create_fragment(fragment: object): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + `create_fragment`, fragment, { observe: 'response', responseType: 'text' as 'json' });
-  } 
-  Revise_fragment(fragment: object): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + `revise_fragment`, fragment, { observe: 'response', responseType: 'text' as 'json'  });
-  }
-  Delete_fragment(fragment: object): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + `delete_fragment`, fragment, { observe: 'response', responseType: 'text' as 'json'  });
-  }
-  Update_fragment_lock(data: object): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + `set_fragment_lock`, data, { observe: 'response', responseType: 'text' as 'json'  });
-  }
-  Automatic_fragment_linker(fragment: object): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + `automatic_fragment_linker`, fragment, { observe: 'response', responseType: 'text' as 'json'  });
-  }
-  Login_user(login: object): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + `login_user`, login, { observe: 'response', responseType: 'text' as 'json'  });
-  }
-  Create_user(data: object): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + `create_user`, data, { observe: 'response', responseType: 'text' as 'json'  });
-  }
-  Delete_user(data: object): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + `delete_user`, data, { observe: 'response', responseType: 'text' as 'json'  });
-  }
-  User_change_password(data: object): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + `change_password`, data, { observe: 'response', responseType: 'text' as 'json'  });
-  }
-  User_change_role(data: object): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + `change_role`, data, { observe: 'response', responseType: 'text' as 'json'  });
-  }  
-  
-   /**
-   * ... ... ...
-   * @param context
-   * @returns ... ... ...
-   * @author ppbors
-   */
-  CreateContext(context: Context): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + `fcontext/create`, context, { observe: 'response' });
-  }
- 
-  // Scansion Model
-  public async Get_neural_data(book_number: number, line_number: number){
-    const data = await this.http.get(
-      this.NeuralURL + 'Get_neural_data',{
-        params: {
-          book_number: book_number.toString(),
-          line_number: line_number.toString(),
-        }
+  public get_author_list(): object {
+    const filtered_objects = this.author_title_editor_blob;
+    const author_list = new Set(
+      filtered_objects.map(function (el: any) {
+        return el.author;
       })
-      .toPromise();
-      return data;  
+    );
+    return author_list;
+  }
+
+  public get_title_list(author: string): object {
+    const filtered_objects = this.author_title_editor_blob.filter((x: any) => x.author == author);
+    const title_list = new Set(
+      filtered_objects.map(function (el: any) {
+        return el.title;
+      })
+    );
+    return title_list;
+  }
+
+  public get_editor_list(author: string, title: string): object {
+    const filtered_objects = this.author_title_editor_blob.filter((x: any) => x.author == author && x.title == title);
+    const editor_list = new Set(
+      filtered_objects.map(function (el: any) {
+        return el.editor;
+      })
+    );
+    return editor_list;
+  }
+
+  public request_authors(): void {
+    this.authors = [];
+    this.fragment_key = this.create_fragment_key();
+    this.get_authors(this.fragment_key).subscribe({
+      next: (data) => {
+        data.forEach((value) => {
+          this.authors.push({ name: value } as author);
+        });
+        this.new_authors_alert.next(1);
+      },
+      error: (err) => this.handle_error_message(err),
+    });
+  }
+
+  public request_titles(author: string): void {
+    this.titles = [];
+    this.fragment_key = this.create_fragment_key(author);
+    this.get_titles(this.fragment_key).subscribe({
+      next: (data) => {
+        data.forEach((value) => {
+          this.titles.push({ name: value } as title);
+        });
+        this.new_titles_alert.next(1);
+      },
+      error: (err) => this.handle_error_message(err),
+    });
+  }
+
+  public request_editors(author: string, title: string): void {
+    this.editors = [];
+    this.fragment_key = this.create_fragment_key(author, title);
+    this.get_editors(this.fragment_key).subscribe({
+      next: (data) => {
+        data.forEach((value) => {
+          this.editors.push({ name: value } as editor);
+        });
+        this.new_editors_alert.next(1);
+      },
+      error: (err) => this.handle_error_message(err),
+    });
+  }
+
+  public request_fragment_names(column_id: number, author: string, title: string, editor: string): void {
+    this.spinner_on();
+    this.fragment_names = [];
+    this.fragment_key = this.create_fragment_key(author, title, editor);
+    this.get_fragment_names(this.fragment_key).subscribe({
+      next: (data) => {
+        data.forEach((value) => {
+          this.fragment_names.push({ name: value } as fragment_name);
+        });
+        this.fragment_names = this.fragment_names.sort(this.utility.sort_fragment_array_numerically);
+        this.new_fragment_names_alert.next(column_id);
+        this.spinner_off();
+      },
+      error: (err) => this.handle_error_message(err),
+    });
+  }
+
+  public request_fragments(column_id: number, author: string, title: string, editor: string, name?: string): void {
+    this.spinner_on();
+    this.fragments = [];
+    this.fragment_key = this.create_fragment_key(author, title, editor);
+    if (name) {
+      this.fragment_key.name = name;
+    }
+    this.get_fragments(this.fragment_key).subscribe({
+      next: (data) => {
+        data.forEach((value) => {
+          const fragment = new Fragment();
+          fragment.set_fragment(value);
+          this.fragments.push(fragment);
+        });
+        this.new_fragments_alert.next(column_id);
+        this.spinner_off();
+      },
+      error: (err) => this.handle_error_message(err),
+    });
+  }
+
+  public request_create_fragment(fragment: Fragment, column_id?: number): void {
+    this.spinner_on();
+    this.create_fragment(fragment).subscribe({
+      next: (data) => {
+        this.handle_error_message(data);
+        this.request_authors_titles_editors_blob();
+        if (column_id) {
+          this.request_fragment_names(column_id, fragment.author, fragment.title, fragment.editor);
+          this.request_fragments(column_id, fragment.author, fragment.title, fragment.editor, fragment.name);
+        }
+        this.spinner_off();
+      },
+      error: (err) => this.handle_error_message(err),
+    });
+  }
+
+  public request_revise_fragment(fragment: Fragment, column_id?: number): void {
+    this.spinner_on();
+    this.revise_fragment(fragment).subscribe({
+      next: (data) => {
+        this.handle_error_message(data);
+        this.request_authors_titles_editors_blob();
+        if (column_id) {
+          this.request_fragment_names(column_id, fragment.author, fragment.title, fragment.editor);
+          this.request_fragments(column_id, fragment.author, fragment.title, fragment.editor, fragment.name);
+        }
+        this.spinner_off();
+      },
+      error: (err) => this.handle_error_message(err),
+    });
+  }
+
+  public request_delete_fragment(
+    author: string,
+    title: string,
+    editor: string,
+    name: string,
+    column_id?: number
+  ): void {
+    this.spinner_on();
+    this.fragment_key = this.create_fragment_key(author, title, editor, name);
+    this.delete_fragment(this.fragment_key).subscribe({
+      next: (data) => {
+        this.handle_error_message(data);
+        this.request_authors_titles_editors_blob();
+        if (column_id) {
+          this.request_fragment_names(column_id, author, title, editor);
+        }
+        this.spinner_off();
+      },
+      error: (err) => this.handle_error_message(err),
+    });
+  }
+
+  /**
+   * Getter function for public property network_status
+   * @return boolean network_status - Status indicating whether or not the server is
+   *                                    successfully returning requests
+   * @author CptVickers
+   */
+  public get_network_status(): boolean {
+    return this.network_status;
+  }
+
+  /**
+   * Requests all authors from the database. No parameters needed
+   */
+  public request_authors2(column: Column): void {
+    this.get_authors(new Fragment({})).subscribe({
+      next: (data) => {
+        column.retrieved_authors = data;
+      },
+      error: (err) => this.handle_error_message(err),
+    });
+  }
+
+  /**
+   * Requests the titles by the given author. Result is written
+   * to this.retrieved_titles.
+   * @param column Fragment_column object with all necessary data
+   * @author Ycreak
+   */
+  public request_titles2(column: Column): void {
+    this.get_titles(new Fragment({ author: column.selected_fragment_author })).subscribe({
+      next: (data) => {
+        column.retrieved_titles = data;
+      },
+      error: (err) => this.handle_error_message(err),
+    });
+  }
+
+  /**
+   * Requests the editors by the given author and book title. Result is written
+   * to this.retrieved_editors.
+   * @param column Fragment_column object with all necessary data
+   * @author Ycreak
+   */
+  public request_editors2(column: Column): void {
+    this.get_editors(
+      new Fragment({ author: column.selected_fragment_author, title: column.selected_fragment_title })
+    ).subscribe((data) => {
+      column.retrieved_editors = data;
+    });
+  }
+
+  /**
+   * Given the author, title and editor, request the names of the fragments from the server.
+   * @param column Fragment_column object with all necessary data
+   * @author Ycreak
+   */
+  public request_fragment_names2(column: Column): void {
+    this.get_fragment_names(
+      new Fragment({
+        author: column.selected_fragment_author,
+        title: column.selected_fragment_title,
+        editor: column.selected_fragment_editor,
+      })
+    ).subscribe((data) => {
+      column.retrieved_fragment_names = data.sort(this.utility.sort_array_numerically);
+    });
+  }
+
+  /**
+   * Converts the JSON from the server to a Typescript object
+   * @author Ycreak
+   * @TODO: can this be done automatically without being invoked from fragment.component?
+   */
+  public convert_fragment_json_to_typescript(data: any): Fragment[] {
+    const fragment_list = [];
+    for (const i in data) {
+      const fragment = new Fragment();
+      fragment.set_fragment(data[i]);
+      fragment_list.push(fragment);
+    }
+    return fragment_list;
+  }
+  //   _____   ____   _____ _______
+  //  |  __ \ / __ \ / ____|__   __|
+  //  | |__) | |  | | (___    | |
+  //  |  ___/| |  | |\___ \   | |
+  //  | |    | |__| |____) |  | |
+  //  |_|     \____/|_____/   |_|
+  //TODO: what Observable type is a make_response?
+  // Fragments
+  public get_authors(fragment: object): Observable<string[]> {
+    return this.http.post<string[]>(this.FlaskURL + `fragment/get/author`, fragment, {
+      observe: 'body',
+      responseType: 'json',
+    });
+  }
+  public get_titles(fragment: object): Observable<string[]> {
+    return this.http.post<string[]>(this.FlaskURL + `fragment/get/title`, fragment, {
+      observe: 'body',
+      responseType: 'json',
+    });
+  }
+  public get_editors(fragment: object): Observable<string[]> {
+    return this.http.post<string[]>(this.FlaskURL + `fragment/get/editor`, fragment, {
+      observe: 'body',
+      responseType: 'json',
+    });
+  }
+  public get_fragments(fragment: object): Observable<object[]> {
+    return this.http.post<Fragment[]>(this.FlaskURL + `fragment/get`, fragment, {
+      observe: 'body',
+      responseType: 'json',
+    });
+  }
+  public get_fragment_names(fragment: object): Observable<string[]> {
+    return this.http.post<string[]>(this.FlaskURL + `fragment/get/name`, fragment, {
+      observe: 'body',
+      responseType: 'json',
+    });
+  }
+  public get_authors_titles_editors_blob(): Observable<string[]> {
+    return this.http.post<string[]>(this.FlaskURL + `fragment/get/list_display`, {
+      observe: 'body',
+      responseType: 'json',
+    });
+  }
+  public create_fragment(fragment: any): Observable<any> {
+    return this.http.post<any>(this.FlaskURL + `fragment/create`, fragment, {
+      observe: 'response',
+      responseType: 'text' as 'json',
+    });
+  }
+  public revise_fragment(fragment: any): Observable<any> {
+    return this.http.post<any>(this.FlaskURL + `fragment/update`, fragment, {
+      observe: 'response',
+      responseType: 'text' as 'json',
+    });
+  }
+  public delete_fragment(fragment: any): Observable<any> {
+    return this.http.post<any>(this.FlaskURL + `fragment/delete`, fragment, {
+      observe: 'response',
+      responseType: 'text' as 'json',
+    });
+  }
+  public automatic_fragment_linker(fragment: Fragment): Observable<any> {
+    return this.http.post<any>(this.FlaskURL + `automatic_fragment_linker`, fragment, {
+      observe: 'response',
+      responseType: 'text' as 'json',
+    });
+  }
+  // Users
+  public get_users(user: User): Observable<User[]> {
+    return this.http.post<User[]>(this.FlaskURL + `user/get`, user, { observe: 'body', responseType: 'json' });
+  }
+  public login_user(user: User): Observable<User> {
+    return this.http.post<User>(this.FlaskURL + `user/login`, user, { observe: 'body', responseType: 'json' });
+  }
+  public create_user(user: User): Observable<any> {
+    return this.http.post<any>(this.FlaskURL + `user/create`, user, {
+      observe: 'response',
+      responseType: 'text' as 'json',
+    });
+  }
+  public delete_user(user: User): Observable<any> {
+    return this.http.post<any>(this.FlaskURL + `user/delete`, user, {
+      observe: 'response',
+      responseType: 'text' as 'json',
+    });
+  }
+  public user_update(user: User | object): Observable<any> {
+    return this.http.post<any>(this.FlaskURL + `user/update`, user, {
+      observe: 'response',
+      responseType: 'text' as 'json',
+    });
+  }
+  // Neural networks part
+  public scan_lines(lines: object): Observable<any> {
+    return this.http.post<any>(this.NeuralURL + `scan_lines`, lines, { observe: 'body', responseType: 'json' });
+  }
+
+  /**
+   * Function to handle the error err. Calls Snackbar to show it on screen
+   * @param err the generated error
+   * @author Ycreak
+   */
+  public handle_error_message(err: any): void {
+    this.spinner_off();
+    let output = '';
+
+    console.log(err);
+
+    if (err.ok) {
+      output = err.status + ': ' + err.body;
+    } else {
+      output = err.status + ': ' + err.error;
+    }
+    this.utility.open_snackbar(output);
+  }
+
+  /**
+   * Simple function to toggle the spinner
+   * @author Ycreak
+   */
+  public spinner_on(): void {
+    this.spinner = true;
+  }
+
+  /**
+   * Simple function to toggle the spinner
+   * @author Ycreak
+   */
+  public spinner_off(): void {
+    this.spinner = false;
   }
 }
 
+// Interceptor for HTTP errors
 @Injectable()
-export class HttpErrorInterceptor implements HttpInterceptor { 
+export class HttpErrorInterceptor implements HttpInterceptor {
+  constructor(private api: ApiService) {}
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
-      catchError((error: HttpErrorResponse) => {
-        return throwError(error);
+      tap({
+        next: (res) => {
+          this.api.network_status = true; // Set network status to true on successful response
+          console.debug(res);
+        },
+        error: (err) => {
+          if (err instanceof HttpErrorResponse) {
+            if (err.status == 0) {
+              // If server is unavailable
+              this.api.network_status = false; // Set network status to false on unsuccessful response
+            }
+          }
+          return throwError(() => err);
+        },
       })
     );
   }

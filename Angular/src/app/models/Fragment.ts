@@ -1,55 +1,118 @@
-export class Fragment
-{
-    constructor(fragment)
-    {
-        if(fragment['id']) this.fragment_id = fragment['id']
+import { Context } from './Context';
+import { Line } from './Line';
+import { Linked_fragment } from './Linked_fragment';
 
-        if(fragment['fragment_name']) this.fragment_name = fragment['fragment_name']
-        if(fragment['author']) this.author = fragment['author']
-        if(fragment['title']) this.title = fragment['title']
-        if(fragment['editor']) this.editor = fragment['editor']
+/** This class represents a fragment and all its data fields */
+export class Fragment {
+  _id = '';
+  author = '';
+  title = '';
+  editor = '';
+  name = '';
 
-        if(fragment['translation']) this.translation = fragment['translation']
-        if(fragment['differences']) this.differences = fragment['differences']
-        if(fragment['apparatus']) this.apparatus = fragment['apparatus']
-        if(fragment['commentary']) this.commentary = fragment['commentary']
-        if(fragment['reconstruction']) this.reconstruction = fragment['reconstruction']
+  translation = '';
+  differences = '';
+  apparatus = '';
+  commentary = '';
+  reconstruction = '';
+  context: Context[];
 
-        if(fragment['status']) this.status = fragment['status']
-        if(fragment['context']) this.context = fragment['context']
-        if(fragment['lines']) this.lines = fragment['lines']
-        if(fragment['linked_fragments']) this.linked_fragments = fragment['linked_fragments']
+  status = '';
+  lines: Line[] = [];
+  linked_fragments: Linked_fragment[] = [];
+
+  lock = '';
+  published = '';
+
+  bibliography: string[];
+
+  // designates the css color of the fragment header
+  colour = 'black';
+
+  constructor(fragment?: Partial<Fragment>) {
+    // Allow the partial initialisation of a fragment object
+    Object.assign(this, fragment);
+  }
+
+  /**
+   * Converts the JSON received from the server to a Typescript object
+   * @param fragment with JSON data received from the server
+   * @author Ycreak
+   */
+  public set_fragment(fragment) {
+    if ('_id' in fragment) {
+      this._id = fragment['_id'];
     }
-
-    public add_content(fragment){
-        let temp_no_content = true; // Await activating the banner
-        if(fragment['translation'] != ''){ this.translation = fragment['translation']; temp_no_content = false; }
-        if(fragment['differences'] != ''){ this.differences = fragment['differences']; temp_no_content = false; }
-        if(fragment['apparatus'] != ''){ this.apparatus = fragment['apparatus']; temp_no_content = false; }
-        if(fragment['commentary'] != ''){ this.commentary = fragment['commentary']; temp_no_content = false; }
-        if(fragment['reconstruction'] != ''){ this.reconstruction = fragment['reconstruction']; temp_no_content = false; }
-        if(fragment['context'] != ''){ this.context = fragment['context']; temp_no_content = false; }
-        this.no_content = temp_no_content;
+    if ('author' in fragment) {
+      this.author = fragment['author'];
     }
+    if ('title' in fragment) {
+      this.title = fragment['title'];
+    }
+    if ('editor' in fragment) {
+      this.editor = fragment['editor'];
+    }
+    if ('name' in fragment) {
+      this.name = fragment['name'];
+    }
+    if ('translation' in fragment) {
+      this.translation = fragment['translation'];
+    }
+    if ('differences' in fragment) {
+      this.differences = fragment['differences'];
+    }
+    if ('apparatus' in fragment) {
+      this.apparatus = fragment['apparatus'];
+    }
+    if ('commentary' in fragment) {
+      this.commentary = fragment['commentary'];
+    }
+    if ('reconstruction' in fragment) {
+      this.reconstruction = fragment['reconstruction'];
+    }
+    if ('context' in fragment) {
+      this.context = fragment['context'];
+    }
+    if ('status' in fragment) {
+      this.status = fragment['status'];
+    }
+    if ('lines' in fragment) {
+      this.lines = fragment['lines'];
+    }
+    if ('linked_fragments' in fragment) {
+      this.linked_fragments = fragment['linked_fragments'];
+    }
+    if ('lock' in fragment) {
+      this.lock = fragment['lock'];
+    }
+    if ('published' in fragment) {
+      this.published = fragment['published'];
+    }
+    if ('bibliography' in fragment) {
+      this.bibliography = fragment['bibliography'];
+    }
+  }
 
-    fragment_id : string;
-    fragment_name : string = 'TBA';
-    author : string = 'TBA';
-    title : string = 'TBA';
-    editor : string = 'TBA';
-    translation : string;
-    differences : string;
-    apparatus : string;
-    commentary : string;
-    reconstruction : string;
-    status : string;
-    context : object;
-    lines : object;
-    linked_fragments; // this is a list
+  /**
+   * Returns true if the given fragment has one of its content fields filled
+   * @param fragment to be investigated for content
+   * @returns boolean whether content is present
+   * @author Ycreak
+   */
+  public has_content() {
+    if (
+      this.differences != '' ||
+      this.apparatus != '' ||
+      this.translation != '' ||
+      this.commentary != '' ||
+      this.reconstruction != ''
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
-    colour : string = 'black';
-
-    no_content : boolean = false;
-    fragment_link_found : boolean = false; 
+  // deprecated
+  fragment_link_found = false;
 }
-

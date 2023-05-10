@@ -1,135 +1,25 @@
 import { Injectable } from '@angular/core';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {CdkDragDrop, moveItemInArray, transferArrayItem, CdkDragEnd} from '@angular/cdk/drag-drop';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UtilityService {
+  constructor(private snackBar: MatSnackBar) {}
 
-  constructor(
-    private snackBar: MatSnackBar,
-  ) { }
-
-
-    /**
-     * Shared Dashboard and Fragments functions
-     */
-
-    /**
-     * Function to create a custom fragment. Can also be used to create
-     * little headers by leaving body or header empty.
-     * @param body 
-     * @param header 
-     * @param array 
-     * @return array in the correct format to be processed
-     */
-    public CreateOwnFragment(body, header, array, noteStatus){
-      // Set a value if a field has been left empty. Otherwise Firebase will be mad.
-      if (body == null){
-        body = ' '
-      }
-      if (header == null){
-        header == ' '
-      }
-      // Create a array for each content line. Here it only allows one.
-      let contentArray = []
-      // Push the array with one entry to a content array. This is only done like
-      // this to allow easy processing with the CreateFragments function in Utilities.
-      contentArray.push({
-        lineName: header,
-        lineContent: body,
-        lineComplete: body, // This should have html formatting.
-      })
-
-      console.log('hi', array)
-
-      // Push the created data to the array and empty the used arrays.
-      array.push({ fragmentName: header, content: contentArray, note: noteStatus})
-      // Return this new array.
-      return array
-    }
-
-  /**
-   * Returns a sorted list of all fragments numbers from a given editor
-   * @param editor editor who's fragment numbers have to be retrieved
-   * @param array array of all fragments. This is F_Fragments. //TODO: is this true?
+  /** Sorts array numerically on fragment number
+   * @param boolean called from array
+   * @param field on which to perform the comparison
+   * @returns sorted array.
+   * @author Ycreak
    */
-    public GetFragmentNumbers(editor: number, array){
-      // Initialise list
-      let list = [];
-      // Push all fragment numbers to a list
-      for(let key in array){      
-        list.push(array[key].fragmentName);
-      } 
-      // Only take the unique values from this list
-      list = this.uniq(list);
-      // Sort list numerically
-      return list.sort(this.SortNumeric);    
-    }
-
-    // This function merges the multiple lines in a single fragment.
-    // The structure looks as follows: Fragment 2, [[1, "hello"],[2,"hi"]]
-    public MergeLinesIntoFragment(givenArray){
-      let array = [];
-      let contentArray = [];
-      // For each element in the given array
-      for(let element in givenArray){
-        // Data needed for proper retrieval
-        let fragmentName = givenArray[element].fragmentName
-        let lineContent = givenArray[element].lineContent //FIXME: Should be lineContent
-        let lineName = givenArray[element].lineName
-        let status = givenArray[element].status 
-        let buildString = '<p>' + lineName + ': ' + lineContent + '</p>';
-        // Turn tabs into HTML tabs
-        buildString = this.convert_whitespace_encoding(buildString);
-        // Find the element.fragmentName in the array and check whether it exists.
-        let currentFragment = array.find(x => x.fragmentName === fragmentName)
-        if(currentFragment){ // The current fragmentName is already in the array.
-          // Save the content found in a temporary array
-          contentArray = currentFragment.content;
-          // Delete the entry (to allow it to be recreated after this if)
-          array.splice(array.findIndex((x => x.fragmentName === fragmentName)),1);   
-        }
-        // Push the content (either completely new or with the stored content included)      
-        contentArray.push({
-          lineName: lineName,
-          lineContent: lineContent,
-          lineComplete: buildString,
-        })
-        // Push the created data to the array and empty the used arrays.
-        array.push({ fragmentName: givenArray[element].fragmentName, content: contentArray, status: status})
-        contentArray = [];
-      }
-      // Sort the lines in array, needs to be own function
-      for(let element in array){
-        array[element].content.sort(this.SortFragmentsArrayNumerically);
-      }
-      
-      // Put normal fragments first, then incerta and then adespota. TODO: should be separate function
-      let normal = this.FilterObjOnKey(array, 'status', '')
-      let incerta = this.FilterObjOnKey(array, 'status', 'Incertum')
-      let adesp = this.FilterObjOnKey(array, 'status', 'Adesp.')
-      // Concatenate in the order we want (i'm a hacker)
-      array = normal.concat(incerta).concat(adesp)
-  
-      console.log('array', array)
-      return array
-    }
-
-
-  /**
-  * Sorts array numerically on fragment number
-  * @param a
-  * @param b
-  * @returns sorted array
-  * @author Ycreak
-  */ // TODO: Complete rewrite. Should put Adesp and Incert. on the bottom. 
-  public SortNumeric(a: any, b: any) {
+  public sort_fragment_array_numerically(a: any, b: any) {
     // Sort array via the number element given.
     // To allow fragments like '350-356' to be ordered.
-    const A = Number(a);
-    const B = Number(b);
+    const A = Number(a.name.split('-', 1));
+    const B = Number(b.name.split('-', 1));
 
     let comparison = 0;
     if (A > B) {
@@ -140,160 +30,190 @@ export class UtilityService {
     return comparison;
   }
 
-  /**
-  * Sorts array numerically on fragment number
-  * @param boolean called from array
-  * @returns sorted array.
-  * @author Ycreak
-  */ // TODO: Should put Adesp and Incert. on the bottom. 
-  public SortArrayNumerically(a, b) {
-    // Sort array via the number element given.
-    // To allow fragments like '350-356' to be ordered.
-    const A = Number(a.fragmentName.split("-", 1));
-    const B = Number(b.fragmentName.split("-", 1));
-
-    let comparison = 0;
-    if (A > B) {
-      comparison = 1;
-    } else if (A < B) {
-      comparison = -1;
-    }
-    return comparison;
-  }
-
-    /** A PARAMETER SHOULD BE GIVEN BUT I AM A WORTHLESS PROGRAMMER xD lineNumber vs fragNumber
-  * Sorts array numerically on fragment number
-  * @param boolean called from array
-  * @returns sorted array.
-  * @author Ycreak
-  */ // TODO: Should put Adesp and Incert. on the bottom. 
-  public SortFragmentsArrayNumerically(a, b) {
-    // Sort array via the number element given.
-    // To allow fragments like '350-356' to be ordered.
-    const A = Number(a.fragment_name.split("-", 1));
-    const B = Number(b.fragment_name.split("-", 1));
-
-    let comparison = 0;
-    if (A > B) {
-      comparison = 1;
-    } else if (A < B) {
-      comparison = -1;
-    }
-    return comparison;
-  }
-
-  /**
-   * Check if a json object is actually empty
-   * @param obj -- json object to be checked
-   * @returns whether obj is an empty json object
-   * @author Ycreak, ppbors // Nani?
+  /** Sorts array numerically
+   * @param boolean called from array
+   * @param field on which to perform the comparison
+   * @returns sorted array.
+   * @author Ycreak
    */
-  public IsEmpty(obj: JSON) : boolean {
-    for (var prop in obj) {
-      if (obj.hasOwnProperty(prop))
-        return false;
-    }
-    return true;
-  }
+  public sort_array_numerically(a, b) {
+    // Sort array via the number element given.
+    // To allow fragments like '350-356' to be ordered.
+    const A = Number(a.split('-', 1));
+    const B = Number(b.split('-', 1));
 
-  public IsEmptyArray(array) : boolean {
-    if(Array.isArray(array) && array.length){
-      return false;
+    let comparison = 0;
+    if (A > B) {
+      comparison = 1;
+    } else if (A < B) {
+      comparison = -1;
     }
-    else{
-      return true;
-    }
-  }
-
-  // Returns a list of uniq numbers. Used for fragmentnumber lists.
-  public uniq(a) {
-    return a.sort().filter(function(item, pos, ary) {
-        return !pos || item != ary[pos - 1];
-    });
+    return comparison;
   }
 
   /**
    * Takes a string and looks for whitespace decoding. Converts it to html spans
-   * @param string 
+   * @param string that needs whitespaces converted to html spans
+   * @returns string with whitespaces converted to html spans
+   * @author Ycreak
    */
-  public convert_whitespace_encoding(string: string){
+  public convert_whitespace_encoding(string: string): string {
     // Find fish hooks with number in between.
     const matches = string.match(/<(\d+)>/);
     // If found, replace it with the correct whitespace number
     if (matches) {
-        console.log(matches);
-        // Create a span with the number of indents we want. Character level.
-        // matches[0] contains including fish hooks, matches[1] only number
-        let replacement = '<span style="padding-left:' + matches[1] + 'ch;"></span>'
-        string = string.replace(matches[0], replacement);       
-    }  
-    return string
+      console.log(matches);
+      // Create a span with the number of indents we want. Character level.
+      // matches[0] contains including fish hooks, matches[1] only number
+      const replacement = '<span style="padding-left:' + matches[1] + 'ch;"></span>';
+      string = string.replace(matches[0], replacement);
+    }
+    return string;
   }
 
-  public FilterObjOnKey(array, key, value){
-    var temp = array.filter(obj => {
+  /**
+   * This function filters the given array on the given key if it is equal to the provided value
+   * @param array to be filtered
+   * @param key within the array to be filtered
+   * @param value which should equal to the field to enable filtering
+   * @returns the filtered array
+   * @author Ycreak
+   */
+  public filter_object_on_key(array, key, value): Array<any> {
+    const filtered_array = array.filter((obj) => {
       return obj[key] === value;
-    })
-    return temp    
-  } 
-
-  // Creates main editor array: the third field has the mainEditor key. Should be named properly.
-  public FilterArrayOnKey(array, key, value){
-    return array.filter(x => x[key] === value);
+    });
+    return filtered_array;
   }
 
-  public PushToArray(item, array){
-    // Simple function to push given item to given array
-    array.push(item);
-    return array;
-  }
-
-  public PopArray(array){
-    // Simple function to pop item from given array  
-    let _ = array.pop();
-    return array;
-  }
-
-  public Test(thing){
-    console.log('Test output:', thing)
-  }
-
-    /**
+  /**
    * Opens Material popup window with the given message
    * @param message information that is showed in the popup
+   * @author Ycreak
    */
-  public OpenSnackbar(message){
+  public open_snackbar(message): void {
     this.snackBar.open(message, 'Close', {
-      duration: 5000
+      duration: 5000,
     });
   }
 
   /**
-   * Function to handle the error err. Calls Snackbar to show it on screen
-   * @param err the generated error
+   * Function that adds a subscribable loading hint to the dashboard component
+   * @author CptVickers
    */
-  public HandleErrorMessage(err) {
+  public get_loading_hint(): Observable<string> {
+    const loading_hint = new Observable<string>((subscriber) => {
+      function f() {
+        subscriber.next('Loading data');
+        setTimeout(function () {
+          subscriber.next('Loading data.');
+        }, 500);
+        setTimeout(function () {
+          subscriber.next('Loading data..');
+        }, 1000);
+        setTimeout(function () {
+          subscriber.next('Loading data...');
+        }, 1500);
+      }
+      f();
+      const loading_hint_generator = setInterval(f, 2000);
+      return function unsubscribe() {
+        clearInterval(loading_hint_generator);
+        subscriber.complete();
+      };
+    });
+    return loading_hint;
+  }
 
-    let output = '';
-    
-    if (err.ok){
-      output = err.status + ': ' + err.body;
+  /**
+   * Allows a fragment to be moved and dropped to create a custom ordering
+   * @param event what happens to the column
+   * @author Ycreak
+   */
+  public drop(event: CdkDragDrop<string[]>) {
+    // console.log(event)
+
+    if (event.container === event.previousContainer) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
     }
-    else{
-      output = err.status + ': ' + err.error;
-    }    
-    
-    console.log(err)
-    this.OpenSnackbar(output);
-  }
-  
-  
-
-  // Allows a fragment to be moved and dropped to create a custom ordering
-  public moveAndDrop(event: CdkDragDrop<string[]>, array) {
-    moveItemInArray(array, event.previousIndex, event.currentIndex);
   }
 
+  /**
+   * Capitalizes the first letter of each given word
+   * @param word the word to be capitalized
+   * @returns string that is capitalized
+   * @author CptVickers
+   */
+  public capitalize_word(word: string): string {
+    if (!word) return word;
+    return word[0].toUpperCase() + word.substr(1).toLowerCase();
+  }
+
+  /**
+   * Function to push an item to an array
+   * @param item to be pushed
+   * @param array to be extended
+   * @returns new array with item pushed
+   * @author Ycreak
+   */
+  public push_to_array(item, array): Array<any> {
+    array.push(item);
+    return array;
+  }
+
+  /**
+   * Function to pop an item from an array
+   * @param array to be popped
+   * @returns new array with item popped
+   * @author Ycreak
+   */
+  public pop_array(array) {
+    const _ = array.pop();
+    return array;
+  }
+
+  public is_empty_array(array): boolean {
+    if (Array.isArray(array) && array.length) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  /**
+   * This function moves an element within an array from the given location to the given new location
+   * @param arr in which the moving should be done
+   * @param from_index element's index that is to be moved
+   * @param to_index index to where the element is to be moved
+   * @returns updated array
+   * @author Ycreak
+   */
+  public move_element_in_array(arr, from_index, to_index): Array<any> {
+    const element = arr[from_index];
+    arr.splice(from_index, 1);
+    arr.splice(to_index, 0, element);
+    return arr;
+  }
+
+  // private get_offset( el ) {
+  //   var _x = 0;
+  //   var _y = 0;
+  //   while( el && !isNaN( el.offsetLeft ) && !isNaN( el.offsetTop ) ) {
+  //       _x += el.offsetLeft - el.scrollLeft;
+  //       _y += el.offsetTop - el.scrollTop;
+  //       el = el.offsetParent;
+  //   }
+  //   return { top: _y, left: _x };
+  // }
+  /**
+   * Test function
+   * @author Ycreak
+   */
+  private test(thing): void {
+    console.log('############ TESTING ############');
+    console.log(thing);
+    console.log('############ ####### ############');
+  }
 }
-
-

@@ -1,0 +1,195 @@
+<div class="container-fluid playground-height-padding">
+  <hr class="playground-divider-top" />
+  <div class="playground-title">PLAYGROUND</div>
+  <mat-progress-bar mode="query" *ngIf="this.api.spinner"></mat-progress-bar>
+  <!-- First we display all buttons to control the playground -->
+  <div class="row">
+    <div class="playground-button-container col-3">
+      <!-- Button to select the text -->
+      <button
+        mat-stroked-button
+        class="playground-select-text-button playground-button button-margin"
+        [matMenuTriggerFor]="menu_authors"
+        (click)="this.playground.new_column = false">
+        <ng-container *ngIf="this.playground.new_column; else text_button_clicked"> Select Text </ng-container>
+
+        <ng-template #text_button_clicked>
+          {{ this.playground.author }}-{{ this.playground.title }}-{{ this.playground.editor }}
+          <sup *ngIf="this.playground.edited">altered</sup>
+        </ng-template>
+      </button>
+    </div>
+    <div class="playground-button-container col-3">
+      <button mat-stroked-button class="playground-button button-margin" [matMenuTriggerFor]="fragment_selection">
+        Add single fragment
+        <!--<mat-icon class="mat-icon-realigned" fontIcon="expand_more" style="float: right"></mat-icon>-->
+      </button>
+      <mat-menu #fragment_selection="matMenu">
+        <ng-container *ngFor="let fragment_name of this.playground.fragment_names">
+          <button
+            mat-menu-item
+            (click)="this.playground.fragment_name = fragment_name.name"
+            (click)="this.add_single_fragment(this.playground, fragment_name.name)">
+            {{ fragment_name.name }}
+          </button>
+        </ng-container>
+      </mat-menu>
+    </div>
+    <div class="playground-button-container col-3">
+      <button
+        mat-stroked-button
+        class="playground-button button-margin"
+        (click)="
+          this.api.request_fragments(
+            this.playground.column_id,
+            this.playground.author,
+            this.playground.title,
+            this.playground.editor
+          )
+        "
+        (click)="this.single_fragment_requested = false">
+        Add all fragments from selected edition
+      </button>
+    </div>
+  </div>
+  <div class="div-padding-lg"></div>
+
+  <div class="row">
+    <!-- The second row contains all buttons to control the flow of fragments and notes -->
+    <div class="playground-button-container col-3">
+      <button
+        mat-stroked-button
+        class="playground-button button-margin"
+        color="accent"
+        (click)="this.delete_clicked_item_from_playground(this.playground, 'fragment')">
+        Delete fragment
+      </button>
+    </div>
+    <div class="playground-button-container col-3">
+      <button
+        mat-stroked-button
+        class="playground-button button-margin"
+        color="accent"
+        (click)="this.delete_clicked_item_from_playground(this.playground, 'note')">
+        Delete note
+      </button>
+    </div>
+    <div class="playground-button-container col-3">
+      <button
+        mat-stroked-button
+        class="button-dashed-background playground-button button-margin"
+        color="warn"
+        (click)="this.playground.fragments = []; this.playground.note_array = []">
+        Clear playground
+      </button>
+    </div>
+  </div>
+
+  <div class="div-padding-lg"></div>
+  <!-- Possibility to add a little note -->
+  <div class="row">
+    <div mat-dialog-content class="col-6">
+      <mat-form-field class="playground-mat-form-field input-form" style="--width: 50vw">
+        <input
+          matInput
+          placeholder="Add a note"
+          ngDefaultControl
+          [(ngModel)]="note"
+          (keydown.enter)="this.playground.note_array = this.utility.push_to_array(note, this.playground.note_array)" />
+        <button
+          type="button"
+          mat-icon-button
+          matSuffix
+          (click)="this.playground.note_array = this.utility.push_to_array(note, this.playground.note_array)">
+          <mat-icon>{{ "add" }}</mat-icon>
+        </button>
+        <mat-hint>To organise your playground</mat-hint>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <hr class="playground-divider" />
+  <!-- For loop to print all the notes -->
+  <div
+    *ngFor="let note of this.playground.note_array"
+    class="note zlayer"
+    style="--layer: 3"
+    (click)="this.playground.clicked_note = note"
+    cdkDrag>
+    {{ note }}
+  </div>
+  <!-- For loop to print all the base selected fragments -->
+  <!-- Recording the clicked fragment allows us to delete it when pressing the delete button -->
+  <!-- Also, keep track whether we are dragging or not. If we drag, we do not want the click event to fire -->
+  <div
+    *ngFor="let fragment of this.playground.fragments"
+    class="playground zlayer"
+    style="--layer: 2"
+    cdkDrag
+    (cdkDragStarted)="this.playground_dragging = true"
+    (click)="this.handle_fragment_click(fragment, true)"
+    (click)="this.playground.clicked_fragment = fragment">
+    <div *ngIf="this.settings.fragments.show_headers">
+      <b [style.color]="fragment.colour">Fragment {{ fragment.name }} </b> &nbsp;
+      <sup>{{ fragment.author }}, {{ fragment.title }}, {{ fragment.editor }}</sup> &nbsp;
+      <i>{{ fragment.status }}</i>
+    </div>
+
+    <div *ngFor="let fragment_line of fragment.lines">
+      <p
+        *ngIf="this.settings.fragments.show_line_names; else no_line_names_playground"
+        [innerHTML]="fragment_line.line_number + ': ' + fragment_line.text | safeHtml"></p>
+      <ng-template #no_line_names_playground>
+        <!--safeHtml to allow whitespaces made by spans-->
+        <p [innerHTML]="fragment_line.text | safeHtml"></p>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+<!-- Nested menu to select author - title - editor. -->
+<mat-menu #menu_authors="matMenu">
+  <ng-container *ngFor="let author of this.api.get_author_list(); let i = index">
+    <button
+      mat-menu-item
+      (menuOpened)="this.playground.retrieved_titles = []; this.playground.retrieved_editors = []"
+      (menuOpened)="this.playground.title = ''; this.playground.editor = ''"
+      (menuOpened)="this.playground.author = author"
+      (menuOpened)="this.playground.retrieved_titles = this.api.get_title_list(author)"
+      [matMenuTriggerFor]="menu_titles">
+      {{ author }}
+    </button>
+  </ng-container>
+</mat-menu>
+
+<mat-menu #menu_titles="matMenu">
+  <ng-container *ngFor="let title of this.playground.retrieved_titles; let i = index">
+    <button
+      mat-menu-item
+      (menuOpened)="this.playground.retrieved_editors = []"
+      (menuOpened)="this.playground.title = ''"
+      (menuOpened)="this.playground.title = title"
+      (menuOpened)="this.playground.retrieved_editors = this.api.get_editor_list(this.playground.author, title)"
+      [matMenuTriggerFor]="menu_editors">
+      {{ title }}
+    </button>
+  </ng-container>
+</mat-menu>
+
+<mat-menu #menu_editors="matMenu">
+  <ng-container *ngFor="let editor of this.playground.retrieved_editors; let i = index">
+    <button
+      mat-menu-item
+      (click)="this.playground.editor = editor"
+      (click)="
+        this.api.request_fragment_names(
+          this.playground.column_id,
+          this.playground.author,
+          this.playground.title,
+          this.playground.editor
+        )
+      ">
+      {{ editor }}
+    </button>
+  </ng-container>
+</mat-menu>
