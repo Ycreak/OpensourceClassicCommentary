@@ -1,7 +1,7 @@
 import { Injectable, Inject, Component } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
-import { LocalStorageService } from '../local-storage.service';
+import { LocalStorageService } from '@oscc/services/local-storage.service';
 
 /**
  * This service handles the dialogs used in the OSCC

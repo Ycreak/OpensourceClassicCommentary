@@ -20,7 +20,7 @@ import { LoginComponent } from '@oscc/login/login.component';
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
 import { ColumnHandlerService } from '@oscc/services/column-handler.service';
-import { LocalStorageService } from '../services/local-storage.service';
+import { LocalStorageService } from '@oscc/services/local-storage.service';
 
 @Component({
   selector: 'app-overview',
@@ -101,29 +101,10 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Function to handle the settings dialog. Will save changes via the oscc_settings object
-   * @author Ycreak
-   */
-  public open_settings(): void {
-    this.dialog.open_settings_dialog(this.settings.fragments).subscribe((result) => {
-      if (result) {
-        this.settings.fragments.dragging_disabled = result['dragging_disabled'];
-        this.settings.fragments.fragment_order_gradient = result['fragment_order_gradient'];
-        this.settings.fragments.auto_scroll_linked_fragments = result['auto_scroll_linked_fragments'];
-
-        // Also save the settings in local storage
-        this.settings.save_settings(result);
-      }
-    });
-  }
-
-  /**
    * Function to handle the login dialog
    * @author Ycreak
    */
   public login(): void {
     const dialogRef = this.matdialog.open(LoginComponent, {});
   }
-
-
 }
