@@ -7,7 +7,7 @@ import { MatDialog } from '@angular/material/dialog'; // Library used for intera
 // Service imports
 import { ApiService } from '@oscc/api.service';
 import { DialogService } from '@oscc/services/dialog.service';
-import { FragmentsSettings, SettingsService } from '@oscc/services/settings.service';
+import { SettingsService } from '@oscc/services/settings.service';
 import { WindowSizeWatcherService } from '@oscc/services/window-watcher.service';
 //import { UtilityService } from '@oscc/utility.service';
 import { AuthService } from '@oscc/auth/auth.service';
@@ -20,7 +20,7 @@ import { LoginComponent } from '@oscc/login/login.component';
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
 import { ColumnHandlerService } from '@oscc/services/column-handler.service';
-import { LocalStorageService } from '../local-storage.service';
+import { LocalStorageService } from '../services/local-storage.service';
 
 @Component({
   selector: 'app-overview',
@@ -54,7 +54,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.current_fragment = new Fragment({});
 
     // Load the user's previously used setting from local storage using the LocalStorageService service
-    this.load_settings();
+    this.settings.load_settings();
   }
 
   ngOnDestroy() {
@@ -110,6 +110,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
         this.settings.fragments.dragging_disabled = result['dragging_disabled'];
         this.settings.fragments.fragment_order_gradient = result['fragment_order_gradient'];
         this.settings.fragments.auto_scroll_linked_fragments = result['auto_scroll_linked_fragments'];
+
+        // Also save the settings in local storage
+        this.settings.save_settings(result);
       }
     });
   }
@@ -122,16 +125,5 @@ export class OverviewComponent implements OnInit, OnDestroy {
     const dialogRef = this.matdialog.open(LoginComponent, {});
   }
 
-  /**
-   * Function used to load the user's previously used settings from local storage using the LocalStorageService service
-   * @author Sajvanwijk
-   */
-  private load_settings(): void {
-    // Load all the fragments settings
-    for (const setting in this.settings.fragments) {
-      (this.settings.fragments as any)[setting as keyof FragmentsSettings] = this.localstorage.getData(setting);
-    }
 
-    // Load all the settings for other components here once they exist
-  }
 }

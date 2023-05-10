@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class LocalStorageService {
-  constructor() {}
+  //constructor() {}
 
   public saveData(key: string, value: string): void {
     console.log('save func called!', key, value);
