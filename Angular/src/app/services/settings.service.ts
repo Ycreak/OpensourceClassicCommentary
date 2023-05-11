@@ -41,7 +41,6 @@ export class SettingsService {
   public load_settings(): void {
     // Load all the fragments settings
     let loadedsetting: any;
-    console.log('loading settings...');
 
     // Attempt to load the setting from memory
     loadedsetting = this.localstorage.getData('auto_scroll_linked_fragments');
