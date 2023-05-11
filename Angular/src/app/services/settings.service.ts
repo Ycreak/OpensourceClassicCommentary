@@ -39,15 +39,34 @@ export class SettingsService {
    * @author Sajvanwijk
    */
   public load_settings(): void {
-    // TODO: check if we have settings saved. If not, load the defaults
-
     // Load all the fragments settings
-    this.fragments.auto_scroll_linked_fragments = this.localstorage.getData('auto_scroll_linked_fragments');
-    this.fragments.commentary_size = this.localstorage.getData('commentary_size');
-    this.fragments.dragging_disabled = this.localstorage.getData('dragging_disabled');
-    this.fragments.fragment_order_gradient = this.localstorage.getData('fragment_order_gradient');
-    this.fragments.show_headers = this.localstorage.getData('show_headers');
-    this.fragments.show_line_names = this.localstorage.getData('show_line_names');
+    let loadedsetting: any;
+    console.log('loading settings...');
+
+    // Attempt to load the setting from memory
+    loadedsetting = this.localstorage.getData('auto_scroll_linked_fragments');
+    // Assign the loaded setting only if it isn't null and meets the criteria. Otherwise: load defaults.
+    this.fragments.auto_scroll_linked_fragments = ['true', 'false'].includes(loadedsetting)
+      ? loadedsetting == 'true'
+      : false; // Default value
+
+    loadedsetting = this.localstorage.getData('commentary_size');
+    this.fragments.commentary_size = loadedsetting > 20 && loadedsetting < 80 ? (loadedsetting as number) : 40; // Default value
+
+    loadedsetting = this.localstorage.getData('dragging_disabled');
+    this.fragments.dragging_disabled = ['true', 'false'].includes(loadedsetting) ? loadedsetting == 'true' : false; // Default value
+
+    loadedsetting = this.localstorage.getData('fragment_order_gradient');
+    this.fragments.fragment_order_gradient = ['true', 'false'].includes(loadedsetting)
+      ? loadedsetting == 'true'
+      : false; // Default value
+
+    loadedsetting = this.localstorage.getData('show_headers');
+    this.fragments.show_headers = ['true', 'false'].includes(loadedsetting) ? loadedsetting == 'true' : true; // Default value
+
+    loadedsetting = this.localstorage.getData('show_line_names');
+    this.fragments.show_line_names = ['true', 'false'].includes(loadedsetting) ? loadedsetting == 'true' : true; // Default value
+
     // Load all the settings for other components here once they exist
   }
 
@@ -57,13 +76,12 @@ export class SettingsService {
    */
   public save_settings(): void {
     // Save all the fragments settings
-    this.localstorage.saveData('auto_scroll_linked_fragments', this.fragments['auto_scroll_linked_fragment']);
-    // TODO: find an elegant way to save booleans and numbers as strings, and load them from string to boolean/number again
-    //this.localstorage.saveData('commentary_size', this.fragments['commentary_size']);
-    //this.localstorage.saveData('dragging_disabled', this.fragments['dragging_disabled']);
-    //this.localstorage.saveData('fragment_order_gradient', data['fragment_order_gradient']);
-    //this.localstorage.saveData('show_headers', data['show_headers']);
-    //this.localstorage.saveData('show_line_names', data['show_line_names']);
+    this.localstorage.saveData('auto_scroll_linked_fragments', String(this.fragments['auto_scroll_linked_fragments']));
+    this.localstorage.saveData('commentary_size', String(this.fragments['commentary_size']));
+    this.localstorage.saveData('dragging_disabled', String(this.fragments['dragging_disabled']));
+    this.localstorage.saveData('fragment_order_gradient', String(this.fragments['fragment_order_gradient']));
+    this.localstorage.saveData('show_headers', String(this.fragments['show_headers']));
+    this.localstorage.saveData('show_line_names', String(this.fragments['show_line_names']));
 
     // Save all the settings for other components here once they exist
   }
