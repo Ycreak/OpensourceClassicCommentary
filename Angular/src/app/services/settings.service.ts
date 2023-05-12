@@ -73,7 +73,7 @@ export class SettingsService {
    * Function used to load the user's previously used settings from local storage using the LocalStorageService service
    * @author Sajvanwijk
    */
-  public save_settings(): void {
+  private save_settings(): void {
     // Save all the fragments settings
     this.localstorage.saveData('auto_scroll_linked_fragments', String(this.fragments['auto_scroll_linked_fragments']));
     this.localstorage.saveData('commentary_size', String(this.fragments['commentary_size']));

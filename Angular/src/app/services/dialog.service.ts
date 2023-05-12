@@ -1,7 +1,6 @@
 import { Injectable, Inject, Component } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
-import { LocalStorageService } from '@oscc/services/local-storage.service';
 
 /**
  * This service handles the dialogs used in the OSCC
@@ -183,9 +182,5 @@ export class CustomDialogComponent {
   styleUrls: ['../dialogs/dialogs.scss'],
 })
 export class SettingsDialogComponent {
-  constructor(
-    public dialogRef: MatDialogRef<SettingsDialogComponent>,
-    public localstorage: LocalStorageService,
-    @Inject(MAT_DIALOG_DATA) public data
-  ) {}
+  constructor(public dialogRef: MatDialogRef<SettingsDialogComponent>, @Inject(MAT_DIALOG_DATA) public data) {}
 }
