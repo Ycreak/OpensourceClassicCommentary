@@ -269,7 +269,7 @@ export class FragmentsComponent implements OnInit, AfterViewInit, OnDestroy {
    * @returns: Color as HSL value (presented as string)
    * @author CptVickers
    */
-  public generate_fragment_gradient_background_color(n_fragments: number, fragment_index: number) {
+  protected generate_fragment_gradient_background_color(n_fragments: number, fragment_index: number) {
     if (this.settings.fragments.fragment_order_gradient == true) {
       const max_brightness = 100;
       const min_brightness = 80;
