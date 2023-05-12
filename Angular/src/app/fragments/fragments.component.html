@@ -142,7 +142,6 @@
             given_column.original_fragment_order.indexOf(fragment.name)
           )
         ">
-        <!-- FIXME: Fragments isn't defined during view init. How to solve this? -->
         <div *ngIf="this.settings.fragments.show_headers">
           <b [style.color]="fragment.colour">Fragment {{ fragment.name }} </b> &nbsp;
           <sup>{{ fragment.author }}, {{ fragment.title }}, {{ fragment.editor }}</sup> &nbsp;

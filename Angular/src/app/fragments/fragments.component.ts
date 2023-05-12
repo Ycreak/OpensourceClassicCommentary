@@ -91,10 +91,10 @@ export class FragmentsComponent implements OnInit, AfterViewInit, OnDestroy {
 
         column.fragments = fragments;
 
-        // Store the original order of the fragments in the column object
+        // Store the original order of the fragment names in the column object
         column.original_fragment_order = []; // Clear first
-        for (const frag of fragments) {
-          column.original_fragment_order.push(frag.name);
+        for (const fragment of fragments) {
+          column.original_fragment_order.push(fragment.name);
         }
       }
     });
@@ -269,7 +269,6 @@ export class FragmentsComponent implements OnInit, AfterViewInit, OnDestroy {
    * @returns: Color as HSL value (presented as string)
    * @author CptVickers
    */
-
   public generate_fragment_gradient_background_color(n_fragments: number, fragment_index: number) {
     if (this.settings.fragments.fragment_order_gradient == true) {
       const max_brightness = 100;
