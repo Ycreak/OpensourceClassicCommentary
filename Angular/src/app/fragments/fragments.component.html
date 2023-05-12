@@ -137,7 +137,7 @@
         (cdkDragDropped)="this.column_handler.track_edited_columns($event)"
         [attr.id]="fragment.fragment_id"
         [style.border-left-color]="
-          this.generate_fragment_gradient_color(
+          this.generate_fragment_gradient_border_color(
             given_column.fragments.length,
             given_column.original_fragment_order.indexOf(fragment.name)
           )
