@@ -20,6 +20,7 @@ import { LoginComponent } from '@oscc/login/login.component';
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
 import { ColumnHandlerService } from '@oscc/services/column-handler.service';
+import { LocalStorageService } from '@oscc/services/local-storage.service';
 
 @Component({
   selector: 'app-overview',
@@ -40,6 +41,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     protected auth_service: AuthService,
     protected dialog: DialogService,
     protected settings: SettingsService,
+    public localstorage: LocalStorageService,
     protected window_watcher: WindowSizeWatcherService,
     private matdialog: MatDialog,
     protected column_handler: ColumnHandlerService,
@@ -50,6 +52,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
     // Create the window watcher for mobile devices
     this.window_watcher.init(window.innerWidth);
     this.current_fragment = new Fragment({});
+
+    // Load the user's previously used setting from local storage using the LocalStorageService service
+    this.settings.load_settings();
   }
 
   ngOnDestroy() {
@@ -93,20 +98,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
    */
   protected toggle_playground(): void {
     this.playground_enabled = !this.playground_enabled;
-  }
-
-  /**
-   * Function to handle the settings dialog. Will save changes via the oscc_settings object
-   * @author Ycreak
-   */
-  public open_settings(): void {
-    this.dialog.open_settings_dialog(this.settings.fragments).subscribe((result) => {
-      if (result) {
-        this.settings.fragments.dragging_disabled = result['dragging_disabled'];
-        this.settings.fragments.fragment_order_gradient = result['fragment_order_gradient'];
-        this.settings.fragments.auto_scroll_linked_fragments = result['auto_scroll_linked_fragments'];
-      }
-    });
   }
 
   /**

@@ -185,20 +185,6 @@ export class FragmentsComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Function to handle the settings dialog. Will save changes via the oscc_settings object
-   * @author Ycreak
-   */
-  public open_settings(): void {
-    this.dialog.open_settings_dialog(this.settings.fragments).subscribe((result) => {
-      if (result) {
-        this.settings.fragments.dragging_disabled = result['dragging_disabled'];
-        this.settings.fragments.fragment_order_gradient = result['fragment_order_gradient'];
-        this.settings.fragments.auto_scroll_linked_fragments = result['auto_scroll_linked_fragments'];
-      }
-    });
-  }
-
-  /**
    * This function opens the requested introduction in a dialog
    * @param requested_introduction string containing the requested introduction
    * @author Ycreak
