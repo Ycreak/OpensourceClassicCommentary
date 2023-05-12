@@ -1,5 +1,5 @@
 // Library imports
-import { Component, OnInit, AfterViewInit, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { Output, EventEmitter } from '@angular/core';
 //import { MatDialog } from '@angular/material/dialog'; // Library used for interacting with the page
 import { trigger, transition, style, animate } from '@angular/animations';
@@ -36,7 +36,7 @@ import { Introductions } from '@oscc/models/Introductions';
     ]),
   ],
 })
-export class FragmentsComponent implements OnInit, AfterViewInit, OnDestroy {
+export class FragmentsComponent implements OnInit, OnDestroy {
   @Output() fragment_clicked2 = new EventEmitter<Fragment>();
 
   public current_fragment: Fragment; // Variable to store the clicked fragment and its data
@@ -74,13 +74,11 @@ export class FragmentsComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     this.api.request_fragments(1, 'Ennius', 'Thyestes', 'TRF');
     //this.request_introduction(this.commentary_column);
-  }
 
-  ngAfterViewInit() {
     /** Handle what happens when new fragments arrive */
     this.fragments_subscription = this.api.new_fragments_alert.subscribe((column_id) => {
       let fragments = this.api.fragments;
-      console.log(fragments);
+
       // A new list of fragments has arrived. Use the column identifier to find the corresponding column
       const column = this.column_handler.columns.find((x) => x.column_id == column_id);
       if (column) {
