@@ -88,6 +88,12 @@ export class FragmentsComponent implements OnInit, OnDestroy {
         fragments = this.sort_fragments_on_status(fragments);
 
         column.fragments = fragments;
+
+        // Store the original order of the fragment names in the column object
+        column.original_fragment_order = []; // Clear first
+        for (const fragment of fragments) {
+          column.original_fragment_order.push(fragment.name);
+        }
       }
     });
   }
@@ -261,8 +267,7 @@ export class FragmentsComponent implements OnInit, OnDestroy {
    * @returns: Color as HSL value (presented as string)
    * @author CptVickers
    */
-  private generate_fragment_gradient_background_color(n_fragments: number, fragment_index: number) {
-    // console.log(this.oscc_settings.fragment_order_gradient);
+  protected generate_fragment_gradient_background_color(n_fragments: number, fragment_index: number) {
     if (this.settings.fragments.fragment_order_gradient == true) {
       const max_brightness = 100;
       const min_brightness = 80;
@@ -272,7 +277,7 @@ export class FragmentsComponent implements OnInit, OnDestroy {
       if (brightness_step > max_brightness_diff) {
         brightness_step = max_brightness_diff;
       }
-      const calculated_brightness = min_brightness + brightness_step * fragment_index;
+      const calculated_brightness = max_brightness - brightness_step * fragment_index;
 
       return `HSL(0, 0%, ${calculated_brightness}%)`;
     } else {
