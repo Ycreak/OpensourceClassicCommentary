@@ -257,38 +257,6 @@ export class FragmentsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * Simple function that generates a different left border color
-   * for each fragment in a fragment column.
-   * This is to indicate the initial order of the fragments.
-   *
-   * Each fragment gets a color chosen from a set color
-   * brightness range, though two neighboring fragments can
-   * only have a set difference in brightness.
-   * @param n_fragments The total number of fragments in the column
-   * @param fragment_index The index of the current fragment
-   * @returns: Color as HSL value (presented as string)
-   * @author CptVickers
-   */
-
-  public generate_fragment_gradient_border_color(n_fragments: number, fragment_index: number) {
-    if (this.settings.fragments.fragment_order_gradient == true) {
-      const max_brightness = 100;
-      const min_brightness = 20;
-      const max_brightness_diff = 40;
-
-      let brightness_step = (max_brightness - min_brightness) / n_fragments;
-      if (brightness_step > max_brightness_diff) {
-        brightness_step = max_brightness_diff;
-      }
-      const calculated_brightness = max_brightness - brightness_step * fragment_index;
-
-      return `HSL(0, 0%, ${calculated_brightness}%)`;
-    } else {
-      return 'transparent';
-    }
-  }
-
-  /**
    * Simple function that generates a different background color
    * for each fragment in a fragment column.
    * This is to indicate the initial order of the fragments.
