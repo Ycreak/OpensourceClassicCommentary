@@ -139,7 +139,7 @@
         [style.border-left-color]="
           this.generate_fragment_gradient_color(
             given_column.fragments.length,
-            given_column.orig_fragment_order.indexOf(fragment.fragment_name)
+            given_column.original_fragment_order.indexOf(fragment.name)
           )
         "
         [style.background-color]="
@@ -148,6 +148,7 @@
             given_column.original_fragment_order.indexOf(fragment.name)
           )
         ">
+        <!-- FIXME: Fragments isn't defined during view init. How to solve this? -->
         <div *ngIf="this.settings.fragments.show_headers">
           <b [style.color]="fragment.colour">Fragment {{ fragment.name }} </b> &nbsp;
           <sup>{{ fragment.author }}, {{ fragment.title }}, {{ fragment.editor }}</sup> &nbsp;
