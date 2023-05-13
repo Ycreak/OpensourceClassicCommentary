@@ -52,26 +52,6 @@ export class UtilityService {
   }
 
   /**
-   * Takes a string and looks for whitespace decoding. Converts it to html spans
-   * @param string that needs whitespaces converted to html spans
-   * @returns string with whitespaces converted to html spans
-   * @author Ycreak
-   */
-  public convert_whitespace_encoding(string: string): string {
-    // Find fish hooks with number in between.
-    const matches = string.match(/<(\d+)>/);
-    // If found, replace it with the correct whitespace number
-    if (matches) {
-      console.log(matches);
-      // Create a span with the number of indents we want. Character level.
-      // matches[0] contains including fish hooks, matches[1] only number
-      const replacement = '<span style="padding-left:' + matches[1] + 'ch;"></span>';
-      string = string.replace(matches[0], replacement);
-    }
-    return string;
-  }
-
-  /**
    * This function filters the given array on the given key if it is equal to the provided value
    * @param array to be filtered
    * @param key within the array to be filtered

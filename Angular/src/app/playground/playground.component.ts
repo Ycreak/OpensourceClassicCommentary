@@ -48,9 +48,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
     /** Handle what happens when new fragments arrive */
     this.fragments_subscription = this.api.new_fragments_alert.subscribe((column_id) => {
       if (column_id == environment.playground_id) {
-        let fragments = this.api.fragments;
-        fragments = this.add_HTML_to_lines(fragments);
-
+        const fragments = this.api.fragments;
         if (this.single_fragment_requested) {
           this.playground.fragments.push(fragments[0]);
         } else {
@@ -69,35 +67,6 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnDestroy() {
     this.fragments_subscription.unsubscribe();
     this.fragment_names_subscription.unsubscribe();
-  }
-
-  /**
-   * This function adds HTML to the lines of the given array. At the moment,
-   * it converts white space encoding for every applicable line by looping through
-   * all elements in a fragment list.
-   * @param array with fragments as retrieved from the server
-   * @returns updated array with nice HTML formatting included
-   * @author Ycreak
-   * @TODO: make this function DRY (see Fragments.component.ts: maybe in API?)
-   */
-  public add_HTML_to_lines(array: Fragment[]): Fragment[] {
-    // For each element in the given array
-    for (const fragment in array) {
-      // Loop through all fragments
-      const current_fragment = array[fragment];
-      for (const item in current_fragment.lines) {
-        // Loop through all lines of current fragment
-        let line_text = current_fragment.lines[item].text;
-        line_text = this.utility.convert_whitespace_encoding(line_text);
-        // Now push the updated lines to the correct place
-        const updated_lines = {
-          line_number: current_fragment.lines[item].line_number,
-          text: line_text,
-        };
-        current_fragment.lines[item] = updated_lines;
-      }
-    }
-    return array;
   }
 
   /**

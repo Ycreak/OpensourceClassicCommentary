@@ -92,6 +92,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     differences: new FormControl(''),
     commentary: new FormControl(''),
     apparatus: new FormControl(''),
+    metrical_analysis: new FormControl(''),
     reconstruction: new FormControl(''),
     // This array is dynamically filled by the function push_fragment_context_to_fragment_form().
     // It will contain multiple FormGroups per context, containing an author, location and text.
@@ -258,6 +259,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       'commentary',
       'apparatus',
       'reconstruction',
+      'metrical_analysis',
       'status',
       'lock',
       'published',
