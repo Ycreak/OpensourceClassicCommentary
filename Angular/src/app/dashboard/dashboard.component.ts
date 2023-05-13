@@ -173,6 +173,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     /** Handle what happens when new fragments arrive */
     this.fragments_subscription = this.api.new_fragments_alert$.subscribe((column_id) => {
       if (column_id == environment.dashboard_id) {
+        this.reset_fragment_form();
         this.convert_Fragment_to_fragment_form(this.api.fragments[0]);
         // Set the data for the drop down menus
         this.selected_fragment_data.author = this.fragment_form.value.author;
