@@ -162,7 +162,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.expand_user_table_row();
 
     /** Handle what happens when new fragment names arrive */
-    this.fragment_names_subscription = this.api.new_fragment_names_alert.subscribe((column_id) => {
+    this.fragment_names_subscription = this.api.new_fragment_names_alert$.subscribe((column_id) => {
       if (column_id == environment.dashboard_id) {
         this.selected_fragment_data.fragment_names = this.api.fragment_names;
       } else if (column_id == environment.referencer_id) {
@@ -171,7 +171,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     /** Handle what happens when new fragments arrive */
-    this.fragments_subscription = this.api.new_fragments_alert.subscribe((column_id) => {
+    this.fragments_subscription = this.api.new_fragments_alert$.subscribe((column_id) => {
       if (column_id == environment.dashboard_id) {
         this.convert_Fragment_to_fragment_form(this.api.fragments[0]);
         // Set the data for the drop down menus

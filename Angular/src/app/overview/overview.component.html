@@ -1,11 +1,11 @@
 <!-- Navigation bar -->
 <mat-toolbar color="primary">
   <span style="width: fit-content; transform: translateY(-1px)">
-    <h3 *ngIf="this.window_watcher.size > 725; else small_title" class="navbar">Open Source Classics Commentary</h3>
+    <h3 *ngIf="this.window_watcher.size > 725; else small_title" class="navbar">{{ this.get_title("long") }}</h3>
   </span>
 
   <ng-template #small_title>
-    <h3 class="navbar">OSCC</h3>
+    <h3 class="navbar">{{ this.get_title("short") }}</h3>
   </ng-template>
 
   <span class="spacer"></span>
