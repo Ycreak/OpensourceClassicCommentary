@@ -217,7 +217,7 @@ export class FragmentsComponent implements OnInit, OnDestroy {
         };
         current_fragment.lines[item] = updated_lines;
       }
-      // replaces the summary tag with summary CSS for each commentary field
+      // replaces the summary tag with summary CSS class for each commentary field
       current_fragment.apparatus = this.convert_summary_tag_to_html(current_fragment.apparatus);
       current_fragment.differences = this.convert_summary_tag_to_html(current_fragment.differences);
       current_fragment.translation = this.convert_summary_tag_to_html(current_fragment.translation);
