@@ -1,12 +1,8 @@
 // Library imports
 import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { Output, EventEmitter } from '@angular/core';
-//import { MatDialog } from '@angular/material/dialog'; // Library used for interacting with the page
 import { trigger, transition, style, animate } from '@angular/animations';
 //import { environment } from '@src/environments/environment';
-
-// Component imports
-//import { LoginComponent } from '@oscc/login/login.component';
 
 // Service imports
 import { ApiService } from '@oscc/api.service';
@@ -203,6 +199,7 @@ export class FragmentsComponent implements OnInit, OnDestroy {
    * @param array with fragments as retrieved from the server
    * @returns updated array with nice HTML formatting included
    * @author Ycreak
+   * @TODO: this function needs to be handled by the API when retrieving the fragments
    */
   public add_HTML_to_lines(array: Fragment[]): Fragment[] {
     // For each element in the given array
@@ -220,8 +217,24 @@ export class FragmentsComponent implements OnInit, OnDestroy {
         };
         current_fragment.lines[item] = updated_lines;
       }
+      // replaces the summary tag with summary CSS class for each commentary field
+      current_fragment.apparatus = this.convert_summary_tag_to_html(current_fragment.apparatus);
+      current_fragment.differences = this.convert_summary_tag_to_html(current_fragment.differences);
+      current_fragment.translation = this.convert_summary_tag_to_html(current_fragment.translation);
+      current_fragment.commentary = this.convert_summary_tag_to_html(current_fragment.commentary);
+      current_fragment.reconstruction = this.convert_summary_tag_to_html(current_fragment.reconstruction);
     }
     return array;
+  }
+
+  /**
+   * Converts the summary tag in the given blob of text to html
+   * @param string with text blob possibly containing the summary tag
+   * @returns string with the summary tag replaced with corresponding html
+   * @author Ycreak
+   */
+  private convert_summary_tag_to_html(given_string: string): string {
+    return given_string.replace(/\[summary\]([\s\S]*?)\[\/summary\]/gm, '<div class="summary">$1</div>');
   }
 
   /**
