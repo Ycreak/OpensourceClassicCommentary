@@ -104,8 +104,8 @@ export class OverviewComponent implements OnInit, OnDestroy {
    * Function to handle the login dialog
    * @author Ycreak
    */
-  public login(): void {
-    const dialogRef = this.matdialog.open(LoginComponent, {});
+  protected login(): void {
+    this.matdialog.open(LoginComponent, {});
   }
 
   /**

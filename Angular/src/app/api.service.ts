@@ -72,10 +72,10 @@ export class ApiService {
   public new_titles_alert = new ReplaySubject(0);
   public new_editors_alert = new ReplaySubject(0);
 
-  private new_fragments_alert = new BehaviorSubject<number>(0);
+  private new_fragments_alert = new BehaviorSubject<number>(-1);
   public new_fragments_alert$ = this.new_fragments_alert.asObservable();
 
-  private new_fragment_names_alert = new BehaviorSubject<number>(0);
+  private new_fragment_names_alert = new BehaviorSubject<number>(-1);
   public new_fragment_names_alert$ = this.new_fragment_names_alert.asObservable();
 
   private create_fragment_key(author?: string, title?: string, editor?: string, name?: string): fragment_key {
