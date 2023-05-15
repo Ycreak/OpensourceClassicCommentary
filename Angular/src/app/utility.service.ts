@@ -149,8 +149,8 @@ export class UtilityService {
    * @returns new array with item popped
    * @author Ycreak
    */
-  public pop_array(array) {
-    const _ = array.pop();
+  public pop_array(array: any) {
+    array.pop();
     return array;
   }
 

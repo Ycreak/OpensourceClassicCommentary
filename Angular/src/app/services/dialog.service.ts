@@ -17,7 +17,7 @@ export class DialogService {
    * @author Ycreak
    */
   public open_about_dialog(): void {
-    const dialogRef = this.dialog.open(ShowAboutDialogComponent, {
+    this.dialog.open(ShowAboutDialogComponent, {
       autoFocus: false, // To allow scrolling in the dialog
       maxHeight: '90vh', //you can adjust the value as per your view
     });
@@ -79,7 +79,7 @@ export class DialogService {
    * @author Ycreak
    */
   public open_custom_dialog(content): void {
-    const dialogRef = this.dialog.open(CustomDialogComponent, {
+    this.dialog.open(CustomDialogComponent, {
       width: '90%',
       height: '75%',
       data: {

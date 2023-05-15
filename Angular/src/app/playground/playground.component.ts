@@ -46,7 +46,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit() {
     /** Handle what happens when new fragments arrive */
-    this.fragments_subscription = this.api.new_fragments_alert.subscribe((column_id) => {
+    this.fragments_subscription = this.api.new_fragments_alert$.subscribe((column_id) => {
       if (column_id == environment.playground_id) {
         const fragments = this.api.fragments;
         if (this.single_fragment_requested) {
@@ -57,7 +57,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     });
     /** Handle what happens when new fragment names arrive */
-    this.fragment_names_subscription = this.api.new_fragment_names_alert.subscribe((column_id) => {
+    this.fragment_names_subscription = this.api.new_fragment_names_alert$.subscribe((column_id) => {
       if (column_id == environment.playground_id) {
         this.playground.fragment_names = this.api.fragment_names;
       }
@@ -108,13 +108,17 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
       const object_index = column.fragments.findIndex((object) => {
         return object._id === column.clicked_fragment._id;
       });
-      column.fragments.splice(object_index, 1);
+      if (object_index != -1) {
+        column.fragments.splice(object_index, 1);
+      }
     } else {
       // it is a note
       const object_index = column.note_array.findIndex((object) => {
         return object === column.clicked_note;
       });
-      column.note_array.splice(object_index, 1);
+      if (object_index != -1) {
+        column.note_array.splice(object_index, 1);
+      }
     }
   }
 
