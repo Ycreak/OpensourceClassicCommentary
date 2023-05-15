@@ -108,13 +108,17 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
       const object_index = column.fragments.findIndex((object) => {
         return object._id === column.clicked_fragment._id;
       });
-      column.fragments.splice(object_index, 1);
+      if (object_index != -1) {
+        column.fragments.splice(object_index, 1);
+      }
     } else {
       // it is a note
       const object_index = column.note_array.findIndex((object) => {
         return object === column.clicked_note;
       });
-      column.note_array.splice(object_index, 1);
+      if (object_index != -1) {
+        column.note_array.splice(object_index, 1);
+      }
     }
   }
 
