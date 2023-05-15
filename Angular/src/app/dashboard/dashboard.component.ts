@@ -440,7 +440,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   protected reset_fragment_form(): void {
     // First, remove all data from the form
     this.fragment_form.reset();
-    // Second, remove the controls created for the FormArrays
+    // Second, remove the previously created FormArray controls and set new ones
     this.fragment_form.setControl('context', new FormArray([]));
     this.fragment_form.setControl('lines', new FormArray([]));
     this.fragment_form.setControl('linked_fragments', new FormArray([]));
