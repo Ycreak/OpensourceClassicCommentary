@@ -92,6 +92,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     differences: new FormControl(''),
     commentary: new FormControl(''),
     apparatus: new FormControl(''),
+    metrical_analysis: new FormControl(''),
     reconstruction: new FormControl(''),
     // This array is dynamically filled by the function push_fragment_context_to_fragment_form().
     // It will contain multiple FormGroups per context, containing an author, location and text.
@@ -161,7 +162,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.expand_user_table_row();
 
     /** Handle what happens when new fragment names arrive */
-    this.fragment_names_subscription = this.api.new_fragment_names_alert.subscribe((column_id) => {
+    this.fragment_names_subscription = this.api.new_fragment_names_alert$.subscribe((column_id) => {
       if (column_id == environment.dashboard_id) {
         this.selected_fragment_data.fragment_names = this.api.fragment_names;
       } else if (column_id == environment.referencer_id) {
@@ -170,8 +171,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     /** Handle what happens when new fragments arrive */
-    this.fragments_subscription = this.api.new_fragments_alert.subscribe((column_id) => {
+    this.fragments_subscription = this.api.new_fragments_alert$.subscribe((column_id) => {
       if (column_id == environment.dashboard_id) {
+        this.reset_fragment_form();
         this.convert_Fragment_to_fragment_form(this.api.fragments[0]);
         // Set the data for the drop down menus
         this.selected_fragment_data.author = this.fragment_form.value.author;
@@ -258,6 +260,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       'commentary',
       'apparatus',
       'reconstruction',
+      'metrical_analysis',
       'status',
       'lock',
       'published',
@@ -437,7 +440,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   protected reset_fragment_form(): void {
     // First, remove all data from the form
     this.fragment_form.reset();
-    // Second, remove the controls created for the FormArrays
+    // Second, remove the previously created FormArray controls and set new ones
     this.fragment_form.setControl('context', new FormArray([]));
     this.fragment_form.setControl('lines', new FormArray([]));
     this.fragment_form.setControl('linked_fragments', new FormArray([]));
