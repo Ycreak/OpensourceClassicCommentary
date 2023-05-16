@@ -111,14 +111,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
    * This form is used to change the introduction texts for authors and authors+titles
    */
   introduction_form_group = new FormGroup({
-    author: new FormControl('', [
-      Validators.required,
-      Validators.pattern('[a-zA-Z ]*')
-    ]), // alpha characters allowed
-    title: new FormControl('', [
-      Validators.required,
-      Validators.pattern('[a-zA-Z ]*')
-    ]), // alpha characters allowed
+    author: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
+    title: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
     author_introduction_text: new FormControl(''),
     title_introduction_text: new FormControl(''),
   });
@@ -177,7 +171,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       column_id: environment.referencer_id,
     });
     this.selected_introduction_data = new Column({
-      column_id: 1,  // TODO: This needs to have a certain value, but I'm not sure what.     
+      column_id: 1, // TODO: This needs to have a certain value, but I'm not sure what.
     });
   }
 
@@ -245,16 +239,16 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           context_array.controls[index].patchValue({ ['text']: result });
         }
       });
-    }
-    else if (field == 'author_introduction' || field == 'title_introduction') {
+    } else if (field == 'author_introduction' || field == 'title_introduction') {
       const text = this.introduction_form_group[field];
-      this.dialog.open_wysiwyg_dialog(text).subscribe(result => {
-        if (result){ // Pass the accepted changes to the regular form field. 
-          this.introduction_form_group.patchValue({[field]: result});
+      this.dialog.open_wysiwyg_dialog(text).subscribe((result) => {
+        if (result) {
+          // Pass the accepted changes to the regular form field.
+          this.introduction_form_group.patchValue({ [field]: result });
         }
-      })
-    }
-    else{ // The other content fields can be updated by just getting their content strings
+      });
+    } else {
+      // The other content fields can be updated by just getting their content strings
       this.dialog.open_wysiwyg_dialog(this.fragment_form.value[field]).subscribe((result) => {
         if (result) {
           this.update_form_field('fragment_form', field, result);
@@ -484,45 +478,42 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
    * Function to request the introduction text for a given author or author + title.
    * @param intro Introduction object with form data; contains selected author and title data.
    * @author CptVickers
+   * @TODO: Move this somewhere else
    */
-  public request_introduction(intro: Introduction_form): void {
-    this.api.get_introduction_text(intro).subscribe(
-      data => {
-        if (data){
-          console.log(data)
-          // Store the received introduction data in the form
-          intro.author_introduction_text = data['author_introduction_text'];
-          intro.title_introduction_text = data['title_introduction_text'];
-          // Update the actual form field
-          this.update_form_field('introduction_form_group', 'author_introduction_text', data['author_introduction_text']);
-          this.update_form_field('introduction_form_group', 'title_introduction_text', data['title_introduction_text']);
-        }
+  private request_introduction(intro: Introduction_form): void {
+    this.api.get_introduction_text(intro).subscribe((data) => {
+      if (data) {
+        console.log(data);
+        // Store the received introduction data in the form
+        intro.author_introduction_text = data['author_introduction_text'];
+        intro.title_introduction_text = data['title_introduction_text'];
+        // Update the actual form field TODO: This is only relevant in dashboard. Be sure to remove this when this function is moved somewhere else.
+        this.update_form_field('introduction_form_group', 'author_introduction_text', data['author_introduction_text']);
+        this.update_form_field('introduction_form_group', 'title_introduction_text', data['title_introduction_text']);
       }
-    )
+    });
   }
 
   /**
    * Function to save the introduction text for a given author or author + title.
    * @param intro: Introduction object with form data; contains selected author and title data,
-   *               as well as the introduction text to be saved. 
+   *               as well as the introduction text to be saved.
    * @returns A text message indicating success/failure.
    * @author CptVickers
+   * @TODO: move this somewhere else
    */
   public request_save_introduction(field: string): string {
-    console.log(field)
+    console.log(field);
     let request: Observable<any>;
     if (field != 'author' && field != 'title') {
-      throw Error(`Error: attempted to save introduction text for invalid field: ${field}`)
-    }
-    else if (field == 'author') {
-      request = this.api.set_author_introduction_text(this.introduction_form_group['author_introduction'])
-    }
-    else if (field == 'title') {
-      request = this.api.set_title_introduction_text(this.introduction_form_group['title_introduction'])
+      throw Error(`Error: attempted to save introduction text for invalid field: ${field}`);
+    } else if (field == 'author') {
+      request = this.api.set_author_introduction_text(this.introduction_form_group['author_introduction']);
+    } else if (field == 'title') {
+      request = this.api.set_title_introduction_text(this.introduction_form_group['title_introduction']);
     }
 
     let result = '';
-
 
     request.subscribe({
       next: (data) => {
@@ -531,7 +522,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       error: (err) => {
         result += err; // TODO: Which route do we use to display the errors?
         this.api.handle_error_message(err);
-      }});
+      },
+    });
     return result;
   }
 
@@ -545,7 +537,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     // Reset the saved changes hint
     this.show_changes_saved_hint = false;
   }
-  
+
   /**
    * Remove an item from a FormArray within a Form
    * @param form_name encapsulating form

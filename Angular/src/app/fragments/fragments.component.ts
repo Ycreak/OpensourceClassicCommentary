@@ -69,7 +69,6 @@ export class FragmentsComponent implements OnInit, OnDestroy {
       );
     }
     this.api.request_fragments(1, 'Ennius', 'Thyestes', 'TRF');
-    //this.request_introduction(this.commentary_column);
 
     /** Handle what happens when new fragments arrive */
     this.fragments_subscription = this.api.new_fragments_alert$.subscribe((column_id) => {

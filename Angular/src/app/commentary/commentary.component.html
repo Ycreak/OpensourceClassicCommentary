@@ -4,10 +4,14 @@
   <!-- Fragment information -->
   <h5>
     Selected
-    <!-- TODO: for next release -->
-    <!-- <a class='a-void' (click)="this.request_introduction(this.current_fragment.author)">{{this.current_fragment.author}}</a>, Do not forget the comma and space -->
-    <!-- <a class='a-void' (click)="this.request_introduction(this.current_fragment.title)">{{this.current_fragment.title}}</a>,  -->
-    {{ this.current_fragment.author }}, {{ this.current_fragment.title }}, {{ this.current_fragment.editor }},
+    <a class="a-void" (click)="this.request_introduction(this.current_fragment.author)">{{
+      this.current_fragment.author
+    }}</a
+    >,
+    <a class="a-void" (click)="this.request_introduction(this.current_fragment.title)">{{
+      this.current_fragment.title
+    }}</a
+    >, {{ this.current_fragment.author }}, {{ this.current_fragment.title }}, {{ this.current_fragment.editor }},
     {{ this.current_fragment.name }}
   </h5>
 </div>
