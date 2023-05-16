@@ -3,7 +3,9 @@ import { ApiService } from '@oscc/api.service';
 
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
+import { Introductions } from '@oscc/models/Introduction_example';
 import { Introduction_form } from '@oscc/models/Introduction_form';
+import { DialogService } from '@oscc/services/dialog.service';
 
 // Service imports
 import { UtilityService } from '@oscc/utility.service';
@@ -18,7 +20,7 @@ export class CommentaryComponent implements OnInit, OnChanges {
 
   protected fragment_clicked = false;
 
-  constructor(protected utility: UtilityService, protected api: ApiService) {}
+  constructor(protected utility: UtilityService, protected api: ApiService, protected dialog: DialogService) {}
 
   ngOnInit(): void {
     this.current_fragment = new Fragment({});
@@ -38,6 +40,10 @@ export class CommentaryComponent implements OnInit, OnChanges {
    * @TODO: Duplicate of the one in dashboard; move this somewhere else
    */
   public request_introduction(intro: Introduction_form): void {
+    // TODO: This is some code for demo purposes
+    const introdemo = new Introductions();
+    this.dialog.open_custom_dialog(introdemo.dict['Ennius']);
+
     this.api.get_introduction_text(intro).subscribe((data) => {
       if (data) {
         console.log(data);
