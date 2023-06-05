@@ -125,7 +125,7 @@ export class Fragment {
    * @author Ycreak
    */
   private convert_summary_tag_to_html(given_string: string): string {
-    if (given_string != '') {
+    if (given_string != '' && given_string != null) {
       return given_string.replace(/\[summary\]([\s\S]*?)\[\/summary\]/gm, '<div class="summary">$1</div>');
     } else {
       return given_string;
