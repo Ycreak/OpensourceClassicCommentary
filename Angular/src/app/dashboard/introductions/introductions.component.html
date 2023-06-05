@@ -12,10 +12,10 @@
     <mat-label>Select author</mat-label>
     <mat-select [(ngModel)]="this.selected_introduction_data.author" ngDefaultControl>
       <mat-option
-        *ngFor="let author of this.selected_introduction_data.retrieved_authors"
+        *ngFor="let author of this.api.get_author_list"
         [value]="author"
-        (click)="this.selected_introduction_data.selected_fragment_author = author"
-        (click)="this.selected_introduction_data.selected_fragment_title = ''"
+        (click)="this.selected_introduction_data.author = author"
+        (click)="this.selected_introduction_data.title = ''"
         (click)="this.selected_introduction_data.retrieved_titles = []"
         (click)="this.reset_introduction_form()"
         (click)="this.update_form_field('introduction_form_group', 'author', author)"
@@ -29,13 +29,13 @@
   <mat-form-field>
     <mat-label>Select title</mat-label>
     <mat-select
-      [(ngModel)]="this.selected_introduction_data.selected_fragment_title"
+      [(ngModel)]="this.selected_introduction_data.title"
       ngDefaultControl
       (click)="this.show_select_author_first_hint = true">
       <mat-option
-        *ngFor="let title of this.selected_introduction_data.retrieved_titles"
+        *ngFor="let title of this.api.get_title_list"
         [value]="title"
-        (click)="this.selected_introduction_data.selected_fragment_title = title"
+        (click)="this.selected_introduction_data.title = title"
         (click)="this.reset_introduction_form()"
         (click)="this.update_form_field('introduction_form_group', 'author', author)"
         (click)="this.update_form_field('introduction_form_group', 'title', title)"
@@ -46,14 +46,14 @@
   </mat-form-field>
   <mat-error
     class="mat-error-inline"
-    *ngIf="this.show_select_author_first_hint && !this.selected_introduction_data.selected_fragment_author"
+    *ngIf="this.show_select_author_first_hint && !this.selected_introduction_data.author"
     >Please select an author first</mat-error
   >
 
   <!-- Introduction text with wysiwyg editor -->
   <form [formGroup]="introduction_form_group">
     <!-- Author introduction text field -->
-    <ng-container *ngIf="this.selected_introduction_data.selected_fragment_author">
+    <ng-container *ngIf="this.selected_introduction_data.author">
       <mat-form-field class="input-form-full-width">
         <mat-label><b>Author introduction</b></mat-label>
         <textarea matInput type="text" formControlName="author_text"></textarea>
@@ -61,7 +61,7 @@
     </ng-container>
 
     <!-- Title introduction text field -->
-    <ng-container *ngIf="this.selected_introduction_data.selected_fragment_title">
+    <ng-container *ngIf="this.selected_introduction_data.title">
       <mat-form-field class="input-form-full-width">
         <mat-label><b>Title introduction</b></mat-label>
         <textarea matInput type="text" formControlName="title_text"></textarea>
