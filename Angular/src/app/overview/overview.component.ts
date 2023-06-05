@@ -2,7 +2,7 @@
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog'; // Library used for interacting with the page
-import { environment } from '@src/environments/environment';
+//import { environment } from '@src/environments/environment';
 
 // Service imports
 import { ApiService } from '@oscc/api.service';
@@ -104,16 +104,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
    * Function to handle the login dialog
    * @author Ycreak
    */
-  protected login(): void {
-    this.matdialog.open(LoginComponent, {});
-  }
-
-  /**
-   * Returns the title from the environment for the frontend to print
-   * @param kind to print: either long or short
-   * @author Ycreak
-   */
-  protected get_title(kind: string) {
-    return kind == 'long' ? environment.title : environment.short_title;
+  public login(): void {
+    const dialogRef = this.matdialog.open(LoginComponent, {});
   }
 }
