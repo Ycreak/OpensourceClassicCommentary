@@ -15,7 +15,7 @@ import { Fragment } from './models/Fragment';
 import { Column } from './models/Column';
 import { User } from './models/User';
 import { Introduction_form } from './models/Introduction_form';
-import { Introductions } from './introductions/Introduction_example';
+import { Introductions } from './dashboard/introductions/Introduction_example';
 import { DialogService } from './services/dialog.service';
 
 export interface fragment_key {
