@@ -27,11 +27,11 @@ div.dialog-header button {
   display: inline-flex;
 }
 
-/* Disable ripple effect on autofocus */
+// Disable ripple effect on autofocus
 div.dialog-header button:focus {
   --mat-mdc-button-persistent-ripple-color: none;
 }
-/* Reenables the effect on focus */
+// Reenables the effect on focus
 div.dialog-header button:hover {
   --mat-mdc-button-persistent-ripple-color: black !important;
 }
