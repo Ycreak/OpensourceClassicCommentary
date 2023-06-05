@@ -1,32 +1,7 @@
 @use "@angular/material" as mat;
 
 @import url("../app.component.scss");
-// Fragments component specific CSS. For more generic CSS, see ../app.component.scss.
-
-// @include mat.checkbox-density(1);
-// @include mat.mat-checkbox-label {
-//   color: white;
-// }
-
-/* Toolbar/header CSS */
-// Alignment
-// mat-checkbox.btn label span.mat-checkbox-inner-container {
-//   width: 28px;
-// }
-
-// mat-checkbox.btn label span.mat-checkbox-label {
-//   width: fit-content;
-// }
-
-// Hide checkmark
-// mat-checkbox.btn label span span svg {
-//   display: none
-// }
-
-// // Onclick ripple effect
-// button.btn span.mat-ripple {
-//   width: inherit;
-// }
+/* Fragments component specific CSS. For more generic CSS, see ../app.component.scss. */
 
 /* Fragments toolbar */
 .fragments-toolbar {
@@ -45,12 +20,12 @@
   margin-left: 0.5rem;
 }
 
-// Styling for the container element
+/* Styling for the container element */
 ng-template {
   height: 100%;
 }
 
-// To show a little hand on <a> elements without href but with click events
+/* To show a little hand on <a> elements without href but with click events */
 .a-void {
   cursor: pointer;
   color: black;
@@ -58,18 +33,18 @@ ng-template {
 
 /* Fragment and commentary column related CSS */
 
-// Box in which the fragment is shown. Created by the for-loop in Fragment Column.
+/* Box in which the fragment is shown. Created by the for-loop in Fragment Column. */
 .fragment-box {
   padding: 10px 5px 0px 5px;
   border-bottom: solid 1px #ccc;
   color: rgba(0, 0, 0, 0.87);
-  // display: block;
+  /* display: block; */
   flex-direction: row;
   align-items: center;
-  // justify-content: space-between;
-  // box-sizing: border-box;
+  /* justify-content: space-between; */
+  /* box-sizing: border-box; */
   cursor: move;
-  // background: white;
+  /* background: white; */
   font-size: 14px;
 
   &:hover {
@@ -77,8 +52,8 @@ ng-template {
     cursor: pointer;
   }
 
-  // Border on left side has color gradient indicating initial fragment order.
-  // Border-left-color property is generated and set elsewhere via types
+  /* Border on left side has color gradient indicating initial fragment order. */
+  /* Border-left-color property is generated and set elsewhere via types */
   border-left-style: solid;
   border-left-width: medium;
   border-left-color: transparent;
@@ -103,12 +78,12 @@ ng-template {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-// For the notes in the playground
+/* For the notes in the playground */
 .input-form {
   width: var(--width);
 }
 
-// Text component
+/* Text component */
 ::ng-deep .mat-line {
   word-wrap: break-word !important;
   white-space: pre-wrap !important;
@@ -133,7 +108,13 @@ ng-template {
   color: white;
 }
 
-.fragments-toolbar {
+.column-toolbar {
+  max-height: 30px;
+  color: white;
+  /* outline: 1px solid black; */
+  background: #9fa1fe;
+}
+.main-column-toolbar {
   max-height: 30px;
   background: #9fa1fe;
   border-bottom: 0.1em solid #3f51b5;
@@ -143,6 +124,6 @@ ng-template {
 .fragment-column-toolbar {
   max-height: 30px;
   color: white;
-  // outline: 1px solid black;
+  /* outline: 1px solid black; */
   background: #9fa1fe;
 }
