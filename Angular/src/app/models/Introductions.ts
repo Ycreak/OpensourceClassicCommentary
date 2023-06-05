@@ -1,5 +1,3 @@
-// A demo example to show what the introduction text could look like
-
 export class Introductions {
   public dict = {
     Ennius:

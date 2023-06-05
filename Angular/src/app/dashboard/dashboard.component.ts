@@ -21,7 +21,6 @@ import { DialogService } from '@oscc/services/dialog.service';
 import { Fragment } from '@oscc/models/Fragment';
 import { Column } from '@oscc/models/Column';
 import { User } from '@oscc/models/User';
-import { IntroductionsComponent } from './introductions/introductions.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -42,7 +41,6 @@ import { IntroductionsComponent } from './introductions/introductions.component'
       transition(':leave', [animate('500ms', style({ opacity: 0, transform: 'translateY(10px)' }))]),
     ]),
   ],
-  providers: [IntroductionsComponent],
 })
 export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   // For the user table
@@ -94,6 +92,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     differences: new FormControl(''),
     commentary: new FormControl(''),
     apparatus: new FormControl(''),
+    metrical_analysis: new FormControl(''),
     reconstruction: new FormControl(''),
     // This array is dynamically filled by the function push_fragment_context_to_fragment_form().
     // It will contain multiple FormGroups per context, containing an author, location and text.
@@ -136,8 +135,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     protected api: ApiService,
     protected utility: UtilityService,
     protected dialog: DialogService,
-    protected auth_service: AuthService,
-    protected introductions: IntroductionsComponent
+    protected auth_service: AuthService
   ) {
     // Assign the data to the data source for the table to render
     this.user_table_users = new MatTableDataSource(this.retrieved_users);
@@ -164,7 +162,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.expand_user_table_row();
 
     /** Handle what happens when new fragment names arrive */
-    this.fragment_names_subscription = this.api.new_fragment_names_alert.subscribe((column_id) => {
+    this.fragment_names_subscription = this.api.new_fragment_names_alert$.subscribe((column_id) => {
       if (column_id == environment.dashboard_id) {
         this.selected_fragment_data.fragment_names = this.api.fragment_names;
       } else if (column_id == environment.referencer_id) {
@@ -173,8 +171,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     /** Handle what happens when new fragments arrive */
-    this.fragments_subscription = this.api.new_fragments_alert.subscribe((column_id) => {
+    this.fragments_subscription = this.api.new_fragments_alert$.subscribe((column_id) => {
       if (column_id == environment.dashboard_id) {
+        this.reset_fragment_form();
         this.convert_Fragment_to_fragment_form(this.api.fragments[0]);
         // Set the data for the drop down menus
         this.selected_fragment_data.author = this.fragment_form.value.author;
@@ -224,7 +223,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       // The other content fields can be updated by just getting their content strings
       this.dialog.open_wysiwyg_dialog(this.fragment_form.value[field]).subscribe((result) => {
         if (result) {
-          this.fragment_form.patchValue({ [field]: result });
+          this.update_form_field('fragment_form', field, result);
         }
       });
     }
@@ -261,11 +260,12 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       'commentary',
       'apparatus',
       'reconstruction',
+      'metrical_analysis',
       'status',
       'lock',
       'published',
     ]) {
-      this.fragment_form.patchValue({ [item]: fragment[item] });
+      this.update_form_field('fragment_form', item, fragment[item]);
     }
 
     // Fill the fragment context array
@@ -423,13 +423,24 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   /**
+   * Updates a value of a key in the given form
+   * @param form what form is to be updated
+   * @param key what field is to be updated
+   * @param value what value is to be written
+   * @author Ycreak
+   */
+  protected update_form_field(form: string, key: string, value: string): void {
+    this[form].patchValue({ [key]: value });
+  }
+
+  /**
    * Function to reset the fragment form
    * @author Ycreak
    */
   protected reset_fragment_form(): void {
     // First, remove all data from the form
     this.fragment_form.reset();
-    // Second, remove the controls created for the FormArrays
+    // Second, remove the previously created FormArray controls and set new ones
     this.fragment_form.setControl('context', new FormArray([]));
     this.fragment_form.setControl('lines', new FormArray([]));
     this.fragment_form.setControl('linked_fragments', new FormArray([]));
