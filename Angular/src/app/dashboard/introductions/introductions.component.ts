@@ -57,4 +57,26 @@ export class IntroductionsComponent implements OnInit {
     const introdemo = new Introductions();
     this.dialog.open_custom_dialog(introdemo.dict['Ennius']);
   }
+
+  /**
+   * This function requests a wysiwyg dialog to handle data updating to the fragment_form.
+   * It functions by providing the field of fragment_form which is to be updated by the editor.
+   * The dialog is called provided the config of the editor and the string to be edited. An edited string
+   * is returned by the dialog service
+   * @param field from fragment_form which is to be send and updated
+   * @author Ycreak
+   */
+  protected request_wysiwyg_dialog(field: string, index = 0): void {
+    if (field == 'author_text' || field == 'title_text') {
+      const text = this.introduction_form_group.value[field];
+      this.dialog.open_wysiwyg_dialog(text).subscribe((result) => {
+        if (result) {
+          // Pass the accepted changes to the regular form field.
+          this.introduction_form_group.patchValue({ [field]: result });
+        }
+      });
+    } else {
+      throw Error('Error: cannot open wysiwyg dialog for this field');
+    }
+  }
 }

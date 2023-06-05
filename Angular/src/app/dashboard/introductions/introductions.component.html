@@ -57,6 +57,12 @@
         <mat-label><b>Author introduction</b></mat-label>
         <textarea matInput type="text" formControlName="author_text"></textarea>
       </mat-form-field>
+      <!-- Button for opening the wysiwyg editor -->
+      <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('author_text')">
+        Rich editor
+      </button>
+      <div class="div-padding-lg"></div>
+      <div class="div-padding-sm"></div>
     </ng-container>
 
     <!-- Title introduction text field -->
@@ -64,11 +70,13 @@
       <mat-form-field class="input-form-full-width">
         <mat-label><b>Title introduction</b></mat-label>
         <textarea matInput type="text" formControlName="title_text"></textarea>
-      </mat-form-field> </ng-container
-    ><br />
-
-    <!-- Button for opening the wysiwyg editor -->
-    <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('title_text')">Rich editor</button>
+      </mat-form-field>
+      <!-- Button for opening the wysiwyg editor -->
+      <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('title_text')">Rich editor</button>
+      <div class="div-padding-lg"></div>
+      <div class="div-padding-sm"></div>
+    </ng-container>
+    <br />
 
     <!-- Save button -->
     <button
