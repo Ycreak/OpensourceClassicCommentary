@@ -78,7 +78,7 @@
             "
             (click)="this.selected_fragment_data.retrieved_titles = this.api.get_title_list(author)"
             (click)="this.reset_fragment_form()"
-            (click)="this.update_form_field('fragment_form', 'author', author)"
+            (click)="this.fragment_form.patchValue({ author: author })"
             (click)="this.fragment_selected = false">
             {{ author }}
           </mat-option>
@@ -97,8 +97,8 @@
               this.selected_fragment_data.retrieved_editors = []; this.selected_fragment_data.fragment_names = []
             "
             (click)="this.reset_fragment_form()"
-            (click)="this.update_form_field('fragment_form', 'author', selected_fragment_data.author)"
-            (click)="this.update_form_field('fragment_form', 'title', title)"
+            (click)="this.fragment_form.patchValue({ author: selected_fragment_data.author })"
+            (click)="this.fragment_form.patchValue({ title: title })"
             (click)="
               this.selected_fragment_data.retrieved_editors = this.api.get_editor_list(
                 this.selected_fragment_data.author,
@@ -121,9 +121,9 @@
             (click)="this.selected_fragment_data.name = ''"
             (click)="this.selected_fragment_data.fragment_names = []"
             (click)="this.reset_fragment_form()"
-            (click)="this.update_form_field('fragment_form', 'author', selected_fragment_data.author)"
-            (click)="this.update_form_field('fragment_form', 'title', selected_fragment_data.title)"
-            (click)="this.update_form_field('fragment_form', 'editor', editor)"
+            (click)="this.fragment_form.patchValue({ author: selected_fragment_data.author })"
+            (click)="this.fragment_form.patchValue({ title: selected_fragment_data.title })"
+            (click)="this.fragment_form.patchValue({ editor: selected_fragment_data.editor })"
             (click)="
               this.api.request_fragment_names(
                 this.selected_fragment_data.column_id,
@@ -145,7 +145,7 @@
             *ngFor="let fragment_name of this.selected_fragment_data.fragment_names"
             [value]="fragment_name.name"
             (click)="this.selected_fragment_data.name = fragment_name.name"
-            (click)="this.update_form_field('fragment_form', 'name', fragment_name.name)"
+            (click)="this.fragment_form.patchValue({ name: fragment_name.name })"
             (click)="
               this.api.request_fragments(
                 255,
@@ -373,22 +373,6 @@
             <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('reconstruction')">
               Rich editor
             </button>
-
-            <div class="div-padding-lg"></div>
-            <div class="div-padding-sm"></div>
-
-            <mat-form-field class="input-form-full-width">
-              <mat-label><b>Fragment Metrical Analysis</b></mat-label>
-              <textarea
-                matInput
-                type="text"
-                formControlName="metrical_analysis"
-                id="FMA"
-                [matKeyboard]="'OSCC'"></textarea>
-            </mat-form-field>
-            <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('metrical_analysis')">
-              Rich editor
-            </button>
           </form>
         </mat-tab>
         <!-- end of the Fragment content tab -->
@@ -609,6 +593,10 @@
       </mat-tab-group>
     </mat-expansion-panel>
 
+    <hr />
+
+    <!-- Change author/author+title introduction expansion panel -->
+    <app-introductions></app-introductions>
     <hr />
 
     <!-- Change user expansion panel -->

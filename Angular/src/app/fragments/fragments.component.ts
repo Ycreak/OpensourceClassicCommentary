@@ -15,7 +15,6 @@ import { ColumnHandlerService } from '@oscc/services/column-handler.service';
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
 import { Column } from '@oscc/models/Column';
-import { Introductions } from '@oscc/models/Introductions';
 
 @Component({
   selector: 'app-fragments',
@@ -69,16 +68,16 @@ export class FragmentsComponent implements OnInit, OnDestroy {
       );
     }
     this.api.request_fragments(1, 'Ennius', 'Thyestes', 'TRF');
-    //this.request_introduction(this.commentary_column);
 
     /** Handle what happens when new fragments arrive */
-    this.fragments_subscription = this.api.new_fragments_alert$.subscribe((column_id) => {
+    this.fragments_subscription = this.api.new_fragments_alert.subscribe((column_id) => {
       let fragments = this.api.fragments;
 
       // A new list of fragments has arrived. Use the column identifier to find the corresponding column
       const column = this.column_handler.columns.find((x) => x.column_id == column_id);
       if (column) {
         // Prepare the fragments for publication
+        fragments = this.add_HTML_to_lines(fragments);
         fragments = fragments.sort(this.utility.sort_fragment_array_numerically);
         fragments = this.sort_fragments_on_status(fragments);
 
@@ -180,15 +179,48 @@ export class FragmentsComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * This function opens the requested introduction in a dialog
-   * @param requested_introduction string containing the requested introduction
+   * This function adds HTML to the lines of the given array. At the moment,
+   * it converts white space encoding for every applicable line by looping through
+   * all elements in a fragment list.
+   * @param array with fragments as retrieved from the server
+   * @returns updated array with nice HTML formatting included
    * @author Ycreak
-   * @TODO: this should be moved to the server
+   * @TODO: this function needs to be handled by the API when retrieving the fragments
    */
-  private request_introduction(requested_introduction: string): void {
-    const new_introduction = new Introductions();
-    const my_introduction = new_introduction.dict[requested_introduction];
-    this.dialog.open_custom_dialog(my_introduction);
+  public add_HTML_to_lines(array: Fragment[]): Fragment[] {
+    // For each element in the given array
+    for (const fragment in array) {
+      // Loop through all fragments
+      const current_fragment = array[fragment];
+      for (const item in current_fragment.lines) {
+        // Loop through all lines of current fragment
+        let line_text = current_fragment.lines[item].text;
+        line_text = this.utility.convert_whitespace_encoding(line_text);
+        // Now push the updated lines to the correct place
+        const updated_lines = {
+          line_number: current_fragment.lines[item].line_number,
+          text: line_text,
+        };
+        current_fragment.lines[item] = updated_lines;
+      }
+      // replaces the summary tag with summary CSS class for each commentary field
+      current_fragment.apparatus = this.convert_summary_tag_to_html(current_fragment.apparatus);
+      current_fragment.differences = this.convert_summary_tag_to_html(current_fragment.differences);
+      current_fragment.translation = this.convert_summary_tag_to_html(current_fragment.translation);
+      current_fragment.commentary = this.convert_summary_tag_to_html(current_fragment.commentary);
+      current_fragment.reconstruction = this.convert_summary_tag_to_html(current_fragment.reconstruction);
+    }
+    return array;
+  }
+
+  /**
+   * Converts the summary tag in the given blob of text to html
+   * @param string with text blob possibly containing the summary tag
+   * @returns string with the summary tag replaced with corresponding html
+   * @author Ycreak
+   */
+  private convert_summary_tag_to_html(given_string: string): string {
+    return given_string.replace(/\[summary\]([\s\S]*?)\[\/summary\]/gm, '<div class="summary">$1</div>');
   }
 
   /**

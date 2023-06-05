@@ -10,12 +10,11 @@ export class Fragment {
   editor = '';
   name = '';
 
-  translation: string;
-  commentary: string;
-  apparatus: string;
-  reconstruction: string;
-  differences: string;
-  metrical_analysis: string;
+  translation = '';
+  differences = '';
+  apparatus = '';
+  commentary = '';
+  reconstruction = '';
   context: Context[];
 
   status = '';
@@ -40,16 +39,7 @@ export class Fragment {
    * @param fragment with JSON data received from the server
    * @author Ycreak
    */
-  public set_fragment(fragment: any) {
-    this.translation = 'translation' in fragment ? (this.translation = fragment['translation']) : '';
-    this.commentary = 'commentary' in fragment ? (this.commentary = fragment['commentary']) : '';
-    this.apparatus = 'apparatus' in fragment ? (this.apparatus = fragment['apparatus']) : '';
-    this.reconstruction = 'reconstruction' in fragment ? (this.reconstruction = fragment['reconstruction']) : '';
-    this.differences = 'differences' in fragment ? (this.differences = fragment['differences']) : '';
-    this.metrical_analysis =
-      'metrical_analysis' in fragment ? (this.metrical_analysis = fragment['metrical_analysis']) : '';
-    this.context = 'context' in fragment ? (this.context = fragment['context']) : [];
-
+  public set_fragment(fragment) {
     if ('_id' in fragment) {
       this._id = fragment['_id'];
     }
@@ -65,7 +55,24 @@ export class Fragment {
     if ('name' in fragment) {
       this.name = fragment['name'];
     }
-
+    if ('translation' in fragment) {
+      this.translation = fragment['translation'];
+    }
+    if ('differences' in fragment) {
+      this.differences = fragment['differences'];
+    }
+    if ('apparatus' in fragment) {
+      this.apparatus = fragment['apparatus'];
+    }
+    if ('commentary' in fragment) {
+      this.commentary = fragment['commentary'];
+    }
+    if ('reconstruction' in fragment) {
+      this.reconstruction = fragment['reconstruction'];
+    }
+    if ('context' in fragment) {
+      this.context = fragment['context'];
+    }
     if ('status' in fragment) {
       this.status = fragment['status'];
     }
@@ -84,72 +91,6 @@ export class Fragment {
     if ('bibliography' in fragment) {
       this.bibliography = fragment['bibliography'];
     }
-
-    this.add_html_to_commentary();
-  }
-
-  /**
-   * This function adds HTML to the lines of the given array. At the moment,
-   * it converts white space encoding for every applicable line by looping through
-   * all elements in a fragment list.
-   * @param array with fragments as retrieved from the server
-   * @returns updated array with nice HTML formatting included
-   * @author Ycreak
-   * @TODO: this function needs to be handled by the API when retrieving the fragments
-   */
-  private add_html_to_commentary(): void {
-    for (const item in this.lines) {
-      // Loop through all lines of current fragment
-      let line_text = this.lines[item].text;
-      line_text = this.convert_whitespace_encoding(line_text);
-      // Now push the updated lines to the correct place
-      const updated_lines = {
-        line_number: this.lines[item].line_number,
-        text: line_text,
-      };
-      this.lines[item] = updated_lines;
-    }
-    // replaces the summary tag with summary CSS class for each commentary field
-    this.apparatus = this.convert_summary_tag_to_html(this.apparatus);
-    this.differences = this.convert_summary_tag_to_html(this.differences);
-    this.translation = this.convert_summary_tag_to_html(this.translation);
-    this.commentary = this.convert_summary_tag_to_html(this.commentary);
-    this.reconstruction = this.convert_summary_tag_to_html(this.reconstruction);
-    this.metrical_analysis = this.convert_summary_tag_to_html(this.metrical_analysis);
-  }
-
-  /**
-   * Converts the summary tag in the given blob of text to html
-   * @param string with text blob possibly containing the summary tag
-   * @returns string with the summary tag replaced with corresponding html
-   * @author Ycreak
-   */
-  private convert_summary_tag_to_html(given_string: string): string {
-    if (given_string != '') {
-      return given_string.replace(/\[summary\]([\s\S]*?)\[\/summary\]/gm, '<div class="summary">$1</div>');
-    } else {
-      return given_string;
-    }
-  }
-
-  /**
-   * Takes a string and looks for whitespace decoding. Converts it to html spans
-   * @param string that needs whitespaces converted to html spans
-   * @returns string with whitespaces converted to html spans
-   * @author Ycreak
-   */
-  private convert_whitespace_encoding(string: string): string {
-    // Find fish hooks with number in between.
-    const matches = string.match(/<(\d+)>/);
-    // If found, replace it with the correct whitespace number
-    if (matches) {
-      console.log(matches);
-      // Create a span with the number of indents we want. Character level.
-      // matches[0] contains including fish hooks, matches[1] only number
-      const replacement = '<span style="padding-left:' + matches[1] + 'ch;"></span>';
-      string = string.replace(matches[0], replacement);
-    }
-    return string;
   }
 
   /**

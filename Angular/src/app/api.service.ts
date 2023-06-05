@@ -3,17 +3,19 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
-import { Observable, throwError, ReplaySubject, BehaviorSubject } from 'rxjs';
+import { Observable, throwError, ReplaySubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { environment } from '@src/environments/environment';
 
 // Service imports
-import { UtilityService } from './utility.service';
+import { UtilityService } from '@oscc/utility.service';
 
 // Model imports
-import { Fragment } from './models/Fragment';
-import { Column } from './models/Column';
-import { User } from './models/User';
+import { Fragment } from '@oscc/models/Fragment';
+import { Column } from '@oscc/models/Column';
+import { User } from '@oscc/models/User';
+import { Introduction_form } from '@oscc/models/Introduction_form';
+import { DialogService } from '@oscc/services/dialog.service';
 
 export interface fragment_key {
   author?: string;
@@ -51,7 +53,7 @@ export class ApiService {
   network_status: boolean; // Indicates if server is reachable or not
   spinner: boolean;
 
-  constructor(private http: HttpClient, private utility: UtilityService) {
+  constructor(private http: HttpClient, private utility: UtilityService, private dialog: DialogService) {
     this.network_status = true; // Assumed online until HttpErrorResponse is received.
   }
 
@@ -71,12 +73,8 @@ export class ApiService {
   public new_authors_alert = new ReplaySubject(0);
   public new_titles_alert = new ReplaySubject(0);
   public new_editors_alert = new ReplaySubject(0);
-
-  private new_fragments_alert = new BehaviorSubject<number>(-1);
-  public new_fragments_alert$ = this.new_fragments_alert.asObservable();
-
-  private new_fragment_names_alert = new BehaviorSubject<number>(-1);
-  public new_fragment_names_alert$ = this.new_fragment_names_alert.asObservable();
+  public new_fragments_alert = new ReplaySubject(0);
+  public new_fragment_names_alert = new ReplaySubject(0);
 
   private create_fragment_key(author?: string, title?: string, editor?: string, name?: string): fragment_key {
     const key: fragment_key = {};
@@ -278,6 +276,46 @@ export class ApiService {
   }
 
   /**
+   * Function to request the introduction text for a given author or author + title.
+   * @param intro Introduction object with form data; contains selected author and title data.
+   * @author CptVickers
+   */
+  public request_introduction(intro: Introduction_form): void {
+    this.get_introduction_text(intro).subscribe((data) => {
+      if (data) {
+        console.log(data);
+        // Store the received introduction data in the form
+        intro.author_text = data['author_text'];
+        intro.title_text = data['title_text'];
+        return intro;
+      }
+    });
+  }
+
+  /**
+   * Function to save the introduction text for a given author or author + title.
+   * @param intro: Introduction object with form data; contains selected author and title data,
+   *               as well as the introduction text to be saved.
+   * @returns A text message indicating success/failure.
+   * @author CptVickers
+   */
+  public request_save_introduction(Introduction_form: Introduction_form): string {
+    const request: Observable<any> = this.set_introduction_text(Introduction_form);
+    let result = '';
+
+    request.subscribe({
+      next: (data) => {
+        result += data;
+      },
+      error: (err) => {
+        result += err;
+        this.handle_error_message(err);
+      },
+    });
+    return result;
+  }
+
+  /**
    * Getter function for public property network_status
    * @return boolean network_status - Status indicating whether or not the server is
    *                                    successfully returning requests
@@ -423,6 +461,18 @@ export class ApiService {
   }
   public automatic_fragment_linker(fragment: Fragment): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `automatic_fragment_linker`, fragment, {
+      observe: 'response',
+      responseType: 'text' as 'json',
+    });
+  }
+  public get_introduction_text(intro: Introduction_form): Observable<any> {
+    return this.http.post<any>(this.FlaskURL + 'introduction/get_introduction_text', intro, {
+      observe: 'body',
+      responseType: 'json',
+    });
+  }
+  public set_introduction_text(intro: Introduction_form): Observable<any> {
+    return this.http.post<any>(this.FlaskURL + 'introduction/set_introduction_text', intro, {
       observe: 'response',
       responseType: 'text' as 'json',
     });
