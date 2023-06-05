@@ -6,6 +6,6 @@ export class Introduction_form {
 
   author = '';
   title = '';
-  author_introduction_text = '';
-  title_introduction_text = '';
+  author_text = '';
+  title_text = '';
 }
