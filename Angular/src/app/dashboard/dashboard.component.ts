@@ -234,7 +234,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       // The other content fields can be updated by just getting their content strings
       this.dialog.open_wysiwyg_dialog(this.fragment_form.value[field]).subscribe((result) => {
         if (result) {
-          this.update_form_field('fragment_form', field, result);
+          this.fragment_form.patchValue({ [field]: result });
         }
       });
     }
@@ -276,7 +276,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       'lock',
       'published',
     ]) {
-      this.update_form_field('fragment_form', item, fragment[item]);
+      this.fragment_form.patchValue({ [item]: fragment[item] });
     }
 
     // Fill the fragment context array
@@ -431,17 +431,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       referencer_column.editor,
       referencer_column.name
     );
-  }
-
-  /**
-   * Updates a value of a key in the given form
-   * @param form what form is to be updated
-   * @param key what field is to be updated
-   * @param value what value is to be written
-   * @author Ycreak
-   */
-  protected update_form_field(form: string, key: string, value: string): void {
-    this[form].patchValue({ [key]: value });
   }
 
   /**

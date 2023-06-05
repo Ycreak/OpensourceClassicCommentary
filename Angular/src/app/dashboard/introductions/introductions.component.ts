@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ApiService } from '@oscc/api.service';
 import { AuthService } from '@oscc/auth/auth.service';
 import { Introduction_form } from '@oscc/models/Introduction_form';
+import { UtilityService } from '../../utility.service';
 
 @Component({
   selector: 'app-introductions',
@@ -26,7 +28,7 @@ export class IntroductionsComponent implements OnInit {
   // This is used for alerting the user that the introduction texts have been saved.
   show_changes_saved_hint = false;
 
-  constructor(protected auth_service: AuthService) {}
+  constructor(protected auth_service: AuthService, protected api: ApiService, private utility: UtilityService) {}
 
   ngOnInit(): void {
     this.selected_introduction_data = new Introduction_form({});

@@ -12,15 +12,15 @@
     <mat-label>Select author</mat-label>
     <mat-select [(ngModel)]="this.selected_introduction_data.author" ngDefaultControl>
       <mat-option
-        *ngFor="let author of this.api.get_author_list"
+        *ngFor="let author of this.api.get_author_list()"
         [value]="author"
         (click)="this.selected_introduction_data.author = author"
         (click)="this.selected_introduction_data.title = ''"
         (click)="this.selected_introduction_data.retrieved_titles = []"
         (click)="this.reset_introduction_form()"
-        (click)="this.update_form_field('introduction_form_group', 'author', author)"
+        (click)="this.introduction_form_group.patchValue({ author: author })"
         (click)="this.api.request_titles(selected_introduction_data)"
-        (click)="this.request_introduction(this.selected_introduction_data)"
+        (click)="this.api.request_introduction(this.selected_introduction_data)"
         (click)="this.show_select_author_first_hint = false">
         {{ author }}
       </mat-option>
@@ -33,13 +33,13 @@
       ngDefaultControl
       (click)="this.show_select_author_first_hint = true">
       <mat-option
-        *ngFor="let title of this.api.get_title_list"
+        *ngFor="let title of this.api.get_title_list()"
         [value]="title"
         (click)="this.selected_introduction_data.title = title"
         (click)="this.reset_introduction_form()"
-        (click)="this.update_form_field('introduction_form_group', 'author', author)"
-        (click)="this.update_form_field('introduction_form_group', 'title', title)"
-        (click)="this.request_introduction(this.selected_introduction_data)">
+        (click)="this.introduction_form_group.patchValue({ author: author })"
+        (click)="this.introduction_form_group.patchValue({ title: title })"
+        (click)="this.api.request_introduction(this.selected_introduction_data)">
         {{ title }}
       </mat-option>
     </mat-select>
@@ -68,8 +68,10 @@
       </mat-form-field> </ng-container
     ><br />
 
-    <!-- Save button-->
+    <!-- Button for opening the wysiwyg editor -->
     <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('title_text')">Rich editor</button>
+
+    <!-- Save button -->
     <button
       mat-button
       class="button-margin-extra confirm-button"
