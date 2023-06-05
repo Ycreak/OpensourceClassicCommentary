@@ -19,7 +19,6 @@
         (click)="this.selected_introduction_data.retrieved_titles = []"
         (click)="this.reset_introduction_form()"
         (click)="this.introduction_form_group.patchValue({ author: author })"
-        (click)="this.api.request_titles(selected_introduction_data)"
         (click)="this.api.request_introduction(this.selected_introduction_data)"
         (click)="this.show_select_author_first_hint = false">
         {{ author }}
@@ -33,7 +32,7 @@
       ngDefaultControl
       (click)="this.show_select_author_first_hint = true">
       <mat-option
-        *ngFor="let title of this.api.get_title_list()"
+        *ngFor="let title of this.api.get_title_list(this.selected_introduction_data.author)"
         [value]="title"
         (click)="this.selected_introduction_data.title = title"
         (click)="this.reset_introduction_form()"
