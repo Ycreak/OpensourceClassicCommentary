@@ -15,6 +15,8 @@ import { Fragment } from './models/Fragment';
 import { Column } from './models/Column';
 import { User } from './models/User';
 import { Introduction_form } from './models/Introduction_form';
+import { Introductions } from './models/Introduction_example';
+import { DialogService } from './services/dialog.service';
 
 export interface fragment_key {
   author?: string;
@@ -52,7 +54,7 @@ export class ApiService {
   network_status: boolean; // Indicates if server is reachable or not
   spinner: boolean;
 
-  constructor(private http: HttpClient, private utility: UtilityService) {
+  constructor(private http: HttpClient, private utility: UtilityService, private dialog: DialogService) {
     this.network_status = true; // Assumed online until HttpErrorResponse is received.
   }
 
@@ -279,6 +281,51 @@ export class ApiService {
   }
 
   /**
+   * Function to request the introduction text for a given author or author + title.
+   * @param intro Introduction object with form data; contains selected author and title data.
+   * @author CptVickers
+   */
+  public request_introduction(intro: Introduction_form): void {
+    // TODO: This is some code for demo purposes
+    const introdemo = new Introductions();
+    this.dialog.open_custom_dialog(introdemo.dict['Ennius']);
+
+    // TODO: Actual request below
+    this.get_introduction_text(intro).subscribe((data) => {
+      if (data) {
+        console.log(data);
+        // Store the received introduction data in the form
+        intro.author_introduction_text = data['author_introduction_text'];
+        intro.title_introduction_text = data['title_introduction_text'];
+        return intro;
+      }
+    });
+  }
+
+  /**
+   * Function to save the introduction text for a given author or author + title.
+   * @param intro: Introduction object with form data; contains selected author and title data,
+   *               as well as the introduction text to be saved.
+   * @returns A text message indicating success/failure.
+   * @author CptVickers
+   */
+  public request_save_introduction(Introduction_form: Introduction_form): string {
+    const request: Observable<any> = this.set_introduction_text(Introduction_form);
+    let result = '';
+
+    request.subscribe({
+      next: (data) => {
+        result += data;
+      },
+      error: (err) => {
+        result += err;
+        this.handle_error_message(err);
+      },
+    });
+    return result;
+  }
+
+  /**
    * Getter function for public property network_status
    * @return boolean network_status - Status indicating whether or not the server is
    *                                    successfully returning requests
@@ -429,13 +476,16 @@ export class ApiService {
     });
   }
   public get_introduction_text(intro: Introduction_form): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + 'introduction/get_introduction_text', intro, {observe: 'body', responseType: 'json' });
+    return this.http.post<any>(this.FlaskURL + 'introduction/get_introduction_text', intro, {
+      observe: 'body',
+      responseType: 'json',
+    });
   }
-  public set_author_introduction_text(intro: Introduction_form): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + 'introduction/set_author_introduction_text', intro, {observe: 'response', responseType: 'text' as 'json'});
-  }
-  public set_title_introduction_text(intro: Introduction_form): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + 'introduction/set_title_introduction_text', intro, {observe: 'response', responseType: 'text' as 'json'});
+  public set_introduction_text(intro: Introduction_form): Observable<any> {
+    return this.http.post<any>(this.FlaskURL + 'introduction/set_introduction_text', intro, {
+      observe: 'response',
+      responseType: 'text' as 'json',
+    });
   }
   // Users
   public get_users(user: User): Observable<User[]> {

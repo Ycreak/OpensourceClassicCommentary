@@ -4,11 +4,11 @@
   <!-- Fragment information -->
   <h5>
     Selected
-    <a class="a-void" (click)="this.request_introduction(this.current_fragment.author)">{{
+    <a class="a-void" (click)="this.api.request_introduction(this.current_fragment.author)">{{
       this.current_fragment.author
     }}</a
     >,
-    <a class="a-void" (click)="this.request_introduction(this.current_fragment.title)">{{
+    <a class="a-void" (click)="this.api.request_introduction(this.current_fragment.title)">{{
       this.current_fragment.title
     }}</a
     >, {{ this.current_fragment.editor }},

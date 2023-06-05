@@ -141,7 +141,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   // In this object all meta data is stored regarding the currently selected fragment
   selected_fragment_data: Column;
   fragment_referencer: Column;
-  selected_introduction_data: Column;
+  selected_introduction_data: Introduction_form;
 
   // This is used for prompting the 'must select author first' hint.
   show_select_author_first_hint = false;
@@ -170,9 +170,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.fragment_referencer = new Column({
       column_id: environment.referencer_id,
     });
-    this.selected_introduction_data = new Column({
-      column_id: 1, // TODO: This needs to have a certain value, but I'm not sure what.
-    });
+    this.selected_introduction_data = new Introduction_form({});
   }
 
   // initiate the table sorting and paginator
@@ -472,59 +470,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.fragment_form.setControl('context', new FormArray([]));
     this.fragment_form.setControl('lines', new FormArray([]));
     this.fragment_form.setControl('linked_fragments', new FormArray([]));
-  }
-
-  /**
-   * Function to request the introduction text for a given author or author + title.
-   * @param intro Introduction object with form data; contains selected author and title data.
-   * @author CptVickers
-   * @TODO: Move this somewhere else
-   */
-  private request_introduction(intro: Introduction_form): void {
-    this.api.get_introduction_text(intro).subscribe((data) => {
-      if (data) {
-        console.log(data);
-        // Store the received introduction data in the form
-        intro.author_introduction_text = data['author_introduction_text'];
-        intro.title_introduction_text = data['title_introduction_text'];
-        // Update the actual form field TODO: This is only relevant in dashboard. Be sure to remove this when this function is moved somewhere else.
-        this.update_form_field('introduction_form_group', 'author_introduction_text', data['author_introduction_text']);
-        this.update_form_field('introduction_form_group', 'title_introduction_text', data['title_introduction_text']);
-      }
-    });
-  }
-
-  /**
-   * Function to save the introduction text for a given author or author + title.
-   * @param intro: Introduction object with form data; contains selected author and title data,
-   *               as well as the introduction text to be saved.
-   * @returns A text message indicating success/failure.
-   * @author CptVickers
-   * @TODO: move this somewhere else
-   */
-  public request_save_introduction(field: string): string {
-    console.log(field);
-    let request: Observable<any>;
-    if (field != 'author' && field != 'title') {
-      throw Error(`Error: attempted to save introduction text for invalid field: ${field}`);
-    } else if (field == 'author') {
-      request = this.api.set_author_introduction_text(this.introduction_form_group['author_introduction']);
-    } else if (field == 'title') {
-      request = this.api.set_title_introduction_text(this.introduction_form_group['title_introduction']);
-    }
-
-    let result = '';
-
-    request.subscribe({
-      next: (data) => {
-        result += data;
-      },
-      error: (err) => {
-        result += err; // TODO: Which route do we use to display the errors?
-        this.api.handle_error_message(err);
-      },
-    });
-    return result;
   }
 
   /**
