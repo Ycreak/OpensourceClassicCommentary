@@ -30,7 +30,7 @@ def get_introduction() -> make_response:
         # Make sure that only one introduction text entry is returned
         if isinstance(intro, list):
             intro = intro[0]
-            intro['title_introduction_text'] = '' # Return only author introduction text
+            intro['title_text'] = '' # Return only author introduction text
 
     # Return the introduction text to the user
     return make_response(jsonify(intro))
@@ -65,15 +65,15 @@ def make_introduction_form_object() -> IntroductionForm:
     except: 
         title = ''
     try: # FIXME: This is a hack
-        author_introduction_text = json[IntroductionFormField.AUTHOR_INTRODUCTION_TEXT]
+        author_text = json[IntroductionFormField.AUTHOR_TEXT]
     except:
-        author_introduction_text = ''
+        author_text = ''
     try:
-        title_introduction_text = json[IntroductionFormField.TITLE_INTRODUCTION_TEXT]
+        title_text = json[IntroductionFormField.TITLE_TEXT]
     except:
-        title_introduction_text = ''
+        title_text = ''
 
     return IntroductionForm(author=author,
                             title=title, 
-                            author_introduction_text=author_introduction_text, 
-                            title_introduction_text=title_introduction_text)
+                            author_text=author_text, 
+                            title_text=title_text)

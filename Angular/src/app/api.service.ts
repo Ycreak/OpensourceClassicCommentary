@@ -295,8 +295,8 @@ export class ApiService {
       if (data) {
         console.log(data);
         // Store the received introduction data in the form
-        intro.author_introduction_text = data['author_introduction_text'];
-        intro.title_introduction_text = data['title_introduction_text'];
+        intro.author_text = data['author_text'];
+        intro.title_text = data['title_text'];
         return intro;
       }
     });
