@@ -15,7 +15,6 @@ import { ColumnHandlerService } from '@oscc/services/column-handler.service';
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
 import { Column } from '@oscc/models/Column';
-import { Introduction_form } from '@oscc/models/Introduction_form';
 
 @Component({
   selector: 'app-fragments',
