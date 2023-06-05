@@ -22,8 +22,8 @@ class IntroductionFormField(object):
     ID = '_id'
     AUTHOR = 'selected_fragment_author'
     TITLE = 'selected_fragment_title'
-    AUTHOR_INTRODUCTION_TEXT = 'author_introduction_text'
-    TITLE_INTRODUCTION_TEXT = 'title_introduction_text'
+    AUTHOR_TEXT = 'author_text'
+    TITLE_TEXT = 'title_text'
 
 @dataclass
 class IntroductionForm:
@@ -31,8 +31,8 @@ class IntroductionForm:
     _id: str = ''
     author: str = ''
     title: str = ''
-    author_introduction_text: str = ''
-    title_introduction_text: str = ''
+    author_text: str = ''
+    title_text: str = ''
 
 class IntroductionFormModel:
     def __init__(self, server):
@@ -51,10 +51,10 @@ class IntroductionFormModel:
                 introduction.author = doc[IntroductionFormField.AUTHOR]
             if IntroductionFormField.TITLE in doc:
                 introduction.title = doc[IntroductionFormField.TITLE]
-            if IntroductionFormField.AUTHOR_INTRODUCTION_TEXT in doc:
-                introduction.author_introduction_text = doc[IntroductionFormField.AUTHOR_INTRODUCTION_TEXT]
-            if IntroductionFormField.TITLE_INTRODUCTION_TEXT in doc:
-                introduction.title_introduction_text = doc[IntroductionFormField.TITLE_INTRODUCTION_TEXT]
+            if IntroductionFormField.AUTHOR_TEXT in doc:
+                introduction.author_introduction_text = doc[IntroductionFormField.AUTHOR_TEXT]
+            if IntroductionFormField.TITLE_TEXT in doc:
+                introduction.title_text = doc[IntroductionFormField.TITLE_TEXT]
             result.append(introduction)
         
         if result == []:
@@ -142,7 +142,7 @@ class IntroductionFormModel:
             for entry in _intros_author:
                 print(entry)
                 doc = self.db[entry['_id']]
-                doc['author_introduction_text'] = intro.author_introduction_text
+                doc['author_text'] = intro.author_text
                 self.db.save(doc)
                 flag = True
         except Exception as e:

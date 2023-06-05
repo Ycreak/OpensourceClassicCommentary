@@ -56,7 +56,7 @@
     <ng-container *ngIf="this.selected_introduction_data.selected_fragment_author">
       <mat-form-field class="input-form-full-width">
         <mat-label><b>Author introduction</b></mat-label>
-        <textarea matInput type="text" formControlName="author_introduction_text"></textarea>
+        <textarea matInput type="text" formControlName="author_text"></textarea>
       </mat-form-field>
     </ng-container>
 
@@ -64,14 +64,12 @@
     <ng-container *ngIf="this.selected_introduction_data.selected_fragment_title">
       <mat-form-field class="input-form-full-width">
         <mat-label><b>Title introduction</b></mat-label>
-        <textarea matInput type="text" formControlName="title_introduction_text"></textarea>
+        <textarea matInput type="text" formControlName="title_text"></textarea>
       </mat-form-field> </ng-container
     ><br />
 
     <!-- Save button-->
-    <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('title_introduction_text')">
-      Rich editor
-    </button>
+    <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('title_text')">Rich editor</button>
     <button
       mat-button
       class="button-margin-extra confirm-button"

@@ -15,8 +15,8 @@ export class IntroductionsComponent implements OnInit {
   introduction_form_group = new FormGroup({
     author: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
     title: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
-    author_introduction_text: new FormControl(''),
-    title_introduction_text: new FormControl(''),
+    author_text: new FormControl(''),
+    title_text: new FormControl(''),
   });
 
   selected_introduction_data: Introduction_form;
