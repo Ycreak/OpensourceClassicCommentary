@@ -3,7 +3,9 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '@oscc/api.service';
 import { AuthService } from '@oscc/auth/auth.service';
 import { Introduction_form } from '@oscc/models/Introduction_form';
+import { Introductions } from '@oscc/dashboard/introductions/Introduction_example';
 import { UtilityService } from '../../utility.service';
+import { DialogService } from '@oscc/services/dialog.service';
 
 @Component({
   selector: 'app-introductions',
@@ -28,7 +30,7 @@ export class IntroductionsComponent implements OnInit {
   // This is used for alerting the user that the introduction texts have been saved.
   show_changes_saved_hint = false;
 
-  constructor(protected auth_service: AuthService, protected api: ApiService, private utility: UtilityService) {}
+  constructor(protected auth_service: AuthService, protected api: ApiService, protected dialog: DialogService) {}
 
   ngOnInit(): void {
     this.selected_introduction_data = new Introduction_form({});
@@ -43,5 +45,16 @@ export class IntroductionsComponent implements OnInit {
     this.introduction_form_group.reset();
     // Reset the saved changes hint
     this.show_changes_saved_hint = false;
+  }
+
+  /**
+   * Function to request the introduction text for a given author or author + title and show it in a dialog.
+   * @param intro Introduction object with form data; contains selected author and title data.
+   * @author CptVickers
+   */
+  public show_introduction_dialog(intro: Introduction_form): void {
+    // TODO: This function just shows some demo text for now; It does not fetch the correct texts from the server.
+    const introdemo = new Introductions();
+    this.dialog.open_custom_dialog(introdemo.dict['Ennius']);
   }
 }
