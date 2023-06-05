@@ -8,15 +8,14 @@ import { tap } from 'rxjs/operators';
 import { environment } from '@src/environments/environment';
 
 // Service imports
-import { UtilityService } from './utility.service';
+import { UtilityService } from '@oscc/utility.service';
 
 // Model imports
-import { Fragment } from './models/Fragment';
-import { Column } from './models/Column';
-import { User } from './models/User';
-import { Introduction_form } from './models/Introduction_form';
-import { Introductions } from './dashboard/introductions/Introduction_example';
-import { DialogService } from './services/dialog.service';
+import { Fragment } from '@oscc/models/Fragment';
+import { Column } from '@oscc/models/Column';
+import { User } from '@oscc/models/User';
+import { Introduction_form } from '@oscc/models/Introduction_form';
+import { DialogService } from '@oscc/services/dialog.service';
 
 export interface fragment_key {
   author?: string;
@@ -282,11 +281,6 @@ export class ApiService {
    * @author CptVickers
    */
   public request_introduction(intro: Introduction_form): void {
-    // TODO: This is some code for demo purposes
-    const introdemo = new Introductions();
-    this.dialog.open_custom_dialog(introdemo.dict['Ennius']);
-
-    // TODO: Actual request below
     this.get_introduction_text(intro).subscribe((data) => {
       if (data) {
         console.log(data);
