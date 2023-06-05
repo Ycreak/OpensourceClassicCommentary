@@ -21,7 +21,7 @@ import { DialogService } from '@oscc/services/dialog.service';
 import { Fragment } from '@oscc/models/Fragment';
 import { Column } from '@oscc/models/Column';
 import { User } from '@oscc/models/User';
-import { Introduction_form } from '@oscc/models/Introduction_form';
+import { IntroductionsComponent } from './introductions/introductions.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -42,6 +42,7 @@ import { Introduction_form } from '@oscc/models/Introduction_form';
       transition(':leave', [animate('500ms', style({ opacity: 0, transform: 'translateY(10px)' }))]),
     ]),
   ],
+  providers: [IntroductionsComponent],
 })
 export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   // For the user table
@@ -108,16 +109,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   });
 
   /**
-   * This form is used to change the introduction texts for authors and authors+titles
-   */
-  introduction_form_group = new FormGroup({
-    author: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
-    title: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
-    author_introduction_text: new FormControl(''),
-    title_introduction_text: new FormControl(''),
-  });
-
-  /**
    * This form is used to change the password of the selected user.
    * After all validators, it will be parsed to a User object.
    */
@@ -141,18 +132,13 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   // In this object all meta data is stored regarding the currently selected fragment
   selected_fragment_data: Column;
   fragment_referencer: Column;
-  selected_introduction_data: Introduction_form;
-
-  // This is used for prompting the 'must select author first' hint.
-  show_select_author_first_hint = false;
-  // This is used for alerting the user that the introduction texts have been saved.
-  show_changes_saved_hint = false;
 
   constructor(
     protected api: ApiService,
     protected utility: UtilityService,
     protected dialog: DialogService,
-    protected auth_service: AuthService
+    protected auth_service: AuthService,
+    protected introductions: IntroductionsComponent
   ) {
     // Assign the data to the data source for the table to render
     this.user_table_users = new MatTableDataSource(this.retrieved_users);
@@ -170,7 +156,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.fragment_referencer = new Column({
       column_id: environment.referencer_id,
     });
-    this.selected_introduction_data = new Introduction_form({});
   }
 
   // initiate the table sorting and paginator
@@ -238,11 +223,11 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       });
     } else if (field == 'author_introduction' || field == 'title_introduction') {
-      const text = this.introduction_form_group[field];
+      const text = this.introductions.introduction_form_group[field];
       this.dialog.open_wysiwyg_dialog(text).subscribe((result) => {
         if (result) {
           // Pass the accepted changes to the regular form field.
-          this.introduction_form_group.patchValue({ [field]: result });
+          this.introductions.introduction_form_group.patchValue({ [field]: result });
         }
       });
     } else {
@@ -470,17 +455,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.fragment_form.setControl('context', new FormArray([]));
     this.fragment_form.setControl('lines', new FormArray([]));
     this.fragment_form.setControl('linked_fragments', new FormArray([]));
-  }
-
-  /**
-   * Function to reset the fragment form
-   * @author CptVickers
-   */
-  protected reset_introduction_form(): void {
-    // First, remove all data from the form
-    this.introduction_form_group.reset();
-    // Reset the saved changes hint
-    this.show_changes_saved_hint = false;
   }
 
   /**
