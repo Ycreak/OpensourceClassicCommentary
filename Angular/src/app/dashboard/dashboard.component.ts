@@ -220,14 +220,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           context_array.controls[index].patchValue({ ['text']: result });
         }
       });
-    } else if (field == 'author_introduction' || field == 'title_introduction') {
-      const text = this.introductions.introduction_form_group[field];
-      this.dialog.open_wysiwyg_dialog(text).subscribe((result) => {
-        if (result) {
-          // Pass the accepted changes to the regular form field.
-          this.introductions.introduction_form_group.patchValue({ [field]: result });
-        }
-      });
     } else {
       // The other content fields can be updated by just getting their content strings
       this.dialog.open_wysiwyg_dialog(this.fragment_form.value[field]).subscribe((result) => {
