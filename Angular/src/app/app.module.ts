@@ -86,6 +86,7 @@ import { ScansionComponent } from './scansion/scansion.component';
 import { PlaygroundComponent } from './playground/playground.component';
 import { CommentaryComponent } from './commentary/commentary.component';
 import { OverviewComponent } from './overview/overview.component';
+import { IntroductionsComponent } from './introductions/introductions.component';
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
@@ -113,6 +114,7 @@ const appRoutes: Routes = [
     PlaygroundComponent,
     CommentaryComponent,
     OverviewComponent,
+    IntroductionsComponent,
   ],
   imports: [
     BrowserModule,
