@@ -15,7 +15,6 @@ import { ColumnHandlerService } from '@oscc/services/column-handler.service';
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
 import { Column } from '@oscc/models/Column';
-import { Introductions } from '@oscc/models/Introductions';
 
 @Component({
   selector: 'app-fragments',
@@ -69,7 +68,6 @@ export class FragmentsComponent implements OnInit, OnDestroy {
       );
     }
     this.api.request_fragments(1, 'Ennius', 'Thyestes', 'TRF');
-    //this.request_introduction(this.commentary_column);
 
     /** Handle what happens when new fragments arrive */
     this.fragments_subscription = this.api.new_fragments_alert$.subscribe((column_id) => {
@@ -177,18 +175,6 @@ export class FragmentsComponent implements OnInit, OnDestroy {
       // colour it if found
       //if (corresponding_fragment) corresponding_fragment.colour = '#FF4081';
     }
-  }
-
-  /**
-   * This function opens the requested introduction in a dialog
-   * @param requested_introduction string containing the requested introduction
-   * @author Ycreak
-   * @TODO: this should be moved to the server
-   */
-  private request_introduction(requested_introduction: string): void {
-    const new_introduction = new Introductions();
-    const my_introduction = new_introduction.dict[requested_introduction];
-    this.dialog.open_custom_dialog(my_introduction);
   }
 
   /**

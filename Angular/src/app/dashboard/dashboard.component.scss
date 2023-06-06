@@ -1,7 +1,7 @@
 @import url("../app.component.scss");
-// Dashboard component specific CSS. For more generic CSS, see ../app.component.scss.
+/* Dashboard component specific CSS. For more generic CSS, see ../app.component.scss. */
 
-// Input form CSS
+/* Input form CSS */
 .input-form {
   min-width: 50%;
   max-width: 90%;
@@ -21,19 +21,23 @@
 .input-form-half {
   min-width: 40%;
   max-width: 100%;
-  // width: auto;
+  /* width: auto; */
 }
 
 .input-form-full-width {
-  width: 90%; // I like the irony
+  width: 90%; /* I like the irony */
 }
 
-// Add padding between buttons
+/* Buttons */
+/* Add padding between buttons */
 mat-stroked-button {
   padding: 2em;
 }
+.confirm-button {
+  background-color: antiquewhite;
+}
 
-// Beautify the space between expansion panel header, description and icon
+/* Beautify the space between expansion panel header, description and icon */
 .mat-expansion-panel-header-title,
 .mat-expansion-panel-header-description {
   flex-basis: 0;
@@ -42,12 +46,12 @@ mat-stroked-button {
   margin-left: 8px;
 }
 
-// Allow the element to be padded on its left side
+/* Allow the element to be padded on its left side */
 .padding-left {
   padding-left: 1em;
 }
 
-// Table specific CSS
+/* Table specific CSS */
 table {
   width: 100%;
 }
@@ -86,12 +90,12 @@ tr.table-element-row:not(.table-expanded-row):active {
   opacity: 0.5;
 }
 
-// Wysiwyg-editor
+/* Wysiwyg-editor */
 ::ng-deep div.ql-toolbar button.symbol-button {
   transform: translateY(-0.2em);
 }
 
-// Wysiwyg-editor
+/* Wysiwyg-editor */
 ::ng-deep div.ql-toolbar button.symbol-button.symbol-button-alt {
   transform: translateY(-0.3em);
 }

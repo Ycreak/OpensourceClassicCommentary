@@ -17,10 +17,12 @@ COUCH_PORT = "5984"
 # List the databases here
 COUCH_FRAGMENTS = "fragments"
 COUCH_USERS = "users"
+COUCH_INTRODUCTIONS = "introductions"
 
 COUCH_TABLES = [
     COUCH_FRAGMENTS, 
-    COUCH_USERS
+    COUCH_USERS,
+    COUCH_INTRODUCTIONS
 ]
 
 COUCH_LIMIT = 1000
