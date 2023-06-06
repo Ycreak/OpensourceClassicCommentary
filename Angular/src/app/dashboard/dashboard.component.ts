@@ -22,6 +22,7 @@ import { Fragment } from '@oscc/models/Fragment';
 import { Column } from '@oscc/models/Column';
 import { User } from '@oscc/models/User';
 import { IntroductionsComponent } from './introductions/introductions.component';
+import { BibliographyComponent } from './bibliography/bibliography.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -42,7 +43,7 @@ import { IntroductionsComponent } from './introductions/introductions.component'
       transition(':leave', [animate('500ms', style({ opacity: 0, transform: 'translateY(10px)' }))]),
     ]),
   ],
-  providers: [IntroductionsComponent],
+  providers: [IntroductionsComponent, BibliographyComponent],
 })
 export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   // For the user table
@@ -106,6 +107,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     status: new FormControl('', Validators.required),
     published: new FormControl(''),
     lock: new FormControl(''),
+    linked_bib_entries: new FormControl(''),
   });
 
   /**
@@ -138,10 +140,13 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     protected utility: UtilityService,
     protected dialog: DialogService,
     protected auth_service: AuthService,
-    protected introductions: IntroductionsComponent
+    protected introductions: IntroductionsComponent,
+    protected bibliography: BibliographyComponent
   ) {
     // Assign the data to the data source for the table to render
     this.user_table_users = new MatTableDataSource(this.retrieved_users);
+
+    this.bibliography.bibliography_author_selection_form_filtered_options;
   }
 
   ngOnInit(): void {
