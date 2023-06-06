@@ -4,6 +4,7 @@
 import { Injectable } from '@angular/core';
 
 import { Column } from '@oscc/models/Column';
+import { Fragment } from '@oscc/models/Fragment';
 
 import { ApiService } from '@oscc/api.service';
 import { UtilityService } from '@oscc/utility.service';
@@ -115,5 +116,40 @@ export class ColumnHandlerService {
       connected_columns_list.push(String(i.column_id));
     }
     return connected_columns_list;
+  }
+
+  /**
+   * Given the current fragment, colour the linked fragments in the other columns
+   * @param fragment of which the linked fragments should be coloured
+   * @author Ycreak
+   */
+  public colour_linked_fragments(fragment: Fragment): void {
+    // Loop through all fragments the linked fragments
+    for (const i in fragment.linked_fragments) {
+      const author = fragment.linked_fragments[i].author;
+      const title = fragment.linked_fragments[i].title;
+      const editor = fragment.linked_fragments[i].editor;
+      const name = fragment.linked_fragments[i].name;
+      // Now, for each fragment that is linked, try to find it in the other columns
+      for (const j in this.columns) {
+        // in each column, take a look in the fragments array to find the linked fragment
+        const corresponding_fragment = this.utility.filter_array_on_object(this.columns[j].fragments, {
+          author: author,
+          title: title,
+          editor: editor,
+          name: name,
+        });
+
+        if (corresponding_fragment?.length) {
+          corresponding_fragment[0].colour = '#FF4081';
+        }
+      }
+      // Do the same for the playground TODO:
+      //const corresponding_fragment = this.playground_handler.playground.fragments.find(
+      //(i) => i._id === linked_fragment_id
+      //);
+      // colour it if found
+      //if (corresponding_fragment) corresponding_fragment.colour = '#FF4081';
+    }
   }
 }
