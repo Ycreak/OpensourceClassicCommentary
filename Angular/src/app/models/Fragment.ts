@@ -41,14 +41,13 @@ export class Fragment {
    * @author Ycreak
    */
   public set_fragment(fragment: any) {
-    this.translation = 'translation' in fragment ? (this.translation = fragment['translation']) : '';
-    this.commentary = 'commentary' in fragment ? (this.commentary = fragment['commentary']) : '';
-    this.apparatus = 'apparatus' in fragment ? (this.apparatus = fragment['apparatus']) : '';
-    this.reconstruction = 'reconstruction' in fragment ? (this.reconstruction = fragment['reconstruction']) : '';
-    this.differences = 'differences' in fragment ? (this.differences = fragment['differences']) : '';
-    this.metrical_analysis =
-      'metrical_analysis' in fragment ? (this.metrical_analysis = fragment['metrical_analysis']) : '';
-    this.context = 'context' in fragment ? (this.context = fragment['context']) : [];
+    this.translation = 'translation' in fragment ? fragment['translation'] : '';
+    this.commentary = 'commentary' in fragment ? fragment['commentary'] : '';
+    this.apparatus = 'apparatus' in fragment ? fragment['apparatus'] : '';
+    this.reconstruction = 'reconstruction' in fragment ? fragment['reconstruction'] : '';
+    this.differences = 'differences' in fragment ? fragment['differences'] : '';
+    this.metrical_analysis = 'metrical_analysis' in fragment ? fragment['metrical_analysis'] : '';
+    this.context = 'context' in fragment ? fragment['context'] : [];
 
     if ('_id' in fragment) {
       this._id = fragment['_id'];
@@ -65,7 +64,6 @@ export class Fragment {
     if ('name' in fragment) {
       this.name = fragment['name'];
     }
-
     if ('status' in fragment) {
       this.status = fragment['status'];
     }
