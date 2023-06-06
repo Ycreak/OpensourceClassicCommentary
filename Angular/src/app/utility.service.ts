@@ -196,4 +196,18 @@ export class UtilityService {
     console.log(thing);
     console.log('############ ####### ############');
   }
+
+  /**
+   * Searches an array of objects based on the given object as filter. Returns all objects
+   * that fit the filter description.
+   * @param array of objects that needs filtering
+   * @param search_object that functions as filter
+   * @return array with objects based on filter
+   * @author Ycreak
+   */
+  public filter_array_on_object(array: any, search_object: any) {
+    return array.filter((el: any) => {
+      return Object.entries(search_object).every(([key, value]) => String(el[key]).includes(String(value)));
+    });
+  }
 }

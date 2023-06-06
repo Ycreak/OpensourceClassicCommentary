@@ -118,7 +118,7 @@ export class FragmentsComponent implements OnInit, OnDestroy {
     // Second, colour the clicked fragment
     fragment.colour = '#3F51B5';
     // Lastly, colour the linked fragments
-    this.colour_linked_fragments(fragment);
+    this.column_handler.colour_linked_fragments(fragment);
     // And scroll each column to the linked fragment if requested
     if (this.settings.fragments.auto_scroll_linked_fragments) {
       this.scroll_to_linked_fragments(fragment);
@@ -147,33 +147,6 @@ export class FragmentsComponent implements OnInit, OnDestroy {
           element.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
         }
       }
-    }
-  }
-
-  /**
-   * Given the current fragment, colour the linked fragments in the other columns
-   * @param fragment of which the linked fragments should be coloured
-   * @author Ycreak
-   */
-  private colour_linked_fragments(fragment: Fragment): void {
-    // Loop through all fragments the linked fragments
-    for (const i in fragment.linked_fragments) {
-      const linked_fragment_id = fragment.linked_fragments[i].linked_fragment_id;
-      // Now, for each fragment that is linked, try to find it in the other columns
-      for (const j in this.column_handler.columns) {
-        // in each column, take a look in the fragments array to find the linked fragment
-        const corresponding_fragment = this.column_handler.columns[j].fragments.find(
-          (i) => i._id === linked_fragment_id
-        );
-        // colour it if found
-        if (corresponding_fragment) corresponding_fragment.colour = '#FF4081';
-      }
-      // Do the same for the playground TODO:
-      //const corresponding_fragment = this.playground_handler.playground.fragments.find(
-      //(i) => i._id === linked_fragment_id
-      //);
-      // colour it if found
-      //if (corresponding_fragment) corresponding_fragment.colour = '#FF4081';
     }
   }
 
