@@ -35,7 +35,7 @@
         *ngFor="let title of this.api.get_title_list(this.selected_introduction_data.author)"
         [value]="title"
         (click)="this.selected_introduction_data.title = title"
-        (click)="this.reset_introduction_form()"
+        (click)="this.reset_introduction_form('title_text')"
         (click)="this.introduction_form_group.patchValue({ author: author })"
         (click)="this.introduction_form_group.patchValue({ title: title })"
         (click)="this.api.request_introduction(this.selected_introduction_data)">

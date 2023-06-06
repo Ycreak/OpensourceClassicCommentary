@@ -39,9 +39,15 @@ export class IntroductionsComponent implements OnInit {
    * Function to reset the fragment form
    * @author CptVickers
    */
-  protected reset_introduction_form(): void {
-    // First, remove all data from the form
-    this.introduction_form_group.reset();
+  protected reset_introduction_form(field?: string): void {
+    if (field == 'author_text') {
+      this.introduction_form_group.patchValue({ author_text: '' });
+    } else if (field == 'title_text') {
+      this.introduction_form_group.patchValue({ title_text: '' });
+    } else {
+      // Remove all data from the form
+      this.introduction_form_group.reset();
+    }
     // Reset the saved changes hint
     this.show_changes_saved_hint = false;
   }
