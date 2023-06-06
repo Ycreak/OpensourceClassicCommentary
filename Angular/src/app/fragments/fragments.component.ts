@@ -178,18 +178,6 @@ export class FragmentsComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * This function opens the requested introduction in a dialog
-   * @param requested_introduction string containing the requested introduction
-   * @author Ycreak
-   * @TODO: this should be moved to the server
-   */
-  private request_introduction(requested_introduction: string): void {
-    const new_introduction = new Introductions();
-    const my_introduction = new_introduction.dict[requested_introduction];
-    this.dialog.open_custom_dialog(my_introduction);
-  }
-
-  /**
    * Sorts the given object of fragments on status. We want to display Certa, followed
    * by Incerta and Adespota.
    * @param fragments
