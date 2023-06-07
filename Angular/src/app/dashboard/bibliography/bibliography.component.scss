@@ -12,12 +12,10 @@
 }
 
 #delete-bibliography-button:enabled {
-  @include button-dashed-background;
-  background: repeating-linear-gradient(-65deg, #fff2f2, #fff2f2 12px, #ffffff 5px, #ffffff 25px);
+  @include button-dashed-background-red;
 }
 
 #delete-bibliography-button:disabled {
-  @include button-dashed-background;
-  background: repeating-linear-gradient(-65deg, #f8f8f8, #f8f8f8 12px, #ffffff 5px, #ffffff 25px);
+  @include button-dashed-background-gray;
   color: darkgray;
 }
