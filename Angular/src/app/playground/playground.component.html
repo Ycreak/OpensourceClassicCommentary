@@ -59,7 +59,7 @@
     <div class="playground-button-container col-3">
       <button
         mat-stroked-button
-        class="playground-button button-margin"
+        class="playground-button playground-delete-button button-margin"
         color="accent"
         (click)="this.delete_clicked_item_from_playground(this.playground, 'fragment')">
         Delete fragment
@@ -68,7 +68,7 @@
     <div class="playground-button-container col-3">
       <button
         mat-stroked-button
-        class="playground-button button-margin"
+        class="playground-button playground-delete-button button-margin"
         color="accent"
         (click)="this.delete_clicked_item_from_playground(this.playground, 'note')">
         Delete note
@@ -77,7 +77,7 @@
     <div class="playground-button-container col-3">
       <button
         mat-stroked-button
-        class="button-dashed-background playground-button button-margin"
+        class="button-dashed-background playground-button playground-delete-button button-margin"
         color="warn"
         (click)="this.playground.fragments = []; this.playground.note_array = []">
         Clear playground
