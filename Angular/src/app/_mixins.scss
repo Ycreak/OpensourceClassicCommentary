@@ -1,0 +1,9 @@
+$theme-primary: #3f51b5;
+$theme-secondary: #ff4081;
+
+@mixin button-dashed-background {
+  background-position: 10px 0, 10px 0, 0 0, 0 0;
+  background-repeat: repeat;
+  background: repeating-linear-gradient(-65deg, #fff7e0, #fff7e0 12px, #ffffff 5px, #ffffff 25px);
+  border-color: rgba(0, 0, 0, 0.12);
+}

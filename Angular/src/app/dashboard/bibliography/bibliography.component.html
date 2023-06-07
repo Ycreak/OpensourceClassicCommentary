@@ -18,6 +18,8 @@
   <!-- Buttons to submit fragment data -->
   <button
     mat-stroked-button
+    class="bibliography-button"
+    id="create-bibliography-button"
     color="primary"
     [disabled]="!bibliography_form.valid"
     (click)="request_create_bibliography_entry(this.bibliography_form.value)"
@@ -26,6 +28,8 @@
   </button>
   <button
     mat-stroked-button
+    class="bibliography-button"
+    id="revise-bibliography-button"
     color="primary"
     [disabled]="!bibliography_form.valid"
     (click)="request_revise_bibliography_entry(this.bibliography_form.value)"
@@ -34,6 +38,8 @@
   </button>
   <button
     mat-stroked-button
+    class="bibliography-button"
+    id="delete-bibliography-button"
     color="warn"
     [disabled]="!bib_entry_selected"
     (click)="request_delete_bibliography_entry(this.bibliography_form.value)"
