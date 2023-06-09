@@ -82,8 +82,6 @@ export class Fragment {
     if ('bibliography' in fragment) {
       this.bibliography = fragment['bibliography'];
     }
-
-    this.add_html_to_commentary();
   }
 
   /**
@@ -95,7 +93,7 @@ export class Fragment {
    * @author Ycreak
    * @TODO: this function needs to be handled by the API when retrieving the fragments
    */
-  private add_html_to_commentary(): void {
+  public add_html_to_commentary(): void {
     for (const item in this.lines) {
       // Loop through all lines of current fragment
       let line_text = this.lines[item].text;
