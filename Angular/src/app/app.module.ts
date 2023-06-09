@@ -88,6 +88,7 @@ import { CommentaryComponent } from './commentary/commentary.component';
 import { OverviewComponent } from './overview/overview.component';
 import { IntroductionsComponent } from './dashboard/introductions/introductions.component';
 import { BibliographyComponent } from './dashboard/bibliography/bibliography.component';
+import { DocumentFilterComponent } from './dialogs/document-filter/document-filter.component';
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
@@ -117,6 +118,7 @@ const appRoutes: Routes = [
     OverviewComponent,
     IntroductionsComponent,
     BibliographyComponent,
+    DocumentFilterComponent,
   ],
   imports: [
     BrowserModule,
