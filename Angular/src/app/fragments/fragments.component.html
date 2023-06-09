@@ -4,7 +4,7 @@
 <!-- Secondary toolbar to manage columns -->
 <ng-template #column_toolbar let-column_to_display="given_column">
   <!--<ng-template #commentary_column_template let-given_fragment="given_fragment">-->
-  <mat-toolbar class="column-toolbar">
+  <mat-toolbar class="fragment-column-toolbar">
     <!-- Button to select the text -->
     <button
       style="color: white"
@@ -80,21 +80,22 @@
   </mat-toolbar>
 </ng-template>
 
-<!-- Container for the page. One row per item (commentary, playground, multiplayer, etc.) -->
-<mat-toolbar class="main-column-toolbar">
-  <div>
+<!-- Toolbar for the fragments section -->
+<mat-toolbar class="fragments-toolbar">
+  <div id="fragments-toolbar-1">
+    <ng-container *ngFor="let column_to_display of this.column_handler.columns">
+      <mat-checkbox ngDefaultControl [(ngModel)]="column_to_display.visible">
+        <div style="color: white">
+          {{ column_to_display.author }}-{{ column_to_display.title }}-{{ column_to_display.editor }}
+          <sup *ngIf="column_to_display.edited">altered</sup>
+        </div>
+      </mat-checkbox>
+    </ng-container>
+  </div>
+  <div id="fragments-toolbar-2">
+    |
     <button class="navbar" mat-button (click)="this.column_handler.add_new_column('fragment')">Add column</button>
   </div>
-  |
-
-  <ng-container *ngFor="let column_to_display of this.column_handler.columns">
-    <mat-checkbox ngDefaultControl [(ngModel)]="column_to_display.visible">
-      <div style="color: white">
-        {{ column_to_display.author }}-{{ column_to_display.title }}-{{ column_to_display.editor }}
-        <sup *ngIf="column_to_display.edited">altered</sup>
-      </div>
-    </mat-checkbox>
-  </ng-container>
 </mat-toolbar>
 <mat-progress-bar mode="query" *ngIf="this.api.spinner"></mat-progress-bar>
 
