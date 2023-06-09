@@ -72,7 +72,7 @@ export class FragmentsComponent implements OnInit, OnDestroy {
     /** Handle what happens when new fragments arrive */
     this.fragments_subscription = this.api.new_fragments_alert$.subscribe((column_id) => {
       let fragments: Fragment[] = this.api.fragments;
-      for (const i in fragments){
+      for (const i in fragments) {
         fragments[i].add_html_to_commentary();
       }
       // A new list of fragments has arrived. Use the column identifier to find the corresponding column
