@@ -1,0 +1,12 @@
+<div mat-dialog-component class="force-dialog-padding">
+  <ng-container *ngFor="let bib of data.zotero">
+    <div [mat-dialog-close]="bib.key" class="bib-select">
+      <b>{{bib.key}}</b>: {{bib.lastname}} {{bib.firstname}} <i>{{ bib.title }}</i> ({{bib.place}} {{bib.date}})
+    </div>
+  </ng-container>
+  <br />
+</div>
+<div mat-dialog-actions>
+  <!--<button mat-button (click)="onNoClick()" cdkFocusInitial>No</button>-->
+  <!--<button mat-button [mat-dialog-close]="true">Yes</button>-->
+</div>

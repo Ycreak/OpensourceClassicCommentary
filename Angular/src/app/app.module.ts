@@ -46,6 +46,7 @@ import { ConfirmationDialogComponent } from './services/dialog.service';
 import { WYSIWYGDialogComponent } from './services/dialog.service';
 import { SettingsDialogComponent } from './services/dialog.service';
 import { CustomDialogComponent } from './services/dialog.service';
+import { BibDialogComponent } from './services/dialog.service';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorInterceptor } from './api.service';
@@ -109,6 +110,7 @@ const appRoutes: Routes = [
     LoginComponent,
     ScansionComponent,
     ConfirmationDialogComponent,
+    BibDialogComponent,
     WYSIWYGDialogComponent,
     SettingsDialogComponent,
     CustomDialogComponent,

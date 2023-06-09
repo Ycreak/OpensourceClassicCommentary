@@ -12,6 +12,7 @@ import { UtilityService } from '@oscc/utility.service';
 
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
+import { Bib } from '@oscc/models/Bib';
 import { Column } from '@oscc/models/Column';
 import { User } from '@oscc/models/User';
 import { Introduction_form } from '@oscc/models/Introduction_form';
@@ -65,6 +66,8 @@ export class ApiService {
   public fragment_key: fragment_key = {};
 
   public author_title_editor_blob: any = [];
+
+  public zotero: any;
 
   FlaskURL: string = environment.flask_api;
   NeuralURL: 'https://oscc.nolden.biz:5002/';
@@ -201,6 +204,22 @@ export class ApiService {
         this.spinner_off();
       },
       error: (err) => this.handle_error_message(err),
+    });
+  }
+
+  public request_zotero_data() {
+    const url = 'https://api.zotero.org/groups/5089557/items?v=3';
+    this.get(url).subscribe({
+      next: (data) => {
+        const bib_list: Bib[] = [];
+        for (const i in data) {
+          const bib = new Bib();
+          bib.set(data[i]);
+          bib_list.push(bib);
+        }
+        this.zotero = bib_list;
+        // this.new_data_alert.next({ label: label, data: data });
+      },
     });
   }
 
@@ -510,6 +529,10 @@ export class ApiService {
   // Neural networks part
   public scan_lines(lines: object): Observable<any> {
     return this.http.post<any>(this.NeuralURL + `scan_lines`, lines, { observe: 'body', responseType: 'json' });
+  }
+
+  public get(url: string): Observable<any> {
+    return this.http.get<any>(url);
   }
 
   /**
