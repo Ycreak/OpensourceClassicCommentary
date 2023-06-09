@@ -608,9 +608,11 @@
         <!-- end of the Fragment lock tab -->
       </mat-tab-group>
     </mat-expansion-panel>
-
+    
     <hr />
-
+    <!-- Edit bibliography expansion panel -->
+    <app-bibliography></app-bibliography>
+    <hr />
     <!-- Change author/author+title introduction expansion panel -->
     <app-introductions></app-introductions>
     <hr />
@@ -812,10 +814,6 @@
         </form>
       </div>
     </mat-expansion-panel>
-
-    <hr />
-    <!-- Edit bibliography expansion panel -->
-    <app-bibliography [fragment_form]="fragment_form"></app-bibliography>
     <hr />
   </mat-accordion>
 </div>
