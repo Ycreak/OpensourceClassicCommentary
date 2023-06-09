@@ -1,4 +1,5 @@
 /* Playground related CSS */
+@use "../_mixins.scss" as *;
 
 .note {
   // width: auto;
@@ -54,11 +55,7 @@
 }
 
 button.button-dashed-background {
-  background-position: 10px 0, 10px 0, 0 0, 0 0;
-  background-repeat: repeat;
-  opacity: 0.8;
-  background: repeating-linear-gradient(-65deg, #fff7e0, #fff7e0 12px, #ffffff 5px, #ffffff 25px);
-  border-color: rgba(0, 0, 0, 0.12);
+  @include button-dashed-background-yellow;
 }
 
 .button-margin {
@@ -78,6 +75,10 @@ button.button-dashed-background {
 
 .playground-select-text-button {
   background-color: #f5f5f5;
+}
+
+.playground-delete-button {
+  color: $theme-secondary;
 }
 
 .playground-mat-form-field {

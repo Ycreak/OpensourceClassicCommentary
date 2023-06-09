@@ -4,7 +4,6 @@ import { ApiService } from '@oscc/api.service';
 import { AuthService } from '@oscc/auth/auth.service';
 import { Introduction_form } from '@oscc/models/Introduction_form';
 import { Introductions } from '@oscc/dashboard/introductions/Introduction_example';
-import { UtilityService } from '../../utility.service';
 import { DialogService } from '@oscc/services/dialog.service';
 
 @Component({
@@ -40,19 +39,25 @@ export class IntroductionsComponent implements OnInit {
    * Function to reset the fragment form
    * @author CptVickers
    */
-  protected reset_introduction_form(): void {
-    // First, remove all data from the form
-    this.introduction_form_group.reset();
+  protected reset_introduction_form(field?: string): void {
+    if (field == 'author_text') {
+      this.introduction_form_group.patchValue({ author_text: '' });
+    } else if (field == 'title_text') {
+      this.introduction_form_group.patchValue({ title_text: '' });
+    } else {
+      // Remove all data from the form
+      this.introduction_form_group.reset();
+    }
     // Reset the saved changes hint
     this.show_changes_saved_hint = false;
   }
 
   /**
    * Function to request the introduction text for a given author or author + title and show it in a dialog.
-   * @param intro Introduction object with form data; contains selected author and title data.
+   * @param _intro Introduction object with form data; contains selected author and title data.
    * @author CptVickers
    */
-  public show_introduction_dialog(intro: Introduction_form): void {
+  public show_introduction_dialog(/*intro: Introduction_form*/): void {
     // TODO: This function just shows some demo text for now; It does not fetch the correct texts from the server.
     const introdemo = new Introductions();
     this.dialog.open_custom_dialog(introdemo.dict['Ennius']);
@@ -66,7 +71,7 @@ export class IntroductionsComponent implements OnInit {
    * @param field from fragment_form which is to be send and updated
    * @author Ycreak
    */
-  protected request_wysiwyg_dialog(field: string, index = 0): void {
+  protected request_wysiwyg_dialog(field: string): void {
     if (field == 'author_text' || field == 'title_text') {
       const text = this.introduction_form_group.value[field];
       this.dialog.open_wysiwyg_dialog(text).subscribe((result) => {
