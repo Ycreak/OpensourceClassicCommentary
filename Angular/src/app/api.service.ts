@@ -507,25 +507,6 @@ export class ApiService {
       responseType: 'text' as 'json',
     });
   }
-  // Bibliography
-  public get_bibliography_authors(): Observable<any> {
-    return; // TODO
-  }
-  public get_bibliography_from_author(author: string): Observable<any> {
-    return; // TODO
-  }
-  public get_bibliography_from_id(id): Observable<any> {
-    return; // TODO
-  }
-  public revise_bibliography_entry(bibliography): Observable<any> {
-    return; // TODO
-  }
-  public create_bibliography_entry(bibliography): Observable<any> {
-    return; // TODO
-  }
-  public delete_bibliography_entry(id): Observable<any> {
-    return; // TODO
-  }
   // Neural networks part
   public scan_lines(lines: object): Observable<any> {
     return this.http.post<any>(this.NeuralURL + `scan_lines`, lines, { observe: 'body', responseType: 'json' });

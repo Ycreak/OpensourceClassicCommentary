@@ -12,9 +12,6 @@ import { Observable, map, startWith } from 'rxjs';
   styleUrls: ['./bibliography.component.scss'],
 })
 export class BibliographyComponent implements OnInit {
-  // This component get fragment_form from dashboard so that it can extract linked_bib_entries from it.
-  @Input() fragment_form: FormGroup;
-
   retrieved_bibliography_authors: object;
   retrieved_author_bibliography: object;
 
