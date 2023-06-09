@@ -19,7 +19,7 @@
       mat-button
       (click)="this.toggle_translation(column_to_display)"
       [innerHTML]="this.translation_toggle_button_label(column_to_display)"></button>
-
+    
     <!-- Nested menu to select author - title - editor. -->
     <mat-menu #menu_authors="matMenu">
       <ng-container *ngFor="let author of this.api.get_author_list(); let i = index">
@@ -69,6 +69,10 @@
     </mat-menu>
 
     <!-- Buttons to close columns or to move columns to left and right -->
+    <button mat-icon-button (click)="this.set_custom_filter()">
+      <mat-icon>filter_alt</mat-icon>
+    </button>
+
     <button mat-icon-button (click)="this.column_handler.move_column(column_to_display.column_id, 'left')">
       <mat-icon>keyboard_arrow_left</mat-icon>
     </button>

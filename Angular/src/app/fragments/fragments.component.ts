@@ -2,6 +2,7 @@
 import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { Output, EventEmitter } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { MatDialog } from '@angular/material/dialog'; 
 //import { environment } from '@src/environments/environment';
 
 // Service imports
@@ -11,6 +12,7 @@ import { SettingsService } from '@oscc/services/settings.service';
 import { UtilityService } from '@oscc/utility.service';
 import { AuthService } from '@oscc/auth/auth.service';
 import { ColumnHandlerService } from '@oscc/services/column-handler.service';
+import { DocumentFilterComponent } from '@oscc/dialogs/document-filter/document-filter.component';
 
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
@@ -46,8 +48,8 @@ export class FragmentsComponent implements OnInit, OnDestroy {
     protected auth_service: AuthService,
     protected dialog: DialogService,
     protected settings: SettingsService,
-    //private matdialog: MatDialog,
-    protected column_handler: ColumnHandlerService
+    private matdialog: MatDialog,
+    protected column_handler: ColumnHandlerService,
   ) {}
 
   ngOnInit(): void {
@@ -222,5 +224,9 @@ export class FragmentsComponent implements OnInit, OnDestroy {
     } else {
       return 'Show translation';
     }
+  }
+  
+  protected set_custom_filter(): void {
+    this.matdialog.open(DocumentFilterComponent, {});
   }
 }
