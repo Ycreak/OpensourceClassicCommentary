@@ -139,7 +139,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     protected utility: UtilityService,
     protected dialog: DialogService,
     protected auth_service: AuthService,
-    protected introductions: IntroductionsComponent,
+    protected introductions: IntroductionsComponent
   ) {
     // Assign the data to the data source for the table to render
     this.user_table_users = new MatTableDataSource(this.retrieved_users);

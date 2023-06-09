@@ -12,7 +12,6 @@ import { Observable, map, startWith } from 'rxjs';
   styleUrls: ['./bibliography.component.scss'],
 })
 export class BibliographyComponent implements OnInit {
-
   retrieved_bibliography_authors: object;
   retrieved_author_bibliography: object;
 
