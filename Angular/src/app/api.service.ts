@@ -67,7 +67,7 @@ export class ApiService {
 
   public author_title_editor_blob: any = [];
 
-  public zotero: any;
+  public zotero: any = {};
 
   FlaskURL: string = environment.flask_api;
   NeuralURL: 'https://oscc.nolden.biz:5002/';
@@ -82,6 +82,9 @@ export class ApiService {
 
   private new_fragment_names_alert = new BehaviorSubject<number>(-1);
   public new_fragment_names_alert$ = this.new_fragment_names_alert.asObservable();
+
+  private new_bib_alert = new BehaviorSubject<Bib[]>([]);
+  public new_bib_alert$ = this.new_bib_alert.asObservable();
 
   private create_fragment_key(author?: string, title?: string, editor?: string, name?: string): fragment_key {
     const key: fragment_key = {};
@@ -218,7 +221,7 @@ export class ApiService {
           bib_list.push(bib);
         }
         this.zotero = bib_list;
-        // this.new_data_alert.next({ label: label, data: data });
+        this.new_bib_alert.next(bib_list);
       },
     });
   }
@@ -306,7 +309,6 @@ export class ApiService {
   public request_introduction(intro: Introduction_form): void {
     this.get_introduction_text(intro).subscribe((data) => {
       if (data) {
-        console.log(data);
         // Store the received introduction data in the form
         intro.author_text = data['author_text'];
         intro.title_text = data['title_text'];

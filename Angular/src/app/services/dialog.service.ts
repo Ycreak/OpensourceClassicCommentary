@@ -2,6 +2,7 @@ import { Injectable, Inject, Component } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { ApiService } from '@oscc/api.service';
+import { BibliographyComponent } from '@oscc/dashboard/bibliography/bibliography.component';
 
 /**
  * This service handles the dialogs used in the OSCC
@@ -91,18 +92,6 @@ export class DialogService {
 }
 
 /**
- * Class to show the bib dialog
- */
-@Component({
-  selector: 'app-bib-dialog',
-  templateUrl: '../dialogs/bib-dialog.html',
-  styleUrls: ['../dialogs/dialogs.scss'],
-})
-export class BibDialogComponent {
-  constructor(public dialogRef: MatDialogRef<CustomDialogComponent>, @Inject(MAT_DIALOG_DATA) public data) {}
-}
-
-/**
  * Class to show the about dialogs
  */
 @Component({
@@ -154,12 +143,10 @@ export class WYSIWYGDialogComponent {
    * @author Ycreak
    */
   public open_bib_dialog(): Observable<string> {
-    const dialogRef = this.dialog.open(BibDialogComponent, {
+    const dialogRef = this.dialog.open(BibliographyComponent, {
       autoFocus: false, // To allow scrolling in the dialog
       maxHeight: '90vh', //you can adjust the value as per your view
-      data: {
-        zotero: this.api.zotero,
-      },
+      minWidth: '500px',
     });
     return dialogRef.afterClosed(); // Returns observable.
   }
@@ -172,8 +159,7 @@ export class WYSIWYGDialogComponent {
     this.open_bib_dialog().subscribe((bib_key) => {
       if (bib_key) {
         if (range) {
-          const bib_string = `<bib-${bib_key}>`;
-          this.editor_instance.insertText(range.index, bib_string, true, 'user');
+          this.editor_instance.insertText(range.index, bib_key, true, 'user');
           //FIXME: the next line makes sure ngModel is updated. This is a bug with the ngx-quill package
           this.editor_instance.insertText(range.index, '', 'user');
         }

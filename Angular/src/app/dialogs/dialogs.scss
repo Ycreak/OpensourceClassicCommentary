@@ -6,10 +6,6 @@ mat-dialog-container {
   height: fit-content !important;
 }
 
-div.force-dialog-padding {
-  padding: 20px 24px 20px 24px !important;
-}
-
 /* Dialog header */
 div.dialog-header {
   display: flex;
@@ -43,8 +39,4 @@ div.dialog-content {
 .center {
   margin: auto;
   width: 50%;
-}
-
-.bib-select:hover {
-  background-color: yellow;
 }

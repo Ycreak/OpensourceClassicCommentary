@@ -1,10 +1,21 @@
+/** This class represents a creator inside a bibliography item */
+export class Creator {
+  lastname: string;
+  firstname: string;
+
+  public set(creator: any) {
+    this.lastname = 'lastName' in creator ? creator.lastName : '';
+    this.firstname = 'firstName' in creator ? creator.firstName : '';
+  }
+}
+
 /** This class represents a bib entry and all its data fields */
 export class Bib {
   place: string;
   date: string;
 
-  lastname: string;
-  firstname: string;
+  creators: Creator[] = [];
+
   title: string;
   key: string;
 
@@ -16,9 +27,15 @@ export class Bib {
   public set(bib: any) {
     this.place = 'place' in bib.data ? bib.data.place : '';
     this.date = 'date' in bib.data ? bib.data.date : '';
-    this.lastname = 'creators' in bib.data ? bib.data.creators[0].lastName : '';
-    this.firstname = 'creators' in bib.data ? bib.data.creators[0].firstName : '';
     this.title = 'title' in bib.data ? bib.data.title : '';
     this.key = 'key' in bib ? bib.key : '';
+
+    if ('creators' in bib.data) {
+      for (const i in bib.data.creators) {
+        const creator = new Creator();
+        creator.set(bib.data.creators[i]);
+        this.creators.push(creator);
+      }
+    }
   }
 }

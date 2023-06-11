@@ -157,8 +157,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.fragment_referencer = new Column({
       column_id: environment.referencer_id,
     });
-
-    this.api.request_zotero_data();
   }
 
   // initiate the table sorting and paginator
@@ -200,9 +198,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param thing item to be printed
    * @author Ycreak
    */
-  public test(thing): void {
-    this.api.request_zotero_data();
-    //console.log(this.retrieved_users, thing);
+  public test(thing: any): void {
+    console.log(this.retrieved_users, thing);
   }
 
   /**

@@ -1,176 +1,57 @@
-<!-- BIBLIOGRAPHY PANEL -->
-<mat-expansion-panel *ngIf="this.auth_service.is_logged_in" [expanded]="true">
-  <mat-expansion-panel-header>
-    <mat-panel-title> Change bibliography data </mat-panel-title>
-    <mat-panel-description>
-      Create, revise and delete bibliography entries.
-      <mat-icon>auto_stories</mat-icon>
-    </mat-panel-description>
-  </mat-expansion-panel-header>
-
+<div mat-dialog-component class="force-dialog-padding">
+  <h3>Select bibliography entry</h3>
   <div class="alert alert-info" role="alert">
-    The OSCC has a build-in bibliography management system which is accessible to all users. Select the tab appropriate
-    for your title and fill in all fields (without HTML formatting). It can then be linked to a fragment using the
-    <b>Change fragment data</b> panel. If you want to revise a source, use the Author search field below to find it in
-    the database. Make sure you are in the correct tab before pressing the revise button.
+    The OSCC uses Zotero as the bibliography management system which is accessible to all users. Select a bibliography
+    entry to insert it in the text. Adding references needs to be done using the Zotero app.
   </div>
 
-  <!-- Buttons to submit fragment data -->
-  <button
-    mat-stroked-button
-    class="bibliography-button"
-    id="create-bibliography-button"
-    color="primary"
-    [disabled]="!bibliography_form.valid"
-    (click)="request_create_bibliography_entry(this.bibliography_form.value)"
-    *ngIf="this.auth_service.current_user_role === 'teacher' || this.auth_service.is_student">
-    Create bibliography entry
-  </button>
-  <button
-    mat-stroked-button
-    class="bibliography-button"
-    id="revise-bibliography-button"
-    color="primary"
-    [disabled]="!bibliography_form.valid"
-    (click)="request_revise_bibliography_entry(this.bibliography_form.value)"
-    *ngIf="this.auth_service.current_user_role === 'teacher' || this.auth_service.is_student">
-    Revise bibliography entry
-  </button>
-  <button
-    mat-stroked-button
-    class="bibliography-button"
-    id="delete-bibliography-button"
-    color="warn"
-    [disabled]="!bib_entry_selected"
-    (click)="request_delete_bibliography_entry(this.bibliography_form.value)"
-    *ngIf="this.auth_service.current_user_role === 'teacher'">
-    Delete bibliography entry
-  </button>
-  <hr />
-
-  <!-- Find the name of your author -->
-  <form class="example-form">
-    <mat-form-field class="example-full-width" appearance="fill">
-      <mat-label>Search an Author</mat-label>
-      <input
-        type="text"
-        placeholder="Type author name"
-        aria-label="Author"
-        matInput
-        [formControl]="bibliography_author_selection_form"
-        [matAutocomplete]="auto" />
-      <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-        <mat-option
-          *ngFor="let option of bibliography_author_selection_form_filtered_options | async"
-          [value]="option"
-          (click)="this.request_bibliography_from_author(option)">
-          {{ option }}
-        </mat-option>
-      </mat-autocomplete>
-      <mat-hint>Search for title to revise</mat-hint>
-    </mat-form-field>
-  </form>
-
-  <mat-selection-list [multiple]="false">
-    <mat-list-option
-      *ngFor="let bib_entry of retrieved_author_bibliography"
-      [value]="bib_entry"
-      (click)="this.handle_bib_entry_selection(bib_entry)"
-      (click)="this.bib_entry_selected = true">
-      {{ bib_entry.author }}, {{ bib_entry.title }}, {{ bib_entry.year }}
-    </mat-list-option>
-  </mat-selection-list>
+  <mat-form-field class="example-form-field">
+    <mat-label>Pages</mat-label>
+    <input matInput type="text" [(ngModel)]="this.pages" />
+    <mat-hint>Add a single page number or a range, e.g. 10 or 10-12 respectively.</mat-hint>
+  </mat-form-field>
 
   <hr />
 
-  <mat-tab-group
-    [selectedIndex]="bibliography_form_selected_type.value"
-    (selectedTabChange)="on_bibliography_tab_change($event)">
-    <form [formGroup]="bibliography_form">
-      <mat-tab label="Book"
-        ><br />
+  <mat-form-field appearance="outline" class="table-filter-form-field">
+    <mat-label>Filter...</mat-label>
+    <input matInput (keyup)="this.apply_sort_filter($event, this.table_data)" placeholder="..." #input />
+  </mat-form-field>
 
-        <mat-form-field class="input-form-half">
-          <mat-label>Author</mat-label>
-          <input matInput type="text" formControlName="author" />
-          <!--required> TODO:?-->
-        </mat-form-field>
+  <div class="mat-elevation-z1">
+    <table mat-table [dataSource]="this.table_data" matSort #sort="matSort">
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="col-4">Author</th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.name }}
+        </td>
+      </ng-container>
 
-        <mat-form-field class="input-form-half">
-          <mat-label>Title</mat-label>
-          <input matInput type="text" formControlName="title" />
-          <!--required> -->
-        </mat-form-field>
+      <ng-container matColumnDef="title">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="col-5">Title</th>
+        <td mat-cell *matCellDef="let row">
+          <i>{{ row.title }}</i>
+        </td>
+      </ng-container>
 
-        <mat-form-field class="input-form-half">
-          <mat-label>Year</mat-label>
-          <input matInput type="text" formControlName="year" />
-          <!--required> -->
-        </mat-form-field>
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="col-5">Date</th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.date }}
+        </td>
+      </ng-container>
 
-        <mat-form-field class="input-form-half">
-          <mat-label>Series</mat-label>
-          <input matInput type="text" formControlName="series" />
-          <!--required> -->
-        </mat-form-field>
+      <tr mat-header-row *matHeaderRowDef="this.table_columns"></tr>
+      <tr
+        mat-row
+        class="bib-select"
+        [mat-dialog-close]="this.get_bib_key(row.key, this.pages)"
+        *matRowDef="let row; columns: this.table_columns"></tr>
 
-        <mat-form-field class="input-form-half">
-          <mat-label>Number</mat-label>
-          <input matInput type="text" formControlName="number" />
-          <!--required> -->
-        </mat-form-field>
-
-        <mat-form-field class="input-form-half">
-          <mat-label>Location</mat-label>
-          <input matInput type="text" formControlName="location" />
-          <!--required> -->
-        </mat-form-field>
-
-        <mat-form-field class="input-form-half">
-          <mat-label>Edition</mat-label>
-          <input matInput type="text" formControlName="edition" />
-          <!--required> -->
-        </mat-form-field>
-      </mat-tab>
-
-      <mat-tab label="Article"
-        ><br />
-        <mat-form-field class="input-form-half">
-          <mat-label>Author</mat-label>
-          <input matInput type="text" formControlName="author" />
-          <!--required> -->
-        </mat-form-field>
-
-        <mat-form-field class="input-form-half">
-          <mat-label>Title</mat-label>
-          <input matInput type="text" formControlName="title" />
-          <!--required> -->
-        </mat-form-field>
-
-        <mat-form-field class="input-form-half">
-          <mat-label>Year</mat-label>
-          <input matInput type="text" formControlName="year" />
-          <!--required> -->
-        </mat-form-field>
-
-        <mat-form-field class="input-form-half">
-          <mat-label>Journal</mat-label>
-          <input matInput type="text" formControlName="journal" />
-          <!--required> -->
-        </mat-form-field>
-
-        <mat-form-field class="input-form-half">
-          <mat-label>Volume</mat-label>
-          <input matInput type="text" formControlName="volume" />
-          <!--required> -->
-        </mat-form-field>
-
-        <mat-form-field class="input-form-half">
-          <mat-label>Pages</mat-label>
-          <input matInput type="text" formControlName="pages" />
-          <!--required> -->
-        </mat-form-field>
-      </mat-tab>
-    </form>
-  </mat-tab-group>
-</mat-expansion-panel>
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="4">No data matches filter.</td>
+      </tr>
+    </table>
+    <mat-paginator [pageSizeOptions]="[25, 100, 1000]" #paginator="matPaginator"> </mat-paginator>
+  </div>
+</div>
