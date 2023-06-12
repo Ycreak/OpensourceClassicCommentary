@@ -9,6 +9,16 @@ import { Observable } from 'rxjs';
 export class UtilityService {
   constructor(private snackBar: MatSnackBar) {}
 
+  public sort_object_list_on_string_value(a: string, b: string, key: string) {
+    if (a[key] < b[key]) {
+      return -1;
+    }
+    if (a[key] > b[key]) {
+      return 1;
+    }
+    return 0;
+  }
+
   /** Sorts array numerically on fragment number
    * @param boolean called from array
    * @param field on which to perform the comparison

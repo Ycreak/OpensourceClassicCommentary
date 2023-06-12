@@ -1,6 +1,8 @@
 import { Injectable, Inject, Component } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
+import { ApiService } from '@oscc/api.service';
+import { BibliographyComponent } from '@oscc/dashboard/bibliography/bibliography.component';
 
 /**
  * This service handles the dialogs used in the OSCC
@@ -126,9 +128,44 @@ export class ConfirmationDialogComponent {
   styleUrls: ['../dialogs/dialogs.scss'],
 })
 export class WYSIWYGDialogComponent {
-  constructor(public dialogRef: MatDialogRef<WYSIWYGDialogComponent>, @Inject(MAT_DIALOG_DATA) public data) {}
+  constructor(
+    private dialog: MatDialog,
+    private api: ApiService,
+    public dialogRef: MatDialogRef<WYSIWYGDialogComponent>,
+    @Inject(MAT_DIALOG_DATA)
+    public data: any
+  ) {}
 
   editor_instance: any; // allows communication with the editor
+
+  /**
+   * Function to open the about dialog
+   * @author Ycreak
+   */
+  public open_bib_dialog(): Observable<string> {
+    const dialogRef = this.dialog.open(BibliographyComponent, {
+      autoFocus: false, // To allow scrolling in the dialog
+      maxHeight: '90vh', //you can adjust the value as per your view
+      minWidth: '500px',
+    });
+    return dialogRef.afterClosed(); // Returns observable.
+  }
+
+  /**
+   * Opens the bib selection dialog. On succesful selection, adds the bib entry key after the cursor.
+   */
+  public add_bib_entry(): void {
+    const range = this.editor_instance.getSelection();
+    this.open_bib_dialog().subscribe((bib_key) => {
+      if (bib_key) {
+        if (range) {
+          this.editor_instance.insertText(range.index, bib_key, true, 'user');
+          //FIXME: the next line makes sure ngModel is updated. This is a bug with the ngx-quill package
+          this.editor_instance.insertText(range.index, '', 'user');
+        }
+      }
+    });
+  }
 
   /**
    * This function inserts the given symbol in the desired manner in the rich text editor.

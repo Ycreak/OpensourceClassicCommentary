@@ -19,3 +19,22 @@
   @include button-dashed-background-gray;
   color: darkgray;
 }
+
+.bib-select:hover td {
+  background-color: yellow;
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+}
+
+.mat-mdc-form-field {
+  font-size: 14px;
+  width: 100%;
+}
+
+td,
+th {
+  width: 25%;
+}

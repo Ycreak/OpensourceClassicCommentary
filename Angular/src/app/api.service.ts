@@ -12,6 +12,7 @@ import { UtilityService } from '@oscc/utility.service';
 
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
+import { Bib } from '@oscc/models/Bib';
 import { Column } from '@oscc/models/Column';
 import { User } from '@oscc/models/User';
 import { Introduction_form } from '@oscc/models/Introduction_form';
@@ -66,6 +67,8 @@ export class ApiService {
 
   public author_title_editor_blob: any = [];
 
+  public zotero: any = {};
+
   FlaskURL: string = environment.flask_api;
   NeuralURL: 'https://oscc.nolden.biz:5002/';
 
@@ -79,6 +82,9 @@ export class ApiService {
 
   private new_fragment_names_alert = new BehaviorSubject<number>(-1);
   public new_fragment_names_alert$ = this.new_fragment_names_alert.asObservable();
+
+  private new_bib_alert = new BehaviorSubject<Bib[]>([]);
+  public new_bib_alert$ = this.new_bib_alert.asObservable();
 
   private create_fragment_key(author?: string, title?: string, editor?: string, name?: string): fragment_key {
     const key: fragment_key = {};
@@ -204,6 +210,22 @@ export class ApiService {
     });
   }
 
+  public request_zotero_data() {
+    const url = 'https://api.zotero.org/groups/5089557/items?v=3';
+    this.get(url).subscribe({
+      next: (data) => {
+        const bib_list: Bib[] = [];
+        for (const i in data) {
+          const bib = new Bib();
+          bib.set(data[i]);
+          bib_list.push(bib);
+        }
+        this.zotero = bib_list;
+        this.new_bib_alert.next(bib_list);
+      },
+    });
+  }
+
   public request_fragments(column_id: number, author: string, title: string, editor: string, name?: string): void {
     this.spinner_on();
     this.fragments = [];
@@ -287,7 +309,6 @@ export class ApiService {
   public request_introduction(intro: Introduction_form): void {
     this.get_introduction_text(intro).subscribe((data) => {
       if (data) {
-        console.log(data);
         // Store the received introduction data in the form
         intro.author_text = data['author_text'];
         intro.title_text = data['title_text'];
@@ -510,6 +531,10 @@ export class ApiService {
   // Neural networks part
   public scan_lines(lines: object): Observable<any> {
     return this.http.post<any>(this.NeuralURL + `scan_lines`, lines, { observe: 'body', responseType: 'json' });
+  }
+
+  public get(url: string): Observable<any> {
+    return this.http.get<any>(url);
   }
 
   /**

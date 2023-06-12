@@ -146,6 +146,12 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
+    if (!environment.production) {
+      // Only load if the environment is development: otherwise Commentary will load
+      // because direct Dashboard route does not exist.
+      this.api.request_zotero_data();
+    }
+
     this.loading_hint = this.utility.get_loading_hint(); // Initialize the loading hint
     this.api.request_authors_titles_editors_blob();
     this.request_users();
@@ -198,7 +204,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param thing item to be printed
    * @author Ycreak
    */
-  public test(thing): void {
+  public test(thing: any): void {
     console.log(this.retrieved_users, thing);
   }
 

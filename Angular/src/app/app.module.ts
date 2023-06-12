@@ -45,6 +45,7 @@ import { SafeHtmlPipe } from './pipes/safeHtml.pipe';
 import { ConfirmationDialogComponent } from './services/dialog.service';
 import { WYSIWYGDialogComponent } from './services/dialog.service';
 import { SettingsDialogComponent } from './services/dialog.service';
+import { BibliographyComponent } from './dashboard/bibliography/bibliography.component';
 import { CustomDialogComponent } from './services/dialog.service';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -87,12 +88,12 @@ import { PlaygroundComponent } from './playground/playground.component';
 import { CommentaryComponent } from './commentary/commentary.component';
 import { OverviewComponent } from './overview/overview.component';
 import { IntroductionsComponent } from './dashboard/introductions/introductions.component';
-import { BibliographyComponent } from './dashboard/bibliography/bibliography.component';
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
   { path: '', component: OverviewComponent },
-  { path: 'fragments', component: FragmentsComponent },
+  { path: 'fragments', component: OverviewComponent },
+  { path: 'bib', component: BibliographyComponent },
   { path: 'playground', component: PlaygroundComponent },
   // {path: 'text', component: TextComponent},
   { path: 'scansion', component: ScansionComponent, canActivate: [AuthGuard] },

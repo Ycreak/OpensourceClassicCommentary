@@ -28,6 +28,7 @@ export class CommentaryComponent implements OnInit, OnChanges {
   ) {}
 
   ngOnInit(): void {
+    this.api.request_zotero_data();
     this.current_fragment = new Fragment({});
   }
 
@@ -35,6 +36,7 @@ export class CommentaryComponent implements OnInit, OnChanges {
     // If the input fragment changes, we will note that a fragment has been clicked
     if (changes.current_fragment.currentValue.author != '') {
       this.fragment_clicked = true;
+      this.current_fragment.convert_bib_entries(this.api.zotero);
     }
   }
 }

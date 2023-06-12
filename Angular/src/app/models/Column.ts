@@ -1,6 +1,4 @@
 import { Fragment } from './Fragment';
-import text_cache from './text_cache.json';
-
 /**
  * This class represents a Fragment column, which contains meta data about a column. Most
  * important within a column is the Fragments object, which is a list containing fragments.
@@ -17,8 +15,6 @@ export class Column {
   title: string;
   editor: string;
   name: string;
-
-  text_cache: any = text_cache;
 
   column_id: number; // has to be a string for cdkDrag
   type = ''; // denotes playground, commentary, text or fragment column
