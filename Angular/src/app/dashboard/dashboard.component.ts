@@ -147,7 +147,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit(): void {
     if (!environment.production) {
-      // Only load if the environment is development: otherwise Commentary will load 
+      // Only load if the environment is development: otherwise Commentary will load
       // because direct Dashboard route does not exist.
       this.api.request_zotero_data();
     }
