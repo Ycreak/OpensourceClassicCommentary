@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { ApiService } from '@oscc/api.service';
 import { AuthService } from '@oscc/auth/auth.service';
 import { DialogService } from '@oscc/services/dialog.service';
@@ -15,9 +15,9 @@ import { Bib } from '@oscc/models/Bib';
   templateUrl: './bibliography.component.html',
   styleUrls: ['./bibliography.component.scss'],
 })
-export class BibliographyComponent implements OnInit, OnDestroy {
-  @ViewChild('paginator') paginator: MatPaginator;
-  @ViewChild('sort') sort: MatSort;
+export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
   table_columns: string[] = ['name', 'title', 'date'];
   table_data: MatTableDataSource<any>;
   table_source_data: any[];
@@ -39,9 +39,13 @@ export class BibliographyComponent implements OnInit, OnDestroy {
         a.creators[0].lastname > b.creators[0].lastname ? 1 : b.creators[0].lastname > a.creators[0].lastname ? -1 : 0
       );
       this.fill_table(bib);
-      this.table_data.paginator = this.paginator;
-      this.table_data.sort = this.sort;
     });
+  }
+
+  ngAfterViewInit(): void {
+    // Sort and paginator prefer an init AfterViewInit
+    this.table_data.paginator = this.paginator;
+    this.table_data.sort = this.sort;
   }
 
   ngOnDestroy(): void {
@@ -76,7 +80,6 @@ export class BibliographyComponent implements OnInit, OnDestroy {
         date: bib[i].date,
         key: bib[i].key,
       };
-      console.log(table_object);
       this.table_source_data.push(table_object);
     }
     this.table_data = new MatTableDataSource(this.table_source_data);
@@ -90,11 +93,11 @@ export class BibliographyComponent implements OnInit, OnDestroy {
    * @param table that needs to be sorted/filtered
    * @author Ycreak
    */
-  public apply_sort_filter(event: Event, table: MatTableDataSource<object>): void {
+  public apply_sort_filter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value;
-    table.filter = filterValue.trim().toLowerCase();
-    if (table.paginator) {
-      table.paginator.firstPage();
+    this.table_data.filter = filterValue.trim().toLowerCase();
+    if (this.table_data.paginator) {
+      this.table_data.paginator.firstPage();
     }
   }
 }
