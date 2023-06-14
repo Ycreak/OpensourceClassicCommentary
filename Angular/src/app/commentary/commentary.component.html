@@ -128,7 +128,8 @@
       </mat-expansion-panel-header>
       <div class="mat-expansion-panel-content">
         <div class="mat-expansion-panel-body">
-          <div [innerHTML]="current_fragment_content"></div>
+          <app-expandable-text [content]="current_fragment_content"></app-expandable-text>
+          <!-- TODO: This is currently not applied to citation context -->
         </div>
       </div>
     </mat-expansion-panel>

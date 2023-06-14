@@ -1,0 +1,10 @@
+<!-- This component adds the possibility to expand and collapse the view of the given content-->
+<div class="collapsed-text-container">
+  <div
+    [innerHTML]="content"
+    [class.collapsed-text]="this.isCollapsed"
+    [class.uncollapsed-text]="!this.isCollapsed"></div>
+  <button mat-button class="collapse-expand-button" *ngIf="this.enabled" (click)="this.ToggleCollapsed()">
+    {{ this.GetToggleButtonText }}
+  </button>
+</div>

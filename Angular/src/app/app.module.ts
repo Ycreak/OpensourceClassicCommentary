@@ -88,6 +88,7 @@ import { PlaygroundComponent } from './playground/playground.component';
 import { CommentaryComponent } from './commentary/commentary.component';
 import { OverviewComponent } from './overview/overview.component';
 import { IntroductionsComponent } from './dashboard/introductions/introductions.component';
+import { ExpandableTextComponent } from './other_components/expandable-text/expandable-text.component';
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
@@ -118,6 +119,7 @@ const appRoutes: Routes = [
     OverviewComponent,
     IntroductionsComponent,
     BibliographyComponent,
+    ExpandableTextComponent,
   ],
   imports: [
     BrowserModule,
