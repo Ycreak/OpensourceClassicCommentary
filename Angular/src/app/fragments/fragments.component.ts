@@ -1,6 +1,6 @@
 // Library imports
 import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
-import { Output, EventEmitter } from '@angular/core';
+import { Input, Output, EventEmitter } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 //import { environment } from '@src/environments/environment';
 
@@ -32,13 +32,12 @@ import { Column } from '@oscc/models/Column';
   ],
 })
 export class FragmentsComponent implements OnInit, OnDestroy {
+  @Input() fragments_translated: boolean;
   @Output() fragment_clicked2 = new EventEmitter<Fragment>();
   @Output() fragments_translated_event = new EventEmitter<boolean>();
 
   public current_fragment: Fragment; // Variable to store the clicked fragment and its data
   fragment_clicked = false; // Shows "click a fragment" banner at startup if nothing is yet selected
-
-  public fragments_translated: boolean; // Variable to indicate whether or not the translated text should be displayed.
 
   // Subscription variables
   private fragments_subscription: any;
@@ -211,7 +210,7 @@ export class FragmentsComponent implements OnInit, OnDestroy {
     // Toggle the text in the fragments column
     this.fragments_translated = !this.fragments_translated;
 
-    // Emit an event so that the commentary section can process the change
+    // Emit an event so that the other components can process the change
     this.fragments_translated_event.emit(this.fragments_translated);
   }
 

@@ -19,9 +19,9 @@ import { UtilityService } from '@oscc/utility.service';
 })
 export class CommentaryComponent implements OnInit, OnChanges {
   @Input() current_fragment: Fragment;
+  @Input() fragments_translated: boolean;
 
   protected fragment_clicked = false;
-  protected fragments_translated = this.fragments.fragments_translated || false;
 
   constructor(
     protected utility: UtilityService,
@@ -39,13 +39,11 @@ export class CommentaryComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     // If the input fragment changes, we will note that a fragment has been clicked
-    if (changes.current_fragment.currentValue.author != '') {
-      this.fragment_clicked = true;
-      this.current_fragment.convert_bib_entries(this.api.zotero);
+    if (changes.current_fragment) {
+      if (changes.current_fragment.currentValue.author != '') {
+        this.fragment_clicked = true;
+        this.current_fragment.convert_bib_entries(this.api.zotero);
+      }
     }
-  }
-
-  public set set_fragments_translated(bool: boolean) {
-    this.fragments_translated = bool; //TODO: move to ngOnChanges?
   }
 }

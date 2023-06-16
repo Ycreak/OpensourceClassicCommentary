@@ -35,6 +35,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   protected commentary_enabled = true;
   protected commentary_is_reduced_size = false;
   protected playground_enabled = true;
+  protected fragments_translated = false; // Indicates if fragments in frag.col. should be shown translated
 
   protected current_fragment: Fragment;
 
@@ -101,15 +102,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
    */
   protected toggle_playground(): void {
     this.playground_enabled = !this.playground_enabled;
-  }
-
-  /**
-   * This function communicates a change in fragments_translated status
-   * to other elements.
-   * @author CptVickers
-   */
-  protected toggle_fragments_translated(bool: boolean): void {
-    this.commentary.set_fragments_translated = bool;
   }
 
   /**

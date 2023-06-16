@@ -79,8 +79,9 @@
   <mat-drawer-container class="drawer-container" autosize>
     <div class="overview-sidenav-content">
       <app-fragments
-        (fragment_clicked2)="this.current_fragment = $event"
-        (fragments_translated_event)="toggle_fragments_translated($event)">
+        [fragments_translated]="this.fragments_translated"
+        (fragments_translated_event)="this.fragments_translated = $event"
+        (fragment_clicked2)="this.current_fragment = $event">
       </app-fragments>
     </div>
 
@@ -94,7 +95,11 @@
       position="end"
       opened="true">
       <div style="padding: 0.5em">
-        <app-commentary #commentary [current_fragment]="this.current_fragment"> </app-commentary>
+        <app-commentary
+          #commentary
+          [current_fragment]="this.current_fragment"
+          [fragments_translated]="this.fragments_translated">
+        </app-commentary>
       </div>
     </mat-drawer>
   </mat-drawer-container>
