@@ -1,9 +1,13 @@
 <!-- This component adds the possibility to expand and collapse the view of the given content-->
 <div class="collapsed-text-container">
+  <!-- Main content div -->
   <div
     [innerHTML]="content"
-    [class.collapsed-text]="this.isCollapsed"
+    [class.collapsed-text]="this.isCollapsed && !this.maskDisabled"
+    [class.collapsed-text-no-gradient-mask]="this.maskDisabled"
     [class.uncollapsed-text]="!this.isCollapsed"></div>
+  <!-- Hideable content div -->
+  <div [hidden]="isCollapsed" [innerHTML]="content_hideable"></div>
   <button mat-button class="collapse-expand-button" *ngIf="this.enabled" (click)="this.ToggleCollapsed()">
     {{ this.GetToggleButtonText }}
   </button>

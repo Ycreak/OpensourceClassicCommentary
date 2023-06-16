@@ -7,11 +7,13 @@ import { Component, Input, ElementRef, AfterViewInit, ChangeDetectorRef } from '
   styleUrls: ['./expandable-text.component.scss'],
 })
 export class ExpandableTextComponent implements AfterViewInit {
-  @Input() content: any;
+  @Input() content: string; // HTML content
   @Input() isCollapsed?: boolean;
   @Input() collapsedHeightPx?: number; // Height when collapsed in em;
 
   protected enabled: boolean;
+  protected maskDisabled = false;
+  protected content_hideable: string;
 
   constructor(private elRef: ElementRef, private cdRef: ChangeDetectorRef) {
     this.enabled = true;
@@ -22,17 +24,32 @@ export class ExpandableTextComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    /** Check if the content is so small that it does not need to be collapsed */
-    // Get current content height
-    const contentHeight = this.elRef.nativeElement.offsetHeight;
+    // Check if the content has a hidden section
+    // If so, hide this section, hide the gradient mask and set the component height to fit-content.
+    if (this.content.includes('[hidden]')) {
+      // Hide the to-be-hidden text to the hideable section
+      this.content = this.content.replace('[/hidden]', ''); // Remove leftover tags
+      [this.content, this.content_hideable] = this.content.split('[hidden]');
 
-    if (contentHeight < this.collapsedHeightPx) {
-      // There is not enough content to warrant an expand content button. Let's hide it from view.
-      this.enabled = false;
-      // Also make sure the element isn't collapsed.
-      this.isCollapsed = false;
+      // Remove the gradient mask
+      // This also sets the component height to fit-content
+      this.maskDisabled = true;
+
       // Push the changes to the Angular change detector
       this.cdRef.detectChanges();
+    } else {
+      /** Check if the content is so small that it does not need to be collapsed */
+      // Get current content height
+      const contentHeight = this.elRef.nativeElement.offsetHeight;
+
+      if (contentHeight < this.collapsedHeightPx) {
+        // There is not enough content to warrant an expand content button. Let's hide it from view.
+        this.enabled = false;
+        // Also make sure the element isn't collapsed.
+        this.isCollapsed = false;
+        // Push the changes to the Angular change detector
+        this.cdRef.detectChanges();
+      }
     }
   }
 
@@ -41,7 +58,17 @@ export class ExpandableTextComponent implements AfterViewInit {
    * @author CptVickers
    */
   protected ToggleCollapsed() {
+    // If the content contains a hidden section, unhide TODO:
+    if (this.isCollapsed) {
+      this.content = this.content.replace('<span hidden>', "<span name='unhidden'>");
+    } else {
+      this.content = this.content.replace("<span name='unhidden'>", '<span hidden>');
+    }
+
     this.isCollapsed = !this.isCollapsed;
+
+    // Push the changes to the Angular change detector
+    this.cdRef.detectChanges();
   }
 
   /**

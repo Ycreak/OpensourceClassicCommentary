@@ -2,11 +2,21 @@ div.collapsed-text-container {
   display: grid;
 }
 
-div.collapsed-text {
+%collapsed-text {
   max-height: var(--collapsed-height);
   overflow: hidden;
+}
+
+div.collapsed-text {
+  @extend %collapsed-text;
   mask-image: linear-gradient(180deg, black 60%, transparent);
   -webkit-mask-image: linear-gradient(180deg, black 60%, transparent);
+}
+
+div.collapsed-text-no-gradient-mask {
+  @extend %collapsed-text;
+  overflow: visible;
+  max-height: fit-content;
 }
 
 div.collapsed-text p {
