@@ -1,4 +1,4 @@
-import { Component, Input, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, Input, ElementRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 //import { CommentaryComponent } from '../../commentary/commentary.component';
 
 @Component({
@@ -13,7 +13,7 @@ export class ExpandableTextComponent implements AfterViewInit {
 
   protected enabled: boolean;
 
-  constructor(private elRef: ElementRef) {
+  constructor(private elRef: ElementRef, private cdRef: ChangeDetectorRef) {
     this.enabled = true;
     this.isCollapsed = this.isCollapsed || true; // Set isCollapsed to true by default
     this.collapsedHeightPx = 200; // Element height is 200px by default when collapsed FIXME: Em would be nicer, but would also make the comparison in the ngAfterViewInit below a bit more difficult.
@@ -31,6 +31,8 @@ export class ExpandableTextComponent implements AfterViewInit {
       this.enabled = false;
       // Also make sure the element isn't collapsed.
       this.isCollapsed = false;
+      // Push the changes to the Angular change detector
+      this.cdRef.detectChanges();
     }
   }
 
