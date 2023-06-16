@@ -141,15 +141,13 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
    * @author CptVickers
    */
   protected clear_playground(): void {
-    this.dialog
-      .open_confirmation_dialog('Are you sure you want to clear the playground?', this.playground.fragments)
-      .subscribe({
-        next: (res) => {
-          if (res === true) {
-            this.playground.fragments = [];
-            this.playground.note_array = [];
-          }
-        },
-      });
+    this.dialog.open_confirmation_dialog('Are you sure you want to clear the playground?', '').subscribe({
+      next: (res) => {
+        if (res === true) {
+          this.playground.fragments = [];
+          this.playground.note_array = [];
+        }
+      },
+    });
   }
 }
