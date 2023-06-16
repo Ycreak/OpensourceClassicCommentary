@@ -7,15 +7,14 @@
   <mat-toolbar class="fragment-column-toolbar">
     <!-- Button to select the text -->
     <button
-      style="color: white"
+      class="fragment-column-button"
       mat-button
       [matMenuTriggerFor]="menu_authors"
       (click)="column_to_display.new_column = false">
       Select text
     </button>
     <button
-      style="color: white"
-      ;
+      class="fragment-column-button"
       mat-button
       (click)="this.toggle_translation()"
       [innerHTML]="this.translation_toggle_button_label"></button>
