@@ -29,7 +29,9 @@ export class ExpandableTextComponent implements AfterViewInit {
     if (this.content.includes('[hidden]')) {
       // Hide the to-be-hidden text to the hideable section
       this.content = this.content.replace('[/hidden]', ''); // Remove leftover tags
-      [this.content, this.content_hideable] = this.content.split('[hidden]');
+      let content_hideable_arr: Array<string>;
+      [this.content, ...content_hideable_arr] = this.content.split('[hidden]');
+      this.content_hideable = content_hideable_arr.join();
 
       // Remove the gradient mask
       // This also sets the component height to fit-content
