@@ -47,7 +47,7 @@
   <ng-container *ngIf="!this.fragments_translated">
     <ng-container
       *ngTemplateOutlet="
-        show_fragment_content;
+        show_fragment_content_frag_translation;
         context: { current_fragment_content: given_fragment.translation, title: 'Fragment Translation' }
       ">
     </ng-container>
@@ -57,7 +57,7 @@
   <ng-container *ngIf="this.fragments_translated">
     <ng-container
       *ngTemplateOutlet="
-        show_fragment_content_lines;
+        show_fragment_content_orig_text;
         context: { current_fragment_content: given_fragment.lines, title: 'Original text' }
       ">
     </ng-container>
@@ -128,6 +128,7 @@
   <!-- Show the fragment metrical analysis -->
 </ng-template>
 
+<!-- ###### TEMPLATES ###### -->
 <!-- Template to show fragment content from the given fragment in a mat expansion panel -->
 <ng-template #show_fragment_content let-current_fragment_content="current_fragment_content" let-title="title">
   <ng-container *ngIf="current_fragment_content !== ''">
@@ -149,12 +150,14 @@
   </ng-container>
 </ng-template>
 
-<!-- TODO: Maybe we should make a public template for displaying the fragment lines -->
 <!-- Template to show fragment content from the given fragment in a mat expansion panel -->
-<ng-template #show_fragment_content_lines let-current_fragment_content="current_fragment_content" let-title="title">
+<ng-template #show_fragment_content_orig_text let-current_fragment_content="current_fragment_content" let-title="title">
   <ng-container *ngIf="current_fragment_content !== ''">
     <!-- do not generate fields if content is empty -->
-    <mat-expansion-panel *ngIf="current_fragment_content">
+    <mat-expansion-panel
+      *ngIf="current_fragment_content"
+      [expanded]="this.translation_orig_text_expanded"
+      (click)="toggle_translation_orig_text_expanded()">
       <mat-expansion-panel-header>
         <mat-panel-title>
           <b>{{ title }}</b>
@@ -171,6 +174,33 @@
               <p [innerHTML]="fragment_line.text | safeHtml"></p>
             </ng-template>
           </div>
+        </div>
+      </div>
+    </mat-expansion-panel>
+    <hr />
+    <!-- And add a nice line to separate the fields -->
+  </ng-container>
+</ng-template>
+
+<!-- Template to show fragment content from the given fragment in a mat expansion panel -->
+<ng-template
+  #show_fragment_content_frag_translation
+  let-current_fragment_content="current_fragment_content"
+  let-title="title">
+  <ng-container *ngIf="current_fragment_content !== ''">
+    <!-- do not generate fields if content is empty -->
+    <mat-expansion-panel
+      *ngIf="current_fragment_content"
+      [expanded]="this.translation_orig_text_expanded"
+      (click)="toggle_translation_orig_text_expanded()">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <b>{{ title }}</b>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div class="mat-expansion-panel-content">
+        <div class="mat-expansion-panel-body">
+          <div [innerHTML]="current_fragment_content"></div>
         </div>
       </div>
     </mat-expansion-panel>

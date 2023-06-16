@@ -22,6 +22,7 @@ export class CommentaryComponent implements OnInit, OnChanges {
   @Input() fragments_translated: boolean;
 
   protected fragment_clicked = false;
+  protected translation_orig_text_expanded = false;
 
   constructor(
     protected utility: UtilityService,
@@ -45,5 +46,15 @@ export class CommentaryComponent implements OnInit, OnChanges {
         this.current_fragment.convert_bib_entries(this.api.zotero);
       }
     }
+  }
+
+  /**
+   * Function to toggle the expansion state of the fragment translation/original text sections
+   * The expansion state is stored as a variable in this component so that it persists between
+   * DOM changes.
+   * @author CptVickers
+   */
+  protected toggle_translation_orig_text_expanded(): void {
+    this.translation_orig_text_expanded = !this.translation_orig_text_expanded;
   }
 }
