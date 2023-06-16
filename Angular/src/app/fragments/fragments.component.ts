@@ -33,9 +33,12 @@ import { Column } from '@oscc/models/Column';
 })
 export class FragmentsComponent implements OnInit, OnDestroy {
   @Output() fragment_clicked2 = new EventEmitter<Fragment>();
+  @Output() fragments_translated_event = new EventEmitter<boolean>();
 
   public current_fragment: Fragment; // Variable to store the clicked fragment and its data
   fragment_clicked = false; // Shows "click a fragment" banner at startup if nothing is yet selected
+
+  public fragments_translated: boolean; // Variable to indicate whether or not the translated text should be displayed.
 
   // Subscription variables
   private fragments_subscription: any;
@@ -196,6 +199,31 @@ export class FragmentsComponent implements OnInit, OnDestroy {
       return `HSL(0, 0%, ${calculated_brightness}%)`;
     } else {
       return 'transparent';
+    }
+  }
+
+  /**
+   * This function allows the user to display the translations of the fragments instead of the original text.
+   * The Fragment Translation tab in the commentary section then becomes the 'original text' tab instead.
+   * @author CptVickers
+   */
+  protected toggle_translation(): void {
+    // Toggle the text in the fragments column
+    this.fragments_translated = !this.fragments_translated;
+
+    // Emit an event so that the commentary section can process the change
+    this.fragments_translated_event.emit(this.fragments_translated);
+  }
+
+  /**
+   * Function to get an appropriate label for the toggle translation button
+   * @author CptVickers
+   */
+  protected get translation_toggle_button_label(): string {
+    if (this.fragments_translated === true) {
+      return 'Show original text';
+    } else {
+      return 'Show translation';
     }
   }
 }

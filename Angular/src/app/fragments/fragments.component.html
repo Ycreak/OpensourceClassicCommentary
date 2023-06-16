@@ -13,6 +13,12 @@
       (click)="column_to_display.new_column = false">
       Select text
     </button>
+    <button
+      style="color: white"
+      ;
+      mat-button
+      (click)="this.toggle_translation()"
+      [innerHTML]="this.translation_toggle_button_label"></button>
 
     <!-- Nested menu to select author - title - editor. -->
     <mat-menu #menu_authors="matMenu">
@@ -148,15 +154,22 @@
           <sup>{{ fragment.author }}, {{ fragment.title }}, {{ fragment.editor }}</sup> &nbsp;
           <i>{{ fragment.status }}</i>
         </div>
-        <div *ngFor="let fragment_line of fragment.lines">
-          <p
-            *ngIf="this.settings.fragments.show_line_names; else no_line_names"
-            [innerHTML]="fragment_line.line_number + ': ' + fragment_line.text | safeHtml"></p>
-          <ng-template #no_line_names>
-            <!--safeHtml to allow whitespaces made by spans-->
-            <p [innerHTML]="fragment_line.text | safeHtml"></p>
-          </ng-template>
-        </div>
+        <ng-container *ngIf="!this.fragments_translated; else translated_text_template">
+          <div *ngFor="let fragment_line of fragment.lines">
+            <p
+              *ngIf="this.settings.fragments.show_line_names; else no_line_names"
+              [innerHTML]="fragment_line.line_number + ': ' + fragment_line.text | safeHtml"></p>
+            <ng-template #no_line_names>
+              <!--safeHtml to allow whitespaces made by spans-->
+              <p [innerHTML]="fragment_line.text | safeHtml"></p>
+            </ng-template>
+          </div>
+        </ng-container>
+        <ng-template #translated_text_template>
+          <div>
+            <p [innerHTML]="fragment.translation"></p>
+          </div>
+        </ng-template>
       </div>
       <!--</div>-->
     </div>

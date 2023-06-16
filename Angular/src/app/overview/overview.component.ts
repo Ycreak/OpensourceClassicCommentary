@@ -1,6 +1,6 @@
 // Library imports
 
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog'; // Library used for interacting with the page
 import { environment } from '@src/environments/environment';
 
@@ -21,6 +21,7 @@ import { LoginComponent } from '@oscc/login/login.component';
 import { Fragment } from '@oscc/models/Fragment';
 import { ColumnHandlerService } from '@oscc/services/column-handler.service';
 import { LocalStorageService } from '@oscc/services/local-storage.service';
+import { CommentaryComponent } from '@oscc/commentary/commentary.component';
 
 @Component({
   selector: 'app-overview',
@@ -29,6 +30,8 @@ import { LocalStorageService } from '@oscc/services/local-storage.service';
   providers: [FragmentsComponent],
 })
 export class OverviewComponent implements OnInit, OnDestroy {
+  @ViewChild('commentary') commentary: CommentaryComponent;
+
   protected commentary_enabled = true;
   protected commentary_is_reduced_size = false;
   protected playground_enabled = true;
@@ -98,6 +101,15 @@ export class OverviewComponent implements OnInit, OnDestroy {
    */
   protected toggle_playground(): void {
     this.playground_enabled = !this.playground_enabled;
+  }
+
+  /**
+   * This function communicates a change in fragments_translated status
+   * to other elements.
+   * @author CptVickers
+   */
+  protected toggle_fragments_translated(bool: boolean): void {
+    this.commentary.set_fragments_translated = bool;
   }
 
   /**
