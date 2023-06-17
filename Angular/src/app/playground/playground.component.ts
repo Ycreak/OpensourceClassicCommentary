@@ -11,6 +11,7 @@ import { SettingsService } from '@oscc/services/settings.service';
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
 import { Column } from '@oscc/models/Column';
+import { DialogService } from '@oscc/services/dialog.service';
 
 @Component({
   selector: 'app-playground',
@@ -37,7 +38,8 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
     protected api: ApiService,
     protected utility: UtilityService,
     protected settings: SettingsService,
-    protected column_handler: ColumnHandlerService
+    protected column_handler: ColumnHandlerService,
+    protected dialog: DialogService
   ) {}
 
   ngOnInit(): void {
@@ -133,5 +135,19 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
     this.single_fragment_requested = true;
     // format the fragment and push it to the list
     this.api.request_fragments(column.column_id, column.author, column.title, column.editor, fragment_name);
+  }
+
+  /**
+   * @author CptVickers
+   */
+  protected clear_playground(): void {
+    this.dialog.open_confirmation_dialog('Are you sure you want to clear the playground?', '').subscribe({
+      next: (res) => {
+        if (res) {
+          this.playground.fragments = [];
+          this.playground.note_array = [];
+        }
+      },
+    });
   }
 }
