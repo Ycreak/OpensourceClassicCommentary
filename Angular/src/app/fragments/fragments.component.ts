@@ -219,7 +219,7 @@ export class FragmentsComponent implements OnInit, OnDestroy {
    * @author CptVickers
    */
   protected get translation_toggle_button_label(): string {
-    if (this.fragments_translated === true) {
+    if (this.fragments_translated) {
       return 'Show original text';
     } else {
       return 'Show translation';
