@@ -107,17 +107,16 @@ export class LoginComponent {
             });
             this.api.create_user(user).subscribe({
               next: (res) => {
-                this.api.handle_error_message(res), (this.login_form_expanded = false);
+                this.utility.open_snackbar('New user successfully created');
+                this.login_form_expanded = false;
                 this.create_form_expanded = false;
                 this.api.spinner_off();
 
                 // Also log in the new user after user creation
                 this.api.spinner_on();
-                setTimeout(() => {
-                  this.submit_login({
-                    value: { username: this.create_form.value.username, password: this.create_form.value.password1 },
-                  });
-                }, 2000);
+                this.submit_login({
+                  value: { username: this.create_form.value.username, password: this.create_form.value.password1 },
+                });
               },
               error: (err) => this.api.handle_error_message(err),
             });
