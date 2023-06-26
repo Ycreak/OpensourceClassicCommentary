@@ -2,7 +2,7 @@
 import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { Output, EventEmitter } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
-import { MatDialog } from '@angular/material/dialog'; 
+import { MatDialog } from '@angular/material/dialog';
 //import { environment } from '@src/environments/environment';
 
 // Service imports
@@ -49,7 +49,7 @@ export class FragmentsComponent implements OnInit, OnDestroy {
     protected dialog: DialogService,
     protected settings: SettingsService,
     private matdialog: MatDialog,
-    protected column_handler: ColumnHandlerService,
+    protected column_handler: ColumnHandlerService
   ) {}
 
   ngOnInit(): void {
@@ -225,8 +225,16 @@ export class FragmentsComponent implements OnInit, OnDestroy {
       return 'Show translation';
     }
   }
-  
-  protected set_custom_filter(): void {
-    this.matdialog.open(DocumentFilterComponent, {});
+
+  protected set_custom_filter(column_id: number): void {
+    const dialogRef = this.matdialog.open(DocumentFilterComponent, {});
+    dialogRef.afterClosed().subscribe({
+      next: (document_filter) => {
+        if (document_filter) {
+          console.log(document_filter, 'data');
+          this.api.request_documents(column_id, document_filter);
+        }
+      },
+    });
   }
 }

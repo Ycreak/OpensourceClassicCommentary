@@ -1,1 +1,22 @@
-<p>document-filter works!</p>
+<div style="padding: 2em">
+  <h5>Set custom filters</h5>
+  <form [formGroup]="this.form">
+    <mat-form-field appearance="outline">
+      <mat-label> Author </mat-label>
+      <input matInput formControlName="author" /> </mat-form-field
+    ><br />
+    <mat-form-field appearance="outline">
+      <mat-label> Title </mat-label>
+      <input matInput formControlName="title" /> </mat-form-field
+    ><br />
+    <mat-form-field appearance="outline">
+      <mat-label> Editor </mat-label>
+      <input matInput formControlName="editor" /> </mat-form-field
+    ><br />
+    <mat-form-field appearance="outline">
+      <mat-label> Status </mat-label>
+      <input matInput formControlName="status" /> </mat-form-field
+    ><br />
+    <button mat-stroked-button (click)="this.close_dialog()">Search</button>
+  </form>
+</div>
