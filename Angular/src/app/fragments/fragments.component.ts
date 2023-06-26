@@ -1,6 +1,6 @@
 // Library imports
 import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
-import { Input, Output, EventEmitter } from '@angular/core';
+import { Output, EventEmitter } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 //import { environment } from '@src/environments/environment';
 
@@ -32,9 +32,7 @@ import { Column } from '@oscc/models/Column';
   ],
 })
 export class FragmentsComponent implements OnInit, OnDestroy {
-  @Input() fragments_translated: boolean;
-  @Output() fragment_clicked2 = new EventEmitter<Fragment>();
-  @Output() fragments_translated_event = new EventEmitter<boolean>();
+  @Output() new_commentary = new EventEmitter<Fragment>();
 
   public current_fragment: Fragment; // Variable to store the clicked fragment and its data
   fragment_clicked = false; // Shows "click a fragment" banner at startup if nothing is yet selected
@@ -104,11 +102,15 @@ export class FragmentsComponent implements OnInit, OnDestroy {
   /**
    * Function to handle what happens when a fragment is selected in HTML.
    * @param fragment selected by the user
+   * @param Column
    * @author Ycreak
    */
-  protected handle_fragment_click(fragment: Fragment): void {
-    this.fragment_clicked2.emit(fragment);
-    // If we are currently dragging a fragment in the playground, we do not want the click even to fire.
+  protected handle_fragment_click(fragment: Fragment, column: Column): void {
+    //TODO: we need to emit a commentary object to the commentary
+    fragment.fragments_translated = column.fragments_translated;
+    this.new_commentary.emit(fragment);
+
+    //this.fragment_clicked2.emit(fragment);
     this.fragment_clicked = true;
     this.current_fragment = fragment;
 
@@ -206,20 +208,16 @@ export class FragmentsComponent implements OnInit, OnDestroy {
    * The Fragment Translation tab in the commentary section then becomes the 'original text' tab instead.
    * @author CptVickers
    */
-  protected toggle_translation(): void {
-    // Toggle the text in the fragments column
-    this.fragments_translated = !this.fragments_translated;
-
-    // Emit an event so that the other components can process the change
-    this.fragments_translated_event.emit(this.fragments_translated);
+  protected toggle_translation(column: Column): void {
+    column.fragments_translated = !column.fragments_translated;
   }
 
   /**
    * Function to get an appropriate label for the toggle translation button
    * @author CptVickers
    */
-  protected get translation_toggle_button_label(): string {
-    if (this.fragments_translated) {
+  protected translation_toggle_button_label(column: Column): string {
+    if (column.fragments_translated) {
       return 'Show original text';
     } else {
       return 'Show translation';

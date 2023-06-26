@@ -33,9 +33,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   @ViewChild('commentary') commentary: CommentaryComponent;
 
   protected commentary_enabled = true;
-  protected commentary_is_reduced_size = false;
   protected playground_enabled = true;
-  protected fragments_translated = false; // Indicates if fragments in frag.col. should be shown translated
 
   protected current_fragment: Fragment;
 
@@ -86,14 +84,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
    */
   protected toggle_commentary(): void {
     this.commentary_enabled = !this.commentary_enabled;
-  }
-
-  /**
-   * Simple function to toggle the commentary column size
-   * @author CptVickers
-   */
-  protected toggle_commentary_size(): void {
-    this.commentary_is_reduced_size = !this.commentary_is_reduced_size;
   }
 
   /**
