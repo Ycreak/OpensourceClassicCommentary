@@ -32,7 +32,7 @@ import { Column } from '@oscc/models/Column';
   ],
 })
 export class FragmentsComponent implements OnInit, OnDestroy {
-  @Output() fragment_clicked2 = new EventEmitter<Fragment>();
+  @Output() new_commentary = new EventEmitter<Fragment>();
 
   public current_fragment: Fragment; // Variable to store the clicked fragment and its data
   fragment_clicked = false; // Shows "click a fragment" banner at startup if nothing is yet selected
@@ -102,11 +102,15 @@ export class FragmentsComponent implements OnInit, OnDestroy {
   /**
    * Function to handle what happens when a fragment is selected in HTML.
    * @param fragment selected by the user
+   * @param Column
    * @author Ycreak
    */
-  protected handle_fragment_click(fragment: Fragment): void {
-    this.fragment_clicked2.emit(fragment);
-    // If we are currently dragging a fragment in the playground, we do not want the click even to fire.
+  protected handle_fragment_click(fragment: Fragment, column: Column): void {
+    //TODO: we need to emit a commentary object to the commentary
+    fragment.fragments_translated = column.fragments_translated;
+    this.new_commentary.emit(fragment);
+
+    //this.fragment_clicked2.emit(fragment);
     this.fragment_clicked = true;
     this.current_fragment = fragment;
 
@@ -196,6 +200,27 @@ export class FragmentsComponent implements OnInit, OnDestroy {
       return `HSL(0, 0%, ${calculated_brightness}%)`;
     } else {
       return 'transparent';
+    }
+  }
+
+  /**
+   * This function allows the user to display the translations of the fragments instead of the original text.
+   * The Fragment Translation tab in the commentary section then becomes the 'original text' tab instead.
+   * @author CptVickers
+   */
+  protected toggle_translation(column: Column): void {
+    column.fragments_translated = !column.fragments_translated;
+  }
+
+  /**
+   * Function to get an appropriate label for the toggle translation button
+   * @author CptVickers
+   */
+  protected translation_toggle_button_label(column: Column): string {
+    if (column.fragments_translated) {
+      return 'Show original text';
+    } else {
+      return 'Show translation';
     }
   }
 }

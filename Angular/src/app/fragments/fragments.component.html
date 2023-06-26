@@ -7,12 +7,18 @@
   <mat-toolbar class="fragment-column-toolbar">
     <!-- Button to select the text -->
     <button
-      style="color: white"
+      class="fragment-column-button"
       mat-button
       [matMenuTriggerFor]="menu_authors"
       (click)="column_to_display.new_column = false">
       Select text
     </button>
+    <button
+      *ngIf="column_to_display.has_translations()"
+      class="fragment-column-button"
+      mat-button
+      (click)="this.toggle_translation(column_to_display)"
+      [innerHTML]="this.translation_toggle_button_label(column_to_display)"></button>
 
     <!-- Nested menu to select author - title - editor. -->
     <mat-menu #menu_authors="matMenu">
@@ -132,7 +138,7 @@
     <div *ngFor="let fragment of given_column.fragments">
       <div
         class="fragment-box"
-        (click)="handle_fragment_click(fragment)"
+        (click)="handle_fragment_click(fragment, given_column)"
         cdkDrag
         [cdkDragDisabled]="this.settings.fragments.dragging_disabled"
         (cdkDragDropped)="this.column_handler.track_edited_columns($event)"
@@ -148,15 +154,22 @@
           <sup>{{ fragment.author }}, {{ fragment.title }}, {{ fragment.editor }}</sup> &nbsp;
           <i>{{ fragment.status }}</i>
         </div>
-        <div *ngFor="let fragment_line of fragment.lines">
-          <p
-            *ngIf="this.settings.fragments.show_line_names; else no_line_names"
-            [innerHTML]="fragment_line.line_number + ': ' + fragment_line.text | safeHtml"></p>
-          <ng-template #no_line_names>
-            <!--safeHtml to allow whitespaces made by spans-->
-            <p [innerHTML]="fragment_line.text | safeHtml"></p>
-          </ng-template>
-        </div>
+        <ng-container *ngIf="given_column.fragments_translated; else fragments_not_translated">
+          <div>
+            <p [innerHTML]="fragment.translation"></p>
+          </div>
+        </ng-container>
+        <ng-template #fragments_not_translated>
+          <div *ngFor="let fragment_line of fragment.lines">
+            <p
+              *ngIf="this.settings.fragments.show_line_names; else no_line_names"
+              [innerHTML]="fragment_line.line_number + ': ' + fragment_line.text | safeHtml"></p>
+            <ng-template #no_line_names>
+              <!--safeHtml to allow whitespaces made by spans-->
+              <p [innerHTML]="fragment_line.text | safeHtml"></p>
+            </ng-template>
+          </div>
+        </ng-template>
       </div>
       <!--</div>-->
     </div>

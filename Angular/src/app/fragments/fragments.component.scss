@@ -31,8 +31,6 @@ ng-template {
   color: black;
 }
 
-/* Fragment and commentary column related CSS */
-
 /* Box in which the fragment is shown. Created by the for-loop in Fragment Column. */
 .fragment-box {
   padding: 10px 5px 0px 5px;
@@ -120,4 +118,8 @@ ng-template {
   color: white;
   /* outline: 1px solid black; */
   background: #9fa1fe;
+}
+
+.fragment-column-button {
+  color: white;
 }

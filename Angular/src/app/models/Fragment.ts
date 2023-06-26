@@ -19,6 +19,9 @@ export class Fragment {
   metrical_analysis: string;
   context: Context[];
 
+  // TODO: this needs to be part of the commentary object
+  fragments_translated = false;
+
   status = '';
   lines: Line[] = [];
   linked_fragments: Linked_fragment[] = [];
