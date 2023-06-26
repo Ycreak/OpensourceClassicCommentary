@@ -8,7 +8,7 @@
     [class.uncollapsed-text]="!this.isCollapsed"></div>
   <!-- Hideable content div -->
   <div [hidden]="isCollapsed" [innerHTML]="content_hideable"></div>
-  <button mat-button class="collapse-expand-button" *ngIf="this.enabled" (click)="this.ToggleCollapsed()">
-    {{ this.GetToggleButtonText }}
+  <button mat-button class="collapse-expand-button" *ngIf="this.enabled" (click)="this.toggle_collapsed()">
+    {{ this.get_toggle_button_text}}
   </button>
 </div>
