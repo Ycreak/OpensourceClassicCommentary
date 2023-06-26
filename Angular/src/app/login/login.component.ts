@@ -63,7 +63,7 @@ export class LoginComponent {
     public dialogRef: MatDialogRef<LoginComponent>
   ) {}
 
-  public submit_login(login_form): void {
+  public submit_login(login_form: any): void {
     // Create a user session for the auth_service to fill in
     this.api.spinner_on();
     const user = new User({
@@ -87,7 +87,7 @@ export class LoginComponent {
    * @param form provided by the user
    * @returns void, but does request api for creation of a user
    */
-  public submit_create(form): void {
+  public submit_create(form: any): void {
     // Check if the magic word is correct
     if (form.magic_word != this.auth_service.magic_phrase) {
       this.utility.open_snackbar('That is not the magic word');
@@ -106,10 +106,15 @@ export class LoginComponent {
               password: encodeURIComponent(form.password1),
             });
             this.api.create_user(user).subscribe({
-              next: (res) => {
-                this.api.handle_error_message(res), (this.login_form_expanded = false);
+              next: () => {
+                this.login_form_expanded = false;
                 this.create_form_expanded = false;
                 this.api.spinner_off();
+                // Also log in the new user after user creation
+                this.api.spinner_on();
+                this.submit_login({
+                  value: { username: this.create_form.value.username, password: this.create_form.value.password1 },
+                });
               },
               error: (err) => this.api.handle_error_message(err),
             });
