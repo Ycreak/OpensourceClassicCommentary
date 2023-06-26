@@ -1,0 +1,38 @@
+div.collapsed-text-container {
+  display: grid;
+}
+
+%collapsed-text {
+  max-height: var(--collapsed-height);
+  overflow: hidden;
+}
+
+div.collapsed-text {
+  @extend %collapsed-text;
+  mask-image: linear-gradient(180deg, black 60%, transparent);
+  -webkit-mask-image: linear-gradient(180deg, black 60%, transparent);
+}
+
+div.collapsed-text-no-gradient-mask {
+  @extend %collapsed-text;
+  overflow: visible;
+  max-height: fit-content;
+}
+
+div.collapsed-text p {
+  width: auto;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+div.uncollapsed-text {
+  max-height: none;
+  overflow: visible;
+}
+
+button.collapse-expand-button {
+  border: lightgray;
+  border-style: solid;
+  border-width: thin;
+  border-radius: 0.5rem;
+}
