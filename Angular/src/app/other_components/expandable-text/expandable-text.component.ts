@@ -18,7 +18,7 @@ export class ExpandableTextComponent implements AfterViewInit {
   constructor(private elRef: ElementRef, private cdRef: ChangeDetectorRef) {
     this.enabled = true;
     this.isCollapsed = this.isCollapsed || true; // Set isCollapsed to true by default
-    this.collapsedHeightPx = 200; // Element height is 200px by default when collapsed FIXME: Em would be nicer, but would also make the comparison in the ngAfterViewInit below a bit more difficult.
+    this.collapsedHeightPx = this.collapsedHeightPx || 200; // Element height is 200px by default when collapsed FIXME: Em would be nicer, but would also make the comparison in the ngAfterViewInit below a bit more difficult.
     // Send this variable to the css
     document.querySelector('body').style.setProperty('--collapsed-height', String(this.collapsedHeightPx + 'px'));
   }
@@ -29,7 +29,7 @@ export class ExpandableTextComponent implements AfterViewInit {
     if (this.content.includes('[hidden]')) {
       // Hide the to-be-hidden text to the hideable section
       this.content = this.content.replace('[/hidden]', ''); // Remove leftover tags
-      let content_hideable_arr: Array<string>;
+      let content_hideable_arr: string[];
       [this.content, ...content_hideable_arr] = this.content.split('[hidden]');
       this.content_hideable = content_hideable_arr.join();
 
@@ -59,7 +59,7 @@ export class ExpandableTextComponent implements AfterViewInit {
    * Function used by the toggle button to change between collapsed and expanded view.
    * @author CptVickers
    */
-  protected ToggleCollapsed() {
+  protected toggle_collapsed() {
     // If the content contains a hidden section, unhide TODO:
     if (this.isCollapsed) {
       this.content = this.content.replace('<span hidden>', "<span name='unhidden'>");
@@ -77,7 +77,7 @@ export class ExpandableTextComponent implements AfterViewInit {
    * Function used by the toggle button to get a relevant label based on the element being expanded or collapsed
    * @author CptVickers
    */
-  protected get GetToggleButtonText() {
+  protected get get_toggle_button_text() {
     if (this.isCollapsed === true) {
       return 'Show more';
     } else {
