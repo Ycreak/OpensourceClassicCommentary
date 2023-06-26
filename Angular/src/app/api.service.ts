@@ -301,6 +301,12 @@ export class ApiService {
     });
   }
 
+  /**
+   * Requests documents from the server given a filter object
+   * @param number of column_id
+   * @param object of filter to apply to documents
+   * @author Ycreak
+   */
   public request_documents(column_id: number, filter: object): void {
     this.spinner_on();
     this.fragments = [];

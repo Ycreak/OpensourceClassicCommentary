@@ -226,6 +226,11 @@ export class FragmentsComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Opens a dialog to set a custom filter. If filter set, requests documents from server
+   * @param number of column_id to load documents into
+   * @author Ycreak
+   */
   protected set_custom_filter(column_id: number): void {
     const dialogRef = this.matdialog.open(DocumentFilterComponent, {});
     dialogRef.afterClosed().subscribe({
