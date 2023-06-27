@@ -302,6 +302,29 @@ export class ApiService {
   }
 
   /**
+   * Requests documents from the server given a filter object
+   * @param number of column_id
+   * @param object of filter to apply to documents
+   * @author Ycreak
+   */
+  public request_documents(column_id: number, filter: object): void {
+    this.spinner_on();
+    this.fragments = [];
+    this.get_fragments(filter).subscribe({
+      next: (data) => {
+        data.forEach((value) => {
+          const fragment = new Fragment();
+          fragment.set_fragment(value);
+          this.fragments.push(fragment);
+        });
+        this.new_fragments_alert.next(column_id);
+        this.spinner_off();
+      },
+      error: (err) => this.handle_error_message(err),
+    });
+  }
+
+  /**
    * Function to request the introduction text for a given author or author + title.
    * @param intro Introduction object with form data; contains selected author and title data.
    * @author CptVickers
