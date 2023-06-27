@@ -236,7 +236,6 @@ export class FragmentsComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe({
       next: (document_filter) => {
         if (document_filter) {
-          console.log(document_filter, 'data');
           this.api.request_documents(column_id, document_filter);
         }
       },

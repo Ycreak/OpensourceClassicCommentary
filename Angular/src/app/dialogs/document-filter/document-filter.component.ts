@@ -21,7 +21,7 @@ export class DocumentFilterComponent {
     console.log(this.form.value);
   }
 
-  protected close_dialog() {
+  protected submit_filter() {
     const return_form = this.remove_empty_form_fields(this.form.value);
     this.dialogRef.close(return_form);
   }
