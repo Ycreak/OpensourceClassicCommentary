@@ -37,11 +37,8 @@ The frontend is written with Angular and allows the user to interact with the fr
 To install and run the Angular component on your PC, make sure to have [NodeJS](https://nodejs.org/en/) and [NPM](https://www.npmjs.com/) installed on your machine. Next, navigate to the Angular folder and run the following commands in your terminal:
 
 ```console 
-npm install --save @angular/material @angular/cdk
-npm install --save bootstrap
-npm install ngx-simple-text-editor --save
-npm install @efaps/angular-onscreen-material-keyboard
-npm install --save jquery
+sudo npm install -g @angular/cli
+npm install --save @angular/material @angular/cdk bootstrap jquery
 npm install
 ```
 
@@ -61,6 +58,25 @@ To keep the project up to date, use [Angular's update guide](https://update.angu
 npm i -g npm-check-updates
 ncu -u
 npm install
+```
+
+The project also uses Prettier and ESLint for better code practises and easier cooperation between programmers.
+
+```console
+npm install --save-dev --save-exact prettier
+
+
+```
+
+To run Prettier:
+```console
+npx prettier --check .
+npx prettier --write .
+```
+
+To run ESLint:
+```console
+npm run lint
 ```
 
 ### Dependencies
