@@ -61,7 +61,9 @@
   <button (click)="login()" mat-menu-item>Login</button>
   <button mat-menu-item routerLink="/dashboard" *ngIf="this.auth_service.is_logged_in">Dashboard</button>
   <button mat-menu-item routerLink="/scansion" *ngIf="this.auth_service.is_logged_in">Scansion</button>
-  <a href="https://github.com/Ycreak/OpensourceClassicCommentary/" target="_blank" mat-menu-item>Documentation</a>
+  <a href="https://github.com/Ycreak/OpensourceClassicCommentary/#readme" target="_blank" mat-menu-item
+    >Documentation</a
+  >
   <button (click)="this.settings.open_settings()" mat-menu-item>Settings</button>
   <button (click)="this.dialog.open_about_dialog()" mat-menu-item>About</button>
   <div mat-menu-item>V23.04.27</div>
