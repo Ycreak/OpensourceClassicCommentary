@@ -211,8 +211,7 @@ export class ApiService {
   }
 
   public request_zotero_data() {
-    const url = 'https://api.zotero.org/groups/5089557/items?v=3';
-    this.get(url).subscribe({
+    this.get(environment.zotero_url).subscribe({
       next: (data) => {
         const bib_list: Bib[] = [];
         for (const i in data) {

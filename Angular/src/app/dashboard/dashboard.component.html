@@ -280,10 +280,6 @@
             have appeared. Do not add HTML for a paragraph here!
           </div>
 
-          <div class="alert alert-info" role="alert">
-            You can press <b>SHIFT</b> for the popup keyboard to reveal more metre and HTML possibilities.
-          </div>
-
           <form [formGroup]="fragment_form">
             <button mat-stroked-button color="primary" (click)="push_fragment_line_to_fragment_form('', '')">
               Add New Fragment Line
@@ -316,11 +312,6 @@
           ><br />
           <!-- This piece of code allows users to provide content for the fragment. It contains simple text fields
                 which communicate directly with the fragment_form. -->
-          <div class="alert alert-info" role="alert">
-            You can press <b>SHIFT</b> for the popup keyboard to reveal more metre and HTML possibilities. Furthermore,
-            text fields can be enlarged if needs be.
-          </div>
-
           <form [formGroup]="fragment_form">
             <mat-form-field class="input-form-full-width">
               <mat-label><b>Fragment translation</b></mat-label>

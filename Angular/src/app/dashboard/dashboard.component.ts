@@ -146,6 +146,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
+    //if (environment.debug) {
+    //this.api.request_fragments(255, 'Ennius', 'Thyestes', 'TRF', '112');
+    //}
     if (!environment.production) {
       // Only load if the environment is development: otherwise Commentary will load
       // because direct Dashboard route does not exist.
@@ -205,7 +208,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
    * @author Ycreak
    */
   public test(thing: any): void {
-    console.log(this.retrieved_users, thing);
+    console.log(this.fragment_form, thing);
   }
 
   /**
@@ -242,13 +245,11 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   /**
    * Converts the fragment_form (formgroup) to the Fragment object
    * @param fragment_form to be converted
-   * @returns Fragment object
+   * @returns object representing a json blob for the server
    * @author Ycreak
    */
   private convert_fragment_form_to_Fragment(fragment_form: FormGroup): Fragment {
-    const new_fragment = new Fragment({});
-    new_fragment.set_fragment(fragment_form.value);
-    return new_fragment;
+    return fragment_form.value;
   }
 
   /**
@@ -259,31 +260,26 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   private convert_Fragment_to_fragment_form(fragment: Fragment): void {
     // This functions updates the fragment_form with the provided fragment
+    for (const item of ['_id', 'name', 'author', 'title', 'editor', 'status', 'lock', 'published']) {
+      this.fragment_form.patchValue({ [item]: fragment[item] });
+    }
+    // Update the fragment form with the commentary of the given fragment
     for (const item of [
-      '_id',
-      'name',
-      'author',
-      'title',
-      'editor',
       'translation',
       'differences',
       'commentary',
       'apparatus',
       'reconstruction',
       'metrical_analysis',
-      'status',
-      'lock',
-      'published',
     ]) {
-      this.fragment_form.patchValue({ [item]: fragment[item] });
+      this.fragment_form.patchValue({ [item]: fragment.commentary[item] });
     }
-
     // Fill the fragment context array
-    for (const i in fragment.context) {
+    for (const i in fragment.commentary.context) {
       this.push_fragment_context_to_fragment_form(
-        fragment.context[i].author,
-        fragment.context[i].location,
-        fragment.context[i].text
+        fragment.commentary.context[i].author,
+        fragment.commentary.context[i].location,
+        fragment.commentary.context[i].text
       );
     }
     // Fill the fragment lines array

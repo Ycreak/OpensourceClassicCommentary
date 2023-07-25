@@ -35,7 +35,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   protected commentary_enabled = true;
   protected playground_enabled = true;
 
-  protected current_fragment: Fragment;
+  protected clicked_fragment: Fragment;
 
   constructor(
     protected api: ApiService,
@@ -53,7 +53,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Create the window watcher for mobile devices
     this.window_watcher.init(window.innerWidth);
-    this.current_fragment = new Fragment({});
+    this.clicked_fragment = new Fragment({});
 
     // Load the user's previously used setting from local storage using the LocalStorageService service
     this.settings.load_settings();
@@ -100,6 +100,15 @@ export class OverviewComponent implements OnInit, OnDestroy {
    */
   protected login(): void {
     this.matdialog.open(LoginComponent, {});
+  }
+
+  /**
+   * Function to check whether a fragment has been clicked
+   * @returns boolean
+   * @author Ycreak
+   */
+  protected fragment_is_clicked(): boolean {
+    return this.clicked_fragment.author != '';
   }
 
   /**

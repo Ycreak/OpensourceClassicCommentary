@@ -34,7 +34,7 @@ import { Column } from '@oscc/models/Column';
   ],
 })
 export class FragmentsComponent implements OnInit, OnDestroy {
-  @Output() new_commentary = new EventEmitter<Fragment>();
+  @Output() clicked_fragment = new EventEmitter<Fragment>();
 
   public current_fragment: Fragment; // Variable to store the clicked fragment and its data
   fragment_clicked = false; // Shows "click a fragment" banner at startup if nothing is yet selected
@@ -54,6 +54,7 @@ export class FragmentsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.api.request_authors_titles_editors_blob();
+    this.api.request_zotero_data();
     // Create an empty current_fragment variable to be filled whenever the user clicks a fragment
     this.current_fragment = new Fragment({});
     // Create a commentary column (deprecated -> can be replaced by simple linked_fragments list)
@@ -75,7 +76,7 @@ export class FragmentsComponent implements OnInit, OnDestroy {
     this.fragments_subscription = this.api.new_fragments_alert$.subscribe((column_id) => {
       let fragments: Fragment[] = this.api.fragments;
       for (const i in fragments) {
-        fragments[i].add_html_to_commentary();
+        fragments[i].add_html_to_lines();
       }
       // A new list of fragments has arrived. Use the column identifier to find the corresponding column
       const column = this.column_handler.columns.find((x) => x.column_id == column_id);
@@ -110,7 +111,7 @@ export class FragmentsComponent implements OnInit, OnDestroy {
   protected handle_fragment_click(fragment: Fragment, column: Column): void {
     //TODO: we need to emit a commentary object to the commentary
     fragment.fragments_translated = column.fragments_translated;
-    this.new_commentary.emit(fragment);
+    this.clicked_fragment.emit(fragment);
 
     //this.fragment_clicked2.emit(fragment);
     this.fragment_clicked = true;
