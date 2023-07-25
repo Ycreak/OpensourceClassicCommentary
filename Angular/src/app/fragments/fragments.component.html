@@ -161,7 +161,7 @@
         </div>
         <ng-container *ngIf="given_column.fragments_translated; else fragments_not_translated">
           <div>
-            <p [innerHTML]="fragment.translation"></p>
+            <p [innerHTML]="fragment.commentary.translation"></p>
           </div>
         </ng-container>
         <ng-template #fragments_not_translated>

@@ -4,28 +4,20 @@ import { Linked_fragment } from './Linked_fragment';
 
 /** This class represents a fragment and all its data fields */
 export class Fragment {
+  // Meta data
   _id = '';
   author = '';
   title = '';
   editor = '';
   name = '';
-
-  commentary: Commentary;
-
-  //translation: string;
-  //commentary: string;
-  //apparatus: string;
-  //reconstruction: string;
-  //differences: string;
-  //metrical_analysis: string;
-  //context: Context[];
-
-  // Keeps track whether we tranlated this fragment using the column translate functionality
-  fragments_translated = false;
-
   status = '';
+  // Commentary
+  commentary: Commentary;
+  // Content
   lines: Line[] = [];
   linked_fragments: Linked_fragment[] = [];
+  // Keeps track whether we tranlated this fragment using the column translate functionality
+  fragments_translated = false;
 
   lock = '';
   published = '';
@@ -44,7 +36,7 @@ export class Fragment {
    * @author Ycreak
    */
   public set_fragment(fragment: any) {
-    this.commentary = new Commentary();
+    this.commentary = new Commentary({});
     this.commentary.set(fragment);
 
     this._id = '_id' in fragment ? fragment['_id'] : '';

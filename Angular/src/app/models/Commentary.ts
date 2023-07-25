@@ -4,15 +4,20 @@ import { Line } from './Line';
 
 /** This class represents a fragment and all its data fields */
 export class Commentary {
-  translation: string;
-  commentary: string;
-  apparatus: string;
-  reconstruction: string;
-  differences: string;
-  metrical_analysis: string;
-  context: Context[];
+  translation = '';
+  commentary = '';
+  apparatus = '';
+  reconstruction = '';
+  differences = '';
+  metrical_analysis = '';
+  context: Context[] = [];
 
   lines: Line[] = [];
+
+  constructor(commentary?: Partial<Commentary>) {
+    // Allow the partial initialisation of a fragment object
+    Object.assign(this, commentary);
+  }
 
   /**
    * Converts the JSON received from the server to a Typescript object
@@ -20,13 +25,18 @@ export class Commentary {
    * @author Ycreak
    */
   public set(fragment: any) {
-    this.translation = 'translation' in fragment ? fragment['translation'] : '';
-    this.commentary = 'commentary' in fragment ? fragment['commentary'] : '';
-    this.apparatus = 'apparatus' in fragment ? fragment['apparatus'] : '';
-    this.reconstruction = 'reconstruction' in fragment ? fragment['reconstruction'] : '';
-    this.differences = 'differences' in fragment ? fragment['differences'] : '';
-    this.metrical_analysis = 'metrical_analysis' in fragment ? fragment['metrical_analysis'] : '';
-    this.context = 'context' in fragment ? fragment['context'] : [];
+    if (fragment.name == '112') {
+      console.log('fr', fragment);
+    }
+    this.translation = 'translation' in fragment && fragment['translation'] != null ? fragment['translation'] : '';
+    this.commentary = 'commentary' in fragment && fragment['commentary'] != null ? fragment['commentary'] : '';
+    this.apparatus = 'apparatus' in fragment && fragment['apparatus'] != null ? fragment['apparatus'] : '';
+    this.reconstruction =
+      'reconstruction' in fragment && fragment['reconstruction'] != null ? fragment['reconstruction'] : '';
+    this.differences = 'differences' in fragment && fragment['differences'] != null ? fragment['differences'] : '';
+    this.metrical_analysis =
+      'metrical_analysis' in fragment && fragment['metrical_analysis'] != null ? fragment['metrical_analysis'] : '';
+    this.context = 'context' in fragment && fragment['context'] != null ? fragment['context'] : [];
   }
 
   /**

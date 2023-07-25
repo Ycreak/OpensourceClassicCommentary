@@ -146,6 +146,10 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
+    if (environment.debug) {
+      this.api.request_fragments(255, 'Ennius', 'Thyestes', 'TRF', '112');
+    }
+
     if (!environment.production) {
       // Only load if the environment is development: otherwise Commentary will load
       // because direct Dashboard route does not exist.
@@ -205,7 +209,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
    * @author Ycreak
    */
   public test(thing: any): void {
-    console.log(this.retrieved_users, thing);
+    console.log(this.fragment_form, thing);
   }
 
   /**
@@ -242,13 +246,11 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   /**
    * Converts the fragment_form (formgroup) to the Fragment object
    * @param fragment_form to be converted
-   * @returns Fragment object
+   * @returns object representing a json blob for the server
    * @author Ycreak
    */
   private convert_fragment_form_to_Fragment(fragment_form: FormGroup): Fragment {
-    const new_fragment = new Fragment({});
-    new_fragment.set_fragment(fragment_form.value);
-    return new_fragment;
+    return fragment_form.value;
   }
 
   /**

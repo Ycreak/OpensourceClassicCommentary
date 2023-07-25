@@ -33,6 +33,7 @@ export class CommentaryComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.commentary) {
+      console.log('comm', this.commentary);
       this.commentary.add_html();
       this.commentary.convert_bib_entries(this.api.zotero);
     }
