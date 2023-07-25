@@ -146,10 +146,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
-    if (environment.debug) {
-      this.api.request_fragments(255, 'Ennius', 'Thyestes', 'TRF', '112');
-    }
-
+    //if (environment.debug) {
+    //this.api.request_fragments(255, 'Ennius', 'Thyestes', 'TRF', '112');
+    //}
     if (!environment.production) {
       // Only load if the environment is development: otherwise Commentary will load
       // because direct Dashboard route does not exist.
