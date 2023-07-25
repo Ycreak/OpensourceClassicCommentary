@@ -52,7 +52,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
       if (column_id == environment.playground_id) {
         const fragments = this.api.fragments;
         for (const i in fragments) {
-          fragments[i].add_html_to_commentary();
+          fragments[i].add_html_to_lines();
         }
         if (this.single_fragment_requested) {
           this.playground.fragments.push(fragments[0]);

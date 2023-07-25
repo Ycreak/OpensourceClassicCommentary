@@ -265,25 +265,29 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       'author',
       'title',
       'editor',
-      'translation',
-      'differences',
-      'commentary',
-      'apparatus',
-      'reconstruction',
-      'metrical_analysis',
       'status',
       'lock',
       'published',
     ]) {
       this.fragment_form.patchValue({ [item]: fragment[item] });
     }
-
+    // Update the fragment form with the commentary of the given fragment
+    for (const item of [
+      'translation',
+      'differences',
+      'commentary',
+      'apparatus',
+      'reconstruction',
+      'metrical_analysis',
+    ]) {
+      this.fragment_form.patchValue({ [item]: fragment.commentary[item] });
+    }
     // Fill the fragment context array
-    for (const i in fragment.context) {
+    for (const i in fragment.commentary.context) {
       this.push_fragment_context_to_fragment_form(
-        fragment.context[i].author,
-        fragment.context[i].location,
-        fragment.context[i].text
+        fragment.commentary.context[i].author,
+        fragment.commentary.context[i].location,
+        fragment.commentary.context[i].text
       );
     }
     // Fill the fragment lines array

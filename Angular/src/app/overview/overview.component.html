@@ -78,7 +78,7 @@
 <div>
   <mat-drawer-container class="drawer-container" autosize>
     <div class="overview-sidenav-content">
-      <app-fragments (new_commentary)="this.current_fragment = $event"> </app-fragments>
+      <app-fragments (clicked_fragment)="this.clicked_fragment = $event"> </app-fragments>
     </div>
 
     <hr />
@@ -91,9 +91,37 @@
       position="end"
       opened="true">
       <div style="padding: 0.5em">
-        <app-commentary #commentary [current_fragment]="this.current_fragment"> </app-commentary>
+        <!--Show the currently clicked author + title-->
+        <div *ngIf="!this.fragment_is_clicked(); else fragment_clicked">
+          <h5>Click a fragment to show its content.</h5>
+        </div>
+        <ng-template #fragment_clicked>
+          <h5>
+            Selected
+            <a class="a-void" (click)="this.introductions.show_introduction_dialog(this.clicked_fragment.author)">{{
+              this.clicked_fragment.author
+            }}</a
+            >,
+            <a class="a-void" (click)="this.introductions.show_introduction_dialog(this.clicked_fragment.title)">{{
+              this.clicked_fragment.title
+            }}</a
+            >, {{ this.clicked_fragment.editor }},
+            {{ this.clicked_fragment.name }}
+          </h5>
+
+          <!-- Show banner if no commentary available -->
+          <div *ngIf="!this.clicked_fragment.commentary.has_content()" class="alert alert-info" role="alert">
+            No content is available yet for this specific fragment.
+          </div>
+          <!--Show the commentary via the commentary component -->
+          <app-commentary *ngIf="this.clicked_fragment.commentary.has_content()" #commentary 
+            [commentary]="this.clicked_fragment.commentary"
+            [fragments_translated]="this.clicked_fragment.fragments_translated"> 
+          </app-commentary>
+        </ng-template>
+       
       </div>
     </mat-drawer>
   </mat-drawer-container>
-  <app-playground *ngIf="this.playground_enabled" (fragment_clicked)="this.current_fragment = $event"></app-playground>
+  <app-playground *ngIf="this.playground_enabled" (clicked_fragment)="this.clicked_fragment = $event"></app-playground>
 </div>

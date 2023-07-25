@@ -4,7 +4,7 @@ import { IntroductionsComponent } from '@oscc/dashboard/introductions/introducti
 import { FragmentsComponent } from '@oscc/fragments/fragments.component';
 
 // Model imports
-import { Fragment } from '@oscc/models/Fragment';
+import { Commentary } from '@oscc/models/Commentary';
 import { DialogService } from '@oscc/services/dialog.service';
 import { SettingsService } from '@oscc/services/settings.service';
 
@@ -17,8 +17,8 @@ import { UtilityService } from '@oscc/utility.service';
   styleUrls: ['./commentary.component.scss'],
   providers: [IntroductionsComponent, FragmentsComponent],
 })
-export class CommentaryComponent implements OnInit, OnChanges {
-  @Input() current_fragment: Fragment;
+export class CommentaryComponent implements OnChanges {
+  @Input() commentary: Commentary;
   @Input() fragments_translated: boolean;
 
   protected fragment_clicked = false;
@@ -29,22 +29,12 @@ export class CommentaryComponent implements OnInit, OnChanges {
     protected api: ApiService,
     protected dialog: DialogService,
     protected settings: SettingsService,
-    private introductions: IntroductionsComponent,
-    private fragments: FragmentsComponent
   ) {}
 
-  ngOnInit(): void {
-    this.api.request_zotero_data();
-    this.current_fragment = new Fragment({});
-  }
-
   ngOnChanges(changes: SimpleChanges) {
-    // If the input fragment changes, we will note that a fragment has been clicked
-    if (changes.current_fragment) {
-      if (changes.current_fragment.currentValue.author != '') {
-        this.fragment_clicked = true;
-        this.current_fragment.convert_bib_entries(this.api.zotero);
-      }
+    if (changes.commentary) {
+      this.commentary.add_html();
+      this.commentary.convert_bib_entries(this.api.zotero);
     }
   }
 

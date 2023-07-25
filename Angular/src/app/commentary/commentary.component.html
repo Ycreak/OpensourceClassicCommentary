@@ -1,34 +1,8 @@
-<!-- <div *ngIf="commentary_enabled" class="col overflow_column"> TODO: -->
-<!-- Show either fragment data or the fact that no fragment has been selected yet. -->
-<div *ngIf="this.fragment_clicked; else no_fragment_clicked">
-  <!-- Fragment information -->
-  <h5>
-    Selected
-    <a class="a-void" (click)="this.introductions.show_introduction_dialog(this.current_fragment.author)">{{
-      this.current_fragment.author
-    }}</a
-    >,
-    <a class="a-void" (click)="this.introductions.show_introduction_dialog(this.current_fragment.title)">{{
-      this.current_fragment.title
-    }}</a
-    >, {{ this.current_fragment.editor }},
-    {{ this.current_fragment.name }}
-  </h5>
-</div>
-<ng-template #no_fragment_clicked>
-  <h5>Click a fragment to show its content.</h5>
-</ng-template>
-
-<!-- Show banner if no commentary available -->
-<div *ngIf="!this.current_fragment.has_content() && this.fragment_clicked" class="alert alert-info" role="alert">
-  No content is available yet for this specific fragment.
-</div>
-
 <!-- Show the commentary for the clicked fragment -->
-<div *ngIf="this.current_fragment.has_content()">
+<div>
   <ng-container
     [ngTemplateOutlet]="commentary_column_template"
-    [ngTemplateOutletContext]="{ given_fragment: this.current_fragment }"></ng-container>
+    [ngTemplateOutletContext]="{ given_fragment: this.commentary }"></ng-container>
 </div>
 
 <!-- TODO: <div *ngFor="let linked_fragment of this.commentary_column.linked_fragments_content">
@@ -44,7 +18,7 @@
 
 <!-- Template for commentary column -->
 <ng-template #commentary_column_template let-given_fragment="given_fragment">
-  <ng-container *ngIf="this.current_fragment.fragments_translated; else fragments_not_translated">
+  <ng-container *ngIf="this.fragments_translated; else fragments_not_translated">
     <ng-container
       *ngTemplateOutlet="
         show_fragment_content_orig_text;
