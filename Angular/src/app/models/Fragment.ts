@@ -1,6 +1,6 @@
-import { Commentary } from './Commentary';
-import { Line } from './Line';
-import { Linked_fragment } from './Linked_fragment';
+import { Commentary } from '@oscc/models/Commentary';
+import { Line } from '@oscc/models/Line';
+import { Linked_fragment } from '@oscc/models/Linked_fragment';
 
 /** This class represents a fragment and all its data fields */
 export class Fragment {
@@ -36,9 +36,6 @@ export class Fragment {
    * @author Ycreak
    */
   public set_fragment(fragment: any) {
-    this.commentary = new Commentary({});
-    this.commentary.set(fragment);
-
     this._id = '_id' in fragment ? fragment['_id'] : '';
     this.author = 'author' in fragment ? fragment['author'] : '';
     this.title = 'title' in fragment ? fragment['title'] : '';
@@ -49,6 +46,10 @@ export class Fragment {
     this.linked_fragments = 'linked_fragments' in fragment ? fragment['linked_fragments'] : [];
     this.lock = 'lock' in fragment ? fragment['lock'] : '';
     this.published = '' in fragment ? fragment['published'] : '';
+
+    this.commentary = new Commentary({});
+    this.commentary.set(fragment);
+    this.commentary.lines = this.lines;
   }
 
   /**

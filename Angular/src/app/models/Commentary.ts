@@ -1,8 +1,11 @@
 import { Bib } from '@oscc/models/Bib';
-import { Context } from './Context';
-import { Line } from './Line';
+import { Context } from '@oscc/models/Context';
+import { Line } from '@oscc/models/Line';
 
-/** This class represents a fragment and all its data fields */
+/**
+ * This class represents a commentary and all its data fields.
+ * It is linked to a document. For example: a fragment has a commentary
+ */
 export class Commentary {
   translation = '';
   commentary = '';
