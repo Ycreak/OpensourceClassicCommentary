@@ -103,14 +103,14 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Function to check whether a fragment has been clicked 
+   * Function to check whether a fragment has been clicked
    * @returns boolean
    * @author Ycreak
    */
   protected fragment_is_clicked(): boolean {
     return this.clicked_fragment.author != '';
   }
-  
+
   /**
    * Returns the title from the environment for the frontend to print
    * @param kind to print: either long or short

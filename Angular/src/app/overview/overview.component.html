@@ -114,12 +114,13 @@
             No content is available yet for this specific fragment.
           </div>
           <!--Show the commentary via the commentary component -->
-          <app-commentary *ngIf="this.clicked_fragment.commentary.has_content()" #commentary 
+          <app-commentary
+            *ngIf="this.clicked_fragment.commentary.has_content()"
+            #commentary
             [commentary]="this.clicked_fragment.commentary"
-            [fragments_translated]="this.clicked_fragment.fragments_translated"> 
+            [fragments_translated]="this.clicked_fragment.fragments_translated">
           </app-commentary>
         </ng-template>
-       
       </div>
     </mat-drawer>
   </mat-drawer-container>

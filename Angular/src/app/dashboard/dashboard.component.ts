@@ -259,16 +259,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   private convert_Fragment_to_fragment_form(fragment: Fragment): void {
     // This functions updates the fragment_form with the provided fragment
-    for (const item of [
-      '_id',
-      'name',
-      'author',
-      'title',
-      'editor',
-      'status',
-      'lock',
-      'published',
-    ]) {
+    for (const item of ['_id', 'name', 'author', 'title', 'editor', 'status', 'lock', 'published']) {
       this.fragment_form.patchValue({ [item]: fragment[item] });
     }
     // Update the fragment form with the commentary of the given fragment

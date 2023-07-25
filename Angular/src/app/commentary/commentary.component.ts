@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, Input, SimpleChanges, OnChanges } from '@angular/core';
 import { ApiService } from '@oscc/api.service';
 import { IntroductionsComponent } from '@oscc/dashboard/introductions/introductions.component';
 import { FragmentsComponent } from '@oscc/fragments/fragments.component';
@@ -28,7 +28,7 @@ export class CommentaryComponent implements OnChanges {
     protected utility: UtilityService,
     protected api: ApiService,
     protected dialog: DialogService,
-    protected settings: SettingsService,
+    protected settings: SettingsService
   ) {}
 
   ngOnChanges(changes: SimpleChanges) {

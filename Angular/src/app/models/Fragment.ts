@@ -1,4 +1,3 @@
-import { Context } from './Context';
 import { Commentary } from './Commentary';
 import { Line } from './Line';
 import { Linked_fragment } from './Linked_fragment';
@@ -45,9 +44,9 @@ export class Fragment {
    * @author Ycreak
    */
   public set_fragment(fragment: any) {
-    this.commentary = new Commentary;
+    this.commentary = new Commentary();
     this.commentary.set(fragment);
-    
+
     this._id = '_id' in fragment ? fragment['_id'] : '';
     this.author = 'author' in fragment ? fragment['author'] : '';
     this.title = 'title' in fragment ? fragment['title'] : '';
@@ -59,7 +58,7 @@ export class Fragment {
     this.lock = 'lock' in fragment ? fragment['lock'] : '';
     this.published = '' in fragment ? fragment['published'] : '';
   }
-  
+
   /**
    * This function adds HTML to the lines of the given array. At the moment,
    * it converts white space encoding for every applicable line by looping through

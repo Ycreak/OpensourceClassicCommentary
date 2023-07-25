@@ -87,7 +87,7 @@ export class Commentary {
     this.reconstruction = this.convert_bib_entry(this.reconstruction, zotero);
     this.translation = this.convert_bib_entry(this.translation, zotero);
 
-    for( const i in this.context ) {
+    for (const i in this.context) {
       this.context[i].text = this.convert_bib_entry(this.context[i].text, zotero);
     }
   }
@@ -162,12 +162,11 @@ export class Commentary {
    */
   public has_content() {
     return (
-      this.differences != ''
-      || this.apparatus != ''
-      || this.translation != ''
-      || this.commentary != ''
-      || this.reconstruction != ''
-    )
+      this.differences != '' ||
+      this.apparatus != '' ||
+      this.translation != '' ||
+      this.commentary != '' ||
+      this.reconstruction != ''
+    );
   }
 }
-

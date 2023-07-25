@@ -54,7 +54,7 @@ export class FragmentsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.api.request_authors_titles_editors_blob();
-  this.api.request_zotero_data();
+    this.api.request_zotero_data();
     // Create an empty current_fragment variable to be filled whenever the user clicks a fragment
     this.current_fragment = new Fragment({});
     // Create a commentary column (deprecated -> can be replaced by simple linked_fragments list)
