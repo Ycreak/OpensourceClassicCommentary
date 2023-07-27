@@ -72,8 +72,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     protected utility: UtilityService,
     protected dialog: DialogService,
     protected auth_service: AuthService
-  ) 
-  {}
+  ) {}
 
   ngOnInit(): void {
     //if (environment.debug) {
