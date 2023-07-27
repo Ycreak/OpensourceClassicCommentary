@@ -1,0 +1,21 @@
+<div *ngIf="this.settings.fragments.show_headers">
+  <b [style.color]="fragment.colour">Fragment {{ this.fragment.name }} </b> &nbsp;
+  <sup>{{ fragment.author }}, {{ fragment.title }}, {{ fragment.editor }}</sup> &nbsp;
+  <i>{{ fragment.status }}</i>
+</div>
+<!--<ng-container *ngIf="given_column.fragments_translated; else fragments_not_translated">-->
+<!--<div>-->
+<!--<p [innerHTML]="fragment.commentary.translation"></p>-->
+<!--</div>-->
+<!--</ng-container>-->
+<ng-container>
+  <div *ngFor="let fragment_line of fragment.lines">
+    <p
+      *ngIf="this.settings.fragments.show_line_names; else no_line_names"
+      [innerHTML]="fragment_line.line_number + ': ' + fragment_line.text | safeHtml"></p>
+    <ng-template #no_line_names>
+      <!--safeHtml to allow whitespaces made by spans-->
+      <p [innerHTML]="fragment_line.text | safeHtml"></p>
+    </ng-template>
+  </div>
+</ng-container>

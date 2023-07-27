@@ -4,6 +4,9 @@ import { Linked_fragment } from '@oscc/models/Linked_fragment';
 
 /** This class represents a fragment and all its data fields */
 export class Fragment {
+  language = '';
+  genre = '';
+  document_type = 'fragment';
   // Meta data
   _id = '';
   author = '';

@@ -1,0 +1,36 @@
+{
+  "data": [
+    {
+      "name": "T6",
+      "author": "Accius",
+      "witness": "Cicero",
+      "title": "Planc. 59",
+      "text": "grauis ille et ingeniosus poeta...",
+      "translation": "An earnest and gifted poet... (Tr. Watt)"
+    },
+    {
+      "name": "T7",
+      "author": "Accius",
+      "witness": "Cicero",
+      "title": "De orat. 3.27",
+      "text": "Atque id primum in poetis cerni licet, quibus est proxima cognatio cum oratoribus: quam sunt inter sese Ennius, Pacuvius Acciusque dissimiles, quam apud Graecos Aeschylus, Sophocles, Euripides, quamquam omnibus par paene laus in dissimili scribendi genere tribuitur!",
+      "translation": "This can in the first instance be observed in the case of poetry, poets being the next of kin to orators; what a difference there is between Ennius, Pacuvius and Accius, and in Greece between Aeschylus, Sophocles and Euripides, although all of them win almost equal applause in their various styles of writing. (Transl. Rackham)"
+    },
+    {
+      "name": "T8",
+      "author": "Accius",
+      "witness": "Cicero",
+      "title": "Leg. 2.54",
+      "text": "(D. Brutum) doctum hominem sane, cuius fuit Accius perfamiliaris.",
+      "translation": "[Decimus Brutus], surely a learned man, and a great friend of Accius."
+    },
+    {
+      "name": "T9",
+      "author": "Accius",
+      "witness": "Cicero",
+      "title": "Brut. 72-3",
+      "text": "atqui hic Livius [qui] primus fabulam C. Claudio Caeci filio et M. Tuditano consulibus docuit anno ipso ante quam natus est Ennius, post Romam conditam autem quarto decumo et quingentesimo, ut hic ait, quem nos sequimur. est enim inter scriptores de numero annorum controuersia. Accius autem a Q. Maxumo quintum consule captum Tarento scripsit Livium annis XXX post quam eum fabulam docuisse et Atticus scribit et nos in antiquis commentariis inuenimus; docuisse autem fabulam annis post XI, C. Cornelio Q. Minucio consulibus ludis Iuventatis, quos Salinator Senensi proelio uouerat. in quo tantus error Acci fuit, ut his consulibus XL annos natus Ennius fuerit: quoi aequalis fuerit Livius, minor fuit aliquanto is, qui primus fabulam dedit, quam ii, qui multas docuerant ante hos consules, et Plautus et Naevius. haec si minus apta uidentur huic sermoni, Brute, Attico adsigna, qui me inflammauit studio inlustrium hominum aetates et tempora persequendi.",
+      "translation": "And yet this Livius produced a play in the consulship of Gaius Claudius, Caecus’ son, and Marcus Tuditanus, the very year before Ennius was born and the five hundred fourteenth after Rome’s founding [= 240 BCE; cf. Sen. 50, Tusc. 1.3, Varro apud Gell. NA 17.21.42-3], according to Atticus here, whom I follow. For authors disagree about the chronology. Accius wrote that Quintus Maximus captured Livius at Tarentum in his fifth consulship – thirty years after Livius produced his play according to both Atticus and old records I’ve found [= 209 BCE] – and then produced the play eleven years later, when Gaius Cornelius and Quintus Minucius were consuls [= 197 BCE, so therefore in fact 12 years later, or 13 if reckoned inclusively], at the games in honor of Youth that Salinator had vowed in the battle of Sena [fought 207 BCE]. Accius’ error is so gross that in Cornelius’ and Minucius’ consulship Ennius was already forty years old: if we regard Livius as his contemporary, then the first man to produce a play was a bit younger than both Plautus and Naevius, who had already produced many plays before those consuls [Naevius’ first play is dated to 235 by Gellius after Varro: NA 17.21.45]. If these reckonings seem ill-suited to our conversations, Brutus, blame Atticus, who fired me with enthusiasm for tracing the chronologies of distinguished people’. (Transl. Kaster)"
+    }
+  ]
+}

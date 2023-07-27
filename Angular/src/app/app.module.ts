@@ -91,6 +91,8 @@ import { IntroductionsComponent } from './dashboard/introductions/introductions.
 import { ExpandableTextComponent } from './other_components/expandable-text/expandable-text.component';
 import { DocumentFilterComponent } from './dialogs/document-filter/document-filter.component';
 import { UsersComponent } from './dashboard/users/users.component';
+import { TestimoniaComponent } from './fragments/testimonia/testimonia.component';
+import { FragmentComponent } from './fragments/fragment/fragment.component';
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
@@ -124,6 +126,8 @@ const appRoutes: Routes = [
     ExpandableTextComponent,
     DocumentFilterComponent,
     UsersComponent,
+    TestimoniaComponent,
+    FragmentComponent,
   ],
   imports: [
     BrowserModule,

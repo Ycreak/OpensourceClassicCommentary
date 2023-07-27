@@ -16,7 +16,10 @@ import { DocumentFilterComponent } from '@oscc/dialogs/document-filter/document-
 
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
+import { Testimonium } from '@oscc/models/Testimonium';
 import { Column } from '@oscc/models/Column';
+
+import testimonia from '@oscc/testimonia.json';
 
 @Component({
   selector: 'app-fragments',
@@ -35,6 +38,8 @@ import { Column } from '@oscc/models/Column';
 })
 export class FragmentsComponent implements OnInit, OnDestroy {
   @Output() clicked_fragment = new EventEmitter<Fragment>();
+
+  private testimonia = testimonia.data;
 
   public current_fragment: Fragment; // Variable to store the clicked fragment and its data
   fragment_clicked = false; // Shows "click a fragment" banner at startup if nothing is yet selected
@@ -70,7 +75,7 @@ export class FragmentsComponent implements OnInit, OnDestroy {
         })
       );
     }
-    this.api.request_fragments(1, 'Ennius', 'Thyestes', 'TRF');
+    this.api.request_fragments(1, 'Ennius', 'Eumenides', 'TRF');
 
     /** Handle what happens when new fragments arrive */
     this.fragments_subscription = this.api.new_fragments_alert$.subscribe((column_id) => {
@@ -86,6 +91,15 @@ export class FragmentsComponent implements OnInit, OnDestroy {
         fragments = this.sort_fragments_on_status(fragments);
 
         column.fragments = fragments;
+        column.documents = [...column.fragments];
+
+        this.testimonia.forEach((element) => {
+          const new_testimonium = new Testimonium({});
+          new_testimonium.set(element);
+          column.documents.push(new_testimonium);
+        });
+
+        //console.log(column.documents)
 
         // Store the original order of the fragment names in the column object
         column.original_fragment_order = []; // Clear first

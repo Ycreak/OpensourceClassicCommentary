@@ -140,7 +140,7 @@
     [cdkDropListData]="given_column.fragments"
     [cdkDropListConnectedTo]="this.column_handler.connected_columns_list"
     (cdkDropListDropped)="this.utility.drop($event)">
-    <div *ngFor="let fragment of given_column.fragments">
+    <div *ngFor="let fragment of given_column.documents">
       <div
         class="fragment-box"
         (click)="handle_fragment_click(fragment, given_column)"
@@ -154,27 +154,12 @@
             given_column.original_fragment_order.indexOf(fragment.name)
           )
         ">
-        <div *ngIf="this.settings.fragments.show_headers">
-          <b [style.color]="fragment.colour">Fragment {{ fragment.name }} </b> &nbsp;
-          <sup>{{ fragment.author }}, {{ fragment.title }}, {{ fragment.editor }}</sup> &nbsp;
-          <i>{{ fragment.status }}</i>
+        <div *ngIf="fragment.document_type === 'testimonium'">
+          <app-testimonia [testimonium]="fragment"> </app-testimonia>
         </div>
-        <ng-container *ngIf="given_column.fragments_translated; else fragments_not_translated">
-          <div>
-            <p [innerHTML]="fragment.commentary.translation"></p>
-          </div>
-        </ng-container>
-        <ng-template #fragments_not_translated>
-          <div *ngFor="let fragment_line of fragment.lines">
-            <p
-              *ngIf="this.settings.fragments.show_line_names; else no_line_names"
-              [innerHTML]="fragment_line.line_number + ': ' + fragment_line.text | safeHtml"></p>
-            <ng-template #no_line_names>
-              <!--safeHtml to allow whitespaces made by spans-->
-              <p [innerHTML]="fragment_line.text | safeHtml"></p>
-            </ng-template>
-          </div>
-        </ng-template>
+        <div *ngIf="fragment.document_type === 'fragment'">
+          <app-fragment [fragment]="fragment"> </app-fragment>
+        </div>
       </div>
       <!--</div>-->
     </div>

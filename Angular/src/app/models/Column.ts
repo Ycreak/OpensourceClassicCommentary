@@ -26,6 +26,7 @@ export class Column {
 
   fragments: Fragment[] = [];
   fragment_names: any[] = [];
+  documents: any[] = [];
 
   retrieved_authors: string[] = [];
   retrieved_titles: string[] = [];
