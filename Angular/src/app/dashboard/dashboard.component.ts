@@ -17,7 +17,7 @@ import { Column } from '@oscc/models/Column';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   // Fragment referencer variables
@@ -71,9 +71,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     protected api: ApiService,
     protected utility: UtilityService,
     protected dialog: DialogService,
-    protected auth_service: AuthService,
-    //protected introductions: IntroductionsComponent
-  ) {}
+    protected auth_service: AuthService
+  ) 
+  {}
 
   ngOnInit(): void {
     //if (environment.debug) {
