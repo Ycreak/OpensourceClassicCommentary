@@ -1,7 +1,5 @@
 import { Component, Input, SimpleChanges, OnChanges } from '@angular/core';
 import { ApiService } from '@oscc/api.service';
-import { IntroductionsComponent } from '@oscc/dashboard/introductions/introductions.component';
-import { FragmentsComponent } from '@oscc/fragments/fragments.component';
 
 // Model imports
 import { Commentary } from '@oscc/models/Commentary';
@@ -15,13 +13,12 @@ import { UtilityService } from '@oscc/utility.service';
   selector: 'app-commentary',
   templateUrl: './commentary.component.html',
   styleUrls: ['./commentary.component.scss'],
-  providers: [IntroductionsComponent, FragmentsComponent],
 })
 export class CommentaryComponent implements OnChanges {
   @Input() commentary: Commentary;
-  @Input() fragments_translated: boolean;
+  @Input() translated: boolean;
 
-  protected fragment_clicked = false;
+  protected document_clicked = false;
   protected translation_orig_text_expanded = false;
 
   constructor(
@@ -33,7 +30,6 @@ export class CommentaryComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.commentary) {
-      console.log('comm', this.commentary);
       this.commentary.add_html();
       this.commentary.convert_bib_entries(this.api.zotero);
     }

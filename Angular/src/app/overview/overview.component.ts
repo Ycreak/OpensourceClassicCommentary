@@ -12,7 +12,7 @@ import { WindowSizeWatcherService } from '@oscc/services/window-watcher.service'
 //import { UtilityService } from '@oscc/utility.service';
 import { AuthService } from '@oscc/auth/auth.service';
 
-import { FragmentsComponent } from '@oscc/fragments/fragments.component';
+import { ColumnsComponent } from '@oscc/columns/columns.component';
 
 // Component imports
 import { LoginComponent } from '@oscc/login/login.component';
@@ -27,7 +27,7 @@ import { CommentaryComponent } from '@oscc/commentary/commentary.component';
   selector: 'app-overview',
   templateUrl: './overview.component.html',
   styleUrls: ['./overview.component.scss'],
-  providers: [FragmentsComponent],
+  providers: [ColumnsComponent],
 })
 export class OverviewComponent implements OnInit, OnDestroy {
   @ViewChild('commentary') commentary: CommentaryComponent;
@@ -35,7 +35,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   protected commentary_enabled = true;
   protected playground_enabled = true;
 
-  protected clicked_fragment: Fragment;
+  protected clicked_document: Fragment;
 
   constructor(
     protected api: ApiService,
@@ -47,13 +47,13 @@ export class OverviewComponent implements OnInit, OnDestroy {
     protected window_watcher: WindowSizeWatcherService,
     private matdialog: MatDialog,
     protected column_handler: ColumnHandlerService,
-    protected fragments: FragmentsComponent
+    protected columns: ColumnsComponent
   ) {}
 
   ngOnInit(): void {
     // Create the window watcher for mobile devices
     this.window_watcher.init(window.innerWidth);
-    this.clicked_fragment = new Fragment({});
+    this.clicked_document = new Fragment({});
 
     // Load the user's previously used setting from local storage using the LocalStorageService service
     this.settings.load_settings();
@@ -108,7 +108,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
    * @author Ycreak
    */
   protected fragment_is_clicked(): boolean {
-    return this.clicked_fragment.author != '';
+    return this.clicked_document.author != '';
   }
 
   /**

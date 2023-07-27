@@ -30,7 +30,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   protected referenced_name = '';
 
   private fragment_names_subscription: any;
-  private fragments_subscription: any;
+  private documents_subscription: any;
 
   hide = true; // Whether to hide passwords in the material form fields
 
@@ -111,7 +111,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     /** Handle what happens when new fragments arrive */
-    this.fragments_subscription = this.api.new_fragments_alert$.subscribe((column_id) => {
+    this.documents_subscription = this.api.new_fragments_alert$.subscribe((column_id) => {
       if (column_id == environment.dashboard_id) {
         this.reset_fragment_form();
         this.convert_Fragment_to_fragment_form(this.api.fragments[0]);
@@ -125,7 +125,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy() {
-    this.fragments_subscription.unsubscribe();
+    this.documents_subscription.unsubscribe();
     this.fragment_names_subscription.unsubscribe();
   }
 

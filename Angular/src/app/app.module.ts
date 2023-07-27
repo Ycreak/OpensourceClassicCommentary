@@ -35,12 +35,11 @@ import { NgxSimpleTextEditorModule } from 'ngx-simple-text-editor';
 // Component Imports
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { FragmentsComponent } from './fragments/fragments.component';
+import { ColumnsComponent } from './columns/columns.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './auth/auth.guard';
 import { SafeHtmlPipe } from './pipes/safeHtml.pipe';
-// import { SafeHtmlPipe } from './fragments/fragments.component';
 
 import { ConfirmationDialogComponent } from './services/dialog.service';
 import { WYSIWYGDialogComponent } from './services/dialog.service';
@@ -91,8 +90,8 @@ import { IntroductionsComponent } from './dashboard/introductions/introductions.
 import { ExpandableTextComponent } from './other_components/expandable-text/expandable-text.component';
 import { DocumentFilterComponent } from './dialogs/document-filter/document-filter.component';
 import { UsersComponent } from './dashboard/users/users.component';
-import { TestimoniaComponent } from './fragments/testimonia/testimonia.component';
-import { FragmentComponent } from './fragments/fragment/fragment.component';
+import { TestimoniaComponent } from './columns/testimonia/testimonia.component';
+import { FragmentComponent } from './columns/fragment/fragment.component';
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
@@ -109,7 +108,7 @@ const appRoutes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
-    FragmentsComponent,
+    ColumnsComponent,
     SafeHtmlPipe,
     DashboardComponent,
     LoginComponent,
@@ -182,7 +181,7 @@ const appRoutes: Routes = [
       multi: true,
     },
     {
-      provide: FragmentsComponent,
+      provide: ColumnsComponent,
     },
   ],
   bootstrap: [AppComponent],

@@ -19,7 +19,7 @@ import { DialogService } from '@oscc/services/dialog.service';
   styleUrls: ['./playground.component.scss'],
 })
 export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
-  @Output() fragment_clicked = new EventEmitter<Fragment>();
+  @Output() document_clicked = new EventEmitter<Fragment>();
 
   // Playground column that keeps all data related to said playground
   playground: Column;
@@ -29,7 +29,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
   note: any;
 
   // Subscription variables
-  private fragments_subscription: any;
+  private documents_subscription: any;
   private fragment_names_subscription: any;
 
   protected single_fragment_requested: boolean;
@@ -48,7 +48,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit() {
     /** Handle what happens when new fragments arrive */
-    this.fragments_subscription = this.api.new_fragments_alert$.subscribe((column_id) => {
+    this.documents_subscription = this.api.new_fragments_alert$.subscribe((column_id) => {
       if (column_id == environment.playground_id) {
         const fragments = this.api.fragments;
         for (const i in fragments) {
@@ -70,7 +70,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy() {
-    this.fragments_subscription.unsubscribe();
+    this.documents_subscription.unsubscribe();
     this.fragment_names_subscription.unsubscribe();
   }
 
@@ -79,19 +79,19 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param fragment selected by the user
    * @author Ycreak
    */
-  protected handle_fragment_click(fragment: Fragment): void {
+  protected handle_document_click(fragment: Fragment): void {
     // If we are currently dragging a fragment in the playground, we do not want the click even to fire.
     if (!this.playground_dragging) {
-      this.fragment_clicked.emit(fragment);
+      this.document_clicked.emit(fragment);
       // The next part handles the colouring of clicked and referenced fragments.
       // First, restore all fragments to their original black colour when a new fragment is clicked
       for (const index in this.column_handler.columns) {
-        this.column_handler.columns[index] = this.column_handler.colour_fragments_black(
+        this.column_handler.columns[index] = this.column_handler.colour_documents_black(
           this.column_handler.columns[index]
         );
       }
       //TODO:
-      this.playground = this.column_handler.colour_fragments_black(this.playground);
+      this.playground = this.column_handler.colour_documents_black(this.playground);
       // Second, colour the clicked fragment
       fragment.colour = '#3F51B5';
       // Lastly, colour the linked fragments
@@ -111,7 +111,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
   public delete_clicked_item_from_playground(column: Column, item: string): void {
     if (item == 'fragment') {
       const object_index = column.fragments.findIndex((object) => {
-        return object._id === column.clicked_fragment._id;
+        return object._id === column.clicked_document._id;
       });
       if (object_index != -1) {
         column.fragments.splice(object_index, 1);

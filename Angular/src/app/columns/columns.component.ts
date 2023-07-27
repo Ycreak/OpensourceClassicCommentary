@@ -22,9 +22,9 @@ import { Column } from '@oscc/models/Column';
 import testimonia from '@oscc/testimonia.json';
 
 @Component({
-  selector: 'app-fragments',
-  templateUrl: './fragments.component.html',
-  styleUrls: ['./fragments.component.scss'],
+  selector: 'app-columns',
+  templateUrl: './columns.component.html',
+  styleUrls: ['./columns.component.scss'],
   encapsulation: ViewEncapsulation.None,
   animations: [
     trigger('fadeSlideInOut', [
@@ -36,34 +36,32 @@ import testimonia from '@oscc/testimonia.json';
     ]),
   ],
 })
-export class FragmentsComponent implements OnInit, OnDestroy {
-  @Output() clicked_fragment = new EventEmitter<Fragment>();
+export class ColumnsComponent implements OnInit, OnDestroy {
+  @Output() clicked_document = new EventEmitter<Fragment>();
 
   private testimonia = testimonia.data;
 
-  public current_fragment: Fragment; // Variable to store the clicked fragment and its data
-  fragment_clicked = false; // Shows "click a fragment" banner at startup if nothing is yet selected
+  public current_document: Fragment; // Variable to store the clicked fragment and its data
+  document_clicked = false; // Shows "click a fragment" banner at startup if nothing is yet selected
 
   // Subscription variables
-  private fragments_subscription: any;
+  private documents_subscription: any;
 
   constructor(
     protected api: ApiService,
     protected utility: UtilityService,
     protected auth_service: AuthService,
     protected dialog: DialogService,
+    protected column_handler: ColumnHandlerService,
     protected settings: SettingsService,
-    private matdialog: MatDialog,
-    protected column_handler: ColumnHandlerService
+    private matdialog: MatDialog
   ) {}
 
   ngOnInit(): void {
     this.api.request_authors_titles_editors_blob();
     this.api.request_zotero_data();
-    // Create an empty current_fragment variable to be filled whenever the user clicks a fragment
-    this.current_fragment = new Fragment({});
-    // Create a commentary column (deprecated -> can be replaced by simple linked_fragments list)
-    //this.commentary_column = new Column({ column_id: '255' });
+    // Create an empty current_document variable to be filled whenever the user clicks a fragment
+    this.current_document = new Fragment({});
     // Create the first column and push it to the columns list
     if (this.column_handler.columns.length < 1) {
       this.column_handler.columns.push(
@@ -78,7 +76,7 @@ export class FragmentsComponent implements OnInit, OnDestroy {
     this.api.request_fragments(1, 'Ennius', 'Eumenides', 'TRF');
 
     /** Handle what happens when new fragments arrive */
-    this.fragments_subscription = this.api.new_fragments_alert$.subscribe((column_id) => {
+    this.documents_subscription = this.api.new_fragments_alert$.subscribe((column_id) => {
       let fragments: Fragment[] = this.api.fragments;
       for (const i in fragments) {
         fragments[i].add_html_to_lines();
@@ -88,7 +86,7 @@ export class FragmentsComponent implements OnInit, OnDestroy {
       if (column) {
         // Prepare the fragments for publication
         fragments = fragments.sort(this.utility.sort_fragment_array_numerically);
-        fragments = this.sort_fragments_on_status(fragments);
+        fragments = this.sort_documents_on_status(fragments);
 
         column.fragments = fragments;
         column.documents = [...column.fragments];
@@ -98,8 +96,6 @@ export class FragmentsComponent implements OnInit, OnDestroy {
           new_testimonium.set(element);
           column.documents.push(new_testimonium);
         });
-
-        //console.log(column.documents)
 
         // Store the original order of the fragment names in the column object
         column.original_fragment_order = []; // Clear first
@@ -111,104 +107,104 @@ export class FragmentsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.fragments_subscription) {
-      this.fragments_subscription.unsubscribe();
+    if (this.documents_subscription) {
+      this.documents_subscription.unsubscribe();
     }
   }
 
   /**
-   * Function to handle what happens when a fragment is selected in HTML.
-   * @param fragment selected by the user
+   * Function to handle what happens when a document is selected in HTML.
+   * @param document selected by the user
    * @param Column
    * @author Ycreak
    */
-  protected handle_fragment_click(fragment: Fragment, column: Column): void {
+  protected handle_document_click(document: Fragment, column: Column): void {
     //TODO: we need to emit a commentary object to the commentary
-    fragment.fragments_translated = column.fragments_translated;
-    this.clicked_fragment.emit(fragment);
+    document.translated = column.translated;
+    this.clicked_document.emit(document);
 
-    //this.fragment_clicked2.emit(fragment);
-    this.fragment_clicked = true;
-    this.current_fragment = fragment;
+    //this.document_clicked2.emit(document);
+    this.document_clicked = true;
+    this.current_document = document;
 
-    // The next part handles the colouring of clicked and referenced fragments.
-    // First, restore all fragments to their original black colour when a new fragment is clicked
+    // The next part handles the colouring of clicked and referenced documents.
+    // First, restore all documents to their original black colour when a new document is clicked
     for (const index in this.column_handler.columns) {
-      this.column_handler.columns[index] = this.column_handler.colour_fragments_black(
+      this.column_handler.columns[index] = this.column_handler.colour_documents_black(
         this.column_handler.columns[index]
       );
     }
-    // Second, colour the clicked fragment
-    fragment.colour = '#3F51B5';
-    // Lastly, colour the linked fragments
-    this.column_handler.colour_linked_fragments(fragment);
-    // And scroll each column to the linked fragment if requested
-    if (this.settings.fragments.auto_scroll_linked_fragments) {
-      this.scroll_to_linked_fragments(fragment);
-    }
+    // Second, colour the clicked document
+    document.colour = '#3F51B5';
+    // Lastly, colour the linked documents
+    this.column_handler.colour_linked_fragments(document);
+    // And scroll each column to the linked document if requested
+    //if (this.settings.fragments.auto_scroll_linked_fragments) {
+    //this.scroll_to_linked_fragments(document);
+    //}
   }
 
   /**
-   * Given the fragment, this function checks whether its linked fragments appear in the
-   * other opened columns. If so, the columns are scrolled to put the linked fragment in view
-   * @param fragment object with the linked_fragments field to be examined
+   * Given the document, this function checks whether its linked documents appear in the
+   * other opened columns. If so, the columns are scrolled to put the linked document in view
+   * @param document object with the linked_fragments field to be examined
    * @author Ycreak
    */
-  private scroll_to_linked_fragments(fragment: Fragment) {
-    for (const i in fragment.linked_fragments) {
-      const linked_fragment_id = fragment.linked_fragments[i].linked_fragment_id;
-      // Now, for each fragment that is linked, try to find it in the other columns
-      for (const j in this.column_handler.columns) {
-        // in each column, take a look in the fragments array to find the linked fragment
-        const corresponding_fragment = this.column_handler.columns[j].fragments.find(
-          (i) => i._id === linked_fragment_id
-        );
-        // move to this fragment if found
-        if (corresponding_fragment) {
-          // Scroll to the corresponding element in the found column
-          const element = document.getElementById(corresponding_fragment._id);
-          element.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-        }
-      }
-    }
-  }
+  //private scroll_to_linked_fragments(document: Fragment) {
+  //for (const i in document.linked_fragments) {
+  //const linked_document_id = document.linked_fragments[i].linked_fragment_id;
+  //// Now, for each document that is linked, try to find it in the other columns
+  //for (const j in this.columns) {
+  //// in each column, take a look in the documents array to find the linked document
+  //const corresponding_document = this.columns[j].documents.find(
+  //(i) => i._id === linked_document_id
+  //);
+  //// move to this document if found
+  //if (corresponding_document) {
+  //// Scroll to the corresponding element in the found column
+  //const element = document.getElementById(corresponding_document._id);
+  //element.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  //}
+  //}
+  //}
+  //}
 
   /**
-   * Sorts the given object of fragments on status. We want to display Certa, followed
+   * Sorts the given object of documents on status. We want to display Certa, followed
    * by Incerta and Adespota.
-   * @param fragments
-   * @returns fragments in the order we want
+   * @param documents
+   * @returns documents in the order we want
    * @author Ycreak
    */
-  public sort_fragments_on_status(fragments: Fragment[]): Fragment[] {
-    const normal = this.utility.filter_object_on_key(fragments, 'status', 'Certum');
-    const incerta = this.utility.filter_object_on_key(fragments, 'status', 'Incertum');
-    const adesp = this.utility.filter_object_on_key(fragments, 'status', 'Adesp.');
+  public sort_documents_on_status(documents: any[]): any[] {
+    const normal = this.utility.filter_object_on_key(documents, 'status', 'Certum');
+    const incerta = this.utility.filter_object_on_key(documents, 'status', 'Incertum');
+    const adesp = this.utility.filter_object_on_key(documents, 'status', 'Adesp.');
     // Concatenate in the order we want
-    fragments = normal.concat(incerta).concat(adesp);
-    return fragments;
+    documents = normal.concat(incerta).concat(adesp);
+    return documents;
   }
 
   /**
    * Simple function that generates a different background color
    * for each fragment in a fragment column.
-   * This is to indicate the initial order of the fragments.
+   * This is to indicate the initial order of the documents.
    *
    * Each fragment gets a color chosen from a set color
-   * brightness range, though two neighboring fragments can
+   * brightness range, though two neighboring documents can
    * only have a set difference in brightness.
-   * @param n_fragments The total number of fragments in the column
+   * @param n_documents The total number of documents in the column
    * @param fragment_index The index of the current fragment
    * @returns: Color as HSL value (presented as string)
    * @author CptVickers
    */
-  protected generate_fragment_gradient_background_color(n_fragments: number, fragment_index: number) {
+  protected generate_document_gradient_background_color(n_documents: number, fragment_index: number) {
     if (this.settings.fragments.fragment_order_gradient == true) {
       const max_brightness = 100;
       const min_brightness = 80;
       const max_brightness_diff = 10;
 
-      let brightness_step = (max_brightness - min_brightness) / n_fragments;
+      let brightness_step = (max_brightness - min_brightness) / n_documents;
       if (brightness_step > max_brightness_diff) {
         brightness_step = max_brightness_diff;
       }
@@ -226,7 +222,7 @@ export class FragmentsComponent implements OnInit, OnDestroy {
    * @author CptVickers
    */
   protected toggle_translation(column: Column): void {
-    column.fragments_translated = !column.fragments_translated;
+    column.translated = !column.translated;
   }
 
   /**
@@ -234,7 +230,7 @@ export class FragmentsComponent implements OnInit, OnDestroy {
    * @author CptVickers
    */
   protected translation_toggle_button_label(column: Column): string {
-    if (column.fragments_translated) {
+    if (column.translated) {
       return 'Show original text';
     } else {
       return 'Show translation';

@@ -20,7 +20,7 @@ export class Fragment {
   lines: Line[] = [];
   linked_fragments: Linked_fragment[] = [];
   // Keeps track whether we tranlated this fragment using the column translate functionality
-  fragments_translated = false;
+  translated = false;
 
   lock = '';
   published = '';
@@ -88,7 +88,6 @@ export class Fragment {
     const matches = string.match(/<(\d+)>/);
     // If found, replace it with the correct whitespace number
     if (matches) {
-      console.log(matches);
       // Create a span with the number of indents we want. Character level.
       // matches[0] contains including fish hooks, matches[1] only number
       const replacement = '<span style="padding-left:' + matches[1] + 'ch;"></span>';

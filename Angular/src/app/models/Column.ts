@@ -35,7 +35,7 @@ export class Column {
 
   note_array: string[] = [];
 
-  clicked_fragment: Fragment;
+  clicked_document: Fragment;
   linked_fragments_content: Fragment[] = []; //FIXME: needs to be different from Fragment.linked_fragments
 
   clicked_note: string;
@@ -53,7 +53,7 @@ export class Column {
   original_fragment_order: string[] = [];
 
   // If fragments translated, shows translation in column and original text in the commentary
-  fragments_translated = false;
+  translated = false;
 
   // Checks if the column is able to show fragment translations
   has_translations(): boolean {

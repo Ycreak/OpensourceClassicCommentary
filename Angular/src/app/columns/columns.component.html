@@ -55,7 +55,7 @@
           mat-menu-item
           (click)="column_to_display.editor = editor"
           (click)="column_to_display.edited = false"
-          (click)="column_to_display.fragments_translated = false"
+          (click)="column_to_display.translated = false"
           (click)="
             this.api.request_fragments(
               column_to_display.column_id,
@@ -143,13 +143,13 @@
     <div *ngFor="let fragment of given_column.documents">
       <div
         class="fragment-box"
-        (click)="handle_fragment_click(fragment, given_column)"
+        (click)="handle_document_click(fragment, given_column)"
         cdkDrag
         [cdkDragDisabled]="this.settings.fragments.dragging_disabled"
         (cdkDragDropped)="this.column_handler.track_edited_columns($event)"
         [attr.id]="fragment.fragment_id"
         [style.background-color]="
-          this.generate_fragment_gradient_background_color(
+          this.generate_document_gradient_background_color(
             given_column.fragments.length,
             given_column.original_fragment_order.indexOf(fragment.name)
           )
