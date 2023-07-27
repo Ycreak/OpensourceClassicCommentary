@@ -80,7 +80,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit(): void {
     //if (environment.debug) {
-    //this.api.request_fragments(255, 'Ennius', 'Thyestes', 'TRF', '112');
+    //this.api.request_documents(255, 'Ennius', 'Thyestes', 'TRF', '112');
     //}
     if (!environment.production) {
       // Only load if the environment is development: otherwise Commentary will load
@@ -111,10 +111,10 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     /** Handle what happens when new fragments arrive */
-    this.documents_subscription = this.api.new_fragments_alert$.subscribe((column_id) => {
+    this.documents_subscription = this.api.new_documents_alert$.subscribe((column_id) => {
       if (column_id == environment.dashboard_id) {
         this.reset_fragment_form();
-        this.convert_Fragment_to_fragment_form(this.api.fragments[0]);
+        this.convert_Fragment_to_fragment_form(this.api.documents[0]);
         // Set the data for the drop down menus
         this.selected_fragment_data.author = this.fragment_form.value.author;
         this.selected_fragment_data.title = this.fragment_form.value.title;

@@ -27,7 +27,7 @@ export class ColumnHandlerService {
    * @param column: columns with documents to be painted black
    * @author Ycreak
    */
-  public colour_documents_black(column): Column {
+  public colour_documents_black(column: Column): Column {
     for (const i in column.documents) {
       column.documents[i].colour = 'black';
     }

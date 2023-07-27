@@ -62,7 +62,7 @@ export class ApiService {
   public titles: title[] = [];
   public editors: editor[] = [];
   public fragment_names: fragment_name[] = [];
-  public fragments: Fragment[] = [];
+  public documents: any[] = [];
   public fragment_key: fragment_key = {};
 
   public author_title_editor_blob: any = [];
@@ -77,8 +77,8 @@ export class ApiService {
   public new_titles_alert = new ReplaySubject(0);
   public new_editors_alert = new ReplaySubject(0);
 
-  private new_fragments_alert = new BehaviorSubject<number>(-1);
-  public new_fragments_alert$ = this.new_fragments_alert.asObservable();
+  private new_documents_alert = new BehaviorSubject<number>(-1);
+  public new_documents_alert$ = this.new_documents_alert.asObservable();
 
   private new_fragment_names_alert = new BehaviorSubject<number>(-1);
   public new_fragment_names_alert$ = this.new_fragment_names_alert.asObservable();
@@ -225,9 +225,9 @@ export class ApiService {
     });
   }
 
-  public request_fragments(column_id: number, author: string, title: string, editor: string, name?: string): void {
+  public request_documents(column_id: number, author: string, title: string, editor: string, name?: string): void {
     this.spinner_on();
-    this.fragments = [];
+    this.documents = [];
     this.fragment_key = this.create_fragment_key(author, title, editor);
     if (name) {
       this.fragment_key.name = name;
@@ -237,9 +237,9 @@ export class ApiService {
         data.forEach((value) => {
           const fragment = new Fragment();
           fragment.set_fragment(value);
-          this.fragments.push(fragment);
+          this.documents.push(fragment);
         });
-        this.new_fragments_alert.next(column_id);
+        this.new_documents_alert.next(column_id);
         this.spinner_off();
       },
       error: (err) => this.handle_error_message(err),
@@ -254,7 +254,7 @@ export class ApiService {
         this.request_authors_titles_editors_blob();
         if (column_id) {
           this.request_fragment_names(column_id, fragment.author, fragment.title, fragment.editor);
-          this.request_fragments(column_id, fragment.author, fragment.title, fragment.editor, fragment.name);
+          this.request_documents(column_id, fragment.author, fragment.title, fragment.editor, fragment.name);
         }
         this.spinner_off();
       },
@@ -270,7 +270,7 @@ export class ApiService {
         this.request_authors_titles_editors_blob();
         if (column_id) {
           this.request_fragment_names(column_id, fragment.author, fragment.title, fragment.editor);
-          this.request_fragments(column_id, fragment.author, fragment.title, fragment.editor, fragment.name);
+          this.request_documents(column_id, fragment.author, fragment.title, fragment.editor, fragment.name);
         }
         this.spinner_off();
       },
@@ -305,18 +305,19 @@ export class ApiService {
    * @param number of column_id
    * @param object of filter to apply to documents
    * @author Ycreak
+   * @TODO: replace request_documents with this function
    */
-  public request_documents(column_id: number, filter: object): void {
+  public request_documents_with_filter(column_id: number, filter: object): void {
     this.spinner_on();
-    this.fragments = [];
+    this.documents = [];
     this.get_fragments(filter).subscribe({
       next: (data) => {
         data.forEach((value) => {
           const fragment = new Fragment();
           fragment.set_fragment(value);
-          this.fragments.push(fragment);
+          this.documents.push(fragment);
         });
-        this.new_fragments_alert.next(column_id);
+        this.new_documents_alert.next(column_id);
         this.spinner_off();
       },
       error: (err) => this.handle_error_message(err),

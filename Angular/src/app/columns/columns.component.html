@@ -57,7 +57,7 @@
           (click)="column_to_display.edited = false"
           (click)="column_to_display.translated = false"
           (click)="
-            this.api.request_fragments(
+            this.api.request_documents(
               column_to_display.column_id,
               column_to_display.author,
               column_to_display.title,
@@ -137,7 +137,7 @@
   <div
     cdkDropList
     id="{{ given_column.column_id }}"
-    [cdkDropListData]="given_column.fragments"
+    [cdkDropListData]="given_column.documents"
     [cdkDropListConnectedTo]="this.column_handler.connected_columns_list"
     (cdkDropListDropped)="this.utility.drop($event)">
     <div *ngFor="let fragment of given_column.documents">
@@ -150,7 +150,7 @@
         [attr.id]="fragment.fragment_id"
         [style.background-color]="
           this.generate_document_gradient_background_color(
-            given_column.fragments.length,
+            given_column.documents.length,
             given_column.original_fragment_order.indexOf(fragment.name)
           )
         ">
@@ -161,7 +161,6 @@
           <app-fragment [fragment]="fragment"> </app-fragment>
         </div>
       </div>
-      <!--</div>-->
     </div>
   </div>
 </ng-template>

@@ -48,9 +48,9 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit() {
     /** Handle what happens when new fragments arrive */
-    this.documents_subscription = this.api.new_fragments_alert$.subscribe((column_id) => {
+    this.documents_subscription = this.api.new_documents_alert$.subscribe((column_id) => {
       if (column_id == environment.playground_id) {
-        const fragments = this.api.fragments;
+        const fragments = this.api.documents;
         for (const i in fragments) {
           fragments[i].add_html_to_lines();
         }
@@ -134,7 +134,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
   public add_single_fragment(column: Column, fragment_name: string): void {
     this.single_fragment_requested = true;
     // format the fragment and push it to the list
-    this.api.request_fragments(column.column_id, column.author, column.title, column.editor, fragment_name);
+    this.api.request_documents(column.column_id, column.author, column.title, column.editor, fragment_name);
   }
 
   /**

@@ -37,11 +37,11 @@ import testimonia from '@oscc/testimonia.json';
   ],
 })
 export class ColumnsComponent implements OnInit, OnDestroy {
-  @Output() clicked_document = new EventEmitter<Fragment>();
+  @Output() clicked_document = new EventEmitter<any>();
 
   private testimonia = testimonia.data;
 
-  public current_document: Fragment; // Variable to store the clicked fragment and its data
+  public current_document: any; // Variable to store the clicked fragment and its data
   document_clicked = false; // Shows "click a fragment" banner at startup if nothing is yet selected
 
   // Subscription variables
@@ -73,23 +73,22 @@ export class ColumnsComponent implements OnInit, OnDestroy {
         })
       );
     }
-    this.api.request_fragments(1, 'Ennius', 'Eumenides', 'TRF');
+    this.api.request_documents(1, 'Ennius', 'Eumenides', 'TRF');
 
-    /** Handle what happens when new fragments arrive */
-    this.documents_subscription = this.api.new_fragments_alert$.subscribe((column_id) => {
-      let fragments: Fragment[] = this.api.fragments;
-      for (const i in fragments) {
-        fragments[i].add_html_to_lines();
+    /** Handle what happens when new documents arrive */
+    this.documents_subscription = this.api.new_documents_alert$.subscribe((column_id) => {
+      let documents: any[] = this.api.documents;
+      for (const i in documents) {
+        documents[i].add_html_to_lines();
       }
       // A new list of fragments has arrived. Use the column identifier to find the corresponding column
       const column = this.column_handler.columns.find((x) => x.column_id == column_id);
       if (column) {
-        // Prepare the fragments for publication
-        fragments = fragments.sort(this.utility.sort_fragment_array_numerically);
-        fragments = this.sort_documents_on_status(fragments);
+        // Prepare the documents for publication
+        documents = documents.sort(this.utility.sort_fragment_array_numerically);
+        documents = this.sort_documents_on_status(documents);
 
-        column.fragments = fragments;
-        column.documents = [...column.fragments];
+        column.documents = documents;
 
         this.testimonia.forEach((element) => {
           const new_testimonium = new Testimonium({});
@@ -99,8 +98,8 @@ export class ColumnsComponent implements OnInit, OnDestroy {
 
         // Store the original order of the fragment names in the column object
         column.original_fragment_order = []; // Clear first
-        for (const fragment of fragments) {
-          column.original_fragment_order.push(fragment.name);
+        for (const document of documents) {
+          column.original_fragment_order.push(document.name);
         }
       }
     });
@@ -247,7 +246,7 @@ export class ColumnsComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe({
       next: (document_filter) => {
         if (document_filter) {
-          this.api.request_documents(column_id, document_filter);
+          this.api.request_documents_with_filter(column_id, document_filter);
         }
       },
     });
