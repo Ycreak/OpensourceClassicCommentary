@@ -13,14 +13,11 @@ import { DialogService } from '@oscc/services/dialog.service';
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
 import { Column } from '@oscc/models/Column';
-import { IntroductionsComponent } from './introductions/introductions.component';
-import { BibliographyComponent } from './bibliography/bibliography.component';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss'],
-  providers: [IntroductionsComponent, BibliographyComponent],
+  styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   // Fragment referencer variables
@@ -75,7 +72,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     protected utility: UtilityService,
     protected dialog: DialogService,
     protected auth_service: AuthService,
-    protected introductions: IntroductionsComponent
+    //protected introductions: IntroductionsComponent
   ) {}
 
   ngOnInit(): void {
