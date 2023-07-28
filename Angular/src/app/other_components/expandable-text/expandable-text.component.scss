@@ -5,6 +5,7 @@ div.collapsed-text-container {
 %collapsed-text {
   max-height: var(--collapsed-height);
   overflow: hidden;
+  padding: 0px 1px 0px 1px; // Avoids some text elements like summaries from being cut off
 }
 
 div.collapsed-text {
