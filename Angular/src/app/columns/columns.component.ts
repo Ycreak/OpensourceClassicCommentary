@@ -175,7 +175,7 @@ export class ColumnsComponent implements OnInit, OnDestroy {
     const testimonia = this.utility.filter_object_on_key(documents, 'document_type', 'testimonium');
     // Concatenate in the order we want
     documents = normal.concat(incerta).concat(adesp).concat(testimonia);
-    
+
     return documents;
   }
 
