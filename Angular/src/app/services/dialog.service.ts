@@ -112,10 +112,7 @@ export class ShowAboutDialogComponent {}
   styleUrls: ['../dialogs/dialogs.scss'],
 })
 export class ConfirmationDialogComponent {
-  constructor(
-    public dialogRef: MatDialogRef<ConfirmationDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data,
-  ) {}
+  constructor(public dialogRef: MatDialogRef<ConfirmationDialogComponent>, @Inject(MAT_DIALOG_DATA) public data) {}
 
   onNoClick(): void {
     this.dialogRef.close();
@@ -137,7 +134,7 @@ export class WYSIWYGDialogComponent {
     private api: ApiService,
     public dialogRef: MatDialogRef<WYSIWYGDialogComponent>,
     @Inject(MAT_DIALOG_DATA)
-    public data: any,
+    public data: any
   ) {}
 
   editor_instance: any; // allows communication with the editor
@@ -210,10 +207,7 @@ export class WYSIWYGDialogComponent {
   styleUrls: ['../dialogs/dialogs.scss'],
 })
 export class CustomDialogComponent {
-  constructor(
-    public dialogRef: MatDialogRef<CustomDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data,
-  ) {}
+  constructor(public dialogRef: MatDialogRef<CustomDialogComponent>, @Inject(MAT_DIALOG_DATA) public data) {}
 }
 
 /**
@@ -237,10 +231,7 @@ export class SettingsDialogComponent {
     auto_scroll_linked_fragments: 'Automatically scrolls linked fragments into view if possible',
   };
 
-  constructor(
-    public dialogRef: MatDialogRef<SettingsDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data,
-  ) {}
+  constructor(public dialogRef: MatDialogRef<SettingsDialogComponent>, @Inject(MAT_DIALOG_DATA) public data) {}
 
   protected toggle_tooltip(tooltip) {
     if (tooltip.disabled) {
