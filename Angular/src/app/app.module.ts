@@ -90,6 +90,7 @@ import { OverviewComponent } from './overview/overview.component';
 import { IntroductionsComponent } from './dashboard/introductions/introductions.component';
 import { ExpandableTextComponent } from './other_components/expandable-text/expandable-text.component';
 import { DocumentFilterComponent } from './dialogs/document-filter/document-filter.component';
+import { UsersComponent } from './dashboard/users/users.component';
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
@@ -122,6 +123,7 @@ const appRoutes: Routes = [
     BibliographyComponent,
     ExpandableTextComponent,
     DocumentFilterComponent,
+    UsersComponent,
   ],
   imports: [
     BrowserModule,

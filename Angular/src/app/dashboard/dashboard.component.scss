@@ -51,45 +51,6 @@ mat-stroked-button {
   padding-left: 1em;
 }
 
-/* Table specific CSS */
-table {
-  width: 100%;
-}
-
-td,
-th {
-  width: 25%;
-}
-
-tr.table-detail-row {
-  height: 0;
-}
-
-tr.table-element-row:not(.table-expanded-row):hover {
-  background: whitesmoke;
-}
-
-tr.table-element-row:not(.table-expanded-row):active {
-  background: #efefef;
-}
-
-.table-element-row td {
-  border-bottom-width: 0;
-}
-
-.table-element-detail {
-  overflow: hidden;
-  display: flex;
-}
-
-.table-element-description {
-  padding: 16px;
-}
-
-.table-element-description-attribution {
-  opacity: 0.5;
-}
-
 /* Wysiwyg-editor */
 ::ng-deep div.ql-toolbar button.symbol-button {
   transform: translateY(-0.2em);
