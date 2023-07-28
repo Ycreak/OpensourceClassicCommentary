@@ -68,7 +68,6 @@ export class ColumnsComponent implements OnInit, OnDestroy {
         })
       );
     }
-
     //this.api.request_documents(1, 'Ennius', 'Eumenides', 'TRF');
     this.api.request_documents_with_filter(1, { author: 'Accius' });
 
@@ -176,6 +175,7 @@ export class ColumnsComponent implements OnInit, OnDestroy {
     const testimonia = this.utility.filter_object_on_key(documents, 'document_type', 'testimonium');
     // Concatenate in the order we want
     documents = normal.concat(incerta).concat(adesp).concat(testimonia);
+    
     return documents;
   }
 

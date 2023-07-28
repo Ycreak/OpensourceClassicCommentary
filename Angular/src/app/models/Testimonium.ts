@@ -30,7 +30,6 @@ export class Testimonium {
    * @author Ycreak
    */
   public set(testimonium: any) {
-    console.log(testimonium, 'in set');
     this._id = '_id' in testimonium ? testimonium['_id'] : '';
     this.author = 'author' in testimonium ? testimonium['author'] : '';
     this.title = 'title' in testimonium ? testimonium['title'] : '';
