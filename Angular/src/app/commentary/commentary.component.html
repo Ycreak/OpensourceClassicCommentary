@@ -57,7 +57,7 @@
   <ng-template #fragments_not_translated>
     <ng-container
       *ngTemplateOutlet="
-        show_fragment_content;
+        show_fragment_translation;
         context: { current_fragment_content: given_fragment.translation, title: 'Fragment Translation' }
       ">
     </ng-container>
@@ -152,6 +152,31 @@
 </ng-template>
 
 <!-- Template to show fragment content from the given fragment in a mat expansion panel -->
+<ng-template #show_fragment_translation let-current_fragment_content="current_fragment_content" let-title="title">
+  <ng-container *ngIf="current_fragment_content !== ''">
+    <!-- do not generate fields if content is empty -->
+    <mat-expansion-panel
+      *ngIf="current_fragment_content"
+      [expanded]="this.translation_orig_text_expanded"
+      (click)="toggle_translation_orig_text_expanded()">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <b>{{ title }}</b>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div class="mat-expansion-panel-content">
+        <div class="mat-expansion-panel-body">
+          <app-expandable-text [content]="current_fragment_content"></app-expandable-text>
+          <!-- TODO: This is currently not applied to citation context -->
+        </div>
+      </div>
+    </mat-expansion-panel>
+    <hr />
+    <!-- And add a nice line to separate the fields -->
+  </ng-container>
+</ng-template>
+
+<!-- Template to show the original text from the given fragment in a mat expansion panel -->
 <ng-template #show_fragment_content_orig_text let-current_fragment_content="current_fragment_content" let-title="title">
   <ng-container *ngIf="current_fragment_content.length > 0">
     <!-- do not generate fields if content is empty -->
@@ -161,7 +186,7 @@
       (click)="toggle_translation_orig_text_expanded()">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          <b>{{ title }}</b>
+          <b>{{ title }} - Expanded:{{ this.translation_orig_text_expanded }}</b>
         </mat-panel-title>
       </mat-expansion-panel-header>
       <div class="mat-expansion-panel-content">
