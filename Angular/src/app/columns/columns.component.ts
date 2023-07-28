@@ -73,28 +73,26 @@ export class ColumnsComponent implements OnInit, OnDestroy {
         })
       );
     }
-    this.api.request_documents(1, 'Ennius', 'Eumenides', 'TRF');
+    //this.api.request_documents(1, 'Ennius', 'Eumenides', 'TRF');
+    this.api.request_documents_with_filter(1, {author: 'Accius'});
 
     /** Handle what happens when new documents arrive */
     this.documents_subscription = this.api.new_documents_alert$.subscribe((column_id) => {
       let documents: any[] = this.api.documents;
+      console.log('docs', documents)
       for (const i in documents) {
-        documents[i].add_html_to_lines();
+        if (documents[i].document_type == 'fragment') {
+          documents[i].add_html_to_lines();
+        }
       }
       // A new list of fragments has arrived. Use the column identifier to find the corresponding column
       const column = this.column_handler.columns.find((x) => x.column_id == column_id);
       if (column) {
         // Prepare the documents for publication
-        documents = documents.sort(this.utility.sort_fragment_array_numerically);
-        documents = this.sort_documents_on_status(documents);
+        //documents = documents.sort(this.utility.sort_fragment_array_numerically);
+        //documents = this.sort_documents_on_status(documents);
 
         column.documents = documents;
-
-        this.testimonia.forEach((element) => {
-          const new_testimonium = new Testimonium({});
-          new_testimonium.set(element);
-          column.documents.push(new_testimonium);
-        });
 
         // Store the original order of the fragment names in the column object
         column.original_fragment_order = []; // Clear first

@@ -41,10 +41,16 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   fragment_form = new FormGroup({
     _id: new FormControl(''),
-    name: new FormControl('', [Validators.required, Validators.pattern('[0-9-_ ]*')]), // numbers and "-" and "_" allowed.
-    author: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
-    title: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
-    editor: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
+    //name: new FormControl('', [Validators.required, Validators.pattern('[0-9-_ ]*')]), // numbers and "-" and "_" allowed.
+    //author: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
+    //title: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
+    //editor: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
+    //name: new FormControl('', [Validators.pattern('[0-9-_ ]*')]), // numbers and "-" and "_" allowed.
+    name: new FormControl(''), // numbers and "-" and "_" allowed.
+    author: new FormControl('', [Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
+    //title: new FormControl('', [Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
+    title: new FormControl(''), // alpha characters allowed
+    editor: new FormControl('', [Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
     translation: new FormControl(''),
     differences: new FormControl(''),
     commentary: new FormControl(''),
@@ -58,9 +64,13 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     // It will contain multiple FormGroups per line, containing a line_number and line_text.
     lines: new FormArray([]),
     linked_fragments: new FormArray([]),
-    status: new FormControl('', Validators.required),
+    //status: new FormControl('', Validators.required),
+    status: new FormControl(''),
     published: new FormControl(''),
     lock: new FormControl(''),
+    document_type: new FormControl(''),
+    witness: new FormControl(''),
+    text: new FormControl(''),
   });
 
   // In this object all meta data is stored regarding the currently selected fragment
@@ -183,7 +193,10 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   private convert_Fragment_to_fragment_form(fragment: Fragment): void {
     // This functions updates the fragment_form with the provided fragment
-    for (const item of ['_id', 'name', 'author', 'title', 'editor', 'status', 'lock', 'published']) {
+    for (const item of [
+      '_id', 'name', 'author', 'title', 'editor', 'status', 'lock', 'published',
+      'witness', 'text', 'document_type'
+    ]) {
       this.fragment_form.patchValue({ [item]: fragment[item] });
     }
     // Update the fragment form with the commentary of the given fragment
