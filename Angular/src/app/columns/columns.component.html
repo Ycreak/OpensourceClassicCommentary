@@ -153,7 +153,8 @@
           this.generate_document_gradient_background_color(
             given_column.documents.length,
             given_column.original_fragment_order.indexOf(fragment.name)
-          )"
+          )
+        "
         appOnCopy
         (copyFragment)="this.copy_fragment_content(current_fragment)">
         <div *ngIf="fragment.document_type === 'testimonium'">
@@ -167,16 +168,16 @@
   </div>
 </ng-template>
 
-
 <!-- Context menu for right click actions on fragments -->
-<mat-menu #rightMenu="matMenu"> 
-  <ng-template matMenuContent let-item="item"> 
-    <button (click)="this.copy_fragment_content(current_fragment)" mat-menu-item>Copy text</button> 
-  </ng-template> 
-</mat-menu> 
+<mat-menu #rightMenu="matMenu">
+  <ng-template matMenuContent let-item="item">
+    <button (click)="this.copy_fragment_content(current_fragment)" mat-menu-item>Copy text</button>
+  </ng-template>
+</mat-menu>
 
-  <!-- hidden helper div used for the context menu -->
-  <div style="visibility: hidden; position: fixed;" 
-  [style.left]="menuTopLeftPosition.x" 
-  [style.top]="menuTopLeftPosition.y" 
-  [matMenuTriggerFor]="rightMenu"></div> 
+<!-- hidden helper div used for the context menu -->
+<div
+  style="visibility: hidden; position: fixed"
+  [style.left]="menuTopLeftPosition.x"
+  [style.top]="menuTopLeftPosition.y"
+  [matMenuTriggerFor]="rightMenu"></div>
