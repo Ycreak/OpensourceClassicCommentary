@@ -1,4 +1,4 @@
-import { Injectable, Inject, Component, ViewChild, Pipe } from '@angular/core';
+import { Injectable, Inject, Component, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { ApiService } from '@oscc/api.service';

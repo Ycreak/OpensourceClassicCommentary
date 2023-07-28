@@ -127,7 +127,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
    * @param anchor The id of the element to scroll to. ('#' can be omitted)
    * @author sajvanwijk
    */
-  protected scroll_to(anchor: string): void {
+  protected scroll_viewport_to(anchor: string): void {
     setTimeout(() => {
       this.viewportscroller.scrollToAnchor(anchor);
     }, 200); //FIXME: An async/await on the playground renderer would be nicer, but this works for now.
