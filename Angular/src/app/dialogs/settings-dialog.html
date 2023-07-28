@@ -12,59 +12,105 @@
 
   <p>
     <mat-slide-toggle [(ngModel)]="data.dragging_disabled">
-      <span class="text-tooltip" matTooltip="Disallows moving fragments by dragging them" matTooltipShowDelay="1000"
+      <span class="text-tooltip" [matTooltip]="this.tooltips.dragging_disabled" matTooltipShowDelay="1000"
         >Disable fragment dragging</span
       >
     </mat-slide-toggle>
+    &nbsp;
+    <mat-icon
+      class="icon-tooltip"
+      #dragtooltip_icon="matTooltip"
+      [matTooltip]="this.tooltips.dragging_disabled"
+      [matTooltipDisabled]="true"
+      (click)="this.toggle_tooltip(dragtooltip_icon)"
+      (mouseenter)="null"
+      (mouseleave)="this.disable_tooltip(dragtooltip_icon)"
+      >help_outline</mat-icon
+    >
   </p>
 
   <br />
 
   <p>
     <mat-slide-toggle [(ngModel)]="data.fragment_order_gradient">
-      <span
-        class="text-tooltip"
-        matTooltip="Enables a color gradient that shows the original order of the fragments, from a lighter to a darker color"
-        matTooltipShowDelay="1000"
+      <span class="text-tooltip" [matTooltip]="this.tooltips.fragment_order_gradient" matTooltipShowDelay="1000"
         >Show fragment order gradient</span
       >
     </mat-slide-toggle>
+    &nbsp;
+    <mat-icon
+      class="icon-tooltip"
+      #gradienttooltip_icon="matTooltip"
+      [matTooltip]="this.tooltips.fragment_order_gradient"
+      [matTooltipDisabled]="true"
+      (click)="this.toggle_tooltip(gradienttooltip_icon)"
+      (mouseenter)="null"
+      (mouseleave)="this.disable_tooltip(gradienttooltip_icon)"
+      >help_outline</mat-icon
+    >
   </p>
 
   <br />
 
   <p>
     <mat-slide-toggle [(ngModel)]="data.show_headers">
-      <span
-        class="text-tooltip"
-        matTooltip="Show fragment headers that include data about the fragment"
-        matTooltipShowDelay="1000"
+      <span class="text-tooltip" [matTooltip]="this.tooltips.show_headers" matTooltipShowDelay="1000"
         >Show fragments headers</span
       >
     </mat-slide-toggle>
+    &nbsp;
+    <mat-icon
+      class="icon-tooltip"
+      #headertooltip_icon="matTooltip"
+      [matTooltip]="this.tooltips.show_headers"
+      [matTooltipDisabled]="true"
+      (click)="this.toggle_tooltip(headertooltip_icon)"
+      (mouseenter)="null"
+      (mouseleave)="this.disable_tooltip(headertooltip_icon)"
+      >help_outline</mat-icon
+    >
   </p>
 
   <br />
 
   <p>
     <mat-slide-toggle [(ngModel)]="data.show_line_names">
-      <span class="text-tooltip" matTooltip=" Show the name or number of each fragment line" matTooltipShowDelay="1000"
+      <span class="text-tooltip" [matTooltip]="this.tooltips.show_line_names" matTooltipShowDelay="1000"
         >Show fragment line names</span
       >
     </mat-slide-toggle>
+    &nbsp;
+    <mat-icon
+      class="icon-tooltip"
+      #linenametooltip_icon="matTooltip"
+      [matTooltip]="this.tooltips.show_line_names"
+      [matTooltipDisabled]="true"
+      (click)="this.toggle_tooltip(linenametooltip_icon)"
+      (mouseenter)="null"
+      (mouseleave)="this.disable_tooltip(linenametooltip_icon)"
+      >help_outline</mat-icon
+    >
   </p>
 
   <br />
 
   <p>
     <mat-slide-toggle [(ngModel)]="data.auto_scroll_linked_fragments">
-      <span
-        class="text-tooltip"
-        matTooltip="Automatically scrolls linked fragments into view if possible"
-        matTooltipShowDelay="1000"
+      <span class="text-tooltip" [matTooltip]="this.tooltips.auto_scroll_linked_fragments" matTooltipShowDelay="1000"
         >Auto scroll to linked fragments</span
       >
     </mat-slide-toggle>
+    &nbsp;
+    <mat-icon
+      class="icon-tooltip"
+      #autoscrolllinkedtooltip_icon="matTooltip"
+      [matTooltip]="this.tooltips.auto_scroll_linked_fragments"
+      [matTooltipDisabled]="true"
+      (click)="this.toggle_tooltip(autoscrolllinkedtooltip_icon)"
+      (mouseenter)="null"
+      (mouseleave)="this.disable_tooltip(autoscrolllinkedtooltip_icon)"
+      >help_outline</mat-icon
+    >
   </p>
 
   <hr />

@@ -25,3 +25,13 @@ div.force-dialog-padding {
 .text-tooltip:hover {
   cursor: help;
 }
+
+.icon-tooltip {
+  color: lightgray;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.icon-tooltip:hover {
+  opacity: 80%;
+}
