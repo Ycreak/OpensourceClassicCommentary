@@ -33,6 +33,10 @@ class FragmentField(object):
     LINES = "lines"
     LINKED_FRAGMENTS = "linked_fragments"
 
+    WITNESS = "witness"
+    TEXT = "text"
+    DOCUMENT_TYPE = "document_type"
+
 @dataclass
 class Fragment:
     _id: str = None
@@ -50,6 +54,10 @@ class Fragment:
     context: list = None
     lines: list = None
     linked_fragments: list = None
+
+    witness: str = None
+    text: str = None
+    document_type: str = None
 
 class FragmentModel:
     def __init__(self, server):
@@ -87,6 +95,12 @@ class FragmentModel:
                 fragment.lines = doc[FragmentField.LINES]
             if FragmentField.LINKED_FRAGMENTS in doc:
                 fragment.linked_fragments = doc[FragmentField.LINKED_FRAGMENTS]
+            if FragmentField.WITNESS in doc:
+                fragment.witness = doc[FragmentField.WITNESS]
+            if FragmentField.TEXT in doc:
+                fragment.text = doc[FragmentField.TEXT]
+            if FragmentField.DOCUMENT_TYPE in doc:
+                fragment.document_type = doc[FragmentField.DOCUMENT_TYPE]
             result.append(fragment)
         return result
 
