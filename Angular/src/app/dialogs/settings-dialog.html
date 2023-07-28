@@ -11,31 +11,60 @@
   <!-- <br> -->
 
   <p>
-    <mat-slide-toggle [(ngModel)]="data.dragging_disabled">Disable fragment dragging</mat-slide-toggle>
+    <mat-slide-toggle [(ngModel)]="data.dragging_disabled">
+      <span class="text-tooltip" matTooltip="Disallows moving fragments by dragging them" matTooltipShowDelay="1000"
+        >Disable fragment dragging</span
+      >
+    </mat-slide-toggle>
   </p>
 
   <br />
 
   <p>
-    <mat-slide-toggle [(ngModel)]="data.fragment_order_gradient">Show fragment order gradient</mat-slide-toggle>
+    <mat-slide-toggle [(ngModel)]="data.fragment_order_gradient">
+      <span
+        class="text-tooltip"
+        matTooltip="Enables a color gradient that shows the original order of the fragments, from a lighter to a darker color"
+        matTooltipShowDelay="1000"
+        >Show fragment order gradient</span
+      >
+    </mat-slide-toggle>
   </p>
 
   <br />
 
   <p>
-    <mat-slide-toggle [(ngModel)]="data.show_headers">Show fragments headers</mat-slide-toggle>
+    <mat-slide-toggle [(ngModel)]="data.show_headers">
+      <span
+        class="text-tooltip"
+        matTooltip="Show fragment headers that include data about the fragment"
+        matTooltipShowDelay="1000"
+        >Show fragments headers</span
+      >
+    </mat-slide-toggle>
   </p>
 
   <br />
 
   <p>
-    <mat-slide-toggle [(ngModel)]="data.show_line_names">Show fragment line names</mat-slide-toggle>
+    <mat-slide-toggle [(ngModel)]="data.show_line_names">
+      <span class="text-tooltip" matTooltip=" Show the name or number of each fragment line" matTooltipShowDelay="1000"
+        >Show fragment line names</span
+      >
+    </mat-slide-toggle>
   </p>
 
   <br />
 
   <p>
-    <mat-slide-toggle [(ngModel)]="data.auto_scroll_linked_fragments">Auto scroll to linked fragments</mat-slide-toggle>
+    <mat-slide-toggle [(ngModel)]="data.auto_scroll_linked_fragments">
+      <span
+        class="text-tooltip"
+        matTooltip="Automatically scrolls linked fragments into view if possible"
+        matTooltipShowDelay="1000"
+        >Auto scroll to linked fragments</span
+      >
+    </mat-slide-toggle>
   </p>
 
   <hr />
