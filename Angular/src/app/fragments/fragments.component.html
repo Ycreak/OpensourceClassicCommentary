@@ -7,7 +7,7 @@
   <mat-toolbar class="fragment-column-toolbar">
     <!-- Button to select the text -->
     <button
-      class="fragment-column-button"
+      class="frag-select-text-button fragment-column-button"
       mat-button
       [matMenuTriggerFor]="menu_authors"
       (click)="column_to_display.new_column = false">
@@ -15,7 +15,7 @@
     </button>
     <button
       *ngIf="column_to_display.has_translations()"
-      class="fragment-column-button"
+      class="frag-show-translation-button fragment-column-button"
       mat-button
       (click)="this.toggle_translation(column_to_display)"
       [innerHTML]="this.translation_toggle_button_label(column_to_display)"></button>
@@ -70,19 +70,28 @@
     </mat-menu>
 
     <!-- Buttons to modify columns -->
-    <button mat-icon-button (click)="this.set_custom_filter(column_to_display.column_id)">
+    <button mat-icon-button class="frag-filter-button" (click)="this.set_custom_filter(column_to_display.column_id)">
       <mat-icon>filter_alt</mat-icon>
     </button>
 
-    <button mat-icon-button (click)="this.column_handler.move_column(column_to_display.column_id, 'left')">
+    <button
+      mat-icon-button
+      class="frag-col-left-button"
+      (click)="this.column_handler.move_column(column_to_display.column_id, 'left')">
       <mat-icon>keyboard_arrow_left</mat-icon>
     </button>
 
-    <button mat-icon-button (click)="this.column_handler.move_column(column_to_display.column_id, 'right')">
+    <button
+      mat-icon-button
+      class="frag-col-right-button"
+      (click)="this.column_handler.move_column(column_to_display.column_id, 'right')">
       <mat-icon>keyboard_arrow_right</mat-icon>
     </button>
 
-    <button mat-icon-button (click)="this.column_handler.close_column(column_to_display.column_id)">
+    <button
+      mat-icon-button
+      class="frag-col-close-button"
+      (click)="this.column_handler.close_column(column_to_display.column_id)">
       <mat-icon>clear</mat-icon>
     </button>
 
