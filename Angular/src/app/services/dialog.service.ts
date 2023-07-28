@@ -1,8 +1,9 @@
-import { Injectable, Inject, Component } from '@angular/core';
+import { Injectable, Inject, Component, ViewChild, Pipe } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { ApiService } from '@oscc/api.service';
 import { BibliographyComponent } from '@oscc/dashboard/bibliography/bibliography.component';
+import { MatTooltip } from '@angular/material/tooltip';
 
 /**
  * This service handles the dialogs used in the OSCC
@@ -219,5 +220,31 @@ export class CustomDialogComponent {
   styleUrls: ['../dialogs/dialogs.scss'],
 })
 export class SettingsDialogComponent {
+  @ViewChild('dragtooltip_icon') dragtooltip_icon: MatTooltip;
+
+  protected tooltips = {
+    dragging_disabled: 'Disallows moving fragments by dragging them',
+    fragment_order_gradient:
+      'Enables a color gradient that shows the original order of the fragments, from a lighter to a darker color',
+    show_headers: 'Show fragment headers that include data about the fragment',
+    show_line_names: 'Show the name or number of each line of each fragment',
+    auto_scroll_linked_fragments: 'Automatically scrolls linked fragments into view if possible',
+  };
+
   constructor(public dialogRef: MatDialogRef<SettingsDialogComponent>, @Inject(MAT_DIALOG_DATA) public data) {}
+
+  protected toggle_tooltip(tooltip) {
+    if (tooltip.disabled) {
+      tooltip.disabled = false;
+      tooltip.show();
+    } else {
+      tooltip.disabled = true;
+      tooltip.hide();
+    }
+  }
+
+  protected disable_tooltip(tooltip) {
+    tooltip.disabled = true;
+    tooltip.hide();
+  }
 }
