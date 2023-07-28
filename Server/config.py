@@ -11,7 +11,7 @@ TRUSTED_ORIGINS = [
 
 COUCH_USER = "admin"
 COUCH_PASSWORD = "ledenpas"
-COUCH_HOST = "192.168.1.42"
+COUCH_HOST = "localhost"
 COUCH_PORT = "5984"
 
 # List the databases here

@@ -133,6 +133,7 @@ def get_fragment():
     fragment_lst = fragments.filter(Fragment(author=author, title=title, editor=editor, name=name), sorted=True)
     if not fragment_lst:
         return make_response("Not found", 401)
+
     return jsonify(fragment_lst), 200
 
 def create_fragment():    
@@ -152,6 +153,18 @@ def create_fragment():
         context = None
         lines = None
         linked_fragments = None
+
+        # Testimonia
+        witness = None
+        text = None
+        document_type = None
+
+        if FragmentField.WITNESS in request.get_json():
+            witness = request.get_json()[FragmentField.WITNESS]
+        if FragmentField.TEXT in request.get_json():
+            text = request.get_json()[FragmentField.TEXT]
+        if FragmentField.DOCUMENT_TYPE in request.get_json():
+            document_type = request.get_json()[FragmentField.DOCUMENT_TYPE]
 
         if FragmentField.STATUS in request.get_json():
             status = request.get_json()[FragmentField.STATUS]
@@ -184,7 +197,7 @@ def create_fragment():
     fragment = fragments.create(Fragment(_id=uuid4().hex, author=author, title=title, editor=editor, name=name, status=status,
                                          lock=lock, translation=translation, differences=differences, apparatus=apparatus, 
                                          commentary=commentary, reconstruction=reconstruction, context=context, lines=lines, 
-                                         linked_fragments=linked_fragments))
+                                         linked_fragments=linked_fragments, witness=witness, text=text, document_type=document_type))
     if fragment == None:
         return make_response("Server error", 500)
     
@@ -227,6 +240,18 @@ def update_fragment():
         context = None
         lines = None
         linked_fragments = None
+        
+        # Testimonia
+        witness = None
+        text = None
+        document_type = None
+
+        if FragmentField.WITNESS in request.get_json():
+            witness = request.get_json()[FragmentField.WITNESS]
+        if FragmentField.TEXT in request.get_json():
+            text = request.get_json()[FragmentField.TEXT]
+        if FragmentField.DOCUMENT_TYPE in request.get_json():
+            document_type = request.get_json()[FragmentField.DOCUMENT_TYPE]
 
         if FragmentField.STATUS in request.get_json():
             status = request.get_json()[FragmentField.STATUS]
@@ -261,7 +286,7 @@ def update_fragment():
     fragment = fragments.update(Fragment(_id=_id, author=author, title=title, editor=editor, name=name, status=status,
                                          lock=lock, translation=translation, differences=differences, apparatus=apparatus, 
                                          commentary=commentary, reconstruction=reconstruction, context=context, lines=lines, 
-                                         linked_fragments=linked_fragments))
+                                         linked_fragments=linked_fragments, witness=witness, text=text, document_type=document_type))
     if fragment == None:
         return make_response("Server error", 500)
 
