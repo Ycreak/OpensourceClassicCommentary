@@ -66,7 +66,7 @@ export class ColumnsComponent implements OnInit, OnDestroy {
           author: 'Ennius',
           title: 'Thyestes',
           editor: 'TRF',
-        }),
+        })
       );
     }
     //this.api.request_documents(1, 'Ennius', 'Eumenides', 'TRF');
