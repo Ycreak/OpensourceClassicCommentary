@@ -1,12 +1,11 @@
 /**
- * This service allows for column manipulation within the fragment component
+ * This service allows for column manipulation within the document component
  */
 import { Injectable } from '@angular/core';
 
 import { Column } from '@oscc/models/Column';
 import { Fragment } from '@oscc/models/Fragment';
 
-import { ApiService } from '@oscc/api.service';
 import { UtilityService } from '@oscc/utility.service';
 
 @Injectable({
@@ -18,19 +17,19 @@ export class ColumnHandlerService {
   // List of connected columns to allow dragging and dropping between columns
   connected_columns_list: string[] = [];
 
-  // Object to store all column data: just an array with column data in the form of fragment columns
+  // Object to store all column data: just an array with column data in the form of document columns
   columns: Column[] = [];
 
-  constructor(private api: ApiService, private utility: UtilityService) {}
+  constructor(private utility: UtilityService) {}
 
   /**
-   * Colours all fragment titles black
-   * @param column: columns with fragments to be painted black
+   * Colours all document titles black
+   * @param column: columns with documents to be painted black
    * @author Ycreak
    */
-  public colour_fragments_black(column): Column {
-    for (const i in column.fragments) {
-      column.fragments[i].colour = 'black';
+  public colour_documents_black(column: Column): Column {
+    for (const i in column.documents) {
+      column.documents[i].colour = 'black';
     }
     return column;
   }
@@ -91,7 +90,7 @@ export class ColumnHandlerService {
 
   /**
    * We keep track of dragging and dropping within or between columns. If an edit occurs,
-   * we set the corresponding fragment_column boolean 'edited' to true.
+   * we set the corresponding document_column boolean 'edited' to true.
    * @param event containing the column identifiers of those that are edited
    * @author Ycreak
    * @TODO: what type is 'event'? CdkDragDrop<string[]> does not allow reading.
@@ -119,37 +118,37 @@ export class ColumnHandlerService {
   }
 
   /**
-   * Given the current fragment, colour the linked fragments in the other columns
-   * @param fragment of which the linked fragments should be coloured
+   * Given the current document, colour the linked documents in the other columns
+   * @param document of which the linked documents should be coloured
    * @author Ycreak
    */
-  public colour_linked_fragments(fragment: Fragment): void {
-    // Loop through all fragments the linked fragments
-    for (const i in fragment.linked_fragments) {
-      const author = fragment.linked_fragments[i].author;
-      const title = fragment.linked_fragments[i].title;
-      const editor = fragment.linked_fragments[i].editor;
-      const name = fragment.linked_fragments[i].name;
-      // Now, for each fragment that is linked, try to find it in the other columns
+  public colour_linked_fragments(document: Fragment): void {
+    // Loop through all documents the linked documents
+    for (const i in document.linked_fragments) {
+      const author = document.linked_fragments[i].author;
+      const title = document.linked_fragments[i].title;
+      const editor = document.linked_fragments[i].editor;
+      const name = document.linked_fragments[i].name;
+      // Now, for each document that is linked, try to find it in the other columns
       for (const j in this.columns) {
-        // in each column, take a look in the fragments array to find the linked fragment
-        const corresponding_fragment = this.utility.filter_array_on_object(this.columns[j].fragments, {
+        // in each column, take a look in the documents array to find the linked document
+        const corresponding_document = this.utility.filter_array_on_object(this.columns[j].documents, {
           author: author,
           title: title,
           editor: editor,
           name: name,
         });
 
-        if (corresponding_fragment?.length) {
-          corresponding_fragment[0].colour = '#FF4081';
+        if (corresponding_document?.length) {
+          corresponding_document[0].colour = '#FF4081';
         }
       }
       // Do the same for the playground TODO:
-      //const corresponding_fragment = this.playground_handler.playground.fragments.find(
-      //(i) => i._id === linked_fragment_id
+      //const corresponding_document = this.playground_handler.playground.documents.find(
+      //(i) => i._id === linked_document_id
       //);
       // colour it if found
-      //if (corresponding_fragment) corresponding_fragment.colour = '#FF4081';
+      //if (corresponding_document) corresponding_document.colour = '#FF4081';
     }
   }
 }

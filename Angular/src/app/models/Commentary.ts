@@ -28,9 +28,6 @@ export class Commentary {
    * @author Ycreak
    */
   public set(fragment: any) {
-    if (fragment.name == '112') {
-      console.log('fr', fragment);
-    }
     this.translation = 'translation' in fragment && fragment['translation'] != null ? fragment['translation'] : '';
     this.commentary = 'commentary' in fragment && fragment['commentary'] != null ? fragment['commentary'] : '';
     this.apparatus = 'apparatus' in fragment && fragment['apparatus'] != null ? fragment['apparatus'] : '';
@@ -158,7 +155,6 @@ export class Commentary {
     const matches = string.match(/<(\d+)>/);
     // If found, replace it with the correct whitespace number
     if (matches) {
-      console.log(matches);
       // Create a span with the number of indents we want. Character level.
       // matches[0] contains including fish hooks, matches[1] only number
       const replacement = '<span style="padding-left:' + matches[1] + 'ch;"></span>';

@@ -147,7 +147,7 @@
             (click)="this.selected_fragment_data.name = fragment_name.name"
             (click)="this.fragment_form.patchValue({ name: fragment_name.name })"
             (click)="
-              this.api.request_fragments(
+              this.api.request_documents(
                 255,
                 selected_fragment_data.author,
                 selected_fragment_data.title,

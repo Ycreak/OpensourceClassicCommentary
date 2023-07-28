@@ -40,7 +40,7 @@
         mat-stroked-button
         class="playground-button button-margin"
         (click)="
-          this.api.request_fragments(
+          this.api.request_documents(
             this.playground.column_id,
             this.playground.author,
             this.playground.title,
@@ -127,8 +127,8 @@
     style="--layer: 2"
     cdkDrag
     (cdkDragStarted)="this.playground_dragging = true"
-    (click)="this.handle_fragment_click(fragment, true)"
-    (click)="this.playground.clicked_fragment = fragment">
+    (click)="this.handle_document_click(fragment, true)"
+    (click)="this.playground.clicked_document = fragment">
     <div *ngIf="this.settings.fragments.show_headers">
       <b [style.color]="fragment.colour">Fragment {{ fragment.name }} </b> &nbsp;
       <sup>{{ fragment.author }}, {{ fragment.title }}, {{ fragment.editor }}</sup> &nbsp;

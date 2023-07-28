@@ -18,11 +18,11 @@
 
 <!-- Template for commentary column -->
 <ng-template #commentary_column_template let-given_fragment="given_fragment">
-  <ng-container *ngIf="this.fragments_translated; else fragments_not_translated">
+  <ng-container *ngIf="this.translated; else fragments_not_translated">
     <ng-container
       *ngTemplateOutlet="
         show_fragment_content_orig_text;
-        context: { current_fragment_content: given_fragment.lines, title: 'Original text' }
+        context: { current_document_content: given_fragment.lines, title: 'Original text' }
       ">
     </ng-container>
   </ng-container>
@@ -32,7 +32,7 @@
     <ng-container
       *ngTemplateOutlet="
         show_fragment_content;
-        context: { current_fragment_content: given_fragment.translation, title: 'Fragment Translation' }
+        context: { current_document_content: given_fragment.translation, title: 'Fragment Translation' }
       ">
     </ng-container>
   </ng-template>
@@ -41,7 +41,7 @@
   <ng-container
     *ngTemplateOutlet="
       show_fragment_content;
-      context: { current_fragment_content: given_fragment.apparatus, title: 'Apparatus Criticus' }
+      context: { current_document_content: given_fragment.apparatus, title: 'Apparatus Criticus' }
     ">
   </ng-container>
   <!-- Show the apparatus criticus of the fragment -->
@@ -49,7 +49,7 @@
   <ng-container
     *ngTemplateOutlet="
       show_fragment_content;
-      context: { current_fragment_content: given_fragment.differences, title: 'Editorial Differences' }
+      context: { current_document_content: given_fragment.differences, title: 'Editorial Differences' }
     ">
   </ng-container>
   <!-- Show the fragment differences -->
@@ -80,7 +80,7 @@
   <ng-container
     *ngTemplateOutlet="
       show_fragment_content;
-      context: { current_fragment_content: given_fragment.commentary, title: 'Fragment Commentary' }
+      context: { current_document_content: given_fragment.commentary, title: 'Fragment Commentary' }
     ">
   </ng-container>
   <!-- Show the fragment commentary -->
@@ -88,7 +88,7 @@
   <ng-container
     *ngTemplateOutlet="
       show_fragment_content;
-      context: { current_fragment_content: given_fragment.reconstruction, title: 'Fragment Reconstruction' }
+      context: { current_document_content: given_fragment.reconstruction, title: 'Fragment Reconstruction' }
     ">
   </ng-container>
   <!-- Show the fragment reconstruction -->
@@ -96,7 +96,7 @@
   <ng-container
     *ngTemplateOutlet="
       show_fragment_content;
-      context: { current_fragment_content: given_fragment.metrical_analysis, title: 'Metrical Analysis' }
+      context: { current_document_content: given_fragment.metrical_analysis, title: 'Metrical Analysis' }
     ">
   </ng-container>
   <!-- Show the fragment metrical analysis -->
@@ -104,10 +104,10 @@
 
 <!-- ###### TEMPLATES ###### -->
 <!-- Template to show fragment content from the given fragment in a mat expansion panel -->
-<ng-template #show_fragment_content let-current_fragment_content="current_fragment_content" let-title="title">
-  <ng-container *ngIf="current_fragment_content !== ''">
+<ng-template #show_fragment_content let-current_document_content="current_document_content" let-title="title">
+  <ng-container *ngIf="current_document_content !== ''">
     <!-- do not generate fields if content is empty -->
-    <mat-expansion-panel *ngIf="current_fragment_content">
+    <mat-expansion-panel *ngIf="current_document_content">
       <mat-expansion-panel-header>
         <mat-panel-title>
           <b>{{ title }}</b>
@@ -115,7 +115,7 @@
       </mat-expansion-panel-header>
       <div class="mat-expansion-panel-content">
         <div class="mat-expansion-panel-body">
-          <app-expandable-text [content]="current_fragment_content"></app-expandable-text>
+          <app-expandable-text [content]="current_document_content"></app-expandable-text>
           <!-- TODO: This is currently not applied to citation context -->
         </div>
       </div>
@@ -126,11 +126,11 @@
 </ng-template>
 
 <!-- Template to show fragment content from the given fragment in a mat expansion panel -->
-<ng-template #show_fragment_content_orig_text let-current_fragment_content="current_fragment_content" let-title="title">
-  <ng-container *ngIf="current_fragment_content.length > 0">
+<ng-template #show_fragment_content_orig_text let-current_document_content="current_document_content" let-title="title">
+  <ng-container *ngIf="current_document_content.length > 0">
     <!-- do not generate fields if content is empty -->
     <mat-expansion-panel
-      *ngIf="current_fragment_content"
+      *ngIf="current_document_content"
       [expanded]="this.translation_orig_text_expanded"
       (click)="toggle_translation_orig_text_expanded()">
       <mat-expansion-panel-header>
@@ -140,7 +140,7 @@
       </mat-expansion-panel-header>
       <div class="mat-expansion-panel-content">
         <div class="mat-expansion-panel-body">
-          <div *ngFor="let fragment_line of current_fragment_content">
+          <div *ngFor="let fragment_line of current_document_content">
             <p
               *ngIf="this.settings.fragments.show_line_names; else no_line_names"
               [innerHTML]="fragment_line.line_number + ': ' + fragment_line.text | safeHtml"></p>

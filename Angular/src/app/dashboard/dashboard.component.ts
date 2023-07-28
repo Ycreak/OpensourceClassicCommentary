@@ -13,14 +13,11 @@ import { DialogService } from '@oscc/services/dialog.service';
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
 import { Column } from '@oscc/models/Column';
-import { IntroductionsComponent } from './introductions/introductions.component';
-import { BibliographyComponent } from './bibliography/bibliography.component';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
-  providers: [IntroductionsComponent, BibliographyComponent],
 })
 export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   // Fragment referencer variables
@@ -30,7 +27,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   protected referenced_name = '';
 
   private fragment_names_subscription: any;
-  private fragments_subscription: any;
+  private documents_subscription: any;
 
   hide = true; // Whether to hide passwords in the material form fields
 
@@ -74,13 +71,12 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     protected api: ApiService,
     protected utility: UtilityService,
     protected dialog: DialogService,
-    protected auth_service: AuthService,
-    protected introductions: IntroductionsComponent
+    protected auth_service: AuthService
   ) {}
 
   ngOnInit(): void {
     //if (environment.debug) {
-    //this.api.request_fragments(255, 'Ennius', 'Thyestes', 'TRF', '112');
+    //this.api.request_documents(255, 'Ennius', 'Thyestes', 'TRF', '112');
     //}
     if (!environment.production) {
       // Only load if the environment is development: otherwise Commentary will load
@@ -111,10 +107,10 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     /** Handle what happens when new fragments arrive */
-    this.fragments_subscription = this.api.new_fragments_alert$.subscribe((column_id) => {
+    this.documents_subscription = this.api.new_documents_alert$.subscribe((column_id) => {
       if (column_id == environment.dashboard_id) {
         this.reset_fragment_form();
-        this.convert_Fragment_to_fragment_form(this.api.fragments[0]);
+        this.convert_Fragment_to_fragment_form(this.api.documents[0]);
         // Set the data for the drop down menus
         this.selected_fragment_data.author = this.fragment_form.value.author;
         this.selected_fragment_data.title = this.fragment_form.value.title;
@@ -125,7 +121,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy() {
-    this.fragments_subscription.unsubscribe();
+    this.documents_subscription.unsubscribe();
     this.fragment_names_subscription.unsubscribe();
   }
 
