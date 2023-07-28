@@ -42,7 +42,7 @@
     mat-stroked-button
     *ngIf="!this.playground_enabled; else playground_disabled"
     class="navbar button-margin"
-    (click)="this.toggle_playground()">
+    (click)="this.toggle_playground(); this.scroll_to('playground')">
     PLAYGROUND
   </button>
 

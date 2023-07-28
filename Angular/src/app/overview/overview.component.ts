@@ -22,6 +22,7 @@ import { Fragment } from '@oscc/models/Fragment';
 import { ColumnHandlerService } from '@oscc/services/column-handler.service';
 import { LocalStorageService } from '@oscc/services/local-storage.service';
 import { CommentaryComponent } from '@oscc/commentary/commentary.component';
+import { ViewportScroller } from '@angular/common';
 
 @Component({
   selector: 'app-overview',
@@ -47,7 +48,8 @@ export class OverviewComponent implements OnInit, OnDestroy {
     protected window_watcher: WindowSizeWatcherService,
     private matdialog: MatDialog,
     protected column_handler: ColumnHandlerService,
-    protected columns: ColumnsComponent
+    protected columns: ColumnsComponent,
+    private viewportscroller: ViewportScroller,
   ) {}
 
   ngOnInit(): void {
@@ -118,5 +120,16 @@ export class OverviewComponent implements OnInit, OnDestroy {
    */
   protected get_title(kind: string) {
     return kind == 'long' ? environment.title : environment.short_title;
+  }
+
+  /**
+   * Used to scroll the viewport to a certain part of the page.
+   * @param anchor The id of the element to scroll to. ('#' can be omitted)
+   * @author sajvanwijk
+   */
+  protected scroll_to(anchor: string): void {
+    setTimeout(() => {
+      this.viewportscroller.scrollToAnchor(anchor);
+    }, 200); //FIXME: An async/await on the playground renderer would be nicer, but this works for now.
   }
 }
