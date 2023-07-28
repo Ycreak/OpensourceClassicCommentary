@@ -16,10 +16,7 @@ import { DocumentFilterComponent } from '@oscc/dialogs/document-filter/document-
 
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
-import { Testimonium } from '@oscc/models/Testimonium';
 import { Column } from '@oscc/models/Column';
-
-import testimonia from '@oscc/testimonia.json';
 
 @Component({
   selector: 'app-columns',
@@ -38,8 +35,6 @@ import testimonia from '@oscc/testimonia.json';
 })
 export class ColumnsComponent implements OnInit, OnDestroy {
   @Output() clicked_document = new EventEmitter<any>();
-
-  private testimonia = testimonia.data;
 
   public current_document: any; // Variable to store the clicked fragment and its data
   document_clicked = false; // Shows "click a fragment" banner at startup if nothing is yet selected
@@ -73,13 +68,13 @@ export class ColumnsComponent implements OnInit, OnDestroy {
         })
       );
     }
+
     //this.api.request_documents(1, 'Ennius', 'Eumenides', 'TRF');
-    this.api.request_documents_with_filter(1, {author: 'Accius'});
+    this.api.request_documents_with_filter(1, { author: 'Accius' });
 
     /** Handle what happens when new documents arrive */
     this.documents_subscription = this.api.new_documents_alert$.subscribe((column_id) => {
       let documents: any[] = this.api.documents;
-      console.log('docs', documents)
       for (const i in documents) {
         if (documents[i].document_type == 'fragment') {
           documents[i].add_html_to_lines();
@@ -89,8 +84,8 @@ export class ColumnsComponent implements OnInit, OnDestroy {
       const column = this.column_handler.columns.find((x) => x.column_id == column_id);
       if (column) {
         // Prepare the documents for publication
-        //documents = documents.sort(this.utility.sort_fragment_array_numerically);
-        //documents = this.sort_documents_on_status(documents);
+        documents = documents.sort(this.utility.sort_fragment_array_numerically);
+        documents = this.sort_documents_on_status(documents);
 
         column.documents = documents;
 
@@ -177,8 +172,10 @@ export class ColumnsComponent implements OnInit, OnDestroy {
     const normal = this.utility.filter_object_on_key(documents, 'status', 'Certum');
     const incerta = this.utility.filter_object_on_key(documents, 'status', 'Incertum');
     const adesp = this.utility.filter_object_on_key(documents, 'status', 'Adesp.');
+    // Put testimonia at the end
+    const testimonia = this.utility.filter_object_on_key(documents, 'document_type', 'testimonium');
     // Concatenate in the order we want
-    documents = normal.concat(incerta).concat(adesp);
+    documents = normal.concat(incerta).concat(adesp).concat(testimonia);
     return documents;
   }
 

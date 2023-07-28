@@ -117,7 +117,14 @@ def get_fragment():
     title = None
     editor = None
     name = None
+    document_type = None
+    status = None
+
     try:
+        if FragmentField.STATUS in request.get_json():
+            status = request.get_json()[FragmentField.STATUS]
+        if FragmentField.DOCUMENT_TYPE in request.get_json():
+            document_type = request.get_json()[FragmentField.DOCUMENT_TYPE]
         if FragmentField.AUTHOR in request.get_json():
             author = request.get_json()[FragmentField.AUTHOR]
         if FragmentField.TITLE in request.get_json():
@@ -130,7 +137,7 @@ def get_fragment():
         logging.error(e)
         return make_response("Unprocessable entity", 422)
 
-    fragment_lst = fragments.filter(Fragment(author=author, title=title, editor=editor, name=name), sorted=True)
+    fragment_lst = fragments.filter(Fragment(author=author, title=title, editor=editor, name=name, document_type=document_type, status=status), sorted=True)
     if not fragment_lst:
         return make_response("Not found", 401)
 

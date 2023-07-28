@@ -14,8 +14,21 @@
       <input matInput formControlName="editor" /> </mat-form-field
     ><br />
     <mat-form-field appearance="outline">
-      <mat-label> Status </mat-label>
-      <input matInput formControlName="status" /> </mat-form-field
+      <mat-select formControlName="status" ngDefaultControl>
+        <!--<mat-select required formControlName="status" ngDefaultControl>-->
+        <mat-option value="Certum">Certum</mat-option>
+        <mat-option value="Incertum">Incertum</mat-option>
+        <mat-option value="Adesp.">Adespoton</mat-option>
+      </mat-select>
+      <mat-label>Line status</mat-label>
+    </mat-form-field>
+    <br />
+    <mat-form-field appearance="outline">
+      <mat-select formControlName="document_type" ngDefaultControl>
+        <mat-option value="fragment">Fragments</mat-option>
+        <mat-option value="testimonium">Testimonia</mat-option>
+      </mat-select>
+      <mat-label>Document type</mat-label> </mat-form-field
     ><br />
     <button mat-stroked-button (click)="this.submit_filter()">Search</button>
   </form>

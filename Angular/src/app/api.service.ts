@@ -315,14 +315,14 @@ export class ApiService {
       next: (data) => {
         data.forEach((value: any) => {
           let new_document: any;
-          if(value.document_type == 'fragment'){
+          if (value.document_type == 'fragment') {
             new_document = new Fragment({});
             new_document.set_fragment(value);
-          } else if (value.document_type == 'testimonium'){
+          } else if (value.document_type == 'testimonium') {
             new_document = new Testimonium({});
             new_document.set(value);
           } else {
-            console.error('unknown document type')
+            console.error('unknown document type');
           }
           this.documents.push(new_document);
         });
