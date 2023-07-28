@@ -152,8 +152,9 @@
           this.generate_document_gradient_background_color(
             given_column.documents.length,
             given_column.original_fragment_order.indexOf(fragment.name)
-          )
-        ">
+          )"
+        appOnCopy
+        (copyFragment)="this.copy_fragment_content(current_fragment)">
         <div *ngIf="fragment.document_type === 'testimonium'">
           <app-testimonia [testimonium]="fragment"> </app-testimonia>
         </div>

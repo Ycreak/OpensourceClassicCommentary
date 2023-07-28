@@ -136,9 +136,33 @@ export class ColumnsComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Given the document, this function checks whether its linked documents appear in the
-   * other opened columns. If so, the columns are scrolled to put the linked document in view
-   * @param document object with the linked_fragments field to be examined
+   * Helper function to find and return the textual content of a given document object
+   * @author CptVickers
+   */
+  protected copy_document_content(document): void {
+    let content = '';
+    if (!document.fragments_translated) {
+      // Parse the fragment lines into a single string
+      const fragment_lines = document.lines;
+      for (const line of fragment_lines) {
+        content += line.line_number + ': ' + line.text + '\n';
+      }
+    }
+    else {
+      content = document.translation;
+    }
+
+    // Move the result to the user's clipboard
+    navigator.clipboard.writeText(content);
+
+    // Notify the user that the text has been copied
+    this.utility.open_snackbar("Document copied!");
+  }
+
+  /**
+   * Given the fragment, this function checks whether its linked fragments appear in the
+   * other opened columns. If so, the columns are scrolled to put the linked fragment in view
+   * @param fragment object with the linked_fragments field to be examined
    * @author Ycreak
    */
   //private scroll_to_linked_fragments(document: Fragment) {

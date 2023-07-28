@@ -92,6 +92,7 @@ import { DocumentFilterComponent } from './dialogs/document-filter/document-filt
 import { UsersComponent } from './dashboard/users/users.component';
 import { TestimoniaComponent } from './columns/testimonia/testimonia.component';
 import { FragmentComponent } from './columns/fragment/fragment.component';
+import { OnCopyDirective } from './directives/on-copy.directive';
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
@@ -127,6 +128,7 @@ const appRoutes: Routes = [
     UsersComponent,
     TestimoniaComponent,
     FragmentComponent,
+    OnCopyDirective,
   ],
   imports: [
     BrowserModule,
