@@ -12,6 +12,7 @@ import { UtilityService } from '@oscc/utility.service';
 
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
+import { Testimonium } from '@oscc/models/Testimonium';
 import { Bib } from '@oscc/models/Bib';
 import { Column } from '@oscc/models/Column';
 import { User } from '@oscc/models/User';
@@ -312,10 +313,18 @@ export class ApiService {
     this.documents = [];
     this.get_fragments(filter).subscribe({
       next: (data) => {
-        data.forEach((value) => {
-          const fragment = new Fragment();
-          fragment.set_fragment(value);
-          this.documents.push(fragment);
+        data.forEach((value: any) => {
+          let new_document: any;
+          if (value.document_type == 'fragment') {
+            new_document = new Fragment({});
+            new_document.set_fragment(value);
+          } else if (value.document_type == 'testimonium') {
+            new_document = new Testimonium({});
+            new_document.set(value);
+          } else {
+            console.error('unknown document type');
+          }
+          this.documents.push(new_document);
         });
         this.new_documents_alert.next(column_id);
         this.spinner_off();

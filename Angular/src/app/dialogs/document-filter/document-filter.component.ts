@@ -13,6 +13,7 @@ export class DocumentFilterComponent {
     title: new FormControl(''),
     editor: new FormControl(''),
     status: new FormControl(''),
+    document_type: new FormControl(''),
   });
 
   constructor(public dialogRef: MatDialogRef<DocumentFilterComponent>) {}

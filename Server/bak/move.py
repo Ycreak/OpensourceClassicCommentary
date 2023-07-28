@@ -1,7 +1,7 @@
 import couchdb
 
-couch = couchdb.Server('http://admin:yVu4DES8qzajPCy@localhost:5984/')
-db = couch['fragments_staging'] # existing       
+couch = couchdb.Server('http://admin:ledenpas@localhost:5984/')
+db = couch['fragments'] # existing       
 
 # new_fragment = fragment_empty
 
@@ -97,6 +97,20 @@ def refactor_fragment_link():
             pass
 
 """
+Adding document_type to fragments
+"""
+def add_document_type():
+    for id in db:
+        doc = db[id]
+
+        try:
+            print(doc['author'], doc['title'], doc['editor'], doc['_id'])
+            doc['document_type'] = 'fragment' 
+            doc_id, doc_rev = db.save(doc)
+        except:
+            pass
+        print('#####################')
+"""
 Rafactoring fragment_name to name
 """
 def refactor_fragment_name():
@@ -112,4 +126,4 @@ def refactor_fragment_name():
 
         print('#####################')
 
-refactor_fragment_name()
+add_document_type()
