@@ -144,6 +144,7 @@
       <div
         class="fragment-box"
         (click)="handle_document_click(fragment, given_column)"
+        (contextmenu)="handle_document_click(fragment, given_column); onRightClick($event, this.current_fragment)"
         cdkDrag
         [cdkDragDisabled]="this.settings.fragments.dragging_disabled"
         (cdkDragDropped)="this.column_handler.track_edited_columns($event)"
@@ -153,7 +154,9 @@
             given_column.documents.length,
             given_column.original_fragment_order.indexOf(fragment.name)
           )
-        ">
+        "
+        appOnCopy
+        (copyFragment)="this.copy_fragment_content(current_fragment)">
         <div *ngIf="fragment.document_type === 'testimonium'">
           <app-testimonia [testimonium]="fragment"> </app-testimonia>
         </div>
@@ -164,3 +167,17 @@
     </div>
   </div>
 </ng-template>
+
+<!-- Context menu for right click actions on fragments -->
+<mat-menu #rightMenu="matMenu">
+  <ng-template matMenuContent let-item="item">
+    <button (click)="this.copy_fragment_content(current_fragment)" mat-menu-item>Copy text</button>
+  </ng-template>
+</mat-menu>
+
+<!-- hidden helper div used for the context menu -->
+<div
+  style="visibility: hidden; position: fixed"
+  [style.left]="menuTopLeftPosition.x"
+  [style.top]="menuTopLeftPosition.y"
+  [matMenuTriggerFor]="rightMenu"></div>

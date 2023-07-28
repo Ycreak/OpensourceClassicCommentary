@@ -1,5 +1,5 @@
 // Library imports
-import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewEncapsulation, ViewChild } from '@angular/core';
 import { Output, EventEmitter } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { MatDialog } from '@angular/material/dialog';
@@ -17,6 +17,7 @@ import { DocumentFilterComponent } from '@oscc/dialogs/document-filter/document-
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
 import { Column } from '@oscc/models/Column';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
   selector: 'app-columns',
@@ -136,9 +137,32 @@ export class ColumnsComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Given the document, this function checks whether its linked documents appear in the
-   * other opened columns. If so, the columns are scrolled to put the linked document in view
-   * @param document object with the linked_fragments field to be examined
+   * Helper function to find and return the textual content of a given document object
+   * @author CptVickers
+   */
+  protected copy_document_content(document): void {
+    let content = '';
+    if (!document.fragments_translated) {
+      // Parse the fragment lines into a single string
+      const fragment_lines = document.lines;
+      for (const line of fragment_lines) {
+        content += line.line_number + ': ' + line.text + '\n';
+      }
+    } else {
+      content = document.translation;
+    }
+
+    // Move the result to the user's clipboard
+    navigator.clipboard.writeText(content);
+
+    // Notify the user that the text has been copied
+    this.utility.open_snackbar('Document copied!');
+  }
+
+  /**
+   * Given the fragment, this function checks whether its linked fragments appear in the
+   * other opened columns. If so, the columns are scrolled to put the linked fragment in view
+   * @param fragment object with the linked_fragments field to be examined
    * @author Ycreak
    */
   //private scroll_to_linked_fragments(document: Fragment) {
@@ -245,5 +269,34 @@ export class ColumnsComponent implements OnInit, OnDestroy {
         }
       },
     });
+  }
+
+  /**
+   * Method called when the user click with the right button
+   * Used to open a context menu as described in this component's html
+   * @param event MouseEvent, it contains the coordinates
+   * @param item Our data contained in the row of the table
+   * @author sajvanwijk
+   */
+  // we create an object that contains coordinates
+  menuTopLeftPosition = { x: '0', y: '0' };
+
+  // reference to the MatMenuTrigger in the DOM
+  @ViewChild(MatMenuTrigger, { static: true }) matMenuTrigger: MatMenuTrigger;
+
+  protected onRightClick(event: MouseEvent, item) {
+    // preventDefault avoids to show the visualization of the right-click menu of the browser
+    event.preventDefault();
+
+    // we record the mouse position in our object
+    this.menuTopLeftPosition.x = event.clientX + 'px';
+    this.menuTopLeftPosition.y = event.clientY + 'px';
+
+    // we open the menu
+    // we pass to the menu the information about our object
+    this.matMenuTrigger.menuData = { item: item };
+
+    // we open the menu
+    this.matMenuTrigger.openMenu();
   }
 }
