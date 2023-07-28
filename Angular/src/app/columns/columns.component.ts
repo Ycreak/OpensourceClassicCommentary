@@ -148,8 +148,7 @@ export class ColumnsComponent implements OnInit, OnDestroy {
       for (const line of fragment_lines) {
         content += line.line_number + ': ' + line.text + '\n';
       }
-    }
-    else {
+    } else {
       content = document.translation;
     }
 
@@ -157,7 +156,7 @@ export class ColumnsComponent implements OnInit, OnDestroy {
     navigator.clipboard.writeText(content);
 
     // Notify the user that the text has been copied
-    this.utility.open_snackbar("Document copied!");
+    this.utility.open_snackbar('Document copied!');
   }
 
   /**
