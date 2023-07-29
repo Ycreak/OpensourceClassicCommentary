@@ -139,7 +139,9 @@
     id="{{ given_column.column_id }}"
     [cdkDropListData]="given_column.documents"
     [cdkDropListConnectedTo]="this.column_handler.connected_columns_list"
-    (cdkDropListDropped)="this.utility.drop($event)">
+    (cdkDropListDropped)="this.utility.drop($event)"
+    appOnCopy
+    (copyFragment)="this.copy_document_content(this.current_document)">
     <div *ngFor="let fragment of given_column.documents">
       <div
         class="fragment-box"
@@ -154,9 +156,7 @@
             given_column.documents.length,
             given_column.original_fragment_order.indexOf(fragment.name)
           )
-        "
-        appOnCopy
-        (copyFragment)="this.copy_fragment_content(current_fragment)">
+        ">
         <div *ngIf="fragment.document_type === 'testimonium'">
           <app-testimonia [testimonium]="fragment"> </app-testimonia>
         </div>
@@ -171,7 +171,7 @@
 <!-- Context menu for right click actions on fragments -->
 <mat-menu #rightMenu="matMenu">
   <ng-template matMenuContent let-item="item">
-    <button (click)="this.copy_fragment_content(current_fragment)" mat-menu-item>Copy text</button>
+    <button (click)="this.copy_document_content(this.current_document)" mat-menu-item>Copy text</button>
   </ng-template>
 </mat-menu>
 

@@ -69,8 +69,8 @@ export class ColumnsComponent implements OnInit, OnDestroy {
         })
       );
     }
-    //this.api.request_documents(1, 'Ennius', 'Eumenides', 'TRF');
-    this.api.request_documents_with_filter(1, { author: 'Accius' });
+    this.api.request_documents(1, 'Ennius', 'Eumenides', 'TRF');
+    //this.api.request_documents_with_filter(1, { author: 'Accius' });
 
     /** Handle what happens when new documents arrive */
     this.documents_subscription = this.api.new_documents_alert$.subscribe((column_id) => {
@@ -140,16 +140,19 @@ export class ColumnsComponent implements OnInit, OnDestroy {
    * Helper function to find and return the textual content of a given document object
    * @author CptVickers
    */
-  protected copy_document_content(document): void {
+  protected copy_document_content(given_document: any): void {
     let content = '';
-    if (!document.fragments_translated) {
+
+    console.log('current doc:', given_document);
+
+    if (!given_document.fragments_translated) {
       // Parse the fragment lines into a single string
-      const fragment_lines = document.lines;
+      const fragment_lines = given_document.lines;
       for (const line of fragment_lines) {
         content += line.line_number + ': ' + line.text + '\n';
       }
     } else {
-      content = document.translation;
+      content = given_document.translation;
     }
 
     // Move the result to the user's clipboard
