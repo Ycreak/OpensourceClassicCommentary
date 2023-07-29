@@ -47,7 +47,7 @@
     <!-- Change fragment expansion panel -->
     <mat-expansion-panel
       *ngIf="this.auth_service.current_user_role === 'teacher' || this.auth_service.current_user_role === 'student'"
-      [expanded]="true">
+      [expanded]="false">
       <mat-expansion-panel-header>
         <mat-panel-title> Change fragment data </mat-panel-title>
         <mat-panel-description>
@@ -625,6 +625,18 @@
         </mat-tab>
         <!-- end of the Fragment lock tab -->
       </mat-tab-group>
+    </mat-expansion-panel>
+    <hr />
+    <!-- Change testimonia expansion panel -->
+    <mat-expansion-panel *ngIf="this.auth_service.current_user_role === 'teacher'" [expanded]="true">
+      <mat-expansion-panel-header>
+        <mat-panel-title> Change testimonia data </mat-panel-title>
+        <mat-panel-description>
+          Create, revise and delete testimonia
+          <mat-icon>local_library</mat-icon>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <app-testimonia-dashboard></app-testimonia-dashboard>
     </mat-expansion-panel>
     <hr />
     <!-- Change author/author+title introduction expansion panel -->

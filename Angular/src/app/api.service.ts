@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
 import { Observable, throwError, ReplaySubject, BehaviorSubject } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { tap, map } from 'rxjs/operators';
 import { environment } from '@src/environments/environment';
 
 // Service imports
@@ -52,6 +52,11 @@ export interface fragment_name {
   providedIn: 'root',
 })
 export class ApiService {
+  private post_data = {
+    observe: 'body',
+    responseType: 'json',
+  };
+
   network_status: boolean; // Indicates if server is reachable or not
   spinner: boolean;
 
@@ -74,15 +79,21 @@ export class ApiService {
   NeuralURL: 'https://oscc.nolden.biz:5002/';
 
   public new_fragment_alert = new ReplaySubject(0);
-  public new_authors_alert = new ReplaySubject(0);
+  //public new_authors_alert = new ReplaySubject(0);
   public new_titles_alert = new ReplaySubject(0);
   public new_editors_alert = new ReplaySubject(0);
+
+  private new_authors_alert = new BehaviorSubject<author[]>([]);
+  public new_authors_alert$ = this.new_authors_alert.asObservable();
 
   private new_documents_alert = new BehaviorSubject<number>(-1);
   public new_documents_alert$ = this.new_documents_alert.asObservable();
 
   private new_fragment_names_alert = new BehaviorSubject<number>(-1);
   public new_fragment_names_alert$ = this.new_fragment_names_alert.asObservable();
+
+  private new_document_names_alert = new BehaviorSubject<fragment_name[]>([]);
+  public new_document_names_alert$ = this.new_document_names_alert.asObservable();
 
   private new_bib_alert = new BehaviorSubject<Bib[]>([]);
   public new_bib_alert$ = this.new_bib_alert.asObservable();
@@ -152,20 +163,6 @@ export class ApiService {
     return editor_list;
   }
 
-  public request_authors(): void {
-    this.authors = [];
-    this.fragment_key = this.create_fragment_key();
-    this.get_authors(this.fragment_key).subscribe({
-      next: (data) => {
-        data.forEach((value) => {
-          this.authors.push({ name: value } as author);
-        });
-        this.new_authors_alert.next(1);
-      },
-      error: (err) => this.handle_error_message(err),
-    });
-  }
-
   public request_titles(author: string): void {
     this.titles = [];
     this.fragment_key = this.create_fragment_key(author);
@@ -189,6 +186,24 @@ export class ApiService {
           this.editors.push({ name: value } as editor);
         });
         this.new_editors_alert.next(1);
+      },
+      error: (err) => this.handle_error_message(err),
+    });
+  }
+
+  public request_document_names(key: any): void {
+    console.log('key', key);
+    let names: fragment_name[] = [];
+    this.spinner_on();
+    this.get_fragment_names(key).subscribe({
+      next: (data) => {
+        data.forEach((value) => {
+          names.push({ name: value } as fragment_name);
+        });
+        //names = this.fragment_names.sort(this.utility.sort_fragment_array_numerically);
+        console.log('data!', names);
+        this.new_document_names_alert.next(names);
+        this.spinner_off();
       },
       error: (err) => this.handle_error_message(err),
     });
@@ -300,6 +315,69 @@ export class ApiService {
       error: (err) => this.handle_error_message(err),
     });
   }
+  public get_names(key: any): Observable<any> {
+    return new Observable((observer) => {
+      this.http
+        .post<string[]>(this.FlaskURL + `fragment/get/name`, key, {
+          observe: 'body',
+          responseType: 'json',
+        })
+        .subscribe((data: any) => {
+          const names: fragment_name[] = [];
+          data.forEach((value: any) => {
+            names.push({ name: value } as fragment_name);
+          });
+          observer.next(names);
+          observer.complete();
+        });
+    });
+  }
+
+  public get_authors(key: any): Observable<any> {
+    return new Observable((observer) => {
+      this.http
+        .post<any>(this.FlaskURL + `fragment/get/author`, key, {
+          observe: 'body',
+          responseType: 'json',
+        })
+        .subscribe((data: any) => {
+          const authors: author[] = [];
+          data.forEach((value: any) => {
+            authors.push({ name: value } as author);
+          });
+          observer.next(authors);
+          observer.complete();
+        });
+    });
+  }
+
+  public get_documents(key: any): Observable<any> {
+    return new Observable((observer) => {
+      this.http
+        .post<any>(this.FlaskURL + `fragment/get`, key, {
+          observe: 'body',
+          responseType: 'json',
+        })
+        .subscribe((data: any) => {
+          const documents: any[] = [];
+          data.forEach((value: any) => {
+            let new_document: any;
+            if (value.document_type == 'fragment') {
+              new_document = new Fragment({});
+              new_document.set_fragment(value);
+            } else if (value.document_type == 'testimonium') {
+              new_document = new Testimonium({});
+              new_document.set(value);
+            } else {
+              console.error('unknown document type');
+            }
+            documents.push(new_document);
+          });
+          observer.next(documents);
+          observer.complete();
+        });
+    });
+  }
 
   /**
    * Requests documents from the server given a filter object
@@ -383,64 +461,6 @@ export class ApiService {
   }
 
   /**
-   * Requests all authors from the database. No parameters needed
-   */
-  public request_authors2(column: Column): void {
-    this.get_authors(new Fragment({})).subscribe({
-      next: (data) => {
-        column.retrieved_authors = data;
-      },
-      error: (err) => this.handle_error_message(err),
-    });
-  }
-
-  /**
-   * Requests the titles by the given author. Result is written
-   * to this.retrieved_titles.
-   * @param column Fragment_column object with all necessary data
-   * @author Ycreak
-   */
-  public request_titles2(column: Column): void {
-    this.get_titles(new Fragment({ author: column.selected_fragment_author })).subscribe({
-      next: (data) => {
-        column.retrieved_titles = data;
-      },
-      error: (err) => this.handle_error_message(err),
-    });
-  }
-
-  /**
-   * Requests the editors by the given author and book title. Result is written
-   * to this.retrieved_editors.
-   * @param column Fragment_column object with all necessary data
-   * @author Ycreak
-   */
-  public request_editors2(column: Column): void {
-    this.get_editors(
-      new Fragment({ author: column.selected_fragment_author, title: column.selected_fragment_title })
-    ).subscribe((data) => {
-      column.retrieved_editors = data;
-    });
-  }
-
-  /**
-   * Given the author, title and editor, request the names of the fragments from the server.
-   * @param column Fragment_column object with all necessary data
-   * @author Ycreak
-   */
-  public request_fragment_names2(column: Column): void {
-    this.get_fragment_names(
-      new Fragment({
-        author: column.selected_fragment_author,
-        title: column.selected_fragment_title,
-        editor: column.selected_fragment_editor,
-      })
-    ).subscribe((data) => {
-      column.retrieved_fragment_names = data.sort(this.utility.sort_array_numerically);
-    });
-  }
-
-  /**
    * Converts the JSON from the server to a Typescript object
    * @author Ycreak
    * @TODO: can this be done automatically without being invoked from fragment.component?
@@ -462,12 +482,6 @@ export class ApiService {
   //  |_|     \____/|_____/   |_|
   //TODO: what Observable type is a make_response?
   // Fragments
-  public get_authors(fragment: object): Observable<string[]> {
-    return this.http.post<string[]>(this.FlaskURL + `fragment/get/author`, fragment, {
-      observe: 'body',
-      responseType: 'json',
-    });
-  }
   public get_titles(fragment: object): Observable<string[]> {
     return this.http.post<string[]>(this.FlaskURL + `fragment/get/title`, fragment, {
       observe: 'body',

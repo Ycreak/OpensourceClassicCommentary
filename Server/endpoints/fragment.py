@@ -29,6 +29,7 @@ def get_author():
     title = None
     editor = None
     name = None
+    document_type = None
     try:
         if FragmentField.AUTHOR in request.get_json():
             author = request.get_json()[FragmentField.AUTHOR]
@@ -38,10 +39,12 @@ def get_author():
             editor = request.get_json()[FragmentField.EDITOR]
         if FragmentField.NAME in request.get_json():
             name = request.get_json()[FragmentField.NAME]
+        if FragmentField.DOCUMENT_TYPE in request.get_json():
+            document_type = request.get_json()[FragmentField.DOCUMENT_TYPE]
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-    fragment_lst = fragments.filter(Fragment(author=author, title=title, editor=editor, name=name), sorted=True)
+    fragment_lst = fragments.filter(Fragment(author=author, title=title, editor=editor, name=name, document_type=document_type), sorted=True)
     if not fragment_lst:
         return make_response("Not found", 401)
     return jsonify(sorted(set([frag.author for frag in fragment_lst]))), 200
@@ -95,6 +98,8 @@ def get_name():
     title = None
     editor = None
     name = None
+    document_type = None
+
     try:
         if FragmentField.AUTHOR in request.get_json():
             author = request.get_json()[FragmentField.AUTHOR]
@@ -104,10 +109,12 @@ def get_name():
             editor = request.get_json()[FragmentField.EDITOR]
         if FragmentField.NAME in request.get_json():
             name = request.get_json()[FragmentField.NAME]
+        if FragmentField.DOCUMENT_TYPE in request.get_json():
+            document_type = request.get_json()[FragmentField.DOCUMENT_TYPE]
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-    fragment_lst = fragments.filter(Fragment(author=author, title=title, editor=editor, name=name), sorted=True)
+    fragment_lst = fragments.filter(Fragment(author=author, title=title, editor=editor, name=name, document_type=document_type), sorted=True)
     if not fragment_lst:
         return make_response("Not found", 401)
     return jsonify(list(set([frag.name for frag in fragment_lst]))), 200
