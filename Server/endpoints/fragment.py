@@ -307,15 +307,28 @@ def update_fragment():
     return make_response("Revised", 200)
 
 def delete_fragment():
-    try:
-        author = request.get_json()[FragmentField.AUTHOR]
-        title = request.get_json()[FragmentField.TITLE]
-        editor = request.get_json()[FragmentField.EDITOR]
-        name = request.get_json()[FragmentField.NAME]
-    except KeyError as e:
-        logging.error(e)
-        return make_response("Unprocessable entity", 422)
-    fragment = fragments.delete(Fragment(author=author, title=title, editor=editor, name=name))
+    document_type = request.get_json()[FragmentField.DOCUMENT_TYPE]
+
+    if document_type == 'testimonium':
+        try:
+            author = request.get_json()[FragmentField.AUTHOR]
+            name = request.get_json()[FragmentField.NAME]
+        except KeyError as e:
+            logging.error(e)
+            return make_response("Unprocessable entity", 422)
+        fragment = fragments.delete(Fragment(author=author, name=name, document_type=document_type))
+
+    elif document_type == 'fragment':
+        try:
+            author = request.get_json()[FragmentField.AUTHOR]
+            title = request.get_json()[FragmentField.TITLE]
+            editor = request.get_json()[FragmentField.EDITOR]
+            name = request.get_json()[FragmentField.NAME]
+        except KeyError as e:
+            logging.error(e)
+            return make_response("Unprocessable entity", 422)
+        fragment = fragments.delete(Fragment(author=author, title=title, editor=editor, name=name, document_type=document_type))
+
 
     if fragment:
         return make_response("OK", 200)

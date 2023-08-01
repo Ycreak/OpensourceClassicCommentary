@@ -200,18 +200,17 @@
 
           <div class="alert alert-info" role="alert">
             To create a new fragment, please provide all meta data and press the <b>Create Fragment</b> button. The
-            button wont activate before all meta data fields are filled in correctly.
+            button won't activate before all meta data fields are filled in correctly.
           </div>
           <!-- Every mat tab has its own fragment_form call to keep each entity easily separated and organised -->
 
           <form [formGroup]="fragment_form">
             <mat-form-field class="input-form-full-width">
               <mat-label>Fragment name</mat-label>
-              <input matInput type="text" formControlName="name" />
-              <!--<input required matInput type="text" formControlName="name" />-->
+              <input required matInput type="text" formControlName="name" />
               <!--required> -->
               <mat-hint><b>Only</b> provide the number of the fragment</mat-hint>
-              <!--<mat-error *ngIf="fragment_form.get('name').errors?.['required']">You must enter a value.</mat-error>-->
+              <mat-error *ngIf="fragment_form.get('name').errors?.['required']">You must enter a value.</mat-error>
               <mat-error *ngIf="fragment_form.get('name').errors?.['pattern']"
                 >You entered disallowed characters.</mat-error
               >
@@ -221,11 +220,10 @@
 
             <mat-form-field class="input-form-full-width">
               <mat-label>Author name</mat-label>
-              <input matInput type="text" formControlName="author" />
-              <!--<input required matInput type="text" formControlName="author" />-->
+              <input required matInput type="text" formControlName="author" />
               <mat-hint>Provide the author of the fragment</mat-hint>
               <!-- i prefer the get function like this to prevent long getters-->
-              <!--<mat-error *ngIf="fragment_form.get('author').errors?.['required']">You must enter a value.</mat-error>-->
+              <mat-error *ngIf="fragment_form.get('author').errors?.['required']">You must enter a value.</mat-error>
               <mat-error *ngIf="fragment_form.get('author').errors?.['pattern']"
                 >You entered disallowed characters.</mat-error
               >
@@ -235,10 +233,9 @@
 
             <mat-form-field class="input-form-full-width">
               <mat-label>Title name</mat-label>
-              <!--<input required matInput type="text" formControlName="title" />-->
-              <input matInput type="text" formControlName="title" />
+              <input required matInput type="text" formControlName="title" />
               <mat-hint>Provide the name of the book</mat-hint>
-              <!--<mat-error *ngIf="fragment_form.get('title').errors?.['required']">You must enter a value.</mat-error>-->
+              <mat-error *ngIf="fragment_form.get('title').errors?.['required']">You must enter a value.</mat-error>
               <mat-error *ngIf="fragment_form.get('title').errors?.['pattern']"
                 >You entered disallowed characters.</mat-error
               >
@@ -248,10 +245,9 @@
 
             <mat-form-field class="input-form-full-width">
               <mat-label>Editor name</mat-label>
-              <!--<input required matInput type="text" formControlName="editor" />-->
-              <input matInput type="text" formControlName="editor" />
+              <input required matInput type="text" formControlName="editor" />
               <mat-hint>Provide the name of the editor</mat-hint>
-              <!--<mat-error *ngIf="fragment_form.get('editor').errors?.['required']">You must enter a value.</mat-error>-->
+              <mat-error *ngIf="fragment_form.get('editor').errors?.['required']">You must enter a value.</mat-error>
               <mat-error *ngIf="fragment_form.get('editor').errors?.['pattern']"
                 >You entered disallowed characters.</mat-error
               >
@@ -260,35 +256,12 @@
             <div class="div-padding-sm"></div>
 
             <mat-form-field appearance="fill">
-              <mat-select formControlName="status" ngDefaultControl>
-                <!--<mat-select required formControlName="status" ngDefaultControl>-->
+              <mat-select required formControlName="status" ngDefaultControl>
                 <mat-option value="Certum">Certum</mat-option>
                 <mat-option value="Incertum">Incertum</mat-option>
                 <mat-option value="Adesp.">Adespoton</mat-option>
               </mat-select>
               <mat-label>Line status</mat-label>
-            </mat-form-field>
-
-            <hr />
-            <mat-form-field appearance="fill">
-              <!--<mat-select required formControlName="document_type" ngDefaultControl>-->
-              <mat-select formControlName="document_type" ngDefaultControl>
-                <mat-option value="fragment">Fragment</mat-option>
-                <mat-option value="testimonium">Testimonium</mat-option>
-              </mat-select>
-              <mat-label>Document type</mat-label>
-            </mat-form-field>
-            <mat-form-field class="input-form-full-width">
-              <mat-label>Witness</mat-label>
-              <!--<input required matInput type="text" formControlName="witness" />-->
-              <input matInput type="text" formControlName="witness" />
-              <mat-hint>Provide the name of the witness</mat-hint>
-            </mat-form-field>
-            <mat-form-field class="input-form-full-width">
-              <mat-label>Text</mat-label>
-              <input matInput type="text" formControlName="text" />
-              <!--<input required matInput type="text" formControlName="text" />-->
-              <mat-hint>Provide the testimonium text</mat-hint>
             </mat-form-field>
 
             <div class="div-padding"></div>

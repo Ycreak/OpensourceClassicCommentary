@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
 import { Observable, throwError, ReplaySubject, BehaviorSubject } from 'rxjs';
-import { tap, map } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { environment } from '@src/environments/environment';
 
 // Service imports
@@ -14,7 +14,6 @@ import { UtilityService } from '@oscc/utility.service';
 import { Fragment } from '@oscc/models/Fragment';
 import { Testimonium } from '@oscc/models/Testimonium';
 import { Bib } from '@oscc/models/Bib';
-import { Column } from '@oscc/models/Column';
 import { User } from '@oscc/models/User';
 import { Introduction_form } from '@oscc/models/Introduction_form';
 import { DialogService } from '@oscc/services/dialog.service';
@@ -192,16 +191,13 @@ export class ApiService {
   }
 
   public request_document_names(key: any): void {
-    console.log('key', key);
-    let names: fragment_name[] = [];
+    const names: fragment_name[] = [];
     this.spinner_on();
     this.get_fragment_names(key).subscribe({
       next: (data) => {
         data.forEach((value) => {
           names.push({ name: value } as fragment_name);
         });
-        //names = this.fragment_names.sort(this.utility.sort_fragment_array_numerically);
-        console.log('data!', names);
         this.new_document_names_alert.next(names);
         this.spinner_off();
       },
@@ -262,7 +258,7 @@ export class ApiService {
     });
   }
 
-  public request_create_fragment(fragment: Fragment, column_id?: number): void {
+  public request_create_fragment(fragment: any, column_id?: number): void {
     this.spinner_on();
     this.create_fragment(fragment).subscribe({
       next: (data) => {
@@ -278,7 +274,7 @@ export class ApiService {
     });
   }
 
-  public request_revise_fragment(fragment: Fragment, column_id?: number): void {
+  public request_revise_fragment(fragment: any, column_id?: number): void {
     this.spinner_on();
     this.revise_fragment(fragment).subscribe({
       next: (data) => {
@@ -294,22 +290,15 @@ export class ApiService {
     });
   }
 
-  public request_delete_fragment(
-    author: string,
-    title: string,
-    editor: string,
-    name: string,
-    column_id?: number
-  ): void {
+  public request_delete_fragment(key: any): void {
     this.spinner_on();
-    this.fragment_key = this.create_fragment_key(author, title, editor, name);
-    this.delete_fragment(this.fragment_key).subscribe({
+    this.delete_fragment(key).subscribe({
       next: (data) => {
         this.handle_error_message(data);
         this.request_authors_titles_editors_blob();
-        if (column_id) {
-          this.request_fragment_names(column_id, author, title, editor);
-        }
+        //if (column_id) {
+        //this.request_fragment_names(column_id, author, title, editor);
+        //}
         this.spinner_off();
       },
       error: (err) => this.handle_error_message(err),

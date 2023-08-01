@@ -41,16 +41,11 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   fragment_form = new FormGroup({
     _id: new FormControl(''),
-    //name: new FormControl('', [Validators.required, Validators.pattern('[0-9-_ ]*')]), // numbers and "-" and "_" allowed.
-    //author: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
-    //title: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
-    //editor: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
-    //name: new FormControl('', [Validators.pattern('[0-9-_ ]*')]), // numbers and "-" and "_" allowed.
-    name: new FormControl(''), // numbers and "-" and "_" allowed.
-    author: new FormControl('', [Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
-    //title: new FormControl('', [Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
-    title: new FormControl(''), // alpha characters allowed
-    editor: new FormControl('', [Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
+    document_type: new FormControl('fragment'),
+    name: new FormControl('', [Validators.required, Validators.pattern('[0-9-_ ]*')]), // numbers and "-" and "_" allowed.
+    author: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
+    title: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
+    editor: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
     translation: new FormControl(''),
     differences: new FormControl(''),
     commentary: new FormControl(''),
@@ -68,9 +63,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     status: new FormControl(''),
     published: new FormControl(''),
     lock: new FormControl(''),
-    document_type: new FormControl(''),
-    witness: new FormControl(''),
-    text: new FormControl(''),
   });
 
   // In this object all meta data is stored regarding the currently selected fragment
@@ -439,13 +431,13 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         if (result) {
           const fragment = this.convert_fragment_form_to_Fragment(fragment_form);
           this.reset_fragment_form();
-          this.api.request_delete_fragment(
-            fragment.author,
-            fragment.title,
-            fragment.editor,
-            fragment.name,
-            environment.dashboard_id
-          );
+          this.api.request_delete_fragment({
+            document_type: 'fragment',
+            author: fragment.author,
+            title: fragment.title,
+            editor: fragment.editor,
+            name: fragment.name,
+          });
           this.fragment_selected = false;
         }
       });
