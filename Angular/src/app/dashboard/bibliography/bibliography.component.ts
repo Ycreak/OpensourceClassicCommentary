@@ -25,7 +25,11 @@ export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
   private bib_subscription: any;
   protected pages: string;
 
-  constructor(protected auth_service: AuthService, protected api: ApiService, protected dialog: DialogService) {
+  constructor(
+    protected auth_service: AuthService,
+    protected api: ApiService,
+    protected dialog: DialogService,
+  ) {
     this.table_data = new MatTableDataSource(this.table_source_data);
   }
 
@@ -36,7 +40,7 @@ export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
     this.bib_subscription = this.api.new_bib_alert$.subscribe((bib: Bib[]) => {
       // Sort bib on lastname
       bib.sort((a, b) =>
-        a.creators[0].lastname > b.creators[0].lastname ? 1 : b.creators[0].lastname > a.creators[0].lastname ? -1 : 0
+        a.creators[0].lastname > b.creators[0].lastname ? 1 : b.creators[0].lastname > a.creators[0].lastname ? -1 : 0,
       );
       this.fill_table(bib);
     });
@@ -54,11 +58,14 @@ export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  protected get_bib_key(key: string, pages: string): string {
+  protected get_bib_key(author: string, date: string, key: string, pages?: string): string {
+    //Get the year from date using a regular expression
+    const year = /\d{4}/g.exec(date);
+
     if (pages) {
-      return `[bib-${key}-${pages}]`;
+      return `[${author}, ${year}, ${pages} ${key}]`;
     } else {
-      return `[bib-${key}]`;
+      return `[${author}, ${year}, ${key}]`;
     }
   }
 
@@ -76,6 +83,7 @@ export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
       // Create an object for the table with the specific fields we need
       const table_object: any = {
         name: `${bib[i].creators[0].lastname}, ${bib[i].creators[0].firstname}`,
+        lastname: `${bib[i].creators[0].lastname}`,
         title: bib[i].title,
         date: bib[i].date,
         key: bib[i].key,
