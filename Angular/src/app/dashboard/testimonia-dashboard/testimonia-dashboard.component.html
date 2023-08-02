@@ -1,0 +1,151 @@
+<!-- Selection of testimonium. All the clicks below are to make sure the form field stays in sync with
+    all types of unlogical user routes and inputs -->
+<mat-form-field>
+  <mat-label>Select author</mat-label>
+  <mat-select [(ngModel)]="this.selected_author" ngDefaultControl>
+    <mat-option
+      *ngFor="let author of this.author_list"
+      [value]="author.name"
+      (click)="this.request_testimonia_names(author.name)"
+      (click)="this.selected_name = ''"
+      (click)="this.name_list = []"
+      (click)="this.reset_form()"
+      (click)="this.form.patchValue({ author: author.name })">
+      {{ author.name }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<mat-form-field>
+  <mat-label>Select name</mat-label>
+  <mat-select [(ngModel)]="this.selected_name" ngDefaultControl>
+    <mat-option
+      *ngFor="let name of this.name_list"
+      [value]="name.name"
+      (click)="this.request_testimonium(this.selected_author, name.name)"
+      (click)="this.form.patchValue({ name: name.name })">
+      {{ name.name }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<hr />
+
+<!--Buttons to submit testimonium data -->
+<button
+  mat-stroked-button
+  class="button-margin"
+  color="primary"
+  [disabled]="!form.valid"
+  (click)="request_create_testimonium(this.form.value)"
+  *ngIf="this.auth_service.current_user_role === 'teacher' || this.auth_service.current_user_role === 'student'">
+  Create testimonium
+</button>
+<button
+  mat-stroked-button
+  class="button-margin"
+  color="primary"
+  [disabled]="!form.valid"
+  (click)="request_revise_testimonium(this.form.value)"
+  *ngIf="this.auth_service.current_user_role === 'teacher' || this.auth_service.current_user_role === 'student'">
+  Save Changes
+</button>
+<button
+  mat-stroked-button
+  class="button-margin"
+  color="warn"
+  [disabled]="!testimonium_selected"
+  (click)="request_delete_testimonium(this.form.value)"
+  *ngIf="this.auth_service.current_user_role === 'teacher'">
+  Delete testimonium
+</button>
+
+<hr />
+<mat-tab-group>
+  <mat-tab label="Testimonia Meta Data"
+    ><br />
+
+    <div class="alert alert-info" role="alert">
+      To create a new testimonium, please provide all meta data and press the <b>Create testimonium</b> button. The
+      button won't activate before all meta data fields are filled in correctly.
+    </div>
+    <!-- Every mat tab has its own form call to keep each entity easily separated and organised -->
+
+    <form [formGroup]="form">
+      <mat-form-field class="input-form-full-width">
+        <mat-label>Testimonium name</mat-label>
+        <input required matInput type="text" formControlName="name" />
+        <mat-hint><b>Only</b> provide the number of the testimonium</mat-hint>
+        <mat-error *ngIf="form.get('name').errors?.['required']">You must enter a value.</mat-error>
+        <mat-error *ngIf="form.get('name').errors?.['pattern']">You entered disallowed characters.</mat-error>
+      </mat-form-field>
+
+      <div class="div-padding-sm"></div>
+
+      <mat-form-field class="input-form-full-width">
+        <mat-label>Author name</mat-label>
+        <input required matInput type="text" formControlName="author" />
+        <mat-hint>Provide the author mentioned in the testimonium</mat-hint>
+        <mat-error *ngIf="form.get('author').errors?.['required']">You must enter a value.</mat-error>
+        <mat-error *ngIf="form.get('author').errors?.['pattern']">You entered disallowed characters.</mat-error>
+      </mat-form-field>
+
+      <div class="div-padding-sm"></div>
+
+      <mat-form-field class="input-form-full-width">
+        <mat-label>Witness name</mat-label>
+        <input required matInput type="text" formControlName="witness" />
+        <mat-hint>Provide the name of the witness</mat-hint>
+        <mat-error *ngIf="form.get('witness').errors?.['required']">You must enter a value.</mat-error>
+        <mat-error *ngIf="form.get('witness').errors?.['pattern']">You entered disallowed characters.</mat-error>
+      </mat-form-field>
+
+      <div class="div-padding-sm"></div>
+
+      <mat-form-field class="input-form-full-width">
+        <mat-label>Title name</mat-label>
+        <input required matInput type="text" formControlName="title" />
+        <mat-hint>Provide the name of the witness' text</mat-hint>
+        <mat-error *ngIf="form.get('title').errors?.['required']">You must enter a value.</mat-error>
+        <mat-error *ngIf="form.get('title').errors?.['pattern']">You entered disallowed characters.</mat-error>
+      </mat-form-field>
+
+      <div class="div-padding-sm"></div>
+    </form>
+  </mat-tab>
+  <!-- end of the Meta data tab -->
+  <mat-tab label="Testimonia Text"
+    ><br />
+    <form [formGroup]="form">
+      <mat-form-field class="input-form-full-width">
+        <mat-label><b>Testimonium text</b></mat-label>
+        <textarea matInput type="text" formControlName="text"></textarea>
+      </mat-form-field>
+      <button
+        mat-button
+        class="button-margin-extra"
+        (click)="this.form = this.helper.request_wysiwyg_dialog(this.form, 'text', 'formControl')">
+        Rich editor
+      </button>
+    </form>
+    <div class="div-padding-lg"></div>
+  </mat-tab>
+  <!-- end of the text tab -->
+  <mat-tab label="Testimonia Commentary"
+    ><br />
+    <form [formGroup]="form">
+      <mat-form-field class="input-form-full-width">
+        <mat-label><b>Testimonium translation</b></mat-label>
+        <textarea matInput type="text" formControlName="translation"></textarea>
+      </mat-form-field>
+      <button
+        mat-button
+        class="button-margin-extra"
+        (click)="this.form = this.helper.request_wysiwyg_dialog(this.form, 'translation', 'formControl')">
+        Rich editor
+      </button>
+    </form>
+    <div class="div-padding-lg"></div>
+  </mat-tab>
+  <!-- end of the content tab -->
+</mat-tab-group>
