@@ -38,10 +38,7 @@ export class ColumnsComponent implements OnInit {
   @Output() clicked_document = new EventEmitter<any>();
 
   public current_document: any; // Variable to store the clicked fragment and its data
-  document_clicked = false; // Shows "click a fragment" banner at startup if nothing is yet selected
-
-  // Subscription variables
-  private documents_subscription: any;
+  public document_clicked = false; // Shows "click a fragment" banner at startup if nothing is yet selected
 
   constructor(
     protected api: ApiService,
