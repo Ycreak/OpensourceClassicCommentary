@@ -51,11 +51,6 @@ export interface fragment_name {
   providedIn: 'root',
 })
 export class ApiService {
-  private post_data = {
-    observe: 'body',
-    responseType: 'json',
-  };
-
   network_status: boolean; // Indicates if server is reachable or not
   spinner: boolean;
 
@@ -339,14 +334,29 @@ export class ApiService {
         });
     });
   }
+  public get_titles2(fragment: object): Observable<string[]> {
+    return this.http.post<string[]>(this.FlaskURL + `fragment/get/title`, fragment, {
+      observe: 'body',
+      responseType: 'json',
+    });
+  }
+
+  /**
+   * Performs a post with the given data to the given url + endpoint
+   * @param url (string)
+   * @param endpoint (string)
+   * @param data (object)
+   */
+  public post(url: string, endpoint: string, data: object): Observable<any> {
+    return this.http.post<string[]>(url + endpoint, data, {
+      observe: 'body',
+      responseType: 'json',
+    });
+  }
 
   public get_documents(key: any): Observable<any> {
     return new Observable((observer) => {
-      this.http
-        .post<any>(this.FlaskURL + `fragment/get`, key, {
-          observe: 'body',
-          responseType: 'json',
-        })
+      this.post(this.FlaskURL, 'fragment/get', key)
         .subscribe((data: any) => {
           const documents: any[] = [];
           data.forEach((value: any) => {
