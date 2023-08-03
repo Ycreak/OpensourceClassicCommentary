@@ -340,31 +340,44 @@ export class ApiService {
     });
   }
 
-  public get_documents(key: any): Observable<any> {
+  /**
+   * Performs a post with the given data to the given url + endpoint
+   * @param url (string)
+   * @param endpoint (string)
+   * @param data (object)
+   */
+  public post(url: string, endpoint: string, data: object): Observable<any> {
+    return this.http.post<string[]>(url + endpoint, data, {
+      observe: 'body',
+      responseType: 'json',
+    });
+  }
+
+  /**
+   * Retrieve documents from the server given the filter
+   * @param filter (object) on which to filter documents
+   * @author Ycreak
+   */
+  public get_documents(filter: any): Observable<any> {
     return new Observable((observer) => {
-      this.http
-        .post<any>(this.FlaskURL + `fragment/get`, key, {
-          observe: 'body',
-          responseType: 'json',
-        })
-        .subscribe((data: any) => {
-          const documents: any[] = [];
-          data.forEach((value: any) => {
-            let new_document: any;
-            if (value.document_type == 'fragment') {
-              new_document = new Fragment({});
-              new_document.set_fragment(value);
-            } else if (value.document_type == 'testimonium') {
-              new_document = new Testimonium({});
-              new_document.set(value);
-            } else {
-              console.error('unknown document type');
-            }
-            documents.push(new_document);
-          });
-          observer.next(documents);
-          observer.complete();
+      this.post(this.FlaskURL, 'fragment/get', filter).subscribe((data: any) => {
+        const documents: any[] = [];
+        data.forEach((value: any) => {
+          let new_document: any;
+          if (value.document_type == 'fragment') {
+            new_document = new Fragment({});
+            new_document.set_fragment(value);
+          } else if (value.document_type == 'testimonium') {
+            new_document = new Testimonium({});
+            new_document.set(value);
+          } else {
+            console.error('unknown document type');
+          }
+          documents.push(new_document);
         });
+        observer.next(documents);
+        observer.complete();
+      });
     });
   }
 
