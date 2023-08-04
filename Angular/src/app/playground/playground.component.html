@@ -29,7 +29,14 @@
           <button
             mat-menu-item
             (click)="this.playground.fragment_name = fragment_name.name"
-            (click)="this.add_single_fragment(this.playground, fragment_name.name)">
+            (click)="
+              this.add_single_fragment({
+                author: this.playground.author,
+                title: this.playground.title,
+                editor: this.playground.editor,
+                name: fragment_name.name
+              })
+            ">
             {{ fragment_name.name }}
           </button>
         </ng-container>
@@ -40,12 +47,11 @@
         mat-stroked-button
         class="playground-button button-margin"
         (click)="
-          this.api.request_documents(
-            this.playground.column_id,
-            this.playground.author,
-            this.playground.title,
-            this.playground.editor
-          )
+          this.request_documents({
+            author: this.playground.author,
+            title: this.playground.title,
+            editor: this.playground.editor,
+          })
         "
         (click)="this.single_fragment_requested = false">
         Add all fragments from selected edition
@@ -122,7 +128,7 @@
   <!-- Recording the clicked fragment allows us to delete it when pressing the delete button -->
   <!-- Also, keep track whether we are dragging or not. If we drag, we do not want the click event to fire -->
   <div
-    *ngFor="let fragment of this.playground.fragments"
+    *ngFor="let fragment of this.playground.documents"
     class="playground zlayer"
     style="--layer: 2"
     cdkDrag

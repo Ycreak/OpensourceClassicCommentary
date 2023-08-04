@@ -51,11 +51,6 @@ export interface fragment_name {
   providedIn: 'root',
 })
 export class ApiService {
-  private post_data = {
-    observe: 'body',
-    responseType: 'json',
-  };
-
   network_status: boolean; // Indicates if server is reachable or not
   spinner: boolean;
 
@@ -190,38 +185,6 @@ export class ApiService {
     });
   }
 
-  public request_document_names(key: any): void {
-    const names: fragment_name[] = [];
-    this.spinner_on();
-    this.get_fragment_names(key).subscribe({
-      next: (data) => {
-        data.forEach((value) => {
-          names.push({ name: value } as fragment_name);
-        });
-        this.new_document_names_alert.next(names);
-        this.spinner_off();
-      },
-      error: (err) => this.handle_error_message(err),
-    });
-  }
-
-  public request_fragment_names(column_id: number, author: string, title: string, editor: string): void {
-    this.spinner_on();
-    this.fragment_names = [];
-    this.fragment_key = this.create_fragment_key(author, title, editor);
-    this.get_fragment_names(this.fragment_key).subscribe({
-      next: (data) => {
-        data.forEach((value) => {
-          this.fragment_names.push({ name: value } as fragment_name);
-        });
-        this.fragment_names = this.fragment_names.sort(this.utility.sort_fragment_array_numerically);
-        this.new_fragment_names_alert.next(column_id);
-        this.spinner_off();
-      },
-      error: (err) => this.handle_error_message(err),
-    });
-  }
-
   public request_zotero_data() {
     this.get(environment.zotero_url).subscribe({
       next: (data) => {
@@ -265,7 +228,8 @@ export class ApiService {
         this.handle_error_message(data);
         this.request_authors_titles_editors_blob();
         if (column_id) {
-          this.request_fragment_names(column_id, fragment.author, fragment.title, fragment.editor);
+          //this.get_document_names(column_id, fragment.author, fragment.title, fragment.editor);
+          //FIXME: port this to the new API setup
           this.request_documents(column_id, fragment.author, fragment.title, fragment.editor, fragment.name);
         }
         this.spinner_off();
@@ -281,7 +245,8 @@ export class ApiService {
         this.handle_error_message(data);
         this.request_authors_titles_editors_blob();
         if (column_id) {
-          this.request_fragment_names(column_id, fragment.author, fragment.title, fragment.editor);
+          //FIXME: port this to the new API setup
+          //this.request_fragment_names(column_id, fragment.author, fragment.title, fragment.editor);
           this.request_documents(column_id, fragment.author, fragment.title, fragment.editor, fragment.name);
         }
         this.spinner_off();
@@ -350,6 +315,22 @@ export class ApiService {
     return this.http.post<string[]>(url + endpoint, data, {
       observe: 'body',
       responseType: 'json',
+    });
+  }
+
+  public get_document_names(filter: object): Observable<any> {
+    this.spinner_on();
+    return new Observable((observer) => {
+      let document_names: fragment_name[] = [];
+      this.post(this.FlaskURL, 'fragment/get/name', filter).subscribe((data: any) => {
+        data.forEach((value: any) => {
+          document_names.push({ name: value } as fragment_name);
+        });
+        document_names = document_names.sort(this.utility.sort_fragment_array_numerically);
+        this.spinner_off();
+        observer.next(document_names);
+        observer.complete();
+      });
     });
   }
 
@@ -498,12 +479,6 @@ export class ApiService {
   }
   public get_fragments(fragment: object): Observable<object[]> {
     return this.http.post<Fragment[]>(this.FlaskURL + `fragment/get`, fragment, {
-      observe: 'body',
-      responseType: 'json',
-    });
-  }
-  public get_fragment_names(fragment: object): Observable<string[]> {
-    return this.http.post<string[]>(this.FlaskURL + `fragment/get/name`, fragment, {
       observe: 'body',
       responseType: 'json',
     });

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Output, EventEmitter } from '@angular/core';
 import { ColumnHandlerService } from '@oscc/services/column-handler.service';
 import { ApiService } from '@oscc/api.service';
@@ -18,19 +18,13 @@ import { DialogService } from '@oscc/services/dialog.service';
   templateUrl: './playground.component.html',
   styleUrls: ['./playground.component.scss'],
 })
-export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
+export class PlaygroundComponent implements OnInit {
   @Output() document_clicked = new EventEmitter<Fragment>();
-
   // Playground column that keeps all data related to said playground
   playground: Column;
   // Boolean to keep track if we are dragging or clicking a fragment within the playground
   playground_dragging: boolean;
-
   note: any;
-
-  // Subscription variables
-  private documents_subscription: any;
-  private fragment_names_subscription: any;
 
   protected single_fragment_requested: boolean;
 
@@ -46,34 +40,32 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
     this.playground = new Column({ column_id: environment.playground_id });
   }
 
-  ngAfterViewInit() {
-    /** Handle what happens when new fragments arrive */
-    this.documents_subscription = this.api.new_documents_alert$.subscribe((column_id) => {
-      if (column_id == environment.playground_id) {
-        const fragments = this.api.documents;
-        for (const i in fragments) {
-          fragments[i].add_html_to_lines();
-        }
-        if (this.single_fragment_requested) {
-          this.playground.fragments.push(fragments[0]);
-        } else {
-          this.playground.fragments = fragments;
-        }
-      }
-    });
-    /** Handle what happens when new fragment names arrive */
-    this.fragment_names_subscription = this.api.new_fragment_names_alert$.subscribe((column_id) => {
-      if (column_id == environment.playground_id) {
-        this.playground.fragment_names = this.api.fragment_names;
-      }
+  /**
+   * Request the API for documents: add them to the given column
+   * @param column_id (number) in which to add the documents
+   * @param documents (object[]) which to add to the provided column
+   */
+  protected request_documents(filter: object): void {
+    this.api.get_documents(filter).subscribe((documents) => {
+      this.process_incoming_documents(documents);
     });
   }
-
-  ngOnDestroy() {
-    this.documents_subscription.unsubscribe();
-    this.fragment_names_subscription.unsubscribe();
+  /**
+   * Processes incoming documents: adds html, sorts documents and puts them in the given column.
+   * @param column_id (number) in which to add the documents
+   * @param documents (object[]) which to add to the provided column
+   * @author Ycreak
+   */
+  private process_incoming_documents(documents: any[]): void {
+    for (const i in documents) {
+      documents[i].add_html_to_lines();
+    }
+    if (this.single_fragment_requested) {
+      this.playground.documents.push(documents[0]);
+    } else {
+      this.playground.documents = documents;
+    }
   }
-
   /**
    * Function to handle what happens when a fragment is selected in HTML.
    * @param fragment selected by the user
@@ -110,11 +102,11 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   public delete_clicked_item_from_playground(column: Column, item: string): void {
     if (item == 'fragment') {
-      const object_index = column.fragments.findIndex((object) => {
+      const object_index = column.documents.findIndex((object) => {
         return object._id === column.clicked_document._id;
       });
       if (object_index != -1) {
-        column.fragments.splice(object_index, 1);
+        column.documents.splice(object_index, 1);
       }
     } else {
       // it is a note
@@ -131,10 +123,10 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param column to which the fragment is to be added
    * @author Ycreak
    */
-  public add_single_fragment(column: Column, fragment_name: string): void {
+  public add_single_fragment(filter: object): void {
     this.single_fragment_requested = true;
     // format the fragment and push it to the list
-    this.api.request_documents(column.column_id, column.author, column.title, column.editor, fragment_name);
+    this.request_documents(filter);
   }
 
   /**
@@ -144,7 +136,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy, AfterViewInit {
     this.dialog.open_confirmation_dialog('Are you sure you want to clear the playground?', '').subscribe({
       next: (res) => {
         if (res) {
-          this.playground.fragments = [];
+          this.playground.documents = [];
           this.playground.note_array = [];
         }
       },
