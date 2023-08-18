@@ -16,6 +16,7 @@ import { DocumentFilterComponent } from '@oscc/dialogs/document-filter/document-
 
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
+import { Linked_fragment } from '@oscc/models/Linked_fragment';
 import { Column } from '@oscc/models/Column';
 import { MatMenuTrigger } from '@angular/material/menu';
 
@@ -66,35 +67,27 @@ export class ColumnsComponent implements OnInit {
         })
       );
     }
-    this.request_documents(1, { document_type: 'fragment', author: 'Ennius', title: 'Eumenides', editor: 'TRF' });
+    this.request_documents(1, { document_type: 'fragment', author: 'Ennius', title: 'Thyestes', editor: 'TRF' });
   }
 
   /**
-   * Processes incoming documents: adds html, sorts documents and puts them in the given column.
+   * Formats incoming documents: adds html, sorts documents.
    * @param column_id (number) in which to add the documents
    * @param documents (object[]) which to add to the provided column
+   * @returns documents (object[]) nicely formatted
    * @author Ycreak
    */
-  private process_incoming_documents(column_id: number, documents: any[]): void {
-    console.log(column_id, documents);
+  private format_incoming_documents(documents: any[]): any[] {
     for (const i in documents) {
       if (documents[i].document_type == 'fragment') {
         documents[i].add_html_to_lines();
       }
     }
-    // A new list of fragments has arrived. Use the column identifier to find the corresponding column
-    const column = this.column_handler.columns.find((x) => x.column_id == column_id);
-    if (column) {
-      // Prepare the documents for publication
-      documents = documents.sort(this.utility.sort_fragment_array_numerically);
-      documents = this.sort_documents_on_status(documents);
-      column.documents = documents;
-      // Store the original order of the fragment names in the column object
-      column.original_fragment_order = []; // Clear first
-      for (const document of documents) {
-        column.original_fragment_order.push(document.name);
-      }
-    }
+    // Prepare the documents for publication
+    documents = documents.sort(this.utility.sort_fragment_array_numerically);
+    documents = this.sort_documents_on_status(documents);
+
+    return documents;
   }
 
   /**
@@ -104,7 +97,8 @@ export class ColumnsComponent implements OnInit {
    */
   protected request_documents(column_id: number, filter: object): void {
     this.api.get_documents(filter).subscribe((documents) => {
-      this.process_incoming_documents(column_id, documents);
+      documents = this.format_incoming_documents(documents);
+      this.column_handler.add_documents_to_column(column_id, documents);
     });
   }
 
@@ -131,8 +125,6 @@ export class ColumnsComponent implements OnInit {
    * @author Ycreak
    */
   protected handle_document_click(document: Fragment, column: Column): void {
-    console.log('document', document)
-
     //TODO: we need to emit a commentary object to the commentary
     document.translated = column.translated;
     this.clicked_document.emit(document);
@@ -157,13 +149,22 @@ export class ColumnsComponent implements OnInit {
     //this.scroll_to_linked_fragments(document);
     //}
   }
-  
+
   /**
    * Retrieves linked fragments from server and shows them in a new column
    * @author Ycreak
    */
   protected show_linked_documents(given_document: any): void {
-    console.log('current doc:', given_document);
+    if (given_document.linked_fragments.length > 0) {
+      const column_id = this.column_handler.add_new_column('fragment');
+      given_document.linked_fragments.forEach((linked_fragment: Linked_fragment) => {
+        this.api.get_documents(linked_fragment).subscribe((documents) => {
+          this.column_handler.add_documents_to_column(column_id, documents, true);
+        });
+      });
+    } else {
+      this.utility.open_snackbar('No linked documents found');
+    }
   }
 
   /**
@@ -272,7 +273,7 @@ export class ColumnsComponent implements OnInit {
   // reference to the MatMenuTrigger in the DOM
   @ViewChild(MatMenuTrigger, { static: true }) matMenuTrigger: MatMenuTrigger;
 
-  protected onRightClick(event: MouseEvent, item) {
+  protected onRightClick(event: MouseEvent, item: any) {
     // preventDefault avoids to show the visualization of the right-click menu of the browser
     event.preventDefault();
 

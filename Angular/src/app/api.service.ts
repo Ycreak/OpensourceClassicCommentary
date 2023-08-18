@@ -16,7 +16,6 @@ import { Testimonium } from '@oscc/models/Testimonium';
 import { Bib } from '@oscc/models/Bib';
 import { User } from '@oscc/models/User';
 import { Introduction_form } from '@oscc/models/Introduction_form';
-import { DialogService } from '@oscc/services/dialog.service';
 
 export interface fragment_key {
   author?: string;
@@ -52,9 +51,10 @@ export interface fragment_name {
 })
 export class ApiService {
   network_status: boolean; // Indicates if server is reachable or not
+  concurrent_api_calls = 0;
   spinner: boolean;
 
-  constructor(private http: HttpClient, private utility: UtilityService, private dialog: DialogService) {
+  constructor(private http: HttpClient, private utility: UtilityService) {
     this.network_status = true; // Assumed online until HttpErrorResponse is received.
   }
 
@@ -341,6 +341,7 @@ export class ApiService {
    */
   public get_documents(filter: any): Observable<any> {
     return new Observable((observer) => {
+      this.spinner_on();
       this.post(this.FlaskURL, 'fragment/get', filter).subscribe((data: any) => {
         const documents: any[] = [];
         data.forEach((value: any) => {
@@ -356,6 +357,7 @@ export class ApiService {
           }
           documents.push(new_document);
         });
+        this.spinner_off();
         observer.next(documents);
         observer.complete();
       });
@@ -584,7 +586,8 @@ export class ApiService {
    * @author Ycreak
    */
   public spinner_on(): void {
-    this.spinner = true;
+    this.concurrent_api_calls += 1;
+    this.spinner = this.concurrent_api_calls > 0;
   }
 
   /**
@@ -592,7 +595,8 @@ export class ApiService {
    * @author Ycreak
    */
   public spinner_off(): void {
-    this.spinner = false;
+    this.concurrent_api_calls -= 1;
+    this.spinner = this.concurrent_api_calls > 0;
   }
 }
 
