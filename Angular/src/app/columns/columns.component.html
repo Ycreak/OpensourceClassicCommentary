@@ -171,6 +171,7 @@
 <mat-menu #rightMenu="matMenu">
   <ng-template matMenuContent let-item="item">
     <button (click)="this.copy_document_content(this.current_document)" mat-menu-item>Copy text</button>
+    <button (click)="this.show_linked_documents(this.current_document)" mat-menu-item>Linked documents</button>
   </ng-template>
 </mat-menu>
 

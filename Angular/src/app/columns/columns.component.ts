@@ -131,6 +131,8 @@ export class ColumnsComponent implements OnInit {
    * @author Ycreak
    */
   protected handle_document_click(document: Fragment, column: Column): void {
+    console.log('document', document)
+
     //TODO: we need to emit a commentary object to the commentary
     document.translated = column.translated;
     this.clicked_document.emit(document);
@@ -154,6 +156,14 @@ export class ColumnsComponent implements OnInit {
     //if (this.settings.fragments.auto_scroll_linked_fragments) {
     //this.scroll_to_linked_fragments(document);
     //}
+  }
+  
+  /**
+   * Retrieves linked fragments from server and shows them in a new column
+   * @author Ycreak
+   */
+  protected show_linked_documents(given_document: any): void {
+    console.log('current doc:', given_document);
   }
 
   /**
