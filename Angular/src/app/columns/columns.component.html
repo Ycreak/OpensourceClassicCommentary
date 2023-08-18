@@ -57,12 +57,11 @@
           (click)="column_to_display.edited = false"
           (click)="column_to_display.translated = false"
           (click)="
-            this.api.request_documents(
-              column_to_display.column_id,
-              column_to_display.author,
-              column_to_display.title,
-              column_to_display.editor
-            )
+            this.request_documents(column_to_display.column_id, {
+              author: column_to_display.author,
+              title: column_to_display.title,
+              editor: column_to_display.editor
+            })
           ">
           {{ editor }}
         </button>

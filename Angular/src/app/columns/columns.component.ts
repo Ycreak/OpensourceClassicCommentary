@@ -1,5 +1,5 @@
 // Library imports
-import { Component, OnInit, OnDestroy, ViewEncapsulation, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { Output, EventEmitter } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { MatDialog } from '@angular/material/dialog';
@@ -34,14 +34,11 @@ import { MatMenuTrigger } from '@angular/material/menu';
     ]),
   ],
 })
-export class ColumnsComponent implements OnInit, OnDestroy {
+export class ColumnsComponent implements OnInit {
   @Output() clicked_document = new EventEmitter<any>();
 
   public current_document: any; // Variable to store the clicked fragment and its data
-  document_clicked = false; // Shows "click a fragment" banner at startup if nothing is yet selected
-
-  // Subscription variables
-  private documents_subscription: any;
+  public document_clicked = false; // Shows "click a fragment" banner at startup if nothing is yet selected
 
   constructor(
     protected api: ApiService,
@@ -69,39 +66,62 @@ export class ColumnsComponent implements OnInit, OnDestroy {
         })
       );
     }
-    this.api.request_documents(1, 'Ennius', 'Eumenides', 'TRF');
-    //this.api.request_documents_with_filter(1, { author: 'Accius' });
+    this.request_documents(1, { document_type: 'fragment', author: 'Ennius', title: 'Eumenides', editor: 'TRF' });
+  }
 
-    /** Handle what happens when new documents arrive */
-    this.documents_subscription = this.api.new_documents_alert$.subscribe((column_id) => {
-      let documents: any[] = this.api.documents;
-      for (const i in documents) {
-        if (documents[i].document_type == 'fragment') {
-          documents[i].add_html_to_lines();
-        }
+  /**
+   * Processes incoming documents: adds html, sorts documents and puts them in the given column.
+   * @param column_id (number) in which to add the documents
+   * @param documents (object[]) which to add to the provided column
+   * @author Ycreak
+   */
+  private process_incoming_documents(column_id: number, documents: any[]): void {
+    console.log(column_id, documents);
+    for (const i in documents) {
+      if (documents[i].document_type == 'fragment') {
+        documents[i].add_html_to_lines();
       }
-      // A new list of fragments has arrived. Use the column identifier to find the corresponding column
-      const column = this.column_handler.columns.find((x) => x.column_id == column_id);
-      if (column) {
-        // Prepare the documents for publication
-        documents = documents.sort(this.utility.sort_fragment_array_numerically);
-        documents = this.sort_documents_on_status(documents);
-
-        column.documents = documents;
-
-        // Store the original order of the fragment names in the column object
-        column.original_fragment_order = []; // Clear first
-        for (const document of documents) {
-          column.original_fragment_order.push(document.name);
-        }
+    }
+    // A new list of fragments has arrived. Use the column identifier to find the corresponding column
+    const column = this.column_handler.columns.find((x) => x.column_id == column_id);
+    if (column) {
+      // Prepare the documents for publication
+      documents = documents.sort(this.utility.sort_fragment_array_numerically);
+      documents = this.sort_documents_on_status(documents);
+      column.documents = documents;
+      // Store the original order of the fragment names in the column object
+      column.original_fragment_order = []; // Clear first
+      for (const document of documents) {
+        column.original_fragment_order.push(document.name);
       }
+    }
+  }
+
+  /**
+   * Request the API for documents: add them to the given column
+   * @param column_id (number) in which to add the documents
+   * @param documents (object[]) which to add to the provided column
+   */
+  protected request_documents(column_id: number, filter: object): void {
+    this.api.get_documents(filter).subscribe((documents) => {
+      this.process_incoming_documents(column_id, documents);
     });
   }
 
-  ngOnDestroy() {
-    if (this.documents_subscription) {
-      this.documents_subscription.unsubscribe();
-    }
+  /**
+   * Opens a dialog to set a custom filter. If filter set, requests documents from server
+   * @param number of column_id to load documents into
+   * @author Ycreak
+   */
+  protected set_custom_filter(column_id: number): void {
+    const dialogRef = this.matdialog.open(DocumentFilterComponent, {});
+    dialogRef.afterClosed().subscribe({
+      next: (document_filter) => {
+        if (document_filter) {
+          this.request_documents(column_id, document_filter);
+        }
+      },
+    });
   }
 
   /**
@@ -143,8 +163,6 @@ export class ColumnsComponent implements OnInit, OnDestroy {
   protected copy_document_content(given_document: any): void {
     let content = '';
 
-    console.log('current doc:', given_document);
-
     if (!given_document.fragments_translated) {
       // Parse the fragment lines into a single string
       const fragment_lines = given_document.lines;
@@ -154,38 +172,11 @@ export class ColumnsComponent implements OnInit, OnDestroy {
     } else {
       content = given_document.translation;
     }
-
     // Move the result to the user's clipboard
     navigator.clipboard.writeText(content);
-
     // Notify the user that the text has been copied
     this.utility.open_snackbar('Document copied!');
   }
-
-  /**
-   * Given the fragment, this function checks whether its linked fragments appear in the
-   * other opened columns. If so, the columns are scrolled to put the linked fragment in view
-   * @param fragment object with the linked_fragments field to be examined
-   * @author Ycreak
-   */
-  //private scroll_to_linked_fragments(document: Fragment) {
-  //for (const i in document.linked_fragments) {
-  //const linked_document_id = document.linked_fragments[i].linked_fragment_id;
-  //// Now, for each document that is linked, try to find it in the other columns
-  //for (const j in this.columns) {
-  //// in each column, take a look in the documents array to find the linked document
-  //const corresponding_document = this.columns[j].documents.find(
-  //(i) => i._id === linked_document_id
-  //);
-  //// move to this document if found
-  //if (corresponding_document) {
-  //// Scroll to the corresponding element in the found column
-  //const element = document.getElementById(corresponding_document._id);
-  //element.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-  //}
-  //}
-  //}
-  //}
 
   /**
    * Sorts the given object of documents on status. We want to display Certa, followed
@@ -259,22 +250,6 @@ export class ColumnsComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Opens a dialog to set a custom filter. If filter set, requests documents from server
-   * @param number of column_id to load documents into
-   * @author Ycreak
-   */
-  protected set_custom_filter(column_id: number): void {
-    const dialogRef = this.matdialog.open(DocumentFilterComponent, {});
-    dialogRef.afterClosed().subscribe({
-      next: (document_filter) => {
-        if (document_filter) {
-          this.api.request_documents_with_filter(column_id, document_filter);
-        }
-      },
-    });
-  }
-
-  /**
    * Method called when the user click with the right button
    * Used to open a context menu as described in this component's html
    * @param event MouseEvent, it contains the coordinates
@@ -302,4 +277,29 @@ export class ColumnsComponent implements OnInit, OnDestroy {
     // we open the menu
     this.matMenuTrigger.openMenu();
   }
+
+  /**
+   * Given the fragment, this function checks whether its linked fragments appear in the
+   * other opened columns. If so, the columns are scrolled to put the linked fragment in view
+   * @param fragment object with the linked_fragments field to be examined
+   * @author Ycreak
+   */
+  //private scroll_to_linked_fragments(document: Fragment) {
+  //for (const i in document.linked_fragments) {
+  //const linked_document_id = document.linked_fragments[i].linked_fragment_id;
+  //// Now, for each document that is linked, try to find it in the other columns
+  //for (const j in this.columns) {
+  //// in each column, take a look in the documents array to find the linked document
+  //const corresponding_document = this.columns[j].documents.find(
+  //(i) => i._id === linked_document_id
+  //);
+  //// move to this document if found
+  //if (corresponding_document) {
+  //// Scroll to the corresponding element in the found column
+  //const element = document.getElementById(corresponding_document._id);
+  //element.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  //}
+  //}
+  //}
+  //}
 }

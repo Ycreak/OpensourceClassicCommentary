@@ -20,6 +20,8 @@ export class ColumnHandlerService {
   // Object to store all column data: just an array with column data in the form of document columns
   columns: Column[] = [];
 
+  public playground_id = 0;
+
   constructor(private utility: UtilityService) {}
 
   /**
