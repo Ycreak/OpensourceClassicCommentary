@@ -95,6 +95,8 @@ import { FragmentComponent } from './columns/fragment/fragment.component';
 import { OnCopyDirective } from './directives/on-copy.directive';
 import { TestimoniaDashboardComponent } from './dashboard/testimonia-dashboard/testimonia-dashboard.component';
 
+import { MyComponentWrapperComponent } from './reactwrapper';
+
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
   { path: '', component: OverviewComponent },
@@ -131,6 +133,7 @@ const appRoutes: Routes = [
     FragmentComponent,
     OnCopyDirective,
     TestimoniaDashboardComponent,
+    MyComponentWrapperComponent,
   ],
   imports: [
     BrowserModule,

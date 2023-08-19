@@ -5,7 +5,8 @@
     "baseUrl": "./",
     "paths": {
       "@oscc/*": ["./src/app/*"],
-      "@src/*": ["./src/*"]
+      "@src/*": ["./src/*"],
+      "react": [ "./node_modules/@types/react" ]
     },
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
@@ -23,6 +24,7 @@
     "useDefineForClassFields": false,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
+    "jsx": "react",
   },
   "angularCompilerOptions": {
     "strictTemplates": false
