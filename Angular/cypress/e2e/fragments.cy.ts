@@ -14,7 +14,7 @@ describe('Fragments section e2e test', () => {
 
   context('Fragment dragging', () => {
     // Annoyingly enough I can't get dragging to work using Cypress
-    it.only('Should be able to change the order of fragments', () => {
+    it('Should be able to change the order of fragments', () => {
       return;
     });
 

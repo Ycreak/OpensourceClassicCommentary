@@ -39,13 +39,12 @@
   if problems are still occuring.
 </div>
 
-<!-- TAB GROUPS TO ENTER DATA -->
-
-<!-- FRAGMENT PANEL -->
+<!-- EXPANSION PANELS -->
 <div class="container-fluid">
   <mat-accordion multi>
     <!-- Change fragment expansion panel -->
     <mat-expansion-panel
+      id="fragments_panel"
       *ngIf="this.auth_service.current_user_role === 'teacher' || this.auth_service.current_user_role === 'student'"
       [expanded]="true">
       <mat-expansion-panel-header>
@@ -480,7 +479,7 @@
               </mat-select>
             </mat-form-field>
 
-            <mat-form-field class="input-form-custom" style="--width: 25%">
+            d<mat-form-field class="input-form-custom" style="--width: 25%">
               <mat-label>Select referenced editor</mat-label>
               <mat-select [(ngModel)]="this.fragment_referencer.editor" ngDefaultControl>
                 <mat-option
@@ -611,11 +610,11 @@
 
     <hr />
     <!-- Change author/author+title introduction expansion panel -->
-    <app-introductions></app-introductions>
+    <app-introductions id="introductions_panel"></app-introductions>
     <hr />
 
     <!-- Change user expansion panel -->
-    <mat-expansion-panel *ngIf="this.auth_service.is_logged_in" [expanded]="true">
+    <mat-expansion-panel id="users_panel" *ngIf="this.auth_service.is_logged_in" [expanded]="true">
       <mat-expansion-panel-header>
         <mat-panel-title> Change user data </mat-panel-title>
         <mat-panel-description>

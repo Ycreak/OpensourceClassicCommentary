@@ -24,23 +24,27 @@ describe('OSCC application flow/overview component e2e test', () => {
   });
 
   it('Should be able to toggle the playground', () => {
-    cy.get('app-playground').then(($playground) => {
-      if ($playground) {
-        cy.get('mat-toolbar')
-          .find('button')
-          .contains(/playground/i)
-          .should('exist')
-          .click();
-        cy.get('app-playground').should('not.exist');
-      } else {
-        cy.get('mat-toolbar')
-          .find('button')
-          .contains(/playground/i)
-          .should('exist')
-          .click();
-        cy.get('app-playground').should('exist');
-      }
-    });
+    for (let i = 0; i < 2; i++) {
+      cy.get('body').then(($body) => {
+        if ($body.find('app-playground').length) {
+          cy.get('mat-toolbar')
+            .find('button')
+            .contains(/playground/i)
+            .should('exist')
+            .click()
+            .then(() => {
+              cy.get('app-playground').should('not.exist');
+            });
+        } else {
+          cy.get('mat-toolbar')
+            .find('button')
+            .contains(/playground/i)
+            .should('exist')
+            .click();
+          cy.get('app-playground').should('exist');
+        }
+      });
+    }
   });
 
   context('Should be able to traverse the menu', () => {
