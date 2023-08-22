@@ -12,6 +12,7 @@ import { Fragment } from '@oscc/models/Fragment';
 })
 export class FragmentComponent {
   @Input() fragment: Fragment;
+  @Input() translated: boolean;
 
   constructor(protected settings: SettingsService) {}
 }

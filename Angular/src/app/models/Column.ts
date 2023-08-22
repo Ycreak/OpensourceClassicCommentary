@@ -57,8 +57,8 @@ export class Column {
 
   // Checks if the column is able to show fragment translations
   has_translations(): boolean {
-    for (const i in this.fragments) {
-      if (this.fragments[i].commentary.translation) {
+    for (const i in this.documents) {
+      if (this.documents[i].commentary.translation) {
         return true;
       }
     }

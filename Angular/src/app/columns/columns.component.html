@@ -160,7 +160,7 @@
           <app-testimonia [testimonium]="fragment"> </app-testimonia>
         </div>
         <div *ngIf="fragment.document_type === 'fragment'">
-          <app-fragment [fragment]="fragment"> </app-fragment>
+          <app-fragment [fragment]="fragment" [translated]="given_column.translated"> </app-fragment>
         </div>
       </div>
     </div>
