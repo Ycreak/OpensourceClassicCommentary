@@ -16,26 +16,9 @@
         </div>
     </div> -->
 
-<!-- Template for commentary column -->
+<!-- Template for commentary column: TODO: take this out of this template -->
 <ng-template #commentary_column_template let-given_fragment="given_fragment">
-  <ng-container *ngIf="this.translated; else fragments_not_translated">
-    <ng-container
-      *ngTemplateOutlet="
-        show_fragment_content_orig_text;
-        context: { current_document_content: given_fragment.lines, title: 'Original text' }
-      ">
-    </ng-container>
-  </ng-container>
-  <!-- Show the translation of the fragment -->
-
-  <ng-template #fragments_not_translated>
-    <ng-container
-      *ngTemplateOutlet="
-        show_fragment_content;
-        context: { current_document_content: given_fragment.translation, title: 'Fragment Translation' }
-      ">
-    </ng-container>
-  </ng-template>
+  <app-translation [commentary]="given_fragment" [translated]="this.translated"></app-translation>
   <!-- Show the fragment's original text -->
 
   <ng-container
