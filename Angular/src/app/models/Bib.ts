@@ -11,6 +11,7 @@ export class Creator {
 
 /** This class represents a bib entry and all its data fields */
 export class Bib {
+  citation: string;
   place: string;
   date: string;
 
@@ -25,6 +26,7 @@ export class Bib {
    * @author Ycreak
    */
   public set(bib: any) {
+    this.citation = 'citation' in bib ? bib.citation : '';
     this.place = 'place' in bib.data ? bib.data.place : '';
     this.date = 'date' in bib.data ? bib.data.date : '';
     this.title = 'title' in bib.data ? bib.data.title : '';

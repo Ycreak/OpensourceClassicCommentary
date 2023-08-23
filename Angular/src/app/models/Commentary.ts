@@ -17,6 +17,8 @@ export class Commentary {
 
   lines: Line[] = [];
 
+  bibliography = '';
+
   constructor(commentary?: Partial<Commentary>) {
     // Allow the partial initialisation of a fragment object
     Object.assign(this, commentary);
@@ -28,6 +30,7 @@ export class Commentary {
    * @author Ycreak
    */
   public set(fragment: any) {
+    this.bibliography = '';
     this.translation = 'translation' in fragment && fragment['translation'] != null ? fragment['translation'] : '';
     this.commentary = 'commentary' in fragment && fragment['commentary'] != null ? fragment['commentary'] : '';
     this.apparatus = 'apparatus' in fragment && fragment['apparatus'] != null ? fragment['apparatus'] : '';
@@ -118,7 +121,6 @@ export class Commentary {
       let html = '';
 
       // Convert the bibliography items.
-      // TODO: we should let zotero convert the fields into a nice string.
       const bib_regex = /\[bib-([\s\S]*?)\]/gm;
       const bib_entries = [...given_string.matchAll(bib_regex)];
       if (bib_entries?.length) {
@@ -127,6 +129,7 @@ export class Commentary {
           const values = entry[1].split('-');
           bib_key = values[0];
           const bib_item = zotero.find((o) => o.key === bib_key);
+          this.bibliography += `<p>${bib_item.citation}</p>`;
           if (values.length > 2) {
             from_page = values[1];
             to_page = values[2];

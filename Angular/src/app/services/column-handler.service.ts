@@ -38,9 +38,10 @@ export class ColumnHandlerService {
 
   /**
    * This function adds a new column to the columns array
+   * @returns column_id (number)
    * @author Ycreak
    */
-  public add_new_column(column_type: string): void {
+  public add_new_column(column_type: string): number {
     //TODO: shall we create a limit? like no more than 25 columns?
     // First, increment the column_identifier to create a new and unique id
     this.column_identifier += 1;
@@ -49,6 +50,7 @@ export class ColumnHandlerService {
     this.columns.push(new_column);
     // And update the connected columns list
     this.connected_columns_list = this.update_connected_columns_list(this.columns);
+    return this.column_identifier;
   }
 
   /**
@@ -151,6 +153,31 @@ export class ColumnHandlerService {
       //);
       // colour it if found
       //if (corresponding_document) corresponding_document.colour = '#FF4081';
+    }
+  }
+
+  /**
+   * Adds the provided documents to the correct column given its identifier
+   * @param column_id (string)
+   * @param documents (object[])
+   * @param append (boolean, optional) whether to append documents to column or not
+   */
+  public add_documents_to_column(column_id: number, documents: any[], append?: boolean): void {
+    // A new list of fragments has arrived. Use the column identifier to find the corresponding column
+    const column = this.columns.find((x) => x.column_id == column_id);
+    if (column) {
+      if (append) {
+        documents.forEach((document: any) => column.documents.push(document));
+        //console.log(column.documents, documents)
+        //column.documents.push(documents);
+      } else {
+        column.documents = documents;
+      }
+      // Store the original order of the fragment names in the column object
+      column.original_fragment_order = []; // Clear first
+      for (const document of documents) {
+        column.original_fragment_order.push(document.name);
+      }
     }
   }
 }
