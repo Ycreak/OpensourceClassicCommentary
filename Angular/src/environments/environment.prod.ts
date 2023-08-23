@@ -9,6 +9,6 @@ export const environment = {
   current_user_name: '',
   current_user_role: 'guest',
   production: true,
-  zotero_url: "https://api.zotero.org/groups/5089557/items?v=3",
+  zotero_url: "https://api.zotero.org/groups/5089557/items?v=3&include=data,citation",
   debug: false
 };
