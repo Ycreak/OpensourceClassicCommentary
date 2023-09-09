@@ -3,6 +3,7 @@ import { Output, EventEmitter } from '@angular/core';
 import { ColumnHandlerService } from '@oscc/services/column-handler.service';
 import { ApiService } from '@oscc/api.service';
 import { environment } from '@src/environments/environment';
+import { fabric } from 'fabric';
 
 // Service imports
 import { UtilityService } from '@oscc/utility.service';
@@ -27,6 +28,8 @@ export class PlaygroundComponent implements OnInit {
   note: any;
 
   protected single_fragment_requested: boolean;
+  protected canvas: fabric.Canvas;
+  private new_fragment_location = 10;
 
   constructor(
     protected api: ApiService,
@@ -38,6 +41,10 @@ export class PlaygroundComponent implements OnInit {
 
   ngOnInit(): void {
     this.playground = new Column({ column_id: environment.playground_id });
+    this.canvas = new fabric.Canvas('playground_canvas');
+    this.set_canvas_event_handlers();
+
+    this.request_documents({ author: 'Ennius', title: 'Eumenides', editor: 'TRF' });
   }
 
   /**
@@ -48,6 +55,9 @@ export class PlaygroundComponent implements OnInit {
   protected request_documents(filter: object): void {
     this.api.get_documents(filter).subscribe((documents) => {
       this.process_incoming_documents(documents);
+      documents.forEach((document: any) => {
+        this.add_document_to_canvas(document);
+      });
     });
   }
   /**
@@ -111,6 +121,10 @@ export class PlaygroundComponent implements OnInit {
    * @author Ycreak
    */
   public delete_clicked_item_from_playground(column: Column, item: string): void {
+    // For the canvas
+    this.canvas.getActiveObjects().forEach((item: any) => {
+      this.canvas.remove(item);
+    });
     if (item == 'fragment') {
       const object_index = column.documents.findIndex((object) => {
         return object._id === column.clicked_document._id;
@@ -148,8 +162,87 @@ export class PlaygroundComponent implements OnInit {
         if (res) {
           this.playground.documents = [];
           this.playground.note_array = [];
+          this.canvas.clear();
+          this.new_fragment_location = 10;
         }
       },
+    });
+  }
+
+  /**
+   * Adds the given fragment to the canvas
+   * @author Luuk
+   */
+  private add_document_to_canvas(fragment: any): void {
+    const header_text = `Fragment ${fragment.name}`;
+    const header = new fabric.Text(header_text, {
+      fontSize: 20,
+      fontWeight: 'bold',
+      originX: 'left',
+      originY: 'bottom',
+    });
+    let lines_text = '';
+    fragment.lines.forEach((line: any) => {
+      lines_text += `${line.line_number}: ${line.text}\n`;
+    });
+    const lines = new fabric.Text(lines_text, {
+      fontSize: 20,
+      originX: 'left',
+    });
+    const group = new fabric.Group([header, lines], {
+      top: this.new_fragment_location,
+    });
+    this.canvas.add(group);
+    this.new_fragment_location += 100;
+  }
+
+  /**
+   * Sets the event handlers for the canvas, such as scrolling, zooming,
+   * panning and selecting.
+   * @author Ycreak
+   */
+  private set_canvas_event_handlers(): void {
+    this.canvas.on('mouse:wheel', (opt: any) => {
+      const delta = opt.e.deltaY;
+      let zoom = this.canvas.getZoom();
+      zoom *= 0.999 ** delta;
+      if (zoom > 20) zoom = 20;
+      if (zoom < 0.01) zoom = 0.01;
+      this.canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+      opt.e.preventDefault();
+      opt.e.stopPropagation();
+      this.canvas.requestRenderAll();
+    });
+    /**
+     * When control is pressed down, we will drag the canvas
+     * If not, we allow selection of multiple objects
+     */
+    this.canvas.on('mouse:down', function (opt: any) {
+      const evt = opt.e;
+      if (evt.shiftKey === true) {
+        this.isDragging = true;
+        this.selection = false;
+        this.lastPosX = evt.clientX;
+        this.lastPosY = evt.clientY;
+      }
+    });
+    this.canvas.on('mouse:move', function (opt: any) {
+      if (this.isDragging) {
+        const e = opt.e;
+        const vpt = this.viewportTransform;
+        vpt[4] += e.clientX - this.lastPosX;
+        vpt[5] += e.clientY - this.lastPosY;
+        this.requestRenderAll();
+        this.lastPosX = e.clientX;
+        this.lastPosY = e.clientY;
+      }
+    });
+    this.canvas.on('mouse:up', function () {
+      // on mouse up we want to recalculate new interaction
+      // for all objects, so we call setViewportTransform
+      this.setViewportTransform(this.viewportTransform);
+      this.isDragging = false;
+      this.selection = true;
     });
   }
 }
