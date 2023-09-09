@@ -51,6 +51,16 @@ export class PlaygroundComponent implements OnInit {
     });
   }
   /**
+   * Request the API for document names: add them to the playground object
+   * @param column_id (number) in which to add the documents
+   * @param documents (object[]) which to add to the provided column
+   */
+  protected request_document_names(filter: object): void {
+    this.api.get_document_names(filter).subscribe((document_names) => {
+      this.playground.fragment_names = document_names;
+    });
+  }
+  /**
    * Processes incoming documents: adds html, sorts documents and puts them in the given column.
    * @param column_id (number) in which to add the documents
    * @param documents (object[]) which to add to the provided column

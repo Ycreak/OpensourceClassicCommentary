@@ -31,6 +31,7 @@
             (click)="this.playground.fragment_name = fragment_name.name"
             (click)="
               this.add_single_fragment({
+                document_type: 'fragment',
                 author: this.playground.author,
                 title: this.playground.title,
                 editor: this.playground.editor,
@@ -188,12 +189,11 @@
       mat-menu-item
       (click)="this.playground.editor = editor"
       (click)="
-        this.api.request_fragment_names(
-          this.playground.column_id,
-          this.playground.author,
-          this.playground.title,
-          this.playground.editor
-        )
+        this.request_document_names({
+          author: this.playground.author,
+          title: this.playground.title,
+          editor: this.playground.editor,
+        })
       ">
       {{ editor }}
     </button>

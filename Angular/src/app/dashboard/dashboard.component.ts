@@ -344,6 +344,16 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   //  |  _  /|  __|| |  | | |  | |  __|  \___ \   | |  \___ \
   //  | | \ \| |___| |__| | |__| | |____ ____) |  | |  ____) |
   //  |_|  \_\______\___\_\\____/|______|_____/   |_| |_____/
+  /**
+   * Request the API for document names: add them to the dashboard document object
+   * @param column_id (number) in which to add the documents
+   * @param documents (object[]) which to add to the provided column
+   */
+  protected request_document_names(filter: object): void {
+    this.api.get_document_names(filter).subscribe((document_names) => {
+      this.selected_fragment_data.fragment_names = document_names;
+    });
+  }
 
   /**
    * This function requests the api to revise the fragment given the fragment_form.
