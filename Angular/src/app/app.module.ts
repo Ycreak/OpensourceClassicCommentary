@@ -95,6 +95,7 @@ import { FragmentComponent } from './columns/fragment/fragment.component';
 import { OnCopyDirective } from './directives/on-copy.directive';
 import { TestimoniaDashboardComponent } from './dashboard/testimonia-dashboard/testimonia-dashboard.component';
 import { TranslationComponent } from './commentary/translation/translation.component';
+import { Playground2Component } from './playground2/playground2.component';
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
@@ -102,6 +103,7 @@ const appRoutes: Routes = [
   { path: 'fragments', component: OverviewComponent },
   { path: 'bib', component: BibliographyComponent },
   { path: 'playground', component: PlaygroundComponent },
+  { path: 'playground2', component: Playground2Component },
   // {path: 'text', component: TextComponent},
   { path: 'scansion', component: ScansionComponent, canActivate: [AuthGuard] },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
@@ -133,6 +135,7 @@ const appRoutes: Routes = [
     OnCopyDirective,
     TestimoniaDashboardComponent,
     TranslationComponent,
+    Playground2Component,
   ],
   imports: [
     BrowserModule,

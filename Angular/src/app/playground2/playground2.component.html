@@ -1,0 +1,9 @@
+<p>playground2 works!</p>
+<!--<canvas id="myCanvas" width="400" height="400"></canvas>-->
+<canvas #htmlCanvas id="c"></canvas>
+
+Zoom: {{ canvas.getZoom() }}
+<br />
+<div style="max-width: 100vw; height: 500px; overflow-y: scroll">
+  <div *ngFor="let i of output.reverse()">{{ i }}</div>
+</div>
