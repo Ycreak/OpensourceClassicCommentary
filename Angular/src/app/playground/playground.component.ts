@@ -125,12 +125,9 @@ export class PlaygroundComponent implements OnInit {
 
   /**
    * This function allows the playground to delete notes and fragements
-   * @param column column from which the deletion is to take place
-   * @param item either a note or a fragment needs deletion
    * @author Ycreak
    */
   public delete_clicked_objects(): void {
-    // For the canvas
     this.canvas.getActiveObjects().forEach((item: any) => {
       this.canvas.remove(item);
     });
