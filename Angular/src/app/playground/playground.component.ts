@@ -4,6 +4,7 @@ import { ColumnHandlerService } from '@oscc/services/column-handler.service';
 import { ApiService } from '@oscc/api.service';
 import { environment } from '@src/environments/environment';
 import { fabric } from 'fabric';
+import { HostListener } from '@angular/core';
 
 // Service imports
 import { UtilityService } from '@oscc/utility.service';
@@ -21,6 +22,13 @@ import { DialogService } from '@oscc/services/dialog.service';
 })
 export class PlaygroundComponent implements OnInit {
   @Output() document_clicked = new EventEmitter<Fragment>();
+  @HostListener('document:keyup', ['$event'])
+  handleDeleteKeyboardEvent(event: KeyboardEvent) {
+    if (event.key === 'Delete') {
+      this.delete_clicked_objects();
+    }
+  }
+
   // Playground column that keeps all data related to said playground
   playground: Column;
   // Boolean to keep track if we are dragging or clicking a fragment within the playground
@@ -29,6 +37,7 @@ export class PlaygroundComponent implements OnInit {
 
   protected single_fragment_requested: boolean;
   protected canvas: fabric.Canvas;
+  private canvas_font_size = 16;
   private new_fragment_location = 10;
 
   constructor(
@@ -43,7 +52,7 @@ export class PlaygroundComponent implements OnInit {
     this.playground = new Column({ column_id: environment.playground_id });
     this.canvas = new fabric.Canvas('playground_canvas');
     this.set_canvas_event_handlers();
-
+    this.init_canvas_settings();
     this.request_documents({ author: 'Ennius', title: 'Eumenides', editor: 'TRF' });
   }
 
@@ -120,27 +129,11 @@ export class PlaygroundComponent implements OnInit {
    * @param item either a note or a fragment needs deletion
    * @author Ycreak
    */
-  public delete_clicked_item_from_playground(column: Column, item: string): void {
+  public delete_clicked_objects(): void {
     // For the canvas
     this.canvas.getActiveObjects().forEach((item: any) => {
       this.canvas.remove(item);
     });
-    if (item == 'fragment') {
-      const object_index = column.documents.findIndex((object) => {
-        return object._id === column.clicked_document._id;
-      });
-      if (object_index != -1) {
-        column.documents.splice(object_index, 1);
-      }
-    } else {
-      // it is a note
-      const object_index = column.note_array.findIndex((object) => {
-        return object === column.clicked_note;
-      });
-      if (object_index != -1) {
-        column.note_array.splice(object_index, 1);
-      }
-    }
   }
 
   /**
@@ -170,13 +163,28 @@ export class PlaygroundComponent implements OnInit {
   }
 
   /**
+   * Adds the given note to the canvas
+   * @author Ycreak
+   */
+  protected add_note_to_canvas(note: string): void {
+    const text = new fabric.Textbox(note, {
+      width: 200,
+      fontSize: this.canvas_font_size,
+      textAlign: 'left', // you can use specify the text align
+      backgroundColor: '#ffefd5',
+      editable: true,
+    });
+    this.canvas.add(text);
+  }
+
+  /**
    * Adds the given fragment to the canvas
-   * @author Luuk
+   * @author Ycreak
    */
   private add_document_to_canvas(fragment: any): void {
     const header_text = `Fragment ${fragment.name}`;
     const header = new fabric.Text(header_text, {
-      fontSize: 20,
+      fontSize: this.canvas_font_size,
       fontWeight: 'bold',
       originX: 'left',
       originY: 'bottom',
@@ -186,7 +194,7 @@ export class PlaygroundComponent implements OnInit {
       lines_text += `${line.line_number}: ${line.text}\n`;
     });
     const lines = new fabric.Text(lines_text, {
-      fontSize: 20,
+      fontSize: this.canvas_font_size,
       originX: 'left',
     });
     const group = new fabric.Group([header, lines], {
@@ -194,6 +202,15 @@ export class PlaygroundComponent implements OnInit {
     });
     this.canvas.add(group);
     this.new_fragment_location += 100;
+  }
+
+  /**
+   * Inits various canvas settings
+   * @author Ycreak
+   */
+  private init_canvas_settings(): void {
+    this.canvas.freeDrawingBrush.color = 'black';
+    this.canvas.freeDrawingBrush.width = 10;
   }
 
   /**
@@ -244,5 +261,12 @@ export class PlaygroundComponent implements OnInit {
       this.isDragging = false;
       this.selection = true;
     });
+  }
+  /**
+   * Toggles canvas drawing mode
+   * @author Ycreak
+   */
+  protected toggle_drawing_mode(): void {
+    this.canvas.isDrawingMode = !this.canvas.isDrawingMode;
   }
 }

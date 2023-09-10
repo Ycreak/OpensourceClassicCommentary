@@ -68,17 +68,8 @@
         mat-stroked-button
         class="playground-button playground-delete-button button-margin"
         color="accent"
-        (click)="this.delete_clicked_item_from_playground(this.playground, 'fragment')">
-        Delete fragment
-      </button>
-    </div>
-    <div class="playground-button-container col-3">
-      <button
-        mat-stroked-button
-        class="playground-button playground-delete-button button-margin"
-        color="accent"
-        (click)="this.delete_clicked_item_from_playground(this.playground, 'note')">
-        Delete note
+        (click)="this.delete_clicked_objects()">
+        Delete object(s)
       </button>
     </div>
     <div class="playground-button-container col-3">
@@ -90,70 +81,58 @@
         Clear playground
       </button>
     </div>
+    <div class="playground-button-container col-3">
+      <button
+        mat-stroked-button
+        class="playground-button playground-delete-button button-margin"
+        color="accent"
+        (click)="this.toggle_drawing_mode()">
+        Toggle drawing
+      </button>
+    </div>
   </div>
+
+  <!--<div class="div-padding-lg"></div>-->
+
+  <!--<div class="row">-->
+
+  <!--</div>-->
 
   <div class="div-padding-lg"></div>
   <!-- Possibility to add a little note -->
   <div class="row">
-    <div mat-dialog-content class="col-6">
-      <mat-form-field class="playground-mat-form-field input-form" style="--width: 50vw">
-        <input
-          matInput
-          placeholder="Add a note"
-          ngDefaultControl
-          [(ngModel)]="note"
-          (keydown.enter)="this.playground.note_array = this.utility.push_to_array(note, this.playground.note_array)" />
-        <button
-          type="button"
-          mat-icon-button
-          matSuffix
-          (click)="this.playground.note_array = this.utility.push_to_array(note, this.playground.note_array)">
+    <div mat-dialog-content class="playground-button-container col-6">
+      <mat-form-field class="playground-mat-form-field input-form">
+        <input matInput placeholder="Add a note" ngDefaultControl [(ngModel)]="note" />
+        <button type="button" mat-icon-button matSuffix (click)="this.add_note_to_canvas(note)">
           <mat-icon>{{ "add" }}</mat-icon>
         </button>
         <mat-hint>To organise your playground</mat-hint>
       </mat-form-field>
     </div>
+    <div class="playground-button-container col-3" *ngIf="this.canvas.isDrawingMode">
+      <mat-form-field>
+        <mat-label>Pencil colour</mat-label>
+        <mat-select [(value)]="this.canvas.freeDrawingBrush.color">
+          <mat-option value="black">Black</mat-option>
+          <mat-option value="red">Red</mat-option>
+          <mat-option value="blue">Blue</mat-option>
+          <mat-option value="green">Green</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="playground-button-container col-3" *ngIf="this.canvas.isDrawingMode">
+      <mat-form-field class="example-margin example-width">
+        <mat-label>Pencil width</mat-label>
+        <input matInput type="number" [(ngModel)]="this.canvas.freeDrawingBrush.width" />
+      </mat-form-field>
+    </div>
   </div>
   <hr class="playground-divider" />
-  <canvas id="playground_canvas" width="1500" height="1000"></canvas>
+  <canvas id="playground_canvas" width="800" height="1000"></canvas>
 
   <hr class="playground-divider" />
   <!-- For loop to print all the notes -->
-  <div
-    *ngFor="let note of this.playground.note_array"
-    class="note zlayer"
-    style="--layer: 3"
-    (click)="this.playground.clicked_note = note"
-    cdkDrag>
-    {{ note }}
-  </div>
-  <!-- For loop to print all the base selected fragments -->
-  <!-- Recording the clicked fragment allows us to delete it when pressing the delete button -->
-  <!-- Also, keep track whether we are dragging or not. If we drag, we do not want the click event to fire -->
-  <div
-    *ngFor="let fragment of this.playground.documents"
-    class="playground zlayer"
-    style="--layer: 2"
-    cdkDrag
-    (cdkDragStarted)="this.playground_dragging = true"
-    (click)="this.handle_document_click(fragment, true)"
-    (click)="this.playground.clicked_document = fragment">
-    <div *ngIf="this.settings.fragments.show_headers">
-      <b [style.color]="fragment.colour">Fragment {{ fragment.name }} </b> &nbsp;
-      <sup>{{ fragment.author }}, {{ fragment.title }}, {{ fragment.editor }}</sup> &nbsp;
-      <i>{{ fragment.status }}</i>
-    </div>
-
-    <div *ngFor="let fragment_line of fragment.lines">
-      <p
-        *ngIf="this.settings.fragments.show_line_names; else no_line_names_playground"
-        [innerHTML]="fragment_line.line_number + ': ' + fragment_line.text | safeHtml"></p>
-      <ng-template #no_line_names_playground>
-        <!--safeHtml to allow whitespaces made by spans-->
-        <p [innerHTML]="fragment_line.text | safeHtml"></p>
-      </ng-template>
-    </div>
-  </div>
 </div>
 
 <!-- Nested menu to select author - title - editor. -->
