@@ -2,13 +2,12 @@ import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { ApiService } from '@oscc/api.service';
 import { AuthService } from '@oscc/auth/auth.service';
 import { DialogService } from '@oscc/services/dialog.service';
+import { ZoteroService } from '@oscc/services/zotero.service';
 
 import { ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-
-import { Bib } from '@oscc/models/Bib';
 
 @Component({
   selector: 'app-bibliography',
@@ -25,7 +24,12 @@ export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
   private bib_subscription: any;
   protected pages: string;
 
-  constructor(protected auth_service: AuthService, protected api: ApiService, protected dialog: DialogService) {
+  constructor(
+    protected auth_service: AuthService,
+    protected zotero: ZoteroService,
+    protected api: ApiService,
+    protected dialog: DialogService
+  ) {
     this.table_data = new MatTableDataSource(this.table_source_data);
   }
 
@@ -33,13 +37,11 @@ export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
    * On Init, we just load the list of authors. From here, selection is started
    */
   ngOnInit(): void {
-    this.bib_subscription = this.api.new_bib_alert$.subscribe((bib: Bib[]) => {
-      // Sort bib on lastname
-      bib.sort((a, b) =>
-        a.creators[0].lastname > b.creators[0].lastname ? 1 : b.creators[0].lastname > a.creators[0].lastname ? -1 : 0
-      );
-      this.fill_table(bib);
-    });
+    // Sort bib on lastname
+    this.zotero.bibliography.sort((a, b) =>
+      a.creators[0].lastname > b.creators[0].lastname ? 1 : b.creators[0].lastname > a.creators[0].lastname ? -1 : 0
+    );
+    this.fill_table(this.zotero.bibliography);
   }
 
   ngAfterViewInit(): void {

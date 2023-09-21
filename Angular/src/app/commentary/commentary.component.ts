@@ -1,5 +1,6 @@
 import { Component, Input, SimpleChanges, OnChanges } from '@angular/core';
 import { ApiService } from '@oscc/api.service';
+import { ZoteroService } from '@oscc/services/zotero.service';
 
 // Model imports
 import { Commentary } from '@oscc/models/Commentary';
@@ -22,6 +23,7 @@ export class CommentaryComponent implements OnChanges {
   protected translation_orig_text_expanded = false;
 
   constructor(
+    private zotero: ZoteroService,
     protected utility: UtilityService,
     protected api: ApiService,
     protected dialog: DialogService,
@@ -31,7 +33,7 @@ export class CommentaryComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes.commentary) {
       this.commentary.add_html();
-      this.commentary.convert_bib_entries(this.api.zotero);
+      this.commentary.convert_bib_entries(this.zotero.bibliography);
     }
   }
 

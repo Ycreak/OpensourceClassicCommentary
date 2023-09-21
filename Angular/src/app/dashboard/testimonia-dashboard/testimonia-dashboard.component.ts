@@ -87,7 +87,7 @@ export class TestimoniaDashboardComponent implements OnInit {
         .open_confirmation_dialog('Are you sure you want to SAVE CHANGES to this fragment?', item_string)
         .subscribe((result) => {
           if (result) {
-            this.api.request_revise_fragment(form);
+            this.api.revise_fragment(form);
             this.reset_form();
           }
         });
@@ -106,7 +106,7 @@ export class TestimoniaDashboardComponent implements OnInit {
       .open_confirmation_dialog('Are you sure you want to CREATE this testimonium?', item_string)
       .subscribe((result) => {
         if (result) {
-          this.api.request_create_fragment(form);
+          this.api.create_fragment(form);
           this.reset_form();
         }
       });
@@ -125,7 +125,7 @@ export class TestimoniaDashboardComponent implements OnInit {
       .subscribe((result) => {
         if (result) {
           this.reset_form();
-          this.api.request_delete_fragment({
+          this.api.delete_fragment({
             document_type: 'testimonium',
             author: form.author,
             name: form.name,
