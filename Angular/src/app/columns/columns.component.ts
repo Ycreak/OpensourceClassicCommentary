@@ -12,6 +12,7 @@ import { SettingsService } from '@oscc/services/settings.service';
 import { UtilityService } from '@oscc/utility.service';
 import { AuthService } from '@oscc/auth/auth.service';
 import { ColumnHandlerService } from '@oscc/services/column-handler.service';
+import { ZoteroService } from '@oscc/services/zotero.service';
 import { DocumentFilterComponent } from '@oscc/dialogs/document-filter/document-filter.component';
 
 // Model imports
@@ -47,13 +48,15 @@ export class ColumnsComponent implements OnInit {
     protected auth_service: AuthService,
     protected dialog: DialogService,
     protected column_handler: ColumnHandlerService,
+    private zotero: ZoteroService,
     protected settings: SettingsService,
     private matdialog: MatDialog
   ) {}
 
   ngOnInit(): void {
     this.api.request_authors_titles_editors_blob();
-    this.api.request_zotero_data();
+    //FIXME: maybe we should only request the bibliography on fragment click?
+    this.zotero.request_bibliography();
     // Create an empty current_document variable to be filled whenever the user clicks a fragment
     this.current_document = new Fragment({});
     // Create the first column and push it to the columns list

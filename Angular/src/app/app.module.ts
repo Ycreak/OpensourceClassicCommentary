@@ -95,6 +95,7 @@ import { FragmentComponent } from './columns/fragment/fragment.component';
 import { OnCopyDirective } from './directives/on-copy.directive';
 import { TestimoniaDashboardComponent } from './dashboard/testimonia-dashboard/testimonia-dashboard.component';
 import { TranslationComponent } from './commentary/translation/translation.component';
+import { FragmentsDashboardComponent } from './dashboard/fragments-dashboard/fragments-dashboard.component';
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
@@ -133,6 +134,7 @@ const appRoutes: Routes = [
     OnCopyDirective,
     TestimoniaDashboardComponent,
     TranslationComponent,
+    FragmentsDashboardComponent,
   ],
   imports: [
     BrowserModule,
