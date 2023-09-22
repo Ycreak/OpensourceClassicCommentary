@@ -115,8 +115,8 @@
           </div>
           <!--Show the commentary via the commentary component -->
           <app-commentary
-            *ngIf="this.clicked_document.commentary.has_content()"
             #commentary
+            [document]="this.clicked_document"
             [commentary]="this.clicked_document.commentary"
             [translated]="this.clicked_document.translated">
           </app-commentary>

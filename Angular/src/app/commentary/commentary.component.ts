@@ -18,12 +18,16 @@ import { UtilityService } from '@oscc/utility.service';
 })
 export class CommentaryComponent implements OnChanges {
   @Input() commentary: Commentary;
+  @Input() document: any;
   @Input() translated: boolean;
 
   protected document_clicked = false;
   protected translation_orig_text_expanded = false;
 
   protected bibliography = '';
+
+  protected no_linked_commentary_found: boolean;
+  protected linked_commentaries: Commentary[];
 
   constructor(
     private string_formatter: StringFormatterService,
@@ -35,9 +39,30 @@ export class CommentaryComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.commentary) {
+      this.no_linked_commentary_found = false;
+      this.linked_commentaries = [];
+
+      this.bibliography = '';
+
       this.commentary = this.add_html(this.commentary);
       this.format_bib_entries(this.commentary, this.api.bibliography);
     }
+  }
+
+  protected retrieve_linked_commentary(): void {
+    // If no linked fragments are found, we set a banner
+    if (this.document.linked_fragments.length == 0) {
+      this.no_linked_commentary_found = true;
+    }
+    this.document.linked_fragments.forEach((filter: any) => {
+      this.api.get_documents(filter).subscribe((documents) => {
+        if (documents[0].commentary.has_content()) {
+          this.linked_commentaries.push(documents[0].commentary);
+        }
+        // If linked fragments are found but have no commentary, we set the banner
+        this.no_linked_commentary_found = this.linked_commentaries.length == 0;
+      });
+    });
   }
 
   /**
@@ -49,7 +74,7 @@ export class CommentaryComponent implements OnChanges {
    * @author Ycreak
    * @TODO: this function needs to be handled by the API when retrieving the fragments
    */
-  public add_html(commentary: Commentary): Commentary {
+  protected add_html(commentary: Commentary): Commentary {
     for (const item in commentary.lines) {
       // Loop through all lines of current fragment
       let line_text = commentary.lines[item].text;

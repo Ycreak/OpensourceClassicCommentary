@@ -1,3 +1,10 @@
+<div *ngIf="this.no_linked_commentary_found" class="alert alert-info" role="alert">No linked commentary found.</div>
+
+<div style="text-align: center">
+  <button mat-stroked-button (click)="this.retrieve_linked_commentary()">
+    Retrieve commentary from linked fragments
+  </button>
+</div>
 <!-- Show the commentary for the clicked fragment -->
 <ng-container *ngIf="this.commentary.translation">
   <app-translation [commentary]="this.commentary" [translated]="this.translated"></app-translation>
