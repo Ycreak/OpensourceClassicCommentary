@@ -50,11 +50,20 @@ export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  protected get_bib_key(key: string, pages: string): string {
+  /**
+   * Generates the bib key from the clicked table row
+   * @param key (string)
+   * @param author (string)
+   * @param date (string)
+   * @param pages (string)
+   * @return bib_key (string)
+   * @author Ycreak
+   */
+  protected get_bib_key(key: string, author: string, date: string, pages: string): string {
     if (pages) {
-      return `[bib-${key}-${pages}]`;
+      return `[bib-${key}-${author}-${date}-${pages}]`;
     } else {
-      return `[bib-${key}]`;
+      return `[bib-${key}-${author}-${date}]`;
     }
   }
 
@@ -72,6 +81,7 @@ export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
       // Create an object for the table with the specific fields we need
       const table_object: any = {
         name: `${bib[i].creators[0].lastname}, ${bib[i].creators[0].firstname}`,
+        lastname: `${bib[i].creators[0].lastname}`,
         title: bib[i].title,
         date: bib[i].date,
         key: bib[i].key,

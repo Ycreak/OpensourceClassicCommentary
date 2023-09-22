@@ -45,7 +45,7 @@
       <tr
         mat-row
         class="bib-select"
-        [mat-dialog-close]="this.get_bib_key(row.key, this.pages)"
+        [mat-dialog-close]="this.get_bib_key(row.key, row.lastname, row.date, this.pages)"
         *matRowDef="let row; columns: this.table_columns"></tr>
 
       <tr class="mat-row" *matNoDataRow>
