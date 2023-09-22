@@ -175,7 +175,7 @@ export class ApiService {
   public revise_fragment(fragment: any): void {
     this.spinner_on();
     this.http
-      .post<string[]>(this.FlaskURL + `fragment/`, fragment, {
+      .post<string[]>(this.FlaskURL + `fragment/update`, fragment, {
         observe: 'response',
         responseType: 'text' as 'json',
       })
@@ -349,7 +349,7 @@ export class ApiService {
     });
     return result;
   }
-  
+
   /**
    * Retrieves the Zotero bibliography from the Flask server
    * @param key (object)

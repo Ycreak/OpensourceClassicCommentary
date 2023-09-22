@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class StringFormatterService {
-
-  constructor() { }
+  //constructor() {}
 
   /**
    * Converts the custom tags in the given blob of text to html
@@ -20,7 +19,7 @@ export class StringFormatterService {
     }
     return given_string;
   }
-  
+
   /**
    * Takes a string and looks for whitespace decoding. Converts it to html spans
    * @param string that needs whitespaces converted to html spans

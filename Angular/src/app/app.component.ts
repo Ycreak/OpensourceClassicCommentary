@@ -10,15 +10,12 @@ import { ApiService } from '@oscc/api.service';
 export class AppComponent implements OnInit {
   title = 'OpenSourceClassicCommentary';
 
-  constructor(
-    protected api: ApiService,
-  ) {}
-
+  constructor(protected api: ApiService) {}
 
   ngOnInit() {
     // All things needed at startup by the OSCC are listed here
     this.api.get_bibliography().subscribe((bib) => {
-      console.debug('Bibliography retrieved', bib)
+      console.debug('Bibliography retrieved', bib);
     });
   }
 }

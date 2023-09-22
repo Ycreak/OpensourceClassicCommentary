@@ -23,11 +23,7 @@ export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
   private bib_subscription: any;
   protected pages: string;
 
-  constructor(
-    protected auth_service: AuthService,
-    protected api: ApiService,
-    protected dialog: DialogService
-  ) {
+  constructor(protected auth_service: AuthService, protected api: ApiService, protected dialog: DialogService) {
     this.table_data = new MatTableDataSource(this.table_source_data);
   }
 

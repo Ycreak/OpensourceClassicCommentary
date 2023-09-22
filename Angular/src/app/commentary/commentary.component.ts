@@ -79,7 +79,7 @@ export class CommentaryComponent implements OnChanges {
    * @author Ycreak
    */
   public format_bib_entries(commentary: Commentary, bibliography: Bib[]): void {
-   //TODO: needs to be reworked in the commentary rewrite
+    //TODO: needs to be reworked in the commentary rewrite
     commentary.differences = this.convert_bib_entry(commentary.differences, bibliography);
     commentary.commentary = this.convert_bib_entry(commentary.commentary, bibliography);
     commentary.apparatus = this.convert_bib_entry(commentary.apparatus, bibliography);
@@ -112,7 +112,7 @@ export class CommentaryComponent implements OnChanges {
         full_tag = entry[0];
         const values = entry[1].split('-');
         bib_key = values[0];
-       const bib_item = bibliography.find((o) => o.key === bib_key); 
+        const bib_item = bibliography.find((o) => o.key === bib_key);
         //Add the item to the bibliography for easy printing in an expansion panel
         this.bibliography += `<p>${bib_item.creators[0].lastname} (${bib_item.date}) ${bib_item.title}</p>`;
         if (values.length > 2) {

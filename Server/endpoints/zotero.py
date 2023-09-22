@@ -1,5 +1,6 @@
 import json
 from pyzotero import zotero as pyzotero
+from flask_jsonpify import jsonify
 
 class Zotero:
     zotero_api: pyzotero.Zotero
