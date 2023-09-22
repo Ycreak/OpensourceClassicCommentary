@@ -10,8 +10,6 @@ import { SettingsService } from '@oscc/services/settings.service';
 // Service imports
 import { UtilityService } from '@oscc/utility.service';
 
-import { Bib } from '@oscc/models/Bib';
-
 @Component({
   selector: 'app-commentary',
   templateUrl: './commentary.component.html',
@@ -93,17 +91,17 @@ export class CommentaryComponent implements OnChanges {
    * @returns string with bib entries handled
    * @author Ycreak
    */
-  public convert_bib_entries(commentary: Commentary, zotero: Bib[]): void {
-    // TODO: needs to be reworked in the commentary rewrite
-    //commentary.differences = this.convert_bib_entry(commentary.differences, zotero);
-    //commentary.commentary = this.convert_bib_entry(commentary.commentary, zotero);
-    //commentary.apparatus = this.convert_bib_entry(commentary.apparatus, zotero);
-    //commentary.reconstruction = this.convert_bib_entry(commentary.reconstruction, zotero);
-    //commentary.translation = this.convert_bib_entry(commentary.translation, zotero);
-    //for (const i in commentary.context) {
-    //commentary.context[i].text = this.convert_bib_entry(commentary.context[i].text, zotero);
-    //}
-  }
+  //public convert_bib_entries(commentary: Commentary, zotero: Bib[]): void {
+  // TODO: needs to be reworked in the commentary rewrite
+  //commentary.differences = this.convert_bib_entry(commentary.differences, zotero);
+  //commentary.commentary = this.convert_bib_entry(commentary.commentary, zotero);
+  //commentary.apparatus = this.convert_bib_entry(commentary.apparatus, zotero);
+  //commentary.reconstruction = this.convert_bib_entry(commentary.reconstruction, zotero);
+  //commentary.translation = this.convert_bib_entry(commentary.translation, zotero);
+  //for (const i in commentary.context) {
+  //commentary.context[i].text = this.convert_bib_entry(commentary.context[i].text, zotero);
+  //}
+  //}
 
   /**
    * Converts all Zotero cite entries in a blob of text to proper citations
