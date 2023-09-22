@@ -20,7 +20,8 @@ export class TranslationComponent implements OnChanges {
   protected expansion_panel_title: string;
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.translated) {
+    if (changes) {
+      console.log('change!');
       this.process_translation();
     }
   }

@@ -15,5 +15,6 @@ export const environment = {
   current_user_role: 'teacher',
   production: false,
   zotero_url: "https://api.zotero.org/groups/5089557/items?v=3&include=data,citation",
+  zotero_item: "https://api.zotero.org/groups/5089557/items/<key>?v=3&include=data,citation",
   debug: true,
 };

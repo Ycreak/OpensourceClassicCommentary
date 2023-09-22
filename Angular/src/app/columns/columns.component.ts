@@ -56,7 +56,7 @@ export class ColumnsComponent implements OnInit {
   ngOnInit(): void {
     this.api.request_authors_titles_editors_blob();
     //FIXME: maybe we should only request the bibliography on fragment click?
-    this.zotero.request_bibliography();
+    //this.zotero.request_bibliography();
     // Create an empty current_document variable to be filled whenever the user clicks a fragment
     this.current_document = new Fragment({});
     // Create the first column and push it to the columns list
