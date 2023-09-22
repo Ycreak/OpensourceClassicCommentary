@@ -6,7 +6,6 @@ import { environment } from '@src/environments/environment';
 
 // Component imports
 import { ApiService } from '@oscc/api.service';
-import { ZoteroService } from '@oscc/services/zotero.service';
 import { UtilityService } from '@oscc/utility.service';
 import { AuthService } from '@oscc/auth/auth.service';
 import { DialogService } from '@oscc/services/dialog.service';
@@ -69,7 +68,6 @@ export class FragmentsDashboardComponent implements OnInit {
 
   constructor(
     protected api: ApiService,
-    private zotero: ZoteroService,
     protected utility: UtilityService,
     protected dialog: DialogService,
     protected auth_service: AuthService
@@ -81,8 +79,6 @@ export class FragmentsDashboardComponent implements OnInit {
     //}
 
     this.api.request_authors_titles_editors_blob();
-    this.zotero.request_bibliography();
-
     // We will store all dashboard data in the following data object
     this.selected_fragment_data = new Column({
       column_id: environment.dashboard_id,
