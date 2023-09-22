@@ -9,7 +9,7 @@ export const environment = {
   referencer_id: 256, 
   playground_id: 0,
   //flask_api: 'http://localhost:5003/',
-  flask_api: 'https://oscc.nolden.biz:5004/',
+  flask_api: 'http://oscc.nolden.biz:5004/',
   is_logged_in: true,
   current_user_name: 'Lucus',
   current_user_role: 'teacher',

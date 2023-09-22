@@ -90,6 +90,22 @@
   <hr
 /></ng-container>
 
+<ng-container *ngIf="this.bibliography">
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <b>Fragment Bibliography</b>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="mat-expansion-panel-content">
+      <div class="mat-expansion-panel-body">
+        <app-expandable-text [content]="this.bibliography"></app-expandable-text>
+      </div>
+    </div>
+  </mat-expansion-panel>
+  <hr
+/></ng-container>
+
 <!-- TODO: <div *ngFor="let linked_fragment of this.commentary_column.linked_fragments_content">
         <div *ngIf="linked_fragment.has_content()">
             <h6>

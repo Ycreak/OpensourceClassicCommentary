@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { ApiService } from '@oscc/api.service';
 import { AuthService } from '@oscc/auth/auth.service';
 import { DialogService } from '@oscc/services/dialog.service';
-import { ZoteroService } from '@oscc/services/zotero.service';
 
 import { ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
@@ -26,7 +25,6 @@ export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     protected auth_service: AuthService,
-    protected zotero: ZoteroService,
     protected api: ApiService,
     protected dialog: DialogService
   ) {
@@ -38,10 +36,10 @@ export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   ngOnInit(): void {
     // Sort bib on lastname
-    this.zotero.bibliography.sort((a, b) =>
+    this.api.bibliography.sort((a, b) =>
       a.creators[0].lastname > b.creators[0].lastname ? 1 : b.creators[0].lastname > a.creators[0].lastname ? -1 : 0
     );
-    this.fill_table(this.zotero.bibliography);
+    this.fill_table(this.api.bibliography);
   }
 
   ngAfterViewInit(): void {

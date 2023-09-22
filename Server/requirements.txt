@@ -8,4 +8,5 @@ jsonpickle
 fuzzywuzzy
 python-Levenshtein
 pytest
+pyzotero
 wheel

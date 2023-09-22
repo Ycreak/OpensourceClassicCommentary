@@ -12,6 +12,7 @@ import { UtilityService } from '@oscc/utility.service';
 
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
+import { Bib } from '@oscc/models/Bib';
 import { Testimonium } from '@oscc/models/Testimonium';
 import { User } from '@oscc/models/User';
 import { Introduction_form } from '@oscc/models/Introduction_form';
@@ -52,6 +53,8 @@ export class ApiService {
   network_status: boolean; // Indicates if server is reachable or not
   concurrent_api_calls = 0;
   spinner: boolean;
+
+  bibliography: Bib[] = [];
 
   constructor(private http: HttpClient, private utility: UtilityService) {
     this.network_status = true; // Assumed online until HttpErrorResponse is received.
@@ -345,6 +348,33 @@ export class ApiService {
       },
     });
     return result;
+  }
+  
+  /**
+   * Retrieves the Zotero bibliography from the Flask server
+   * @param key (object)
+   * @return document_names (list)
+   * @author Ycreak
+   */
+  public get_bibliography(): Observable<any> {
+    return new Observable((observer) => {
+      this.http
+        .post<any>(this.FlaskURL + `bibliography/get`, {
+          observe: 'body',
+          responseType: 'json',
+        })
+        .subscribe((data: any) => {
+          const bib_list: Bib[] = [];
+          data.forEach((item: any) => {
+            const bib = new Bib();
+            bib.set(item);
+            bib_list.push(bib);
+          });
+          this.bibliography = bib_list;
+          observer.next(data);
+          observer.complete();
+        });
+    });
   }
 
   /**

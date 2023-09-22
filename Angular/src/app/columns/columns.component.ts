@@ -12,7 +12,6 @@ import { SettingsService } from '@oscc/services/settings.service';
 import { UtilityService } from '@oscc/utility.service';
 import { AuthService } from '@oscc/auth/auth.service';
 import { ColumnHandlerService } from '@oscc/services/column-handler.service';
-import { ZoteroService } from '@oscc/services/zotero.service';
 import { DocumentFilterComponent } from '@oscc/dialogs/document-filter/document-filter.component';
 
 // Model imports
@@ -48,7 +47,6 @@ export class ColumnsComponent implements OnInit {
     protected auth_service: AuthService,
     protected dialog: DialogService,
     protected column_handler: ColumnHandlerService,
-    private zotero: ZoteroService,
     protected settings: SettingsService,
     private matdialog: MatDialog
   ) {}
