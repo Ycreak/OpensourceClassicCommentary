@@ -18,7 +18,23 @@ export class ZoteroService {
   public get(url: string): Observable<any> {
     return this.http.get<any>(url);
   }
-
+  /**
+   * Returns the zotero item given the key.
+   * @param key (string)
+   * @return zotero_item (object)
+   * @author Ycreak
+   */
+  public get_zotero_item(key: any): Observable<any> {
+    return new Observable((observer) => {
+      const zotero_link = environment.zotero_item.replace('<key>', key);
+      this.get(zotero_link).subscribe((data: any) => {
+        const bib = new Bib();
+        bib.set(data);
+        observer.next(bib);
+        observer.complete();
+      });
+    });
+  }
   /**
    * Returns the zotero bibliography. If not yet retrieved, does so.
    * @author Ycreak

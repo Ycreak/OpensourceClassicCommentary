@@ -1,9 +1,94 @@
 <!-- Show the commentary for the clicked fragment -->
-<div>
-  <ng-container
-    [ngTemplateOutlet]="commentary_column_template"
-    [ngTemplateOutletContext]="{ given_fragment: this.commentary }"></ng-container>
-</div>
+<ng-container *ngIf="this.commentary.translation">
+  <app-translation [commentary]="this.commentary" [translated]="this.translated"></app-translation>
+  <hr
+/></ng-container>
+
+<ng-container *ngIf="this.commentary.apparatus">
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <b>Apparatus Criticus</b>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="mat-expansion-panel-content">
+      <div class="mat-expansion-panel-body">
+        <app-expandable-text [content]="this.commentary.apparatus"></app-expandable-text>
+      </div>
+    </div>
+  </mat-expansion-panel>
+  <hr
+/></ng-container>
+
+<ng-container *ngIf="this.commentary.differences">
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <b>Editorial Differences</b>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="mat-expansion-panel-content">
+      <div class="mat-expansion-panel-body">
+        <app-expandable-text [content]="this.commentary.differences"></app-expandable-text>
+      </div>
+    </div>
+  </mat-expansion-panel>
+  <hr
+/></ng-container>
+
+<ng-container *ngIf="!this.utility.is_empty_array(this.commentary.context)">
+  <div *ngFor="let current_context of this.commentary.context">
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <b>Citation Context</b>
+        </mat-panel-title>
+        <div>
+          {{ current_context.author }} <i>{{ current_context.location }}</i>
+        </div>
+        <div class="div-padding-sm"></div>
+      </mat-expansion-panel-header>
+      <div class="mat-expansion-panel-content">
+        <div class="mat-expansion-panel-body">
+          <div [innerHTML]="current_context.text"></div>
+        </div>
+      </div>
+    </mat-expansion-panel>
+  </div>
+  <hr />
+</ng-container>
+
+<ng-container *ngIf="this.commentary.commentary">
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <b>Fragment Commentary</b>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="mat-expansion-panel-content">
+      <div class="mat-expansion-panel-body">
+        <app-expandable-text [content]="this.commentary.commentary"></app-expandable-text>
+      </div>
+    </div>
+  </mat-expansion-panel>
+  <hr
+/></ng-container>
+
+<ng-container *ngIf="this.commentary.reconstruction">
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <b>Fragment Reconstruction</b>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="mat-expansion-panel-content">
+      <div class="mat-expansion-panel-body">
+        <app-expandable-text [content]="this.commentary.reconstruction"></app-expandable-text>
+      </div>
+    </div>
+  </mat-expansion-panel>
+  <hr
+/></ng-container>
 
 <!-- TODO: <div *ngFor="let linked_fragment of this.commentary_column.linked_fragments_content">
         <div *ngIf="linked_fragment.has_content()">
@@ -15,134 +100,3 @@
                 [ngTemplateOutletContext]="{ given_fragment: linked_fragment }"></ng-container>
         </div>
     </div> -->
-
-<!-- Template for commentary column: TODO: take this out of this template -->
-<ng-template #commentary_column_template let-given_fragment="given_fragment">
-  <app-translation [commentary]="given_fragment" [translated]="this.translated"></app-translation>
-  <!-- Show the fragment's original text -->
-
-  <ng-container
-    *ngTemplateOutlet="
-      show_fragment_content;
-      context: { current_document_content: given_fragment.apparatus, title: 'Apparatus Criticus' }
-    ">
-  </ng-container>
-  <!-- Show the apparatus criticus of the fragment -->
-
-  <ng-container
-    *ngTemplateOutlet="
-      show_fragment_content;
-      context: { current_document_content: given_fragment.differences, title: 'Editorial Differences' }
-    ">
-  </ng-container>
-  <!-- Show the fragment differences -->
-
-  <ng-container *ngIf="!this.utility.is_empty_array(given_fragment.context)">
-    <div *ngFor="let current_context of given_fragment.context">
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            <b>Citation Context</b>
-          </mat-panel-title>
-          <div>
-            {{ current_context.author }} <i>{{ current_context.location }}</i>
-          </div>
-          <div class="div-padding-sm"></div>
-        </mat-expansion-panel-header>
-        <div class="mat-expansion-panel-content">
-          <div class="mat-expansion-panel-body">
-            <div [innerHTML]="current_context.text"></div>
-          </div>
-        </div>
-      </mat-expansion-panel>
-    </div>
-    <hr />
-    <!-- Show all context items for the selected fragment -->
-  </ng-container>
-
-  <ng-container
-    *ngTemplateOutlet="
-      show_fragment_content;
-      context: { current_document_content: given_fragment.commentary, title: 'Fragment Commentary' }
-    ">
-  </ng-container>
-  <!-- Show the fragment commentary -->
-
-  <ng-container
-    *ngTemplateOutlet="
-      show_fragment_content;
-      context: { current_document_content: given_fragment.reconstruction, title: 'Fragment Reconstruction' }
-    ">
-  </ng-container>
-  <!-- Show the fragment reconstruction -->
-
-  <ng-container
-    *ngTemplateOutlet="
-      show_fragment_content;
-      context: { current_document_content: given_fragment.metrical_analysis, title: 'Metrical Analysis' }
-    ">
-  </ng-container>
-  <!-- Show the fragment metrical analysis -->
-  <ng-container
-    *ngTemplateOutlet="
-      show_fragment_content;
-      context: { current_document_content: given_fragment.bibliography, title: 'Bibliography' }
-    ">
-  </ng-container>
-  <!-- Show the document bibliography -->
-</ng-template>
-
-<!-- ###### TEMPLATES ###### -->
-<!-- Template to show fragment content from the given fragment in a mat expansion panel -->
-<ng-template #show_fragment_content let-current_document_content="current_document_content" let-title="title">
-  <ng-container *ngIf="current_document_content !== ''">
-    <!-- do not generate fields if content is empty -->
-    <mat-expansion-panel *ngIf="current_document_content">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          <b>{{ title }}</b>
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <div class="mat-expansion-panel-content">
-        <div class="mat-expansion-panel-body">
-          <app-expandable-text [content]="current_document_content"></app-expandable-text>
-          <!-- TODO: This is currently not applied to citation context -->
-        </div>
-      </div>
-    </mat-expansion-panel>
-    <hr />
-    <!-- And add a nice line to separate the fields -->
-  </ng-container>
-</ng-template>
-
-<!-- Template to show fragment content from the given fragment in a mat expansion panel -->
-<ng-template #show_fragment_content_orig_text let-current_document_content="current_document_content" let-title="title">
-  <ng-container *ngIf="current_document_content.length > 0">
-    <!-- do not generate fields if content is empty -->
-    <mat-expansion-panel
-      *ngIf="current_document_content"
-      [expanded]="this.translation_orig_text_expanded"
-      (click)="toggle_translation_orig_text_expanded()">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          <b>{{ title }}</b>
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <div class="mat-expansion-panel-content">
-        <div class="mat-expansion-panel-body">
-          <div *ngFor="let fragment_line of current_document_content">
-            <p
-              *ngIf="this.settings.fragments.show_line_names; else no_line_names"
-              [innerHTML]="fragment_line.line_number + ': ' + fragment_line.text | safeHtml"></p>
-            <ng-template #no_line_names>
-              <!--safeHtml to allow whitespaces made by spans-->
-              <p [innerHTML]="fragment_line.text | safeHtml"></p>
-            </ng-template>
-          </div>
-        </div>
-      </div>
-    </mat-expansion-panel>
-    <hr />
-    <!-- And add a nice line to separate the fields -->
-  </ng-container>
-</ng-template>
