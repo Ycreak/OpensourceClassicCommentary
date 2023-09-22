@@ -115,12 +115,13 @@ export class CommentaryComponent implements OnChanges {
         const bib_item = bibliography.find((o) => o.key === bib_key);
         //Add the item to the bibliography for easy printing in an expansion panel
         this.bibliography += `<p>${bib_item.creators[0].lastname} (${bib_item.date}) ${bib_item.title}</p>`;
-        if (values.length > 2) {
-          from_page = values[1];
-          to_page = values[2];
+        // The key looks as follows: [bib-<key>-<lastname>-<date>-<from_page>-<to_page>]
+        if (values.length > 4) {
+          from_page = values[3];
+          to_page = values[4];
           html = `(${bib_item.creators[0].lastname}, ${bib_item.date}: ${from_page}-${to_page})`;
-        } else if (values.length > 1) {
-          from_page = values[1];
+        } else if (values.length > 3) {
+          from_page = values[3];
           html = `(${bib_item.creators[0].lastname}, ${bib_item.date}: ${from_page})`;
         } else {
           html = `(${bib_item.creators[0].lastname}, ${bib_item.date})`;
