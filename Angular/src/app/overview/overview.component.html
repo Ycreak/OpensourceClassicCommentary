@@ -109,14 +109,10 @@
             {{ this.clicked_document.name }}
           </h5>
 
-          <!-- Show banner if no commentary available -->
-          <div *ngIf="!this.clicked_document.commentary.has_content()" class="alert alert-info" role="alert">
-            No content is available yet for this specific fragment.
-          </div>
           <!--Show the commentary via the commentary component -->
           <app-commentary
-            *ngIf="this.clicked_document.commentary.has_content()"
             #commentary
+            [document]="this.clicked_document"
             [commentary]="this.clicked_document.commentary"
             [translated]="this.clicked_document.translated">
           </app-commentary>
