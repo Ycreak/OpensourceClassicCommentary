@@ -1,125 +1,103 @@
-<div *ngIf="this.no_linked_commentary_found" class="alert alert-info" role="alert">No linked commentary found.</div>
+<!-- Show banner if no commentary available -->
+<div *ngIf="!this.commentary.has_content()" class="alert alert-info" role="alert">
+  No content is available yet for this specific fragment.
+</div>
 
-<div style="text-align: center">
+<div>
+  <ng-container
+    [ngTemplateOutlet]="commentary_column_template"
+    [ngTemplateOutletContext]="{ given_commentary: this.commentary }">
+  </ng-container>
+</div>
+
+<ng-template #commentary_column_template let-commentary="given_commentary">
+  <!-- Show the fragment's translation or original text -->
+  <ng-container *ngIf="commentary.translation">
+    <app-translation [commentary]="commentary" [translated]="this.translated"></app-translation>
+    <hr
+  /></ng-container>
+
+  <ng-container *ngIf="commentary.apparatus">
+    <app-general-commentary-field
+      [content]="commentary.apparatus"
+      [title]="'Apparatus Criticus'"></app-general-commentary-field>
+    <hr
+  /></ng-container>
+
+  <ng-container *ngIf="commentary.differences">
+    <app-general-commentary-field
+      [content]="commentary.differences"
+      [title]="'Editorial Differences'"></app-general-commentary-field>
+    <hr
+  /></ng-container>
+
+  <ng-container *ngIf="!this.utility.is_empty_array(commentary.context)">
+    <div *ngFor="let current_context of commentary.context">
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <b>Citation Context</b>
+          </mat-panel-title>
+          <div>
+            {{ current_context.author }} <i>{{ current_context.location }}</i>
+          </div>
+          <div class="div-padding-sm"></div>
+        </mat-expansion-panel-header>
+        <div class="mat-expansion-panel-content">
+          <div class="mat-expansion-panel-body">
+            <div [innerHTML]="current_context.text"></div>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </div>
+    <hr />
+  </ng-container>
+
+  <ng-container *ngIf="commentary.commentary">
+    <app-general-commentary-field
+      [content]="commentary.commentary"
+      [title]="'Fragment Commentary'"></app-general-commentary-field>
+    <hr
+  /></ng-container>
+
+  <ng-container *ngIf="commentary.metrical_analysis">
+    <app-general-commentary-field
+      [content]="commentary.metrical_analysis"
+      [title]="'Metrical Analysis'"></app-general-commentary-field>
+    <hr
+  /></ng-container>
+
+  <ng-container *ngIf="commentary.reconstuction">
+    <app-general-commentary-field
+      [content]="commentary.reconstruction"
+      [title]="'Fragment Reconstruction'"></app-general-commentary-field>
+    <hr
+  /></ng-container>
+
+  <ng-container *ngIf="commentary.bibliography">
+    <app-general-commentary-field
+      [content]="commentary.bibliography"
+      [title]="'Fragment Bibliography'"></app-general-commentary-field>
+  </ng-container>
+</ng-template>
+
+<!--Linked commentary section-->
+<div style="text-align: center; padding-top: 1em; padding-bottom: 1em" *ngIf="!this.linked_commentary_retrieved">
   <button mat-stroked-button (click)="this.retrieve_linked_commentary()">
     Retrieve commentary from linked fragments
   </button>
 </div>
-<!-- Show the commentary for the clicked fragment -->
-<ng-container *ngIf="this.commentary.translation">
-  <app-translation [commentary]="this.commentary" [translated]="this.translated"></app-translation>
-  <hr
-/></ng-container>
 
-<ng-container *ngIf="this.commentary.apparatus">
-  <mat-expansion-panel>
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        <b>Apparatus Criticus</b>
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-    <div class="mat-expansion-panel-content">
-      <div class="mat-expansion-panel-body">
-        <app-expandable-text [content]="this.commentary.apparatus"></app-expandable-text>
-      </div>
-    </div>
-  </mat-expansion-panel>
-  <hr
-/></ng-container>
+<div *ngIf="this.no_linked_commentary_found" class="alert alert-info" role="alert">No linked commentary found.</div>
 
-<ng-container *ngIf="this.commentary.differences">
-  <mat-expansion-panel>
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        <b>Editorial Differences</b>
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-    <div class="mat-expansion-panel-content">
-      <div class="mat-expansion-panel-body">
-        <app-expandable-text [content]="this.commentary.differences"></app-expandable-text>
-      </div>
-    </div>
-  </mat-expansion-panel>
-  <hr
-/></ng-container>
-
-<ng-container *ngIf="!this.utility.is_empty_array(this.commentary.context)">
-  <div *ngFor="let current_context of this.commentary.context">
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          <b>Citation Context</b>
-        </mat-panel-title>
-        <div>
-          {{ current_context.author }} <i>{{ current_context.location }}</i>
-        </div>
-        <div class="div-padding-sm"></div>
-      </mat-expansion-panel-header>
-      <div class="mat-expansion-panel-content">
-        <div class="mat-expansion-panel-body">
-          <div [innerHTML]="current_context.text"></div>
-        </div>
-      </div>
-    </mat-expansion-panel>
+<div *ngFor="let linked_fragment of this.linked_commentaries">
+  <div *ngIf="linked_fragment.commentary.has_content()">
+    <h6>
+      Commentary from {{ linked_fragment.author }}, {{ linked_fragment.title }}, {{ linked_fragment.editor }},
+      {{ linked_fragment.name }}
+    </h6>
+    <ng-container
+      [ngTemplateOutlet]="commentary_column_template"
+      [ngTemplateOutletContext]="{ given_commentary: linked_fragment.commentary }"></ng-container>
   </div>
-  <hr />
-</ng-container>
-
-<ng-container *ngIf="this.commentary.commentary">
-  <mat-expansion-panel>
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        <b>Fragment Commentary</b>
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-    <div class="mat-expansion-panel-content">
-      <div class="mat-expansion-panel-body">
-        <app-expandable-text [content]="this.commentary.commentary"></app-expandable-text>
-      </div>
-    </div>
-  </mat-expansion-panel>
-  <hr
-/></ng-container>
-
-<ng-container *ngIf="this.commentary.reconstruction">
-  <mat-expansion-panel>
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        <b>Fragment Reconstruction</b>
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-    <div class="mat-expansion-panel-content">
-      <div class="mat-expansion-panel-body">
-        <app-expandable-text [content]="this.commentary.reconstruction"></app-expandable-text>
-      </div>
-    </div>
-  </mat-expansion-panel>
-  <hr
-/></ng-container>
-
-<ng-container *ngIf="this.bibliography">
-  <mat-expansion-panel>
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        <b>Fragment Bibliography</b>
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-    <div class="mat-expansion-panel-content">
-      <div class="mat-expansion-panel-body">
-        <app-expandable-text [content]="this.bibliography"></app-expandable-text>
-      </div>
-    </div>
-  </mat-expansion-panel>
-  <hr
-/></ng-container>
-
-<!-- TODO: <div *ngFor="let linked_fragment of this.commentary_column.linked_fragments_content">
-        <div *ngIf="linked_fragment.has_content()">
-            <h6>
-                Linked commentary from {{ linked_fragment.author }}, {{ linked_fragment.title }},
-                {{ linked_fragment.editor }}, {{ linked_fragment.name }}
-            </h6>
-            <ng-container [ngTemplateOutlet]="commentary_column_template"
-                [ngTemplateOutletContext]="{ given_fragment: linked_fragment }"></ng-container>
-        </div>
-    </div> -->
+</div>

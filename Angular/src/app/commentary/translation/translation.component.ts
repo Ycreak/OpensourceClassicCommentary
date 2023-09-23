@@ -21,7 +21,6 @@ export class TranslationComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes) {
-      console.log('change!');
       this.process_translation();
     }
   }

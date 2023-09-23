@@ -4,7 +4,6 @@ import { StringFormatterService } from '@oscc/services/string-formatter.service'
 
 // Model imports
 import { Commentary } from '@oscc/models/Commentary';
-import { Bib } from '@oscc/models/Bib';
 import { DialogService } from '@oscc/services/dialog.service';
 import { SettingsService } from '@oscc/services/settings.service';
 
@@ -27,6 +26,7 @@ export class CommentaryComponent implements OnChanges {
   protected bibliography = '';
 
   protected no_linked_commentary_found: boolean;
+  protected linked_commentary_retrieved = false;
   protected linked_commentaries: Commentary[];
 
   constructor(
@@ -40,27 +40,45 @@ export class CommentaryComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes.commentary) {
       this.no_linked_commentary_found = false;
+      this.linked_commentary_retrieved = false;
       this.linked_commentaries = [];
 
       this.bibliography = '';
 
       this.commentary = this.add_html(this.commentary);
-      this.format_bib_entries(this.commentary, this.api.bibliography);
+      this.commentary = this.format_bib_entries(this.commentary);
     }
   }
 
+  /**
+   * Retrieve linked commentary given the current document
+   * @author Ycreak
+   */
   protected retrieve_linked_commentary(): void {
+    let concurrent_calls = 0;
+    this.linked_commentary_retrieved = true;
     // If no linked fragments are found, we set a banner
     if (this.document.linked_fragments.length == 0) {
       this.no_linked_commentary_found = true;
     }
+
+    console.log(this.document.linked_fragments);
     this.document.linked_fragments.forEach((filter: any) => {
+      concurrent_calls += 1;
       this.api.get_documents(filter).subscribe((documents) => {
-        if (documents[0].commentary.has_content()) {
-          this.linked_commentaries.push(documents[0].commentary);
+        const found_document = documents[0];
+        concurrent_calls -= 1;
+        if (found_document.commentary.has_content()) {
+          found_document.commentary = this.add_html(found_document.commentary);
+          found_document.commentary = this.format_bib_entries(found_document.commentary);
+          this.linked_commentaries.push(found_document);
+          console.log(this.linked_commentaries);
         }
         // If linked fragments are found but have no commentary, we set the banner
-        this.no_linked_commentary_found = this.linked_commentaries.length == 0;
+        // Only set this banner on the last api call. Otherwise the banner might flash by
+        if (concurrent_calls == 0) {
+          this.no_linked_commentary_found = this.linked_commentaries.length == 0;
+        }
       });
     });
   }
@@ -100,19 +118,24 @@ export class CommentaryComponent implements OnChanges {
   /**
    * Converts bib references to proper html
    * @param string that needs bib entries handled
-   * @returns string with bib entries handled
+   * @returns Commentary with bib entries handled
    * @author Ycreak
    */
-  public format_bib_entries(commentary: Commentary, bibliography: Bib[]): void {
+  public format_bib_entries(commentary: Commentary): Commentary {
     //TODO: needs to be reworked in the commentary rewrite
-    commentary.differences = this.convert_bib_entry(commentary.differences, bibliography);
-    commentary.commentary = this.convert_bib_entry(commentary.commentary, bibliography);
-    commentary.apparatus = this.convert_bib_entry(commentary.apparatus, bibliography);
-    commentary.reconstruction = this.convert_bib_entry(commentary.reconstruction, bibliography);
-    commentary.translation = this.convert_bib_entry(commentary.translation, bibliography);
+    commentary.differences = this.convert_bib_entry(commentary.differences);
+    commentary.commentary = this.convert_bib_entry(commentary.commentary);
+    commentary.apparatus = this.convert_bib_entry(commentary.apparatus);
+    commentary.reconstruction = this.convert_bib_entry(commentary.reconstruction);
+    commentary.translation = this.convert_bib_entry(commentary.translation);
     for (const i in commentary.context) {
-      commentary.context[i].text = this.convert_bib_entry(commentary.context[i].text, bibliography);
+      commentary.context[i].text = this.convert_bib_entry(commentary.context[i].text);
     }
+
+    commentary.bibliography = this.bibliography;
+    this.bibliography = '';
+
+    return commentary;
   }
 
   /**
@@ -122,7 +145,7 @@ export class CommentaryComponent implements OnChanges {
    * @returns string with its Zotero entries converted
    * @author Ycreak
    */
-  protected convert_bib_entry(given_string: string, bibliography: Bib[]): string {
+  protected convert_bib_entry(given_string: string): string {
     let from_page = '';
     let to_page = '';
     let bib_key = '';
@@ -137,7 +160,7 @@ export class CommentaryComponent implements OnChanges {
         full_tag = entry[0];
         const values = entry[1].split('-');
         bib_key = values[0];
-        const bib_item = bibliography.find((o) => o.key === bib_key);
+        const bib_item = this.api.bibliography.find((o) => o.key === bib_key);
         //Add the item to the bibliography for easy printing in an expansion panel
         this.bibliography += `<p>${bib_item.creators[0].lastname} (${bib_item.date}) ${bib_item.title}</p>`;
         // The key looks as follows: [bib-<key>-<lastname>-<date>-<from_page>-<to_page>]
