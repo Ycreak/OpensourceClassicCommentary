@@ -351,6 +351,34 @@ export class ApiService {
   }
 
   /**
+   * Asks Flask to resync the Zotero bibliography. Receives synced bibliography
+   * @param key (object)
+   * @return document_names (list)
+   * @author Ycreak
+   */
+  public sync_bibliography(): Observable<any> {
+    return new Observable((observer) => {
+      this.http
+        .post<any>(this.FlaskURL + `bibliography/sync`, {
+          observe: 'body',
+          responseType: 'json',
+        })
+        .subscribe((data: any) => {
+          const bib_list: Bib[] = [];
+          data.forEach((item: any) => {
+            const bib = new Bib();
+            bib.set(item);
+            bib_list.push(bib);
+          });
+          this.bibliography = bib_list;
+          observer.next(data);
+          observer.complete();
+        });
+    });
+  }
+
+
+  /**
    * Retrieves the Zotero bibliography from the Flask server
    * @param key (object)
    * @return document_names (list)

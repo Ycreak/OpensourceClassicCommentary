@@ -12,4 +12,10 @@ import { AuthService } from '@oscc/auth/auth.service';
 })
 export class DashboardComponent {
   constructor(protected api: ApiService, protected auth_service: AuthService) {}
+
+  protected request_bibliography_resync(): void {
+    this.api.sync_bibliography().subscribe((bib) => {
+      console.debug('Bibliography resynced', bib);
+    });
+  }
 }

@@ -19,6 +19,12 @@
   <button
     mat-stroked-button
     class="navbar button-margin"
+    (click)="this.request_bibliography_resync()">
+    SYNC BIBLIOGRAPHY 
+  </button>
+  <button
+    mat-stroked-button
+    class="navbar button-margin"
     *ngIf="this.auth_service.current_user_role === 'teacher'"
     (click)="test('Navbar')">
     TEST
