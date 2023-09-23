@@ -13,13 +13,6 @@
       (click)="column_to_display.new_column = false">
       Select text
     </button>
-    <button
-      *ngIf="column_to_display.has_translations()"
-      class="fragment-column-button"
-      mat-button
-      (click)="this.toggle_translation(column_to_display)"
-      [innerHTML]="this.translation_toggle_button_label(column_to_display)"></button>
-
     <!-- Nested menu to select author - title - editor. -->
     <mat-menu #menu_authors="matMenu">
       <ng-container *ngFor="let author of this.api.get_author_list(); let i = index">
@@ -69,10 +62,6 @@
     </mat-menu>
 
     <!-- Buttons to modify columns -->
-    <button mat-icon-button (click)="this.set_custom_filter(column_to_display.column_id)">
-      <mat-icon>filter_alt</mat-icon>
-    </button>
-
     <button mat-icon-button (click)="this.column_handler.move_column(column_to_display.column_id, 'left')">
       <mat-icon>keyboard_arrow_left</mat-icon>
     </button>
@@ -83,6 +72,10 @@
 
     <button mat-icon-button (click)="this.column_handler.close_column(column_to_display.column_id)">
       <mat-icon>clear</mat-icon>
+    </button>
+
+    <button mat-icon-button (click)="this.current_column = column_to_display" [matMenuTriggerFor]="columnMenu">
+      <mat-icon fontIcon="menu"></mat-icon>
     </button>
 
     <!-- Separator-->
@@ -181,3 +174,13 @@
   [style.left]="menuTopLeftPosition.x"
   [style.top]="menuTopLeftPosition.y"
   [matMenuTriggerFor]="rightMenu"></div>
+
+<mat-menu #columnMenu="matMenu">
+  <button
+    *ngIf="this.current_column.has_translations()"
+    (click)="this.toggle_translation(this.current_column)"
+    mat-menu-item>
+    {{ this.translation_toggle_button_label(this.current_column) }}
+  </button>
+  <button (click)="this.set_custom_filter(this.current_column.column_id)" mat-menu-item>Custom filter</button>
+</mat-menu>
