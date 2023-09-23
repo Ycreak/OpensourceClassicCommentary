@@ -177,6 +177,11 @@
 
 <mat-menu #columnMenu="matMenu">
   <button
+    (click)="this.show_column_bibliography(this.current_column.documents)"
+    mat-menu-item>
+    Column Bibliography
+  </button>
+  <button
     *ngIf="this.current_column.has_translations()"
     (click)="this.toggle_translation(this.current_column)"
     mat-menu-item>

@@ -259,6 +259,10 @@ export class ColumnsComponent implements OnInit, OnChanges {
     }
   }
 
+  protected show_column_bibliography(documents: any): void {
+    console.log('hello', documents)
+  }
+
   /**
    * This function allows the user to display the translations of the fragments instead of the original text.
    * The Fragment Translation tab in the commentary section then becomes the 'original text' tab instead.
