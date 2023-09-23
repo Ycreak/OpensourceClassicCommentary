@@ -53,7 +53,7 @@ export class PlaygroundComponent implements OnInit {
     this.canvas = new fabric.Canvas('playground_canvas');
     this.set_canvas_event_handlers();
     this.init_canvas_settings();
-    this.request_documents({ author: 'Ennius', title: 'Eumenides', editor: 'TRF' });
+    //this.request_documents({ author: 'Ennius', title: 'Eumenides', editor: 'TRF' });
   }
 
   /**

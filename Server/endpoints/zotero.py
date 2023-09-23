@@ -2,6 +2,8 @@ import json
 from pyzotero import zotero as pyzotero
 from flask_jsonpify import jsonify
 
+import utilities as util
+
 class Zotero:
     zotero_api: pyzotero.Zotero
     
@@ -13,29 +15,13 @@ class Zotero:
 
     def __init__(self) -> None:
         self.zotero_api = pyzotero.Zotero(self.library_id, self.library_type)
-        # Opening JSON file
-        with open(self.cache_file, 'r') as openfile:
-            # Reading from json file
-            self.bibliography = json.load(openfile)
-
+        self.bibliography = util.read_json(self.cache_file) 
         
-    def write_cache(self, bibliography: object) -> None:
-        """Writes the given bibliography to the cache
-
-        Args:
-            bibliography (list): with zotero items
-        """        
-        # Serializing json
-        json_object = json.dumps(bibliography, indent=2)
-        # Writing to sample.json
-        with open(self.cache_file, "w") as outfile:
-            outfile.write(json_object)
-
     def renew(self) -> None:
         """Renews the complete zotero bibliography. Expensive operation
         """        
         bibliography = self.zotero_api.everything(self.zotero_api.items())
-        self.write_cache(bibliography)
+        util.write_json(bibliography, self.cache_file)
 
     def get_latest_cached_version(self) -> int:
         """Gets latest version known to the cache
@@ -63,7 +49,19 @@ class Zotero:
             self.bibliography = [d for d in self.bibliography if d['key'] != key]
             self.bibliography.append(bib_item)
 
-        self.write_cache(self.bibliography)
+        # Delete from the cache those entries that are deleted from Zotero
+        cached_keys = [x['key'] for x in self.bibliography]
+        online_keys = list(self.zotero_api.item_versions().keys())
+
+        deleted_keys = list(set(cached_keys) - set(online_keys))
+
+        if len(deleted_keys) > 0:
+            print(deleted_keys)
+            for key in deleted_keys:
+                print('Removing deleted item:', key)
+                self.bibliography = [d for d in self.bibliography if d['key'] != key]
+
+        util.write_json(self.bibliography, self.cache_file)
 
 def get_bibliography():
     zotero = Zotero()

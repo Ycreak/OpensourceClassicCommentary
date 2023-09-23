@@ -82,13 +82,16 @@
 </ng-template>
 
 <!--Linked commentary section-->
+<hr />
 <div style="text-align: center; padding-top: 1em; padding-bottom: 1em" *ngIf="!this.linked_commentary_retrieved">
   <button mat-stroked-button (click)="this.retrieve_linked_commentary()">
     Retrieve commentary from linked fragments
   </button>
 </div>
 
-<div *ngIf="this.no_linked_commentary_found" class="alert alert-info" role="alert">No linked commentary found.</div>
+<div *ngIf="this.no_linked_commentary_found" class="alert alert-info" style="padding-top: 1em" role="alert">
+  No linked commentary found.
+</div>
 
 <div *ngFor="let linked_fragment of this.linked_commentaries">
   <div *ngIf="linked_fragment.commentary.has_content()">

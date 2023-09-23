@@ -15,14 +15,21 @@ from flask_jsonpify import jsonify
 from uuid import uuid4
 
 from couch import CouchAuthenticator
+import utilities as util
 from models.fragment import Fragment, FragmentModel, FragmentField
 
 fragments = FragmentModel(CouchAuthenticator().couch)
 
+list_display_cache_file: str = "cache/list_display.json"
+
 def get_list_display():
+    result = util.read_json(list_display_cache_file)
+    return jsonify(result)
+
+def refresh_list_display():
     fragment_lst = fragments.all()
     fragment_lst = [(x.author, x.title, x.editor) for x in fragment_lst]
-    return jsonify(sorted(list(set(fragment_lst))))
+    util.write_json(sorted(list(set(fragment_lst))), list_display_cache_file)
 
 def get_author():
     author = None
@@ -215,6 +222,7 @@ def create_fragment():
     if fragment == None:
         return make_response("Server error", 500)
     
+    refresh_list_display() 
     return make_response("Created", 200)
 
 def link_fragment():
@@ -304,6 +312,7 @@ def update_fragment():
     if fragment == None:
         return make_response("Server error", 500)
 
+    refresh_list_display() 
     return make_response("Revised", 200)
 
 def delete_fragment():
@@ -331,6 +340,7 @@ def delete_fragment():
 
 
     if fragment:
+        refresh_list_display() 
         return make_response("OK", 200)
     else:
         return make_response("Not found", 401)
