@@ -89,7 +89,9 @@
   </button>
 </div>
 
-<div *ngIf="this.no_linked_commentary_found" class="alert alert-info" style="padding-top: 1em" role="alert">No linked commentary found.</div>
+<div *ngIf="this.no_linked_commentary_found" class="alert alert-info" style="padding-top: 1em" role="alert">
+  No linked commentary found.
+</div>
 
 <div *ngFor="let linked_fragment of this.linked_commentaries">
   <div *ngIf="linked_fragment.commentary.has_content()">

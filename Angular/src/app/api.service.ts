@@ -377,7 +377,6 @@ export class ApiService {
     });
   }
 
-
   /**
    * Retrieves the Zotero bibliography from the Flask server
    * @param key (object)
