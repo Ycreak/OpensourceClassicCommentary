@@ -41,6 +41,7 @@ export class ColumnsComponent implements OnInit, OnChanges {
 
   public current_document: any; // Variable to store the clicked fragment and its data
   public document_clicked = false; // Shows "click a fragment" banner at startup if nothing is yet selected
+  protected current_column: Column;
 
   constructor(
     protected api: ApiService,
@@ -69,6 +70,7 @@ export class ColumnsComponent implements OnInit, OnChanges {
         })
       );
     }
+    this.current_column = this.column_handler.columns[0];
     this.request_documents(1, { document_type: 'fragment', author: 'Ennius', title: 'Thyestes', editor: 'Ribbeck' });
   }
 
