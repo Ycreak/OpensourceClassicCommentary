@@ -1,6 +1,6 @@
 // Library imports
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
-import { Output, EventEmitter } from '@angular/core';
+import { Output, EventEmitter, Input, OnChanges } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { MatDialog } from '@angular/material/dialog';
 //import { environment } from '@src/environments/environment';
@@ -35,7 +35,8 @@ import { MatMenuTrigger } from '@angular/material/menu';
     ]),
   ],
 })
-export class ColumnsComponent implements OnInit {
+export class ColumnsComponent implements OnInit, OnChanges {
+  @Input() requested_column: any;
   @Output() clicked_document = new EventEmitter<any>();
 
   public current_document: any; // Variable to store the clicked fragment and its data
@@ -69,6 +70,22 @@ export class ColumnsComponent implements OnInit {
       );
     }
     this.request_documents(1, { document_type: 'fragment', author: 'Ennius', title: 'Thyestes', editor: 'Ribbeck' });
+  }
+
+  ngOnChanges() {
+    // If a new column is requested, we will handle the request here
+    if (this.requested_column) {
+      const column_id = this.column_handler.add_new_column('fragment');
+      const filter = {
+        author: this.requested_column.author,
+        title: this.requested_column.title,
+        editor: this.requested_column.editor,
+      };
+      this.api.get_documents(filter).subscribe((documents) => {
+        documents = this.format_incoming_documents(documents);
+        this.column_handler.add_documents_to_column(column_id, documents);
+      });
+    }
   }
 
   /**

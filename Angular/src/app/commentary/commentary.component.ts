@@ -1,4 +1,5 @@
 import { Component, Input, SimpleChanges, OnChanges } from '@angular/core';
+import { Output, EventEmitter } from '@angular/core';
 import { ApiService } from '@oscc/api.service';
 import { StringFormatterService } from '@oscc/services/string-formatter.service';
 
@@ -19,6 +20,8 @@ export class CommentaryComponent implements OnChanges {
   @Input() commentary: Commentary;
   @Input() document: any;
   @Input() translated: boolean;
+
+  @Output() request_column = new EventEmitter<any>();
 
   protected document_clicked = false;
   protected translation_orig_text_expanded = false;
