@@ -46,6 +46,7 @@ import { WYSIWYGDialogComponent } from './services/dialog.service';
 import { SettingsDialogComponent } from './services/dialog.service';
 import { BibliographyComponent } from './dashboard/bibliography/bibliography.component';
 import { CustomDialogComponent } from './services/dialog.service';
+import { ColumnBibliographyComponent } from './services/dialog.service';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorInterceptor } from './api.service';
@@ -122,6 +123,7 @@ const appRoutes: Routes = [
     WYSIWYGDialogComponent,
     SettingsDialogComponent,
     CustomDialogComponent,
+    ColumnBibliographyComponent,
     PlaygroundComponent,
     CommentaryComponent,
     OverviewComponent,

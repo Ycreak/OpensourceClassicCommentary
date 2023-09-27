@@ -126,6 +126,7 @@ export class CommentaryComponent implements OnChanges {
    */
   public format_bib_entries(commentary: Commentary): Commentary {
     //TODO: needs to be reworked in the commentary rewrite
+    // See for example show_column_bibliography() in columns.ts
     commentary.differences = this.convert_bib_entry(commentary.differences);
     commentary.commentary = this.convert_bib_entry(commentary.commentary);
     commentary.apparatus = this.convert_bib_entry(commentary.apparatus);
