@@ -26,15 +26,6 @@ import { MatMenuTrigger } from '@angular/material/menu';
   templateUrl: './columns.component.html',
   styleUrls: ['./columns.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  animations: [
-    trigger('fadeSlideInOut', [
-      transition(':enter', [
-        style({ opacity: 0, transform: 'translateY(10px)' }),
-        animate('500ms', style({ opacity: 1, transform: 'translateY(0)' })),
-      ]),
-      transition(':leave', [animate('500ms', style({ opacity: 0, transform: 'translateY(10px)' }))]),
-    ]),
-  ],
 })
 export class ColumnsComponent implements OnInit, OnChanges {
   @Input() requested_column: any;
@@ -69,7 +60,7 @@ export class ColumnsComponent implements OnInit, OnChanges {
           author: 'Ennius',
           title: 'Thyestes',
           editor: 'TRF',
-        })
+        }),
       );
     }
     this.current_column = this.column_handler.columns[0];
@@ -160,7 +151,7 @@ export class ColumnsComponent implements OnInit, OnChanges {
     // First, restore all documents to their original black colour when a new document is clicked
     for (const index in this.column_handler.columns) {
       this.column_handler.columns[index] = this.column_handler.colour_documents_black(
-        this.column_handler.columns[index]
+        this.column_handler.columns[index],
       );
     }
     // Second, colour the clicked document
