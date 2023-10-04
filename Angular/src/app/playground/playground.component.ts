@@ -6,6 +6,9 @@ import { environment } from '@src/environments/environment';
 import { fabric } from 'fabric';
 import { HostListener } from '@angular/core';
 
+import { Socket } from 'ngx-socket-io';
+import { map } from 'rxjs/operators';
+
 // Service imports
 import { UtilityService } from '@oscc/utility.service';
 import { SettingsService } from '@oscc/services/settings.service';
@@ -45,15 +48,32 @@ export class PlaygroundComponent implements OnInit {
     protected utility: UtilityService,
     protected settings: SettingsService,
     protected column_handler: ColumnHandlerService,
-    protected dialog: DialogService
+    protected dialog: DialogService,
+    private socket: Socket
   ) {}
 
+  sendMessage(message: any) {
+    this.socket.emit('message', message);
+  }
+
+  getMessage() {
+    return this.socket.fromEvent('message').pipe(map((data: any) => data));
+  }
+
   ngOnInit(): void {
+    this.getMessage().subscribe((message) => {
+      console.log('hello', message);
+    });
+
     this.playground = new Column({ column_id: environment.playground_id });
     this.canvas = new fabric.Canvas('playground_canvas');
     this.set_canvas_event_handlers();
     this.init_canvas_settings();
     //this.request_documents({ author: 'Ennius', title: 'Eumenides', editor: 'TRF' });
+  }
+
+  test() {
+    this.sendMessage('hello there');
   }
 
   /**

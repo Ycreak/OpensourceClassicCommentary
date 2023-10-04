@@ -82,6 +82,10 @@ import { MatSliderModule } from '@angular/material/slider';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { QuillModule } from 'ngx-quill';
 
+// Websockets
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+const config: SocketIoConfig = { url: 'http://localhost:5000', options: {} };
+
 // Allows communication with firebase
 import { ScansionComponent } from './scansion/scansion.component';
 import { PlaygroundComponent } from './playground/playground.component';
@@ -183,6 +187,7 @@ const appRoutes: Routes = [
     DragDropModule,
     ClipboardModule,
     // MatKeyboardModule,
+    SocketIoModule.forRoot(config),
 
     // AngularFireModule.initializeApp(environment.firebase),
   ],
