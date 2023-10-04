@@ -77,6 +77,20 @@ export class DialogService {
   }
 
   /**
+   * Opens a dialog that shows the bibliography for a column
+   * @param content that is to be shown
+   * @author Ycreak
+   */
+  public open_column_bibliography(content): void {
+    this.dialog.open(ColumnBibliographyComponent, {
+      width: '90%',
+      height: '75%',
+      data: {
+        content: content,
+      },
+    });
+  }
+  /**
    * Opens a dialog that shows the provided content
    * @param content that is to be shown
    * @author Ycreak
@@ -208,6 +222,17 @@ export class WYSIWYGDialogComponent {
 })
 export class CustomDialogComponent {
   constructor(public dialogRef: MatDialogRef<CustomDialogComponent>, @Inject(MAT_DIALOG_DATA) public data) {}
+}
+/**
+ * Class to show the bibliography of a column.
+ */
+@Component({
+  selector: 'app-column-bibliopgraphy',
+  templateUrl: '../dialogs/column-bibliography.html',
+  styleUrls: ['../dialogs/dialogs.scss'],
+})
+export class ColumnBibliographyComponent {
+  constructor(public dialogRef: MatDialogRef<ColumnBibliographyComponent>, @Inject(MAT_DIALOG_DATA) public data) {}
 }
 
 /**

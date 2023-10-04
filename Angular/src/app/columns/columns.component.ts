@@ -10,6 +10,7 @@ import { ApiService } from '@oscc/api.service';
 import { DialogService } from '@oscc/services/dialog.service';
 import { SettingsService } from '@oscc/services/settings.service';
 import { UtilityService } from '@oscc/utility.service';
+import { BibliographyHelperService } from '@oscc/services/bibliography-helper.service';
 import { AuthService } from '@oscc/auth/auth.service';
 import { ColumnHandlerService } from '@oscc/services/column-handler.service';
 import { DocumentFilterComponent } from '@oscc/dialogs/document-filter/document-filter.component';
@@ -50,6 +51,7 @@ export class ColumnsComponent implements OnInit, OnChanges {
     protected dialog: DialogService,
     protected column_handler: ColumnHandlerService,
     protected settings: SettingsService,
+    private bib_helper: BibliographyHelperService,
     private matdialog: MatDialog
   ) {}
 
@@ -71,7 +73,7 @@ export class ColumnsComponent implements OnInit, OnChanges {
       );
     }
     this.current_column = this.column_handler.columns[0];
-    this.request_documents(1, { document_type: 'fragment', author: 'Ennius', title: 'Thyestes', editor: 'Ribbeck' });
+    this.request_documents(1, { document_type: 'fragment', author: 'Ennius', title: 'Thyestes', editor: 'TRF' });
   }
 
   ngOnChanges() {
@@ -256,6 +258,31 @@ export class ColumnsComponent implements OnInit, OnChanges {
       return `HSL(0, 0%, ${calculated_brightness}%)`;
     } else {
       return 'transparent';
+    }
+  }
+
+  /**
+   * Opens a bibliography dialog with all entries from the documents in the column.
+   * @param documents (list)
+   * @author Ycreak
+   */
+  protected show_column_bibliography(column: Column): void {
+    let string_bibliography = '';
+    let bib_keys: string[] = [];
+
+    column.documents.forEach((doc: any) => {
+      bib_keys = bib_keys.concat(this.bib_helper.retrieve_bib_keys_from_commentary(doc.commentary));
+    });
+    bib_keys = [...new Set(bib_keys)];
+    // If there are keys, show the bibliography
+    if (bib_keys.length > 0) {
+      bib_keys.forEach((key: string) => {
+        string_bibliography += this.bib_helper.convert_bib_key_into_citation(key);
+      });
+      this.dialog.open_column_bibliography(string_bibliography);
+    } else {
+      // If no keys are found, print a snackbar with the message
+      this.utility.open_snackbar('No bibliography available for this column.');
     }
   }
 
