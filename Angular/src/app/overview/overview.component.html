@@ -78,7 +78,10 @@
 <div>
   <mat-drawer-container class="drawer-container" autosize>
     <div class="overview-sidenav-content">
-      <app-columns [requested_column]="this.requested_column" (clicked_document)="this.clicked_document = $event">
+      <app-columns
+        [requested_column]="this.requested_column"
+        (clicked_document)="this.clicked_document = $event"
+        (translation_toggle_event)="this.translation_toggled = $event">
       </app-columns>
     </div>
 
@@ -116,6 +119,7 @@
             [document]="this.clicked_document"
             [commentary]="this.clicked_document.commentary"
             [translated]="this.clicked_document.translated"
+            [translated]="this.translation_toggled"
             (request_column)="this.requested_column = $event">
           </app-commentary>
         </ng-template>
