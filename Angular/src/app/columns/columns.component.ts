@@ -29,6 +29,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
 export class ColumnsComponent implements OnInit, OnChanges {
   @Input() requested_column: any;
   @Output() clicked_document = new EventEmitter<any>();
+  @Output() translation_toggle_event = new EventEmitter<boolean>();
 
   public current_document: any; // Variable to store the clicked fragment and its data
   public document_clicked = false; // Shows "click a fragment" banner at startup if nothing is yet selected
@@ -42,7 +43,7 @@ export class ColumnsComponent implements OnInit, OnChanges {
     protected column_handler: ColumnHandlerService,
     protected settings: SettingsService,
     private bib_helper: BibliographyHelperService,
-    private matdialog: MatDialog
+    private matdialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
@@ -59,7 +60,7 @@ export class ColumnsComponent implements OnInit, OnChanges {
           author: 'Ennius',
           title: 'Thyestes',
           editor: 'TRF',
-        })
+        }),
       );
     }
     this.current_column = this.column_handler.columns[0];
@@ -150,7 +151,7 @@ export class ColumnsComponent implements OnInit, OnChanges {
     // First, restore all documents to their original black colour when a new document is clicked
     for (const index in this.column_handler.columns) {
       this.column_handler.columns[index] = this.column_handler.colour_documents_black(
-        this.column_handler.columns[index]
+        this.column_handler.columns[index],
       );
     }
     // Second, colour the clicked document
@@ -288,6 +289,9 @@ export class ColumnsComponent implements OnInit, OnChanges {
    */
   protected toggle_translation(column: Column): void {
     column.translated = !column.translated;
+
+    // Also fire a event which notifies other components like the commentary component of the change.
+    this.translation_toggle_event.emit(column.translated);
   }
 
   /**
