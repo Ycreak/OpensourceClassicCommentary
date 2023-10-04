@@ -2,6 +2,12 @@
 $toolbar-height: 64px;
 
 /* HTML Elements */
+.alert {
+  margin-bottom: 0;
+  border: 3px var(--bs-alert-border-color) solid;
+  border-radius: 0;
+}
+
 .overflow_column {
   height: 100vh;
   overflow: scroll;
