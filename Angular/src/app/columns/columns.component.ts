@@ -266,35 +266,24 @@ export class ColumnsComponent implements OnInit, OnChanges {
    * @param documents (list)
    * @author Ycreak
    */
-  protected show_column_bibliography(documents: any): void {
-    const commentary_fields = [
-      'commentary',
-      'differences',
-      'apparatus',
-      'reconstruction',
-      'metrical_analysis',
-      'translation',
-    ];
+  protected show_column_bibliography(column: Column): void {
     let string_bibliography = '';
     let bib_keys: string[] = [];
 
-    documents.forEach((doc: any) => {
-      // Retrieve all keys for the simple string commentary fields
-      for (const key in doc.commentary) {
-        if (commentary_fields.includes(key)) {
-          bib_keys = bib_keys.concat(this.bib_helper.get_bib_keys(doc.commentary[key]));
-        }
-      }
-      // Retrieve keys for the context fields
-      for (const i in doc.commentary.context) {
-        bib_keys = bib_keys.concat(this.bib_helper.get_bib_keys(doc.commentary.context[i].text));
-      }
+    column.documents.forEach((doc: any) => {
+      bib_keys = bib_keys.concat(this.bib_helper.retrieve_bib_keys_from_commentary(doc.commentary));
     });
     bib_keys = [...new Set(bib_keys)];
-    bib_keys.forEach((key: string) => {
-      string_bibliography += this.bib_helper.convert_bib_key_into_citation(key);
-    });
-    this.dialog.open_column_bibliography(string_bibliography);
+    // If there are keys, show the bibliography
+    if (bib_keys.length > 0) {
+      bib_keys.forEach((key: string) => {
+        string_bibliography += this.bib_helper.convert_bib_key_into_citation(key);
+      });
+      this.dialog.open_column_bibliography(string_bibliography);
+    } else {
+      // If no keys are found, print a snackbar with the message
+      this.utility.open_snackbar('No bibliography available for this column.');
+    }
   }
 
   /**

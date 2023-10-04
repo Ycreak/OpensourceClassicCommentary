@@ -55,6 +55,9 @@ export class Column {
   // If fragments translated, shows translation in column and original text in the commentary
   translated = false;
 
+  // Whether a column has bib items and therefore a possible bibliography
+  has_bibliography = false;
+
   // Checks if the column is able to show fragment translations
   has_translations(): boolean {
     for (const i in this.documents) {

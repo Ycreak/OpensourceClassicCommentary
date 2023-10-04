@@ -7,6 +7,7 @@ import { Column } from '@oscc/models/Column';
 import { Fragment } from '@oscc/models/Fragment';
 
 import { UtilityService } from '@oscc/utility.service';
+import { BibliographyHelperService } from '@oscc/services/bibliography-helper.service';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +23,7 @@ export class ColumnHandlerService {
 
   public playground_id = 0;
 
-  constructor(private utility: UtilityService) {}
+  constructor(private bib_helper: BibliographyHelperService, private utility: UtilityService) {}
 
   /**
    * Colours all document titles black
@@ -178,6 +179,15 @@ export class ColumnHandlerService {
       for (const document of documents) {
         column.original_fragment_order.push(document.name);
       }
+      // See if there are any bibliography references in the column. Set the flag accordingly
+      let bib_keys: string[] = [];
+      documents.forEach((doc: any) => {
+        bib_keys = bib_keys.concat(this.bib_helper.retrieve_bib_keys_from_commentary(doc.commentary));
+        if (bib_keys.length > 0) {
+          return;
+        }
+      });
+      column.has_bibliography = bib_keys.length > 0;
     }
   }
 }
