@@ -52,7 +52,7 @@ export class ColumnsComponent implements OnInit, OnChanges {
     protected column_handler: ColumnHandlerService,
     protected settings: SettingsService,
     private bib_helper: BibliographyHelperService,
-    private matdialog: MatDialog
+    private matdialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
@@ -69,7 +69,7 @@ export class ColumnsComponent implements OnInit, OnChanges {
           author: 'Ennius',
           title: 'Thyestes',
           editor: 'TRF',
-        })
+        }),
       );
     }
     this.current_column = this.column_handler.columns[0];
@@ -159,7 +159,7 @@ export class ColumnsComponent implements OnInit, OnChanges {
     // First, restore all documents to their original black colour when a new document is clicked
     for (const index in this.column_handler.columns) {
       this.column_handler.columns[index] = this.column_handler.colour_documents_black(
-        this.column_handler.columns[index]
+        this.column_handler.columns[index],
       );
     }
     // Second, colour the clicked document
