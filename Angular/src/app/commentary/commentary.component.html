@@ -83,8 +83,8 @@
 
 <!--Linked commentary section-->
 <hr />
-<div style="text-align: center; padding-top: 1em; padding-bottom: 1em" *ngIf="!this.linked_commentary_retrieved">
-  <button mat-stroked-button (click)="this.retrieve_linked_commentary()">
+<div style="display: flex" *ngIf="!this.linked_commentary_retrieved">
+  <button class="commentary-extra-feature-button" mat-stroked-button (click)="this.retrieve_linked_commentary()">
     Retrieve commentary from linked fragments
   </button>
 </div>
