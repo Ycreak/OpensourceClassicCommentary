@@ -405,6 +405,48 @@ export class ApiService {
   }
 
   /**
+   * Saves the given playground on the server
+   * @param playground (json)
+   * @author Ycreak
+   */
+  public save_playground(playground: any): void {
+    this.spinner_on();
+    this.http
+      .post<string[]>(this.FlaskURL + `playground/save`, playground, {
+        observe: 'response',
+        responseType: 'text' as 'json',
+      })
+      .subscribe({
+        next: (data) => {
+          this.handle_error_message(data);
+          this.spinner_off();
+        },
+        error: (err) => this.handle_error_message(err),
+      });
+  }
+  /**
+   * Deletes the given playground from the server
+   * @param name (string)
+   * @author Ycreak
+   */
+  public delete_playground(playground: any): void {
+    this.spinner_on();
+    this.http
+      .post<string[]>(this.FlaskURL + `playground/delete`, playground, {
+        observe: 'response',
+        responseType: 'text' as 'json',
+      })
+      .subscribe({
+        next: (data) => {
+          this.handle_error_message(data);
+          this.spinner_off();
+        },
+        error: (err) => this.handle_error_message(err),
+      });
+  }
+
+
+  /**
    * Getter function for public property network_status
    * @return boolean network_status - Status indicating whether or not the server is
    *                                    successfully returning requests

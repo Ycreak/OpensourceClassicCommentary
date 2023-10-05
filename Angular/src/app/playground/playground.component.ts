@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Output, EventEmitter } from '@angular/core';
 import { ColumnHandlerService } from '@oscc/services/column-handler.service';
 import { ApiService } from '@oscc/api.service';
+import { WebsocketsService } from '@oscc/playground/websockets.service';
 import { environment } from '@src/environments/environment';
 import { fabric } from 'fabric';
 import { HostListener } from '@angular/core';
@@ -49,31 +50,73 @@ export class PlaygroundComponent implements OnInit {
     protected settings: SettingsService,
     protected column_handler: ColumnHandlerService,
     protected dialog: DialogService,
-    private socket: Socket
+    protected websockets: WebsocketsService
   ) {}
 
-  sendMessage(message: any) {
-    this.socket.emit('message', message);
-  }
+  //sendMessage(message: any) {
+    //this.socket.emit('message', message);
+  //}
 
-  getMessage() {
-    return this.socket.fromEvent('message').pipe(map((data: any) => data));
-  }
+  //getMessage() {
+    //return this.socket.fromEvent('message').pipe(map((data: any) => data));
+  //}
 
   ngOnInit(): void {
-    this.getMessage().subscribe((message) => {
+   
+    this.websockets.login();
+
+
+    this.websockets.getMessage().subscribe((message) => {
       console.log('hello', message);
+      var group = new fabric.Group(message['objects'], {
+      });
+      message['objects'].forEach((item: any) => {
+        console.log(item)
+        //this.canvas.add(group);
+        //fabric.util.enlivenObjects([path], function(objects) {
+          //objects.forEach(function(o) {
+          //this.canvas.add(o);
+      //});
+  //});
+      })
+
     });
 
     this.playground = new Column({ column_id: environment.playground_id });
     this.canvas = new fabric.Canvas('playground_canvas');
     this.set_canvas_event_handlers();
     this.init_canvas_settings();
-    //this.request_documents({ author: 'Ennius', title: 'Eumenides', editor: 'TRF' });
+    this.request_documents({ author: 'Ennius', title: 'Eumenides', editor: 'TRF' });
+  }
+
+  public load_playground() {
+
+  }
+
+
+  protected delete_playground() {
+
   }
 
   test() {
-    this.sendMessage('hello there');
+    console.log('hello')
+    //this.websockets.getMessage().subscribe((message) => {
+      //console.log('hello', message);
+    //});
+    //this.websockets.sendMessage({from: 'Antje', to: 'Lucus', message: 'hello there', objects: this.canvas.getObjects()});
+    //console.log(this.canvas.getObjects())
+    //
+    const json = this.canvas.toJSON();
+    this.canvas.clear();
+   
+    setTimeout(() => {
+      console.log('waiting')
+      this.canvas.loadFromJSON(json, this.canvas.renderAll.bind(this.canvas))
+    }, 5000)
+
+      //CallBack, function(o, object) {
+      //this.canvas.setActiveObject(object);
+    //});
   }
 
   /**

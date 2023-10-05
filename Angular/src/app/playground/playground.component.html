@@ -92,6 +92,37 @@
       </button>
     </div>
   </div>
+  <div class="row">
+    <!-- The third row contains all buttons to control the websockets -->
+    <div class="playground-button-container col-3">
+      <button
+        mat-stroked-button
+        class="playground-button playground-delete-button button-margin"
+        color="accent"
+        (click)="this.websockets.load_playground()">
+        Load playground
+      </button>
+    </div>
+    <div class="playground-button-container col-3">
+      <button
+        mat-stroked-button
+        class="button-dashed-background playground-button playground-delete-button button-margin"
+        color="warn"
+        (click)="this.websockets.save_playground(this.canvas, 'hi')">
+        Save playground
+      </button>
+    </div>
+    <div class="playground-button-container col-3">
+      <button
+        mat-stroked-button
+        class="playground-button playground-delete-button button-margin"
+        color="accent"
+        (click)="this.toggle_drawing_mode()"
+        (click)="this.test()">
+       Delete playground 
+      </button>
+    </div>
+  </div>
 
   <div class="div-padding-lg"></div>
   <!-- Possibility to add a little note -->
