@@ -52,7 +52,7 @@ export class ColumnsComponent implements OnInit, OnChanges {
     protected column_handler: ColumnHandlerService,
     protected settings: SettingsService,
     private bib_helper: BibliographyHelperService,
-    private matdialog: MatDialog
+    private matdialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
@@ -69,7 +69,7 @@ export class ColumnsComponent implements OnInit, OnChanges {
           author: 'Ennius',
           title: 'Thyestes',
           editor: 'TRF',
-        })
+        }),
       );
     }
     this.current_column = this.column_handler.columns[0];
@@ -154,12 +154,13 @@ export class ColumnsComponent implements OnInit, OnChanges {
     //this.document_clicked2.emit(document);
     this.document_clicked = true;
     this.current_document = document;
+    this.current_column = column;
 
     // The next part handles the colouring of clicked and referenced documents.
     // First, restore all documents to their original black colour when a new document is clicked
     for (const index in this.column_handler.columns) {
       this.column_handler.columns[index] = this.column_handler.colour_documents_black(
-        this.column_handler.columns[index]
+        this.column_handler.columns[index],
       );
     }
     // Second, colour the clicked document
@@ -320,7 +321,7 @@ export class ColumnsComponent implements OnInit, OnChanges {
   // reference to the MatMenuTrigger in the DOM
   @ViewChild(MatMenuTrigger, { static: true }) matMenuTrigger: MatMenuTrigger;
 
-  protected onRightClick(event: MouseEvent, item: any) {
+  protected onRightClick(event: MouseEvent, document: any, column: Column) {
     // preventDefault avoids to show the visualization of the right-click menu of the browser
     event.preventDefault();
 
@@ -330,7 +331,7 @@ export class ColumnsComponent implements OnInit, OnChanges {
 
     // we open the menu
     // we pass to the menu the information about our object
-    this.matMenuTrigger.menuData = { item: item };
+    this.matMenuTrigger.menuData = { document, column };
 
     // we open the menu
     this.matMenuTrigger.openMenu();
