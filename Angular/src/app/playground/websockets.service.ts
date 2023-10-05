@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from '@oscc/auth/auth.service';
+import { ApiService } from '@oscc/api.service';
 import { Socket } from 'ngx-socket-io';
 import { map } from 'rxjs/operators';
 
@@ -11,10 +12,9 @@ import { Playground } from '@oscc/models/Playground';
 export class WebsocketsService {
 
   constructor(
+    private api: ApiService,
     private socket: Socket,
     private auth_service: AuthService,
-
-
   ) { }
  
   public load_playground(){
@@ -27,7 +27,7 @@ export class WebsocketsService {
       name: name, 
       canvas: canvas.toJSON()
     });
-    console.log('ply', playground)
+    this.api.create_playground(playground);
   }
 
   public login(): void {

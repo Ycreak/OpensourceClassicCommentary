@@ -7,17 +7,25 @@ import { environment } from '@src/environments/environment';
 import { fabric } from 'fabric';
 import { HostListener } from '@angular/core';
 
-import { Socket } from 'ngx-socket-io';
-import { map } from 'rxjs/operators';
+import {Inject} from '@angular/core';
+import {MatDialog, MAT_DIALOG_DATA, MatDialogRef, MatDialogModule} from '@angular/material/dialog';
+import {NgIf} from '@angular/common';
+import {MatButtonModule} from '@angular/material/button';
+import {FormsModule} from '@angular/forms';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
 
 // Service imports
 import { UtilityService } from '@oscc/utility.service';
 import { SettingsService } from '@oscc/services/settings.service';
+import { AuthService } from '@oscc/auth/auth.service';
 
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
 import { Column } from '@oscc/models/Column';
 import { DialogService } from '@oscc/services/dialog.service';
+import { Playground } from '@oscc/models/Playground';
+import {MatSelectModule} from '@angular/material/select';
 
 @Component({
   selector: 'app-playground',
@@ -33,6 +41,7 @@ export class PlaygroundComponent implements OnInit {
     }
   }
 
+  private playground_name = 'placeholder';
   // Playground column that keeps all data related to said playground
   playground: Column;
   // Boolean to keep track if we are dragging or clicking a fragment within the playground
@@ -45,12 +54,14 @@ export class PlaygroundComponent implements OnInit {
   private new_fragment_location = 10;
 
   constructor(
+    private auth_service: AuthService,
     protected api: ApiService,
     protected utility: UtilityService,
     protected settings: SettingsService,
     protected column_handler: ColumnHandlerService,
     protected dialog: DialogService,
-    protected websockets: WebsocketsService
+    protected websockets: WebsocketsService, 
+    private mat_dialog: MatDialog
   ) {}
 
   //sendMessage(message: any) {
@@ -65,22 +76,9 @@ export class PlaygroundComponent implements OnInit {
    
     this.websockets.login();
 
-
     this.websockets.getMessage().subscribe((message) => {
       console.log('hello', message);
-      var group = new fabric.Group(message['objects'], {
-      });
-      message['objects'].forEach((item: any) => {
-        console.log(item)
-        //this.canvas.add(group);
-        //fabric.util.enlivenObjects([path], function(objects) {
-          //objects.forEach(function(o) {
-          //this.canvas.add(o);
-      //});
-  //});
-      })
-
-    });
+    })
 
     this.playground = new Column({ column_id: environment.playground_id });
     this.canvas = new fabric.Canvas('playground_canvas');
@@ -88,11 +86,6 @@ export class PlaygroundComponent implements OnInit {
     this.init_canvas_settings();
     this.request_documents({ author: 'Ennius', title: 'Eumenides', editor: 'TRF' });
   }
-
-  public load_playground() {
-
-  }
-
 
   protected delete_playground() {
 
@@ -328,5 +321,71 @@ export class PlaygroundComponent implements OnInit {
    */
   protected toggle_drawing_mode(): void {
     this.canvas.isDrawingMode = !this.canvas.isDrawingMode;
+  }
+
+  protected load_playground(): void {
+    this.api.get_playground_names({owner: this.auth_service.current_user_name}).subscribe((playgrounds) => {
+      if (playgrounds.length > 0) {
+        console.log(playgrounds)
+        const dialogRef = this.mat_dialog.open(LoadPlaygroundDialog, {
+          data: {playgrounds: playgrounds, name: ''},
+        });
+        dialogRef.afterClosed().subscribe((name: string) => {
+          if (name) {
+            console.log('name', name)
+            this.api.get_playground({owner: this.auth_service.current_user_name, name: name}).subscribe((playground) => {
+              console.log('yay', playground)
+              this.canvas.clear()
+              this.canvas.loadFromJSON(playground.canvas, this.canvas.renderAll.bind(this.canvas))
+            });
+          }
+        });
+      } else {
+        this.utility.open_snackbar('No playgrounds found');
+      }
+    });
+
+  }
+  protected save_playground(): void {
+    const dialogRef = this.mat_dialog.open(SavePlaygroundDialog, {
+      data: {name: this.playground_name},
+    });
+    dialogRef.afterClosed().subscribe((name: string) => {
+      if (name) {
+        this.websockets.save_playground(this.canvas, name);
+      }
+    });
+  }
+}
+
+@Component({
+  selector: 'load-playground-dialog',
+  templateUrl: 'load-playground-dialog.html',
+  standalone: true,
+  imports: [MatDialogModule, MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule, MatSelectModule],
+})
+export class LoadPlaygroundDialog {
+  constructor(
+    public dialogRef: MatDialogRef<LoadPlaygroundDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+  ) {}
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+}
+
+@Component({
+  selector: 'save-playground-dialog',
+  templateUrl: 'save-playground-dialog.html',
+  standalone: true,
+  imports: [MatDialogModule, MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule],
+})
+export class SavePlaygroundDialog {
+  constructor(
+    public dialogRef: MatDialogRef<SavePlaygroundDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+  ) {}
+  onNoClick(): void {
+    this.dialogRef.close();
   }
 }

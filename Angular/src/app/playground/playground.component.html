@@ -99,7 +99,7 @@
         mat-stroked-button
         class="playground-button playground-delete-button button-margin"
         color="accent"
-        (click)="this.websockets.load_playground()">
+        (click)="this.load_playground()">
         Load playground
       </button>
     </div>
@@ -108,7 +108,7 @@
         mat-stroked-button
         class="button-dashed-background playground-button playground-delete-button button-margin"
         color="warn"
-        (click)="this.websockets.save_playground(this.canvas, 'hi')">
+        (click)="this.save_playground()">
         Save playground
       </button>
     </div>

@@ -26,7 +26,7 @@ class CouchAuthenticator:
         try:
             request = self.couch.version()
             if not str(request).startswith(conf.COUCH_VERSION):
-                logging.error("Couch server not available or out of sync. Stopping...")
+                logging.error("Wrong Couch server version. Stopping...")
                 exit(1)
         except:
             logging.error("Couch server not available or out of sync. Stopping...")

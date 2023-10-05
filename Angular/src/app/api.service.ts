@@ -12,6 +12,7 @@ import { UtilityService } from '@oscc/utility.service';
 
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
+import { Playground  } from '@oscc/models/Playground';
 import { Bib } from '@oscc/models/Bib';
 import { Testimonium } from '@oscc/models/Testimonium';
 import { User } from '@oscc/models/User';
@@ -403,7 +404,60 @@ export class ApiService {
         });
     });
   }
+  
+  /**
+   * Retrieves playground from the given key
+   * @param key (object)
+   * @return playground (object)
+   * @author Ycreak
+   */
+  public get_playground(filter: object): Observable<any> {
+    this.spinner_on();
+    return new Observable((observer) => {
+      this.post(this.FlaskURL, 'playground/get', filter).subscribe((data: any) => {
+        this.spinner_off();
+        observer.next(data[0]);
+        observer.complete();
+      });
+    });
+  }
+  /**
+   * Retrieves playground names from the given key
+   * @param key (object)
+   * @return playground_names (list)
+   * @author Ycreak
+   */
+  public get_playground_names(filter: object): Observable<any> {
+    this.spinner_on();
+    return new Observable((observer) => {
+      this.post(this.FlaskURL, 'playground/get/name', filter).subscribe((data: any) => {
+        this.spinner_off();
+        observer.next(data);
+        observer.complete();
+      });
+    });
+  }
 
+  /**
+   * Creates the given playground on the server
+   * @param playground (Playground)
+   * @author Ycreak
+   */
+  public create_playground(playground: Playground): void {
+    this.spinner_on();
+    this.http
+      .post<string[]>(this.FlaskURL + `playground/create`, playground, {
+        observe: 'response',
+        responseType: 'text' as 'json',
+      })
+      .subscribe({
+        next: (data) => {
+          this.handle_error_message(data);
+          this.spinner_off();
+        },
+        error: (err) => this.handle_error_message(err),
+      });
+  }
   /**
    * Saves the given playground on the server
    * @param playground (json)
