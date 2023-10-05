@@ -337,6 +337,10 @@ export class ColumnsComponent implements OnInit, OnChanges {
     this.matMenuTrigger.openMenu();
   }
 
+  protected close_column(column: Column): void {
+    this.column_handler.close_column(column.column_id);
+  }
+
   /**
    * Given the fragment, this function checks whether its linked fragments appear in the
    * other opened columns. If so, the columns are scrolled to put the linked fragment in view
