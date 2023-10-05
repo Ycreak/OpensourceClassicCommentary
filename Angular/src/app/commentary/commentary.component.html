@@ -34,11 +34,11 @@
   <ng-container *ngIf="!this.utility.is_empty_array(commentary.context)">
     <div *ngFor="let current_context of commentary.context">
       <mat-expansion-panel>
-        <mat-expansion-panel-header>
+        <mat-expansion-panel-header class="citation-context-mat-exp-header">
           <mat-panel-title>
             <b>Citation Context</b>
           </mat-panel-title>
-          <div>
+          <div class="citation-context-mat-panel-info-slot">
             {{ current_context.author }} <i>{{ current_context.location }}</i>
           </div>
           <div class="div-padding-sm"></div>
