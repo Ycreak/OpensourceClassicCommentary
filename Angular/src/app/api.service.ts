@@ -12,7 +12,7 @@ import { UtilityService } from '@oscc/utility.service';
 
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
-import { Playground  } from '@oscc/models/Playground';
+import { Playground } from '@oscc/models/Playground';
 import { Bib } from '@oscc/models/Bib';
 import { Testimonium } from '@oscc/models/Testimonium';
 import { User } from '@oscc/models/User';
@@ -404,7 +404,7 @@ export class ApiService {
         });
     });
   }
-  
+
   /**
    * Retrieves playground from the given key
    * @param key (object)
@@ -466,7 +466,7 @@ export class ApiService {
   public save_playground(playground: any): void {
     this.spinner_on();
     this.http
-      .post<string[]>(this.FlaskURL + `playground/save`, playground, {
+      .post<string[]>(this.FlaskURL + `playground/update`, playground, {
         observe: 'response',
         responseType: 'text' as 'json',
       })
@@ -498,7 +498,6 @@ export class ApiService {
         error: (err) => this.handle_error_message(err),
       });
   }
-
 
   /**
    * Getter function for public property network_status

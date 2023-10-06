@@ -49,8 +49,6 @@ def get_playground():
     if not playground_lst:
         return make_response("Not found", 401)
 
-    print(playground_lst)
-
     return jsonify(playground_lst), 200
 
 def create_playground():    

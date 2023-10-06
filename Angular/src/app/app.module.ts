@@ -102,6 +102,8 @@ import { TestimoniaDashboardComponent } from './dashboard/testimonia-dashboard/t
 import { TranslationComponent } from './commentary/translation/translation.component';
 import { GeneralCommentaryFieldComponent } from './commentary/general-commentary-field/general-commentary-field.component';
 import { FragmentsDashboardComponent } from './dashboard/fragments-dashboard/fragments-dashboard.component';
+import { LoadPlaygroundComponent } from './playground/load-playground/load-playground.component';
+import { SavePlaygroundComponent } from './playground/save-playground/save-playground.component';
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
@@ -143,6 +145,8 @@ const appRoutes: Routes = [
     TranslationComponent,
     GeneralCommentaryFieldComponent,
     FragmentsDashboardComponent,
+    LoadPlaygroundComponent,
+    SavePlaygroundComponent,
   ],
   imports: [
     BrowserModule,
