@@ -1,7 +1,6 @@
 // Library imports
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { Output, EventEmitter, Input, OnChanges } from '@angular/core';
-import { trigger, transition, style, animate } from '@angular/animations';
 import { MatDialog } from '@angular/material/dialog';
 //import { environment } from '@src/environments/environment';
 
@@ -60,7 +59,7 @@ export class ColumnsComponent implements OnInit, OnChanges {
           author: 'Ennius',
           title: 'Thyestes',
           editor: 'TRF',
-        }),
+        })
       );
     }
     this.current_column = this.column_handler.columns[0];
@@ -151,7 +150,7 @@ export class ColumnsComponent implements OnInit, OnChanges {
     // First, restore all documents to their original black colour when a new document is clicked
     for (const index in this.column_handler.columns) {
       this.column_handler.columns[index] = this.column_handler.colour_documents_black(
-        this.column_handler.columns[index],
+        this.column_handler.columns[index]
       );
     }
     // Second, colour the clicked document

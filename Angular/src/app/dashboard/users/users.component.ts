@@ -74,7 +74,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
     protected api: ApiService,
     protected utility: UtilityService,
     protected dialog: DialogService,
-    protected auth_service: AuthService,
+    protected auth_service: AuthService
   ) {
     // Assign the data to the data source for the table to render
     this.user_table_users = new MatTableDataSource(this.retrieved_users);
