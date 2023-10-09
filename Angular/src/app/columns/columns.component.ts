@@ -330,7 +330,7 @@ export class ColumnsComponent implements OnInit, OnChanges {
     this.menuTopLeftPosition.y = event.clientY + 'px';
 
     // we open the menu
-    // we pass to the menu the information about our object
+    // we pass to the menu the information about our document and column
     this.matMenuTrigger.menuData = { document, column };
 
     // we open the menu
