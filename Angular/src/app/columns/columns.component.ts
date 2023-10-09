@@ -154,6 +154,7 @@ export class ColumnsComponent implements OnInit, OnChanges {
     //this.document_clicked2.emit(document);
     this.document_clicked = true;
     this.current_document = document;
+    this.current_column = column;
 
     // The next part handles the colouring of clicked and referenced documents.
     // First, restore all documents to their original black colour when a new document is clicked
@@ -320,7 +321,7 @@ export class ColumnsComponent implements OnInit, OnChanges {
   // reference to the MatMenuTrigger in the DOM
   @ViewChild(MatMenuTrigger, { static: true }) matMenuTrigger: MatMenuTrigger;
 
-  protected onRightClick(event: MouseEvent, item: any) {
+  protected onRightClick(event: MouseEvent, document: any, column: Column) {
     // preventDefault avoids to show the visualization of the right-click menu of the browser
     event.preventDefault();
 
@@ -329,8 +330,8 @@ export class ColumnsComponent implements OnInit, OnChanges {
     this.menuTopLeftPosition.y = event.clientY + 'px';
 
     // we open the menu
-    // we pass to the menu the information about our object
-    this.matMenuTrigger.menuData = { item: item };
+    // we pass to the menu the information about our document and column
+    this.matMenuTrigger.menuData = { document, column };
 
     // we open the menu
     this.matMenuTrigger.openMenu();

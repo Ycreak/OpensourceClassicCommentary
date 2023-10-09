@@ -138,7 +138,10 @@
       <div
         class="fragment-box"
         (click)="handle_document_click(fragment, given_column)"
-        (contextmenu)="handle_document_click(fragment, given_column); onRightClick($event, this.current_fragment)"
+        (contextmenu)="
+          handle_document_click(fragment, given_column);
+          onRightClick($event, this.current_document, this.current_column)
+        "
         cdkDrag
         [cdkDragDisabled]="this.settings.fragments.dragging_disabled"
         (cdkDragDropped)="this.column_handler.track_edited_columns($event)"
@@ -163,8 +166,10 @@
 <!-- Context menu for right click actions on fragments -->
 <mat-menu #rightMenu="matMenu">
   <ng-template matMenuContent let-item="item">
-    <button (click)="this.copy_document_content(this.current_document)" mat-menu-item>Copy text</button>
-    <button (click)="this.show_linked_documents(this.current_document)" mat-menu-item>Linked documents</button>
+    <button (click)="this.copy_document_content(matMenuTrigger.menuData.document)" mat-menu-item>Copy text</button>
+    <button (click)="this.show_linked_documents(matMenuTrigger.menuData.document)" mat-menu-item>
+      Linked documents
+    </button>
   </ng-template>
 </mat-menu>
 
