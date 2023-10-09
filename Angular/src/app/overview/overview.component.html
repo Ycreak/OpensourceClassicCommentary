@@ -68,7 +68,7 @@
 </mat-menu>
 
 <!-- Display for if server is down -->
-<div *ngIf="this.api.get_network_status() === false" class="alert alert-warning" role="alert" @fadeSlideInOut>
+<div *ngIf="this.api.get_network_status() === false" class="alert alert-warning" role="alert">
   Your client cannot connect to the server. Please check if you have the latest version of your browser installed.
   Furthermore, secured networks like DUWO and Leiden University are known to cause problems. Also, please click
   <u><a href="https://oscc.lucdh.nl">the following URL</a></u> for the best results. Please contact the administrators

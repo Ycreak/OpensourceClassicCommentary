@@ -1,7 +1,6 @@
 // Library imports
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { Output, EventEmitter, Input, OnChanges } from '@angular/core';
-import { trigger, transition, style, animate } from '@angular/animations';
 import { MatDialog } from '@angular/material/dialog';
 //import { environment } from '@src/environments/environment';
 
@@ -26,15 +25,6 @@ import { MatMenuTrigger } from '@angular/material/menu';
   templateUrl: './columns.component.html',
   styleUrls: ['./columns.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  animations: [
-    trigger('fadeSlideInOut', [
-      transition(':enter', [
-        style({ opacity: 0, transform: 'translateY(10px)' }),
-        animate('500ms', style({ opacity: 1, transform: 'translateY(0)' })),
-      ]),
-      transition(':leave', [animate('500ms', style({ opacity: 0, transform: 'translateY(10px)' }))]),
-    ]),
-  ],
 })
 export class ColumnsComponent implements OnInit, OnChanges {
   @Input() requested_column: any;
