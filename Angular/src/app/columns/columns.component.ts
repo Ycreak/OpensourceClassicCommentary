@@ -29,6 +29,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
 export class ColumnsComponent implements OnInit, OnChanges {
   @Input() requested_column: any;
   @Output() clicked_document = new EventEmitter<any>();
+  @Output() translation_toggle_event = new EventEmitter<boolean>();
 
   public current_document: any; // Variable to store the clicked fragment and its data
   public document_clicked = false; // Shows "click a fragment" banner at startup if nothing is yet selected
@@ -288,6 +289,9 @@ export class ColumnsComponent implements OnInit, OnChanges {
    */
   protected toggle_translation(column: Column): void {
     column.translated = !column.translated;
+
+    // Also fire a event which notifies other components like the commentary component of the change.
+    this.translation_toggle_event.emit(column.translated);
   }
 
   /**

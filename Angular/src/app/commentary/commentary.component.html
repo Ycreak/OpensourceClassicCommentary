@@ -34,18 +34,18 @@
   <ng-container *ngIf="!this.utility.is_empty_array(commentary.context)">
     <div *ngFor="let current_context of commentary.context">
       <mat-expansion-panel>
-        <mat-expansion-panel-header>
+        <mat-expansion-panel-header class="citation-context-mat-exp-header">
           <mat-panel-title>
             <b>Citation Context</b>
           </mat-panel-title>
-          <div>
+          <div class="citation-context-mat-panel-info-slot">
             {{ current_context.author }} <i>{{ current_context.location }}</i>
           </div>
           <div class="div-padding-sm"></div>
         </mat-expansion-panel-header>
         <div class="mat-expansion-panel-content">
           <div class="mat-expansion-panel-body">
-            <div [innerHTML]="current_context.text"></div>
+            <app-expandable-text [content]="current_context.text"></app-expandable-text>
           </div>
         </div>
       </mat-expansion-panel>
@@ -83,8 +83,8 @@
 
 <!--Linked commentary section-->
 <hr />
-<div style="text-align: center; padding-top: 1em; padding-bottom: 1em" *ngIf="!this.linked_commentary_retrieved">
-  <button mat-stroked-button (click)="this.retrieve_linked_commentary()">
+<div style="display: flex" *ngIf="!this.linked_commentary_retrieved">
+  <button class="commentary-extra-feature-button" mat-stroked-button (click)="this.retrieve_linked_commentary()">
     Retrieve commentary from linked fragments
   </button>
 </div>

@@ -37,6 +37,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   protected playground_enabled = true;
 
   protected clicked_document: Fragment;
+  protected translation_toggled: boolean;
   protected requested_column: any;
 
   constructor(
