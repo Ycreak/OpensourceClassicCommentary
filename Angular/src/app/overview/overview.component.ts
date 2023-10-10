@@ -51,7 +51,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     private matdialog: MatDialog,
     protected column_handler: ColumnHandlerService,
     protected columns: ColumnsComponent,
-    private viewportscroller: ViewportScroller,
+    private viewportscroller: ViewportScroller
   ) {}
 
   ngOnInit(): void {
