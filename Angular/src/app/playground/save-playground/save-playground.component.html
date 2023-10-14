@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>Save playground</h1>
+<div mat-dialog-content>
+  <mat-form-field>
+    <mat-label>Name of the playground</mat-label>
+    <input matInput [(ngModel)]="this.name" />
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button [mat-dialog-close]="{ name: this.name, button: 'create' }" cdkFocusInitial>Create</button>
+  <button mat-button [mat-dialog-close]="{ name: this.name, button: 'save' }" cdkFocusInitial>Save</button>
+</div>

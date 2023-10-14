@@ -10,7 +10,7 @@ TRUSTED_ORIGINS = [
 ]
 
 COUCH_USER = "admin"
-COUCH_PASSWORD = "ledenpas"
+COUCH_PASSWORD = "yVu4DES8qzajPCy"
 COUCH_HOST = "localhost"
 COUCH_PORT = "5984"
 
@@ -18,15 +18,17 @@ COUCH_PORT = "5984"
 COUCH_FRAGMENTS = "fragments"
 COUCH_USERS = "users"
 COUCH_INTRODUCTIONS = "introductions"
+COUCH_PLAYGROUNDS = "playgrounds"
 
 COUCH_TABLES = [
     COUCH_FRAGMENTS, 
     COUCH_USERS,
+    COUCH_PLAYGROUNDS,
     COUCH_INTRODUCTIONS
 ]
 
 COUCH_LIMIT = 1000
-COUCH_VERSION = "3" # Keep up-to-date. Used for authentication
+COUCH_VERSION = "2" # Keep up-to-date. Used for authentication
 
 # Do not touch!
 PWD_HASH_NAME = "sha512"

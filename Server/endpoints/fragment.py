@@ -150,7 +150,7 @@ def get_fragment():
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-
+    
     fragment_lst = fragments.filter(Fragment(author=author, title=title, editor=editor, name=name, document_type=document_type, status=status), sorted=True)
     if not fragment_lst:
         return make_response("Not found", 401)

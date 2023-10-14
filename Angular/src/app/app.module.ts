@@ -82,6 +82,10 @@ import { MatSliderModule } from '@angular/material/slider';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { QuillModule } from 'ngx-quill';
 
+// Websockets
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+const config: SocketIoConfig = { url: 'http://localhost:5000', options: {} };
+
 // Allows communication with firebase
 import { ScansionComponent } from './scansion/scansion.component';
 import { PlaygroundComponent } from './playground/playground.component';
@@ -98,6 +102,9 @@ import { TestimoniaDashboardComponent } from './dashboard/testimonia-dashboard/t
 import { TranslationComponent } from './commentary/translation/translation.component';
 import { GeneralCommentaryFieldComponent } from './commentary/general-commentary-field/general-commentary-field.component';
 import { FragmentsDashboardComponent } from './dashboard/fragments-dashboard/fragments-dashboard.component';
+import { LoadPlaygroundComponent } from './playground/load-playground/load-playground.component';
+import { SavePlaygroundComponent } from './playground/save-playground/save-playground.component';
+import { DeletePlaygroundComponent } from './playground/delete-playground/delete-playground.component';
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
@@ -139,6 +146,9 @@ const appRoutes: Routes = [
     TranslationComponent,
     GeneralCommentaryFieldComponent,
     FragmentsDashboardComponent,
+    LoadPlaygroundComponent,
+    SavePlaygroundComponent,
+    DeletePlaygroundComponent,
   ],
   imports: [
     BrowserModule,
@@ -183,6 +193,7 @@ const appRoutes: Routes = [
     DragDropModule,
     ClipboardModule,
     // MatKeyboardModule,
+    SocketIoModule.forRoot(config),
 
     // AngularFireModule.initializeApp(environment.firebase),
   ],

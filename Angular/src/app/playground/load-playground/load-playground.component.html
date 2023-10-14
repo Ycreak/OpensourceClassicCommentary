@@ -1,0 +1,19 @@
+<h1 mat-dialog-title>Load playground</h1>
+<div mat-dialog-content>
+  <mat-progress-bar mode="query" *ngIf="this.api.spinner"></mat-progress-bar>
+
+  <div *ngIf="this.no_playgrounds" class="alert alert-info" role="alert">No playgrounds found for this user</div>
+
+  <mat-form-field>
+    <mat-label>Select a playground</mat-label>
+    <mat-select [(ngModel)]="this.selected_playground">
+      <mat-option *ngFor="let playground of this.playgrounds" [value]="playground">
+        {{ playground }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button [mat-dialog-close]="this.selected_playground" cdkFocusInitial>Load</button>
+</div>

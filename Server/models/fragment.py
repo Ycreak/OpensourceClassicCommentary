@@ -15,7 +15,6 @@ import logging
 
 import config as conf
 
-
 class FragmentField(object):
     ID = "_id"
     NAME = "name"
@@ -102,6 +101,7 @@ class FragmentModel:
             if FragmentField.DOCUMENT_TYPE in doc:
                 fragment.document_type = doc[FragmentField.DOCUMENT_TYPE]
             result.append(fragment)
+
         return result
 
     def all(self, sorted=False):

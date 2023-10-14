@@ -33,6 +33,7 @@ from endpoints.user import get_user, login_user, create_user, delete_user, updat
 from endpoints.fragment import get_author, get_title, get_editor, get_fragment, get_name, create_fragment, update_fragment, delete_fragment
 from endpoints.fragment import link_fragment, get_list_display
 from endpoints.zotero import get_bibliography, sync_bibliography
+from endpoints.playground import create_playground, update_playground, delete_playground, get_playgrounds, get_playground
 
 app = Flask(__name__)
 api = Api(app)
@@ -67,6 +68,11 @@ app.add_url_rule("/fragment/get/list_display", view_func=get_list_display, metho
 app.add_url_rule("/bibliography/get", view_func=get_bibliography, methods=["POST"])
 app.add_url_rule("/bibliography/sync", view_func=sync_bibliography, methods=["POST"])
 
+app.add_url_rule("/playground/get", view_func=get_playground, methods=["POST"])
+app.add_url_rule("/playground/get/name", view_func=get_playgrounds, methods=["POST"])
+app.add_url_rule("/playground/create", view_func=create_playground, methods=["POST"])
+app.add_url_rule("/playground/update", view_func=update_playground, methods=["POST"])
+app.add_url_rule("/playground/delete", view_func=delete_playground, methods=["POST"])
 # @app.route("/automatic_fragment_linker", methods=['POST'])
 # def automatic_fragment_linker():
 #     # Route to allow for the creation of the given fragment

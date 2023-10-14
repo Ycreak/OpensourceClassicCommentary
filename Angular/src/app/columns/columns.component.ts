@@ -64,7 +64,7 @@ export class ColumnsComponent implements OnInit, OnChanges {
       );
     }
     this.current_column = this.column_handler.columns[0];
-    this.request_documents(1, { document_type: 'fragment', author: 'Ennius', title: 'Thyestes', editor: 'TRF' });
+    //this.request_documents(1, { document_type: 'fragment', author: 'Ennius', title: 'Thyestes', editor: 'Ribbeck' });
   }
 
   ngOnChanges() {
@@ -91,6 +91,7 @@ export class ColumnsComponent implements OnInit, OnChanges {
    * @author Ycreak
    */
   private format_incoming_documents(documents: any[]): any[] {
+    console.log('doc', documents);
     for (const i in documents) {
       if (documents[i].document_type == 'fragment') {
         documents[i].add_html_to_lines();
