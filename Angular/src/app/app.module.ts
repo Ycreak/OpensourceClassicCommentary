@@ -104,6 +104,7 @@ import { GeneralCommentaryFieldComponent } from './commentary/general-commentary
 import { FragmentsDashboardComponent } from './dashboard/fragments-dashboard/fragments-dashboard.component';
 import { LoadPlaygroundComponent } from './playground/load-playground/load-playground.component';
 import { SavePlaygroundComponent } from './playground/save-playground/save-playground.component';
+import { DeletePlaygroundComponent } from './playground/delete-playground/delete-playground.component';
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
@@ -147,6 +148,7 @@ const appRoutes: Routes = [
     FragmentsDashboardComponent,
     LoadPlaygroundComponent,
     SavePlaygroundComponent,
+    DeletePlaygroundComponent,
   ],
   imports: [
     BrowserModule,

@@ -4,6 +4,7 @@ export class Playground {
     Object.assign(this, playground);
   }
 
+  _id: string;
   name: string;
   owner: string;
   shared_with: string[];

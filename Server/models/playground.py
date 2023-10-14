@@ -17,6 +17,7 @@ import config as conf
 
 
 class PlaygroundField(object):
+    ID = "_id"
     NAME = "name"
     OWNER = "owner"
     CANVAS = "canvas"
@@ -81,13 +82,6 @@ class PlaygroundModel:
         return playground
 
     def update(self, playground):
-        # we update playgrounds via their _id, so no need for get.
-        # FIXME: is this correct BORS?
-        # playground = self.get(playground)
-
-        # if playground == None:
-        #     logging.error("update(): playground could not be found")
-        #     return False
         try:
             doc = self.db[playground._id]
             for key, value in asdict(playground).items():
@@ -121,6 +115,7 @@ class PlaygroundModel:
             "limit": conf.COUCH_LIMIT
         }
         result = self.db.find(mango)
+
         result = self.__get_playgrounds(result)
 
         if result:

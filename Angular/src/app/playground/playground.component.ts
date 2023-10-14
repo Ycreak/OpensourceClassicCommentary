@@ -23,6 +23,7 @@ import { Playground } from '@oscc/models/Playground';
 // Component imports
 import { LoadPlaygroundComponent } from './load-playground/load-playground.component';
 import { SavePlaygroundComponent } from './save-playground/save-playground.component';
+import { DeletePlaygroundComponent } from './delete-playground/delete-playground.component';
 
 @Component({
   selector: 'app-playground',
@@ -38,7 +39,8 @@ export class PlaygroundComponent implements OnInit {
     }
   }
 
-  private playground_name = 'placeholder';
+  protected playground_name = '';
+  private playground_id = '';
   // Playground column that keeps all data related to said playground
   playground: Column;
   // Boolean to keep track if we are dragging or clicking a fragment within the playground
@@ -49,8 +51,6 @@ export class PlaygroundComponent implements OnInit {
   protected canvas: fabric.Canvas;
   private canvas_font_size = 16;
   private new_fragment_location = 10;
-
-  private my_playgrounds: string[] = [];
 
   constructor(
     private auth_service: AuthService,
@@ -63,42 +63,11 @@ export class PlaygroundComponent implements OnInit {
     private mat_dialog: MatDialog
   ) {}
 
-  //sendMessage(message: any) {
-  //this.socket.emit('message', message);
-  //}
-
-  //getMessage() {
-  //return this.socket.fromEvent('message').pipe(map((data: any) => data));
-  //}
-
   ngOnInit(): void {
-    // If we are logged in, retrieve
-    //if (this.auth_service.is_logged_in) {
-    //this.api.get_playground_names({owner: this.auth_service.current_user_name}).subscribe((playgrounds) => {
-    //this.my_playgrounds = playgrounds;
-    //}
-
-    //this.websockets.login();
-
-    //this.websockets.getMessage().subscribe((message) => {
-    //console.log('hello', message);
-    //})
-
     this.playground = new Column({ column_id: environment.playground_id });
     this.canvas = new fabric.Canvas('playground_canvas');
     this.set_canvas_event_handlers();
     this.init_canvas_settings();
-    //this.request_documents({ author: 'Ennius', title: 'Eumenides', editor: 'TRF' });
-  }
-
-  test() {
-    console.log('hello');
-    //this.websockets.getMessage().subscribe((message) => {
-    //console.log('hello', message);
-    //});
-    //this.websockets.sendMessage({from: 'Antje', to: 'Lucus', message: 'hello there', objects: this.canvas.getObjects()});
-    //console.log(this.canvas.getObjects())
-    //
   }
 
   /**
@@ -138,33 +107,6 @@ export class PlaygroundComponent implements OnInit {
       this.playground.documents.push(documents[0]);
     } else {
       this.playground.documents = documents;
-    }
-  }
-  /**
-   * Function to handle what happens when a fragment is selected in HTML.
-   * @param fragment selected by the user
-   * @author Ycreak
-   */
-  protected handle_document_click(fragment: Fragment): void {
-    // If we are currently dragging a fragment in the playground, we do not want the click even to fire.
-    if (!this.playground_dragging) {
-      this.document_clicked.emit(fragment);
-      // The next part handles the colouring of clicked and referenced fragments.
-      // First, restore all fragments to their original black colour when a new fragment is clicked
-      for (const index in this.column_handler.columns) {
-        this.column_handler.columns[index] = this.column_handler.colour_documents_black(
-          this.column_handler.columns[index]
-        );
-      }
-      //TODO:
-      this.playground = this.column_handler.colour_documents_black(this.playground);
-      // Second, colour the clicked fragment
-      fragment.colour = '#3F51B5';
-      // Lastly, colour the linked fragments
-      // this.colour_linked_fragments(fragment);
-    } else {
-      // After a drag, make sure to set the dragging boolean on false again
-      this.playground_dragging = false;
     }
   }
 
@@ -312,18 +254,24 @@ export class PlaygroundComponent implements OnInit {
     this.canvas.isDrawingMode = !this.canvas.isDrawingMode;
   }
 
+  /**
+   * Opens the load playground dialog. If it returns with a name, we retrieve that playground from
+   * the server.
+   * @author Ycreak
+   */
   protected load_playground(): void {
     const dialogRef = this.mat_dialog.open(LoadPlaygroundComponent, {
       data: { owner: this.auth_service.current_user_name },
     });
-
     dialogRef.afterClosed().subscribe({
       next: (name: any) => {
         if (name) {
-          this.playground_name = name;
           this.api
             .get_playground({ owner: this.auth_service.current_user_name, name: name })
             .subscribe((playground) => {
+              this.playground_name = playground.name;
+              this.playground_id = playground._id;
+              // Apply data to the canvas
               this.canvas.clear();
               this.canvas.loadFromJSON(playground.canvas, this.canvas.renderAll.bind(this.canvas));
             });
@@ -332,6 +280,11 @@ export class PlaygroundComponent implements OnInit {
     });
   }
 
+  /**
+   * Opens the save playground dialog. It returns with a create or save request and a name to save/create to.
+   * Accordingly, a playground with given name is created/saved. Error handling is done on the server
+   * @author Ycreak
+   */
   protected save_playground(): void {
     const dialogRef = this.mat_dialog.open(SavePlaygroundComponent, {
       data: { name: this.playground_name },
@@ -339,8 +292,9 @@ export class PlaygroundComponent implements OnInit {
     dialogRef.afterClosed().subscribe((data: any) => {
       if (data) {
         const playground = new Playground({
+          _id: this.playground_id,
           owner: this.auth_service.current_user_name,
-          name: data.name,
+          name: this.playground_name,
           canvas: this.canvas.toJSON(),
         });
         if (data.button == 'save') {
@@ -349,6 +303,23 @@ export class PlaygroundComponent implements OnInit {
           this.api.create_playground(playground);
         }
       }
+    });
+  }
+
+  /**
+   * Opens the delete playground dialog. If accepted, we delete the current playground.
+   * @author Ycreak
+   */
+  protected delete_playground(): void {
+    const dialogRef = this.mat_dialog.open(DeletePlaygroundComponent, {
+      data: { name: this.playground_name },
+    });
+    dialogRef.afterClosed().subscribe({
+      next: (name: any) => {
+        if (name) {
+          this.api.delete_playground({ owner: this.auth_service.current_user_name, name: this.playground_name });
+        }
+      },
     });
   }
 }

@@ -86,8 +86,7 @@
         mat-stroked-button
         class="playground-button playground-delete-button button-margin"
         color="accent"
-        (click)="this.toggle_drawing_mode()"
-        (click)="this.test()">
+        (click)="this.toggle_drawing_mode()">
         Toggle drawing
       </button>
     </div>
@@ -114,11 +113,11 @@
     </div>
     <div class="playground-button-container col-3">
       <button
+        [disabled]="this.playground_name === ''"
         mat-stroked-button
         class="playground-button playground-delete-button button-margin"
         color="accent"
-        (click)="this.toggle_drawing_mode()"
-        (click)="this.test()">
+        (click)="this.delete_playground()">
         Delete playground
       </button>
     </div>

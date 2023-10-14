@@ -49,6 +49,8 @@ def get_playground():
     if not playground_lst:
         return make_response("Not found", 401)
 
+    print(playground_lst)
+
     return jsonify(playground_lst), 200
 
 def create_playground():    
@@ -68,7 +70,7 @@ def create_playground():
         logging.error(e)
         return make_response("Unprocessable entity", 422)
     
-    if playgrounds.filter(Playground(name=name,owner=owner,canvas=canvas)):
+    if playgrounds.filter(Playground(name=name,owner=owner)):
         logging.error("create_playground(): duplicate playground")
         return make_response("Forbidden", 403)
 
@@ -80,14 +82,11 @@ def create_playground():
 
 def update_playground():    
     try:
-        owner = request.get_json()[PlaygroundField.OWNER]
-        name = request.get_json()[PlaygroundField.NAME]
+        _id = request.get_json()[PlaygroundField.ID]
         canvas = request.get_json()[PlaygroundField.CANVAS]
 
-        if PlaygroundField.NAME in request.get_json():
-            name = request.get_json()[PlaygroundField.NAME]
-        if PlaygroundField.OWNER in request.get_json():
-            owner = request.get_json()[PlaygroundField.OWNER]
+        if PlaygroundField.ID in request.get_json():
+            _id = request.get_json()[PlaygroundField.ID]
         if PlaygroundField.CANVAS in request.get_json():
             canvas = request.get_json()[PlaygroundField.CANVAS]
     
@@ -95,12 +94,7 @@ def update_playground():
         logging.error(e)
         return make_response("Unprocessable entity", 422)
 
-    # FIXME: Given the id, we must make sure the fragment exists.
-    # if not fragments.filter(Fragment(author=author, title=title, editor=editor, name=name)):
-    #     logging.error("revise_fragment(): fragment does not exist")
-    #     return make_response("Forbidden", 403)
-
-    playground = playgrounds.update(Playground(owner=owner, name=name, canvas=canvas))
+    playground = playgrounds.update(Playground(_id=_id, canvas=canvas))
     if playground == None:
         return make_response("Server error", 500)
 
@@ -108,12 +102,11 @@ def update_playground():
 
 def delete_playground():
     try:
-        owner = request.get_json()[PlaygroundField.OWNER]
-        name = request.get_json()[PlaygroundField.NAME]
+        _id = request.get_json()[PlaygroundField.ID]
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-    playground = playgrounds.delete(Playground(owner=owner, name=name))
+    playground = playgrounds.delete(Playground(_id=_id))
 
     if playground:
         return make_response("OK", 200)
