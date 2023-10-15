@@ -12,10 +12,12 @@ export class WebsocketsService {
   public login(): void {
     this.socket.emit('sign_in', { id: 0, name: this.auth_service.current_user_name });
   }
-  sendMessage(message: any) {
+
+  public sendMessage(message: any) {
     this.socket.emit('message', message);
   }
-  getMessage() {
+
+  public getMessage() {
     return this.socket.fromEvent('message').pipe(map((data: any) => data));
   }
 }

@@ -105,6 +105,7 @@ import { FragmentsDashboardComponent } from './dashboard/fragments-dashboard/fra
 import { LoadPlaygroundComponent } from './playground/load-playground/load-playground.component';
 import { SavePlaygroundComponent } from './playground/save-playground/save-playground.component';
 import { DeletePlaygroundComponent } from './playground/delete-playground/delete-playground.component';
+import { SharePlaygroundComponent } from './playground/share-playground/share-playground.component';
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
@@ -149,6 +150,7 @@ const appRoutes: Routes = [
     LoadPlaygroundComponent,
     SavePlaygroundComponent,
     DeletePlaygroundComponent,
+    SharePlaygroundComponent,
   ],
   imports: [
     BrowserModule,

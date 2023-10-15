@@ -1,0 +1,23 @@
+<h1 mat-dialog-title>Share playground</h1>
+<div mat-dialog-content>
+  <form [formGroup]="this.form">
+    <button mat-stroked-button color="primary" (click)="add_user('')">Add new user</button>
+
+    <div class="div-padding-lg"></div>
+
+    <div formArrayName="users" *ngFor="let user of form.get('users')['controls']; let i = index">
+      <div [formGroupName]="i">
+        <mat-form-field class="input-form-small">
+          <mat-label>User name</mat-label>
+          <input matInput type="text" formControlName="name" />
+        </mat-form-field>
+
+        <button mat-button (click)="delete_user(i)">Delete</button>
+      </div>
+    </div>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button (click)="onYesClick()" cdkFocusInitial>Share</button>
+</div>

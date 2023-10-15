@@ -20,17 +20,17 @@ def on_disconnect():
 def user_sign_in(user_name, methods=['GET', 'POST']):
     users[request.sid] = user_name['name']
     socketio.emit('current_users', users)
-    print("New user sign in!\nThe users are: ", users)
+    print("New user sign in!", users)
 
 @socketio.on('message')
 def messaging(message, methods=['GET', 'POST']):
     print('received message: ' + str(message['message']))
     message['from'] = request.sid
     socketio.emit('message', message, room=request.sid)
-    socketio.emit('message', message, room=message['to'])
+    socketio.emit('message', message)
 
-    for item in message['objects']:
-        canvas_objects.push(item)
+    # for item in message['objects']:
+        # canvas_objects.push(item)
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)

@@ -21,6 +21,7 @@ class PlaygroundField(object):
     NAME = "name"
     OWNER = "owner"
     CANVAS = "canvas"
+    SHARED_WITH = "shared_with"
 
 @dataclass
 class Playground:
@@ -28,6 +29,7 @@ class Playground:
     name: str = None
     owner: str = None
     canvas: object = None
+    shared_with: list = None
 
 class PlaygroundModel:
     def __init__(self, server):
@@ -43,6 +45,8 @@ class PlaygroundModel:
                 playground.owner = doc[PlaygroundField.OWNER]
             if PlaygroundField.CANVAS in doc:
                 playground.canvas = doc[PlaygroundField.CANVAS]
+            if PlaygroundField.SHARED_WITH in doc:
+                playground.shared_with = doc[PlaygroundField.SHARED_WITH]
             result.append(playground)
         return result
 

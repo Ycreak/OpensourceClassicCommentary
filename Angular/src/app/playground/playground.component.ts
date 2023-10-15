@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Output, EventEmitter } from '@angular/core';
 import { ColumnHandlerService } from '@oscc/services/column-handler.service';
 import { ApiService } from '@oscc/api.service';
-//import { WebsocketsService } from '@oscc/playground/websockets.service';
+import { WebsocketsService } from '@oscc/playground/websockets.service';
 import { environment } from '@src/environments/environment';
 import { fabric } from 'fabric';
 import { HostListener } from '@angular/core';
@@ -24,6 +24,7 @@ import { Playground } from '@oscc/models/Playground';
 import { LoadPlaygroundComponent } from './load-playground/load-playground.component';
 import { SavePlaygroundComponent } from './save-playground/save-playground.component';
 import { DeletePlaygroundComponent } from './delete-playground/delete-playground.component';
+import { SharePlaygroundComponent } from './share-playground/share-playground.component';
 
 @Component({
   selector: 'app-playground',
@@ -39,7 +40,9 @@ export class PlaygroundComponent implements OnInit {
     }
   }
 
+  //TODO: refactor this to an object once the playground column is deprecated
   protected playground_name = '';
+  private playground_shared_with: string[] = [];
   private playground_id = '';
   // Playground column that keeps all data related to said playground
   playground: Column;
@@ -59,7 +62,7 @@ export class PlaygroundComponent implements OnInit {
     protected settings: SettingsService,
     protected column_handler: ColumnHandlerService,
     protected dialog: DialogService,
-    //protected websockets: WebsocketsService,
+    protected websockets: WebsocketsService,
     private mat_dialog: MatDialog
   ) {}
 
@@ -68,6 +71,20 @@ export class PlaygroundComponent implements OnInit {
     this.canvas = new fabric.Canvas('playground_canvas');
     this.set_canvas_event_handlers();
     this.init_canvas_settings();
+
+    this.websockets.login();
+
+    this.websockets.getMessage().subscribe((message) => {
+      console.log('received', message);
+    });
+  }
+
+  protected send_message() {
+    this.websockets.sendMessage({
+      message: 'hello',
+      from: this.auth_service.current_user_name,
+      to: 'all',
+    });
   }
 
   /**
@@ -303,6 +320,23 @@ export class PlaygroundComponent implements OnInit {
           this.api.create_playground(playground);
         }
       }
+    });
+  }
+
+  /**
+   * Opens the share playground dialog. If accepted, we share the current playground with the given users.
+   * @author Ycreak
+   */
+  protected share_playground(): void {
+    const dialogRef = this.mat_dialog.open(SharePlaygroundComponent, {
+      data: { shared_with: this.playground_shared_with },
+    });
+    dialogRef.afterClosed().subscribe({
+      next: (share_list: any) => {
+        if (share_list) {
+          this.api.save_playground({ _id: this.playground_id, shared_with: this.playground_shared_with });
+        }
+      },
     });
   }
 
