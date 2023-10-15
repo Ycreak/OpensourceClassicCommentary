@@ -422,6 +422,22 @@ export class ApiService {
     });
   }
   /**
+   * Retrieves playgrounds shared with the given user
+   * @param key (object)
+   * @return playgrounds (object)
+   * @author Ycreak
+   */
+  public get_shared_playgrounds(filter: object): Observable<any> {
+    this.spinner_on();
+    return new Observable((observer) => {
+      this.post(this.FlaskURL, 'playground/get/shared', filter).subscribe((data: any) => {
+        this.spinner_off();
+        observer.next(data);
+        observer.complete();
+      });
+    });
+  }
+  /**
    * Retrieves playground names from the given key
    * @param key (object)
    * @return playground_names (list)

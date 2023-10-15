@@ -25,6 +25,7 @@ import { LoadPlaygroundComponent } from './load-playground/load-playground.compo
 import { SavePlaygroundComponent } from './save-playground/save-playground.component';
 import { DeletePlaygroundComponent } from './delete-playground/delete-playground.component';
 import { SharePlaygroundComponent } from './share-playground/share-playground.component';
+import { JoinPlaygroundComponent } from './join-playground/join-playground.component';
 
 @Component({
   selector: 'app-playground',
@@ -286,7 +287,9 @@ export class PlaygroundComponent implements OnInit {
           this.api
             .get_playground({ owner: this.auth_service.current_user_name, name: name })
             .subscribe((playground) => {
+              console.log(playground);
               this.playground_name = playground.name;
+              this.playground_shared_with = playground.shared_with;
               this.playground_id = playground._id;
               // Apply data to the canvas
               this.canvas.clear();
@@ -324,6 +327,29 @@ export class PlaygroundComponent implements OnInit {
   }
 
   /**
+   * Opens the join playground dialog.
+   * @author Ycreak
+   */
+  protected join_playground(): void {
+    const dialogRef = this.mat_dialog.open(JoinPlaygroundComponent, {
+      data: { name: this.auth_service.current_user_name },
+    });
+    dialogRef.afterClosed().subscribe({
+      next: (playground: any) => {
+        if (playground) {
+          this.api.get_playground({ owner: playground.owner, name: playground.name }).subscribe((playground) => {
+            this.playground_name = playground.name;
+            this.playground_shared_with = playground.shared_with;
+            this.playground_id = playground._id;
+            // Apply data to the canvas
+            this.canvas.clear();
+            this.canvas.loadFromJSON(playground.canvas, this.canvas.renderAll.bind(this.canvas));
+          });
+        }
+      },
+    });
+  }
+  /**
    * Opens the share playground dialog. If accepted, we share the current playground with the given users.
    * @author Ycreak
    */
@@ -334,7 +360,7 @@ export class PlaygroundComponent implements OnInit {
     dialogRef.afterClosed().subscribe({
       next: (share_list: any) => {
         if (share_list) {
-          this.api.save_playground({ _id: this.playground_id, shared_with: this.playground_shared_with });
+          this.api.save_playground({ _id: this.playground_id, shared_with: share_list });
         }
       },
     });
