@@ -52,16 +52,14 @@ def get_playground():
     return jsonify(playground_lst), 200
 
 def get_shared_playgrounds():
-    shared_with_user = None
+    user = None
     try:
-        if PlaygroundField.SHARED_WITH_USER in request.get_json():
-            shared_with_user = request.get_json()[PlaygroundField.SHARED_WITH_USER]
+        if PlaygroundField.USER in request.get_json():
+            user = request.get_json()[PlaygroundField.USER]
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-    playground_lst = playgrounds.get_shared_playgrounds(Playground(shared_with_user=shared_with_user), sorted=True)
-
-    print('list', playground_lst)
+    playground_lst = playgrounds.get_shared_playgrounds(Playground(user=user), sorted=True)
 
     if not playground_lst:
         return make_response("Not found", 401)
@@ -77,7 +75,7 @@ def create_playground():
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-    
+  
     if playgrounds.filter(Playground(name=name,owner=owner)):
         logging.error("create_playground(): duplicate playground")
         return make_response("Forbidden", 403)

@@ -24,7 +24,7 @@ export class JoinPlaygroundComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.api.get_shared_playgrounds({ shared_with_user: this.name }).subscribe((playgrounds) => {
+    this.api.get_shared_playgrounds({ user: this.name }).subscribe((playgrounds) => {
       if (playgrounds.length > 0) {
         this.playgrounds = playgrounds;
       } else {

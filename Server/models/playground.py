@@ -22,7 +22,7 @@ class PlaygroundField(object):
     OWNER = "owner"
     CANVAS = "canvas"
     SHARED_WITH = "shared_with"
-    SHARED_WITH_USER = "shared_with_user"
+    USER = "user"
 
 @dataclass
 class Playground:
@@ -31,7 +31,7 @@ class Playground:
     owner: str = None
     canvas: object = None
     shared_with: list = None
-    shared_with_user: str = None
+    user: str = None
 
 class PlaygroundModel:
     def __init__(self, server):
@@ -72,7 +72,9 @@ class PlaygroundModel:
         result = self.db.find(mango)
         result = self.__get_playgrounds(result)
         if sorted:
-            result.sort(key=lambda Playground: Playground.name)
+            #FIXME:
+            # result.sort(key=lambda Playground: Playground.name)
+            pass
         return result
 
     def create(self, playground):
@@ -126,21 +128,22 @@ class PlaygroundModel:
         return None
 
     def get_shared_playgrounds(self, playground, sorted=False):
+        print(playground)
         # TODO: it would be nice to make this function drier
         playground = {key: value for key, value in playground.__dict__.items() if value}
-        # We check whether the requesting user is in any of the shared_with arrays of the playground.
+        # We check whether the requesting user is in any of the shared_with object arrays of the playground.
         # If so, we return the playground metadata to the frontend for the requester to pick from.
         mango = {
            "selector": {
               "shared_with": {
                  "$elemMatch": {
-                    "$eq": playground["shared_with_user"]
+                    "name": playground["user"]
                  }
               }
            },
             "limit": conf.COUCH_LIMIT
         }
-
+        print('lets go')
         result = self.db.find(mango)
         # Do not add the canvas to this request: we only want meta data
         result = self.__get_playgrounds(result, canvas=False)

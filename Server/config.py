@@ -10,7 +10,7 @@ TRUSTED_ORIGINS = [
 ]
 
 COUCH_USER = "admin"
-COUCH_PASSWORD = "yVu4DES8qzajPCy"
+COUCH_PASSWORD = "secret"
 COUCH_HOST = "localhost"
 COUCH_PORT = "5984"
 
@@ -28,7 +28,7 @@ COUCH_TABLES = [
 ]
 
 COUCH_LIMIT = 1000
-COUCH_VERSION = "2" # Keep up-to-date. Used for authentication
+COUCH_VERSION = "3" # Keep up-to-date. Used for authentication
 
 # Do not touch!
 PWD_HASH_NAME = "sha512"

@@ -27,8 +27,8 @@ export class SharePlaygroundComponent implements OnInit {
 
   ngOnInit(): void {
     // Fill the user form field array
-    this.shared_with.forEach((user: string) => {
-      this.add_user(user);
+    this.shared_with.forEach((user: any) => {
+      this.add_user(user.name, user.save, user.del);
     });
   }
 
@@ -41,12 +41,8 @@ export class SharePlaygroundComponent implements OnInit {
    * @author Ycreak
    */
   protected onYesClick(): void {
-    const return_array: string[] = [];
     const users = this.form.get('users') as FormArray;
-    users.value.forEach((user: any) => {
-      return_array.push(user.name);
-    });
-    this.dialogRef.close(return_array);
+    this.dialogRef.close(users.value);
   }
 
   /**
@@ -65,9 +61,11 @@ export class SharePlaygroundComponent implements OnInit {
    * @param user (string)
    * @author Ycreak
    */
-  protected add_user(user: string): void {
+  protected add_user(name: string, save: boolean, del: boolean): void {
     const new_user = new FormGroup({
-      name: new FormControl(user),
+      name: new FormControl(name),
+      save: new FormControl(save),
+      del: new FormControl(del),
     });
     const user_array = this.form.get('users') as FormArray;
     user_array.push(new_user);

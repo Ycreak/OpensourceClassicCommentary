@@ -20,12 +20,13 @@ export class LoadPlaygroundComponent implements OnInit {
     public dialogRef: MatDialogRef<LoadPlaygroundComponent>,
     protected api: ApiService
   ) {
-    this.name = dialog_data.name;
+    this.name = dialog_data.owner;
     this.playgrounds = dialog_data.playgrounds;
   }
 
   ngOnInit(): void {
     this.api.get_playground_names({ owner: this.name }).subscribe((playgrounds) => {
+      console.log(playgrounds)
       if (playgrounds.length > 0) {
         this.playgrounds = playgrounds;
       } else {

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Output, EventEmitter } from '@angular/core';
 import { ColumnHandlerService } from '@oscc/services/column-handler.service';
 import { ApiService } from '@oscc/api.service';
-import { WebsocketsService } from '@oscc/playground/websockets.service';
+//import { WebsocketsService } from '@oscc/playground/websockets.service';
 import { environment } from '@src/environments/environment';
 import { fabric } from 'fabric';
 import { HostListener } from '@angular/core';
@@ -43,8 +43,10 @@ export class PlaygroundComponent implements OnInit {
 
   //TODO: refactor this to an object once the playground column is deprecated
   protected playground_name = '';
-  private playground_shared_with: string[] = [];
+  private playground_shared_with: any[] = [];
+  //private playground_shared_with2: any[] = [{name: 'Sebas', save: true, del: false}, {name: 'Antje', save: false, del: false}];
   private playground_id = '';
+  private owner: string;
   // Playground column that keeps all data related to said playground
   playground: Column;
   // Boolean to keep track if we are dragging or clicking a fragment within the playground
@@ -63,7 +65,7 @@ export class PlaygroundComponent implements OnInit {
     protected settings: SettingsService,
     protected column_handler: ColumnHandlerService,
     protected dialog: DialogService,
-    protected websockets: WebsocketsService,
+    //protected websockets: WebsocketsService,
     private mat_dialog: MatDialog
   ) {}
 
@@ -73,20 +75,20 @@ export class PlaygroundComponent implements OnInit {
     this.set_canvas_event_handlers();
     this.init_canvas_settings();
 
-    this.websockets.login();
+    //this.websockets.login();
 
-    this.websockets.getMessage().subscribe((message) => {
-      console.log('received', message);
-    });
+    //this.websockets.getMessage().subscribe((message) => {
+      //console.log('received', message);
+    //});
   }
 
-  protected send_message() {
-    this.websockets.sendMessage({
-      message: 'hello',
-      from: this.auth_service.current_user_name,
-      to: 'all',
-    });
-  }
+  //protected send_message() {
+    //this.websockets.sendMessage({
+      //message: 'hello',
+      //from: this.auth_service.current_user_name,
+      //to: 'all',
+    //});
+  //}
 
   /**
    * Request the API for documents: add them to the given column
@@ -291,6 +293,7 @@ export class PlaygroundComponent implements OnInit {
               this.playground_name = playground.name;
               this.playground_shared_with = playground.shared_with;
               this.playground_id = playground._id;
+              this.owner = playground.owner
               // Apply data to the canvas
               this.canvas.clear();
               this.canvas.loadFromJSON(playground.canvas, this.canvas.renderAll.bind(this.canvas));
@@ -314,7 +317,7 @@ export class PlaygroundComponent implements OnInit {
         const playground = new Playground({
           _id: this.playground_id,
           owner: this.auth_service.current_user_name,
-          name: this.playground_name,
+          name: data.name,
           canvas: this.canvas.toJSON(),
         });
         if (data.button == 'save') {
@@ -337,10 +340,11 @@ export class PlaygroundComponent implements OnInit {
     dialogRef.afterClosed().subscribe({
       next: (playground: any) => {
         if (playground) {
-          this.api.get_playground({ owner: playground.owner, name: playground.name }).subscribe((playground) => {
+          this.api.get_playground({ user: playground.user, name: playground.name }).subscribe((playground) => {
             this.playground_name = playground.name;
             this.playground_shared_with = playground.shared_with;
             this.playground_id = playground._id;
+            this.owner = playground.owner;
             // Apply data to the canvas
             this.canvas.clear();
             this.canvas.loadFromJSON(playground.canvas, this.canvas.renderAll.bind(this.canvas));
@@ -358,9 +362,9 @@ export class PlaygroundComponent implements OnInit {
       data: { shared_with: this.playground_shared_with },
     });
     dialogRef.afterClosed().subscribe({
-      next: (share_list: any) => {
-        if (share_list) {
-          this.api.save_playground({ _id: this.playground_id, shared_with: share_list });
+      next: (share_with: any) => {
+        if (share_with) {
+          this.api.save_playground({ _id: this.playground_id, shared_with: share_with });
         }
       },
     });
@@ -377,7 +381,13 @@ export class PlaygroundComponent implements OnInit {
     dialogRef.afterClosed().subscribe({
       next: (name: any) => {
         if (name) {
-          this.api.delete_playground({ owner: this.auth_service.current_user_name, name: this.playground_name });
+          console.log(this.owner, this.auth_service.current_user_name)
+          // Check if we have the correct rights to delete the playground
+          if (this.owner === this.auth_service.current_user_name) {
+            this.api.delete_playground({ _id: this.playground_id });
+          } else {
+            this.utility.open_snackbar('Not allowed');
+          }
         }
       },
     });

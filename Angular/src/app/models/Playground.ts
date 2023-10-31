@@ -7,6 +7,11 @@ export class Playground {
   _id: string;
   name: string;
   owner: string;
+  user: string;
   shared_with: string[];
   canvas: any;
+
+  note_array: any[];
+  fragment_names: string[];
+  documents: any[];
 }

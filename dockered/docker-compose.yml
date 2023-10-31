@@ -1,0 +1,10 @@
+version: '3.7'
+services:
+  couchdb:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5984:5984"
+    volumes:
+      - ./couchdb-data:/usr/local/var/lib/couchdb
