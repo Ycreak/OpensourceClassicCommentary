@@ -78,16 +78,16 @@ export class PlaygroundComponent implements OnInit {
     //this.websockets.login();
 
     //this.websockets.getMessage().subscribe((message) => {
-      //console.log('received', message);
+    //console.log('received', message);
     //});
   }
 
   //protected send_message() {
-    //this.websockets.sendMessage({
-      //message: 'hello',
-      //from: this.auth_service.current_user_name,
-      //to: 'all',
-    //});
+  //this.websockets.sendMessage({
+  //message: 'hello',
+  //from: this.auth_service.current_user_name,
+  //to: 'all',
+  //});
   //}
 
   /**
@@ -293,7 +293,7 @@ export class PlaygroundComponent implements OnInit {
               this.playground_name = playground.name;
               this.playground_shared_with = playground.shared_with;
               this.playground_id = playground._id;
-              this.owner = playground.owner
+              this.owner = playground.owner;
               // Apply data to the canvas
               this.canvas.clear();
               this.canvas.loadFromJSON(playground.canvas, this.canvas.renderAll.bind(this.canvas));
@@ -381,7 +381,7 @@ export class PlaygroundComponent implements OnInit {
     dialogRef.afterClosed().subscribe({
       next: (name: any) => {
         if (name) {
-          console.log(this.owner, this.auth_service.current_user_name)
+          console.log(this.owner, this.auth_service.current_user_name);
           // Check if we have the correct rights to delete the playground
           if (this.owner === this.auth_service.current_user_name) {
             this.api.delete_playground({ _id: this.playground_id });

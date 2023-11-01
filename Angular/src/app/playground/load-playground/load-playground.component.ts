@@ -26,7 +26,7 @@ export class LoadPlaygroundComponent implements OnInit {
 
   ngOnInit(): void {
     this.api.get_playground_names({ owner: this.name }).subscribe((playgrounds) => {
-      console.log(playgrounds)
+      console.log(playgrounds);
       if (playgrounds.length > 0) {
         this.playgrounds = playgrounds;
       } else {

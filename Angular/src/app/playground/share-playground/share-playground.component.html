@@ -7,7 +7,6 @@
 
     <div class="container-fluid">
       <div formArrayName="users" *ngFor="let user of form.get('users')['controls']; let i = index">
-
         <div class="row">
           <div class="playground-button-container col-6">
             <div [formGroupName]="i">
