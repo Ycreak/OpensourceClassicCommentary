@@ -3,77 +3,105 @@ import copy
 from flask import request, make_response
 import logging
 from flask_jsonpify import jsonify
+from uuid import uuid4
 
-from Server.couch import CouchAuthenticator
-from Server.models.introduction import IntroductionForm, IntroductionFormField, IntroductionFormModel
+from couch import CouchAuthenticator
+import utilities as util
+from models.playground import Introduction, IntroductionModel, IntroductionField
 
-introduction = IntroductionFormModel(CouchAuthenticator().couch)
+introductions = IntroductionModel(CouchAuthenticator().couch)
 
-def get_introduction() -> make_response:
+def get_introductions():
     try:
-        introform = make_introduction_form_object()
+        author = request.get_json()[IntroductionField.AUTHOR]
+        if IntroductionField.title in request.get_json():
+            title = request.get_json()[IntroductionField.title]
+        else:
+            title = '';
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
+    introduction_lst = introductions.filter(Introduction(author=author, title=title), sorted=True)
+    if not introduction_lst:
+        return make_response("Not found", 401)
+    return jsonify(introduction_lst), 200
 
-    # Get the introduction texts from the database and load it into the introduction object.
-    intro = introduction.get(introform)
-    # Make sure that only one introduction text entry is returned
-    if isinstance(intro, list):
-        intro = intro[0]
+# def get_playground():
+    # owner = None
+    # name = None
+    # try:
+        # if PlaygroundField.OWNER in request.get_json():
+            # owner = request.get_json()[PlaygroundField.OWNER]
+        # if PlaygroundField.NAME in request.get_json():
+            # name = request.get_json()[PlaygroundField.NAME]
+    # except KeyError as e:
+        # logging.error(e)
+        # return make_response("Unprocessable entity", 422)
 
-    # If an author/title combo was not found, look for author only
-    if not intro:
-        author_only = copy.deepcopy(introform)
-        author_only.title = ''
-        intro = introduction.get(author_only)
-        # Make sure that only one introduction text entry is returned
-        if isinstance(intro, list):
-            intro = intro[0]
-            intro['title_text'] = '' # Return only author introduction text
+    # playground_lst = playgrounds.filter(Playground(name=name, owner=owner), sorted=True)
+    # if not playground_lst:
+        # return make_response("Not found", 401)
 
-    # Return the introduction text to the user
-    return make_response(jsonify(intro))
+    # print(playground_lst)
 
+    # return jsonify(playground_lst), 200
 
-def set_introduction() -> make_response:
-    try:
-        introform = make_introduction_form_object()
-    except KeyError as e:
-        logging.error(e)
-        return make_response("Unprocessable entity", 422)
+# def create_playground():    
+    # try:
+        # owner = request.get_json()[PlaygroundField.OWNER]
+        # name = request.get_json()[PlaygroundField.NAME]
+        # canvas = request.get_json()[PlaygroundField.CANVAS]
 
-    # Send the introduction texts to the database
-    if introduction.update(introform):
-        return make_response("OK", 200)
-    else:
-        return make_response("Access denied; could not update introduction text", 401)
+        # if PlaygroundField.NAME in request.get_json():
+            # name = request.get_json()[PlaygroundField.NAME]
+        # if PlaygroundField.OWNER in request.get_json():
+            # owner = request.get_json()[PlaygroundField.OWNER]
+        # if PlaygroundField.CANVAS in request.get_json():
+            # canvas = request.get_json()[PlaygroundField.CANVAS]
 
+    # except KeyError as e:
+        # logging.error(e)
+        # return make_response("Unprocessable entity", 422)
+    
+    # if playgrounds.filter(Playground(name=name,owner=owner)):
+        # logging.error("create_playground(): duplicate playground")
+        # return make_response("Forbidden", 403)
 
-def make_introduction_form_object() -> IntroductionForm:
-    # Parse json request into a local object.
-    try:
-        json = request.get_json()
-    except:
-        raise Exception("Error: Could not get request json")
-    try:
-        author = json[IntroductionFormField.AUTHOR]
-    except:
-        author = ''
-    try:
-        title = json[IntroductionFormField.TITLE]
-    except: 
-        title = ''
-    try: # FIXME: This is a hack
-        author_text = json[IntroductionFormField.AUTHOR_TEXT]
-    except:
-        author_text = ''
-    try:
-        title_text = json[IntroductionFormField.TITLE_TEXT]
-    except:
-        title_text = ''
+    # playground = playgrounds.create(Playground(_id=uuid4().hex, name=name, owner=owner, canvas=canvas))
+    # if playground == None:
+        # return make_response("Server error", 500)
+    
+    # return make_response("Created", 200)
 
-    return IntroductionForm(author=author,
-                            title=title, 
-                            author_text=author_text, 
-                            title_text=title_text)
+# def update_playground():    
+    # try:
+        # _id = request.get_json()[PlaygroundField.ID]
+        # canvas = request.get_json()[PlaygroundField.CANVAS]
+
+        # if PlaygroundField.ID in request.get_json():
+            # _id = request.get_json()[PlaygroundField.ID]
+        # if PlaygroundField.CANVAS in request.get_json():
+            # canvas = request.get_json()[PlaygroundField.CANVAS]
+    
+    # except KeyError as e:
+        # logging.error(e)
+        # return make_response("Unprocessable entity", 422)
+
+    # playground = playgrounds.update(Playground(_id=_id, canvas=canvas))
+    # if playground == None:
+        # return make_response("Server error", 500)
+
+    # return make_response("Revised", 200)
+
+# def delete_playground():
+    # try:
+        # _id = request.get_json()[PlaygroundField.ID]
+    # except KeyError as e:
+        # logging.error(e)
+        # return make_response("Unprocessable entity", 422)
+    # playground = playgrounds.delete(Playground(_id=_id))
+
+    # if playground:
+        # return make_response("OK", 200)
+    # else:
+        # return make_response("Not found", 401)

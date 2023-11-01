@@ -34,6 +34,7 @@ from endpoints.fragment import get_author, get_title, get_editor, get_fragment, 
 from endpoints.fragment import link_fragment, get_list_display
 from endpoints.zotero import get_bibliography, sync_bibliography
 from endpoints.playground import create_playground, update_playground, delete_playground, get_playgrounds, get_playground
+from endpoints.introduction import create_introduction, delete_introduction, update_introduction, get_introduction
 
 app = Flask(__name__)
 api = Api(app)
@@ -73,6 +74,11 @@ app.add_url_rule("/playground/get/name", view_func=get_playgrounds, methods=["PO
 app.add_url_rule("/playground/create", view_func=create_playground, methods=["POST"])
 app.add_url_rule("/playground/update", view_func=update_playground, methods=["POST"])
 app.add_url_rule("/playground/delete", view_func=delete_playground, methods=["POST"])
+
+app.add_url_rule("/introduction/get", view_func=get_introduction, methods=["POST"])
+app.add_url_rule("/introduction/create", view_func=create_introduction, methods=["POST"])
+app.add_url_rule("/introduction/update", view_func=update_introduction, methods=["POST"])
+app.add_url_rule("/introduction/delete", view_func=delete_introduction, methods=["POST"])
 # @app.route("/automatic_fragment_linker", methods=['POST'])
 # def automatic_fragment_linker():
 #     # Route to allow for the creation of the given fragment
