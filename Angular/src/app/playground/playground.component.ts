@@ -24,6 +24,8 @@ import { Playground } from '@oscc/models/Playground';
 import { LoadPlaygroundComponent } from './load-playground/load-playground.component';
 import { SavePlaygroundComponent } from './save-playground/save-playground.component';
 import { DeletePlaygroundComponent } from './delete-playground/delete-playground.component';
+import { SharePlaygroundComponent } from './share-playground/share-playground.component';
+import { JoinPlaygroundComponent } from './join-playground/join-playground.component';
 
 @Component({
   selector: 'app-playground',
@@ -39,8 +41,12 @@ export class PlaygroundComponent implements OnInit {
     }
   }
 
+  //TODO: refactor this to an object once the playground column is deprecated
   protected playground_name = '';
+  private playground_shared_with: any[] = [];
+  //private playground_shared_with2: any[] = [{name: 'Sebas', save: true, del: false}, {name: 'Antje', save: false, del: false}];
   private playground_id = '';
+  private owner: string;
   // Playground column that keeps all data related to said playground
   playground: Column;
   // Boolean to keep track if we are dragging or clicking a fragment within the playground
@@ -68,7 +74,21 @@ export class PlaygroundComponent implements OnInit {
     this.canvas = new fabric.Canvas('playground_canvas');
     this.set_canvas_event_handlers();
     this.init_canvas_settings();
+
+    //this.websockets.login();
+
+    //this.websockets.getMessage().subscribe((message) => {
+    //console.log('received', message);
+    //});
   }
+
+  //protected send_message() {
+  //this.websockets.sendMessage({
+  //message: 'hello',
+  //from: this.auth_service.current_user_name,
+  //to: 'all',
+  //});
+  //}
 
   /**
    * Request the API for documents: add them to the given column
@@ -269,8 +289,11 @@ export class PlaygroundComponent implements OnInit {
           this.api
             .get_playground({ owner: this.auth_service.current_user_name, name: name })
             .subscribe((playground) => {
+              console.log(playground);
               this.playground_name = playground.name;
+              this.playground_shared_with = playground.shared_with;
               this.playground_id = playground._id;
+              this.owner = playground.owner;
               // Apply data to the canvas
               this.canvas.clear();
               this.canvas.loadFromJSON(playground.canvas, this.canvas.renderAll.bind(this.canvas));
@@ -294,7 +317,7 @@ export class PlaygroundComponent implements OnInit {
         const playground = new Playground({
           _id: this.playground_id,
           owner: this.auth_service.current_user_name,
-          name: this.playground_name,
+          name: data.name,
           canvas: this.canvas.toJSON(),
         });
         if (data.button == 'save') {
@@ -303,6 +326,47 @@ export class PlaygroundComponent implements OnInit {
           this.api.create_playground(playground);
         }
       }
+    });
+  }
+
+  /**
+   * Opens the join playground dialog.
+   * @author Ycreak
+   */
+  protected join_playground(): void {
+    const dialogRef = this.mat_dialog.open(JoinPlaygroundComponent, {
+      data: { name: this.auth_service.current_user_name },
+    });
+    dialogRef.afterClosed().subscribe({
+      next: (playground: any) => {
+        if (playground) {
+          this.api.get_playground({ user: playground.user, name: playground.name }).subscribe((playground) => {
+            this.playground_name = playground.name;
+            this.playground_shared_with = playground.shared_with;
+            this.playground_id = playground._id;
+            this.owner = playground.owner;
+            // Apply data to the canvas
+            this.canvas.clear();
+            this.canvas.loadFromJSON(playground.canvas, this.canvas.renderAll.bind(this.canvas));
+          });
+        }
+      },
+    });
+  }
+  /**
+   * Opens the share playground dialog. If accepted, we share the current playground with the given users.
+   * @author Ycreak
+   */
+  protected share_playground(): void {
+    const dialogRef = this.mat_dialog.open(SharePlaygroundComponent, {
+      data: { shared_with: this.playground_shared_with },
+    });
+    dialogRef.afterClosed().subscribe({
+      next: (share_with: any) => {
+        if (share_with) {
+          this.api.save_playground({ _id: this.playground_id, shared_with: share_with });
+        }
+      },
     });
   }
 
@@ -317,7 +381,13 @@ export class PlaygroundComponent implements OnInit {
     dialogRef.afterClosed().subscribe({
       next: (name: any) => {
         if (name) {
-          this.api.delete_playground({ owner: this.auth_service.current_user_name, name: this.playground_name });
+          console.log(this.owner, this.auth_service.current_user_name);
+          // Check if we have the correct rights to delete the playground
+          if (this.owner === this.auth_service.current_user_name) {
+            this.api.delete_playground({ _id: this.playground_id });
+          } else {
+            this.utility.open_snackbar('Not allowed');
+          }
         }
       },
     });

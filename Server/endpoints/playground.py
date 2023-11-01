@@ -24,7 +24,7 @@ def get_playgrounds():
     owner = None
     try:
         if PlaygroundField.OWNER in request.get_json():
-            name = request.get_json()[PlaygroundField.OWNER]
+            owner = request.get_json()[PlaygroundField.OWNER]
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
@@ -49,8 +49,21 @@ def get_playground():
     if not playground_lst:
         return make_response("Not found", 401)
 
-    print(playground_lst)
+    return jsonify(playground_lst), 200
 
+def get_shared_playgrounds():
+    user = None
+    try:
+        if PlaygroundField.USER in request.get_json():
+            user = request.get_json()[PlaygroundField.USER]
+    except KeyError as e:
+        logging.error(e)
+        return make_response("Unprocessable entity", 422)
+    playground_lst = playgrounds.get_shared_playgrounds(Playground(user=user), sorted=True)
+
+    if not playground_lst:
+        return make_response("Not found", 401)
+    
     return jsonify(playground_lst), 200
 
 def create_playground():    
@@ -59,17 +72,10 @@ def create_playground():
         name = request.get_json()[PlaygroundField.NAME]
         canvas = request.get_json()[PlaygroundField.CANVAS]
 
-        if PlaygroundField.NAME in request.get_json():
-            name = request.get_json()[PlaygroundField.NAME]
-        if PlaygroundField.OWNER in request.get_json():
-            owner = request.get_json()[PlaygroundField.OWNER]
-        if PlaygroundField.CANVAS in request.get_json():
-            canvas = request.get_json()[PlaygroundField.CANVAS]
-
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-    
+  
     if playgrounds.filter(Playground(name=name,owner=owner)):
         logging.error("create_playground(): duplicate playground")
         return make_response("Forbidden", 403)
@@ -83,18 +89,19 @@ def create_playground():
 def update_playground():    
     try:
         _id = request.get_json()[PlaygroundField.ID]
-        canvas = request.get_json()[PlaygroundField.CANVAS]
+        canvas = None 
+        shared_with = None 
 
-        if PlaygroundField.ID in request.get_json():
-            _id = request.get_json()[PlaygroundField.ID]
         if PlaygroundField.CANVAS in request.get_json():
             canvas = request.get_json()[PlaygroundField.CANVAS]
+        if PlaygroundField.SHARED_WITH in request.get_json():
+            shared_with = request.get_json()[PlaygroundField.SHARED_WITH]
     
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
 
-    playground = playgrounds.update(Playground(_id=_id, canvas=canvas))
+    playground = playgrounds.update(Playground(_id=_id, canvas=canvas, shared_with=shared_with))
     if playground == None:
         return make_response("Server error", 500)
 

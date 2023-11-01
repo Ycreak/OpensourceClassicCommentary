@@ -4,11 +4,11 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ApiService } from '@oscc/api.service';
 
 @Component({
-  selector: 'app-load-playground',
-  templateUrl: './load-playground.component.html',
-  styleUrls: ['./load-playground.component.scss'],
+  selector: 'app-join-playground',
+  templateUrl: './join-playground.component.html',
+  styleUrls: ['./join-playground.component.scss'],
 })
-export class LoadPlaygroundComponent implements OnInit {
+export class JoinPlaygroundComponent implements OnInit {
   protected name: string;
   protected playgrounds: string[] = [];
 
@@ -17,16 +17,14 @@ export class LoadPlaygroundComponent implements OnInit {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialog_data: any,
-    public dialogRef: MatDialogRef<LoadPlaygroundComponent>,
+    public dialogRef: MatDialogRef<JoinPlaygroundComponent>,
     protected api: ApiService
   ) {
-    this.name = dialog_data.owner;
-    this.playgrounds = dialog_data.playgrounds;
+    this.name = dialog_data.name;
   }
 
   ngOnInit(): void {
-    this.api.get_playground_names({ owner: this.name }).subscribe((playgrounds) => {
-      console.log(playgrounds);
+    this.api.get_shared_playgrounds({ user: this.name }).subscribe((playgrounds) => {
       if (playgrounds.length > 0) {
         this.playgrounds = playgrounds;
       } else {

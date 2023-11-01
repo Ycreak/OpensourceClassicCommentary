@@ -21,6 +21,8 @@ class PlaygroundField(object):
     NAME = "name"
     OWNER = "owner"
     CANVAS = "canvas"
+    SHARED_WITH = "shared_with"
+    USER = "user"
 
 @dataclass
 class Playground:
@@ -28,12 +30,14 @@ class Playground:
     name: str = None
     owner: str = None
     canvas: object = None
+    shared_with: list = None
+    user: str = None
 
 class PlaygroundModel:
     def __init__(self, server):
         self.db = server[conf.COUCH_PLAYGROUNDS]
     
-    def __get_playgrounds(self, playground_lst):
+    def __get_playgrounds(self, playground_lst, canvas=True):
         result = list()
         for doc in playground_lst:
             playground = Playground(_id=doc.id)
@@ -41,8 +45,11 @@ class PlaygroundModel:
                 playground.name = doc[PlaygroundField.NAME]
             if PlaygroundField.OWNER in doc:
                 playground.owner = doc[PlaygroundField.OWNER]
-            if PlaygroundField.CANVAS in doc:
-                playground.canvas = doc[PlaygroundField.CANVAS]
+            if PlaygroundField.SHARED_WITH in doc:
+                playground.shared_with = doc[PlaygroundField.SHARED_WITH]
+            if (canvas):
+                if PlaygroundField.CANVAS in doc:
+                    playground.canvas = doc[PlaygroundField.CANVAS]
             result.append(playground)
         return result
 
@@ -62,19 +69,16 @@ class PlaygroundModel:
             "selector": playground,
             "limit": conf.COUCH_LIMIT
         }
-        print(mango)
         result = self.db.find(mango)
         result = self.__get_playgrounds(result)
         if sorted:
-            result.sort(key=lambda Playground: Playground.name)
+            #FIXME:
+            # result.sort(key=lambda Playground: Playground.name)
+            pass
         return result
 
     def create(self, playground):
         playground = {key: value for key, value in playground.__dict__.items() if value}
-        # @deprecated because of refactoring
-        # playground[playgroundField.ID] = playground.pop("_id") # MongoDB uses "_id" instead of "id"
-        # playground[playgroundField.NAME] = playground.pop("name")
-        
         doc_id, _ = self.db.save(playground)
         if not doc_id:
             logging.error("create(): failed to create playground")
@@ -115,7 +119,6 @@ class PlaygroundModel:
             "limit": conf.COUCH_LIMIT
         }
         result = self.db.find(mango)
-
         result = self.__get_playgrounds(result)
 
         if result:
@@ -123,3 +126,27 @@ class PlaygroundModel:
                 logging.warning("get(): function returned more than 1 object!")
             return result[0]
         return None
+
+    def get_shared_playgrounds(self, playground, sorted=False):
+        print(playground)
+        # TODO: it would be nice to make this function drier
+        playground = {key: value for key, value in playground.__dict__.items() if value}
+        # We check whether the requesting user is in any of the shared_with object arrays of the playground.
+        # If so, we return the playground metadata to the frontend for the requester to pick from.
+        mango = {
+           "selector": {
+              "shared_with": {
+                 "$elemMatch": {
+                    "name": playground["user"]
+                 }
+              }
+           },
+            "limit": conf.COUCH_LIMIT
+        }
+        print('lets go')
+        result = self.db.find(mango)
+        # Do not add the canvas to this request: we only want meta data
+        result = self.__get_playgrounds(result, canvas=False)
+        if sorted:
+            result.sort(key=lambda Playground: Playground.name)
+        return result
