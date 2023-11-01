@@ -9,14 +9,8 @@
       <button
         mat-stroked-button
         class="playground-select-text-button playground-button button-margin"
-        [matMenuTriggerFor]="menu_authors"
-        (click)="this.playground.new_column = false">
-        <ng-container *ngIf="this.playground.new_column; else text_button_clicked"> Select Text </ng-container>
-
-        <ng-template #text_button_clicked>
-          {{ this.playground.author }}-{{ this.playground.title }}-{{ this.playground.editor }}
-          <sup *ngIf="this.playground.edited">altered</sup>
-        </ng-template>
+        [matMenuTriggerFor]="menu_authors">
+        <ng-container> Select Text </ng-container>
       </button>
     </div>
     <div class="playground-button-container col-3">
@@ -158,10 +152,10 @@
         <mat-hint>To organise your playground</mat-hint>
       </mat-form-field>
     </div>
-    <div class="playground-button-container col-3" *ngIf="this.canvas.isDrawingMode">
+    <div class="playground-button-container col-3" *ngIf="this.playground.canvas.isDrawingMode">
       <mat-form-field>
         <mat-label>Pencil colour</mat-label>
-        <mat-select [(value)]="this.canvas.freeDrawingBrush.color">
+        <mat-select [(value)]="this.playground.canvas.freeDrawingBrush.color">
           <mat-option value="black">Black</mat-option>
           <mat-option value="red">Red</mat-option>
           <mat-option value="blue">Blue</mat-option>
@@ -169,10 +163,10 @@
         </mat-select>
       </mat-form-field>
     </div>
-    <div class="playground-button-container col-3" *ngIf="this.canvas.isDrawingMode">
+    <div class="playground-button-container col-3" *ngIf="this.playground.canvas.isDrawingMode">
       <mat-form-field class="example-margin example-width">
         <mat-label>Pencil width</mat-label>
-        <input matInput type="number" [(ngModel)]="this.canvas.freeDrawingBrush.width" />
+        <input matInput type="number" [(ngModel)]="this.playground.canvas.freeDrawingBrush.width" />
       </mat-form-field>
     </div>
   </div>
