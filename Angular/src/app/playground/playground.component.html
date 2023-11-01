@@ -112,7 +112,7 @@
     </div>
     <div class="playground-button-container col-3">
       <button
-        [disabled]="this.playground_name === ''"
+        [disabled]="this.playground.name2 === ''"
         mat-stroked-button
         class="playground-button playground-delete-button button-margin"
         color="accent"
@@ -145,8 +145,8 @@
   <div class="row">
     <div mat-dialog-content class="playground-button-container col-6">
       <mat-form-field class="playground-mat-form-field input-form">
-        <input matInput placeholder="Add a note" ngDefaultControl [(ngModel)]="note" />
-        <button type="button" mat-icon-button matSuffix (click)="this.add_note_to_canvas(note)">
+        <input matInput placeholder="Add a note" ngDefaultControl [(ngModel)]="this.playground.note" />
+        <button type="button" mat-icon-button matSuffix (click)="this.add_note_to_canvas(this.playground.note)">
           <mat-icon>{{ "add" }}</mat-icon>
         </button>
         <mat-hint>To organise your playground</mat-hint>

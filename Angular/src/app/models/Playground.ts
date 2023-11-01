@@ -19,6 +19,10 @@ export class Playground {
   fragment_names: string[];
   documents: any[];
 
+
+  // Deprecate this
+  note: string;
+
   author: string;
   title: string;
   editor: string;
@@ -26,6 +30,7 @@ export class Playground {
 
   retrieved_titles: string[];
   retrieved_editors: string[];
+  //
 
   public clear() {
     this.documents = [];
