@@ -81,10 +81,8 @@ export class FragmentsDashboardComponent implements OnInit {
     this.api.request_authors_titles_editors_blob();
     // We will store all dashboard data in the following data object
     this.selected_fragment_data = new Column({
-      column_id: environment.dashboard_id,
     });
     this.fragment_referencer = new Column({
-      column_id: environment.referencer_id,
     });
   }
 
