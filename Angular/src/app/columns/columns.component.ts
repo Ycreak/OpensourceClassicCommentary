@@ -97,7 +97,7 @@ export class ColumnsComponent implements OnInit, OnChanges {
           doc.add_html_to_lines();
         }
       }
-    })
+    });
     // Prepare the documents for publication
     documents = documents.sort(this.utility.sort_fragment_array_numerically);
     documents = this.sort_documents_on_status(documents);

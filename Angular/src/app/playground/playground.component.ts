@@ -52,7 +52,7 @@ export class PlaygroundComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.playground = new Playground({ });
+    this.playground = new Playground({});
     this.playground.canvas = new fabric.Canvas('playground_canvas');
     this.set_canvas_event_handlers();
     this.init_canvas_settings();
@@ -125,7 +125,7 @@ export class PlaygroundComponent implements OnInit {
     this.dialog.open_confirmation_dialog('Are you sure you want to clear the playground?', '').subscribe({
       next: (res) => {
         if (res) {
-          this.playground.clear()
+          this.playground.clear();
         }
       },
     });
@@ -261,7 +261,10 @@ export class PlaygroundComponent implements OnInit {
               this.playground.owner = playground.owner;
               // Apply data to the canvas
               this.playground.canvas.clear();
-              this.playground.canvas.loadFromJSON(playground.canvas, this.playground.canvas.renderAll.bind(this.playground.canvas));
+              this.playground.canvas.loadFromJSON(
+                playground.canvas,
+                this.playground.canvas.renderAll.bind(this.playground.canvas)
+              );
             });
         }
       },
@@ -312,7 +315,10 @@ export class PlaygroundComponent implements OnInit {
             this.playground.owner = playground.owner;
             // Apply data to the canvas
             this.playground.canvas.clear();
-            this.playground.canvas.loadFromJSON(playground.canvas, this.playground.canvas.renderAll.bind(this.playground.canvas));
+            this.playground.canvas.loadFromJSON(
+              playground.canvas,
+              this.playground.canvas.renderAll.bind(this.playground.canvas)
+            );
           });
         }
       },

@@ -2,7 +2,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormArray } from '@angular/forms';
 import { Validators } from '@angular/forms';
-import { environment } from '@src/environments/environment';
 
 // Component imports
 import { ApiService } from '@oscc/api.service';
@@ -80,10 +79,8 @@ export class FragmentsDashboardComponent implements OnInit {
 
     this.api.request_authors_titles_editors_blob();
     // We will store all dashboard data in the following data object
-    this.selected_fragment_data = new Column({
-    });
-    this.fragment_referencer = new Column({
-    });
+    this.selected_fragment_data = new Column({});
+    this.fragment_referencer = new Column({});
   }
 
   /**

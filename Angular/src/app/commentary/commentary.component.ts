@@ -64,8 +64,6 @@ export class CommentaryComponent implements OnChanges {
     if (this.document.linked_fragments.length == 0) {
       this.no_linked_commentary_found = true;
     }
-
-    console.log(this.document.linked_fragments);
     this.document.linked_fragments.forEach((filter: any) => {
       concurrent_calls += 1;
       this.api.get_documents(filter).subscribe((documents) => {
@@ -75,7 +73,6 @@ export class CommentaryComponent implements OnChanges {
           found_document.commentary = this.add_html(found_document.commentary);
           found_document.commentary = this.format_bib_entries(found_document.commentary);
           this.linked_commentaries.push(found_document);
-          console.log(this.linked_commentaries);
         }
         // If linked fragments are found but have no commentary, we set the banner
         // Only set this banner on the last api call. Otherwise the banner might flash by
