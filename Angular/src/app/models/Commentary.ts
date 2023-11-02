@@ -1,4 +1,10 @@
-import { Context } from '@oscc/models/Context';
+import { Apparatus_field } from '@oscc/models/commentary/Apparatus';
+import { Commentary_field } from '@oscc/models/commentary/Commentary';
+import { Context_field } from '@oscc/models/commentary/Context';
+import { Differences_field } from '@oscc/models/commentary/Differences';
+import { Reconstruction_field } from '@oscc/models/commentary/Reconstruction';
+import { Translation_field } from '@oscc/models/commentary/Translation';
+
 import { Line } from '@oscc/models/Line';
 
 /**
@@ -12,11 +18,20 @@ export class Commentary {
   reconstruction = '';
   differences = '';
   metrical_analysis = '';
-  context: Context[] = [];
+  context: Context_field[] = [];
 
   lines: Line[] = [];
 
   bibliography = '';
+
+  fields: any = {
+    apparatus: [],
+    commentary: [],
+    context: [],
+    differences: [],
+    reconstruction: [],
+    translation: [],
+  };
 
   constructor(commentary?: Partial<Commentary>) {
     // Allow the partial initialisation of a fragment object
@@ -39,6 +54,52 @@ export class Commentary {
     this.metrical_analysis =
       'metrical_analysis' in fragment && fragment['metrical_analysis'] != null ? fragment['metrical_analysis'] : '';
     this.context = 'context' in fragment && fragment['context'] != null ? fragment['context'] : [];
+
+    if ('apparatus' in fragment && fragment['apparatus'] != '') {
+      this.fields.apparatus.push(
+        new Apparatus_field({
+          text: fragment['apparatus'],
+        })
+      );
+    }
+
+    if ('commentary' in fragment && fragment['commentary'] != '') {
+      this.fields.commentary.push(
+        new Commentary_field({
+          text: fragment['commentary'],
+        })
+      );
+    }
+
+    const contexts = 'context' in fragment && fragment['context'] != null ? fragment['context'] : [];
+    contexts.forEach((context: any) => {
+      this.fields.context.push(new Context_field(context));
+    });
+
+    if ('differences' in fragment && fragment['differences'] != '') {
+      this.fields.differences.push(
+        new Differences_field({
+          text: fragment['differences'],
+        })
+      );
+    }
+
+    if ('reconstruction' in fragment && fragment['reconstruction'] != '') {
+      this.fields.reconstruction.push(
+        new Reconstruction_field({
+          text: fragment['reconstruction'],
+        })
+      );
+    }
+
+    if ('translation' in fragment && fragment['translation'] != '') {
+      this.fields.translation.push(
+        new Translation_field({
+          text: fragment['translation'],
+        })
+      );
+    }
+    console.log('fields', fragment.name, this.fields);
   }
 
   /**

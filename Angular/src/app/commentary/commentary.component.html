@@ -17,17 +17,17 @@
     <hr
   /></ng-container>
 
-  <ng-container *ngIf="commentary.apparatus">
-    <app-general-commentary-field
-      [content]="commentary.apparatus"
-      [title]="'Apparatus Criticus'"></app-general-commentary-field>
+  <ng-container *ngIf="commentary.fields.apparatus">
+    <div *ngFor="let apparatus of commentary.fields.apparatus">
+      <app-apparatus [apparatus]="apparatus"></app-apparatus>
+    </div>
     <hr
   /></ng-container>
 
-  <ng-container *ngIf="commentary.differences">
-    <app-general-commentary-field
-      [content]="commentary.differences"
-      [title]="'Editorial Differences'"></app-general-commentary-field>
+  <ng-container *ngIf="commentary.fields.differences">
+    <div *ngFor="let differences of commentary.fields.differences">
+      <app-differences [differences]="differences"></app-differences>
+    </div>
     <hr
   /></ng-container>
 
@@ -53,24 +53,24 @@
     <hr />
   </ng-container>
 
-  <ng-container *ngIf="commentary.commentary">
-    <app-general-commentary-field
-      [content]="commentary.commentary"
-      [title]="'Fragment Commentary'"></app-general-commentary-field>
+  <ng-container *ngIf="commentary.fields.commentary">
+    <div *ngFor="let commentary of commentary.fields.commentary">
+      <app-commentary [commentary]="commentary"></app-commentary>
+    </div>
     <hr
   /></ng-container>
 
-  <ng-container *ngIf="commentary.metrical_analysis">
-    <app-general-commentary-field
-      [content]="commentary.metrical_analysis"
-      [title]="'Metrical Analysis'"></app-general-commentary-field>
+  <!-- <ng-container *ngIf="metrical_analysis.fields.metrical_analysis">
+    <div *ngFor="let metrical_analysis of metrical_analysis.fields.metrical_analysis">
+      <app-metrical_analysis [metrical_analysis]="metrical_analysis"></app-metrical_analysis>
+    </div>
     <hr
-  /></ng-container>
+  /></ng-container> -->
 
-  <ng-container *ngIf="commentary.reconstuction">
-    <app-general-commentary-field
-      [content]="commentary.reconstruction"
-      [title]="'Fragment Reconstruction'"></app-general-commentary-field>
+  <ng-container *ngIf="commentary.fields.reconstruction">
+    <div *ngFor="let reconstruction of commentary.fields.reconstruction">
+      <app-reconstruction [reconstruction]="reconstruction"></app-reconstruction>
+    </div>
     <hr
   /></ng-container>
 

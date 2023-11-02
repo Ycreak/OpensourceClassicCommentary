@@ -17,11 +17,12 @@ import { UtilityService } from '@oscc/utility.service';
   styleUrls: ['./commentary.component.scss'],
 })
 export class CommentaryComponent implements OnChanges {
-  @Input() commentary: Commentary;
   @Input() document: any;
   @Input() translated: boolean;
 
   @Output() request_column = new EventEmitter<any>();
+
+  protected commentary: Commentary;
 
   protected document_clicked = false;
   protected translation_orig_text_expanded = false;
@@ -41,7 +42,8 @@ export class CommentaryComponent implements OnChanges {
   ) {}
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.commentary) {
+    if (changes.document) {
+      this.commentary = this.document.commentary;
       this.no_linked_commentary_found = false;
       this.linked_commentary_retrieved = false;
       this.linked_commentaries = [];

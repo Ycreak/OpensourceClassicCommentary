@@ -99,7 +99,6 @@ import { TestimoniaComponent } from './columns/testimonia/testimonia.component';
 import { FragmentComponent } from './columns/fragment/fragment.component';
 import { OnCopyDirective } from './directives/on-copy.directive';
 import { TestimoniaDashboardComponent } from './dashboard/testimonia-dashboard/testimonia-dashboard.component';
-import { TranslationComponent } from './commentary/translation/translation.component';
 import { GeneralCommentaryFieldComponent } from './commentary/general-commentary-field/general-commentary-field.component';
 import { FragmentsDashboardComponent } from './dashboard/fragments-dashboard/fragments-dashboard.component';
 import { LoadPlaygroundComponent } from './playground/load-playground/load-playground.component';
@@ -107,6 +106,13 @@ import { SavePlaygroundComponent } from './playground/save-playground/save-playg
 import { DeletePlaygroundComponent } from './playground/delete-playground/delete-playground.component';
 import { SharePlaygroundComponent } from './playground/share-playground/share-playground.component';
 import { JoinPlaygroundComponent } from './playground/join-playground/join-playground.component';
+
+// Commentary components
+import { TranslationComponent } from '@oscc/commentary/translation/translation.component';
+import { ApparatusComponent } from '@oscc/commentary/apparatus/apparatus.component';
+import { DifferencesComponent } from './commentary/differences/differences.component';
+import { ContextComponent } from './commentary/context/context.component';
+import { ReconstructionComponent } from './commentary/reconstruction/reconstruction.component';
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
@@ -146,6 +152,7 @@ const appRoutes: Routes = [
     OnCopyDirective,
     TestimoniaDashboardComponent,
     TranslationComponent,
+    ApparatusComponent,
     GeneralCommentaryFieldComponent,
     FragmentsDashboardComponent,
     LoadPlaygroundComponent,
@@ -153,6 +160,9 @@ const appRoutes: Routes = [
     DeletePlaygroundComponent,
     SharePlaygroundComponent,
     JoinPlaygroundComponent,
+    DifferencesComponent,
+    ContextComponent,
+    ReconstructionComponent,
   ],
   imports: [
     BrowserModule,
