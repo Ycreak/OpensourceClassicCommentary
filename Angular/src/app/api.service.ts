@@ -301,7 +301,7 @@ export class ApiService {
             new_document = new Testimonium({});
             new_document.set(value);
           } else {
-            console.error('unknown document type');
+            console.error('unknown document type', value);
           }
           documents.push(new_document);
         });

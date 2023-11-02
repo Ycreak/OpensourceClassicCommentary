@@ -9,14 +9,8 @@
       <button
         mat-stroked-button
         class="playground-select-text-button playground-button button-margin"
-        [matMenuTriggerFor]="menu_authors"
-        (click)="this.playground.new_column = false">
-        <ng-container *ngIf="this.playground.new_column; else text_button_clicked"> Select Text </ng-container>
-
-        <ng-template #text_button_clicked>
-          {{ this.playground.author }}-{{ this.playground.title }}-{{ this.playground.editor }}
-          <sup *ngIf="this.playground.edited">altered</sup>
-        </ng-template>
+        [matMenuTriggerFor]="menu_authors">
+        <ng-container> Select Text </ng-container>
       </button>
     </div>
     <div class="playground-button-container col-3">
@@ -90,11 +84,6 @@
         Toggle drawing
       </button>
     </div>
-    <div class="playground-button-container col-3">
-      <button mat-stroked-button class="playground-button playground-delete-button button-margin" color="accent">
-        Message
-      </button>
-    </div>
   </div>
   <div class="row">
     <!-- The third row contains all buttons to control the websockets -->
@@ -118,7 +107,7 @@
     </div>
     <div class="playground-button-container col-3">
       <button
-        [disabled]="this.playground_name === ''"
+        [disabled]="this.playground.name2 === ''"
         mat-stroked-button
         class="playground-button playground-delete-button button-margin"
         color="accent"
@@ -151,17 +140,17 @@
   <div class="row">
     <div mat-dialog-content class="playground-button-container col-6">
       <mat-form-field class="playground-mat-form-field input-form">
-        <input matInput placeholder="Add a note" ngDefaultControl [(ngModel)]="note" />
-        <button type="button" mat-icon-button matSuffix (click)="this.add_note_to_canvas(note)">
+        <input matInput placeholder="Add a note" ngDefaultControl [(ngModel)]="this.playground.note" />
+        <button type="button" mat-icon-button matSuffix (click)="this.add_note_to_canvas(this.playground.note)">
           <mat-icon>{{ "add" }}</mat-icon>
         </button>
         <mat-hint>To organise your playground</mat-hint>
       </mat-form-field>
     </div>
-    <div class="playground-button-container col-3" *ngIf="this.canvas.isDrawingMode">
+    <div class="playground-button-container col-3" *ngIf="this.playground.canvas.isDrawingMode">
       <mat-form-field>
         <mat-label>Pencil colour</mat-label>
-        <mat-select [(value)]="this.canvas.freeDrawingBrush.color">
+        <mat-select [(value)]="this.playground.canvas.freeDrawingBrush.color">
           <mat-option value="black">Black</mat-option>
           <mat-option value="red">Red</mat-option>
           <mat-option value="blue">Blue</mat-option>
@@ -169,10 +158,10 @@
         </mat-select>
       </mat-form-field>
     </div>
-    <div class="playground-button-container col-3" *ngIf="this.canvas.isDrawingMode">
+    <div class="playground-button-container col-3" *ngIf="this.playground.canvas.isDrawingMode">
       <mat-form-field class="example-margin example-width">
         <mat-label>Pencil width</mat-label>
-        <input matInput type="number" [(ngModel)]="this.canvas.freeDrawingBrush.width" />
+        <input matInput type="number" [(ngModel)]="this.playground.canvas.freeDrawingBrush.width" />
       </mat-form-field>
     </div>
   </div>
