@@ -41,6 +41,10 @@ export class CommentaryComponent implements OnChanges {
     protected settings: SettingsService
   ) {}
 
+  test() {
+    console.log('test');
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes.document) {
       this.commentary = this.document.commentary;

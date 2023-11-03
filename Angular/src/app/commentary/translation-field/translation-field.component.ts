@@ -8,11 +8,11 @@ import { Commentary } from '@oscc/models/Commentary';
 import { Line } from '@oscc/models/Line';
 
 @Component({
-  selector: 'app-translation',
-  templateUrl: './translation.component.html',
-  styleUrls: ['./translation.component.scss'],
+  selector: 'app-translation-field',
+  templateUrl: './translation-field.component.html',
+  styleUrls: ['./translation-field.component.scss'],
 })
-export class TranslationComponent implements OnChanges {
+export class TranslationFieldComponent implements OnChanges {
   @Input() commentary: Commentary;
   @Input() translated: boolean;
 

@@ -164,7 +164,7 @@ export class UtilityService {
     return array;
   }
 
-  public is_empty_array(array): boolean {
+  public is_empty_array(array: any): boolean {
     if (Array.isArray(array) && array.length) {
       return false;
     } else {

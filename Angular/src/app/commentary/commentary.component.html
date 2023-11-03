@@ -12,72 +12,55 @@
 
 <ng-template #commentary_column_template let-commentary="given_commentary">
   <!-- Show the fragment's translation or original text -->
-  <ng-container *ngIf="commentary.translation">
-    <app-translation [commentary]="commentary" [translated]="this.translated"></app-translation>
+  <ng-container *ngIf="!this.utility.is_empty_array(commentary.fields.translation)">
+    <app-translation-field [commentary]="commentary" [translated]="this.translated"></app-translation-field>
     <hr
   /></ng-container>
 
-  <ng-container *ngIf="commentary.fields.apparatus">
+  <ng-container *ngIf="!this.utility.is_empty_array(commentary.fields.apparatus)">
     <div *ngFor="let apparatus of commentary.fields.apparatus">
-      <app-apparatus [apparatus]="apparatus"></app-apparatus>
+      <app-apparatus-field [apparatus]="apparatus"></app-apparatus-field>
     </div>
     <hr
   /></ng-container>
 
-  <ng-container *ngIf="commentary.fields.differences">
+  <ng-container *ngIf="!this.utility.is_empty_array(commentary.fields.differences)">
     <div *ngFor="let differences of commentary.fields.differences">
-      <app-differences [differences]="differences"></app-differences>
+      <app-differences-field [differences]="differences"></app-differences-field>
     </div>
     <hr
   /></ng-container>
 
-  <ng-container *ngIf="!this.utility.is_empty_array(commentary.context)">
-    <div *ngFor="let current_context of commentary.context">
-      <mat-expansion-panel>
-        <mat-expansion-panel-header class="citation-context-mat-exp-header">
-          <mat-panel-title>
-            <b>Citation Context</b>
-          </mat-panel-title>
-          <div class="citation-context-mat-panel-info-slot">
-            {{ current_context.author }} <i>{{ current_context.location }}</i>
-          </div>
-          <div class="div-padding-sm"></div>
-        </mat-expansion-panel-header>
-        <div class="mat-expansion-panel-content">
-          <div class="mat-expansion-panel-body">
-            <app-expandable-text [content]="current_context.text"></app-expandable-text>
-          </div>
-        </div>
-      </mat-expansion-panel>
+  <ng-container *ngIf="!this.utility.is_empty_array(commentary.fields.context)">
+    <div *ngFor="let context of commentary.fields.context">
+      <app-context-field [context]="context"></app-context-field>
     </div>
     <hr />
   </ng-container>
 
-  <ng-container *ngIf="commentary.fields.commentary">
+  <ng-container *ngIf="!this.utility.is_empty_array(commentary.fields.commentary)">
     <div *ngFor="let commentary of commentary.fields.commentary">
-      <app-commentary [commentary]="commentary"></app-commentary>
+      <app-commentary-field [commentary]="commentary"></app-commentary-field>
     </div>
     <hr
   /></ng-container>
 
-  <!-- <ng-container *ngIf="metrical_analysis.fields.metrical_analysis">
-    <div *ngFor="let metrical_analysis of metrical_analysis.fields.metrical_analysis">
-      <app-metrical_analysis [metrical_analysis]="metrical_analysis"></app-metrical_analysis>
+  <ng-container *ngIf="!this.utility.is_empty_array(commentary.fields.metrical_analysis)">
+    <div *ngFor="let metrical_analysis of commentary.fields.metrical_analysis">
+      <app-metrical-analysis-field [metrical_analysis]="metrical_analysis"></app-metrical-analysis-field>
     </div>
     <hr
-  /></ng-container> -->
+  /></ng-container>
 
-  <ng-container *ngIf="commentary.fields.reconstruction">
+  <ng-container *ngIf="!this.utility.is_empty_array(commentary.fields.reconstruction)">
     <div *ngFor="let reconstruction of commentary.fields.reconstruction">
-      <app-reconstruction [reconstruction]="reconstruction"></app-reconstruction>
+      <app-reconstruction-field [reconstruction]="reconstruction"></app-reconstruction-field>
     </div>
     <hr
   /></ng-container>
 
   <ng-container *ngIf="commentary.bibliography">
-    <app-general-commentary-field
-      [content]="commentary.bibliography"
-      [title]="'Fragment Bibliography'"></app-general-commentary-field>
+    <app-bibliography-field [content]="commentary.bibliography"></app-bibliography-field>
   </ng-container>
 </ng-template>
 

@@ -2,6 +2,7 @@ import { Apparatus_field } from '@oscc/models/commentary/Apparatus';
 import { Commentary_field } from '@oscc/models/commentary/Commentary';
 import { Context_field } from '@oscc/models/commentary/Context';
 import { Differences_field } from '@oscc/models/commentary/Differences';
+import { Metrical_analysis_field } from './commentary/Metrical_analysis';
 import { Reconstruction_field } from '@oscc/models/commentary/Reconstruction';
 import { Translation_field } from '@oscc/models/commentary/Translation';
 
@@ -29,6 +30,7 @@ export class Commentary {
     commentary: [],
     context: [],
     differences: [],
+    metrical_analysis: [],
     reconstruction: [],
     translation: [],
   };
@@ -84,6 +86,14 @@ export class Commentary {
       );
     }
 
+    if ('metrical_analysis' in fragment && fragment['metrical_analysis'] != '') {
+      this.fields.metrical_analysis.push(
+        new Metrical_analysis_field({
+          text: fragment['metrical_analysis'],
+        })
+      );
+    }
+
     if ('reconstruction' in fragment && fragment['reconstruction'] != '') {
       this.fields.reconstruction.push(
         new Reconstruction_field({
@@ -99,7 +109,6 @@ export class Commentary {
         })
       );
     }
-    console.log('fields', fragment.name, this.fields);
   }
 
   /**

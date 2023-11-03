@@ -99,7 +99,6 @@ import { TestimoniaComponent } from './columns/testimonia/testimonia.component';
 import { FragmentComponent } from './columns/fragment/fragment.component';
 import { OnCopyDirective } from './directives/on-copy.directive';
 import { TestimoniaDashboardComponent } from './dashboard/testimonia-dashboard/testimonia-dashboard.component';
-import { GeneralCommentaryFieldComponent } from './commentary/general-commentary-field/general-commentary-field.component';
 import { FragmentsDashboardComponent } from './dashboard/fragments-dashboard/fragments-dashboard.component';
 import { LoadPlaygroundComponent } from './playground/load-playground/load-playground.component';
 import { SavePlaygroundComponent } from './playground/save-playground/save-playground.component';
@@ -108,11 +107,14 @@ import { SharePlaygroundComponent } from './playground/share-playground/share-pl
 import { JoinPlaygroundComponent } from './playground/join-playground/join-playground.component';
 
 // Commentary components
-import { TranslationComponent } from '@oscc/commentary/translation/translation.component';
-import { ApparatusComponent } from '@oscc/commentary/apparatus/apparatus.component';
-import { DifferencesComponent } from './commentary/differences/differences.component';
-import { ContextComponent } from './commentary/context/context.component';
-import { ReconstructionComponent } from './commentary/reconstruction/reconstruction.component';
+import { TranslationFieldComponent } from '@oscc/commentary/translation-field/translation-field.component';
+import { ApparatusFieldComponent } from '@oscc/commentary/apparatus-field/apparatus-field.component';
+import { DifferencesFieldComponent } from './commentary/differences-field/differences-field.component';
+import { ContextFieldComponent } from './commentary/context-field/context-field.component';
+import { ReconstructionFieldComponent } from './commentary/reconstruction-field/reconstruction-field.component';
+import { CommentaryFieldComponent } from './commentary/commentary-field/commentary-field.component';
+import { MetricalAnalysisFieldComponent } from './commentary/metrical-analysis-field/metrical-analysis-field.component';
+import { BibliographyFieldComponent } from './commentary/bibliography-field/bibliography-field.component';
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
@@ -139,30 +141,36 @@ const appRoutes: Routes = [
     SettingsDialogComponent,
     CustomDialogComponent,
     ColumnBibliographyComponent,
-    PlaygroundComponent,
-    CommentaryComponent,
     OverviewComponent,
     IntroductionsComponent,
     BibliographyComponent,
     ExpandableTextComponent,
     DocumentFilterComponent,
     UsersComponent,
+    OnCopyDirective,
+    // Columns components
     TestimoniaComponent,
     FragmentComponent,
-    OnCopyDirective,
+    // Dashboard components
     TestimoniaDashboardComponent,
-    TranslationComponent,
-    ApparatusComponent,
-    GeneralCommentaryFieldComponent,
     FragmentsDashboardComponent,
+    // Playground components
+    PlaygroundComponent,
     LoadPlaygroundComponent,
     SavePlaygroundComponent,
     DeletePlaygroundComponent,
     SharePlaygroundComponent,
     JoinPlaygroundComponent,
-    DifferencesComponent,
-    ContextComponent,
-    ReconstructionComponent,
+    // Commentary components
+    CommentaryComponent,
+    ApparatusFieldComponent,
+    CommentaryFieldComponent,
+    TranslationFieldComponent,
+    DifferencesFieldComponent,
+    ContextFieldComponent,
+    ReconstructionFieldComponent,
+    MetricalAnalysisFieldComponent,
+    BibliographyFieldComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,16 @@
+<mat-expansion-panel>
+  <mat-expansion-panel-header class="citation-context-mat-exp-header">
+    <mat-panel-title>
+      <b>Citation Context</b>
+    </mat-panel-title>
+    <div class="citation-context-mat-panel-info-slot">
+      {{ this.context.author }} <i>{{ this.context.location }}</i>
+    </div>
+    <div class="div-padding-sm"></div>
+  </mat-expansion-panel-header>
+  <div class="mat-expansion-panel-content">
+    <div class="mat-expansion-panel-body">
+      <app-expandable-text [content]="this.context.text"></app-expandable-text>
+    </div>
+  </div>
+</mat-expansion-panel>
