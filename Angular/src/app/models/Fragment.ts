@@ -52,7 +52,6 @@ export class Fragment {
 
     this.commentary = new Commentary({});
     this.commentary.set(fragment);
-    this.commentary.lines = this.lines;
   }
 
   /**

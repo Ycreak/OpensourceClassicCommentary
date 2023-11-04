@@ -64,7 +64,7 @@ export class ColumnsComponent implements OnInit, OnChanges {
       );
     }
     this.current_column = this.column_handler.columns[0];
-    //this.request_documents(1, { document_type: 'fragment', author: 'Ennius', title: 'Thyestes', editor: 'Ribbeck' });
+    this.request_documents(1, { document_type: 'fragment', author: 'Ennius', title: 'Thyestes', editor: 'TRF' });
   }
 
   ngOnChanges() {
