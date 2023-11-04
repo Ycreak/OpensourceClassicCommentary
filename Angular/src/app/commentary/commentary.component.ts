@@ -1,14 +1,14 @@
-import { Component, Input, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { Output, EventEmitter } from '@angular/core';
-import { ApiService } from '@oscc/api.service';
-import { StringFormatterService } from '@oscc/services/string-formatter.service';
 
 // Model imports
 import { Commentary } from '@oscc/models/Commentary';
-import { DialogService } from '@oscc/services/dialog.service';
-import { SettingsService } from '@oscc/services/settings.service';
 
 // Service imports
+import { ApiService } from '@oscc/api.service';
+import { DialogService } from '@oscc/services/dialog.service';
+import { SettingsService } from '@oscc/services/settings.service';
+import { StringFormatterService } from '@oscc/services/string-formatter.service';
 import { UtilityService } from '@oscc/utility.service';
 
 @Component({
@@ -17,11 +17,12 @@ import { UtilityService } from '@oscc/utility.service';
   styleUrls: ['./commentary.component.scss'],
 })
 export class CommentaryComponent implements OnChanges {
-  @Input() commentary: Commentary;
   @Input() document: any;
   @Input() translated: boolean;
 
   @Output() request_column = new EventEmitter<any>();
+
+  protected commentary: Commentary;
 
   protected document_clicked = false;
   protected translation_orig_text_expanded = false;
@@ -40,17 +41,19 @@ export class CommentaryComponent implements OnChanges {
     protected settings: SettingsService
   ) {}
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes.commentary) {
-      this.no_linked_commentary_found = false;
-      this.linked_commentary_retrieved = false;
-      this.linked_commentaries = [];
+  ngOnChanges() {
+    this.commentary = this.document.commentary;
 
-      this.bibliography = '';
+    this.no_linked_commentary_found = false;
+    this.linked_commentary_retrieved = false;
+    this.linked_commentaries = [];
 
-      this.commentary = this.add_html(this.commentary);
-      this.commentary = this.format_bib_entries(this.commentary);
-    }
+    // On init, convert all custom HTML tags in the commentary fields
+    this.commentary = this.process_commentary_content_fields(
+      this.commentary,
+      this.string_formatter.convert_custom_tag_to_html
+    );
+    this.commentary = this.process_bibliography(this.commentary);
   }
 
   /**
@@ -70,8 +73,11 @@ export class CommentaryComponent implements OnChanges {
         const found_document = documents[0];
         concurrent_calls -= 1;
         if (found_document.commentary.has_content()) {
-          found_document.commentary = this.add_html(found_document.commentary);
-          found_document.commentary = this.format_bib_entries(found_document.commentary);
+          this.commentary = this.process_commentary_content_fields(
+            this.commentary,
+            this.string_formatter.convert_custom_tag_to_html
+          );
+          this.commentary = this.process_bibliography(this.commentary);
           this.linked_commentaries.push(found_document);
         }
         // If linked fragments are found but have no commentary, we set the banner
@@ -84,58 +90,40 @@ export class CommentaryComponent implements OnChanges {
   }
 
   /**
-   * This function adds HTML to the lines of the given array. At the moment,
-   * it converts white space encoding for every applicable line by looping through
-   * all elements in a fragment list.
-   * @param array with fragments as retrieved from the server
-   * @returns updated array with nice HTML formatting included
+   * Loops over all content fields of the commentary and applies the provided function to them.
+   * @param commentary (Commentary)
+   * @param given_function (function)
+   * @return Commentary
    * @author Ycreak
-   * @TODO: this function needs to be handled by the API when retrieving the fragments
    */
-  protected add_html(commentary: Commentary): Commentary {
-    for (const item in commentary.lines) {
-      // Loop through all lines of current fragment
-      let line_text = commentary.lines[item].text;
-      line_text = this.string_formatter.convert_whitespace_encoding(line_text);
-      // Now push the updated lines to the correct place
-      const updated_lines = {
-        line_number: commentary.lines[item].line_number,
-        text: line_text,
-      };
-      commentary.lines[item] = updated_lines;
-    }
-    // replaces the summary tag with summary CSS class for each commentary field
-    commentary.apparatus = this.string_formatter.convert_custom_tag_to_html(commentary.apparatus);
-    commentary.differences = this.string_formatter.convert_custom_tag_to_html(commentary.differences);
-    commentary.translation = this.string_formatter.convert_custom_tag_to_html(commentary.translation);
-    commentary.commentary = this.string_formatter.convert_custom_tag_to_html(commentary.commentary);
-    commentary.reconstruction = this.string_formatter.convert_custom_tag_to_html(commentary.reconstruction);
-    commentary.metrical_analysis = this.string_formatter.convert_custom_tag_to_html(commentary.metrical_analysis);
-
+  private process_commentary_content_fields(commentary: Commentary, given_function: any) {
+    const commentary_fields_keys = Object.keys(commentary.fields);
+    commentary_fields_keys.forEach((key: string) => {
+      if (this.utility.is_string(commentary.fields[key])) {
+        commentary.fields[key] = given_function(commentary.fields[key]);
+      } else if (this.utility.is_array(commentary.fields[key])) {
+        commentary.fields[key].forEach((obj: any) => {
+          obj.text = given_function(obj.text);
+        });
+      } else {
+        console.error('Unsupported type.');
+      }
+    });
     return commentary;
   }
 
   /**
-   * Converts bib references to proper html
+   * Converts bib references to proper html and builds the bibliography
    * @param string that needs bib entries handled
    * @returns Commentary with bib entries handled
    * @author Ycreak
    */
-  public format_bib_entries(commentary: Commentary): Commentary {
-    //TODO: needs to be reworked in the commentary rewrite
-    // See for example show_column_bibliography() in columns.ts
-    commentary.differences = this.convert_bib_entry(commentary.differences);
-    commentary.commentary = this.convert_bib_entry(commentary.commentary);
-    commentary.apparatus = this.convert_bib_entry(commentary.apparatus);
-    commentary.reconstruction = this.convert_bib_entry(commentary.reconstruction);
-    commentary.translation = this.convert_bib_entry(commentary.translation);
-    for (const i in commentary.context) {
-      commentary.context[i].text = this.convert_bib_entry(commentary.context[i].text);
-    }
-
+  public process_bibliography(commentary: Commentary): Commentary {
+    this.commentary = this.process_commentary_content_fields(this.commentary, this.convert_bib_entry.bind(this));
+    // The previous function created a temporary bibliography. We put this one
+    // inside our commentary object and clean the temporary one.
     commentary.bibliography = this.bibliography;
     this.bibliography = '';
-
     return commentary;
   }
 

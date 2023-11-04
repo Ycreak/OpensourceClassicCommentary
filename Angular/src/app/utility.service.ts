@@ -148,7 +148,7 @@ export class UtilityService {
    * @returns new array with item pushed
    * @author Ycreak
    */
-  public push_to_array(item, array): Array<any> {
+  public push_to_array(item: any, array: Array<any>): Array<any> {
     array.push(item);
     return array;
   }
@@ -164,7 +164,7 @@ export class UtilityService {
     return array;
   }
 
-  public is_empty_array(array): boolean {
+  public is_empty_array(array: Array<any>): boolean {
     if (Array.isArray(array) && array.length) {
       return false;
     } else {
@@ -172,6 +172,16 @@ export class UtilityService {
     }
   }
 
+  public is_array(x: any) {
+    return Array.isArray(x);
+  }
+
+  /**
+   * Checks if given object is a string
+   */
+  public is_string(x: any) {
+    return Object.prototype.toString.call(x) === '[object String]';
+  }
   /**
    * This function moves an element within an array from the given location to the given new location
    * @param arr in which the moving should be done

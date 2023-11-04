@@ -12,27 +12,27 @@
 
 <ng-template #commentary_column_template let-commentary="given_commentary">
   <!-- Show the fragment's translation or original text -->
-  <ng-container *ngIf="commentary.translation">
-    <app-translation [commentary]="commentary" [translated]="this.translated"></app-translation>
+  <ng-container *ngIf="commentary.fields.translation">
+    <app-translation [document]="document" [translated]="this.translated"></app-translation>
     <hr
   /></ng-container>
 
-  <ng-container *ngIf="commentary.apparatus">
+  <ng-container *ngIf="commentary.fields.apparatus">
     <app-general-commentary-field
-      [content]="commentary.apparatus"
+      [content]="commentary.fields.apparatus"
       [title]="'Apparatus Criticus'"></app-general-commentary-field>
     <hr
   /></ng-container>
 
-  <ng-container *ngIf="commentary.differences">
+  <ng-container *ngIf="commentary.fields.differences">
     <app-general-commentary-field
-      [content]="commentary.differences"
+      [content]="commentary.fields.differences"
       [title]="'Editorial Differences'"></app-general-commentary-field>
     <hr
   /></ng-container>
 
-  <ng-container *ngIf="!this.utility.is_empty_array(commentary.context)">
-    <div *ngFor="let current_context of commentary.context">
+  <ng-container *ngIf="!this.utility.is_empty_array(commentary.fields.context)">
+    <div *ngFor="let current_context of commentary.fields.context">
       <mat-expansion-panel>
         <mat-expansion-panel-header class="citation-context-mat-exp-header">
           <mat-panel-title>
@@ -53,23 +53,23 @@
     <hr />
   </ng-container>
 
-  <ng-container *ngIf="commentary.commentary">
+  <ng-container *ngIf="commentary.fields.commentary">
     <app-general-commentary-field
-      [content]="commentary.commentary"
+      [content]="commentary.fields.commentary"
       [title]="'Fragment Commentary'"></app-general-commentary-field>
     <hr
   /></ng-container>
 
-  <ng-container *ngIf="commentary.metrical_analysis">
+  <ng-container *ngIf="commentary.fields.metrical_analysis">
     <app-general-commentary-field
-      [content]="commentary.metrical_analysis"
+      [content]="commentary.fields.metrical_analysis"
       [title]="'Metrical Analysis'"></app-general-commentary-field>
     <hr
   /></ng-container>
 
-  <ng-container *ngIf="commentary.reconstuction">
+  <ng-container *ngIf="commentary.fields.reconstuction">
     <app-general-commentary-field
-      [content]="commentary.reconstruction"
+      [content]="commentary.fields.reconstruction"
       [title]="'Fragment Reconstruction'"></app-general-commentary-field>
     <hr
   /></ng-container>

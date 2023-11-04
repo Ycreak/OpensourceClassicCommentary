@@ -1,44 +1,56 @@
 import { Context } from '@oscc/models/Context';
-import { Line } from '@oscc/models/Line';
+
+export interface Fields {
+  apparatus: string;
+  commentary: string;
+  context: Context[];
+  differences: string;
+  metrical_analysis: string;
+  reconstruction: string;
+  translation: string;
+}
 
 /**
  * This class represents a commentary and all its data fields.
  * It is linked to a document. For example: a fragment has a commentary
  */
 export class Commentary {
-  translation = '';
-  commentary = '';
-  apparatus = '';
-  reconstruction = '';
-  differences = '';
-  metrical_analysis = '';
-  context: Context[] = [];
-
-  lines: Line[] = [];
+  // All commentary fields are stored in this interface.
+  fields: Fields;
 
   bibliography = '';
 
   constructor(commentary?: Partial<Commentary>) {
-    // Allow the partial initialisation of a fragment object
+    // Allow the partial initialisation of the object
     Object.assign(this, commentary);
   }
 
   /**
    * Converts the JSON received from the server to a Typescript object
-   * @param fragment with JSON data received from the server
+   * @param doc (object) with JSON data received from the server
    * @author Ycreak
    */
-  public set(fragment: any) {
+  public set(doc: any) {
     this.bibliography = '';
-    this.translation = 'translation' in fragment && fragment['translation'] != null ? fragment['translation'] : '';
-    this.commentary = 'commentary' in fragment && fragment['commentary'] != null ? fragment['commentary'] : '';
-    this.apparatus = 'apparatus' in fragment && fragment['apparatus'] != null ? fragment['apparatus'] : '';
-    this.reconstruction =
-      'reconstruction' in fragment && fragment['reconstruction'] != null ? fragment['reconstruction'] : '';
-    this.differences = 'differences' in fragment && fragment['differences'] != null ? fragment['differences'] : '';
-    this.metrical_analysis =
-      'metrical_analysis' in fragment && fragment['metrical_analysis'] != null ? fragment['metrical_analysis'] : '';
-    this.context = 'context' in fragment && fragment['context'] != null ? fragment['context'] : [];
+
+    const apparatus = 'apparatus' in doc && doc['apparatus'] != null ? doc['apparatus'] : '';
+    const translation = 'translation' in doc && doc['translation'] != null ? doc['translation'] : '';
+    const commentary = 'commentary' in doc && doc['commentary'] != null ? doc['commentary'] : '';
+    const reconstruction = 'reconstruction' in doc && doc['reconstruction'] != null ? doc['reconstruction'] : '';
+    const differences = 'differences' in doc && doc['differences'] != null ? doc['differences'] : '';
+    const metrical_analysis =
+      'metrical_analysis' in doc && doc['metrical_analysis'] != null ? doc['metrical_analysis'] : '';
+    const context = 'context' in doc && doc['context'] != null ? doc['context'] : [];
+
+    this.fields = {
+      apparatus: apparatus,
+      commentary: commentary,
+      context: context,
+      differences: differences,
+      metrical_analysis: metrical_analysis,
+      reconstruction: reconstruction,
+      translation: translation,
+    } as Fields;
   }
 
   /**
@@ -49,11 +61,11 @@ export class Commentary {
    */
   public has_content() {
     return (
-      this.differences != '' ||
-      this.apparatus != '' ||
-      this.translation != '' ||
-      this.commentary != '' ||
-      this.reconstruction != ''
+      this.fields.apparatus != '' ||
+      this.fields.commentary != '' ||
+      this.fields.differences != '' ||
+      this.fields.reconstruction != '' ||
+      this.fields.translation != ''
     );
   }
 }

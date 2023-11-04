@@ -3,7 +3,7 @@
  * the original text might be represented by lines instead of by a simple string. This component handles this possibility.
  */
 
-import { Component, Input, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { Commentary } from '@oscc/models/Commentary';
 import { Line } from '@oscc/models/Line';
 
@@ -13,16 +13,17 @@ import { Line } from '@oscc/models/Line';
   styleUrls: ['./translation.component.scss'],
 })
 export class TranslationComponent implements OnChanges {
-  @Input() commentary: Commentary;
+  @Input() document: any;
   @Input() translated: boolean;
+
+  protected commentary: Commentary;
 
   protected translation: string;
   protected expansion_panel_title: string;
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes) {
-      this.process_translation();
-    }
+  ngOnChanges() {
+    this.commentary = this.document.commentary;
+    this.process_translation();
   }
 
   /**
@@ -35,12 +36,12 @@ export class TranslationComponent implements OnChanges {
       this.translation = '';
       //TODO: this does not add HTML like the <10> flag. This function is part of the Fragment model,
       // not the commentary model. We will probably need to put these functions in a helper service.
-      this.commentary.lines.forEach((line: Line) => {
+      this.document.lines.forEach((line: Line) => {
         this.translation += `<p>${line.line_number}: ${line.text}</p>`;
       });
     } else {
       this.expansion_panel_title = 'Fragment translation';
-      this.translation = this.commentary.translation;
+      this.translation = this.commentary.fields.translation;
     }
   }
 }
