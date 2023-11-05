@@ -96,7 +96,7 @@ export class CommentaryComponent implements OnChanges {
    * @return Commentary
    * @author Ycreak
    */
-  private process_commentary_content_fields(commentary: Commentary, given_function: any) {
+  private process_commentary_content_fields(commentary: Commentary, given_function: (arg: string) => string) {
     const commentary_fields_keys = Object.keys(commentary.fields);
     commentary_fields_keys.forEach((key: string) => {
       if (this.utility.is_string(commentary.fields[key])) {
