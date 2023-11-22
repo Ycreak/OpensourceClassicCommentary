@@ -268,6 +268,11 @@ export class ColumnsComponent implements OnInit, OnChanges {
     let bib_keys: string[] = [];
 
     column.documents.forEach((doc: any) => {
+      console.log(doc.name);
+      if (doc.name == '132') {
+        console.log(doc.name, doc.commentary);
+      }
+
       bib_keys = bib_keys.concat(this.bib_helper.retrieve_bib_keys_from_commentary(doc.commentary));
     });
     bib_keys = [...new Set(bib_keys)];
