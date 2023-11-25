@@ -57,6 +57,7 @@ export class Column {
 
   // Whether a column has bib items and therefore a possible bibliography
   has_bibliography = false;
+  bibliography_keys: string[] = [];
 
   // Checks if the column is able to show fragment translations
   has_translations(): boolean {
