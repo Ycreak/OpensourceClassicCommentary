@@ -96,7 +96,7 @@ export class CommentaryComponent implements OnChanges {
    * @return Commentary
    * @author Ycreak
    */
-  private process_commentary_content_fields(commentary: Commentary, given_function: any) {
+  private process_commentary_content_fields(commentary: Commentary, given_function: (arg: string) => string) {
     const commentary_fields_keys = Object.keys(commentary.fields);
     commentary_fields_keys.forEach((key: string) => {
       if (this.utility.is_string(commentary.fields[key])) {
@@ -151,7 +151,7 @@ export class CommentaryComponent implements OnChanges {
         bib_key = values[0];
         const bib_item = this.api.bibliography.find((o) => o.key === bib_key);
         //Add the item to the bibliography for easy printing in an expansion panel
-        this.bibliography += `<p>${bib_item.creators[0].lastname} (${bib_item.date}) ${bib_item.title}</p>`;
+        this.bibliography += bib_item.citation;
         // The key looks as follows: [bib-<key>-<lastname>-<date>-<from_page>-<to_page>]
         if (values.length > 4) {
           from_page = values[3];

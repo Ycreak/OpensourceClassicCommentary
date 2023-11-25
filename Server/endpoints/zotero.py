@@ -1,3 +1,7 @@
+'''
+To retrieve data, we use the pyzotero library.
+'''
+
 import json
 from pyzotero import zotero as pyzotero
 from flask_jsonpify import jsonify
@@ -16,7 +20,14 @@ class Zotero:
     def __init__(self) -> None:
         self.zotero_api = pyzotero.Zotero(self.library_id, self.library_type)
         self.bibliography = util.read_json(self.cache_file) 
-        
+    
+    def test(self) -> None:
+        # self.zotero_api.add_parameters(format='json')
+        self.zotero_api.add_parameters(content='bib')
+        temp = self.zotero_api.item('CWAUHGKR')
+        # temp = self.zotero_api.top(limit=1)
+        print(temp) 
+
     def renew(self) -> None:
         """Renews the complete zotero bibliography. Expensive operation
         """        
@@ -45,7 +56,11 @@ class Zotero:
         if (len(keys) == 0): print('Nothing to upate.')
         for key in keys:
             print('Updating:', key)
+            # Retrieve the zotero item data blob
             bib_item = self.zotero_api.item(key)
+            # Retrieve the zotero item bib blob 
+            self.zotero_api.add_parameters(content='bib')
+            bib_item['citation'] = self.zotero_api.item(key)[0]
             self.bibliography = [d for d in self.bibliography if d['key'] != key]
             self.bibliography.append(bib_item)
 
@@ -65,10 +80,13 @@ class Zotero:
 
 def get_bibliography():
     zotero = Zotero()
-    return jsonify(zotero.bibliography), 200
-    
+    return jsonify(zotero.bibliography), 200 
+
 def sync_bibliography():
     zotero = Zotero()
     zotero.update_cached_bibliography()
     return jsonify(zotero.bibliography), 200
 
+# if __name__ == '__main__':
+    # zotero = Zotero()
+    # zotero.update_cached_bibliography()

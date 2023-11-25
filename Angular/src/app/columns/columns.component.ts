@@ -111,8 +111,17 @@ export class ColumnsComponent implements OnInit, OnChanges {
    */
   protected request_documents(column_id: number, filter: object): void {
     this.api.get_documents(filter).subscribe((documents) => {
-      documents = this.format_incoming_documents(documents);
-      this.column_handler.add_documents_to_column(column_id, documents);
+      // Find all bibliography keys in the documents and add them to the column data for later use
+      documents.forEach((doc: any) => {
+        this.current_column.bibliography_keys = this.current_column.bibliography_keys.concat(
+          this.bib_helper.retrieve_bib_keys_from_commentary(doc.commentary)
+        );
+      });
+      this.current_column.bibliography_keys = [...new Set(this.current_column.bibliography_keys)];
+
+      // Format all documents to look nice on the frontend (little HTML, some beautiful CSS)
+      const formatted_documents = this.format_incoming_documents(documents);
+      this.column_handler.add_documents_to_column(column_id, formatted_documents);
     });
   }
 
@@ -265,15 +274,9 @@ export class ColumnsComponent implements OnInit, OnChanges {
    */
   protected show_column_bibliography(column: Column): void {
     let string_bibliography = '';
-    let bib_keys: string[] = [];
-
-    column.documents.forEach((doc: any) => {
-      bib_keys = bib_keys.concat(this.bib_helper.retrieve_bib_keys_from_commentary(doc.commentary));
-    });
-    bib_keys = [...new Set(bib_keys)];
     // If there are keys, show the bibliography
-    if (bib_keys.length > 0) {
-      bib_keys.forEach((key: string) => {
+    if (column.bibliography_keys.length > 0) {
+      column.bibliography_keys.forEach((key: string) => {
         string_bibliography += this.bib_helper.convert_bib_key_into_citation(key);
       });
       this.dialog.open_column_bibliography(string_bibliography);

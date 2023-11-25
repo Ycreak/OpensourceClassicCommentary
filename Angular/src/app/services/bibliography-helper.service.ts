@@ -64,6 +64,6 @@ export class BibliographyHelperService {
   public convert_bib_key_into_citation(bib_key: string): string {
     const bib_item = this.api.bibliography.find((o) => o.key === bib_key);
     //Add the item to the bibliography for easy printing in an expansion panel
-    return `<p>${bib_item.creators[0].lastname} (${bib_item.date}) ${bib_item.title}</p>`;
+    return bib_item.citation;
   }
 }
