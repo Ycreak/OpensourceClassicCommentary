@@ -113,11 +113,12 @@ export class ColumnsComponent implements OnInit, OnChanges {
     this.api.get_documents(filter).subscribe((documents) => {
       // Find all bibliography keys in the documents and add them to the column data for later use
       documents.forEach((doc: any) => {
-        this.current_column.bibliography_keys = 
-          this.current_column.bibliography_keys.concat(this.bib_helper.retrieve_bib_keys_from_commentary(doc.commentary));
+        this.current_column.bibliography_keys = this.current_column.bibliography_keys.concat(
+          this.bib_helper.retrieve_bib_keys_from_commentary(doc.commentary)
+        );
       });
       this.current_column.bibliography_keys = [...new Set(this.current_column.bibliography_keys)];
-      
+
       // Format all documents to look nice on the frontend (little HTML, some beautiful CSS)
       const formatted_documents = this.format_incoming_documents(documents);
       this.column_handler.add_documents_to_column(column_id, formatted_documents);
