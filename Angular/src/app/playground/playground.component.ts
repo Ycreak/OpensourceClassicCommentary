@@ -115,8 +115,12 @@ export class PlaygroundComponent implements OnInit {
     });
   }
 
-  protected resize() {
-    this.playground.canvas.setDimensions({ width: window.innerWidth - 50, height: 100 });
+  /**
+   * Undoes previous action
+   * @author Ycreak
+   */
+  protected undo(): void {
+    console.log('undo');
   }
 
   /**
