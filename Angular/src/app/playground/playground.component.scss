@@ -111,10 +111,10 @@ hr.playground-divider-top {
   width: 100%;
 }
 
-.canvas-container{
+.canvas-container {
   position: relative;
-  width: 500px;
-  height: 500px;
+  width: 100vh;
+  height: auto;
   canvas {
     background: #ffffff;
     border: 3px solid #3f51b5;
@@ -122,20 +122,20 @@ hr.playground-divider-top {
   }
   .br-icon {
     left: var(--left);
-    top:2%;
+    top: 2%;
     position: absolute;
     cursor: pointer;
     text-align: center;
   }
   .menu {
+    transition: 200;
     border-radius: 25px;
     width: 200px;
     height: 150px;
     top: 10%;
     left: 2%;
-    position:absolute;
+    position: absolute;
     border: 3px solid red;
-
   }
   mat-icon:hover {
     color: grey;
@@ -144,6 +144,3 @@ hr.playground-divider-top {
     color: black;
   }
 }
-
-
-
