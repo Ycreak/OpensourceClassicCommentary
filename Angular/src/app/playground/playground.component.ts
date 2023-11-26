@@ -30,11 +30,18 @@ import { JoinPlaygroundComponent } from './join-playground/join-playground.compo
 })
 export class PlaygroundComponent implements OnInit {
   @Output() document_clicked = new EventEmitter<Fragment>();
+  // Listener for key events
   @HostListener('document:keyup', ['$event'])
   handleDeleteKeyboardEvent(event: KeyboardEvent) {
     if (event.key === 'Delete') {
       this.delete_clicked_objects();
     }
+  }
+  // Listener for window resize evenets
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    // If we resize the window, we want the canvas to resize as well
+    this.resize_canvas();
   }
 
   // Playground column that keeps all data related to said playground
@@ -102,17 +109,30 @@ export class PlaygroundComponent implements OnInit {
    * This function allows the playground to delete notes and fragements
    * @author Ycreak
    */
-  public delete_clicked_objects(): void {
+  protected delete_clicked_objects(): void {
     this.playground.canvas.getActiveObjects().forEach((item: any) => {
       this.playground.canvas.remove(item);
     });
+  }
+
+  protected resize() {
+    this.playground.canvas.setDimensions({ width: window.innerWidth - 50, height: 100 });
+  }
+
+  /**
+   * Checks whether the canvas has selected items
+   * @return boolean
+   * @author Ycreak
+   */
+  protected canvas_has_selection(): boolean {
+    return this.playground.canvas.getActiveObjects().length > 0;
   }
 
   /**
    * @param column to which the fragment is to be added
    * @author Ycreak
    */
-  public add_single_fragment(filter: object): void {
+  protected add_single_fragment(filter: object): void {
     this.single_fragment_requested = true;
     // format the fragment and push it to the list
     this.request_documents(filter);
@@ -178,8 +198,17 @@ export class PlaygroundComponent implements OnInit {
    * @author Ycreak
    */
   private init_canvas_settings(): void {
+    this.resize_canvas();
     this.playground.canvas.freeDrawingBrush.color = 'black';
     this.playground.canvas.freeDrawingBrush.width = 10;
+  }
+
+  /**
+   * Resizes the canvas based on the dimensions of the browser window
+   * @author Ycreak
+   */
+  private resize_canvas(): void {
+    this.playground.canvas.setDimensions({ width: window.innerWidth - 25, height: window.innerHeight });
   }
 
   /**

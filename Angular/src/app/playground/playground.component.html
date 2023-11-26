@@ -4,55 +4,54 @@
   <mat-progress-bar mode="query" *ngIf="this.api.spinner"></mat-progress-bar>
   <!-- Possibility to add a little note -->
   <!--<div class="row">-->
-    <!--<div mat-dialog-content class="playground-button-container col-6">-->
-      <!--<mat-form-field class="playground-mat-form-field input-form">-->
-        <!--<input matInput placeholder="Add a note" ngDefaultControl [(ngModel)]="this.playground.note" />-->
-        <!--<button type="button" mat-icon-button matSuffix (click)="this.add_note_to_canvas(this.playground.note)">-->
-          <!--<mat-icon>{{ "add" }}</mat-icon>-->
-        <!--</button>-->
-        <!--<mat-hint>To organise your playground</mat-hint>-->
-      <!--</mat-form-field>-->
-    <!--</div>-->
-    <!--<div class="playground-button-container col-3" *ngIf="this.playground.canvas.isDrawingMode">-->
-      <!--<mat-form-field>-->
-        <!--<mat-label>Pencil colour</mat-label>-->
-        <!--<mat-select [(value)]="this.playground.canvas.freeDrawingBrush.color">-->
-          <!--<mat-option value="black">Black</mat-option>-->
-          <!--<mat-option value="red">Red</mat-option>-->
-          <!--<mat-option value="blue">Blue</mat-option>-->
-          <!--<mat-option value="green">Green</mat-option>-->
-        <!--</mat-select>-->
-      <!--</mat-form-field>-->
-    <!--</div>-->
-    <!--<div class="playground-button-container col-3" *ngIf="this.playground.canvas.isDrawingMode">-->
-      <!--<mat-form-field class="example-margin example-width">-->
-        <!--<mat-label>Pencil width</mat-label>-->
-        <!--<input matInput type="number" [(ngModel)]="this.playground.canvas.freeDrawingBrush.width" />-->
-      <!--</mat-form-field>-->
-    <!--</div>-->
+  <!--<div mat-dialog-content class="playground-button-container col-6">-->
+  <!--<mat-form-field class="playground-mat-form-field input-form">-->
+  <!--<input matInput placeholder="Add a note" ngDefaultControl [(ngModel)]="this.playground.note" />-->
+  <!--<button type="button" mat-icon-button matSuffix (click)="this.add_note_to_canvas(this.playground.note)">-->
+  <!--<mat-icon>{{ "add" }}</mat-icon>-->
+  <!--</button>-->
+  <!--<mat-hint>To organise your playground</mat-hint>-->
+  <!--</mat-form-field>-->
+  <!--</div>-->
+  <!--<div class="playground-button-container col-3" *ngIf="this.playground.canvas.isDrawingMode">-->
+  <!--<mat-form-field>-->
+  <!--<mat-label>Pencil colour</mat-label>-->
+  <!--<mat-select [(value)]="this.playground.canvas.freeDrawingBrush.color">-->
+  <!--<mat-option value="black">Black</mat-option>-->
+  <!--<mat-option value="red">Red</mat-option>-->
+  <!--<mat-option value="blue">Blue</mat-option>-->
+  <!--<mat-option value="green">Green</mat-option>-->
+  <!--</mat-select>-->
+  <!--</mat-form-field>-->
+  <!--</div>-->
+  <!--<div class="playground-button-container col-3" *ngIf="this.playground.canvas.isDrawingMode">-->
+  <!--<mat-form-field class="example-margin example-width">-->
+  <!--<mat-label>Pencil width</mat-label>-->
+  <!--<input matInput type="number" [(ngModel)]="this.playground.canvas.freeDrawingBrush.width" />-->
+  <!--</mat-form-field>-->
+  <!--</div>-->
   <!--</div>-->
   <hr class="playground-divider" />
   <div class="canvas-container">
-    <canvas id="playground_canvas" width="800" height="1000"></canvas>
-    <div class="menu">
+    <canvas id="playground_canvas"></canvas>
+    <div class="menu" *ngIf="this.canvas_has_selection()">
       <div class="br-icon" style="--left: 4%">
         <mat-icon (click)="this.delete_clicked_objects()">backspace</mat-icon> delete objects
       </div>
-
-
     </div>
     <div class="br-icon" style="--left: 2%"><mat-icon (click)="this.save_playground()">save</mat-icon></div>
     <div class="br-icon" style="--left: 8%"><mat-icon (click)="this.load_playground()">folder</mat-icon></div>
     <div class="br-icon" style="--left: 14%"><mat-icon (click)="this.delete_playground()">delete</mat-icon></div>
     <div class="br-icon" style="--left: 20%"><mat-icon (click)="this.share_playground()">share</mat-icon></div>
     <div class="br-icon" style="--left: 26%"><mat-icon (click)="this.join_playground()">group</mat-icon></div>
-    
+
     <div class="br-icon" style="--left: 40%"><mat-icon (click)="this.clear_playground()">cancel</mat-icon></div>
     <div class="br-icon" style="--left: 46%"><mat-icon (click)="this.toggle_drawing_mode()">brush</mat-icon></div>
 
     <div class="br-icon" style="--left: 60%"><mat-icon [matMenuTriggerFor]="menu_authors">description</mat-icon></div>
     <div class="br-icon" style="--left: 66%"><mat-icon [matMenuTriggerFor]="fragment_selection">note</mat-icon></div>
-    <div class="br-icon" style="--left: 72%"><mat-icon 
+    <div class="br-icon" style="--left: 72%">
+      <mat-icon
         (click)="
           this.request_documents({
             author: this.playground.author,
@@ -61,11 +60,13 @@
           })
         "
         (click)="this.single_fragment_requested = false">
-        note_add</mat-icon></div>
-    <div class="br-icon" style="--left: 78%"><mat-icon>edit_note</mat-icon></div>
+        note_add</mat-icon
+      >
     </div>
+    <div class="br-icon" style="--left: 78%"><mat-icon>edit_note</mat-icon></div>
+  </div>
 </div>
-      
+
 <mat-menu #fragment_selection="matMenu">
   <ng-container *ngFor="let fragment_name of this.playground.fragment_names">
     <button
