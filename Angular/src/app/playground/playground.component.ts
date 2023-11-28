@@ -35,6 +35,12 @@ export class PlaygroundComponent implements OnInit {
   handleDeleteKeyboardEvent(event: KeyboardEvent) {
     if (event.key === 'Delete') {
       this.delete_clicked_objects();
+    } else if ((event.ctrlKey || event.metaKey) && event.key == 'Z') {
+      // Redo the canvas on Ctrl+Shift+Z
+      this.redo();
+    } else if ((event.ctrlKey || event.metaKey) && event.key == 'z') {
+      // Undo the canvas on Ctrl+Z
+      this.undo();
     }
   }
   // Listener for window resize evenets
@@ -49,6 +55,12 @@ export class PlaygroundComponent implements OnInit {
 
   protected single_fragment_requested: boolean;
   private new_fragment_location = 10;
+
+  // Variables for keeping track of canvas states
+  private canvas_states: any[] = [];
+  private current_state_index = -1;
+  private undo_status = false;
+  private redo_status = false;
 
   constructor(
     private auth_service: AuthService,
@@ -113,14 +125,6 @@ export class PlaygroundComponent implements OnInit {
     this.playground.canvas.getActiveObjects().forEach((item: any) => {
       this.playground.canvas.remove(item);
     });
-  }
-
-  /**
-   * Undoes previous action
-   * @author Ycreak
-   */
-  protected undo(): void {
-    console.log('undo');
   }
 
   /**
@@ -263,7 +267,71 @@ export class PlaygroundComponent implements OnInit {
       this.isDragging = false;
       this.selection = true;
     });
+
+    // On object add, delete and modify, save the canvas state for undo and redo
+    // The "() =>:" notation preserves the context of THIS.
+    this.playground.canvas.on('object:added', () => {
+      if (!this.undo_status && !this.redo_status) {
+        this.save_canvas_state();
+      }
+    });
+    this.playground.canvas.on('object:modified', () => {
+      if (!this.undo_status && !this.redo_status) {
+        this.save_canvas_state();
+      }
+    });
+    this.playground.canvas.on('object:removed', () => {
+      if (!this.undo_status && !this.redo_status) {
+        this.save_canvas_state();
+      }
+    });
   }
+
+  /**
+   * Saves the current canvas state to the canvas_states class property
+   * @author Ycreak
+   */
+  private save_canvas_state(): void {
+    if (this.current_state_index < this.canvas_states.length - 1) {
+      const indexToBeInserted = this.current_state_index + 1;
+      this.canvas_states.splice(indexToBeInserted, this.canvas_states.length - indexToBeInserted);
+    }
+    this.canvas_states.push(JSON.stringify(this.playground.canvas));
+    this.current_state_index = this.canvas_states.length - 1;
+  }
+
+  /**
+   * Undoes the canvas by moving back in the saved states
+   * @author Ycreak
+   */
+  protected undo(): void {
+    if (this.current_state_index <= 0) {
+      return;
+    }
+    this.undo_status = true;
+    this.playground.canvas.loadFromJSON(this.canvas_states[this.current_state_index - 1], () => {
+      this.playground.canvas.renderAll();
+      this.undo_status = false;
+      this.current_state_index -= 1;
+    });
+  }
+
+  /**
+   * Redoes the canvas by moving forward in the saved states
+   * @author Ycreak
+   */
+  protected redo(): void {
+    if (this.current_state_index >= this.canvas_states.length - 1) {
+      return;
+    }
+    this.redo_status = true;
+    this.playground.canvas.loadFromJSON(this.canvas_states[this.current_state_index + 1], () => {
+      this.playground.canvas.renderAll();
+      this.redo_status = false;
+      this.current_state_index += 1;
+    });
+  }
+
   /**
    * Toggles canvas drawing mode
    * @author Ycreak
@@ -287,7 +355,6 @@ export class PlaygroundComponent implements OnInit {
           this.api
             .get_playground({ owner: this.auth_service.current_user_name, name: name })
             .subscribe((playground) => {
-              console.log(playground);
               this.playground.name = playground.name;
               this.playground.shared_with = playground.shared_with;
               this.playground._id = playground._id;
