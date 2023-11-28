@@ -47,7 +47,6 @@
 
     <div class="br-icon" style="--left: 40%"><mat-icon (click)="this.clear_playground()">cancel</mat-icon></div>
     <div class="br-icon" style="--left: 46%"><mat-icon (click)="this.toggle_drawing_mode()">brush</mat-icon></div>
-    <div class="br-icon" style="--left: 52%"><mat-icon (click)="this.undo()">undo</mat-icon></div>
 
     <div class="br-icon" style="--left: 60%"><mat-icon [matMenuTriggerFor]="menu_authors">description</mat-icon></div>
     <div class="br-icon" style="--left: 66%"><mat-icon [matMenuTriggerFor]="fragment_selection">note</mat-icon></div>
@@ -65,6 +64,9 @@
       >
     </div>
     <div class="br-icon" style="--left: 78%"><mat-icon>edit_note</mat-icon></div>
+
+    <div class="br-icon" style="--left: 84%"><mat-icon (click)="this.undo()">undo</mat-icon></div>
+    <div class="br-icon" style="--left: 90%"><mat-icon (click)="this.redo()">redo</mat-icon></div>
   </div>
 </div>
 
