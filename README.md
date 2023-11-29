@@ -197,7 +197,7 @@ The communication between frontend and API is done via two models: Fragment and 
 The database is powered by Apache CouchDB and is therefore a NoSQL database. The benefit of this approach is that each fragment is a document with all its information contained in a single JSON. Likewise, each User is a document accompanied by its information. This allows for easy backup and storage, as we can simply store the Fragment documents on any server or repository. Other researchers can then easily download the dataset and use it for other purposes by opening the JSON files. 
 
 ### Installation
-The installation of the database is operating specific. Please consult the [CouchDB website](https://couchdb.apache.org/) for more information. If installed correctly, creating two tables called **Users** and **Fragments** will allow the server to communicate correctly with the database.
+The installation of the database is done with Docker. Having started Docker, go to `http://localhost:5984/_utils/#/replication` and create a replication for each table. The source will be a remote database, with the url being http://nolden.biz:5984/<table_name>. Retrieve the username and password from the administrator. The table names can be found in the Flask API.
 
 ### Tables
 The database contains the following tables:
