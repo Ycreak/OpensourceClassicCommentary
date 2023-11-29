@@ -168,7 +168,7 @@ export class PlaygroundComponent implements OnInit {
       width: 200,
       fontSize: this.playground.font_size,
       textAlign: 'left', // you can use specify the text align
-      backgroundColor: '#ffefd5',
+      backgroundColor: '#F0C086',
       editable: true,
     });
     this.playground.canvas.add(text);
@@ -194,9 +194,26 @@ export class PlaygroundComponent implements OnInit {
       fontSize: this.playground.font_size,
       originX: 'left',
     });
-    const group = new fabric.Group([header, lines], {
+    const text_group = new fabric.Group([header, lines], {
       top: this.new_fragment_location,
+      backgroundColor: 'green',
+      fill: 'red',
+      hasBorders: true,
+      padding: 10,
     });
+    const textBoundingRect = text_group.getBoundingRect();
+    const background_and_border = new fabric.Rect({
+      top: textBoundingRect.top,
+      left: textBoundingRect.left,
+      width: textBoundingRect.width,
+      height: textBoundingRect.height,
+      fill: '#9BA8F2',
+      rx: 10,
+      ry: 10,
+      stroke: 'black',
+      strokeWidth: 1,
+    });
+    const group = new fabric.Group([background_and_border, text_group], {});
     this.playground.canvas.add(group);
     this.new_fragment_location += 100;
   }
