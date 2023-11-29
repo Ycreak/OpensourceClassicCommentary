@@ -1,0 +1,27 @@
+# LOCATION RELATED
+Location of the playground
+  Drawer: hide the columns and commentary
+  Basil: keep it this way
+Location of buttons
+  Buttons inside as overlay
+  Maybe hamburger menu
+
+# UI RELATED
+Look and feel of fragment
+  Color, black text. Allow removing context information
+Look and feel of note
+  Italics, yellow-ish
+
+# USER EXPERIENCE
+Adding fragments/notes
+  Plus button, then show dialog with epic filtering possibilities
+  Waiting room
+Changing fragments/notes
+  Mark changes
+UX for saving/loading
+  Buttons on canvas
+UX for collaboration
+  Links would be nice for guests
+  Collaboration needs to be restricted
+  Show who deleted/modified changelog
+

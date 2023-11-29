@@ -1,0 +1,43 @@
+Fragment
+  - name (string)
+  - author (string)
+  - title (string)
+  - editor (string)
+  - translation (string, optional)
+  - commentary (string, optional)
+  - etc...
+
+Testimonium
+  - name (string)
+  - author (string)
+  - witness (string)
+  - title (string)
+  - text (string, optional)
+  - translation (string, optional)
+
+Introduction
+  - Author (string)
+  - Title (string, optional)
+  - Text (string, optional)
+
+Broader context
+  - author (string)
+  - title (string)
+  - text (string, optional)
+  - apparatus criticus (string, optional)
+  - translation (string, optional)
+  - linked documents (Linked documents, optional)
+
+Aristoteles fragment
+  - name (string)
+  - author (string)
+  - title (string)
+  - editor (string)
+  - text (string, optional)
+  - context (Context, optional)
+  - apparatus criticus (string, optional)
+  - translation (string, optional)
+  - notes & observations (string, optional)
+  - linked documents (Linked documents, optional)
+
+

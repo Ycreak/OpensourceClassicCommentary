@@ -9,22 +9,22 @@ Angular/.angular
 /bazel-out
 
 # Python
-Server/env
-Server/__pycache__
-Server/config.py
-
-server_old/env
-server_old/__pycache__
+flask/env
+flask/__pycache__
+flask/config.py
 
 *.pyc
 
 Temp/
 
+# Couchdb
+couchdb/data/*
+
 # dependencies
 Angular/node_modules
-Server/__pycache__
-Server/server_credentials.py
-Server/Models/__pycache__
+flask/__pycache__
+flask/server_credentials.py
+flask/Models/__pycache__
 # profiling files
 chrome-profiler-events*.json
 speed-measure-plugin*.json

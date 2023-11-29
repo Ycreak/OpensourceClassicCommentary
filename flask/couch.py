@@ -11,26 +11,31 @@
 
 import couchdb
 import logging
+import time
 
 import config as conf
 
 class CouchAuthenticator:
     def __init__(self):
+        not_connected: bool = True
+
         self.url = "http://{0}:{1}@{2}:{3}/".format(conf.COUCH_USER, conf.COUCH_PASSWORD, conf.COUCH_HOST, conf.COUCH_PORT)
         logging.info("CouchDB initalization started.")
         
-        # Connect
-        self.couch = couchdb.Server(self.url)
-        
         # Version check for availability https://couchdb-python.readthedocs.io/en/latest/client.html#server
-        try:
-            request = self.couch.version()
-            if not str(request).startswith(conf.COUCH_VERSION):
-                logging.error("Wrong Couch server version. Stopping...")
-                exit(1)
-        except:
-            logging.error("Couch server not available or out of sync. Stopping...")
-            exit(1)
+        while(not_connected):
+            try:
+                # Try to connect
+                self.couch = couchdb.Server(self.url)
+                request = self.couch.version()
+                if not str(request).startswith(conf.COUCH_VERSION):
+                    logging.error("Wrong Couch server version. Stopping...")
+                    exit(1)
+                not_connected = False
+
+            except:
+                logging.error("Couch server not (yet) available or out of sync. Retrying...")
+                time.sleep(3)
             
         logging.info("CouchDB initialization completed. {0} tables found.".format(len(self.couch)))
 
