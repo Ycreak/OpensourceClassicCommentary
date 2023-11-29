@@ -12,6 +12,7 @@ Angular/.angular
 flask/env
 flask/__pycache__
 flask/config.py
+Server
 
 *.pyc
 
