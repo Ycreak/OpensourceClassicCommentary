@@ -1,8 +1,8 @@
 version: '3.7'
 services:
   couchdb:
-    build: 
-      context: .
+    build:
+      context: ./couchdb
       dockerfile: Dockerfile
     ports:
       - "5984:5984"
