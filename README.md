@@ -1,5 +1,5 @@
 # Open Source Classic Commentary
-<img src="https://github.com/Ycreak/OpensourceClassicCommentary/blob/development/banner.png">
+<img src="https://github.com/Ycreak/OpensourceClassicCommentary/blob/development/docs/banner.png">
 
 ## About
 The Open Source Classics Commentary on the Fragments of Roman Republican Tragedy is an interdisciplinary project between researchers in Classics and Computer Science.
@@ -26,7 +26,7 @@ See [the manual]() and the [Fragment component overview](#Fragment_component) on
 ## Project overview
 The project consists of three parts. A frontend written with Angular (client-sided), an API written with Flask (server-sided) and a NoSQL database powered by Apache CouchDB. Below a diagram of the program. The next sections will describe each of the three parts and their subcomponents.
 
-<img src="https://github.com/Ycreak/OpensourceClassicCommentary/blob/development/project_overview_2.png" width="100%">
+<img src="https://github.com/Ycreak/OpensourceClassicCommentary/blob/development/docs/project_overview_2.png" width="100%">
 
 <a name="angular"/>
 
@@ -38,14 +38,13 @@ To install and run the Angular component on your PC, make sure to have [NodeJS](
 
 ```console 
 sudo npm install -g @angular/cli
-npm install --save @angular/material @angular/cdk bootstrap jquery
 npm install
 ```
 
 The Angular component can now be hosted using the following command (make sure to be in the Angular folder):
 
 ```console 
-ng serve --poll=3000 --port 4200
+ng serve
 ```
 
 Of course, the port can be changed to suit your needs. The poll option denotes the number of files that can be watched on changes to automatically reload the frontend when developing. If the size of the project increases and if the console asks for this, the number should be increased.
@@ -78,17 +77,6 @@ To run ESLint:
 ```console
 npm run lint
 ```
-
-### Dependencies
-The project aims at using as few dependencies as possible. At the moment, the following dependencies are used:
-+ angular-onscreen-material-keyboard : ^0.4.0
-+ insert-text-at-cursor : ^0.3.0a
-+ @angular/forms : ^10.1.6
-+ @angular/material : ^10.2.7
-+ @angular/router : ^10.1.6
-+ ngx-simple-text-editor
-
-A complete list including version numbers can be found in the [Angular documentation]().
 
 #### Rich Text Editor
 The OSCC allows the user to edit fragments via a rich text editor. This editor is invoked via the buttons called *Rich Text*, which starts the ngx-simple-text-editor. In short, the text field including its HTML formatting is given to the editor via the dialog service. This opens a new dialog and the WYSIWYG editor. When closing the editor, the updated text field is send back in plain HTML to be used in the Dashboard for example. The editor is programmed in such a way that it is easily swapped out by a new one if the ngx-simple-text-editor dependency breaks. Additionally, the OSCC will still be functional without the editor, though restricting the user to editing in plain HTML.
@@ -188,7 +176,7 @@ User Handling receives a sanitised object called User from the server alongside 
 ### Communication overview
 The communication between frontend and API is done via two models: Fragment and User. The communication looks as follows: in Angular a Typescript Object is created called Fragment. In the API component this object is turned into a JSON object and sent to Flask. After validation the JSON object is deserialized into a Python object. This structuring ensures a predictability of sent and received data between API and frontend and a simple programming structure for the API. In essence, both Typescript and Python work with their respective objects, with the API services taking care of the communication via JSON and HTTPS. The downside of this approach is the excess of data transferred. For example, when changing a user's password, an empty role field will be transferred instead of the required fields *username* and *new_password*. To illustrate:
 
-<img src="https://github.com/Ycreak/OpensourceClassicCommentary/blob/development/project_overview_api.png">
+<img src="https://github.com/Ycreak/OpensourceClassicCommentary/blob/development/docs/project_overview_api.png">
 
 
 <a name="couchdb"/>
