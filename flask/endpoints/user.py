@@ -16,13 +16,14 @@ from uuid import uuid4
 
 from couch import CouchAuthenticator
 import utilities as util
-from models.user import User, UserField, UserModel, Role
+from models.user import User, UserModel
+from constants import UserMappingField, UserRole
 
 users = UserModel(CouchAuthenticator().couch)
 
 def get_user():
     try:
-        username = request.get_json()[UserField.USERNAME]
+        username = request.get_json()[UserMappingField.USERNAME]
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
@@ -31,11 +32,11 @@ def get_user():
     if not user:
         return make_response("User not found", 404)
 
-    if (user.role == Role.STUDENT) or (user.role == Role.GUEST):
+    if (user.role == UserRole.STUDENT) or (user.role == UserRole.GUEST):
         user.password = None
         user.id = None
         return make_response(jsonify([user]), 200)
-    elif user.role == Role.TEACHER:
+    elif user.role == UserRole.TEACHER:
         all_users = users.all(sorted=True)
         for i in all_users:
             i.password = None
@@ -47,8 +48,8 @@ def get_user():
 
 def login_user():
     try:
-        username = request.get_json()[UserField.USERNAME]
-        password = request.get_json()[UserField.PASSWORD]
+        username = request.get_json()[UserMappingField.USERNAME]
+        password = request.get_json()[UserMappingField.PASSWORD]
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
@@ -76,7 +77,7 @@ def create_user():
     if users.get(User(username=user.username)) != None:
         return make_response("Forbidden", 403)
 
-    user = users.create(User(id=uuid4().hex, username=user.username, password=util.hash_password(user.password), role=Role.GUEST))
+    user = users.create(User(id=uuid4().hex, username=user.username, password=util.hash_password(user.password), role=UserRole.GUEST))
     if user == None:
         return make_response("Server error", 500)
 
@@ -84,7 +85,7 @@ def create_user():
 
 def delete_user():
     try:
-        username = request.get_json()[UserField.USERNAME]
+        username = request.get_json()[UserMappingField.USERNAME]
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
@@ -96,17 +97,17 @@ def delete_user():
 
 def update_user():
     try:
-        username = request.get_json()[UserField.USERNAME]
+        username = request.get_json()[UserMappingField.USERNAME]
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
 
     user = User(username=username)
 
-    if UserField.ROLE in request.get_json():
-        user.role = request.get_json()[UserField.ROLE]
-    if UserField.PASSWORD in request.get_json():
-        user.password = util.hash_password(request.get_json()[UserField.PASSWORD])
+    if UserMappingField.ROLE in request.get_json():
+        user.role = request.get_json()[UserMappingField.ROLE]
+    if UserMappingField.PASSWORD in request.get_json():
+        user.password = util.hash_password(request.get_json()[UserMappingField.PASSWORD])
 
     if users.update(user):
         return make_response("OK", 200)

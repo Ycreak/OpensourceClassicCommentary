@@ -16,7 +16,8 @@ from uuid import uuid4
 
 from couch import CouchAuthenticator
 import utilities as util
-from models.fragment import Fragment, FragmentModel, FragmentField
+from models.fragment import Fragment, FragmentModel
+from constants import FragmentMappingField
 
 fragments = FragmentModel(CouchAuthenticator().couch)
 
@@ -38,16 +39,16 @@ def get_author():
     name = None
     document_type = None
     try:
-        if FragmentField.AUTHOR in request.get_json():
-            author = request.get_json()[FragmentField.AUTHOR]
-        if FragmentField.TITLE in request.get_json():
-            title = request.get_json()[FragmentField.TITLE]
-        if FragmentField.EDITOR in request.get_json():
-            editor = request.get_json()[FragmentField.EDITOR]
-        if FragmentField.NAME in request.get_json():
-            name = request.get_json()[FragmentField.NAME]
-        if FragmentField.DOCUMENT_TYPE in request.get_json():
-            document_type = request.get_json()[FragmentField.DOCUMENT_TYPE]
+        if FragmentMappingField.AUTHOR in request.get_json():
+            author = request.get_json()[FragmentMappingField.AUTHOR]
+        if FragmentMappingField.TITLE in request.get_json():
+            title = request.get_json()[FragmentMappingField.TITLE]
+        if FragmentMappingField.EDITOR in request.get_json():
+            editor = request.get_json()[FragmentMappingField.EDITOR]
+        if FragmentMappingField.NAME in request.get_json():
+            name = request.get_json()[FragmentMappingField.NAME]
+        if FragmentMappingField.DOCUMENT_TYPE in request.get_json():
+            document_type = request.get_json()[FragmentMappingField.DOCUMENT_TYPE]
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
@@ -62,14 +63,14 @@ def get_title():
     editor = None
     name = None
     try:
-        if FragmentField.AUTHOR in request.get_json():
-            author = request.get_json()[FragmentField.AUTHOR]
-        if FragmentField.TITLE in request.get_json():
-            title = request.get_json()[FragmentField.TITLE]
-        if FragmentField.EDITOR in request.get_json():
-            editor = request.get_json()[FragmentField.EDITOR]
-        if FragmentField.NAME in request.get_json():
-            name = request.get_json()[FragmentField.NAME]
+        if FragmentMappingField.AUTHOR in request.get_json():
+            author = request.get_json()[FragmentMappingField.AUTHOR]
+        if FragmentMappingField.TITLE in request.get_json():
+            title = request.get_json()[FragmentMappingField.TITLE]
+        if FragmentMappingField.EDITOR in request.get_json():
+            editor = request.get_json()[FragmentMappingField.EDITOR]
+        if FragmentMappingField.NAME in request.get_json():
+            name = request.get_json()[FragmentMappingField.NAME]
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
@@ -84,14 +85,14 @@ def get_editor():
     editor = None
     name = None
     try:
-        if FragmentField.AUTHOR in request.get_json():
-            author = request.get_json()[FragmentField.AUTHOR]
-        if FragmentField.TITLE in request.get_json():
-            title = request.get_json()[FragmentField.TITLE]
-        if FragmentField.EDITOR in request.get_json():
-            editor = request.get_json()[FragmentField.EDITOR]
-        if FragmentField.NAME in request.get_json():
-            name = request.get_json()[FragmentField.NAME]
+        if FragmentMappingField.AUTHOR in request.get_json():
+            author = request.get_json()[FragmentMappingField.AUTHOR]
+        if FragmentMappingField.TITLE in request.get_json():
+            title = request.get_json()[FragmentMappingField.TITLE]
+        if FragmentMappingField.EDITOR in request.get_json():
+            editor = request.get_json()[FragmentMappingField.EDITOR]
+        if FragmentMappingField.NAME in request.get_json():
+            name = request.get_json()[FragmentMappingField.NAME]
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
@@ -108,16 +109,16 @@ def get_name():
     document_type = None
 
     try:
-        if FragmentField.AUTHOR in request.get_json():
-            author = request.get_json()[FragmentField.AUTHOR]
-        if FragmentField.TITLE in request.get_json():
-            title = request.get_json()[FragmentField.TITLE]
-        if FragmentField.EDITOR in request.get_json():
-            editor = request.get_json()[FragmentField.EDITOR]
-        if FragmentField.NAME in request.get_json():
-            name = request.get_json()[FragmentField.NAME]
-        if FragmentField.DOCUMENT_TYPE in request.get_json():
-            document_type = request.get_json()[FragmentField.DOCUMENT_TYPE]
+        if FragmentMappingField.AUTHOR in request.get_json():
+            author = request.get_json()[FragmentMappingField.AUTHOR]
+        if FragmentMappingField.TITLE in request.get_json():
+            title = request.get_json()[FragmentMappingField.TITLE]
+        if FragmentMappingField.EDITOR in request.get_json():
+            editor = request.get_json()[FragmentMappingField.EDITOR]
+        if FragmentMappingField.NAME in request.get_json():
+            name = request.get_json()[FragmentMappingField.NAME]
+        if FragmentMappingField.DOCUMENT_TYPE in request.get_json():
+            document_type = request.get_json()[FragmentMappingField.DOCUMENT_TYPE]
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
@@ -135,18 +136,18 @@ def get_fragment():
     status = None
 
     try:
-        if FragmentField.STATUS in request.get_json():
-            status = request.get_json()[FragmentField.STATUS]
-        if FragmentField.DOCUMENT_TYPE in request.get_json():
-            document_type = request.get_json()[FragmentField.DOCUMENT_TYPE]
-        if FragmentField.AUTHOR in request.get_json():
-            author = request.get_json()[FragmentField.AUTHOR]
-        if FragmentField.TITLE in request.get_json():
-            title = request.get_json()[FragmentField.TITLE]
-        if FragmentField.EDITOR in request.get_json():
-            editor = request.get_json()[FragmentField.EDITOR]
-        if FragmentField.NAME in request.get_json():
-            name = request.get_json()[FragmentField.NAME]
+        if FragmentMappingField.STATUS in request.get_json():
+            status = request.get_json()[FragmentMappingField.STATUS]
+        if FragmentMappingField.DOCUMENT_TYPE in request.get_json():
+            document_type = request.get_json()[FragmentMappingField.DOCUMENT_TYPE]
+        if FragmentMappingField.AUTHOR in request.get_json():
+            author = request.get_json()[FragmentMappingField.AUTHOR]
+        if FragmentMappingField.TITLE in request.get_json():
+            title = request.get_json()[FragmentMappingField.TITLE]
+        if FragmentMappingField.EDITOR in request.get_json():
+            editor = request.get_json()[FragmentMappingField.EDITOR]
+        if FragmentMappingField.NAME in request.get_json():
+            name = request.get_json()[FragmentMappingField.NAME]
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
@@ -159,10 +160,10 @@ def get_fragment():
 
 def create_fragment():    
     try:
-        author = request.get_json()[FragmentField.AUTHOR]
-        title = request.get_json()[FragmentField.TITLE]
-        editor = request.get_json()[FragmentField.EDITOR]
-        name = request.get_json()[FragmentField.NAME]
+        author = request.get_json()[FragmentMappingField.AUTHOR]
+        title = request.get_json()[FragmentMappingField.TITLE]
+        editor = request.get_json()[FragmentMappingField.EDITOR]
+        name = request.get_json()[FragmentMappingField.NAME]
 
         status = None
         lock = None
@@ -180,33 +181,33 @@ def create_fragment():
         text = None
         document_type = None
 
-        if FragmentField.WITNESS in request.get_json():
-            witness = request.get_json()[FragmentField.WITNESS]
-        if FragmentField.TEXT in request.get_json():
-            text = request.get_json()[FragmentField.TEXT]
-        if FragmentField.DOCUMENT_TYPE in request.get_json():
-            document_type = request.get_json()[FragmentField.DOCUMENT_TYPE]
+        if FragmentMappingField.WITNESS in request.get_json():
+            witness = request.get_json()[FragmentMappingField.WITNESS]
+        if FragmentMappingField.TEXT in request.get_json():
+            text = request.get_json()[FragmentMappingField.TEXT]
+        if FragmentMappingField.DOCUMENT_TYPE in request.get_json():
+            document_type = request.get_json()[FragmentMappingField.DOCUMENT_TYPE]
 
-        if FragmentField.STATUS in request.get_json():
-            status = request.get_json()[FragmentField.STATUS]
-        if FragmentField.LOCK in request.get_json():
-            lock = request.get_json()[FragmentField.LOCK]
-        if FragmentField.TRANSLATION in request.get_json():
-            translation = request.get_json()[FragmentField.TRANSLATION]
-        if FragmentField.DIFFERENCES in request.get_json():
-            differences = request.get_json()[FragmentField.DIFFERENCES]
-        if FragmentField.APPARATUS in request.get_json():
-            apparatus = request.get_json()[FragmentField.APPARATUS]
-        if FragmentField.COMMENTARY in request.get_json():
-            commentary = request.get_json()[FragmentField.COMMENTARY]
-        if FragmentField.RECONSTRUCTION in request.get_json():
-            reconstruction = request.get_json()[FragmentField.RECONSTRUCTION]
-        if FragmentField.CONTEXT in request.get_json():
-            context = request.get_json()[FragmentField.CONTEXT]
-        if FragmentField.LINES in request.get_json():
-            lines = request.get_json()[FragmentField.LINES]
-        if FragmentField.LINKED_FRAGMENTS in request.get_json():
-            linked_fragments = request.get_json()[FragmentField.LINKED_FRAGMENTS]
+        if FragmentMappingField.STATUS in request.get_json():
+            status = request.get_json()[FragmentMappingField.STATUS]
+        if FragmentMappingField.LOCK in request.get_json():
+            lock = request.get_json()[FragmentMappingField.LOCK]
+        if FragmentMappingField.TRANSLATION in request.get_json():
+            translation = request.get_json()[FragmentMappingField.TRANSLATION]
+        if FragmentMappingField.DIFFERENCES in request.get_json():
+            differences = request.get_json()[FragmentMappingField.DIFFERENCES]
+        if FragmentMappingField.APPARATUS in request.get_json():
+            apparatus = request.get_json()[FragmentMappingField.APPARATUS]
+        if FragmentMappingField.COMMENTARY in request.get_json():
+            commentary = request.get_json()[FragmentMappingField.COMMENTARY]
+        if FragmentMappingField.RECONSTRUCTION in request.get_json():
+            reconstruction = request.get_json()[FragmentMappingField.RECONSTRUCTION]
+        if FragmentMappingField.CONTEXT in request.get_json():
+            context = request.get_json()[FragmentMappingField.CONTEXT]
+        if FragmentMappingField.LINES in request.get_json():
+            lines = request.get_json()[FragmentMappingField.LINES]
+        if FragmentMappingField.LINKED_FRAGMENTS in request.get_json():
+            linked_fragments = request.get_json()[FragmentMappingField.LINKED_FRAGMENTS]
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
@@ -227,8 +228,8 @@ def create_fragment():
 
 def link_fragment():
     try:
-        author = request.get_json()[FragmentField.AUTHOR]
-        title = request.get_json()[FragmentField.TITLE]
+        author = request.get_json()[FragmentMappingField.AUTHOR]
+        title = request.get_json()[FragmentMappingField.TITLE]
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
@@ -246,11 +247,11 @@ def link_fragment():
 
 def update_fragment():    
     try:
-        _id = request.get_json()[FragmentField.ID]
-        author = request.get_json()[FragmentField.AUTHOR]
-        title = request.get_json()[FragmentField.TITLE]
-        editor = request.get_json()[FragmentField.EDITOR]
-        name = request.get_json()[FragmentField.NAME]
+        _id = request.get_json()[FragmentMappingField.ID]
+        author = request.get_json()[FragmentMappingField.AUTHOR]
+        title = request.get_json()[FragmentMappingField.TITLE]
+        editor = request.get_json()[FragmentMappingField.EDITOR]
+        name = request.get_json()[FragmentMappingField.NAME]
 
         status = None
         lock = None
@@ -268,33 +269,33 @@ def update_fragment():
         text = None
         document_type = None
 
-        if FragmentField.WITNESS in request.get_json():
-            witness = request.get_json()[FragmentField.WITNESS]
-        if FragmentField.TEXT in request.get_json():
-            text = request.get_json()[FragmentField.TEXT]
-        if FragmentField.DOCUMENT_TYPE in request.get_json():
-            document_type = request.get_json()[FragmentField.DOCUMENT_TYPE]
+        if FragmentMappingField.WITNESS in request.get_json():
+            witness = request.get_json()[FragmentMappingField.WITNESS]
+        if FragmentMappingField.TEXT in request.get_json():
+            text = request.get_json()[FragmentMappingField.TEXT]
+        if FragmentMappingField.DOCUMENT_TYPE in request.get_json():
+            document_type = request.get_json()[FragmentMappingField.DOCUMENT_TYPE]
 
-        if FragmentField.STATUS in request.get_json():
-            status = request.get_json()[FragmentField.STATUS]
-        if FragmentField.LOCK in request.get_json():
-            lock = request.get_json()[FragmentField.LOCK]
-        if FragmentField.TRANSLATION in request.get_json():
-            translation = request.get_json()[FragmentField.TRANSLATION]
-        if FragmentField.DIFFERENCES in request.get_json():
-            differences = request.get_json()[FragmentField.DIFFERENCES]
-        if FragmentField.APPARATUS in request.get_json():
-            apparatus = request.get_json()[FragmentField.APPARATUS]
-        if FragmentField.COMMENTARY in request.get_json():
-            commentary = request.get_json()[FragmentField.COMMENTARY]
-        if FragmentField.RECONSTRUCTION in request.get_json():
-            reconstruction = request.get_json()[FragmentField.RECONSTRUCTION]
-        if FragmentField.CONTEXT in request.get_json():
-            context = request.get_json()[FragmentField.CONTEXT]
-        if FragmentField.LINES in request.get_json():
-            lines = request.get_json()[FragmentField.LINES]
-        if FragmentField.LINKED_FRAGMENTS in request.get_json():
-            linked_fragments = request.get_json()[FragmentField.LINKED_FRAGMENTS]
+        if FragmentMappingField.STATUS in request.get_json():
+            status = request.get_json()[FragmentMappingField.STATUS]
+        if FragmentMappingField.LOCK in request.get_json():
+            lock = request.get_json()[FragmentMappingField.LOCK]
+        if FragmentMappingField.TRANSLATION in request.get_json():
+            translation = request.get_json()[FragmentMappingField.TRANSLATION]
+        if FragmentMappingField.DIFFERENCES in request.get_json():
+            differences = request.get_json()[FragmentMappingField.DIFFERENCES]
+        if FragmentMappingField.APPARATUS in request.get_json():
+            apparatus = request.get_json()[FragmentMappingField.APPARATUS]
+        if FragmentMappingField.COMMENTARY in request.get_json():
+            commentary = request.get_json()[FragmentMappingField.COMMENTARY]
+        if FragmentMappingField.RECONSTRUCTION in request.get_json():
+            reconstruction = request.get_json()[FragmentMappingField.RECONSTRUCTION]
+        if FragmentMappingField.CONTEXT in request.get_json():
+            context = request.get_json()[FragmentMappingField.CONTEXT]
+        if FragmentMappingField.LINES in request.get_json():
+            lines = request.get_json()[FragmentMappingField.LINES]
+        if FragmentMappingField.LINKED_FRAGMENTS in request.get_json():
+            linked_fragments = request.get_json()[FragmentMappingField.LINKED_FRAGMENTS]
     
     except KeyError as e:
         logging.error(e)
@@ -316,12 +317,12 @@ def update_fragment():
     return make_response("Revised", 200)
 
 def delete_fragment():
-    document_type = request.get_json()[FragmentField.DOCUMENT_TYPE]
+    document_type = request.get_json()[FragmentMappingField.DOCUMENT_TYPE]
 
     if document_type == 'testimonium':
         try:
-            author = request.get_json()[FragmentField.AUTHOR]
-            name = request.get_json()[FragmentField.NAME]
+            author = request.get_json()[FragmentMappingField.AUTHOR]
+            name = request.get_json()[FragmentMappingField.NAME]
         except KeyError as e:
             logging.error(e)
             return make_response("Unprocessable entity", 422)
@@ -329,10 +330,10 @@ def delete_fragment():
 
     elif document_type == 'fragment':
         try:
-            author = request.get_json()[FragmentField.AUTHOR]
-            title = request.get_json()[FragmentField.TITLE]
-            editor = request.get_json()[FragmentField.EDITOR]
-            name = request.get_json()[FragmentField.NAME]
+            author = request.get_json()[FragmentMappingField.AUTHOR]
+            title = request.get_json()[FragmentMappingField.TITLE]
+            editor = request.get_json()[FragmentMappingField.EDITOR]
+            name = request.get_json()[FragmentMappingField.NAME]
         except KeyError as e:
             logging.error(e)
             return make_response("Unprocessable entity", 422)

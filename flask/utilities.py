@@ -14,6 +14,8 @@
 import hashlib, binascii, os, string
 from fuzzywuzzy import fuzz
 import json
+import logging
+from flask import request
 
 import config as conf
 

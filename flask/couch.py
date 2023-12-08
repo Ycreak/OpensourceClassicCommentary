@@ -23,7 +23,7 @@ class CouchAuthenticator:
         logging.info("CouchDB initalization started.")
         
         # Version check for availability https://couchdb-python.readthedocs.io/en/latest/client.html#server
-        while(not_connected):
+        while (not_connected):
             try:
                 # Try to connect
                 self.couch = couchdb.Server(self.url)
@@ -34,7 +34,7 @@ class CouchAuthenticator:
                 not_connected = False
 
             except:
-                logging.error("Couch server not (yet) available or out of sync. Retrying...")
+                logging.error("Couch server not (yet) available or out of sync. Re-establishing connection...")
                 time.sleep(3)
             
         logging.info("CouchDB initialization completed. {0} tables found.".format(len(self.couch)))

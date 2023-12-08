@@ -15,16 +15,16 @@ from flask_jsonpify import jsonify
 from uuid import uuid4
 
 from couch import CouchAuthenticator
-import utilities as util
-from models.playground import Playground, PlaygroundModel, PlaygroundField
+from models.playground import Playground, PlaygroundModel
+from constants import PlaygroundMappingField
 
 playgrounds = PlaygroundModel(CouchAuthenticator().couch)
 
 def get_playgrounds():
     owner = None
     try:
-        if PlaygroundField.OWNER in request.get_json():
-            owner = request.get_json()[PlaygroundField.OWNER]
+        if PlaygroundMappingField.OWNER in request.get_json():
+            owner = request.get_json()[PlaygroundMappingField.OWNER]
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
@@ -37,10 +37,10 @@ def get_playground():
     owner = None
     name = None
     try:
-        if PlaygroundField.OWNER in request.get_json():
-            owner = request.get_json()[PlaygroundField.OWNER]
-        if PlaygroundField.NAME in request.get_json():
-            name = request.get_json()[PlaygroundField.NAME]
+        if PlaygroundMappingField.OWNER in request.get_json():
+            owner = request.get_json()[PlaygroundMappingField.OWNER]
+        if PlaygroundMappingField.NAME in request.get_json():
+            name = request.get_json()[PlaygroundMappingField.NAME]
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
@@ -54,8 +54,8 @@ def get_playground():
 def get_shared_playgrounds():
     user = None
     try:
-        if PlaygroundField.USER in request.get_json():
-            user = request.get_json()[PlaygroundField.USER]
+        if PlaygroundMappingField.USER in request.get_json():
+            user = request.get_json()[PlaygroundMappingField.USER]
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
@@ -68,9 +68,9 @@ def get_shared_playgrounds():
 
 def create_playground():    
     try:
-        owner = request.get_json()[PlaygroundField.OWNER]
-        name = request.get_json()[PlaygroundField.NAME]
-        canvas = request.get_json()[PlaygroundField.CANVAS]
+        owner = request.get_json()[PlaygroundMappingField.OWNER]
+        name = request.get_json()[PlaygroundMappingField.NAME]
+        canvas = request.get_json()[PlaygroundMappingField.CANVAS]
 
     except KeyError as e:
         logging.error(e)
@@ -88,14 +88,14 @@ def create_playground():
 
 def update_playground():    
     try:
-        _id = request.get_json()[PlaygroundField.ID]
+        _id = request.get_json()[PlaygroundMappingField.ID]
         canvas = None 
         shared_with = None 
 
-        if PlaygroundField.CANVAS in request.get_json():
-            canvas = request.get_json()[PlaygroundField.CANVAS]
-        if PlaygroundField.SHARED_WITH in request.get_json():
-            shared_with = request.get_json()[PlaygroundField.SHARED_WITH]
+        if PlaygroundMappingField.CANVAS in request.get_json():
+            canvas = request.get_json()[PlaygroundMappingField.CANVAS]
+        if PlaygroundMappingField.SHARED_WITH in request.get_json():
+            shared_with = request.get_json()[PlaygroundMappingField.SHARED_WITH]
     
     except KeyError as e:
         logging.error(e)
@@ -109,7 +109,7 @@ def update_playground():
 
 def delete_playground():
     try:
-        _id = request.get_json()[PlaygroundField.ID]
+        _id = request.get_json()[PlaygroundMappingField.ID]
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)

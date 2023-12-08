@@ -15,28 +15,22 @@ from dataclasses import dataclass, asdict
 import logging
 from uuid import uuid4
 
-import Server.config as conf
-
-class IntroductionFormField(object):
-    # Container for field names
-    ID = '_id'
-    AUTHOR = 'selected_fragment_author'
-    TITLE = 'selected_fragment_title'
-    AUTHOR_TEXT = 'author_text'
-    TITLE_TEXT = 'title_text'
+from config import COUCH_INTRODUCTIONS, COUCH_LIMIT
+from constants import IntroductionMappingField
+from mixins import SetFieldsetToNoneMixin
 
 @dataclass
-class IntroductionForm:
+class IntroductionForm(SetFieldsetToNoneMixin):
     # Data container. Corresponds to the IntroductionForm on the dashboard.
-    _id: str = ''
-    author: str = ''
-    title: str = ''
-    author_text: str = ''
-    title_text: str = ''
+    _id: str
+    author: str
+    title: str
+    author_text: str
+    title_text: str
 
 class IntroductionFormModel:
     def __init__(self, server):
-        self.db = server[conf.COUCH_INTRODUCTIONS]
+        self.db = server[COUCH_INTRODUCTIONS]
 
     def __get_introduction_text(self, intro_lst: list) -> list:
         # Parses result of mango request
@@ -47,14 +41,14 @@ class IntroductionFormModel:
             introduction = IntroductionForm()
             if '_id' in doc:
                 introduction._id = doc['_id']
-            if IntroductionFormField.AUTHOR in doc:
-                introduction.author = doc[IntroductionFormField.AUTHOR]
-            if IntroductionFormField.TITLE in doc:
-                introduction.title = doc[IntroductionFormField.TITLE]
-            if IntroductionFormField.AUTHOR_TEXT in doc:
-                introduction.author_introduction_text = doc[IntroductionFormField.AUTHOR_TEXT]
-            if IntroductionFormField.TITLE_TEXT in doc:
-                introduction.title_text = doc[IntroductionFormField.TITLE_TEXT]
+            if IntroductionMappingField.AUTHOR in doc:
+                introduction.author = doc[IntroductionMappingField.AUTHOR]
+            if IntroductionMappingField.TITLE in doc:
+                introduction.title = doc[IntroductionMappingField.TITLE]
+            if IntroductionMappingField.AUTHOR_TEXT in doc:
+                introduction.author_introduction_text = doc[IntroductionMappingField.AUTHOR_TEXT]
+            if IntroductionMappingField.TITLE_TEXT in doc:
+                introduction.title_text = doc[IntroductionMappingField.TITLE_TEXT]
             result.append(introduction)
         
         if result == []:
@@ -66,7 +60,7 @@ class IntroductionFormModel:
         def find_data(query_dict):
             mango = {
                 "selector": query_dict,
-                "limit": conf.COUCH_LIMIT
+                "limit": COUCH_LIMIT
             }
             result = self.db.find(mango)
             result = self.__get_introduction_text(result)

@@ -10,209 +10,139 @@
 """
 
 
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 import logging
+import builtins
 
-import config as conf
-
-class FragmentField(object):
-    ID = "_id"
-    NAME = "name"
-    AUTHOR = "author"
-    TITLE = "title"
-    EDITOR = "editor"
-    STATUS = "status"
-    LOCK = "lock"
-    TRANSLATION = "translation"
-    DIFFERENCES = "differences"
-    APPARATUS = "apparatus"
-    COMMENTARY = "commentary"
-    RECONSTRUCTION = "reconstruction"
-    CONTEXT = "context"
-    LINES = "lines"
-    LINKED_FRAGMENTS = "linked_fragments"
-
-    WITNESS = "witness"
-    TEXT = "text"
-    DOCUMENT_TYPE = "document_type"
+from config import COUCH_FRAGMENTS, COUCH_LIMIT
+from mixins import SetFieldsetToNoneMixin
+from constants import fragment_mapping
 
 @dataclass
-class Fragment:
-    _id: str = None
-    name: str = None
-    author: str = None
-    title: str = None
-    editor: str = None
-    status: str = None
-    lock: int = None
-    translation: str = None
-    differences: str = None
-    apparatus: str = None
-    commentary: str = None
-    reconstruction: str = None
-    context: list = None
-    lines: list = None
-    linked_fragments: list = None
-
-    witness: str = None
-    text: str = None
-    document_type: str = None
+class Fragment(SetFieldsetToNoneMixin):
+    _id: str
+    name: str
+    author: str
+    title: str
+    editor: str
+    status: str
+    lock: int
+    translation: str
+    differences: str
+    apparatus: str
+    commentary: str
+    reconstruction: str
+    context: list
+    lines: list
+    linked_fragments: list
+    witness: str
+    text: str
+    document_type: str
 
 class FragmentModel:
     def __init__(self, server):
-        self.db = server[conf.COUCH_FRAGMENTS]
+        self.db = server[COUCH_FRAGMENTS]
     
     def __get_fragments(self, frag_lst):
-        result = list()
+        """ Helper function to store a query result as a list of fragments """
+        result = []
+
         for doc in frag_lst:
             fragment = Fragment(_id=doc.id)
-            if FragmentField.NAME in doc:
-                fragment.name = doc[FragmentField.NAME]
-            if FragmentField.AUTHOR in doc:
-                fragment.author = doc[FragmentField.AUTHOR]
-            if FragmentField.TITLE in doc:
-                fragment.title = doc[FragmentField.TITLE]
-            if FragmentField.EDITOR in doc:
-                fragment.editor = doc[FragmentField.EDITOR]
-            if FragmentField.STATUS in doc:
-                fragment.status = doc[FragmentField.STATUS]
-            if FragmentField.LOCK in doc:
-                fragment.lock = doc[FragmentField.LOCK]
-            if FragmentField.TRANSLATION in doc:
-                fragment.translation = doc[FragmentField.TRANSLATION]
-            if FragmentField.DIFFERENCES in doc:
-                fragment.differences = doc[FragmentField.DIFFERENCES]
-            if FragmentField.APPARATUS in doc:
-                fragment.apparatus = doc[FragmentField.APPARATUS]
-            if FragmentField.COMMENTARY in doc:
-                fragment.commentary = doc[FragmentField.COMMENTARY]
-            if FragmentField.RECONSTRUCTION in doc:
-                fragment.reconstruction = doc[FragmentField.RECONSTRUCTION]
-            if FragmentField.CONTEXT in doc:
-                fragment.context = doc[FragmentField.CONTEXT]
-            if FragmentField.LINES in doc:
-                fragment.lines = doc[FragmentField.LINES]
-            if FragmentField.LINKED_FRAGMENTS in doc:
-                fragment.linked_fragments = doc[FragmentField.LINKED_FRAGMENTS]
-            if FragmentField.WITNESS in doc:
-                fragment.witness = doc[FragmentField.WITNESS]
-            if FragmentField.TEXT in doc:
-                fragment.text = doc[FragmentField.TEXT]
-            if FragmentField.DOCUMENT_TYPE in doc:
-                fragment.document_type = doc[FragmentField.DOCUMENT_TYPE]
+            for field_name, field_key in fragment_mapping.items():
+                if field_key in doc:
+                    setattr(fragment, field_name.lower(), doc[field_key])
             result.append(fragment)
 
         return result
 
     def all(self, sorted=False):
+        """ Returns all fragments (no filter) within the COUCH_LIMIT, optional sorting on name"""
+
         result = self.db.find({
-            "selector": dict(),
-            "limit": conf.COUCH_LIMIT
+            "selector": {},
+            "limit": COUCH_LIMIT
         })
         result = self.__get_fragments(result)
+
         if sorted:
-            result.sort(key=lambda Fragment: Fragment.name)
+            result = builtins.sorted(builtins.filter(lambda fragment: fragment.name is not None, result), key=lambda fragment: fragment.name)
+
         return result
         
     def filter(self, fragment, sorted=False):
+        """ Returns those fragments that match the values of the fragment paramater, optional sorting on title """
+
         fragment = {key: value for key, value in fragment.__dict__.items() if value}
-        # @deprecated because of refactoring
-        # if "_id" in fragment: 
-        #     fragment[FragmentField.ID] = fragment.pop("_id")
-        # if "name" in fragment:
-        #     fragment[FragmentField.NAME] = fragment.pop("name")
-        mango = {
+        result = self.db.find({
             "selector": fragment,
-            "limit": conf.COUCH_LIMIT
-        }
-        print(mango)
-        result = self.db.find(mango)
+            "limit": COUCH_LIMIT
+        })
         result = self.__get_fragments(result)
+        
         if sorted:
-            result.sort(key=lambda Fragment: Fragment.title)
+            result = builtins.sorted(builtins.filter(lambda fragment: fragment.title is not None, result), key=lambda fragment: fragment.title)
+
         return result
 
     def create(self, fragment):
+        """ Creates a fragment equal to the fragment parameter """
+
         fragment = {key: value for key, value in fragment.__dict__.items() if value}
-        # @deprecated because of refactoring
-        # fragment[FragmentField.ID] = fragment.pop("_id") # MongoDB uses "_id" instead of "id"
-        # fragment[FragmentField.NAME] = fragment.pop("name")
-        
         doc_id, _ = self.db.save(fragment)
+
         if not doc_id:
             logging.error("create(): failed to create fragment")
             return None
+        
         return fragment
 
     def update(self, fragment):
-        # we update fragments via their _id, so no need for get.
-        # FIXME: is this correct BORS?
-        # fragment = self.get(fragment)
+        """ Update a fragment via the _id for lookup """
 
-        # if fragment == None:
-        #     logging.error("update(): fragment could not be found")
-        #     return False
         try:
             doc = self.db[fragment._id]
+
             for key, value in asdict(fragment).items():
-                if value != None:
+                if value is not None:
                     doc[key] = value
-            print(f'doc: {doc}')
+            
             self.db.save(doc)
             return True
         except Exception as e:
             logging.error(e)
+
         return False
 
     def delete(self, fragment):
-        fragment = self.get(fragment)
-    
-        if fragment == None:
-            logging.error("delete(): fragment could not be found")
-            return False
+        """ Delete a fragment via the _id for lookup """
+
         try:
             doc = self.db[fragment._id]
-            self.db.delete(doc)
-            return True
+
+            if doc is not None:
+                self.db.delete(doc)
+                return True
+        
         except Exception as e:
             logging.error(e)
+
         return False
 
     def get(self, fragment):
+        """ Gets a specific fragment. If more than one are returned, a warning is given """
+
         fragment = {key: value for key, value in fragment.__dict__.items() if value}
-        mango = {
+        
+        result = self.db.find({
             "selector": fragment,
-            "limit": conf.COUCH_LIMIT
-        }
-        result = self.db.find(mango)
+            "limit": COUCH_LIMIT
+        })
         result = self.__get_fragments(result)
 
         if result:
             if len(result) > 1:
                 logging.warning("get(): function returned more than 1 object!")
             return result[0]
+        
         return None
-
-#     def get_or_create(self, user):
-#         result = self.get(user)
-#         if result is not None:
-#             return result
-#         else:
-#             return self.create(user)
-    
-#     def update(self, user):
-#         _user = self.get(User(username=user.username))
-#         if _user == None:
-#             logging.error("update(): user could not be found")
-#             return False
-#         try:
-#             doc = self.db[_user.id]
-#             for key, value in asdict(user).items():
-#                 if value != None:
-#                     doc[key] = value
-#             self.db.save(doc)
-#             return True
-#         except Exception as e:
-#             logging.error(e)
-#         return False
-

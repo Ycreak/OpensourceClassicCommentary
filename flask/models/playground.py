@@ -13,16 +13,9 @@
 from dataclasses import dataclass, asdict
 import logging
 
-import config as conf
+from config import COUCH_PLAYGROUNDS, COUCH_LIMIT
+from constants import PlaygroundMappingField
 
-
-class PlaygroundField(object):
-    ID = "_id"
-    NAME = "name"
-    OWNER = "owner"
-    CANVAS = "canvas"
-    SHARED_WITH = "shared_with"
-    USER = "user"
 
 @dataclass
 class Playground:
@@ -35,28 +28,28 @@ class Playground:
 
 class PlaygroundModel:
     def __init__(self, server):
-        self.db = server[conf.COUCH_PLAYGROUNDS]
+        self.db = server[COUCH_PLAYGROUNDS]
     
     def __get_playgrounds(self, playground_lst, canvas=True):
         result = list()
         for doc in playground_lst:
             playground = Playground(_id=doc.id)
-            if PlaygroundField.NAME in doc:
-                playground.name = doc[PlaygroundField.NAME]
-            if PlaygroundField.OWNER in doc:
-                playground.owner = doc[PlaygroundField.OWNER]
-            if PlaygroundField.SHARED_WITH in doc:
-                playground.shared_with = doc[PlaygroundField.SHARED_WITH]
+            if PlaygroundMappingField.NAME in doc:
+                playground.name = doc[PlaygroundMappingField.NAME]
+            if PlaygroundMappingField.OWNER in doc:
+                playground.owner = doc[PlaygroundMappingField.OWNER]
+            if PlaygroundMappingField.SHARED_WITH in doc:
+                playground.shared_with = doc[PlaygroundMappingField.SHARED_WITH]
             if (canvas):
-                if PlaygroundField.CANVAS in doc:
-                    playground.canvas = doc[PlaygroundField.CANVAS]
+                if PlaygroundMappingField.CANVAS in doc:
+                    playground.canvas = doc[PlaygroundMappingField.CANVAS]
             result.append(playground)
         return result
 
     def all(self, sorted=False):
         result = self.db.find({
             "selector": dict(),
-            "limit": conf.COUCH_LIMIT
+            "limit": COUCH_LIMIT
         })
         result = self.__get_playgrounds(result)
         if sorted:
@@ -67,7 +60,7 @@ class PlaygroundModel:
         playground = {key: value for key, value in playground.__dict__.items() if value}
         mango = {
             "selector": playground,
-            "limit": conf.COUCH_LIMIT
+            "limit": COUCH_LIMIT
         }
         result = self.db.find(mango)
         result = self.__get_playgrounds(result)
@@ -116,7 +109,7 @@ class PlaygroundModel:
         playground = {key: value for key, value in playground.__dict__.items() if value}
         mango = {
             "selector": playground,
-            "limit": conf.COUCH_LIMIT
+            "limit": COUCH_LIMIT
         }
         result = self.db.find(mango)
         result = self.__get_playgrounds(result)
@@ -141,7 +134,7 @@ class PlaygroundModel:
                  }
               }
            },
-            "limit": conf.COUCH_LIMIT
+            "limit": COUCH_LIMIT
         }
         print('lets go')
         result = self.db.find(mango)
