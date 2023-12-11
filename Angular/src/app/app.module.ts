@@ -91,7 +91,7 @@ import { ScansionComponent } from './scansion/scansion.component';
 import { PlaygroundComponent } from './playground/playground.component';
 import { CommentaryComponent } from './commentary/commentary.component';
 import { OverviewComponent } from './overview/overview.component';
-import { IntroductionsComponent } from './dashboard/introductions/introductions.component';
+import { IntroductionsComponent } from './dashboard/introductions-dashboard/introductions.component';
 import { ExpandableTextComponent } from './other_components/expandable-text/expandable-text.component';
 import { DocumentFilterComponent } from './dialogs/document-filter/document-filter.component';
 import { UsersComponent } from './dashboard/users/users.component';
@@ -202,6 +202,7 @@ const appRoutes: Routes = [
     // AngularFireModule.initializeApp(environment.firebase),
   ],
   providers: [
+    SafeHtmlPipe,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpErrorInterceptor,

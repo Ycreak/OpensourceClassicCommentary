@@ -1,0 +1,88 @@
+<mat-expansion-panel *ngIf="this.auth_service.current_user_role === 'teacher'" [expanded]="true">
+  <mat-expansion-panel-header>
+    <mat-panel-title> Change author and title introductions </mat-panel-title>
+    <mat-panel-description>
+      Create and edit descriptions for authors and associated titles
+      <mat-icon>assignment_ind</mat-icon>
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+
+  <div class="alert alert-info" role="alert">
+    To create an introduction for the author, only select the author and leave the title empty. To create an
+    introduction for a title, select both author and title. Press the reset button to reset both fields for a clean
+    slate.
+  </div>
+
+  <!-- Author and title selection boxes -->
+  <mat-form-field>
+    <mat-label>Select author</mat-label>
+    <mat-select [(ngModel)]="this.introduction.author" ngDefaultControl>
+      <mat-option
+        *ngFor="let author of this.api.get_author_list()"
+        [value]="author"
+        (click)="this.introduction.author = author"
+        (click)="this.introduction.title = ''"
+        (click)="this.reset_form()"
+        (click)="this.form.patchValue({ author: author })"
+        (click)="this.request_introduction(this.introduction)"
+        (click)="this.show_select_author_first_hint = false">
+        {{ author }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Select title</mat-label>
+    <mat-select
+      [(ngModel)]="this.introduction.title"
+      ngDefaultControl
+      (click)="this.show_select_author_first_hint = true">
+      <mat-option
+        *ngFor="let title of this.api.get_title_list(this.introduction.author)"
+        [value]="title"
+        (click)="this.introduction.title = title"
+        (click)="this.reset_form('title_text')"
+        (click)="this.form.patchValue({ author: author })"
+        (click)="this.form.patchValue({ title: title })"
+        (click)="this.request_introduction(this.introduction)">
+        {{ title }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-error class="mat-error-inline" *ngIf="this.show_select_author_first_hint && !this.introduction.author"
+    >Please select an author first</mat-error
+  >
+
+  <!-- Introduction text with wysiwyg editor -->
+  <form [formGroup]="form">
+    <!-- Author introduction text field -->
+    <ng-container *ngIf="this.introduction.author">
+      <mat-form-field class="input-form-full-width">
+        <mat-label><b>Introduction text</b></mat-label>
+        <textarea matInput type="text" formControlName="text"></textarea>
+      </mat-form-field>
+      <!-- Button for opening the wysiwyg editor -->
+      <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('text')">Rich editor</button>
+      <div class="div-padding-lg"></div>
+      <div class="div-padding-sm"></div>
+    </ng-container>
+    <br />
+
+    <!-- Save button -->
+    <button
+      mat-button
+      class="button-margin-extra confirm-button"
+      (click)="this.introduction.author = ''"
+      (click)="this.introduction.title = ''">
+      Reset
+    </button>
+    <button
+      mat-button
+      class="button-margin-extra confirm-button"
+      (click)="this.api.save_introduction(this.introduction)">
+      Save Changes
+    </button>
+    <mat-label class="mat-label-inline" *ngIf="this.show_changes_saved_hint">Changes saved</mat-label>
+    <div class="div-padding-lg"></div>
+    <div class="div-padding-sm"></div>
+  </form>
+</mat-expansion-panel>
