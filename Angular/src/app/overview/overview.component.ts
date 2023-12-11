@@ -1,5 +1,4 @@
 // Library imports
-
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog'; // Library used for interacting with the page
 import { environment } from '@src/environments/environment';
@@ -16,6 +15,7 @@ import { ColumnsComponent } from '@oscc/columns/columns.component';
 
 // Component imports
 import { LoginComponent } from '@oscc/login/login.component';
+import { IntroductionsComponent } from './introductions/introductions.component';
 
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
@@ -41,17 +41,16 @@ export class OverviewComponent implements OnInit, OnDestroy {
   protected requested_column: any;
 
   constructor(
+    private mat_dialog: MatDialog,
+    private viewportscroller: ViewportScroller,
     protected api: ApiService,
-    // protected utility: UtilityService,
     protected auth_service: AuthService,
-    protected dialog: DialogService,
-    protected settings: SettingsService,
-    public localstorage: LocalStorageService,
-    protected window_watcher: WindowSizeWatcherService,
-    private matdialog: MatDialog,
     protected column_handler: ColumnHandlerService,
     protected columns: ColumnsComponent,
-    private viewportscroller: ViewportScroller
+    protected dialog: DialogService,
+    protected settings: SettingsService,
+    protected window_watcher: WindowSizeWatcherService,
+    public localstorage: LocalStorageService
   ) {}
 
   ngOnInit(): void {
@@ -67,6 +66,18 @@ export class OverviewComponent implements OnInit, OnDestroy {
     if (this.window_watcher.subscription$) {
       this.window_watcher.subscription$.unsubscribe();
     }
+  }
+
+  /**
+   * Opens the introduction dialog. An introduction can be about either an author or a text.
+   * @author Ycreak
+   */
+  protected show_introduction(author: string, title?: string): void {
+    title = title ? title : '';
+
+    this.mat_dialog.open(IntroductionsComponent, {
+      data: { author: author, title: title },
+    });
   }
 
   test(item?: any) {
@@ -103,7 +114,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
    * @author Ycreak
    */
   protected login(): void {
-    this.matdialog.open(LoginComponent, {});
+    this.mat_dialog.open(LoginComponent, {});
   }
 
   /**

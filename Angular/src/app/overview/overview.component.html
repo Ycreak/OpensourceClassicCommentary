@@ -102,13 +102,14 @@
         <ng-template #document_clicked>
           <h5>
             Selected
-            <a class="a-void" (click)="this.introductions.show_introduction_dialog(this.clicked_document.author)">{{
+            <a class="a-void" (click)="this.show_introduction(this.clicked_document.author)">{{
               this.clicked_document.author
             }}</a
             >,
-            <a class="a-void" (click)="this.introductions.show_introduction_dialog(this.clicked_document.title)">{{
-              this.clicked_document.title
-            }}</a
+            <a
+              class="a-void"
+              (click)="this.show_introduction(this.clicked_document.author, this.clicked_document.title)"
+              >{{ this.clicked_document.title }}</a
             >, {{ this.clicked_document.editor }},
             {{ this.clicked_document.name }}
           </h5>

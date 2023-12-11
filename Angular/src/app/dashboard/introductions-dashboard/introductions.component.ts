@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+
+import { FormControl, FormGroup } from '@angular/forms';
 import { ApiService } from '@oscc/api.service';
 import { AuthService } from '@oscc/auth/auth.service';
-import { Introduction_form } from '@oscc/models/Introduction_form';
-import { Introductions } from '@oscc/dashboard/introductions/Introduction_example';
+import { Introduction } from '@oscc/models/Introduction';
 import { DialogService } from '@oscc/services/dialog.service';
 
 @Component({
-  selector: 'app-introductions',
+  selector: 'app-introductions-dashboard',
   templateUrl: './introductions.component.html',
   styleUrls: ['./introductions.component.scss'],
 })
@@ -15,14 +15,13 @@ export class IntroductionsComponent implements OnInit {
   /**
    * This form is used to change the introduction texts for authors and authors+titles
    */
-  introduction_form_group = new FormGroup({
-    author: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
-    title: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
-    author_text: new FormControl(''),
-    title_text: new FormControl(''),
+  protected form = new FormGroup({
+    author: new FormControl(''),
+    title: new FormControl(''),
+    text: new FormControl(''),
   });
 
-  selected_introduction_data: Introduction_form;
+  protected introduction: Introduction;
 
   // This is used for prompting the 'must select author first' hint.
   show_select_author_first_hint = false;
@@ -32,35 +31,33 @@ export class IntroductionsComponent implements OnInit {
   constructor(protected auth_service: AuthService, protected api: ApiService, protected dialog: DialogService) {}
 
   ngOnInit(): void {
-    this.selected_introduction_data = new Introduction_form({});
+    this.introduction = new Introduction({});
+  }
+
+  /**
+   * Requests an introduction from the server given the key
+   * @param introduction (Introduction) serves as key for the api to filter on
+   * @author Ycreak
+   */
+  protected request_introduction(introduction: Introduction): void {
+    this.api.get_introduction(introduction).subscribe((introduction) => {
+      this.form.patchValue({ text: introduction.content });
+    });
   }
 
   /**
    * Function to reset the fragment form
    * @author CptVickers
    */
-  protected reset_introduction_form(field?: string): void {
-    if (field == 'author_text') {
-      this.introduction_form_group.patchValue({ author_text: '' });
-    } else if (field == 'title_text') {
-      this.introduction_form_group.patchValue({ title_text: '' });
+  protected reset_form(field?: string): void {
+    if (field == 'text') {
+      this.form.patchValue({ text: '' });
     } else {
       // Remove all data from the form
-      this.introduction_form_group.reset();
+      this.form.reset();
     }
     // Reset the saved changes hint
     this.show_changes_saved_hint = false;
-  }
-
-  /**
-   * Function to request the introduction text for a given author or author + title and show it in a dialog.
-   * @param _intro Introduction object with form data; contains selected author and title data.
-   * @author CptVickers
-   */
-  public show_introduction_dialog(/*intro: Introduction_form*/): void {
-    // TODO: This function just shows some demo text for now; It does not fetch the correct texts from the server.
-    const introdemo = new Introductions();
-    this.dialog.open_custom_dialog(introdemo.dict['Ennius']);
   }
 
   /**
@@ -72,12 +69,12 @@ export class IntroductionsComponent implements OnInit {
    * @author Ycreak
    */
   protected request_wysiwyg_dialog(field: string): void {
-    if (field == 'author_text' || field == 'title_text') {
-      const text = this.introduction_form_group.value[field];
+    if (field == 'text') {
+      const text = this.form.value[field];
       this.dialog.open_wysiwyg_dialog(text).subscribe((result) => {
         if (result) {
           // Pass the accepted changes to the regular form field.
-          this.introduction_form_group.patchValue({ [field]: result });
+          this.form.patchValue({ [field]: result });
         }
       });
     } else {

@@ -12,11 +12,11 @@ import { UtilityService } from '@oscc/utility.service';
 
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
+import { Introduction } from '@oscc/models/Introduction';
 import { Playground } from '@oscc/models/Playground';
 import { Bib } from '@oscc/models/Bib';
 import { Testimonium } from '@oscc/models/Testimonium';
 import { User } from '@oscc/models/User';
-import { Introduction_form } from '@oscc/models/Introduction_form';
 
 export interface fragment_key {
   author?: string;
@@ -315,40 +315,42 @@ export class ApiService {
   /**
    * Function to request the introduction text for a given author or author + title.
    * @param intro Introduction object with form data; contains selected author and title data.
-   * @author CptVickers
+   * @author CptVickers, Ycreak
    */
-  public request_introduction(intro: Introduction_form): void {
-    this.get_introduction_text(intro).subscribe((data) => {
-      if (data) {
-        // Store the received introduction data in the form
-        intro.author_text = data['author_text'];
-        intro.title_text = data['title_text'];
-        return intro;
-      }
+  public get_introduction(filter: any): Observable<any> {
+    return new Observable((observer) => {
+      this.spinner_on();
+      this.post(this.FlaskURL, 'introduction/get', filter).subscribe({
+        next: (data: any) => {
+          const new_introduction = new Introduction({});
+          new_introduction.set(data);
+          this.spinner_off();
+          observer.next(new_introduction);
+          observer.complete();
+        },
+        error: (err) => this.handle_error_message(err),
+      });
     });
   }
-
   /**
-   * Function to save the introduction text for a given author or author + title.
-   * @param intro: Introduction object with form data; contains selected author and title data,
-   *               as well as the introduction text to be saved.
-   * @returns A text message indicating success/failure.
-   * @author CptVickers
+   * Saves the given introduction on the server
+   * @param introduction (Introduction)
+   * @author Ycreak
    */
-  public request_save_introduction(Introduction_form: Introduction_form): string {
-    const request: Observable<any> = this.set_introduction_text(Introduction_form);
-    let result = '';
-
-    request.subscribe({
-      next: (data) => {
-        result += data;
-      },
-      error: (err) => {
-        result += err;
-        this.handle_error_message(err);
-      },
-    });
-    return result;
+  public save_introduction(introduction: Introduction): void {
+    this.spinner_on();
+    this.http
+      .post<string[]>(this.FlaskURL + `introduction/update`, introduction, {
+        observe: 'response',
+        responseType: 'text' as 'json',
+      })
+      .subscribe({
+        next: (data) => {
+          this.handle_error_message(data);
+          this.spinner_off();
+        },
+        error: (err) => this.handle_error_message(err),
+      });
   }
 
   /**
@@ -540,19 +542,6 @@ export class ApiService {
   }
   public automatic_fragment_linker(fragment: Fragment): Observable<any> {
     return this.http.post<any>(this.FlaskURL + `automatic_fragment_linker`, fragment, {
-      observe: 'response',
-      responseType: 'text' as 'json',
-    });
-  }
-  // Introduction
-  public get_introduction_text(intro: Introduction_form): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + 'introduction/get_introduction_text', intro, {
-      observe: 'body',
-      responseType: 'json',
-    });
-  }
-  public set_introduction_text(intro: Introduction_form): Observable<any> {
-    return this.http.post<any>(this.FlaskURL + 'introduction/set_introduction_text', intro, {
       observe: 'response',
       responseType: 'text' as 'json',
     });
