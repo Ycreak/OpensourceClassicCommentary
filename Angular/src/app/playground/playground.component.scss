@@ -150,12 +150,20 @@ hr.playground-divider-top {
 }
 .playground-tool-group {
   display: inline-flex;
-  margin: 0px 1rem;
 }
 .playground-icon {
   width: 32px;
   height: 32px;
   cursor: pointer;
+  border: solid transparent;
+  border-bottom-width: 20px;
+  box-sizing: content-box;
+}
+.playground-icon:first-child {
+  border-left-width: 10px;
+}
+.playground-icon:last-child {
+  border-right-width: 10px;
 }
 .playground-icon:hover {
   transition: transform 0.2s ease-out;
