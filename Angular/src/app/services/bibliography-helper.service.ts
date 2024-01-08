@@ -11,7 +11,10 @@ import { UtilityService } from '@oscc/utility.service';
   providedIn: 'root',
 })
 export class BibliographyHelperService {
-  constructor(private utility: UtilityService, protected api: ApiService) {}
+  constructor(
+    private utility: UtilityService,
+    protected api: ApiService
+  ) {}
 
   /**
    * Retrieves all bib keys from the given commentary object

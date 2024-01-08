@@ -21,7 +21,10 @@ export class SettingsService {
     commentary_size: 40,
   };
 
-  constructor(private localstorage: LocalStorageService, protected dialog: DialogService) {}
+  constructor(
+    private localstorage: LocalStorageService,
+    protected dialog: DialogService
+  ) {}
 
   /**
    * Function to handle the settings dialog. Will save changes via the oscc_settings object

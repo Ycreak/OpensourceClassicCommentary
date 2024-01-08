@@ -57,7 +57,10 @@ export class ApiService {
 
   bibliography: Bib[] = [];
 
-  constructor(private http: HttpClient, private utility: UtilityService) {
+  constructor(
+    private http: HttpClient,
+    private utility: UtilityService
+  ) {
     this.network_status = true; // Assumed online until HttpErrorResponse is received.
   }
 

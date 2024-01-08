@@ -1,5 +1,9 @@
 export class Context {
-  constructor(public author: string, public location: string, public text: string) {
+  constructor(
+    public author: string,
+    public location: string,
+    public text: string
+  ) {
     // this.id = id;
     // this.fragment = fragmentID;
     // this.contextAuthor = contextAuthor;

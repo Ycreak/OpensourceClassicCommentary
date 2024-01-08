@@ -7,7 +7,10 @@ import { map } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class WebsocketsService {
-  constructor(private socket: Socket, private auth_service: AuthService) {}
+  constructor(
+    private socket: Socket,
+    private auth_service: AuthService
+  ) {}
 
   public login(): void {
     this.socket.emit('sign_in', { id: 0, name: this.auth_service.current_user_name });

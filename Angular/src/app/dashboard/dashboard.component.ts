@@ -11,7 +11,10 @@ import { AuthService } from '@oscc/auth/auth.service';
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent {
-  constructor(protected api: ApiService, protected auth_service: AuthService) {}
+  constructor(
+    protected api: ApiService,
+    protected auth_service: AuthService
+  ) {}
 
   /**
    * Requests Flask to resync the bibliography

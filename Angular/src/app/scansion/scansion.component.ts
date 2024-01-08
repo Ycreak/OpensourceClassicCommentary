@@ -19,7 +19,10 @@ export class ScansionComponent implements OnInit {
 
   neural_data: object; // object
 
-  constructor(protected api: ApiService, private formBuilder: UntypedFormBuilder) {}
+  constructor(
+    protected api: ApiService,
+    private formBuilder: UntypedFormBuilder
+  ) {}
 
   ngOnInit(): void {
     console.log('scansion');
