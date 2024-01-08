@@ -111,6 +111,8 @@ export class ColumnsComponent implements OnInit, OnChanges {
    */
   protected request_documents(column_id: number, filter: object): void {
     this.api.get_documents(filter).subscribe((documents) => {
+      // Empty the bibliography key list when loading new documents
+      this.current_column.bibliography_keys = [];
       // Find all bibliography keys in the documents and add them to the column data for later use
       documents.forEach((doc: any) => {
         this.current_column.bibliography_keys = this.current_column.bibliography_keys.concat(

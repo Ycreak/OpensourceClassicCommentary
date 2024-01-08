@@ -1,8 +1,8 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
 # compiled output
-Angular/dist
-Angular/.angular
+angular/dist
+angular/.angular
 /tmp
 /out-tsc
 # Only exists if Bazel was run
@@ -22,7 +22,7 @@ Temp/
 couchdb/data/*
 
 # dependencies
-Angular/node_modules
+angular/node_modules
 flask/__pycache__
 flask/server_credentials.py
 flask/Models/__pycache__

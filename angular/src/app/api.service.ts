@@ -305,6 +305,7 @@ export class ApiService {
             new_document.set(value);
           } else {
             console.error('unknown document type', value);
+            this.utility.open_snackbar('Unknown document type received.');
           }
           documents.push(new_document);
         });
