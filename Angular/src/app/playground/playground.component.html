@@ -40,6 +40,74 @@
       </div>
     </div>
     <div id="playground-main-toolbar" class="playground-toolbar">
+      <div id="playground-document-tools" class="playground-tool-group">
+        <img
+          id="playground_authors_btn"
+          class="playground-icon"
+          src="assets\icons\ByteDanceIconPark\9069051_doc_search_icon.png"
+          [matMenuTriggerFor]="menu_authors" />
+        <img
+          id="playground_fragment_btn"
+          class="playground-icon"
+          src="assets\icons\ByteDanceIconPark\9069051_doc_search_icon.png"
+          [matMenuTriggerFor]="fragment_selection" />
+        <img
+          id="playground_add_documents_btn"
+          class="playground-icon"
+          src="assets\icons\ByteDanceIconPark\9069093_doc_add_icon.png"
+          (click)="
+            this.request_documents({
+              author: this.playground.author,
+              title: this.playground.title,
+              editor: this.playground.editor
+            })
+          "
+          (click)="this.single_fragment_requested = false" />
+        <img
+          id="playground_note_btn"
+          class="playground-icon"
+          src="assets\icons\ByteDanceIconPark\9068939_notes_icon.png"
+          (click)="this.add_note_to_canvas('edit me')" />
+        <img
+          id="playground_clear_btn"
+          class="playground-icon"
+          src="assets\icons\ByteDanceIconPark\9069117_clear_icon.png"
+          (click)="this.clear_playground()" />
+      </div>
+
+      <div id="playground-drawing-tools" class="playground-tool-group">
+        <img
+          id="playground_draw_btn"
+          class="playground-icon"
+          src="assets\icons\ByteDanceIconPark\9069780_write_icon.png"
+          (click)="this.toggle_drawing_mode()" />
+        <img
+          id="playground_arrow_btn"
+          class="playground-icon"
+          src="assets\icons\ByteDanceIconPark\9068687_arrow_right_up_icon.png" />
+        <img
+          id="playground_line_btn"
+          class="playground-icon"
+          src="assets\icons\ByteDanceIconPark\9069299_line_icon.png" />
+        <img
+          id="playground_rectangle_btn"
+          class="playground-icon"
+          src="assets\icons\ByteDanceIconPark\9070071_square_icon.png" />
+      </div>
+
+      <div id="playground-history-tools" class="playground-tool-group">
+        <img
+          id="playground_undo_btn"
+          class="playground-icon"
+          src="assets\icons\ByteDanceIconPark\9069465_return_icon.png"
+          (click)="this.undo()" />
+        <img
+          id="playground_redo_btn"
+          class="playground-icon"
+          src="assets\icons\ByteDanceIconPark\9069840_go_on_icon.png"
+          (click)="this.redo()" />
+      </div>
+
       <div id="playground-load-save-tools" class="playground-tool-group">
         <img
           id="playground_save_btn"
@@ -68,73 +136,6 @@
           class="playground-icon"
           src="assets\icons\ByteDanceIconPark\9071420_people_download_icon.png"
           (click)="this.join_playground()" />
-      </div>
-      <div id="playground-drawing-tools" class="playground-tool-group">
-        <img
-          id="playground_draw_btn"
-          class="playground-icon"
-          src="assets\icons\ByteDanceIconPark\9069780_write_icon.png"
-          (click)="this.toggle_drawing_mode()" />
-        <img
-          id="playground_arrow_btn"
-          class="playground-icon"
-          src="assets\icons\ByteDanceIconPark\9068687_arrow_right_up_icon.png" />
-        <img
-          id="playground_line_btn"
-          class="playground-icon"
-          src="assets\icons\ByteDanceIconPark\9069299_line_icon.png" />
-        <img
-          id="playground_rectangle_btn"
-          class="playground-icon"
-          src="assets\icons\ByteDanceIconPark\9070071_square_icon.png" />
-      </div>
-
-      <div id="playground-document-tools" class="playground-tool-group">
-        <img
-          id="playground_authors_btn"
-          class="playground-icon"
-          src="assets\icons\ByteDanceIconPark\9069051_doc_search_icon.png"
-          [matMenuTriggerFor]="menu_authors" />
-        <img
-          id="playground_fragment_btn"
-          class="playground-icon"
-          src="assets\icons\ByteDanceIconPark\9069051_doc_search_icon.png"
-          [matMenuTriggerFor]="fragment_selection" />
-        <img
-          id="playground_add_documents_btn"
-          class="playground-icon"
-          src="assets\icons\ByteDanceIconPark\9069093_doc_add_icon.png"
-          (click)="
-            this.request_documents({
-              author: this.playground.author,
-              title: this.playground.title,
-              editor: this.playground.editor
-            })
-          "
-          (click)="this.single_fragment_requested = false" />
-        <img
-          id="playground_note_btn"
-          class="playground-icon"
-          src="assets\icons\ByteDanceIconPark\9068939_notes_icon.png"
-          (click)="this.add_note_to_canvas('test')" />
-        <img
-          id="playground_clear_btn"
-          class="playground-icon"
-          src="assets\icons\ByteDanceIconPark\9069117_clear_icon.png"
-          (click)="this.clear_playground()" />
-      </div>
-
-      <div id="playground-history-tools" class="playground-tool-group">
-        <img
-          id="playground_undo_btn"
-          class="playground-icon"
-          src="assets\icons\ByteDanceIconPark\9069465_return_icon.png"
-          (click)="this.undo()" />
-        <img
-          id="playground_redo_btn"
-          class="playground-icon"
-          src="assets\icons\ByteDanceIconPark\9069840_go_on_icon.png"
-          (click)="this.redo()" />
       </div>
     </div>
   </div>

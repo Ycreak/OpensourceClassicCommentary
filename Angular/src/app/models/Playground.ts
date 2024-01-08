@@ -17,7 +17,7 @@ export class Playground {
 
   note_array: any[];
   fragment_names: string[];
-  documents: any[];
+  documents: any[] = [];
 
   // Deprecate this
   note: string;
