@@ -2,218 +2,205 @@
   <hr class="playground-divider-top" />
   <div class="playground-title">PLAYGROUND</div>
   <mat-progress-bar mode="query" *ngIf="this.api.spinner"></mat-progress-bar>
-  <!-- First we display all buttons to control the playground -->
-  <div class="row">
-    <div class="playground-button-container col-3">
-      <!-- Button to select the text -->
-      <button
-        mat-stroked-button
-        class="playground-select-text-button playground-button button-margin"
-        [matMenuTriggerFor]="menu_authors">
-        <ng-container> Select Text </ng-container>
-      </button>
+  <!-- Possibility to add a little note -->
+  <!--<div class="row">-->
+  <!--<div mat-dialog-content class="playground-button-container col-6">-->
+  <!--<mat-form-field class="playground-mat-form-field input-form">-->
+  <!--<input matInput placeholder="Add a note" ngDefaultControl [(ngModel)]="this.playground.note" />-->
+  <!--<button type="button" mat-icon-button matSuffix (click)="this.add_note_to_canvas(this.playground.note)">-->
+  <!--<mat-icon>{{ "add" }}</mat-icon>-->
+  <!--</button>-->
+  <!--<mat-hint>To organise your playground</mat-hint>-->
+  <!--</mat-form-field>-->
+  <!--</div>-->
+  <!--<div class="playground-button-container col-3" *ngIf="this.playground.canvas.isDrawingMode">-->
+  <!--<mat-form-field>-->
+  <!--<mat-label>Pencil colour</mat-label>-->
+  <!--<mat-select [(value)]="this.playground.canvas.freeDrawingBrush.color">-->
+  <!--<mat-option value="black">Black</mat-option>-->
+  <!--<mat-option value="red">Red</mat-option>-->
+  <!--<mat-option value="blue">Blue</mat-option>-->
+  <!--<mat-option value="green">Green</mat-option>-->
+  <!--</mat-select>-->
+  <!--</mat-form-field>-->
+  <!--</div>-->
+  <!--<div class="playground-button-container col-3" *ngIf="this.playground.canvas.isDrawingMode">-->
+  <!--<mat-form-field class="example-margin example-width">-->
+  <!--<mat-label>Pencil width</mat-label>-->
+  <!--<input matInput type="number" [(ngModel)]="this.playground.canvas.freeDrawingBrush.width" />-->
+  <!--</mat-form-field>-->
+  <!--</div>-->
+  <!--</div>-->
+  <hr class="playground-divider" />
+  <div class="canvas-container">
+    <canvas id="playground_canvas"></canvas>
+    <div class="menu" *ngIf="this.canvas_has_selection()">
+      <div class="br-icon" style="--left: 4%">
+        <mat-icon (click)="this.delete_clicked_objects()">backspace</mat-icon> delete objects
+      </div>
     </div>
-    <div class="playground-button-container col-3">
-      <button mat-stroked-button class="playground-button button-margin" [matMenuTriggerFor]="fragment_selection">
-        Add single fragment
-        <!--<mat-icon class="mat-icon-realigned" fontIcon="expand_more" style="float: right"></mat-icon>-->
-      </button>
-      <mat-menu #fragment_selection="matMenu">
-        <ng-container *ngFor="let fragment_name of this.playground.fragment_names">
-          <button
-            mat-menu-item
-            (click)="this.playground.fragment_name = fragment_name.name"
-            (click)="
-              this.add_single_fragment({
-                document_type: 'fragment',
-                author: this.playground.author,
-                title: this.playground.title,
-                editor: this.playground.editor,
-                name: fragment_name.name
-              })
-            ">
-            {{ fragment_name.name }}
-          </button>
-        </ng-container>
-      </mat-menu>
+    <div id="playground-main-toolbar" class="playground-toolbar">
+      <div id="playground-load-save-tools" class="playground-tool-group">
+        <img
+          id="playground_save_btn"
+          class="playground-icon"
+          src="assets\icons\ByteDanceIconPark\9070374_hard_disk_one_icon.png"
+          (click)="this.save_playground()" />
+        <img
+          id="playground_load_btn"
+          class="playground-icon"
+          src="assets\icons\ByteDanceIconPark\9068981_folder_open_icon.png"
+          (click)="this.load_playground()" />
+        <img
+          id="playground_delete_btn"
+          class="playground-icon"
+          src="assets\icons\ByteDanceIconPark\9069053_folder_delete_icon.png"
+          (click)="this.delete_playground()" />
+      </div>
+      <div id="playground-sharing-tools" class="playground-tool-group">
+        <img
+          id="playground_share_btn"
+          class="playground-icon"
+          src="assets\icons\ByteDanceIconPark\9071373_people_plus_one_icon.png"
+          (click)="this.share_playground()" />
+        <img
+          id="playground_join_btn"
+          class="playground-icon"
+          src="assets\icons\ByteDanceIconPark\9071420_people_download_icon.png"
+          (click)="this.join_playground()" />
+      </div>
+      <div id="playground-drawing-tools" class="playground-tool-group">
+        <img
+          id="playground_draw_btn"
+          class="playground-icon"
+          src="assets\icons\ByteDanceIconPark\9069780_write_icon.png"
+          (click)="this.toggle_drawing_mode()" />
+        <img
+          id="playground_arrow_btn"
+          class="playground-icon"
+          src="assets\icons\ByteDanceIconPark\9068687_arrow_right_up_icon.png" />
+        <img
+          id="playground_line_btn"
+          class="playground-icon"
+          src="assets\icons\ByteDanceIconPark\9069299_line_icon.png" />
+        <img
+          id="playground_rectangle_btn"
+          class="playground-icon"
+          src="assets\icons\ByteDanceIconPark\9070071_square_icon.png" />
+      </div>
+
+      <div id="playground-document-tools" class="playground-tool-group">
+        <img
+          id="playground_authors_btn"
+          class="playground-icon"
+          src="assets\icons\ByteDanceIconPark\9069051_doc_search_icon.png"
+          [matMenuTriggerFor]="menu_authors" />
+        <img
+          id="playground_fragment_btn"
+          class="playground-icon"
+          src="assets\icons\ByteDanceIconPark\9069051_doc_search_icon.png"
+          [matMenuTriggerFor]="fragment_selection" />
+        <img
+          id="playground_add_documents_btn"
+          class="playground-icon"
+          src="assets\icons\ByteDanceIconPark\9069093_doc_add_icon.png"
+          (click)="
+            this.request_documents({
+              author: this.playground.author,
+              title: this.playground.title,
+              editor: this.playground.editor
+            })
+          "
+          (click)="this.single_fragment_requested = false" />
+        <img
+          id="playground_note_btn"
+          class="playground-icon"
+          src="assets\icons\ByteDanceIconPark\9068939_notes_icon.png"
+          (click)="this.add_note_to_canvas('test')" />
+        <img
+          id="playground_clear_btn"
+          class="playground-icon"
+          src="assets\icons\ByteDanceIconPark\9069117_clear_icon.png"
+          (click)="this.clear_playground()" />
+      </div>
+
+      <div id="playground-history-tools" class="playground-tool-group">
+        <img
+          id="playground_undo_btn"
+          class="playground-icon"
+          src="assets\icons\ByteDanceIconPark\9069465_return_icon.png"
+          (click)="this.undo()" />
+        <img
+          id="playground_redo_btn"
+          class="playground-icon"
+          src="assets\icons\ByteDanceIconPark\9069840_go_on_icon.png"
+          (click)="this.redo()" />
+      </div>
     </div>
-    <div class="playground-button-container col-3">
+  </div>
+
+  <mat-menu #fragment_selection="matMenu">
+    <ng-container *ngFor="let fragment_name of this.playground.fragment_names">
       <button
-        mat-stroked-button
-        class="playground-button button-margin"
+        mat-menu-item
+        (click)="this.playground.fragment_name = fragment_name.name"
         (click)="
-          this.request_documents({
+          this.add_single_fragment({
+            document_type: 'fragment',
+            author: this.playground.author,
+            title: this.playground.title,
+            editor: this.playground.editor,
+            name: fragment_name.name
+          })
+        ">
+        {{ fragment_name.name }}
+      </button>
+    </ng-container>
+  </mat-menu>
+
+  <!-- Nested menu to select author - title - editor. -->
+  <mat-menu #menu_authors="matMenu">
+    <ng-container *ngFor="let author of this.api.get_author_list(); let i = index">
+      <button
+        mat-menu-item
+        (menuOpened)="this.playground.retrieved_titles = []; this.playground.retrieved_editors = []"
+        (menuOpened)="this.playground.title = ''; this.playground.editor = ''"
+        (menuOpened)="this.playground.author = author"
+        (menuOpened)="this.playground.retrieved_titles = this.api.get_title_list(author)"
+        [matMenuTriggerFor]="menu_titles">
+        {{ author }}
+      </button>
+    </ng-container>
+  </mat-menu>
+
+  <mat-menu #menu_titles="matMenu">
+    <ng-container *ngFor="let title of this.playground.retrieved_titles; let i = index">
+      <button
+        mat-menu-item
+        (menuOpened)="this.playground.retrieved_editors = []"
+        (menuOpened)="this.playground.title = ''"
+        (menuOpened)="this.playground.title = title"
+        (menuOpened)="this.playground.retrieved_editors = this.api.get_editor_list(this.playground.author, title)"
+        [matMenuTriggerFor]="menu_editors">
+        {{ title }}
+      </button>
+    </ng-container>
+  </mat-menu>
+
+  <mat-menu #menu_editors="matMenu">
+    <ng-container *ngFor="let editor of this.playground.retrieved_editors; let i = index">
+      <button
+        mat-menu-item
+        (click)="this.playground.editor = editor"
+        (click)="
+          this.request_document_names({
             author: this.playground.author,
             title: this.playground.title,
             editor: this.playground.editor
           })
-        "
-        (click)="this.single_fragment_requested = false">
-        Add all fragments from selected edition
+        ">
+        {{ editor }}
       </button>
-    </div>
-  </div>
-  <div class="div-padding-lg"></div>
-
-  <div class="row">
-    <!-- The second row contains all buttons to control the flow of fragments and notes -->
-    <div class="playground-button-container col-3">
-      <button
-        mat-stroked-button
-        class="playground-button playground-delete-button button-margin"
-        color="accent"
-        (click)="this.delete_clicked_objects()">
-        Delete object(s)
-      </button>
-    </div>
-    <div class="playground-button-container col-3">
-      <button
-        mat-stroked-button
-        class="button-dashed-background playground-button playground-delete-button button-margin"
-        color="warn"
-        (click)="this.clear_playground()">
-        Clear playground
-      </button>
-    </div>
-    <div class="playground-button-container col-3">
-      <button
-        mat-stroked-button
-        class="playground-button playground-delete-button button-margin"
-        color="accent"
-        (click)="this.toggle_drawing_mode()">
-        Toggle drawing
-      </button>
-    </div>
-  </div>
-  <div class="row">
-    <!-- The third row contains all buttons to control the websockets -->
-    <div class="playground-button-container col-3">
-      <button
-        mat-stroked-button
-        class="playground-button playground-delete-button button-margin"
-        color="accent"
-        (click)="this.load_playground()">
-        Load playground
-      </button>
-    </div>
-    <div class="playground-button-container col-3">
-      <button
-        mat-stroked-button
-        class="button-dashed-background playground-button playground-delete-button button-margin"
-        color="warn"
-        (click)="this.save_playground()">
-        Save playground
-      </button>
-    </div>
-    <div class="playground-button-container col-3">
-      <button
-        [disabled]="this.playground.name2 === ''"
-        mat-stroked-button
-        class="playground-button playground-delete-button button-margin"
-        color="accent"
-        (click)="this.delete_playground()">
-        Delete playground
-      </button>
-    </div>
-    <div class="playground-button-container col-3">
-      <button
-        mat-stroked-button
-        class="playground-button playground-delete-button button-margin"
-        color="accent"
-        (click)="this.share_playground()">
-        Share
-      </button>
-    </div>
-    <div class="playground-button-container col-3">
-      <button
-        mat-stroked-button
-        class="playground-button playground-delete-button button-margin"
-        color="accent"
-        (click)="this.join_playground()">
-        Join
-      </button>
-    </div>
-  </div>
-
-  <div class="div-padding-lg"></div>
-  <!-- Possibility to add a little note -->
-  <div class="row">
-    <div mat-dialog-content class="playground-button-container col-6">
-      <mat-form-field class="playground-mat-form-field input-form">
-        <input matInput placeholder="Add a note" ngDefaultControl [(ngModel)]="this.playground.note" />
-        <button type="button" mat-icon-button matSuffix (click)="this.add_note_to_canvas(this.playground.note)">
-          <mat-icon>{{ "add" }}</mat-icon>
-        </button>
-        <mat-hint>To organise your playground</mat-hint>
-      </mat-form-field>
-    </div>
-    <div class="playground-button-container col-3" *ngIf="this.playground.canvas.isDrawingMode">
-      <mat-form-field>
-        <mat-label>Pencil colour</mat-label>
-        <mat-select [(value)]="this.playground.canvas.freeDrawingBrush.color">
-          <mat-option value="black">Black</mat-option>
-          <mat-option value="red">Red</mat-option>
-          <mat-option value="blue">Blue</mat-option>
-          <mat-option value="green">Green</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-    <div class="playground-button-container col-3" *ngIf="this.playground.canvas.isDrawingMode">
-      <mat-form-field class="example-margin example-width">
-        <mat-label>Pencil width</mat-label>
-        <input matInput type="number" [(ngModel)]="this.playground.canvas.freeDrawingBrush.width" />
-      </mat-form-field>
-    </div>
-  </div>
-  <hr class="playground-divider" />
-  <canvas id="playground_canvas" width="800" height="1000"></canvas>
-
-  <hr class="playground-divider" />
-  <!-- For loop to print all the notes -->
+    </ng-container>
+  </mat-menu>
 </div>
-
-<!-- Nested menu to select author - title - editor. -->
-<mat-menu #menu_authors="matMenu">
-  <ng-container *ngFor="let author of this.api.get_author_list(); let i = index">
-    <button
-      mat-menu-item
-      (menuOpened)="this.playground.retrieved_titles = []; this.playground.retrieved_editors = []"
-      (menuOpened)="this.playground.title = ''; this.playground.editor = ''"
-      (menuOpened)="this.playground.author = author"
-      (menuOpened)="this.playground.retrieved_titles = this.api.get_title_list(author)"
-      [matMenuTriggerFor]="menu_titles">
-      {{ author }}
-    </button>
-  </ng-container>
-</mat-menu>
-
-<mat-menu #menu_titles="matMenu">
-  <ng-container *ngFor="let title of this.playground.retrieved_titles; let i = index">
-    <button
-      mat-menu-item
-      (menuOpened)="this.playground.retrieved_editors = []"
-      (menuOpened)="this.playground.title = ''"
-      (menuOpened)="this.playground.title = title"
-      (menuOpened)="this.playground.retrieved_editors = this.api.get_editor_list(this.playground.author, title)"
-      [matMenuTriggerFor]="menu_editors">
-      {{ title }}
-    </button>
-  </ng-container>
-</mat-menu>
-
-<mat-menu #menu_editors="matMenu">
-  <ng-container *ngFor="let editor of this.playground.retrieved_editors; let i = index">
-    <button
-      mat-menu-item
-      (click)="this.playground.editor = editor"
-      (click)="
-        this.request_document_names({
-          author: this.playground.author,
-          title: this.playground.title,
-          editor: this.playground.editor
-        })
-      ">
-      {{ editor }}
-    </button>
-  </ng-container>
-</mat-menu>

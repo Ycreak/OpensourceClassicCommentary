@@ -30,11 +30,24 @@ import { JoinPlaygroundComponent } from './join-playground/join-playground.compo
 })
 export class PlaygroundComponent implements OnInit {
   @Output() document_clicked = new EventEmitter<Fragment>();
+  // Listener for key events
   @HostListener('document:keyup', ['$event'])
   handleDeleteKeyboardEvent(event: KeyboardEvent) {
     if (event.key === 'Delete') {
       this.delete_clicked_objects();
+    } else if ((event.ctrlKey || event.metaKey) && event.key == 'Z') {
+      // Redo the canvas on Ctrl+Shift+Z
+      this.redo();
+    } else if ((event.ctrlKey || event.metaKey) && event.key == 'z') {
+      // Undo the canvas on Ctrl+Z
+      this.undo();
     }
+  }
+  // Listener for window resize evenets
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    // If we resize the window, we want the canvas to resize as well
+    this.resize_canvas();
   }
 
   // Playground column that keeps all data related to said playground
@@ -42,6 +55,12 @@ export class PlaygroundComponent implements OnInit {
 
   protected single_fragment_requested: boolean;
   private new_fragment_location = 10;
+
+  // Variables for keeping track of canvas states
+  private canvas_states: any[] = [];
+  private current_state_index = -1;
+  private undo_status = false;
+  private redo_status = false;
 
   constructor(
     private auth_service: AuthService,
@@ -102,17 +121,26 @@ export class PlaygroundComponent implements OnInit {
    * This function allows the playground to delete notes and fragements
    * @author Ycreak
    */
-  public delete_clicked_objects(): void {
+  protected delete_clicked_objects(): void {
     this.playground.canvas.getActiveObjects().forEach((item: any) => {
       this.playground.canvas.remove(item);
     });
   }
 
   /**
+   * Checks whether the canvas has selected items
+   * @return boolean
+   * @author Ycreak
+   */
+  protected canvas_has_selection(): boolean {
+    return this.playground.canvas.getActiveObjects().length > 0;
+  }
+
+  /**
    * @param column to which the fragment is to be added
    * @author Ycreak
    */
-  public add_single_fragment(filter: object): void {
+  protected add_single_fragment(filter: object): void {
     this.single_fragment_requested = true;
     // format the fragment and push it to the list
     this.request_documents(filter);
@@ -140,7 +168,7 @@ export class PlaygroundComponent implements OnInit {
       width: 200,
       fontSize: this.playground.font_size,
       textAlign: 'left', // you can use specify the text align
-      backgroundColor: '#ffefd5',
+      backgroundColor: '#F0C086',
       editable: true,
     });
     this.playground.canvas.add(text);
@@ -166,9 +194,26 @@ export class PlaygroundComponent implements OnInit {
       fontSize: this.playground.font_size,
       originX: 'left',
     });
-    const group = new fabric.Group([header, lines], {
+    const text_group = new fabric.Group([header, lines], {
       top: this.new_fragment_location,
+      backgroundColor: 'green',
+      fill: 'red',
+      hasBorders: true,
+      padding: 10,
     });
+    const textBoundingRect = text_group.getBoundingRect();
+    const background_and_border = new fabric.Rect({
+      top: textBoundingRect.top,
+      left: textBoundingRect.left,
+      width: textBoundingRect.width,
+      height: textBoundingRect.height,
+      fill: '#9BA8F2',
+      rx: 10,
+      ry: 10,
+      stroke: 'black',
+      strokeWidth: 1,
+    });
+    const group = new fabric.Group([background_and_border, text_group], {});
     this.playground.canvas.add(group);
     this.new_fragment_location += 100;
   }
@@ -178,8 +223,17 @@ export class PlaygroundComponent implements OnInit {
    * @author Ycreak
    */
   private init_canvas_settings(): void {
+    this.resize_canvas();
     this.playground.canvas.freeDrawingBrush.color = 'black';
     this.playground.canvas.freeDrawingBrush.width = 10;
+  }
+
+  /**
+   * Resizes the canvas based on the dimensions of the browser window
+   * @author Ycreak
+   */
+  private resize_canvas(): void {
+    this.playground.canvas.setDimensions({ width: window.innerWidth - 25, height: window.innerHeight });
   }
 
   /**
@@ -230,7 +284,71 @@ export class PlaygroundComponent implements OnInit {
       this.isDragging = false;
       this.selection = true;
     });
+
+    // On object add, delete and modify, save the canvas state for undo and redo
+    // The "() =>:" notation preserves the context of THIS.
+    this.playground.canvas.on('object:added', () => {
+      if (!this.undo_status && !this.redo_status) {
+        this.save_canvas_state();
+      }
+    });
+    this.playground.canvas.on('object:modified', () => {
+      if (!this.undo_status && !this.redo_status) {
+        this.save_canvas_state();
+      }
+    });
+    this.playground.canvas.on('object:removed', () => {
+      if (!this.undo_status && !this.redo_status) {
+        this.save_canvas_state();
+      }
+    });
   }
+
+  /**
+   * Saves the current canvas state to the canvas_states class property
+   * @author Ycreak
+   */
+  private save_canvas_state(): void {
+    if (this.current_state_index < this.canvas_states.length - 1) {
+      const indexToBeInserted = this.current_state_index + 1;
+      this.canvas_states.splice(indexToBeInserted, this.canvas_states.length - indexToBeInserted);
+    }
+    this.canvas_states.push(JSON.stringify(this.playground.canvas));
+    this.current_state_index = this.canvas_states.length - 1;
+  }
+
+  /**
+   * Undoes the canvas by moving back in the saved states
+   * @author Ycreak
+   */
+  protected undo(): void {
+    if (this.current_state_index <= 0) {
+      return;
+    }
+    this.undo_status = true;
+    this.playground.canvas.loadFromJSON(this.canvas_states[this.current_state_index - 1], () => {
+      this.playground.canvas.renderAll();
+      this.undo_status = false;
+      this.current_state_index -= 1;
+    });
+  }
+
+  /**
+   * Redoes the canvas by moving forward in the saved states
+   * @author Ycreak
+   */
+  protected redo(): void {
+    if (this.current_state_index >= this.canvas_states.length - 1) {
+      return;
+    }
+    this.redo_status = true;
+    this.playground.canvas.loadFromJSON(this.canvas_states[this.current_state_index + 1], () => {
+      this.playground.canvas.renderAll();
+      this.redo_status = false;
+      this.current_state_index += 1;
+    });
+  }
+
   /**
    * Toggles canvas drawing mode
    * @author Ycreak
@@ -254,7 +372,6 @@ export class PlaygroundComponent implements OnInit {
           this.api
             .get_playground({ owner: this.auth_service.current_user_name, name: name })
             .subscribe((playground) => {
-              console.log(playground);
               this.playground.name = playground.name;
               this.playground.shared_with = playground.shared_with;
               this.playground._id = playground._id;
