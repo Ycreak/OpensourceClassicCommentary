@@ -23,7 +23,10 @@ export class ColumnHandlerService {
 
   public playground_id = 0;
 
-  constructor(private bib_helper: BibliographyHelperService, private utility: UtilityService) {}
+  constructor(
+    private bib_helper: BibliographyHelperService,
+    private utility: UtilityService
+  ) {}
 
   /**
    * Colours all document titles black

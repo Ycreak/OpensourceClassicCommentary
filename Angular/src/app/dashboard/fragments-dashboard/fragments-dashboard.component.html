@@ -65,12 +65,12 @@
       (click)="this.fragment_form.patchValue({ title: selected_fragment_data.title })"
       (click)="this.fragment_form.patchValue({ editor: selected_fragment_data.editor })"
       (click)="
-              this.request_document_names({
-                author: this.selected_fragment_data.author,
-                title: this.selected_fragment_data.title,
-                editor: this.selected_fragment_data.editor,
-              })
-            "
+        this.request_document_names({
+          author: this.selected_fragment_data.author,
+          title: this.selected_fragment_data.title,
+          editor: this.selected_fragment_data.editor
+        })
+      "
       (click)="this.fragment_selected = false">
       {{ editor }}
     </mat-option>

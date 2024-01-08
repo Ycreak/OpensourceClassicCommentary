@@ -28,7 +28,11 @@ export class IntroductionsComponent implements OnInit {
   // This is used for alerting the user that the introduction texts have been saved.
   show_changes_saved_hint = false;
 
-  constructor(protected auth_service: AuthService, protected api: ApiService, protected dialog: DialogService) {}
+  constructor(
+    protected auth_service: AuthService,
+    protected api: ApiService,
+    protected dialog: DialogService
+  ) {}
 
   ngOnInit(): void {
     this.introduction = new Introduction({});

@@ -15,7 +15,10 @@ export class ExpandableTextComponent implements AfterViewInit {
   protected maskDisabled = false;
   protected content_hideable: string;
 
-  constructor(private elRef: ElementRef, private cdRef: ChangeDetectorRef) {
+  constructor(
+    private elRef: ElementRef,
+    private cdRef: ChangeDetectorRef
+  ) {
     this.enabled = true;
     this.isCollapsed = this.isCollapsed || true; // Set isCollapsed to true by default
     this.collapsedHeightPx = this.collapsedHeightPx || 200; // Element height is 200px by default when collapsed FIXME: Em would be nicer, but would also make the comparison in the ngAfterViewInit below a bit more difficult.

@@ -2,21 +2,33 @@ $theme-primary: #3f51b5;
 $theme-secondary: #ff4081;
 
 @mixin button-dashed-background-yellow {
-  background-position: 10px 0, 10px 0, 0 0, 0 0;
+  background-position:
+    10px 0,
+    10px 0,
+    0 0,
+    0 0;
   background-repeat: repeat;
   background: repeating-linear-gradient(-65deg, #fff7e0, #fff7e0 12px, #ffffff 5px, #ffffff 25px);
   border-color: rgba(0, 0, 0, 0.12);
 }
 
 @mixin button-dashed-background-red {
-  background-position: 10px 0, 10px 0, 0 0, 0 0;
+  background-position:
+    10px 0,
+    10px 0,
+    0 0,
+    0 0;
   background-repeat: repeat;
   background: repeating-linear-gradient(-65deg, #fff2f2, #fff2f2 12px, #ffffff 5px, #ffffff 25px);
   border-color: rgba(0, 0, 0, 0.12);
 }
 
 @mixin button-dashed-background-gray {
-  background-position: 10px 0, 10px 0, 0 0, 0 0;
+  background-position:
+    10px 0,
+    10px 0,
+    0 0,
+    0 0;
   background-repeat: repeat;
   background: repeating-linear-gradient(-65deg, #f8f8f8, #f8f8f8 12px, #ffffff 5px, #ffffff 25px);
   border-color: rgba(0, 0, 0, 0.12);

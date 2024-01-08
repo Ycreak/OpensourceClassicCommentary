@@ -126,7 +126,10 @@ export class ShowAboutDialogComponent {}
   styleUrls: ['../dialogs/dialogs.scss'],
 })
 export class ConfirmationDialogComponent {
-  constructor(public dialogRef: MatDialogRef<ConfirmationDialogComponent>, @Inject(MAT_DIALOG_DATA) public data) {}
+  constructor(
+    public dialogRef: MatDialogRef<ConfirmationDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data
+  ) {}
 
   onNoClick(): void {
     this.dialogRef.close();
@@ -221,7 +224,10 @@ export class WYSIWYGDialogComponent {
   styleUrls: ['../dialogs/dialogs.scss'],
 })
 export class CustomDialogComponent {
-  constructor(public dialogRef: MatDialogRef<CustomDialogComponent>, @Inject(MAT_DIALOG_DATA) public data) {}
+  constructor(
+    public dialogRef: MatDialogRef<CustomDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data
+  ) {}
 }
 /**
  * Class to show the bibliography of a column.
@@ -232,7 +238,10 @@ export class CustomDialogComponent {
   styleUrls: ['../dialogs/dialogs.scss'],
 })
 export class ColumnBibliographyComponent {
-  constructor(public dialogRef: MatDialogRef<ColumnBibliographyComponent>, @Inject(MAT_DIALOG_DATA) public data) {}
+  constructor(
+    public dialogRef: MatDialogRef<ColumnBibliographyComponent>,
+    @Inject(MAT_DIALOG_DATA) public data
+  ) {}
 }
 
 /**
@@ -256,7 +265,10 @@ export class SettingsDialogComponent {
     auto_scroll_linked_fragments: 'Automatically scrolls linked fragments into view if possible',
   };
 
-  constructor(public dialogRef: MatDialogRef<SettingsDialogComponent>, @Inject(MAT_DIALOG_DATA) public data) {}
+  constructor(
+    public dialogRef: MatDialogRef<SettingsDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data
+  ) {}
 
   protected toggle_tooltip(tooltip) {
     if (tooltip.disabled) {
