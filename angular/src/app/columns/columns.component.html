@@ -1,92 +1,10 @@
 <!-- Import the stylesheet for the Material icons -->
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 
-<!-- Secondary toolbar to manage columns -->
-<ng-template #column_toolbar let-column_to_display="given_column">
-  <!--<ng-template #commentary_column_template let-given_fragment="given_fragment">-->
-  <mat-toolbar class="fragment-column-toolbar">
-    <!-- Button to select the text -->
-    <button
-      class="fragment-column-button"
-      mat-button
-      [matMenuTriggerFor]="menu_authors"
-      (click)="column_to_display.new_column = false">
-      Select text
-    </button>
-    <!-- Nested menu to select author - title - editor. -->
-    <mat-menu #menu_authors="matMenu">
-      <ng-container *ngFor="let author of this.api.get_author_list(); let i = index">
-        <button
-          mat-menu-item
-          (menuOpened)="column_to_display.retrieved_titles = []; column_to_display.retrieved_editors = []"
-          (menuOpened)="column_to_display.title = ''; column_to_display.editor = ''"
-          (menuOpened)="column_to_display.author = author"
-          (menuOpened)="column_to_display.retrieved_titles = this.api.get_title_list(author)"
-          [matMenuTriggerFor]="menu_titles">
-          {{ author }}
-        </button>
-      </ng-container>
-    </mat-menu>
-
-    <mat-menu #menu_titles="matMenu">
-      <ng-container *ngFor="let title of column_to_display.retrieved_titles; let i = index">
-        <button
-          mat-menu-item
-          (menuOpened)="column_to_display.retrieved_editors = []"
-          (menuOpened)="column_to_display.title = ''"
-          (menuOpened)="column_to_display.title = title"
-          (menuOpened)="column_to_display.retrieved_editors = this.api.get_editor_list(column_to_display.author, title)"
-          [matMenuTriggerFor]="menu_editors">
-          {{ title }}
-        </button>
-      </ng-container>
-    </mat-menu>
-
-    <mat-menu #menu_editors="matMenu">
-      <ng-container *ngFor="let editor of column_to_display.retrieved_editors; let i = index">
-        <button
-          mat-menu-item
-          (click)="column_to_display.editor = editor"
-          (click)="column_to_display.edited = false"
-          (click)="column_to_display.translated = false"
-          (click)="
-            this.request_documents(column_to_display.column_id, {
-              author: column_to_display.author,
-              title: column_to_display.title,
-              editor: column_to_display.editor
-            })
-          ">
-          {{ editor }}
-        </button>
-      </ng-container>
-    </mat-menu>
-
-    <!-- Buttons to modify columns -->
-    <button mat-icon-button (click)="this.column_handler.move_column(column_to_display.column_id, 'left')">
-      <mat-icon>keyboard_arrow_left</mat-icon>
-    </button>
-
-    <button mat-icon-button (click)="this.column_handler.move_column(column_to_display.column_id, 'right')">
-      <mat-icon>keyboard_arrow_right</mat-icon>
-    </button>
-
-    <button mat-icon-button (click)="this.column_handler.close_column(column_to_display.column_id)">
-      <mat-icon>clear</mat-icon>
-    </button>
-
-    <button mat-icon-button (click)="this.current_column = column_to_display" [matMenuTriggerFor]="columnMenu">
-      <mat-icon fontIcon="menu"></mat-icon>
-    </button>
-
-    <!-- Separator-->
-    <!--</ng-container>-->
-  </mat-toolbar>
-</ng-template>
-
 <!-- Toolbar for the fragments section -->
 <mat-toolbar class="fragments-toolbar">
   <div id="fragments-toolbar-1">
-    <ng-container *ngFor="let column_to_display of this.column_handler.columns">
+    <ng-container *ngFor="let column_to_display of this.columns.list">
       <mat-checkbox ngDefaultControl [(ngModel)]="column_to_display.visible">
         <div style="color: white">
           {{ column_to_display.author }}-{{ column_to_display.title }}-{{ column_to_display.editor }}
@@ -97,7 +15,7 @@
   </div>
   <div id="fragments-toolbar-2">
     |
-    <button class="navbar" mat-button (click)="this.column_handler.add_new_column('fragment')">Add column</button>
+    <button class="navbar" mat-button (click)="this.columns.add('fragment')">Add column</button>
   </div>
 </mat-toolbar>
 <mat-progress-bar mode="query" *ngIf="this.api.spinner"></mat-progress-bar>
@@ -106,17 +24,19 @@
   <div class="row">
     <!-- Row that contains the columns and commentary -->
     <div
-      *ngFor="let column_to_display of this.column_handler.columns"
+      *ngFor="let column_to_display of this.columns.list"
       class="col overflow_column"
       [hidden]="!column_to_display.visible"
       cdkScrollable>
-      <ng-container
-        [ngTemplateOutlet]="fragment_column_template"
-        [ngTemplateOutletContext]="{ given_column: column_to_display }">
-      </ng-container>
+      <app-column [given_column]="column_to_display"></app-column>
+      <!--<ng-container-->
+        <!--[ngTemplateOutlet]="fragment_column_template"-->
+        <!--[ngTemplateOutletContext]="{ given_column: column_to_display }">-->
+      <!--</ng-container>-->
     </div>
   </div>
 </div>
+
 
 <!-- Template for a fragment column -->
 <ng-template #fragment_column_template let-given_column="given_column" let-hint="hint">
@@ -130,7 +50,7 @@
     cdkDropList
     id="{{ given_column.column_id }}"
     [cdkDropListData]="given_column.documents"
-    [cdkDropListConnectedTo]="this.column_handler.connected_columns_list"
+    [cdkDropListConnectedTo]="this.columns.connected_columns_list"
     (cdkDropListDropped)="this.utility.drop($event)"
     appOnCopy
     (copyFragment)="this.copy_document_content(this.current_document)">
@@ -144,7 +64,7 @@
         "
         cdkDrag
         [cdkDragDisabled]="this.settings.fragments.dragging_disabled"
-        (cdkDragDropped)="this.column_handler.track_edited_columns($event)"
+        (cdkDragDropped)="this.columns.set_edited_flag($event)"
         [attr.id]="fragment.fragment_id"
         [style.background-color]="
           this.generate_document_gradient_background_color(

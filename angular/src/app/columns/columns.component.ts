@@ -11,7 +11,7 @@ import { SettingsService } from '@oscc/services/settings.service';
 import { UtilityService } from '@oscc/utility.service';
 import { BibliographyHelperService } from '@oscc/services/bibliography-helper.service';
 import { AuthService } from '@oscc/auth/auth.service';
-import { ColumnHandlerService } from '@oscc/services/column-handler.service';
+import { ColumnsService } from '@oscc/columns/columns.service';
 import { DocumentFilterComponent } from '@oscc/dialogs/document-filter/document-filter.component';
 
 // Model imports
@@ -40,7 +40,7 @@ export class ColumnsComponent implements OnInit, OnChanges {
     protected utility: UtilityService,
     protected auth_service: AuthService,
     protected dialog: DialogService,
-    protected column_handler: ColumnHandlerService,
+    protected columns: ColumnsService,
     protected settings: SettingsService,
     private bib_helper: BibliographyHelperService,
     private matdialog: MatDialog
@@ -48,13 +48,11 @@ export class ColumnsComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.api.request_authors_titles_editors_blob();
-    //FIXME: maybe we should only request the bibliography on fragment click?
-    //this.zotero.request_bibliography();
     // Create an empty current_document variable to be filled whenever the user clicks a fragment
     this.current_document = new Fragment({});
     // Create the first column and push it to the columns list
-    if (this.column_handler.columns.length < 1) {
-      this.column_handler.columns.push(
+    if (this.columns.list.length < 1) {
+      this.columns.list.push(
         new Column({
           column_id: 1,
           author: 'Ennius',
@@ -63,14 +61,14 @@ export class ColumnsComponent implements OnInit, OnChanges {
         })
       );
     }
-    this.current_column = this.column_handler.columns[0];
+    this.current_column = this.columns.list[0];
     this.request_documents(1, { document_type: 'fragment', author: 'Ennius', title: 'Thyestes', editor: 'TRF' });
   }
 
   ngOnChanges() {
     // If a new column is requested, we will handle the request here
     if (this.requested_column) {
-      const column_id = this.column_handler.add_new_column('fragment');
+      const column_id = this.columns.add('fragment');
       const filter = {
         author: this.requested_column.author,
         title: this.requested_column.title,
@@ -78,7 +76,7 @@ export class ColumnsComponent implements OnInit, OnChanges {
       };
       this.api.get_documents(filter).subscribe((documents) => {
         documents = this.format_incoming_documents(documents);
-        this.column_handler.add_documents_to_column(column_id, documents);
+        this.columns.add_documents_to_column(column_id, documents);
       });
     }
   }
@@ -123,7 +121,7 @@ export class ColumnsComponent implements OnInit, OnChanges {
 
       // Format all documents to look nice on the frontend (little HTML, some beautiful CSS)
       const formatted_documents = this.format_incoming_documents(documents);
-      this.column_handler.add_documents_to_column(column_id, formatted_documents);
+      this.columns.add_documents_to_column(column_id, formatted_documents);
     });
   }
 
@@ -161,15 +159,15 @@ export class ColumnsComponent implements OnInit, OnChanges {
 
     // The next part handles the colouring of clicked and referenced documents.
     // First, restore all documents to their original black colour when a new document is clicked
-    for (const index in this.column_handler.columns) {
-      this.column_handler.columns[index] = this.column_handler.colour_documents_black(
-        this.column_handler.columns[index]
+    for (const index in this.columns.list) {
+      this.columns.list[index] = this.columns.colour_documents_black(
+        this.columns.list[index]
       );
     }
     // Second, colour the clicked document
     document.colour = '#3F51B5';
     // Lastly, colour the linked documents
-    this.column_handler.colour_linked_fragments(document);
+    this.columns.colour_linked_fragments(document);
     // And scroll each column to the linked document if requested
     //if (this.settings.fragments.auto_scroll_linked_fragments) {
     //this.scroll_to_linked_fragments(document);
@@ -182,40 +180,14 @@ export class ColumnsComponent implements OnInit, OnChanges {
    */
   protected show_linked_documents(given_document: any): void {
     if (given_document.linked_fragments.length > 0) {
-      const column_id = this.column_handler.add_new_column('fragment');
+      const column_id = this.columns.add('fragment');
       given_document.linked_fragments.forEach((linked_fragment: Linked_fragment) => {
         this.api.get_documents(linked_fragment).subscribe((documents) => {
-          this.column_handler.add_documents_to_column(column_id, documents, true);
+          this.columns.add_documents_to_column(column_id, documents, true);
         });
       });
     } else {
       this.utility.open_snackbar('No linked documents found');
-    }
-  }
-
-  /**
-   * Helper function to find and return the textual content of a given document object
-   * @author CptVickers
-   */
-  protected copy_document_content(given_document: any): void {
-    if (!window.getSelection().toString()) {
-      // Check if the user isn't trying to copy some other text.
-
-      let content = '';
-
-      if (!given_document.fragments_translated) {
-        // Parse the fragment lines into a single string
-        const fragment_lines = given_document.lines;
-        for (const line of fragment_lines) {
-          content += line.line_number + ': ' + line.text + '\n';
-        }
-      } else {
-        content = given_document.translation;
-      }
-      // Move the result to the user's clipboard
-      navigator.clipboard.writeText(content);
-      // Notify the user that the text has been copied
-      this.utility.open_snackbar('Document copied!');
     }
   }
 

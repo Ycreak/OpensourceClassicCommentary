@@ -36,6 +36,7 @@ import { NgxSimpleTextEditorModule } from 'ngx-simple-text-editor';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ColumnsComponent } from './columns/columns.component';
+import { ColumnComponent } from './columns/column/column.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './auth/auth.guard';
@@ -124,6 +125,7 @@ const appRoutes: Routes = [
   declarations: [
     AppComponent,
     ColumnsComponent,
+    ColumnComponent,
     SafeHtmlPipe,
     DashboardComponent,
     LoginComponent,

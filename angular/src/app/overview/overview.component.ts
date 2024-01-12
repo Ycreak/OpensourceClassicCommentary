@@ -8,10 +8,7 @@ import { ApiService } from '@oscc/api.service';
 import { DialogService } from '@oscc/services/dialog.service';
 import { SettingsService } from '@oscc/services/settings.service';
 import { WindowSizeWatcherService } from '@oscc/services/window-watcher.service';
-//import { UtilityService } from '@oscc/utility.service';
 import { AuthService } from '@oscc/auth/auth.service';
-
-import { ColumnsComponent } from '@oscc/columns/columns.component';
 
 // Component imports
 import { LoginComponent } from '@oscc/login/login.component';
@@ -19,7 +16,6 @@ import { IntroductionsComponent } from './introductions/introductions.component'
 
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
-import { ColumnHandlerService } from '@oscc/services/column-handler.service';
 import { LocalStorageService } from '@oscc/services/local-storage.service';
 import { CommentaryComponent } from '@oscc/commentary/commentary.component';
 import { ViewportScroller } from '@angular/common';
@@ -28,7 +24,6 @@ import { ViewportScroller } from '@angular/common';
   selector: 'app-overview',
   templateUrl: './overview.component.html',
   styleUrls: ['./overview.component.scss'],
-  providers: [ColumnsComponent],
 })
 export class OverviewComponent implements OnInit, OnDestroy {
   @ViewChild('commentary') commentary: CommentaryComponent;
@@ -45,8 +40,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
     private viewportscroller: ViewportScroller,
     protected api: ApiService,
     protected auth_service: AuthService,
-    protected column_handler: ColumnHandlerService,
-    protected columns: ColumnsComponent,
     protected dialog: DialogService,
     protected settings: SettingsService,
     protected window_watcher: WindowSizeWatcherService,

@@ -1,0 +1,126 @@
+<ng-container
+  [ngTemplateOutlet]="column_toolbar"
+  [ngTemplateOutletContext]="{ given_column: given_column }"></ng-container>
+<!-- Fragments loop to display all fragments of the chosen edition of reference -->
+<!--<div class="row">-->
+<!-- Columns are connected via the cdkDropListConnectedTo property. -->
+<div
+  cdkDropList
+  id="{{ given_column.column_id }}"
+  [cdkDropListData]="given_column.documents"
+  [cdkDropListConnectedTo]="this.columns.connected_columns_list"
+  (cdkDropListDropped)="this.utility.drop($event)"
+  appOnCopy
+  (copyFragment)="this.copy_document_content(this.current_document)">
+  <div *ngFor="let fragment of given_column.documents">
+    <div
+      class="fragment-box"
+      (click)="handle_document_click(fragment, given_column)"
+      (contextmenu)="
+        handle_document_click(fragment, given_column);
+        onRightClick($event, this.current_document, this.current_column)
+      "
+      cdkDrag
+      [cdkDragDisabled]="this.settings.fragments.dragging_disabled"
+      (cdkDragDropped)="this.columns.set_edited_flag($event)"
+      [attr.id]="fragment.fragment_id"
+      [style.background-color]="
+        this.generate_document_gradient_background_color(
+          given_column.documents.length,
+          given_column.original_fragment_order.indexOf(fragment.name)
+        )
+      ">
+      <div *ngIf="fragment.document_type === 'testimonium'">
+        <app-testimonia [testimonium]="fragment"> </app-testimonia>
+      </div>
+      <div *ngIf="fragment.document_type === 'fragment'">
+        <app-fragment [fragment]="fragment" [translated]="given_column.translated"> </app-fragment>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Secondary toolbar to manage columns -->
+<ng-template #column_toolbar let-column_to_display="given_column">
+  <!--<ng-template #commentary_column_template let-given_fragment="given_fragment">-->
+  <mat-toolbar class="fragment-column-toolbar">
+    <!-- Button to select the text -->
+    <button
+      class="fragment-column-button"
+      mat-button
+      [matMenuTriggerFor]="menu_authors"
+      (click)="column_to_display.new_column = false">
+      Select text
+    </button>
+    <!-- Nested menu to select author - title - editor. -->
+    <mat-menu #menu_authors="matMenu">
+      <ng-container *ngFor="let author of this.api.get_author_list(); let i = index">
+        <button
+          mat-menu-item
+          (menuOpened)="column_to_display.retrieved_titles = []; column_to_display.retrieved_editors = []"
+          (menuOpened)="column_to_display.title = ''; column_to_display.editor = ''"
+          (menuOpened)="column_to_display.author = author"
+          (menuOpened)="column_to_display.retrieved_titles = this.api.get_title_list(author)"
+          [matMenuTriggerFor]="menu_titles">
+          {{ author }}
+        </button>
+      </ng-container>
+    </mat-menu>
+
+    <mat-menu #menu_titles="matMenu">
+      <ng-container *ngFor="let title of column_to_display.retrieved_titles; let i = index">
+        <button
+          mat-menu-item
+          (menuOpened)="column_to_display.retrieved_editors = []"
+          (menuOpened)="column_to_display.title = ''"
+          (menuOpened)="column_to_display.title = title"
+          (menuOpened)="column_to_display.retrieved_editors = this.api.get_editor_list(column_to_display.author, title)"
+          [matMenuTriggerFor]="menu_editors">
+          {{ title }}
+        </button>
+      </ng-container>
+    </mat-menu>
+
+    <mat-menu #menu_editors="matMenu">
+      <ng-container *ngFor="let editor of column_to_display.retrieved_editors; let i = index">
+        <button
+          mat-menu-item
+          (click)="column_to_display.editor = editor"
+          (click)="column_to_display.edited = false"
+          (click)="column_to_display.translated = false"
+          (click)="
+            this.request_documents(column_to_display.column_id, {
+              author: column_to_display.author,
+              title: column_to_display.title,
+              editor: column_to_display.editor
+            })
+          ">
+          {{ editor }}
+        </button>
+      </ng-container>
+    </mat-menu>
+
+    <!-- Buttons to modify columns -->
+    <button mat-icon-button (click)="this.columns.move(column_to_display.column_id, 'left')">
+      <mat-icon>keyboard_arrow_left</mat-icon>
+    </button>
+
+    <button mat-icon-button (click)="this.columns.move(column_to_display.column_id, 'right')">
+      <mat-icon>keyboard_arrow_right</mat-icon>
+    </button>
+
+    <button mat-icon-button (click)="this.columns.close(column_to_display.column_id)">
+      <mat-icon>clear</mat-icon>
+    </button>
+
+    <button mat-icon-button (click)="this.current_column = column_to_display" [matMenuTriggerFor]="columnMenu">
+      <mat-icon fontIcon="menu"></mat-icon>
+    </button>
+
+    <!-- Separator-->
+    <!--</ng-container>-->
+  </mat-toolbar>
+</ng-template>
+
+

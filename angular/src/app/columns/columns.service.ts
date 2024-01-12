@@ -12,14 +12,14 @@ import { BibliographyHelperService } from '@oscc/services/bibliography-helper.se
 @Injectable({
   providedIn: 'root',
 })
-export class ColumnHandlerService {
+export class ColumnsService {
   // We keep track of the number of columns to identify them
   column_identifier = 1;
   // List of connected columns to allow dragging and dropping between columns
   connected_columns_list: string[] = [];
 
   // Object to store all column data: just an array with column data in the form of document columns
-  columns: Column[] = [];
+  list: Column[] = [];
 
   public playground_id = 0;
 
@@ -45,42 +45,42 @@ export class ColumnHandlerService {
    * @returns column_id (number)
    * @author Ycreak
    */
-  public add_new_column(column_type: string): number {
+  public add(column_type: string): number {
     //TODO: shall we create a limit? like no more than 25 columns?
     // First, increment the column_identifier to create a new and unique id
     this.column_identifier += 1;
     // Create new column with the appropriate name. TODO: create better identifiers than simple integers
     const new_column = new Column({ column_id: this.column_identifier, type: column_type });
-    this.columns.push(new_column);
+    this.list.push(new_column);
     // And update the connected columns list
-    this.connected_columns_list = this.update_connected_columns_list(this.columns);
+    this.connected_columns_list = this.connect(this.list);
     return this.column_identifier;
   }
 
   /**
-   * This function deletes a column from this.columns given its name
+   * This function deletes a column from this.list given its name
    * @param column_id of column that is to be closed
    * @author Ycreak
    */
-  public close_column(column_id: number): void {
-    const object_index = this.columns.findIndex((object) => {
+  public close(column_id: number): void {
+    const object_index = this.list.findIndex((object) => {
       return object.column_id === column_id;
     });
-    this.columns.splice(object_index, 1);
+    this.list.splice(object_index, 1);
     // And update the connected columns list
-    this.connected_columns_list = this.update_connected_columns_list(this.columns);
+    this.connected_columns_list = this.connect(this.list);
   }
 
   /**
-   * This function moves a column inside this.columns to allow the user to move columns
+   * This function moves a column inside this.list to allow the user to move columns
    * around on the frontend.
    * @param column_id of column that is to be moved
    * @param direction of movement
    * @author Ycreak
    */
-  public move_column(column_id, direction): void {
+  public move(column_id: number, direction: string): void {
     // First get the current index of the column we want to move
-    const from_index = this.columns.findIndex((object) => {
+    const from_index = this.list.findIndex((object) => {
       return object.column_id === column_id;
     });
     // Next, generate the new index when the column would be moved
@@ -91,9 +91,21 @@ export class ColumnHandlerService {
       to_index = from_index + 1;
     }
     // If this next location is valid, move the column to that location, otherwise do nothing
-    if (to_index >= 0 && to_index < this.columns.length) {
-      this.columns = this.utility.move_element_in_array(this.columns, from_index, to_index);
+    if (to_index >= 0 && to_index < this.list.length) {
+      this.list = this.utility.move_element_in_array(this.list, from_index, to_index);
     }
+  }
+
+  /**
+   * This function creates a list of connected columns to allow dragging and dropping
+   * @author Ycreak
+   */
+  private connect(columns: Column[]): string[] {
+    const connected_columns_list: string[] = [];
+    for (const i of columns) {
+      connected_columns_list.push(String(i.column_id));
+    }
+    return connected_columns_list;
   }
 
   /**
@@ -103,26 +115,14 @@ export class ColumnHandlerService {
    * @author Ycreak
    * @TODO: what type is 'event'? CdkDragDrop<string[]> does not allow reading.
    */
-  public track_edited_columns(event: any): void {
-    // First, find the corresponding columns in this.columns using the column_id that is used
+  public set_edited_flag(event: any): void {
+    // First, find the corresponding columns in this.list using the column_id that is used
     // in this.connected_columns_list used by cdkDrag (and encoded in event)
-    const edited_column_1 = this.columns.find((i) => i.column_id === Number(event.container.id));
-    const edited_column_2 = this.columns.find((i) => i.column_id === Number(event.previousContainer.id));
+    const edited_column_1 = this.list.find((i) => i.column_id === Number(event.container.id));
+    const edited_column_2 = this.list.find((i) => i.column_id === Number(event.previousContainer.id));
     // Next, set the edited flag to true.
     edited_column_1.edited = true;
     edited_column_2.edited = true;
-  }
-
-  /**
-   * This function creates a list of connected columns to allow dragging and dropping
-   * @author Ycreak
-   */
-  private update_connected_columns_list(columns: Column[]): string[] {
-    const connected_columns_list: string[] = [];
-    for (const i of columns) {
-      connected_columns_list.push(String(i.column_id));
-    }
-    return connected_columns_list;
   }
 
   /**
@@ -138,9 +138,9 @@ export class ColumnHandlerService {
       const editor = document.linked_fragments[i].editor;
       const name = document.linked_fragments[i].name;
       // Now, for each document that is linked, try to find it in the other columns
-      for (const j in this.columns) {
+      for (const j in this.list) {
         // in each column, take a look in the documents array to find the linked document
-        const corresponding_document = this.utility.filter_array_on_object(this.columns[j].documents, {
+        const corresponding_document = this.utility.filter_array_on_object(this.list[j].documents, {
           author: author,
           title: title,
           editor: editor,
@@ -168,7 +168,7 @@ export class ColumnHandlerService {
    */
   public add_documents_to_column(column_id: number, documents: any[], append?: boolean): void {
     // A new list of fragments has arrived. Use the column identifier to find the corresponding column
-    const column = this.columns.find((x) => x.column_id == column_id);
+    const column = this.list.find((x) => x.column_id == column_id);
     if (column) {
       if (append) {
         documents.forEach((document: any) => column.documents.push(document));
