@@ -50,7 +50,7 @@
           (click)="column_to_display.edited = false"
           (click)="column_to_display.translated = false"
           (click)="
-            this.request_documents(column_to_display.column_id, {
+            this.columns.request(column_to_display.column_id, {
               author: column_to_display.author,
               title: column_to_display.title,
               editor: column_to_display.editor
@@ -62,19 +62,19 @@
     </mat-menu>
 
     <!-- Buttons to modify columns -->
-    <button mat-icon-button (click)="this.column_handler.move_column(column_to_display.column_id, 'left')">
+    <button mat-icon-button (click)="this.columns.move(column_to_display.column_id, 'left')">
       <mat-icon>keyboard_arrow_left</mat-icon>
     </button>
 
-    <button mat-icon-button (click)="this.column_handler.move_column(column_to_display.column_id, 'right')">
+    <button mat-icon-button (click)="this.columns.move(column_to_display.column_id, 'right')">
       <mat-icon>keyboard_arrow_right</mat-icon>
     </button>
 
-    <button mat-icon-button (click)="this.column_handler.close_column(column_to_display.column_id)">
+    <button mat-icon-button (click)="this.columns.close(column_to_display.column_id)">
       <mat-icon>clear</mat-icon>
     </button>
 
-    <button mat-icon-button (click)="this.current_column = column_to_display" [matMenuTriggerFor]="columnMenu">
+    <button mat-icon-button (click)="this.columns.current = column_to_display" [matMenuTriggerFor]="columnMenu">
       <mat-icon fontIcon="menu"></mat-icon>
     </button>
 
@@ -86,7 +86,7 @@
 <!-- Toolbar for the fragments section -->
 <mat-toolbar class="fragments-toolbar">
   <div id="fragments-toolbar-1">
-    <ng-container *ngFor="let column_to_display of this.column_handler.columns">
+    <ng-container *ngFor="let column_to_display of this.columns.list">
       <mat-checkbox ngDefaultControl [(ngModel)]="column_to_display.visible">
         <div style="color: white">
           {{ column_to_display.author }}-{{ column_to_display.title }}-{{ column_to_display.editor }}
@@ -97,7 +97,7 @@
   </div>
   <div id="fragments-toolbar-2">
     |
-    <button class="navbar" mat-button (click)="this.column_handler.add_new_column('fragment')">Add column</button>
+    <button class="navbar" mat-button (click)="this.columns.add()">Add column</button>
   </div>
 </mat-toolbar>
 <mat-progress-bar mode="query" *ngIf="this.api.spinner"></mat-progress-bar>
@@ -106,7 +106,7 @@
   <div class="row">
     <!-- Row that contains the columns and commentary -->
     <div
-      *ngFor="let column_to_display of this.column_handler.columns"
+      *ngFor="let column_to_display of this.columns.list"
       class="col overflow_column"
       [hidden]="!column_to_display.visible"
       cdkScrollable>
@@ -130,7 +130,7 @@
     cdkDropList
     id="{{ given_column.column_id }}"
     [cdkDropListData]="given_column.documents"
-    [cdkDropListConnectedTo]="this.column_handler.connected_columns_list"
+    [cdkDropListConnectedTo]="this.columns.connected"
     (cdkDropListDropped)="this.utility.drop($event)"
     appOnCopy
     (copyFragment)="this.copy_document_content(this.current_document)">
@@ -140,11 +140,11 @@
         (click)="handle_document_click(fragment, given_column)"
         (contextmenu)="
           handle_document_click(fragment, given_column);
-          onRightClick($event, this.current_document, this.current_column)
+          onRightClick($event, this.current_document, this.columns.current)
         "
         cdkDrag
         [cdkDragDisabled]="this.settings.fragments.dragging_disabled"
-        (cdkDragDropped)="this.column_handler.track_edited_columns($event)"
+        (cdkDragDropped)="this.columns.track_edited_columns($event)"
         [attr.id]="fragment.fragment_id"
         [style.background-color]="
           this.generate_document_gradient_background_color(
@@ -182,16 +182,16 @@
 
 <mat-menu #columnMenu="matMenu">
   <button
-    *ngIf="this.current_column.has_bibliography"
-    (click)="this.show_column_bibliography(this.current_column)"
+    *ngIf="this.columns.current.has_bibliography"
+    (click)="this.show_column_bibliography(this.columns.current)"
     mat-menu-item>
     Column Bibliography
   </button>
   <button
-    *ngIf="this.current_column.has_translations()"
-    (click)="this.toggle_translation(this.current_column)"
+    *ngIf="this.columns.current.has_translations()"
+    (click)="this.toggle_translation(this.columns.current)"
     mat-menu-item>
-    {{ this.translation_toggle_button_label(this.current_column) }}
+    {{ this.translation_toggle_button_label(this.columns.current) }}
   </button>
-  <button (click)="this.set_custom_filter(this.current_column.column_id)" mat-menu-item>Custom filter</button>
+  <button (click)="this.set_custom_filter(this.columns.current.column_id)" mat-menu-item>Custom filter</button>
 </mat-menu>

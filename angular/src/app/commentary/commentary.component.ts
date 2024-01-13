@@ -10,6 +10,7 @@ import { DialogService } from '@oscc/services/dialog.service';
 import { SettingsService } from '@oscc/services/settings.service';
 import { StringFormatterService } from '@oscc/services/string-formatter.service';
 import { UtilityService } from '@oscc/utility.service';
+import { ColumnsService } from '@oscc/columns/columns.service';
 
 @Component({
   selector: 'app-commentary',
@@ -35,6 +36,7 @@ export class CommentaryComponent implements OnChanges {
 
   constructor(
     private string_formatter: StringFormatterService,
+    protected columns: ColumnsService,
     protected utility: UtilityService,
     protected api: ApiService,
     protected dialog: DialogService,

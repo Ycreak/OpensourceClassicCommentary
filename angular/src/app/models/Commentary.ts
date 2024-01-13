@@ -19,6 +19,7 @@ export class Commentary {
   fields: Fields;
 
   bibliography = '';
+  bib_keys: string[] = [];
 
   constructor(commentary?: Partial<Commentary>) {
     // Allow the partial initialisation of the object

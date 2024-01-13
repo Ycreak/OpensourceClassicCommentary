@@ -96,7 +96,7 @@
 <div *ngFor="let linked_fragment of this.linked_commentaries">
   <div *ngIf="linked_fragment.commentary.has_content()">
     <h6>
-      <a class="a-void" (click)="this.request_column.emit(linked_fragment)">
+      <a class="a-void" (click)="this.columns.request(linked_fragment)">
         Commentary from {{ linked_fragment.author }}, {{ linked_fragment.title }}, {{ linked_fragment.editor }},
         {{ linked_fragment.name }}
       </a>

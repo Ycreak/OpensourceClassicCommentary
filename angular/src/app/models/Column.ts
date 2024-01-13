@@ -17,7 +17,6 @@ export class Column {
   name: string;
 
   column_id: number; // has to be a string for cdkDrag
-  type = ''; // denotes playground, commentary, text or fragment column
 
   selected_fragment_author = '';
   selected_fragment_title = '';

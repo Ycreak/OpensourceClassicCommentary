@@ -1,8 +1,7 @@
 // Library imports
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
-import { Output, EventEmitter, Input, OnChanges } from '@angular/core';
+import { Output, EventEmitter, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-//import { environment } from '@src/environments/environment';
 
 // Service imports
 import { ApiService } from '@oscc/api.service';
@@ -11,7 +10,7 @@ import { SettingsService } from '@oscc/services/settings.service';
 import { UtilityService } from '@oscc/utility.service';
 import { BibliographyHelperService } from '@oscc/services/bibliography-helper.service';
 import { AuthService } from '@oscc/auth/auth.service';
-import { ColumnHandlerService } from '@oscc/services/column-handler.service';
+import { ColumnsService } from '@oscc/columns/columns.service';
 import { DocumentFilterComponent } from '@oscc/dialogs/document-filter/document-filter.component';
 
 // Model imports
@@ -26,21 +25,20 @@ import { MatMenuTrigger } from '@angular/material/menu';
   styleUrls: ['./columns.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class ColumnsComponent implements OnInit, OnChanges {
+export class ColumnsComponent implements OnInit {
   @Input() requested_column: any;
   @Output() clicked_document = new EventEmitter<any>();
   @Output() translation_toggle_event = new EventEmitter<boolean>();
 
   public current_document: any; // Variable to store the clicked fragment and its data
   public document_clicked = false; // Shows "click a fragment" banner at startup if nothing is yet selected
-  protected current_column: Column;
 
   constructor(
     protected api: ApiService,
     protected utility: UtilityService,
     protected auth_service: AuthService,
     protected dialog: DialogService,
-    protected column_handler: ColumnHandlerService,
+    protected columns: ColumnsService,
     protected settings: SettingsService,
     private bib_helper: BibliographyHelperService,
     private matdialog: MatDialog
@@ -48,83 +46,12 @@ export class ColumnsComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.api.request_authors_titles_editors_blob();
-    //FIXME: maybe we should only request the bibliography on fragment click?
-    //this.zotero.request_bibliography();
     // Create an empty current_document variable to be filled whenever the user clicks a fragment
     this.current_document = new Fragment({});
     // Create the first column and push it to the columns list
-    if (this.column_handler.columns.length < 1) {
-      this.column_handler.columns.push(
-        new Column({
-          column_id: 1,
-          author: 'Ennius',
-          title: 'Thyestes',
-          editor: 'TRF',
-        })
-      );
+    if (this.columns.list.length < 1) {
+      this.columns.request({ document_type: 'fragment', author: 'Ennius', title: 'Thyestes', editor: 'TRF' });
     }
-    this.current_column = this.column_handler.columns[0];
-    this.request_documents(1, { document_type: 'fragment', author: 'Ennius', title: 'Thyestes', editor: 'TRF' });
-  }
-
-  ngOnChanges() {
-    // If a new column is requested, we will handle the request here
-    if (this.requested_column) {
-      const column_id = this.column_handler.add_new_column('fragment');
-      const filter = {
-        author: this.requested_column.author,
-        title: this.requested_column.title,
-        editor: this.requested_column.editor,
-      };
-      this.api.get_documents(filter).subscribe((documents) => {
-        documents = this.format_incoming_documents(documents);
-        this.column_handler.add_documents_to_column(column_id, documents);
-      });
-    }
-  }
-
-  /**
-   * Formats incoming documents: adds html, sorts documents.
-   * @param column_id (number) in which to add the documents
-   * @param documents (object[]) which to add to the provided column
-   * @returns documents (object[]) nicely formatted
-   * @author Ycreak
-   */
-  private format_incoming_documents(documents: any[]): any[] {
-    documents.forEach((doc: any) => {
-      if (doc) {
-        if (doc.document_type == 'fragment') {
-          doc.add_html_to_lines();
-        }
-      }
-    });
-    // Prepare the documents for publication
-    documents = documents.sort(this.utility.sort_fragment_array_numerically);
-    documents = this.sort_documents_on_status(documents);
-    return documents;
-  }
-
-  /**
-   * Request the API for documents: add them to the given column
-   * @param column_id (number) in which to add the documents
-   * @param documents (object[]) which to add to the provided column
-   */
-  protected request_documents(column_id: number, filter: object): void {
-    this.api.get_documents(filter).subscribe((documents) => {
-      // Empty the bibliography key list when loading new documents
-      this.current_column.bibliography_keys = [];
-      // Find all bibliography keys in the documents and add them to the column data for later use
-      documents.forEach((doc: any) => {
-        this.current_column.bibliography_keys = this.current_column.bibliography_keys.concat(
-          this.bib_helper.retrieve_bib_keys_from_commentary(doc.commentary)
-        );
-      });
-      this.current_column.bibliography_keys = [...new Set(this.current_column.bibliography_keys)];
-
-      // Format all documents to look nice on the frontend (little HTML, some beautiful CSS)
-      const formatted_documents = this.format_incoming_documents(documents);
-      this.column_handler.add_documents_to_column(column_id, formatted_documents);
-    });
   }
 
   /**
@@ -137,7 +64,7 @@ export class ColumnsComponent implements OnInit, OnChanges {
     dialogRef.afterClosed().subscribe({
       next: (document_filter) => {
         if (document_filter) {
-          this.request_documents(column_id, document_filter);
+          this.columns.request(document_filter, column_id);
         }
       },
     });
@@ -157,19 +84,17 @@ export class ColumnsComponent implements OnInit, OnChanges {
     //this.document_clicked2.emit(document);
     this.document_clicked = true;
     this.current_document = document;
-    this.current_column = column;
+    this.columns.current = column;
 
     // The next part handles the colouring of clicked and referenced documents.
     // First, restore all documents to their original black colour when a new document is clicked
-    for (const index in this.column_handler.columns) {
-      this.column_handler.columns[index] = this.column_handler.colour_documents_black(
-        this.column_handler.columns[index]
-      );
+    for (const index in this.columns.list) {
+      this.columns.list[index] = this.columns.blacken(this.columns.list[index]);
     }
     // Second, colour the clicked document
     document.colour = '#3F51B5';
     // Lastly, colour the linked documents
-    this.column_handler.colour_linked_fragments(document);
+    this.columns.colour_linked_fragments(document);
     // And scroll each column to the linked document if requested
     //if (this.settings.fragments.auto_scroll_linked_fragments) {
     //this.scroll_to_linked_fragments(document);
@@ -182,11 +107,9 @@ export class ColumnsComponent implements OnInit, OnChanges {
    */
   protected show_linked_documents(given_document: any): void {
     if (given_document.linked_fragments.length > 0) {
-      const column_id = this.column_handler.add_new_column('fragment');
+      const column_id = this.columns.add();
       given_document.linked_fragments.forEach((linked_fragment: Linked_fragment) => {
-        this.api.get_documents(linked_fragment).subscribe((documents) => {
-          this.column_handler.add_documents_to_column(column_id, documents, true);
-        });
+        this.columns.request(linked_fragment, column_id, true);
       });
     } else {
       this.utility.open_snackbar('No linked documents found');
@@ -200,7 +123,6 @@ export class ColumnsComponent implements OnInit, OnChanges {
   protected copy_document_content(given_document: any): void {
     if (!window.getSelection().toString()) {
       // Check if the user isn't trying to copy some other text.
-
       let content = '';
 
       if (!given_document.fragments_translated) {
@@ -217,25 +139,6 @@ export class ColumnsComponent implements OnInit, OnChanges {
       // Notify the user that the text has been copied
       this.utility.open_snackbar('Document copied!');
     }
-  }
-
-  /**
-   * Sorts the given object of documents on status. We want to display Certa, followed
-   * by Incerta and Adespota.
-   * @param documents
-   * @returns documents in the order we want
-   * @author Ycreak
-   */
-  public sort_documents_on_status(documents: any[]): any[] {
-    const normal = this.utility.filter_object_on_key(documents, 'status', 'Certum');
-    const incerta = this.utility.filter_object_on_key(documents, 'status', 'Incertum');
-    const adesp = this.utility.filter_object_on_key(documents, 'status', 'Adesp.');
-    // Put testimonia at the end
-    const testimonia = this.utility.filter_object_on_key(documents, 'document_type', 'testimonium');
-    // Concatenate in the order we want
-    documents = normal.concat(incerta).concat(adesp).concat(testimonia);
-
-    return documents;
   }
 
   /**
@@ -276,10 +179,22 @@ export class ColumnsComponent implements OnInit, OnChanges {
    */
   protected show_column_bibliography(column: Column): void {
     let string_bibliography = '';
+    const column_bib_keys: string[] = [];
     // If there are keys, show the bibliography
-    if (column.bibliography_keys.length > 0) {
+    if (column.has_bibliography) {
+      column.documents.forEach((doc: any) => {
+        doc.bib_keys.forEach((key: string) => {
+          column_bib_keys.push(key);
+        });
+      });
+      column.bibliography_keys = [...new Set(column_bib_keys)];
+      // Convert the bibliography keys into citations and sort them alphabetically
+      const citations: string[] = [];
       column.bibliography_keys.forEach((key: string) => {
-        string_bibliography += this.bib_helper.convert_bib_key_into_citation(key);
+        citations.push(this.bib_helper.convert_bib_key_into_citation(key));
+      });
+      citations.sort().forEach((citation: string) => {
+        string_bibliography += citation;
       });
       this.dialog.open_column_bibliography(string_bibliography);
     } else {
@@ -295,7 +210,6 @@ export class ColumnsComponent implements OnInit, OnChanges {
    */
   protected toggle_translation(column: Column): void {
     column.translated = !column.translated;
-
     // Also fire a event which notifies other components like the commentary component of the change.
     this.translation_toggle_event.emit(column.translated);
   }
