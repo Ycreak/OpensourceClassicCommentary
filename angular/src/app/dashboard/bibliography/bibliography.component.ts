@@ -1,12 +1,14 @@
 import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
-import { ApiService } from '@oscc/api.service';
-import { AuthService } from '@oscc/auth/auth.service';
-import { DialogService } from '@oscc/services/dialog.service';
 
 import { ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+
+// Services imports
+import { AuthService } from '@oscc/auth/auth.service';
+import { BibliographyService } from '@oscc/services/bibliography.service';
+import { DialogService } from '@oscc/services/dialog.service';
 
 @Component({
   selector: 'app-bibliography',
@@ -24,8 +26,8 @@ export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
   protected pages: string;
 
   constructor(
+    private bib: BibliographyService,
     protected auth_service: AuthService,
-    protected api: ApiService,
     protected dialog: DialogService
   ) {
     this.table_data = new MatTableDataSource(this.table_source_data);
@@ -36,10 +38,10 @@ export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   ngOnInit(): void {
     // Sort bib on lastname
-    this.api.bibliography.sort((a, b) =>
+    this.bib.bibliography.sort((a, b) =>
       a.creators[0].lastname > b.creators[0].lastname ? 1 : b.creators[0].lastname > a.creators[0].lastname ? -1 : 0
     );
-    this.fill_table(this.api.bibliography);
+    this.fill_table(this.bib.bibliography);
   }
 
   ngAfterViewInit(): void {

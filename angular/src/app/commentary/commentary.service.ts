@@ -4,25 +4,21 @@ import { Subject } from 'rxjs';
 import { Commentary } from '@oscc/models/Commentary';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CommentaryService {
-
-  public myVariableChange: Subject<any> = new Subject<any>();
   public doc: Subject<any> = new Subject<any>();
-  public myVariable = false;
+  public translated: Subject<any> = new Subject<any>();
 
-  public content: Commentary = new Commentary({})
+  public content: Commentary = new Commentary({});
 
-  constructor() { 
-  }
-
-  public toggleMyVariable() {
-      this.myVariableChange.next(!this.myVariable);
-  }
+  constructor() {}
 
   public request(doc: any): void {
-    this.doc.next(doc) 
-    //this.content = doc.commentary;
+    this.doc.next(doc);
+  }
+
+  public translate(): void {
+    this.translated.next(!this.translated);
   }
 }

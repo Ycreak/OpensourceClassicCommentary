@@ -69,4 +69,27 @@ export class Commentary {
       this.fields.translation != ''
     );
   }
+
+  public do_on_fields(given_function: (arg: string) => string): void {
+    const commentary_fields_keys = Object.keys(this.fields);
+    commentary_fields_keys.forEach((key: string) => {
+      if (this.is_string(this.fields[key])) {
+        this.fields[key] = given_function(this.fields[key]);
+      } else if (this.is_array(this.fields[key])) {
+        this.fields[key].forEach((obj: any) => {
+          obj.text = given_function(obj.text);
+        });
+      } else {
+        console.error('Unsupported type.');
+      }
+    });
+  }
+
+  private is_array(x: any) {
+    return Array.isArray(x);
+  }
+
+  private is_string(x: any) {
+    return Object.prototype.toString.call(x) === '[object String]';
+  }
 }

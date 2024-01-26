@@ -64,6 +64,7 @@ export class Column {
   has_translations(): boolean {
     for (const i in this.documents) {
       if (this.documents[i].commentary.translation) {
+        console.log('true');
         return true;
       }
     }
@@ -75,7 +76,6 @@ export class Column {
    * @author Ycreak
    */
   create_column_name(): void {
-    this.column_name = `${this.author}-${this.title}-${this.editor}`
+    this.column_name = `${this.author}-${this.title}-${this.editor}`;
   }
-
 }

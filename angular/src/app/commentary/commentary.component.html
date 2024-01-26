@@ -6,19 +6,16 @@
 <ng-template #show_commentary>
   <h5>
     Selected
-    <a class="a-void" (click)="this.show_introduction(this.document.author)">{{
-      this.document.author
-    }}</a
+    <a class="a-void" (click)="this.show_introduction(this.document.author)">{{ this.document.author }}</a
     >,
-    <a
-      class="a-void"
-      (click)="this.show_introduction(this.document.author, this.document.title)"
-      >{{ this.document.title }}</a
+    <a class="a-void" (click)="this.show_introduction(this.document.author, this.document.title)">{{
+      this.document.title
+    }}</a
     >, {{ this.document.editor }},
     {{ this.document.name }}
   </h5>
 
-   <!--Show banner if no commentary available -->
+  <!--Show banner if no commentary available -->
   <div *ngIf="!this.commentary.has_content()" class="alert alert-info" role="alert">
     No content is available yet for this specific fragment.
   </div>
@@ -27,7 +24,7 @@
   <div>
     <ng-container
       [ngTemplateOutlet]="commentary_column_template"
-      [ngTemplateOutletContext]="{ given_commentary: this.commentary}">
+      [ngTemplateOutletContext]="{ given_commentary: this.commentary }">
     </ng-container>
   </div>
 

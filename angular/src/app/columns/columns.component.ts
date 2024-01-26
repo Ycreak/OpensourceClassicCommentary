@@ -1,6 +1,5 @@
 // Library imports
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
-import { Output, EventEmitter, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 // Service imports
@@ -8,7 +7,7 @@ import { ApiService } from '@oscc/api.service';
 import { DialogService } from '@oscc/services/dialog.service';
 import { SettingsService } from '@oscc/services/settings.service';
 import { UtilityService } from '@oscc/utility.service';
-import { BibliographyHelperService } from '@oscc/services/bibliography-helper.service';
+import { BibliographyService } from '@oscc/services/bibliography.service';
 import { AuthService } from '@oscc/auth/auth.service';
 import { ColumnsService } from '@oscc/columns/columns.service';
 import { CommentaryService } from '@oscc/commentary/commentary.service';
@@ -27,10 +26,6 @@ import { MatMenuTrigger } from '@angular/material/menu';
   encapsulation: ViewEncapsulation.None,
 })
 export class ColumnsComponent implements OnInit {
-  @Input() requested_column: any;
-  @Output() clicked_document = new EventEmitter<any>();
-  @Output() translation_toggle_event = new EventEmitter<boolean>();
-
   public current_document: any; // Variable to store the clicked fragment and its data
   public document_clicked = false; // Shows "click a fragment" banner at startup if nothing is yet selected
 
@@ -42,7 +37,7 @@ export class ColumnsComponent implements OnInit {
     protected columns: ColumnsService,
     protected commentary: CommentaryService,
     protected settings: SettingsService,
-    private bib_helper: BibliographyHelperService,
+    private bib: BibliographyService,
     private matdialog: MatDialog
   ) {}
 
@@ -53,8 +48,11 @@ export class ColumnsComponent implements OnInit {
     // Create the first column and push it to the columns list
     if (this.columns.list.length < 1) {
       const column_id = this.columns.add();
-      this.columns.request({ document_type: 'fragment', author: 'Ennius', title: 'Thyestes', editor: 'TRF' }, column_id);
-      this.columns.find(column_id).column_name = `Ennius-Thyestes-TRF`
+      this.columns.request(
+        { document_type: 'fragment', author: 'Ennius', title: 'Thyestes', editor: 'TRF' },
+        column_id
+      );
+      this.columns.find(column_id).column_name = `Ennius-Thyestes-TRF`;
     }
   }
 
@@ -69,7 +67,7 @@ export class ColumnsComponent implements OnInit {
       next: (document_filter) => {
         if (document_filter) {
           this.columns.request(document_filter, column_id);
-          this.columns.find(column_id).column_name = `Custom ${column_id}` 
+          this.columns.find(column_id).column_name = `Custom ${column_id}`;
         }
       },
     });
@@ -83,13 +81,10 @@ export class ColumnsComponent implements OnInit {
    */
   protected handle_document_click(document: Fragment, column: Column): void {
     this.commentary.request(document);
-    //this.commentary.toggleMyVariable();
 
     //TODO: we need to emit a commentary object to the commentary
     document.translated = column.translated;
-    this.clicked_document.emit(document);
 
-    //this.document_clicked2.emit(document);
     this.document_clicked = true;
     this.current_document = document;
     this.columns.current = column;
@@ -118,7 +113,7 @@ export class ColumnsComponent implements OnInit {
       const column_id = this.columns.add();
       given_document.linked_fragments.forEach((linked_fragment: Linked_fragment) => {
         this.columns.request(linked_fragment, column_id, true);
-        this.columns.find(column_id).column_name = `Linked ${column_id}`
+        this.columns.find(column_id).column_name = `Linked ${column_id}`;
       });
     } else {
       this.utility.open_snackbar('No linked documents found');
@@ -187,28 +182,22 @@ export class ColumnsComponent implements OnInit {
    * @author Ycreak
    */
   protected show_column_bibliography(column: Column): void {
-    let string_bibliography = '';
     const column_bib_keys: string[] = [];
     // If there are keys, show the bibliography
-    if (column.has_bibliography) {
-      column.documents.forEach((doc: any) => {
-        doc.bib_keys.forEach((key: string) => {
-          column_bib_keys.push(key);
-        });
+    column.documents.forEach((doc: any) => {
+      doc.bib_keys.forEach((key: string) => {
+        column_bib_keys.push(key);
       });
-      column.bibliography_keys = [...new Set(column_bib_keys)];
-      // Convert the bibliography keys into citations and sort them alphabetically
-      const citations: string[] = [];
-      column.bibliography_keys.forEach((key: string) => {
-        citations.push(this.bib_helper.convert_bib_key_into_citation(key));
-      });
-      citations.sort().forEach((citation: string) => {
-        string_bibliography += citation;
-      });
-      this.dialog.open_column_bibliography(string_bibliography);
-    } else {
+    });
+    column.bibliography_keys = [...new Set(column_bib_keys)];
+
+    if (column.bibliography_keys.length == 0) {
       // If no keys are found, print a snackbar with the message
       this.utility.open_snackbar('No bibliography available for this column.');
+    } else {
+      // Convert the bibliography keys into citations and sort them alphabetically
+      const string_bibliography = this.bib.convert_keys_into_bibliography(column.bibliography_keys);
+      this.dialog.open_column_bibliography(string_bibliography);
     }
   }
 
@@ -220,7 +209,8 @@ export class ColumnsComponent implements OnInit {
   protected toggle_translation(column: Column): void {
     column.translated = !column.translated;
     // Also fire a event which notifies other components like the commentary component of the change.
-    this.translation_toggle_event.emit(column.translated);
+    this.commentary.translate();
+    //this.translation_toggle_event.emit(column.translated);
   }
 
   /**

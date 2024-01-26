@@ -49,12 +49,14 @@
           (click)="column_to_display.translated = false"
           (click)="column_to_display.create_column_name()"
           (click)="
-            this.columns.request({
-              author: column_to_display.author,
-              title: column_to_display.title,
-              editor: column_to_display.editor
-            },
-            column_to_display.column_id)
+            this.columns.request(
+              {
+                author: column_to_display.author,
+                title: column_to_display.title,
+                editor: column_to_display.editor
+              },
+              column_to_display.column_id
+            )
           ">
           {{ editor }}
         </button>
@@ -144,7 +146,7 @@
         "
         cdkDrag
         [cdkDragDisabled]="this.settings.fragments.dragging_disabled"
-        (cdkDragDropped)="this.columns.track_edited_columns($event)"
+        (cdkDragDropped)="this.columns.set_edited_flag($event)"
         [attr.id]="fragment.fragment_id"
         [style.background-color]="
           this.generate_document_gradient_background_color(
@@ -181,16 +183,8 @@
   [matMenuTriggerFor]="rightMenu"></div>
 
 <mat-menu #columnMenu="matMenu">
-  <button
-    *ngIf="this.columns.current.has_bibliography"
-    (click)="this.show_column_bibliography(this.columns.current)"
-    mat-menu-item>
-    Column Bibliography
-  </button>
-  <button
-    *ngIf="this.columns.current.has_translations()"
-    (click)="this.toggle_translation(this.columns.current)"
-    mat-menu-item>
+  <button (click)="this.show_column_bibliography(this.columns.current)" mat-menu-item>Column Bibliography</button>
+  <button (click)="this.toggle_translation(this.columns.current)" mat-menu-item>
     {{ this.translation_toggle_button_label(this.columns.current) }}
   </button>
   <button (click)="this.set_custom_filter(this.columns.current.column_id)" mat-menu-item>Custom filter</button>

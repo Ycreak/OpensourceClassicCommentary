@@ -9,6 +9,7 @@ import { environment } from '@src/environments/environment';
 
 // Service imports
 import { UtilityService } from '@oscc/utility.service';
+import { BibliographyService } from '@oscc/services/bibliography.service';
 
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
@@ -55,9 +56,8 @@ export class ApiService {
   concurrent_api_calls = 0;
   spinner: boolean;
 
-  bibliography: Bib[] = [];
-
   constructor(
+    private bib: BibliographyService,
     private http: HttpClient,
     private utility: UtilityService
   ) {
@@ -307,6 +307,8 @@ export class ApiService {
             console.error('unknown document type', value);
             this.utility.open_snackbar('Unknown document type received.');
           }
+          // Retrieve the bib keys from the commentary of the new document
+          new_document.bib_keys = this.bib.get_keys_from_document(new_document);
           documents.push(new_document);
         });
         this.spinner_off();
@@ -377,7 +379,7 @@ export class ApiService {
             bib.set(item);
             bib_list.push(bib);
           });
-          this.bibliography = bib_list;
+          this.bib.bibliography = bib_list;
           observer.next(data);
           observer.complete();
         });
@@ -404,7 +406,7 @@ export class ApiService {
             bib.set(item);
             bib_list.push(bib);
           });
-          this.bibliography = bib_list;
+          this.bib.bibliography = bib_list;
           observer.next(data);
           observer.complete();
         });

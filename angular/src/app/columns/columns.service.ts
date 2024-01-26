@@ -8,8 +8,8 @@ import { Fragment } from '@oscc/models/Fragment';
 
 // Service imports
 import { ApiService } from '@oscc/api.service';
+import { BibliographyService } from '@oscc/services/bibliography.service';
 import { UtilityService } from '@oscc/utility.service';
-import { BibliographyHelperService } from '@oscc/services/bibliography-helper.service';
 
 @Injectable({
   providedIn: 'root',
@@ -25,7 +25,7 @@ export class ColumnsService {
 
   constructor(
     private api: ApiService,
-    private bib_helper: BibliographyHelperService,
+    private bib: BibliographyService,
     private utility: UtilityService
   ) {}
 
@@ -137,20 +137,13 @@ export class ColumnsService {
         column.documents = documents;
       }
       this.current = column;
-      // Create a list of bibliography keys for the given column
-      column.bibliography_keys = [];
-      documents.forEach((doc: any) => {
-        doc.bib_keys = this.bib_helper.retrieve_bib_keys_from_commentary(doc.commentary);
-        if (doc.bib_keys.length > 0) {
-          column.has_bibliography = true;
-        }
-      });
+      // Check if the column has bibliography keys. If so, we can show the option to create a bibliography
+      column.has_bibliography = this.bib.check_documents_bibliography(column.documents);
       // Store the original order of the fragment names in the column object
       column.original_fragment_order = []; // Clear first
       documents.forEach((doc: any) => {
         column.original_fragment_order.push(doc.name);
       });
-
     });
   }
 
