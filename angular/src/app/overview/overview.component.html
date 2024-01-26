@@ -78,10 +78,7 @@
 <div>
   <mat-drawer-container class="drawer-container" autosize>
     <div class="overview-sidenav-content">
-      <app-columns
-        [requested_column]="this.requested_column"
-        (clicked_document)="this.clicked_document = $event"
-        (translation_toggle_event)="this.translation_toggled = $event">
+      <app-columns>
       </app-columns>
     </div>
 
@@ -95,34 +92,9 @@
       position="end"
       opened="true">
       <div style="padding: 0.5em">
-        <!--Show the currently clicked author + title-->
-        <!--<div *ngIf="!this.fragment_is_clicked(); else document_clicked">-->
-          <!--<h5>Click a fragment to show its content.</h5>-->
-        <!--</div>-->
-        <!--<ng-template #document_clicked>-->
-          <h5>
-            Selected
-            <a class="a-void" (click)="this.show_introduction(this.clicked_document.author)">{{
-              this.clicked_document.author
-            }}</a
-            >,
-            <a
-              class="a-void"
-              (click)="this.show_introduction(this.clicked_document.author, this.clicked_document.title)"
-              >{{ this.clicked_document.title }}</a
-            >, {{ this.clicked_document.editor }},
-            {{ this.clicked_document.name }}
-          </h5>
-
-          <!--Show the commentary via the commentary component -->
-          <app-commentary
-            #commentary
-            [document]="this.clicked_document"
-            [translated]="this.clicked_document.translated"
-            [translated]="this.translation_toggled"
-            (request_column)="this.requested_column = $event">
-          </app-commentary>
-        <!--</ng-template>-->
+        <!--Show the commentary via the commentary component -->
+        <app-commentary #commentary>
+        </app-commentary>
       </div>
     </mat-drawer>
   </mat-drawer-container>

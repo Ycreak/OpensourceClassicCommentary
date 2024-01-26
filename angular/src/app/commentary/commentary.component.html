@@ -1,14 +1,62 @@
-<!-- Show banner if no commentary available -->
-<div *ngIf="!this.commentary2.content.has_content()" class="alert alert-info" role="alert">
-  No content is available yet for this specific fragment.
+<!--Show the currently clicked author + title-->
+<div *ngIf="!this.document_clicked; else show_commentary">
+  <h5>Click a fragment to show its content.</h5>
 </div>
 
-<div>
-  <ng-container
-    [ngTemplateOutlet]="commentary_column_template"
-    [ngTemplateOutletContext]="{ given_commentary: this.commentary2.content }">
-  </ng-container>
-</div>
+<ng-template #show_commentary>
+  <h5>
+    Selected
+    <a class="a-void" (click)="this.show_introduction(this.document.author)">{{
+      this.document.author
+    }}</a
+    >,
+    <a
+      class="a-void"
+      (click)="this.show_introduction(this.document.author, this.document.title)"
+      >{{ this.document.title }}</a
+    >, {{ this.document.editor }},
+    {{ this.document.name }}
+  </h5>
+
+   <!--Show banner if no commentary available -->
+  <div *ngIf="!this.commentary.has_content()" class="alert alert-info" role="alert">
+    No content is available yet for this specific fragment.
+  </div>
+
+  <!--Document commentary section-->
+  <div>
+    <ng-container
+      [ngTemplateOutlet]="commentary_column_template"
+      [ngTemplateOutletContext]="{ given_commentary: this.commentary}">
+    </ng-container>
+  </div>
+
+  <!--Linked commentary section-->
+  <hr />
+  <div style="display: flex" *ngIf="!this.linked_commentary_retrieved">
+    <button class="commentary-extra-feature-button" mat-stroked-button (click)="this.retrieve_linked_commentary()">
+      Retrieve commentary from linked fragments
+    </button>
+  </div>
+
+  <div *ngIf="this.no_linked_commentary_found" class="alert alert-info" style="padding-top: 1em" role="alert">
+    No linked commentary found.
+  </div>
+
+  <div *ngFor="let linked_fragment of this.linked_commentaries">
+    <div *ngIf="linked_fragment.commentary.has_content()">
+      <h6>
+        <a class="a-void" (click)="this.request_linked_fragments(linked_fragment)">
+          Commentary from {{ linked_fragment.author }}, {{ linked_fragment.title }}, {{ linked_fragment.editor }},
+          {{ linked_fragment.name }}
+        </a>
+      </h6>
+      <ng-container
+        [ngTemplateOutlet]="commentary_column_template"
+        [ngTemplateOutletContext]="{ given_commentary: linked_fragment.commentary }"></ng-container>
+    </div>
+  </div>
+</ng-template>
 
 <ng-template #commentary_column_template let-commentary="given_commentary">
   <!-- Show the fragment's translation or original text -->
@@ -80,29 +128,3 @@
       [title]="'Fragment Bibliography'"></app-general-commentary-field>
   </ng-container>
 </ng-template>
-
-<!--Linked commentary section-->
-<hr />
-<div style="display: flex" *ngIf="!this.linked_commentary_retrieved">
-  <button class="commentary-extra-feature-button" mat-stroked-button (click)="this.retrieve_linked_commentary()">
-    Retrieve commentary from linked fragments
-  </button>
-</div>
-
-<div *ngIf="this.no_linked_commentary_found" class="alert alert-info" style="padding-top: 1em" role="alert">
-  No linked commentary found.
-</div>
-
-<div *ngFor="let linked_fragment of this.linked_commentaries">
-  <div *ngIf="linked_fragment.commentary.has_content()">
-    <h6>
-      <a class="a-void" (click)="this.request_linked_fragments(linked_fragment)">
-        Commentary from {{ linked_fragment.author }}, {{ linked_fragment.title }}, {{ linked_fragment.editor }},
-        {{ linked_fragment.name }}
-      </a>
-    </h6>
-    <ng-container
-      [ngTemplateOutlet]="commentary_column_template"
-      [ngTemplateOutletContext]="{ given_commentary: linked_fragment.commentary }"></ng-container>
-  </div>
-</div>

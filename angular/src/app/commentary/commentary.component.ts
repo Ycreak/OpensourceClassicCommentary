@@ -1,12 +1,16 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
-import { Output, EventEmitter } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog'; 
 
 // Model imports
 import { Commentary } from '@oscc/models/Commentary';
 import { Fragment } from '@oscc/models/Fragment';
 
+// Components imports
+import { IntroductionsComponent } from './introductions/introductions.component';
+
 // Service imports
 import { ApiService } from '@oscc/api.service';
+import { BibliographyHelperService } from '@oscc/services/bibliography-helper.service';
 import { DialogService } from '@oscc/services/dialog.service';
 import { SettingsService } from '@oscc/services/settings.service';
 import { StringFormatterService } from '@oscc/services/string-formatter.service';
@@ -19,56 +23,53 @@ import {CommentaryService} from './commentary.service';
   templateUrl: './commentary.component.html',
   styleUrls: ['./commentary.component.scss'],
 })
-export class CommentaryComponent implements OnChanges, OnInit {
-  @Input() document: any;
-  @Input() translated: boolean;
-
+export class CommentaryComponent {
+  // The document given to the commentary to show its commentary
+  protected document: any;
+  // Commentary from the given document
   protected commentary: Commentary;
-
+  // If no document has been clicked, we show a custom message
   protected document_clicked = false;
   protected translation_orig_text_expanded = false;
 
   protected bibliography = '';
 
+  // If no linked commentary has been found, we show a banner
   protected no_linked_commentary_found: boolean;
+  // If no  linked commentary has been retrieved, we show a button with the option to
   protected linked_commentary_retrieved = false;
-  protected linked_commentaries: Commentary[];
+  // List to hold multiple retrieved linked commentaries
+  protected linked_commentaries: Commentary[] = [];
 
   constructor(
+    private bib: BibliographyHelperService,
+    private mat_dialog: MatDialog,
     private string_formatter: StringFormatterService,
     protected columns: ColumnsService,
-    protected commentary2: CommentaryService,
+    protected commentary_service: CommentaryService,
     protected utility: UtilityService,
     protected api: ApiService,
     protected dialog: DialogService,
     protected settings: SettingsService
   ) {
-    console.log('sub')
-    this.commentary2.doc.subscribe(value => {
-      console.log('value', value)
-        // React to the new value here
+    this.commentary_service.doc.subscribe(doc => {
+      // The commentary service has received a new document. We process the incoming document here.
+      this.document_clicked = true;
+      this.document = doc;
+
+      this.commentary = this.document.commentary;
+      // Reset linked commentary status and lists
+      this.no_linked_commentary_found = false;
+      this.linked_commentary_retrieved = false;
+      this.linked_commentaries = [];
+      // Add additional formatting to the commentary
+      this.commentary = this.process_commentary_content_fields(
+        this.commentary,
+        this.string_formatter.convert_custom_tag_to_html
+      );
+      // Create a bibliography for the document
+      this.commentary.bibliography = this.create_bibliography(this.document);
     });
-
-  }
-
-  ngOnInit(): void {
-  }
-
-  ngOnChanges() {
-    console.log('change')
-    //this.commentary = this.document.commentary;
-    //console.log(this.commentary)
-
-    //this.no_linked_commentary_found = false;
-    //this.linked_commentary_retrieved = false;
-    //this.linked_commentaries = [];
-
-    //// On init, convert all custom HTML tags in the commentary fields
-    //this.commentary = this.process_commentary_content_fields(
-      //this.commentary,
-      //this.string_formatter.convert_custom_tag_to_html
-    //);
-    //this.commentary = this.process_bibliography(this.commentary);
   }
 
   /**
@@ -92,7 +93,8 @@ export class CommentaryComponent implements OnChanges, OnInit {
             this.commentary,
             this.string_formatter.convert_custom_tag_to_html
           );
-          this.commentary = this.process_bibliography(this.commentary);
+          //this.commentary.bibliography = this.create_bibliography(this.document);
+          //this.commentary = this.create_bibliography(this.commentary);
           this.linked_commentaries.push(found_document);
         }
         // If linked fragments are found but have no commentary, we set the banner
@@ -133,13 +135,17 @@ export class CommentaryComponent implements OnChanges, OnInit {
    * @returns Commentary with bib entries handled
    * @author Ycreak
    */
-  public process_bibliography(commentary: Commentary): Commentary {
-    this.commentary = this.process_commentary_content_fields(this.commentary, this.convert_bib_entry.bind(this));
-    // The previous function created a temporary bibliography. We put this one
-    // inside our commentary object and clean the temporary one.
-    commentary.bibliography = this.bibliography;
-    this.bibliography = '';
-    return commentary;
+  public create_bibliography(doc: any): string {
+    // Convert the bibliography keys into citations and sort them alphabetically
+    const citations: string[] = [];
+    let string_bibliography = "";
+    doc.bib_keys.forEach((key: string) => {
+      citations.push(this.bib.convert_bib_key_into_citation(key));
+    });
+    citations.sort().forEach((citation: string) => {
+      string_bibliography += citation;
+    });
+    return string_bibliography;
   }
 
   /**
@@ -195,7 +201,7 @@ export class CommentaryComponent implements OnChanges, OnInit {
   }
 
   /**
-   * Requests the columns component for linked fragments
+   * Requests the columns component for a column to visualise linked fragments
    * @param linked_fragment (Fragment)
    * @author Ycreak
    */
@@ -204,4 +210,20 @@ export class CommentaryComponent implements OnChanges, OnInit {
     this.columns.request(fragment, column_id)
     this.columns.find(column_id).column_name = `${fragment.author}-${fragment.title}-${fragment.editor}`
   }
+  
+  /**
+   * Opens the introduction dialog. An introduction can be about either an author or a text.
+   * @author Ycreak
+   */
+  protected show_introduction(author: string, title?: string): void {
+    title = title ? title : '';
+    //FIXME: enable when introductions are working.
+    const enabled = false;
+    if (enabled) {
+      this.mat_dialog.open(IntroductionsComponent, {
+        data: { author: author, title: title },
+      });
+    }
+  }
+
 }
