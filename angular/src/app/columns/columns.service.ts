@@ -120,10 +120,12 @@ export class ColumnsService {
 
   /**
    * Request the API for documents: add them to the given column
+   * @param filter (object) on which to filter the database
    * @param column_id (number) in which to add the documents
-   * @param documents (object[]) which to add to the provided column
+   * @param append (boolean) whether we append documents or replace
+   * @author Ycreak
    */
-  public request(filter: object, column_id?: number, append?: boolean): void {
+  public request(filter: object, column_id: number, append?: boolean): void {
     this.api.get_documents(filter).subscribe((documents) => {
       const column = column_id ? this.find(column_id) : this.find(this.add());
       // Format all documents to look nice on the frontend (little HTML, some beautiful CSS)
@@ -143,12 +145,12 @@ export class ColumnsService {
           column.has_bibliography = true;
         }
       });
-
       // Store the original order of the fragment names in the column object
       column.original_fragment_order = []; // Clear first
       documents.forEach((doc: any) => {
         column.original_fragment_order.push(doc.name);
       });
+
     });
   }
 

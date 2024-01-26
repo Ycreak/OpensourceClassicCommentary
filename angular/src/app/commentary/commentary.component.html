@@ -1,12 +1,12 @@
 <!-- Show banner if no commentary available -->
-<div *ngIf="!this.commentary.has_content()" class="alert alert-info" role="alert">
+<div *ngIf="!this.commentary2.content.has_content()" class="alert alert-info" role="alert">
   No content is available yet for this specific fragment.
 </div>
 
 <div>
   <ng-container
     [ngTemplateOutlet]="commentary_column_template"
-    [ngTemplateOutletContext]="{ given_commentary: this.commentary }">
+    [ngTemplateOutletContext]="{ given_commentary: this.commentary2.content }">
   </ng-container>
 </div>
 
@@ -96,7 +96,7 @@
 <div *ngFor="let linked_fragment of this.linked_commentaries">
   <div *ngIf="linked_fragment.commentary.has_content()">
     <h6>
-      <a class="a-void" (click)="this.columns.request(linked_fragment)">
+      <a class="a-void" (click)="this.request_linked_fragments(linked_fragment)">
         Commentary from {{ linked_fragment.author }}, {{ linked_fragment.title }}, {{ linked_fragment.editor }},
         {{ linked_fragment.name }}
       </a>

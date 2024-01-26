@@ -1,8 +1,9 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { Output, EventEmitter } from '@angular/core';
 
 // Model imports
 import { Commentary } from '@oscc/models/Commentary';
+import { Fragment } from '@oscc/models/Fragment';
 
 // Service imports
 import { ApiService } from '@oscc/api.service';
@@ -11,17 +12,16 @@ import { SettingsService } from '@oscc/services/settings.service';
 import { StringFormatterService } from '@oscc/services/string-formatter.service';
 import { UtilityService } from '@oscc/utility.service';
 import { ColumnsService } from '@oscc/columns/columns.service';
+import {CommentaryService} from './commentary.service';
 
 @Component({
   selector: 'app-commentary',
   templateUrl: './commentary.component.html',
   styleUrls: ['./commentary.component.scss'],
 })
-export class CommentaryComponent implements OnChanges {
+export class CommentaryComponent implements OnChanges, OnInit {
   @Input() document: any;
   @Input() translated: boolean;
-
-  @Output() request_column = new EventEmitter<any>();
 
   protected commentary: Commentary;
 
@@ -37,25 +37,38 @@ export class CommentaryComponent implements OnChanges {
   constructor(
     private string_formatter: StringFormatterService,
     protected columns: ColumnsService,
+    protected commentary2: CommentaryService,
     protected utility: UtilityService,
     protected api: ApiService,
     protected dialog: DialogService,
     protected settings: SettingsService
-  ) {}
+  ) {
+    console.log('sub')
+    this.commentary2.doc.subscribe(value => {
+      console.log('value', value)
+        // React to the new value here
+    });
+
+  }
+
+  ngOnInit(): void {
+  }
 
   ngOnChanges() {
-    this.commentary = this.document.commentary;
+    console.log('change')
+    //this.commentary = this.document.commentary;
+    //console.log(this.commentary)
 
-    this.no_linked_commentary_found = false;
-    this.linked_commentary_retrieved = false;
-    this.linked_commentaries = [];
+    //this.no_linked_commentary_found = false;
+    //this.linked_commentary_retrieved = false;
+    //this.linked_commentaries = [];
 
-    // On init, convert all custom HTML tags in the commentary fields
-    this.commentary = this.process_commentary_content_fields(
-      this.commentary,
-      this.string_formatter.convert_custom_tag_to_html
-    );
-    this.commentary = this.process_bibliography(this.commentary);
+    //// On init, convert all custom HTML tags in the commentary fields
+    //this.commentary = this.process_commentary_content_fields(
+      //this.commentary,
+      //this.string_formatter.convert_custom_tag_to_html
+    //);
+    //this.commentary = this.process_bibliography(this.commentary);
   }
 
   /**
@@ -179,5 +192,16 @@ export class CommentaryComponent implements OnChanges {
    */
   protected toggle_translation_orig_text_expanded(): void {
     this.translation_orig_text_expanded = !this.translation_orig_text_expanded;
+  }
+
+  /**
+   * Requests the columns component for linked fragments
+   * @param linked_fragment (Fragment)
+   * @author Ycreak
+   */
+  protected request_linked_fragments(fragment: Fragment): void {
+    const column_id = this.columns.add()
+    this.columns.request(fragment, column_id)
+    this.columns.find(column_id).column_name = `${fragment.author}-${fragment.title}-${fragment.editor}`
   }
 }

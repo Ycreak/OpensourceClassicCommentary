@@ -11,6 +11,8 @@ export class Column {
     Object.assign(this, column);
   }
 
+  column_name = 'New column';
+
   author: string;
   title: string;
   editor: string;
@@ -67,4 +69,13 @@ export class Column {
     }
     return false;
   }
+
+  /**
+   * Creates a column name from the current class values
+   * @author Ycreak
+   */
+  create_column_name(): void {
+    this.column_name = `${this.author}-${this.title}-${this.editor}`
+  }
+
 }

@@ -11,6 +11,7 @@ import { UtilityService } from '@oscc/utility.service';
 import { BibliographyHelperService } from '@oscc/services/bibliography-helper.service';
 import { AuthService } from '@oscc/auth/auth.service';
 import { ColumnsService } from '@oscc/columns/columns.service';
+import { CommentaryService } from '@oscc/commentary/commentary.service';
 import { DocumentFilterComponent } from '@oscc/dialogs/document-filter/document-filter.component';
 
 // Model imports
@@ -39,6 +40,7 @@ export class ColumnsComponent implements OnInit {
     protected auth_service: AuthService,
     protected dialog: DialogService,
     protected columns: ColumnsService,
+    protected commentary: CommentaryService,
     protected settings: SettingsService,
     private bib_helper: BibliographyHelperService,
     private matdialog: MatDialog
@@ -50,7 +52,9 @@ export class ColumnsComponent implements OnInit {
     this.current_document = new Fragment({});
     // Create the first column and push it to the columns list
     if (this.columns.list.length < 1) {
-      this.columns.request({ document_type: 'fragment', author: 'Ennius', title: 'Thyestes', editor: 'TRF' });
+      const column_id = this.columns.add();
+      this.columns.request({ document_type: 'fragment', author: 'Ennius', title: 'Thyestes', editor: 'TRF' }, column_id);
+      this.columns.find(column_id).column_name = `Ennius-Thyestes-TRF`
     }
   }
 
@@ -65,6 +69,7 @@ export class ColumnsComponent implements OnInit {
       next: (document_filter) => {
         if (document_filter) {
           this.columns.request(document_filter, column_id);
+          this.columns.find(column_id).column_name = `Custom ${column_id}` 
         }
       },
     });
@@ -77,6 +82,9 @@ export class ColumnsComponent implements OnInit {
    * @author Ycreak
    */
   protected handle_document_click(document: Fragment, column: Column): void {
+    this.commentary.request(document);
+    //this.commentary.toggleMyVariable();
+
     //TODO: we need to emit a commentary object to the commentary
     document.translated = column.translated;
     this.clicked_document.emit(document);
@@ -110,6 +118,7 @@ export class ColumnsComponent implements OnInit {
       const column_id = this.columns.add();
       given_document.linked_fragments.forEach((linked_fragment: Linked_fragment) => {
         this.columns.request(linked_fragment, column_id, true);
+        this.columns.find(column_id).column_name = `Linked ${column_id}`
       });
     } else {
       this.utility.open_snackbar('No linked documents found');

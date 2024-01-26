@@ -96,10 +96,10 @@
       opened="true">
       <div style="padding: 0.5em">
         <!--Show the currently clicked author + title-->
-        <div *ngIf="!this.fragment_is_clicked(); else document_clicked">
-          <h5>Click a fragment to show its content.</h5>
-        </div>
-        <ng-template #document_clicked>
+        <!--<div *ngIf="!this.fragment_is_clicked(); else document_clicked">-->
+          <!--<h5>Click a fragment to show its content.</h5>-->
+        <!--</div>-->
+        <!--<ng-template #document_clicked>-->
           <h5>
             Selected
             <a class="a-void" (click)="this.show_introduction(this.clicked_document.author)">{{
@@ -122,7 +122,7 @@
             [translated]="this.translation_toggled"
             (request_column)="this.requested_column = $event">
           </app-commentary>
-        </ng-template>
+        <!--</ng-template>-->
       </div>
     </mat-drawer>
   </mat-drawer-container>

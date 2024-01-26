@@ -18,7 +18,6 @@
       <ng-container *ngFor="let author of this.api.get_author_list(); let i = index">
         <button
           mat-menu-item
-          (menuOpened)="column_to_display.retrieved_titles = []; column_to_display.retrieved_editors = []"
           (menuOpened)="column_to_display.title = ''; column_to_display.editor = ''"
           (menuOpened)="column_to_display.author = author"
           (menuOpened)="column_to_display.retrieved_titles = this.api.get_title_list(author)"
@@ -32,7 +31,6 @@
       <ng-container *ngFor="let title of column_to_display.retrieved_titles; let i = index">
         <button
           mat-menu-item
-          (menuOpened)="column_to_display.retrieved_editors = []"
           (menuOpened)="column_to_display.title = ''"
           (menuOpened)="column_to_display.title = title"
           (menuOpened)="column_to_display.retrieved_editors = this.api.get_editor_list(column_to_display.author, title)"
@@ -49,12 +47,14 @@
           (click)="column_to_display.editor = editor"
           (click)="column_to_display.edited = false"
           (click)="column_to_display.translated = false"
+          (click)="column_to_display.create_column_name()"
           (click)="
-            this.columns.request(column_to_display.column_id, {
+            this.columns.request({
               author: column_to_display.author,
               title: column_to_display.title,
               editor: column_to_display.editor
-            })
+            },
+            column_to_display.column_id)
           ">
           {{ editor }}
         </button>
@@ -89,7 +89,7 @@
     <ng-container *ngFor="let column_to_display of this.columns.list">
       <mat-checkbox ngDefaultControl [(ngModel)]="column_to_display.visible">
         <div style="color: white">
-          {{ column_to_display.author }}-{{ column_to_display.title }}-{{ column_to_display.editor }}
+          {{ column_to_display.column_name }}
           <sup *ngIf="column_to_display.edited">altered</sup>
         </div>
       </mat-checkbox>
