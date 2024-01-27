@@ -1,106 +1,10 @@
-<!-- Selection of fragment. All the clicks below are to make sure the form field stays in sync with
-      all types of unlogical user routes and inputs -->
-<mat-form-field>
-  <mat-label>Select author</mat-label>
-  <mat-select [(ngModel)]="this.selected_fragment_data.author" ngDefaultControl>
-    <mat-option
-      *ngFor="let author of this.api.get_author_list()"
-      [value]="author"
-      (click)="this.selected_fragment_data.author = author"
-      (click)="
-        this.selected_fragment_data.title = '';
-        this.selected_fragment_data.editor = '';
-        this.selected_fragment_data.name = ''
-      "
-      (click)="
-        this.selected_fragment_data.retrieved_titles = [];
-        this.selected_fragment_data.retrieved_editors = [];
-        this.selected_fragment_data.fragment_names =
-          [] //FIXME: perhaps retrieved_fragment_names is more clear than fragment_names?
-      "
-      (click)="this.selected_fragment_data.retrieved_titles = this.api.get_title_list(author)"
-      (click)="this.reset_fragment_form()"
-      (click)="this.fragment_form.patchValue({ author: author })"
-      (click)="this.fragment_selected = false">
-      {{ author }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
-
-<mat-form-field>
-  <mat-label>Select text</mat-label>
-  <mat-select [(ngModel)]="this.selected_fragment_data.title" ngDefaultControl>
-    <mat-option
-      *ngFor="let title of this.selected_fragment_data.retrieved_titles"
-      [value]="title"
-      (click)="this.selected_fragment_data.title = title"
-      (click)="this.selected_fragment_data.editor = ''; this.selected_fragment_data.name = ''"
-      (click)="this.selected_fragment_data.retrieved_editors = []; this.selected_fragment_data.fragment_names = []"
-      (click)="this.reset_fragment_form()"
-      (click)="this.fragment_form.patchValue({ author: selected_fragment_data.author })"
-      (click)="this.fragment_form.patchValue({ title: title })"
-      (click)="
-        this.selected_fragment_data.retrieved_editors = this.api.get_editor_list(
-          this.selected_fragment_data.author,
-          title
-        )
-      "
-      (click)="this.fragment_selected = false">
-      {{ title }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
-
-<mat-form-field>
-  <mat-label>Select edition</mat-label>
-  <mat-select [(ngModel)]="this.selected_fragment_data.editor" ngDefaultControl>
-    <mat-option
-      *ngFor="let editor of this.selected_fragment_data.retrieved_editors"
-      [value]="editor"
-      (click)="this.selected_fragment_data.editor = editor"
-      (click)="this.selected_fragment_data.name = ''"
-      (click)="this.selected_fragment_data.fragment_names = []"
-      (click)="this.reset_fragment_form()"
-      (click)="this.fragment_form.patchValue({ author: selected_fragment_data.author })"
-      (click)="this.fragment_form.patchValue({ title: selected_fragment_data.title })"
-      (click)="this.fragment_form.patchValue({ editor: selected_fragment_data.editor })"
-      (click)="
-        this.request_document_names({
-          author: this.selected_fragment_data.author,
-          title: this.selected_fragment_data.title,
-          editor: this.selected_fragment_data.editor
-        })
-      "
-      (click)="this.fragment_selected = false">
-      {{ editor }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
-
-<mat-form-field>
-  <mat-label>Select fragment</mat-label>
-  <mat-select [(ngModel)]="this.selected_fragment_data.name" ngDefaultControl>
-    <mat-option
-      *ngFor="let fragment_name of this.selected_fragment_data.fragment_names"
-      [value]="fragment_name.name"
-      (click)="this.selected_fragment_data.name = fragment_name.name"
-      (click)="this.fragment_form.patchValue({ name: fragment_name.name })"
-      (click)="
-        this.request_documents({
-          author: selected_fragment_data.author,
-          title: selected_fragment_data.title,
-          editor: selected_fragment_data.editor,
-          name: selected_fragment_data.name
-        })
-      "
-      (click)="this.fragment_selected = true">
-      {{ fragment_name.name }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
-
-<hr />
 <!-- Buttons to submit fragment data -->
+<app-latin-tragic-fragment-filter
+  [button_title]="'Select fragment'"
+  [button_type]="'stroked'"
+  [endpoint]="'name'"
+  (new_filter)="this.apply_filter($event)">
+</app-latin-tragic-fragment-filter>
 <button
   mat-stroked-button
   class="button-margin"
@@ -367,68 +271,12 @@
 
     <hr />
 
-    <div class="row">
-      <mat-form-field class="input-form-custom" style="--max-width: 25%">
-        <mat-label>Select referenced author</mat-label>
-        <mat-select [(ngModel)]="this.fragment_referencer.author" ngDefaultControl>
-          <mat-option
-            *ngFor="let author of this.api.get_author_list()"
-            [value]="author"
-            (click)="
-              this.fragment_referencer.title = '';
-              this.fragment_referencer.editor = '';
-              this.fragment_referencer.name = ''
-            ">
-            {{ author }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field class="input-form-custom" style="--width: 25%">
-        <mat-label>Select referenced title</mat-label>
-        <mat-select [(ngModel)]="this.fragment_referencer.title" ngDefaultControl>
-          <mat-option
-            *ngFor="let title of this.api.get_title_list(this.fragment_referencer.author)"
-            [value]="title"
-            (click)="this.fragment_referencer.editor = ''; this.fragment_referencer.name = ''">
-            {{ title }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field class="input-form-custom" style="--width: 25%">
-        <mat-label>Select referenced editor</mat-label>
-        <mat-select [(ngModel)]="this.fragment_referencer.editor" ngDefaultControl>
-          <mat-option
-            *ngFor="
-              let editor of this.api.get_editor_list(this.fragment_referencer.author, this.fragment_referencer.title)
-            "
-            [value]="editor"
-            (click)="
-              this.fragment_referencer.name = '';
-              this.request_document_names({
-                author: this.fragment_referencer.author,
-                title: this.fragment_referencer.title,
-                editor: this.fragment_referencer.editor
-              })
-            ">
-            {{ editor }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field class="input-form-custom" style="--width: 25%">
-        <mat-label>Select referenced name</mat-label>
-        <mat-select [(ngModel)]="this.fragment_referencer.name" ngDefaultControl>
-          <mat-option
-            *ngFor="let name of this.fragment_referencer.fragment_names"
-            [value]="name.name"
-            (click)="this.add_referenced_fragment_to_Fragment_form(this.fragment_referencer)">
-            {{ name.name }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
+    <app-latin-tragic-fragment-filter
+      [button_title]="'Link fragment'"
+      [button_type]="'stroked'"
+      [endpoint]="'name'"
+      (new_filter)="this.add_linked_fragment($event)">
+    </app-latin-tragic-fragment-filter>
 
     <form [formGroup]="fragment_form">
       <div class="div-padding-lg"></div>
@@ -464,24 +312,6 @@
     </form>
 
     <hr />
-
-    <!-- POSSIBILITY TO LINK FRAGMENTS AUTOMATICALLY BASED ON THEIR FUZZYWUZZY CLOSENESS -->
-    <div class="alert alert-info" role="alert">
-      OSCC can also automatically link similar fragments from different editors together. To do so, select the author
-      and title you wish to link fragments for and click <b>Automatically link fragments</b>. The program will attempt
-      to link all similar enough fragments together. However, some fragments might be missed. It is recommended that the
-      user checks the linked fragments and edits them manually if needed.
-    </div>
-
-    <button
-      mat-stroked-button
-      color="primary"
-      (click)="this.request_automatic_fragment_linker(fragment_referencer)"
-      (click)="this.spinner_active = false"
-      [disabled]="this.fragment_referencer.title === ''"
-      *ngIf="this.auth_service.current_user_role === 'teacher'">
-      Automatically link fragments
-    </button>
   </mat-tab>
   <!-- end of the Fragment referencer tab -->
 

@@ -5,63 +5,22 @@
 <ng-template #column_toolbar let-column_to_display="given_column">
   <!--<ng-template #commentary_column_template let-given_fragment="given_fragment">-->
   <mat-toolbar class="fragment-column-toolbar">
-    <!-- Button to select the text -->
-    <button
-      class="fragment-column-button"
-      mat-button
-      [matMenuTriggerFor]="menu_authors"
-      (click)="column_to_display.new_column = false">
-      Select text
-    </button>
-    <!-- Nested menu to select author - title - editor. -->
-    <mat-menu #menu_authors="matMenu">
-      <ng-container *ngFor="let author of this.api.get_author_list(); let i = index">
-        <button
-          mat-menu-item
-          (menuOpened)="column_to_display.title = ''; column_to_display.editor = ''"
-          (menuOpened)="column_to_display.author = author"
-          (menuOpened)="column_to_display.retrieved_titles = this.api.get_title_list(author)"
-          [matMenuTriggerFor]="menu_titles">
-          {{ author }}
-        </button>
-      </ng-container>
-    </mat-menu>
-
-    <mat-menu #menu_titles="matMenu">
-      <ng-container *ngFor="let title of column_to_display.retrieved_titles; let i = index">
-        <button
-          mat-menu-item
-          (menuOpened)="column_to_display.title = ''"
-          (menuOpened)="column_to_display.title = title"
-          (menuOpened)="column_to_display.retrieved_editors = this.api.get_editor_list(column_to_display.author, title)"
-          [matMenuTriggerFor]="menu_editors">
-          {{ title }}
-        </button>
-      </ng-container>
-    </mat-menu>
-
-    <mat-menu #menu_editors="matMenu">
-      <ng-container *ngFor="let editor of column_to_display.retrieved_editors; let i = index">
-        <button
-          mat-menu-item
-          (click)="column_to_display.editor = editor"
-          (click)="column_to_display.edited = false"
-          (click)="column_to_display.translated = false"
-          (click)="column_to_display.create_column_name()"
-          (click)="
-            this.columns.request(
-              {
-                author: column_to_display.author,
-                title: column_to_display.title,
-                editor: column_to_display.editor
-              },
-              column_to_display.column_id
-            )
-          ">
-          {{ editor }}
-        </button>
-      </ng-container>
-    </mat-menu>
+    <!-- Button to select the text via the quick filter -->
+    <app-latin-tragic-fragment-filter
+      [button_title]="'Select text'"
+      [button_type]="'basic'"
+      [endpoint]="'editor'"
+      (new_filter)="
+        this.columns.request(
+          {
+            author: $event.author,
+            title: $event.title,
+            editor: $event.editor
+          },
+          column_to_display.column_id
+        )
+      ">
+    </app-latin-tragic-fragment-filter>
 
     <!-- Buttons to modify columns -->
     <button mat-icon-button (click)="this.columns.move(column_to_display.column_id, 'left')">

@@ -77,18 +77,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "OpenSourceClassicCommentary:build"
+            "buildTarget": "OpenSourceClassicCommentary:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "OpenSourceClassicCommentary:build:production"
+              "buildTarget": "OpenSourceClassicCommentary:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "OpenSourceClassicCommentary:build"
+            "buildTarget": "OpenSourceClassicCommentary:build"
           }
         },
         "test": {
