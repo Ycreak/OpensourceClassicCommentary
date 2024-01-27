@@ -156,7 +156,7 @@ export class FragmentsDashboardComponent implements OnInit {
       'reconstruction',
       'metrical_analysis',
     ]) {
-      this.fragment_form.patchValue({ [item]: fragment.commentary[item] });
+      this.fragment_form.patchValue({ [item]: fragment.commentary.fields[item] });
     }
     // Fill the fragment context array
     for (const i in fragment.commentary.fields.context) {
