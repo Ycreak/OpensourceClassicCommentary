@@ -5,8 +5,9 @@
 </div>
 
 <ng-container *ngIf="this.translated; else fragments_not_translated">
+  <p *ngIf="fragment.commentary.fields.translation?.length === 0"><i>No translation available</i></p>
   <div>
-    <p [innerHTML]="fragment.commentary.translation"></p>
+    <p [innerHTML]="fragment.commentary.fields.translation"></p>
   </div>
 </ng-container>
 

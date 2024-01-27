@@ -1,6 +1,12 @@
+/**
+ * This component holds all the components of the OSCC: the columns, the commentary and the playground.
+ * @author Ycreak
+ */
+
 // Library imports
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog'; // Library used for interacting with the page
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ViewportScroller } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
 import { environment } from '@src/environments/environment';
 
 // Service imports
@@ -13,20 +19,12 @@ import { AuthService } from '@oscc/auth/auth.service';
 // Component imports
 import { LoginComponent } from '@oscc/login/login.component';
 
-// Model imports
-import { ColumnsService } from '@oscc/columns/columns.service';
-import { LocalStorageService } from '@oscc/services/local-storage.service';
-import { CommentaryComponent } from '@oscc/commentary/commentary.component';
-import { ViewportScroller } from '@angular/common';
-
 @Component({
   selector: 'app-overview',
   templateUrl: './overview.component.html',
   styleUrls: ['./overview.component.scss'],
 })
 export class OverviewComponent implements OnInit, OnDestroy {
-  @ViewChild('commentary') commentary: CommentaryComponent;
-
   protected commentary_enabled = true;
   protected playground_enabled = true;
 
@@ -35,17 +33,14 @@ export class OverviewComponent implements OnInit, OnDestroy {
     private viewportscroller: ViewportScroller,
     protected api: ApiService,
     protected auth_service: AuthService,
-    protected columns: ColumnsService,
     protected dialog: DialogService,
     protected settings: SettingsService,
-    protected window_watcher: WindowSizeWatcherService,
-    public localstorage: LocalStorageService
+    protected window_watcher: WindowSizeWatcherService
   ) {}
 
   ngOnInit(): void {
     // Create the window watcher for mobile devices
     this.window_watcher.init(window.innerWidth);
-
     // Load the user's previously used setting from local storage using the LocalStorageService service
     this.settings.load_settings();
   }

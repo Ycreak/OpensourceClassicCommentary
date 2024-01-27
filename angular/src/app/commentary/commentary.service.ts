@@ -19,6 +19,6 @@ export class CommentaryService {
   }
 
   public translate(): void {
-    this.translated.next(!this.translated);
+    this.translated.next('translation toggle');
   }
 }

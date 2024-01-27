@@ -1,23 +1,31 @@
+/**
+ * This component visualises the columns as specified in the columns service. Whenever changes happen to the list
+ * variable in the columns service, this component visualises these changes.
+ * @author Ycreak
+ */
+
 // Library imports
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 // Service imports
 import { ApiService } from '@oscc/api.service';
+import { AuthService } from '@oscc/auth/auth.service';
+import { BibliographyService } from '@oscc/services/bibliography.service';
+import { ColumnsService } from '@oscc/columns/columns.service';
+import { CommentaryService } from '@oscc/commentary/commentary.service';
 import { DialogService } from '@oscc/services/dialog.service';
 import { SettingsService } from '@oscc/services/settings.service';
 import { UtilityService } from '@oscc/utility.service';
-import { BibliographyService } from '@oscc/services/bibliography.service';
-import { AuthService } from '@oscc/auth/auth.service';
-import { ColumnsService } from '@oscc/columns/columns.service';
-import { CommentaryService } from '@oscc/commentary/commentary.service';
+
+// Component imports
 import { DocumentFilterComponent } from '@oscc/dialogs/document-filter/document-filter.component';
 
 // Model imports
+import { Column } from '@oscc/models/Column';
 import { Fragment } from '@oscc/models/Fragment';
 import { Linked_fragment } from '@oscc/models/Linked_fragment';
-import { Column } from '@oscc/models/Column';
-import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
   selector: 'app-columns',
@@ -26,17 +34,17 @@ import { MatMenuTrigger } from '@angular/material/menu';
   encapsulation: ViewEncapsulation.None,
 })
 export class ColumnsComponent implements OnInit {
-  public current_document: any; // Variable to store the clicked fragment and its data
-  public document_clicked = false; // Shows "click a fragment" banner at startup if nothing is yet selected
+  // Variable to store the clicked fragment and its data. Used for the context menu
+  public current_document: any;
 
   constructor(
     protected api: ApiService,
-    protected utility: UtilityService,
     protected auth_service: AuthService,
-    protected dialog: DialogService,
     protected columns: ColumnsService,
     protected commentary: CommentaryService,
+    protected dialog: DialogService,
     protected settings: SettingsService,
+    protected utility: UtilityService,
     private bib: BibliographyService,
     private matdialog: MatDialog
   ) {}
@@ -79,29 +87,22 @@ export class ColumnsComponent implements OnInit {
    * @param Column
    * @author Ycreak
    */
-  protected handle_document_click(document: Fragment, column: Column): void {
+  protected handle_document_click(document: any, column: Column): void {
+    // Request the commentary to show the clicked document
     this.commentary.request(document);
-
-    //TODO: we need to emit a commentary object to the commentary
-    document.translated = column.translated;
-
-    this.document_clicked = true;
+    // Set the current document and current column for the context menus
     this.current_document = document;
     this.columns.current = column;
 
     // The next part handles the colouring of clicked and referenced documents.
     // First, restore all documents to their original black colour when a new document is clicked
-    for (const index in this.columns.list) {
-      this.columns.list[index] = this.columns.blacken(this.columns.list[index]);
-    }
+    this.columns.list.forEach((column: Column) => {
+      this.columns.blacken(column);
+    });
     // Second, colour the clicked document
     document.colour = '#3F51B5';
     // Lastly, colour the linked documents
     this.columns.colour_linked_fragments(document);
-    // And scroll each column to the linked document if requested
-    //if (this.settings.fragments.auto_scroll_linked_fragments) {
-    //this.scroll_to_linked_fragments(document);
-    //}
   }
 
   /**
@@ -204,13 +205,14 @@ export class ColumnsComponent implements OnInit {
   /**
    * This function allows the user to display the translations of the fragments instead of the original text.
    * The Fragment Translation tab in the commentary section then becomes the 'original text' tab instead.
+   * @param column (Column)
    * @author CptVickers
    */
   protected toggle_translation(column: Column): void {
+    // The document components will listen for this change
     column.translated = !column.translated;
-    // Also fire a event which notifies other components like the commentary component of the change.
+    // Also notify the commentary service that the original text should be shown instead of the translation
     this.commentary.translate();
-    //this.translation_toggle_event.emit(column.translated);
   }
 
   /**

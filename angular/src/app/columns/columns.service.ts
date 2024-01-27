@@ -101,11 +101,10 @@ export class ColumnsService {
    * @param column: columns with documents to be painted black
    * @author Ycreak
    */
-  public blacken(column: Column): Column {
-    for (const i in column.documents) {
-      column.documents[i].colour = 'black';
-    }
-    return column;
+  public blacken(column: Column): void {
+    column.documents.forEach((doc: any) => {
+      doc.colour = 'black';
+    });
   }
 
   /**
