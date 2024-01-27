@@ -83,6 +83,7 @@ export class ApiService {
             author: value[0],
             title: value[1],
             editor: value[2],
+            name: value[3],
           } as text_blob);
         });
         this.spinner_off();
@@ -135,6 +136,26 @@ export class ApiService {
       })
     );
     return editor_list;
+  }
+  /**
+   * Provides a list of document names from the author-title-editor blob
+   * @param author (string)
+   * @param title (string)
+   * @param editor (string)
+   * @return list
+   * @author Ycreak
+   */
+  public get_names_list(author: string, title: string, editor: string): object {
+    const filtered_objects = this.author_title_editor_blob.filter(
+      (x: any) => x.author == author && x.title == title && x.editor == editor
+    );
+    const name_list = new Set(
+      filtered_objects.map(function (el: any) {
+        return el.name;
+      })
+    );
+    // Turn Set into list and sort it
+    return [...name_list].sort(this.utility.sort_array_numerically);
   }
 
   /**
@@ -304,6 +325,8 @@ export class ApiService {
             new_document = new Testimonium({});
             new_document.set(value);
           } else {
+            new_document = new Fragment({});
+            new_document.set_fragment(value);
             console.error('unknown document type', value);
             this.utility.open_snackbar('Unknown document type received.');
           }

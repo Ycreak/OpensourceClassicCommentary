@@ -107,6 +107,7 @@ import { SavePlaygroundComponent } from './playground/save-playground/save-playg
 import { DeletePlaygroundComponent } from './playground/delete-playground/delete-playground.component';
 import { SharePlaygroundComponent } from './playground/share-playground/share-playground.component';
 import { JoinPlaygroundComponent } from './playground/join-playground/join-playground.component';
+import { LatinTragicFragmentFilterComponent } from './filters/latin-tragic-fragment-filter/latin-tragic-fragment-filter.component';
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
@@ -153,6 +154,7 @@ const appRoutes: Routes = [
     DeletePlaygroundComponent,
     SharePlaygroundComponent,
     JoinPlaygroundComponent,
+    LatinTragicFragmentFilterComponent,
   ],
   imports: [
     BrowserModule,

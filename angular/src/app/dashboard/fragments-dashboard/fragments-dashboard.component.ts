@@ -84,6 +84,34 @@ export class FragmentsDashboardComponent implements OnInit {
   }
 
   /**
+   * Applies the filter retrieved from the fragment selection.
+   * @param filter (object)
+   * @author Ycreak
+   */
+  protected apply_filter(filter: any): void {
+    this.request_documents(filter);
+    this.fragment_form.patchValue({
+      author: filter.author,
+      title: filter.title,
+      editor: filter.editor,
+      name: filter.name,
+    });
+    this.fragment_selected = true;
+  }
+  /**
+   * Adds the given fragment to the linked_fragments candidate list
+   * @param filter (object)
+   * @author Ycreak
+   */
+  protected add_linked_fragment(filter: any): void {
+    this.push_linked_fragments_to_fragment_form(filter.author, filter.title, filter.editor, filter.name);
+  }
+
+  protected test(): void {
+    console.log(this.api.author_title_editor_blob);
+  }
+
+  /**
    * This function requests a wysiwyg dialog to handle data updating to the fragment_form.
    * It functions by providing the field of fragment_form which is to be updated by the editor.
    * The dialog is called provided the config of the editor and the string to be edited. An edited string
@@ -247,20 +275,6 @@ export class FragmentsDashboardComponent implements OnInit {
   }
 
   /**
-   * Pushes the id of the referenced fragment to the Fragment_form
-   * @param column Fragment_column object with all necessary data
-   * @author Ycreak
-   */
-  protected add_referenced_fragment_to_Fragment_form(referencer_column: Column): void {
-    this.push_linked_fragments_to_fragment_form(
-      referencer_column.author,
-      referencer_column.title,
-      referencer_column.editor,
-      referencer_column.name
-    );
-  }
-
-  /**
    * Function to reset the fragment form
    * @author Ycreak
    */
@@ -341,12 +355,10 @@ export class FragmentsDashboardComponent implements OnInit {
         .subscribe((result) => {
           if (result) {
             const fragment = this.convert_fragment_form_to_Fragment(fragment_form);
-            //FIXME:
+            fragment.document_type = 'fragment';
             this.api.revise_fragment(fragment);
             this.fragment_selected = true;
             this.reset_fragment_form();
-            // It might be possible we have created a new author, title or editor. Retrieve the lists again
-            // TODO: retrieve author-title-editor blob
           }
         });
     }
@@ -373,11 +385,10 @@ export class FragmentsDashboardComponent implements OnInit {
       .subscribe((result) => {
         if (result) {
           const fragment = this.convert_fragment_form_to_Fragment(fragment_form);
+          fragment.document_type = 'fragment';
           this.api.create_fragment(fragment);
           this.fragment_selected = true;
           this.reset_fragment_form();
-          // It might be possible we have created a new author, title or editor. Retrieve the lists again
-          // TODO: retrieve author-title-editor blob
         }
       });
   }

@@ -28,7 +28,7 @@ def get_list_display():
 
 def refresh_list_display():
     fragment_lst = fragments.all()
-    fragment_lst = [(x.author, x.title, x.editor) for x in fragment_lst]
+    fragment_lst = [(x.author, x.title, x.editor, x.name) for x in fragment_lst]
     util.write_json(sorted(list(set(fragment_lst))), list_display_cache_file)
 
 def get_author():
