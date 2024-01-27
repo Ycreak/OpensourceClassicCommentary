@@ -11,13 +11,14 @@ export class Column {
     Object.assign(this, column);
   }
 
+  column_name = 'New column';
+
   author: string;
   title: string;
   editor: string;
   name: string;
 
   column_id: number; // has to be a string for cdkDrag
-  type = ''; // denotes playground, commentary, text or fragment column
 
   selected_fragment_author = '';
   selected_fragment_title = '';
@@ -63,9 +64,18 @@ export class Column {
   has_translations(): boolean {
     for (const i in this.documents) {
       if (this.documents[i].commentary.translation) {
+        console.log('true');
         return true;
       }
     }
     return false;
+  }
+
+  /**
+   * Creates a column name from the current class values
+   * @author Ycreak
+   */
+  create_column_name(): void {
+    this.column_name = `${this.author}-${this.title}-${this.editor}`;
   }
 }

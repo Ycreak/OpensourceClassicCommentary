@@ -1,6 +1,12 @@
+/**
+ * This component holds all the components of the OSCC: the columns, the commentary and the playground.
+ * @author Ycreak
+ */
+
 // Library imports
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog'; // Library used for interacting with the page
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ViewportScroller } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
 import { environment } from '@src/environments/environment';
 
 // Service imports
@@ -8,56 +14,33 @@ import { ApiService } from '@oscc/api.service';
 import { DialogService } from '@oscc/services/dialog.service';
 import { SettingsService } from '@oscc/services/settings.service';
 import { WindowSizeWatcherService } from '@oscc/services/window-watcher.service';
-//import { UtilityService } from '@oscc/utility.service';
 import { AuthService } from '@oscc/auth/auth.service';
-
-import { ColumnsComponent } from '@oscc/columns/columns.component';
 
 // Component imports
 import { LoginComponent } from '@oscc/login/login.component';
-import { IntroductionsComponent } from './introductions/introductions.component';
-
-// Model imports
-import { Fragment } from '@oscc/models/Fragment';
-import { ColumnHandlerService } from '@oscc/services/column-handler.service';
-import { LocalStorageService } from '@oscc/services/local-storage.service';
-import { CommentaryComponent } from '@oscc/commentary/commentary.component';
-import { ViewportScroller } from '@angular/common';
 
 @Component({
   selector: 'app-overview',
   templateUrl: './overview.component.html',
   styleUrls: ['./overview.component.scss'],
-  providers: [ColumnsComponent],
 })
 export class OverviewComponent implements OnInit, OnDestroy {
-  @ViewChild('commentary') commentary: CommentaryComponent;
-
   protected commentary_enabled = true;
   protected playground_enabled = true;
-
-  protected clicked_document: Fragment;
-  protected translation_toggled: boolean;
-  protected requested_column: any;
 
   constructor(
     private mat_dialog: MatDialog,
     private viewportscroller: ViewportScroller,
     protected api: ApiService,
     protected auth_service: AuthService,
-    protected column_handler: ColumnHandlerService,
-    protected columns: ColumnsComponent,
     protected dialog: DialogService,
     protected settings: SettingsService,
-    protected window_watcher: WindowSizeWatcherService,
-    public localstorage: LocalStorageService
+    protected window_watcher: WindowSizeWatcherService
   ) {}
 
   ngOnInit(): void {
     // Create the window watcher for mobile devices
     this.window_watcher.init(window.innerWidth);
-    this.clicked_document = new Fragment({});
-
     // Load the user's previously used setting from local storage using the LocalStorageService service
     this.settings.load_settings();
   }
@@ -66,25 +49,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
     if (this.window_watcher.subscription$) {
       this.window_watcher.subscription$.unsubscribe();
     }
-  }
-
-  /**
-   * Opens the introduction dialog. An introduction can be about either an author or a text.
-   * @author Ycreak
-   */
-  protected show_introduction(author: string, title?: string): void {
-    title = title ? title : '';
-    //FIXME: enable when introductions are working.
-    const enabled = false;
-    if (enabled) {
-      this.mat_dialog.open(IntroductionsComponent, {
-        data: { author: author, title: title },
-      });
-    }
-  }
-
-  test(item?: any) {
-    console.log('hi', item);
   }
 
   /**
@@ -118,15 +82,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
    */
   protected login(): void {
     this.mat_dialog.open(LoginComponent, {});
-  }
-
-  /**
-   * Function to check whether a fragment has been clicked
-   * @returns boolean
-   * @author Ycreak
-   */
-  protected fragment_is_clicked(): boolean {
-    return this.clicked_document.author != '';
   }
 
   /**
