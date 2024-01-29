@@ -306,16 +306,6 @@ export class FragmentsDashboardComponent implements OnInit {
   //  | | \ \| |___| |__| | |__| | |____ ____) |  | |  ____) |
   //  |_|  \_\______\___\_\\____/|______|_____/   |_| |_____/
   /**
-   * Request the API for document names: add them to the dashboard document object
-   * @param column_id (number) in which to add the documents
-   * @param documents (object[]) which to add to the provided column
-   */
-  protected request_document_names(filter: object): void {
-    this.api.get_document_names(filter).subscribe((document_names) => {
-      this.selected_fragment_data.fragment_names = document_names;
-    });
-  }
-  /**
    * Request the API for documents
    * @param documents (object[]) which to add to the provided column
    */
@@ -356,9 +346,17 @@ export class FragmentsDashboardComponent implements OnInit {
           if (result) {
             const fragment = this.convert_fragment_form_to_Fragment(fragment_form);
             fragment.document_type = 'fragment';
-            this.api.revise_fragment(fragment);
-            this.fragment_selected = true;
             this.reset_fragment_form();
+            this.api.revise_fragment(fragment).subscribe(() => {
+              // When the has been revised, we will load said fragment and fill the fields again
+              this.request_documents({
+                author: fragment.author,
+                title: fragment.title,
+                editor: fragment.editor,
+                name: fragment.name,
+              });
+              this.fragment_selected = true;
+            });
           }
         });
     }
@@ -385,10 +383,18 @@ export class FragmentsDashboardComponent implements OnInit {
       .subscribe((result) => {
         if (result) {
           const fragment = this.convert_fragment_form_to_Fragment(fragment_form);
-          fragment.document_type = 'fragment';
-          this.api.create_fragment(fragment);
-          this.fragment_selected = true;
+          fragment.document_type = 'fragment'; //FIXME: this is a bug
           this.reset_fragment_form();
+          this.api.create_fragment(fragment).subscribe(() => {
+            // When the has been created, we will load said fragment and fill the fields again
+            this.request_documents({
+              author: fragment.author,
+              title: fragment.title,
+              editor: fragment.editor,
+              name: fragment.name,
+            });
+            this.fragment_selected = true;
+          });
         }
       });
   }

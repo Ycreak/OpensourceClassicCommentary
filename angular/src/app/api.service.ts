@@ -176,42 +176,51 @@ export class ApiService {
    * @param fragment (Fragment)
    * @author Ycreak
    */
-  public create_fragment(fragment: any): void {
-    this.spinner_on();
-    this.http
-      .post<string[]>(this.FlaskURL + `fragment/create`, fragment, {
-        observe: 'response',
-        responseType: 'text' as 'json',
-      })
-      .subscribe({
-        next: (data) => {
-          this.handle_error_message(data);
-          this.request_authors_titles_editors_blob();
-          this.spinner_off();
-        },
-        error: (err) => this.handle_error_message(err),
-      });
+  public create_fragment(fragment: any): Observable<any> {
+    return new Observable((observer) => {
+      this.spinner_on();
+      this.http
+        .post<string[]>(this.FlaskURL + `fragment/create`, fragment, {
+          observe: 'response',
+          responseType: 'text' as 'json',
+        })
+        .subscribe({
+          next: (data) => {
+            this.handle_error_message(data);
+            this.request_authors_titles_editors_blob();
+            this.spinner_off();
+            observer.next();
+            observer.complete();
+          },
+          error: (err) => this.handle_error_message(err),
+        });
+    });
   }
   /**
    * Revises the given fragment on the server
    * @param fragment (Fragment)
+   * @return Observable when server has finished
    * @author Ycreak
    */
-  public revise_fragment(fragment: any): void {
-    this.spinner_on();
-    this.http
-      .post<string[]>(this.FlaskURL + `fragment/update`, fragment, {
-        observe: 'response',
-        responseType: 'text' as 'json',
-      })
-      .subscribe({
-        next: (data) => {
-          this.handle_error_message(data);
-          this.request_authors_titles_editors_blob();
-          this.spinner_off();
-        },
-        error: (err) => this.handle_error_message(err),
-      });
+  public revise_fragment(fragment: any): Observable<any> {
+    return new Observable((observer) => {
+      this.spinner_on();
+      this.http
+        .post<string[]>(this.FlaskURL + `fragment/update`, fragment, {
+          observe: 'response',
+          responseType: 'text' as 'json',
+        })
+        .subscribe({
+          next: (data) => {
+            this.handle_error_message(data);
+            this.request_authors_titles_editors_blob();
+            this.spinner_off();
+            observer.next();
+            observer.complete();
+          },
+          error: (err) => this.handle_error_message(err),
+        });
+    });
   }
   /**
    * Deletes the given fragment on the server
