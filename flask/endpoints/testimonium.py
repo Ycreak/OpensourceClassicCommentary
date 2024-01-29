@@ -6,7 +6,7 @@ from uuid import uuid4
 from couch import CouchAuthenticator
 from models.testimonium import Testimonium, TestimoniumModel, TestimoniumField
 
-testimoniums = TestimoniumModel(CouchAuthenticator().couch)
+testimonia = TestimoniumModel(CouchAuthenticator().couch)
 
 def get_author_testimonium():
     author = None
@@ -25,7 +25,7 @@ def get_author_testimonium():
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-    testimonium_lst = testimoniums.filter(Testimonium(author=author, title=title, witness=witness, name=name), sorted=True)
+    testimonium_lst = testimonia.filter(Testimonium(author=author, title=title, witness=witness, name=name), sorted=True)
     if not testimonium_lst:
         return make_response("Not found", 401)
     return jsonify(sorted(set([testimonium.author for testimonium in testimonium_lst]))), 200
@@ -48,7 +48,7 @@ def get_title_testimonium():
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-    testimonium_lst = testimoniums.filter(Testimonium(author=author, title=title, witness=witness, name=name), sorted=True)
+    testimonium_lst = testimonia.filter(Testimonium(author=author, title=title, witness=witness, name=name), sorted=True)
     if not testimonium_lst:
         return make_response("Not found", 401)
     return jsonify(sorted(set([testimonium.title for testimonium in testimonium_lst]))), 200
@@ -71,7 +71,7 @@ def get_witness_testimonium():
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-    testimonium_lst = testimoniums.filter(Testimonium(author=author, title=title, witness=witness, name=name), sorted=True)
+    testimonium_lst = testimonia.filter(Testimonium(author=author, title=title, witness=witness, name=name), sorted=True)
     if not testimonium_lst:
         return make_response("Not found", 401)
     return jsonify(sorted(set([testimonium.witness for testimonium in testimonium_lst]))), 200
@@ -94,7 +94,7 @@ def get_name_testimonium():
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-    testimonium_lst = testimoniums.filter(Testimonium(author=author, title=title, witness=witness, name=name), sorted=True)
+    testimonium_lst = testimonia.filter(Testimonium(author=author, title=title, witness=witness, name=name), sorted=True)
     if not testimonium_lst:
         return make_response("Not found", 401)
     return jsonify(list(set([testimonium.name for testimonium in testimonium_lst]))), 200
@@ -118,7 +118,7 @@ def get_testimonium():
         logging.error(e)
         return make_response("Unprocessable entity", 422)
     
-    testimonium_lst = testimoniums.filter(Testimonium(author=author, title=title, witness=witness, name=name), sorted=True)
+    testimonium_lst = testimonia.filter(Testimonium(author=author, title=title, witness=witness, name=name), sorted=True)
     if not testimonium_lst:
         return make_response("Not found", 401)
 
@@ -143,11 +143,11 @@ def create_testimonium():
         logging.error(e)
         return make_response("Unprocessable entity", 422)
     
-    if testimoniums.filter(Testimonium(author=author, title=title, witness=witness, name=name)):
+    if testimonia.filter(Testimonium(author=author, title=title, witness=witness, name=name)):
         logging.error("create_testimonium(): duplicate testimonium")
         return make_response("Forbidden", 403)
 
-    testimonium = testimoniums.create(Testimonium(_id=uuid4().hex, author=author, title=title, witness=witness, name=name,
+    testimonium = testimonia.create(Testimonium(_id=uuid4().hex, author=author, title=title, witness=witness, name=name,
                                          translation=translation, text=text))
     if testimonium == None:
         return make_response("Server error", 500)
@@ -176,7 +176,7 @@ def update_testimonium():
         logging.error(e)
         return make_response("Unprocessable entity", 422)
     
-    testimonium = testimoniums.update(Testimonium(_id=_id, author=author, title=title, witness=witness, name=name, translation=translation, 
+    testimonium = testimonia.update(Testimonium(_id=_id, author=author, title=title, witness=witness, name=name, translation=translation, 
                                        text=text))
     if testimonium == None:
         return make_response("Server error", 500)
@@ -193,7 +193,7 @@ def delete_testimonium():
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-    testimonium = testimoniums.delete(Testimonium(author=author, title=title, witness=witness, name=name))
+    testimonium = testimonia.delete(Testimonium(author=author, title=title, witness=witness, name=name))
 
 
     if testimonium:

@@ -12,7 +12,7 @@
 #      -- As of now is able to handle fragments and users --  
 #                                                                       #
 #                        RUN INSTRUCTIONS                               #
-#   python3 server.py                                                   #
+#   docker compose up                                                   #
                                                               # # # # # #
 
 # TODO Token authentication between server and front-end
@@ -32,7 +32,7 @@ from couch import CouchAuthenticator
 from endpoints.user import get_user, login_user, create_user, delete_user, update_user
 from endpoints.fragment import get_author, get_title, get_editor, get_fragment, get_name, create_fragment, update_fragment, delete_fragment
 from endpoints.testimonium import get_author_testimonium, get_title_testimonium, get_witness_testimonium, get_testimonium, get_name_testimonium, create_testimonium, update_testimonium, delete_testimonium
-from endpoints.broader_context import get_author_broader_context, get_title_broader_context, get_broader_context, create_broader_context, update_broader_context, delete_broader_context
+from endpoints.text import get_author_text, get_title_text, get_text, create_text, update_text, delete_text
 from endpoints.fragment import link_fragment, get_list_display
 from endpoints.zotero import get_bibliography, sync_bibliography
 from endpoints.playground import create_playground, update_playground, delete_playground, get_playgrounds, get_playground, get_shared_playgrounds
@@ -58,7 +58,6 @@ app.add_url_rule("/user/create", view_func=create_user, methods=["POST"])
 app.add_url_rule("/user/delete", view_func=delete_user, methods=["POST"])
 app.add_url_rule("/user/update", view_func=update_user, methods=["POST"])
 
-
 #####
 # FRAGMENTS
 #####
@@ -75,31 +74,36 @@ app.add_url_rule("/fragment/link", view_func=link_fragment, methods=["POST"])
 app.add_url_rule("/fragment/get/list_display", view_func=get_list_display, methods=["POST"])
 
 #####
-# TESTIMONIUMS
+# TESTIMONIA
 #####
-app.add_url_rule("/testimoniums/get/author", view_func=get_author_testimonium, methods=["POST"])
-app.add_url_rule("/testimoniums/get/title", view_func=get_title_testimonium, methods=["POST"])
-app.add_url_rule("/testimoniums/get/witness", view_func=get_witness_testimonium, methods=["POST"])
-app.add_url_rule("/testimoniums/get", view_func=get_testimonium, methods=["POST"])
-app.add_url_rule("/testimoniums/get/name", view_func=get_name_testimonium, methods=["POST"])
-app.add_url_rule("/testimoniums/create", view_func=create_testimonium, methods=["POST"])
-app.add_url_rule("/testimoniums/update", view_func=update_testimonium, methods=["POST"])
-app.add_url_rule("/testimoniums/delete", view_func=delete_testimonium, methods=["POST"])
+app.add_url_rule("/testimonia/get/author", view_func=get_author_testimonium, methods=["POST"])
+app.add_url_rule("/testimonia/get/title", view_func=get_title_testimonium, methods=["POST"])
+app.add_url_rule("/testimonia/get/witness", view_func=get_witness_testimonium, methods=["POST"])
+app.add_url_rule("/testimonia/get", view_func=get_testimonium, methods=["POST"])
+app.add_url_rule("/testimonia/get/name", view_func=get_name_testimonium, methods=["POST"])
+app.add_url_rule("/testimonia/create", view_func=create_testimonium, methods=["POST"])
+app.add_url_rule("/testimonia/update", view_func=update_testimonium, methods=["POST"])
+app.add_url_rule("/testimonia/delete", view_func=delete_testimonium, methods=["POST"])
 
 #####
-# BROADER CONTEXTS
+# TEXTS
 #####
-app.add_url_rule("/broader_contexts/get/author", view_func=get_author_broader_context, methods=["POST"])
-app.add_url_rule("/broader_contexts/get/title", view_func=get_title_broader_context, methods=["POST"])
-app.add_url_rule("/broader_contexts/get", view_func=get_broader_context, methods=["POST"])
-app.add_url_rule("/broader_contexts/create", view_func=create_broader_context, methods=["POST"])
-app.add_url_rule("/broader_contexts/update", view_func=update_broader_context, methods=["POST"])
-app.add_url_rule("/broader_contexts/delete", view_func=delete_broader_context, methods=["POST"])
+app.add_url_rule("/texts/get/author", view_func=get_author_text, methods=["POST"])
+app.add_url_rule("/texts/get/title", view_func=get_title_text, methods=["POST"])
+app.add_url_rule("/texts/get", view_func=get_text, methods=["POST"])
+app.add_url_rule("/texts/create", view_func=create_text, methods=["POST"])
+app.add_url_rule("/texts/update", view_func=update_text, methods=["POST"])
+app.add_url_rule("/texts/delete", view_func=delete_text, methods=["POST"])
 
+#####
+# BIBLIOGRAPHY
+#####
 app.add_url_rule("/bibliography/get", view_func=get_bibliography, methods=["POST"])
 app.add_url_rule("/bibliography/sync", view_func=sync_bibliography, methods=["POST"])
 
-
+#####
+# PLAYGROUND
+#####
 app.add_url_rule("/playground/get", view_func=get_playground, methods=["POST"])
 app.add_url_rule("/playground/get/shared", view_func=get_shared_playgrounds, methods=["POST"])
 app.add_url_rule("/playground/get/name", view_func=get_playgrounds, methods=["POST"])
@@ -111,20 +115,6 @@ app.add_url_rule("/playground/delete", view_func=delete_playground, methods=["PO
 #     # Route to allow for the creation of the given fragment
 #     response = frag_db.automatic_fragment_linker(Fragment(request.get_json()))
 #     return response  
-
-# @app.route("/revise_fragment", methods=['POST'])
-# def revise_fragment():
-#     # Route to allow for the revision of the given fragment
-#     received_fragment = Fragment(request.get_json())
-#     response = frag_db.revise_fragment(received_fragment)
-#     return response
-
-# @app.route("/delete_fragment", methods=['POST'])
-# def delete_fragment():
-#     # Route to allow for the deletion of the given fragment
-#     response = frag_db.delete_fragment(Fragment(request.get_json()))
-#     return response
-
 
 # MAIN
 if __name__ == '__main__':

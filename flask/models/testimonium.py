@@ -24,9 +24,9 @@ class Testimonium:
 
 class TestimoniumModel:
     def __init__(self, server):
-        self.db = server[conf.COUCH_TESTIMONIUMS]
+        self.db = server[conf.COUCH_TESTIMONIA]
     
-    def __get_testimoniums(self, testimonium_lst):
+    def __get_testimonia(self, testimonium_lst):
         result = list()
         for doc in testimonium_lst:
             testimonium = Testimonium(_id=doc.id)
@@ -51,7 +51,7 @@ class TestimoniumModel:
             "selector": dict(),
             "limit": conf.COUCH_LIMIT
         })
-        result = self.__get_testimoniums(result)
+        result = self.__get_testimonia(result)
         if sorted:
             result.sort(key=lambda Testimonium: Testimonium.name)
         return result
@@ -69,7 +69,7 @@ class TestimoniumModel:
         }
         print(mango)
         result = self.db.find(mango)
-        result = self.__get_testimoniums(result)
+        result = self.__get_testimonia(result)
         if sorted:
             result.sort(key=lambda Testimonium: Testimonium.title)
         return result
@@ -87,7 +87,7 @@ class TestimoniumModel:
         return testimonium
 
     def update(self, testimonium):
-        # we update testimoniums via their _id, so no need for get.
+        # we update testimonia via their _id, so no need for get.
         # FIXME: is this correct BORS?
         # testimonium = self.get(testimonium)
 
@@ -127,7 +127,7 @@ class TestimoniumModel:
             "limit": conf.COUCH_LIMIT
         }
         result = self.db.find(mango)
-        result = self.__get_testimoniums(result)
+        result = self.__get_testimonia(result)
 
         if result:
             if len(result) > 1:
