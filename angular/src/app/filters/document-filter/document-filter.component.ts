@@ -27,6 +27,16 @@ export class DocumentFilterComponent {
     this.dialogRef.close(return_form);
   }
 
+  protected exit(): void {
+    this.dialogRef.close();
+  }
+
+  protected add(): void {}
+
+  protected add_and_close(): void {
+    this.dialogRef.close();
+  }
+
   /**
    * Removes all form values that are empty from the given object
    * @param object that needs to be pruned

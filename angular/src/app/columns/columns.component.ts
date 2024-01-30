@@ -20,7 +20,7 @@ import { SettingsService } from '@oscc/services/settings.service';
 import { UtilityService } from '@oscc/utility.service';
 
 // Component imports
-import { DocumentFilterComponent } from '@oscc/dialogs/document-filter/document-filter.component';
+import { DocumentFilterComponent } from '@oscc/filters/document-filter/document-filter.component';
 
 // Model imports
 import { Column } from '@oscc/models/Column';
