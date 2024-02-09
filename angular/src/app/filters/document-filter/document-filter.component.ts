@@ -31,9 +31,9 @@ export class DocumentFilterComponent {
     this.dialogRef.close();
   }
 
-  protected add(): void {}
+  protected add_table(): void {}
 
-  protected add_and_close(): void {
+  protected add_selection(): void {
     this.dialogRef.close();
   }
 

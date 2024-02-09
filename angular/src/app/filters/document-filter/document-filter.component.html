@@ -3,15 +3,17 @@
   <div mat-dialog-content>
     <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
       <mat-tab label="Fragments">
-        <app-fragment-table></app-fragment-table>
+        <div style='padding-top: 1em'>
+          <app-fragment-table></app-fragment-table>
+        </div>
       </mat-tab>
       <mat-tab label="Testimonia"> Content 2 </mat-tab>
       <mat-tab label="Text"> Content 2 </mat-tab>
     </mat-tab-group>
   </div>
   <div mat-dialog-actions>
-    <button mat-button (click)="this.exit()">Cancel</button>
-    <button mat-button (click)="this.add()" cdkFocusInitial>Add selection</button>
-    <button mat-button (click)="this.add_and_close()" cdkFocusInitial>Add selection and close</button>
+    <button mat-button (click)="this.exit()">Close</button>
+    <button mat-button (click)="this.add_selection()" cdkFocusInitial>Add selection</button>
+    <button mat-button (click)="this.add_table()" cdkFocusInitial>Add table</button>
   </div>
 </div>
