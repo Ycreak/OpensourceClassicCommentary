@@ -1,5 +1,10 @@
-<div mat-dialog-component style="padding: 2em">
-  <h2 mat-dialog-title>Document selector</h2>
+<div class="dialog-header">
+  <h2>Advanced document filter</h2>
+  <button mat-icon-button [mat-dialog-close]="null" [disableRipple]="true">
+    <mat-icon>clear</mat-icon>
+  </button>
+</div>
+
   <div mat-dialog-content>
     <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
       <mat-tab label="Fragments">
@@ -16,4 +21,3 @@
     <button mat-button (click)="this.add_selection()" cdkFocusInitial>Add selection</button>
     <button mat-button (click)="this.add_table()" cdkFocusInitial>Add table</button>
   </div>
-</div>
