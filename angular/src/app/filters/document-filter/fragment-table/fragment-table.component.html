@@ -1,7 +1,7 @@
 <div class="container">
   <div class="row">
     <div class="col-sm">
-      <mat-form-field class='meta-data-selects'>
+      <mat-form-field class="meta-data-selects">
         <mat-label>Author</mat-label>
         <mat-select [(ngModel)]="this._author" ngDefaultControl>
           <mat-option (click)="this.filter_index()" [value]="">-- None --</mat-option>
@@ -12,7 +12,7 @@
       </mat-form-field>
     </div>
     <div class="col-sm">
-      <mat-form-field class='meta-data-selects'>
+      <mat-form-field class="meta-data-selects">
         <mat-label>Title</mat-label>
         <mat-select [(ngModel)]="this._title" ngDefaultControl>
           <mat-option (click)="this.filter_index()" [value]="">-- None --</mat-option>
@@ -23,7 +23,7 @@
       </mat-form-field>
     </div>
     <div class="col-sm">
-      <mat-form-field class='meta-data-selects'>
+      <mat-form-field class="meta-data-selects">
         <mat-label>Editor</mat-label>
         <mat-select [(ngModel)]="this._editor" ngDefaultControl>
           <mat-option (click)="this.filter_index()" [value]="">-- None --</mat-option>
@@ -38,9 +38,8 @@
 
 <mat-form-field>
   <mat-label>Filter fragments</mat-label>
-  <input matInput (keyup)="apply_filter($event)" placeholder="Ex. ium" #input>
+  <input matInput (keyup)="apply_filter($event)" placeholder="Ex. ium" #input />
 </mat-form-field>
-
 
 <div class="mat-elevation-z8">
   <table mat-table [dataSource]="this.filter.dataSource" matSort>

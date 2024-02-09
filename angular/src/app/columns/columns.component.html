@@ -3,7 +3,6 @@
 
 <!-- Secondary toolbar to manage columns -->
 <ng-template #column_toolbar let-column_to_display="given_column">
-  <!--<ng-template #commentary_column_template let-given_fragment="given_fragment">-->
   <mat-toolbar class="fragment-column-toolbar">
     <!-- Button to select the text via the quick filter -->
     <app-latin-tragic-fragment-filter
@@ -18,7 +17,8 @@
             editor: $event.editor
           },
           column_to_display.column_id
-        )
+        );
+        column_to_display.column_name = $event.author + '-' + $event.title + '-' + $event.editor
       ">
     </app-latin-tragic-fragment-filter>
 

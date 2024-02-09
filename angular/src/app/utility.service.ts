@@ -75,25 +75,25 @@ export class UtilityService {
     });
     return filtered_array;
   }
- 
+
   /**
    * Filters a list of objects on the object filter specified
    * @param array (list) with objects
-   * @param filter (object) 
+   * @param filter (object)
    * @return list
    * @author Ycreak
    */
   public filter_array(array: Array<any>, filters: any) {
-   const filter_keys = Object.keys(filters);
-   return array.filter((item: any) => {
+    const filter_keys = Object.keys(filters);
+    return array.filter((item: any) => {
       // Check all filter criteria
-      return filter_keys.every(key => {
+      return filter_keys.every((key) => {
         // Ignore non-existent properties
         if (!item.hasOwnProperty(key)) return true;
         // Compare values
         return item[key] === filters[key];
       });
-   });
+    });
   }
 
   /**

@@ -26,7 +26,7 @@ export class FragmentTableComponent implements AfterViewInit {
   protected _author: string;
   protected _title: string;
   protected _editor: string;
-  
+
   protected _authors: string[];
   protected _titles: string[];
   protected _editors: string[];
@@ -38,18 +38,18 @@ export class FragmentTableComponent implements AfterViewInit {
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(
-    protected api: ApiService, 
+    protected api: ApiService,
     protected filter: FilterService,
-    protected utility: UtilityService, 
+    protected utility: UtilityService
   ) {
     // Create a master index we use as a read only truth, and a local index which we will use to save the filtering of
     // the master index to.
     this.master_index = this.api.author_title_editor_blob;
     this.local_index = this.api.author_title_editor_blob;
 
-    this._authors = [...new Set(this.master_index.map(element => element.author))];
-    this._titles = [...new Set(this.master_index.map(element => element.title))];
-    this._editors = [...new Set(this.master_index.map(element => element.editor))];
+    this._authors = [...new Set(this.master_index.map((element) => element.author))];
+    this._titles = [...new Set(this.master_index.map((element) => element.title))];
+    this._editors = [...new Set(this.master_index.map((element) => element.editor))];
     // Assign the data to the data source for the table to render
     this.filter.dataSource = new MatTableDataSource(this.master_index);
   }
@@ -61,7 +61,7 @@ export class FragmentTableComponent implements AfterViewInit {
 
   test() {
     console.log(this._author);
-    console.log(this.filter.dataSource, this.filter.selection.selected)
+    console.log(this.filter.dataSource, this.filter.selection.selected);
   }
 
   /**
@@ -71,22 +71,22 @@ export class FragmentTableComponent implements AfterViewInit {
   protected filter_index() {
     const filter = {};
 
-    if(this._author) {
+    if (this._author) {
       filter['author'] = this._author;
     }
-    if(this._title) {
+    if (this._title) {
       filter['title'] = this._title;
     }
-    if(this._editor) {
+    if (this._editor) {
       filter['editor'] = this._editor;
     }
 
-    this.local_index = this.utility.filter_array(this.master_index, filter)
+    this.local_index = this.utility.filter_array(this.master_index, filter);
 
-    this._authors = [...new Set(this.local_index.map(element => element.author))];
-    this._titles = [...new Set(this.local_index.map(element => element.title))];
-    this._editors = [...new Set(this.local_index.map(element => element.editor))];
-    
+    this._authors = [...new Set(this.local_index.map((element) => element.author))];
+    this._titles = [...new Set(this.local_index.map((element) => element.title))];
+    this._editors = [...new Set(this.local_index.map((element) => element.editor))];
+
     this.filter.dataSource = new MatTableDataSource(this.local_index);
     this.filter.dataSource.paginator = this.paginator;
     this.filter.dataSource.sort = this.sort;

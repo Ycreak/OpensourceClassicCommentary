@@ -22,6 +22,7 @@ import { SavePlaygroundComponent } from './save-playground/save-playground.compo
 import { DeletePlaygroundComponent } from './delete-playground/delete-playground.component';
 import { SharePlaygroundComponent } from './share-playground/share-playground.component';
 import { JoinPlaygroundComponent } from './join-playground/join-playground.component';
+import { DocumentFilterComponent } from '@oscc/filters/document-filter/document-filter.component';
 
 @Component({
   selector: 'app-playground',
@@ -53,8 +54,8 @@ export class PlaygroundComponent implements OnInit {
   // Playground column that keeps all data related to said playground
   protected playground: Playground;
 
+  //FIXME: deprecated
   protected single_fragment_requested: boolean;
-  private new_fragment_location = 10;
 
   // Variables for keeping track of canvas states
   private canvas_states: any[] = [];
@@ -78,6 +79,26 @@ export class PlaygroundComponent implements OnInit {
   }
 
   /**
+   * Opens a dialog to set a custom filter. If filter set, requests documents from server
+   * @param number of column_id to load documents into
+   * @author Ycreak
+   */
+  protected filter_documents(): void {
+    const dialogRef = this.mat_dialog.open(DocumentFilterComponent, {});
+    dialogRef.afterClosed().subscribe({
+      next: (filters) => {
+        if (filters.length) {
+          //TODO: for now, we need to request every single document from the server.
+          // New API update will allow us to request a list of filters
+          filters.forEach((filter: any) => {
+            this.request_documents(filter);
+          });
+        }
+      },
+    });
+  }
+
+  /**
    * Request the API for documents: add them to the given column
    * @param column_id (number) in which to add the documents
    * @param documents (object[]) which to add to the provided column
@@ -85,8 +106,15 @@ export class PlaygroundComponent implements OnInit {
   protected request_documents(filter: object): void {
     this.api.get_documents(filter).subscribe((documents) => {
       this.process_incoming_documents(documents);
+      // Place the first document at the following height in the canvas. Every following fragment will be placed a
+      // little bit lower to give a stacking effect for newly arrived fragments.
+      const offset_top = 60;
+      const offset_left = 150;
+      const step_next_document = 25;
+      let top = this.playground.canvas.vptCoords.tr.y + offset_top;
       documents.forEach((document: any) => {
-        this.add_document_to_canvas(document);
+        this.add_document_to_canvas(document, top, this.playground.canvas.vptCoords.tr.x - offset_left);
+        top += step_next_document;
       });
     });
   }
@@ -137,16 +165,6 @@ export class PlaygroundComponent implements OnInit {
   }
 
   /**
-   * @param column to which the fragment is to be added
-   * @author Ycreak
-   */
-  protected add_single_fragment(filter: object): void {
-    this.single_fragment_requested = true;
-    // format the fragment and push it to the list
-    this.request_documents(filter);
-  }
-
-  /**
    * @author CptVickers
    */
   protected clear_playground(): void {
@@ -165,6 +183,8 @@ export class PlaygroundComponent implements OnInit {
    */
   protected add_note_to_canvas(note: string): void {
     const text = new fabric.Textbox(note, {
+      top: this.find_canvas_center().y,
+      left: this.find_canvas_center().x,
       width: 200,
       fontSize: this.playground.font_size,
       textAlign: 'left', // you can use specify the text align
@@ -178,7 +198,7 @@ export class PlaygroundComponent implements OnInit {
    * Adds the given fragment to the canvas
    * @author Ycreak
    */
-  private add_document_to_canvas(fragment: any): void {
+  private add_document_to_canvas(fragment: any, top: number, left: number): void {
     const header_text = `Fragment ${fragment.name}`;
     const header = new fabric.Text(header_text, {
       fontSize: this.playground.font_size,
@@ -195,7 +215,6 @@ export class PlaygroundComponent implements OnInit {
       originX: 'left',
     });
     const text_group = new fabric.Group([header, lines], {
-      top: this.new_fragment_location,
       backgroundColor: 'green',
       fill: 'red',
       hasBorders: true,
@@ -213,9 +232,28 @@ export class PlaygroundComponent implements OnInit {
       stroke: 'black',
       strokeWidth: 1,
     });
-    const group = new fabric.Group([background_and_border, text_group], {});
+
+    const group = new fabric.Group([background_and_border, text_group], {
+      top: top,
+      left: left,
+    });
     this.playground.canvas.add(group);
-    this.new_fragment_location += 100;
+  }
+
+  /**
+   * Returns the center of the canvas
+   * @author Ycreak
+   */
+  private find_canvas_center() {
+    const zoom = this.playground.canvas.getZoom();
+    return {
+      x:
+        fabric.util.invertTransform(this.playground.canvas.viewportTransform)[4] +
+        this.playground.canvas.width / zoom / 2,
+      y:
+        fabric.util.invertTransform(this.playground.canvas.viewportTransform)[5] +
+        this.playground.canvas.height / zoom / 2,
+    };
   }
 
   /**
