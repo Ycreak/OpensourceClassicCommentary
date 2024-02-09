@@ -7,11 +7,11 @@ import { AfterViewInit, Component, ViewChild, Output, EventEmitter } from '@angu
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { SelectionModel } from '@angular/cdk/collections';
 
 // Service imports
 import { ApiService } from '@oscc/api.service';
 import { UtilityService } from '@oscc/utility.service';
+import { FilterService } from '../filter.service';
 
 @Component({
   selector: 'app-fragment-table',
@@ -22,8 +22,6 @@ export class FragmentTableComponent implements AfterViewInit {
   @Output() collection = new EventEmitter<any>();
 
   displayedColumns: string[] = ['select', 'author', 'title', 'editor', 'name'];
-  dataSource: MatTableDataSource<any>;
-  selection = new SelectionModel<any>(true, []);
 
   protected _author: string;
   protected _title: string;
@@ -39,7 +37,11 @@ export class FragmentTableComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(protected api: ApiService, protected utility: UtilityService) {
+  constructor(
+    protected api: ApiService, 
+    protected filter: FilterService,
+    protected utility: UtilityService, 
+  ) {
     // Create a master index we use as a read only truth, and a local index which we will use to save the filtering of
     // the master index to.
     this.master_index = this.api.author_title_editor_blob;
@@ -49,16 +51,17 @@ export class FragmentTableComponent implements AfterViewInit {
     this._titles = [...new Set(this.master_index.map(element => element.title))];
     this._editors = [...new Set(this.master_index.map(element => element.editor))];
     // Assign the data to the data source for the table to render
-    this.dataSource = new MatTableDataSource(this.master_index);
+    this.filter.dataSource = new MatTableDataSource(this.master_index);
   }
 
   ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+    this.filter.dataSource.paginator = this.paginator;
+    this.filter.dataSource.sort = this.sort;
   }
 
   test() {
     console.log(this._author);
+    console.log(this.filter.dataSource, this.filter.selection.selected)
   }
 
   /**
@@ -84,33 +87,34 @@ export class FragmentTableComponent implements AfterViewInit {
     this._titles = [...new Set(this.local_index.map(element => element.title))];
     this._editors = [...new Set(this.local_index.map(element => element.editor))];
     
-    this.dataSource = new MatTableDataSource(this.local_index);
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+    this.filter.dataSource = new MatTableDataSource(this.local_index);
+    this.filter.dataSource.paginator = this.paginator;
+    this.filter.dataSource.sort = this.sort;
   }
 
+  /** Applies the given filter to the table. */
   protected apply_filter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
+    this.filter.dataSource.filter = filterValue.trim().toLowerCase();
+    if (this.filter.dataSource.paginator) {
+      this.filter.dataSource.paginator.firstPage();
     }
   }
 
   /** Whether the number of selected elements matches the total number of rows. */
   protected isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
+    const numSelected = this.filter.selection.selected.length;
+    const numRows = this.filter.dataSource.data.length;
     return numSelected === numRows;
   }
 
   /** Selects all rows if they are not all selected; otherwise clear selection. */
   protected toggleAllRows() {
     if (this.isAllSelected()) {
-      this.selection.clear();
+      this.filter.selection.clear();
       return;
     }
-    this.selection.select(...this.dataSource.filteredData);
+    this.filter.selection.select(...this.filter.dataSource.filteredData);
   }
 
   /** The label for the checkbox on the passed row */
@@ -118,6 +122,6 @@ export class FragmentTableComponent implements AfterViewInit {
     if (!row) {
       return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
     }
-    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
+    return `${this.filter.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
   }
 }

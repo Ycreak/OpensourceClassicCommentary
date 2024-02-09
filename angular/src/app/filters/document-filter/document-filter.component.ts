@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {FilterService} from './filter.service';
 
 @Component({
   selector: 'app-document-filter',
@@ -8,48 +9,28 @@ import { MatDialogRef } from '@angular/material/dialog';
   styleUrls: ['./document-filter.component.scss'],
 })
 export class DocumentFilterComponent {
-  form: any = new FormGroup({
-    author: new FormControl(''),
-    title: new FormControl(''),
-    editor: new FormControl(''),
-    status: new FormControl(''),
-    document_type: new FormControl(''),
-  });
+  private column_id: string;
 
-  constructor(public dialogRef: MatDialogRef<DocumentFilterComponent>) {}
-
-  public test() {
-    console.log(this.form.value);
-  }
-
-  protected submit_filter() {
-    const return_form = this.remove_empty_form_fields(this.form.value);
-    this.dialogRef.close(return_form);
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    public dialogRef: MatDialogRef<DocumentFilterComponent>, 
+    private filter: FilterService
+  ) {
+    this.column_id = data.column_id;
   }
 
   protected exit(): void {
     this.dialogRef.close();
   }
 
-  protected add_table(): void {}
+  protected add_table(): void {
+    // We now request the api to add the selected documents to the column we have been provided
+    this.dialogRef.close(this.filter.dataSource.filteredData);
+  }
 
   protected add_selection(): void {
-    this.dialogRef.close();
+    // We now request the api to add the selected documents to the column we have been provided
+    this.dialogRef.close(this.filter.selection.selected);
   }
 
-  /**
-   * Removes all form values that are empty from the given object
-   * @param object that needs to be pruned
-   * @returns object that is pruned
-   * @author Ycreak
-   */
-  public remove_empty_form_fields(form_values: object): object {
-    const form = structuredClone(form_values);
-    for (const field in form) {
-      if (form[field] == '') {
-        delete form[field];
-      }
-    }
-    return form;
-  }
 }

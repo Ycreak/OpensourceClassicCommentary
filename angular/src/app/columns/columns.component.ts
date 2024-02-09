@@ -70,12 +70,17 @@ export class ColumnsComponent implements OnInit {
    * @author Ycreak
    */
   protected set_custom_filter(column_id: number): void {
-    const dialogRef = this.matdialog.open(DocumentFilterComponent, {});
+    const dialogRef = this.matdialog.open(DocumentFilterComponent, {
+      data: {
+        column_id: column_id,
+      }
+    });
     dialogRef.afterClosed().subscribe({
       next: (document_filter) => {
         if (document_filter) {
-          this.columns.request(document_filter, column_id);
-          this.columns.find(column_id).column_name = `Custom ${column_id}`;
+          console.log(document_filter)
+          //this.columns.request(document_filter, column_id);
+          //this.columns.find(column_id).column_name = `Custom ${column_id}`;
         }
       },
     });
