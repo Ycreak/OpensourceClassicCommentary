@@ -76,6 +76,8 @@ export class PlaygroundComponent implements OnInit {
     this.playground.canvas = new fabric.Canvas('playground_canvas');
     this.set_canvas_event_handlers();
     this.init_canvas_settings();
+
+    this.request_documents({ title: 'Eumenides' });
   }
 
   /**
@@ -135,14 +137,19 @@ export class PlaygroundComponent implements OnInit {
    * @author Ycreak
    */
   private process_incoming_documents(documents: any[]): void {
-    for (const i in documents) {
-      documents[i].add_html_to_lines();
-    }
-    if (this.single_fragment_requested) {
-      this.playground.documents.push(documents[0]);
-    } else {
-      this.playground.documents = documents;
-    }
+    // Replace the <n> tag for spaces by actual spaces
+    documents.forEach((doc: any) => {
+      doc.lines.forEach((line: any) => {
+        const matches = line.text.match(/<(\d+)>/);
+        // If found, replace it with the correct whitespace number
+        if (matches) {
+          // Add n spaces. n can be found in matches[1]
+          const replacement = ''.padStart(matches[1], '  ');
+          line.text = line.text.replace(matches[0], replacement);
+        }
+      });
+    });
+    this.playground.documents.push(documents[0]);
   }
 
   /**
@@ -518,4 +525,6 @@ export class PlaygroundComponent implements OnInit {
       },
     });
   }
+
+  protected request_commentary(): void {}
 }

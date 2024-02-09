@@ -34,11 +34,17 @@
   <hr class="playground-divider" />
   <div class="canvas-container">
     <canvas id="playground_canvas"></canvas>
+
+    <!--Popup window with options for the documents-->
     <div class="menu" *ngIf="this.canvas_has_selection()">
-      <div class="br-icon" style="--left: 4%">
-        <mat-icon (click)="this.delete_clicked_objects()">backspace</mat-icon> delete objects
+      <div class="br-icon" (click)="this.delete_clicked_objects()">
+        <mat-icon class="menu-icon">backspace</mat-icon> delete objects
+      </div>
+      <div class="br-icon" (click)="this.request_commentary()">
+        <mat-icon class="menu-icon">notes</mat-icon> commentary
       </div>
     </div>
+
     <div id="playground-main-toolbar" class="playground-toolbar">
       <div id="playground-document-tools" class="playground-tool-group">
         <img
