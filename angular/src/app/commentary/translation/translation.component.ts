@@ -22,7 +22,9 @@ export class TranslationComponent implements OnChanges {
   protected expansion_panel_title: string;
 
   ngOnChanges() {
+    console.log(this.document);
     this.commentary = this.document.commentary;
+    console.log(this.commentary);
     this.process_translation();
   }
 

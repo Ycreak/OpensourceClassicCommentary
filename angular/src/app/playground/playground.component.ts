@@ -78,7 +78,7 @@ export class PlaygroundComponent implements OnInit {
     this.set_canvas_event_handlers();
     this.init_canvas_settings();
 
-    this.request_documents({ title: 'Eumenides' });
+    //this.request_documents({ title: 'Eumenides' });
   }
 
   /**
@@ -535,7 +535,6 @@ export class PlaygroundComponent implements OnInit {
   protected request_commentary(): void {
     const clicked_document = this.playground.canvas.getActiveObjects()[0];
     if (!this.is_note(clicked_document)) {
-      console.log(clicked_document);
       const full_document = this.utility.filter_array(this.documents, clicked_document.identifier)[0];
       this.commentary.request(full_document);
       window.scroll(0, 0);
