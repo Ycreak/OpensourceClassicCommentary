@@ -20,7 +20,7 @@ import { SettingsService } from '@oscc/services/settings.service';
 import { UtilityService } from '@oscc/utility.service';
 
 // Component imports
-import { DocumentFilterComponent } from '@oscc/dialogs/document-filter/document-filter.component';
+import { DocumentFilterComponent } from '@oscc/filters/document-filter/document-filter.component';
 
 // Model imports
 import { Column } from '@oscc/models/Column';
@@ -72,10 +72,13 @@ export class ColumnsComponent implements OnInit {
   protected set_custom_filter(column_id: number): void {
     const dialogRef = this.matdialog.open(DocumentFilterComponent, {});
     dialogRef.afterClosed().subscribe({
-      next: (document_filter) => {
-        if (document_filter) {
-          this.columns.request(document_filter, column_id);
-          this.columns.find(column_id).column_name = `Custom ${column_id}`;
+      next: (filters) => {
+        if (filters.length) {
+          //TODO: for now, we need to request every single document from the server.
+          // New API update will allow us to request a list of filters
+          filters.forEach((filter: any) => {
+            this.columns.request(filter, column_id, true);
+          });
         }
       },
     });

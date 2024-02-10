@@ -34,35 +34,47 @@
   <hr class="playground-divider" />
   <div class="canvas-container">
     <canvas id="playground_canvas"></canvas>
+
+    <!--Popup window with options for the documents-->
     <div class="menu" *ngIf="this.canvas_has_selection()">
-      <div class="br-icon" style="--left: 4%">
-        <mat-icon (click)="this.delete_clicked_objects()">backspace</mat-icon> delete objects
+      <div class="br-icon" (click)="this.delete_clicked_objects()">
+        <mat-icon class="menu-icon">backspace</mat-icon> delete objects
+      </div>
+      <div class="br-icon" (click)="this.request_commentary()">
+        <mat-icon class="menu-icon">notes</mat-icon> commentary
       </div>
     </div>
+
     <div id="playground-main-toolbar" class="playground-toolbar">
       <div id="playground-document-tools" class="playground-tool-group">
         <img
           id="playground_authors_btn"
           class="playground-icon"
-          src="assets\icons\ByteDanceIconPark\9069051_doc_search_icon.png"
+          src="assets\icons\ByteDanceIconPark\9069093_doc_add_icon.png"
           [matMenuTriggerFor]="menu_authors" />
         <img
-          id="playground_fragment_btn"
+          id="playground_authors_btn"
           class="playground-icon"
           src="assets\icons\ByteDanceIconPark\9069051_doc_search_icon.png"
-          [matMenuTriggerFor]="fragment_selection" />
-        <img
-          id="playground_add_documents_btn"
-          class="playground-icon"
-          src="assets\icons\ByteDanceIconPark\9069093_doc_add_icon.png"
-          (click)="
-            this.request_documents({
-              author: this.playground.author,
-              title: this.playground.title,
-              editor: this.playground.editor
-            })
-          "
-          (click)="this.single_fragment_requested = false" />
+          (click)="this.filter_documents()" />
+
+        <!--<img-->
+        <!--id="playground_fragment_btn"-->
+        <!--class="playground-icon"-->
+        <!--src="assets\icons\ByteDanceIconPark\9069051_doc_search_icon.png"-->
+        <!--[matMenuTriggerFor]="fragment_selection" />-->
+        <!--<img-->
+        <!--id="playground_add_documents_btn"-->
+        <!--class="playground-icon"-->
+        <!--src="assets\icons\ByteDanceIconPark\9069093_doc_add_icon.png"-->
+        <!--(click)="-->
+        <!--this.request_documents({-->
+        <!--author: this.playground.author,-->
+        <!--title: this.playground.title,-->
+        <!--editor: this.playground.editor-->
+        <!--})-->
+        <!--"-->
+        <!--(click)="this.single_fragment_requested = false" />-->
         <img
           id="playground_note_btn"
           class="playground-icon"
@@ -140,25 +152,6 @@
     </div>
   </div>
 
-  <mat-menu #fragment_selection="matMenu">
-    <ng-container *ngFor="let fragment_name of this.playground.fragment_names">
-      <button
-        mat-menu-item
-        (click)="this.playground.fragment_name = fragment_name.name"
-        (click)="
-          this.add_single_fragment({
-            document_type: 'fragment',
-            author: this.playground.author,
-            title: this.playground.title,
-            editor: this.playground.editor,
-            name: fragment_name.name
-          })
-        ">
-        {{ fragment_name.name }}
-      </button>
-    </ng-container>
-  </mat-menu>
-
   <!-- Nested menu to select author - title - editor. -->
   <mat-menu #menu_authors="matMenu">
     <ng-container *ngFor="let author of this.api.get_author_list(); let i = index">
@@ -194,7 +187,7 @@
         mat-menu-item
         (click)="this.playground.editor = editor"
         (click)="
-          this.request_document_names({
+          this.request_documents({
             author: this.playground.author,
             title: this.playground.title,
             editor: this.playground.editor

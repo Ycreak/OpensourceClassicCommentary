@@ -8,8 +8,9 @@ import { fabric } from 'fabric';
 
 // Service imports
 import { ApiService } from '@oscc/api.service';
-import { UtilityService } from '@oscc/utility.service';
 import { AuthService } from '@oscc/auth/auth.service';
+import { CommentaryService } from '@oscc/commentary/commentary.service';
+import { UtilityService } from '@oscc/utility.service';
 
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
@@ -22,6 +23,7 @@ import { SavePlaygroundComponent } from './save-playground/save-playground.compo
 import { DeletePlaygroundComponent } from './delete-playground/delete-playground.component';
 import { SharePlaygroundComponent } from './share-playground/share-playground.component';
 import { JoinPlaygroundComponent } from './join-playground/join-playground.component';
+import { DocumentFilterComponent } from '@oscc/filters/document-filter/document-filter.component';
 
 @Component({
   selector: 'app-playground',
@@ -52,9 +54,8 @@ export class PlaygroundComponent implements OnInit {
 
   // Playground column that keeps all data related to said playground
   protected playground: Playground;
-
-  protected single_fragment_requested: boolean;
-  private new_fragment_location = 10;
+  // We keep track of all documents in the playground. We can then search through this array for data like commentaries.
+  private documents: any[] = [];
 
   // Variables for keeping track of canvas states
   private canvas_states: any[] = [];
@@ -64,6 +65,7 @@ export class PlaygroundComponent implements OnInit {
 
   constructor(
     private auth_service: AuthService,
+    private commentary: CommentaryService,
     protected api: ApiService,
     protected utility: UtilityService,
     protected dialog: DialogService,
@@ -75,6 +77,28 @@ export class PlaygroundComponent implements OnInit {
     this.playground.canvas = new fabric.Canvas('playground_canvas');
     this.set_canvas_event_handlers();
     this.init_canvas_settings();
+
+    this.request_documents({ title: 'Eumenides' });
+  }
+
+  /**
+   * Opens a dialog to set a custom filter. If filter set, requests documents from server
+   * @param number of column_id to load documents into
+   * @author Ycreak
+   */
+  protected filter_documents(): void {
+    const dialogRef = this.mat_dialog.open(DocumentFilterComponent, {});
+    dialogRef.afterClosed().subscribe({
+      next: (filters) => {
+        if (filters.length) {
+          //TODO: for now, we need to request every single document from the server.
+          // New API update will allow us to request a list of filters
+          filters.forEach((filter: any) => {
+            this.request_documents(filter);
+          });
+        }
+      },
+    });
   }
 
   /**
@@ -85,21 +109,20 @@ export class PlaygroundComponent implements OnInit {
   protected request_documents(filter: object): void {
     this.api.get_documents(filter).subscribe((documents) => {
       this.process_incoming_documents(documents);
+      // Place the first document at the following height in the canvas. Every following fragment will be placed a
+      // little bit lower to give a stacking effect for newly arrived fragments.
+      const offset_top = 60;
+      const offset_left = 150;
+      const step_next_document = 25;
+      let top = this.playground.canvas.vptCoords.tr.y + offset_top;
       documents.forEach((document: any) => {
-        this.add_document_to_canvas(document);
+        this.documents.push(document);
+        this.add_document_to_canvas(document, top, this.playground.canvas.vptCoords.tr.x - offset_left);
+        top += step_next_document;
       });
     });
   }
-  /**
-   * Request the API for document names: add them to the playground object
-   * @param column_id (number) in which to add the documents
-   * @param documents (object[]) which to add to the provided column
-   */
-  protected request_document_names(filter: object): void {
-    this.api.get_document_names(filter).subscribe((document_names) => {
-      this.playground.fragment_names = document_names;
-    });
-  }
+
   /**
    * Processes incoming documents: adds html, sorts documents and puts them in the given column.
    * @param column_id (number) in which to add the documents
@@ -107,14 +130,19 @@ export class PlaygroundComponent implements OnInit {
    * @author Ycreak
    */
   private process_incoming_documents(documents: any[]): void {
-    for (const i in documents) {
-      documents[i].add_html_to_lines();
-    }
-    if (this.single_fragment_requested) {
-      this.playground.documents.push(documents[0]);
-    } else {
-      this.playground.documents = documents;
-    }
+    // Replace the <n> tag for spaces by actual spaces
+    documents.forEach((doc: any) => {
+      doc.lines.forEach((line: any) => {
+        const matches = line.text.match(/<(\d+)>/);
+        // If found, replace it with the correct whitespace number
+        if (matches) {
+          // Add n spaces. n can be found in matches[1]
+          const replacement = ''.padStart(matches[1], '  ');
+          line.text = line.text.replace(matches[0], replacement);
+        }
+      });
+    });
+    this.playground.documents.push(documents[0]);
   }
 
   /**
@@ -137,16 +165,6 @@ export class PlaygroundComponent implements OnInit {
   }
 
   /**
-   * @param column to which the fragment is to be added
-   * @author Ycreak
-   */
-  protected add_single_fragment(filter: object): void {
-    this.single_fragment_requested = true;
-    // format the fragment and push it to the list
-    this.request_documents(filter);
-  }
-
-  /**
    * @author CptVickers
    */
   protected clear_playground(): void {
@@ -165,6 +183,8 @@ export class PlaygroundComponent implements OnInit {
    */
   protected add_note_to_canvas(note: string): void {
     const text = new fabric.Textbox(note, {
+      top: this.find_canvas_center().y,
+      left: this.find_canvas_center().x,
       width: 200,
       fontSize: this.playground.font_size,
       textAlign: 'left', // you can use specify the text align
@@ -178,7 +198,7 @@ export class PlaygroundComponent implements OnInit {
    * Adds the given fragment to the canvas
    * @author Ycreak
    */
-  private add_document_to_canvas(fragment: any): void {
+  private add_document_to_canvas(fragment: any, top: number, left: number): void {
     const header_text = `Fragment ${fragment.name}`;
     const header = new fabric.Text(header_text, {
       fontSize: this.playground.font_size,
@@ -195,7 +215,6 @@ export class PlaygroundComponent implements OnInit {
       originX: 'left',
     });
     const text_group = new fabric.Group([header, lines], {
-      top: this.new_fragment_location,
       backgroundColor: 'green',
       fill: 'red',
       hasBorders: true,
@@ -207,15 +226,36 @@ export class PlaygroundComponent implements OnInit {
       left: textBoundingRect.left,
       width: textBoundingRect.width,
       height: textBoundingRect.height,
-      fill: '#9BA8F2',
+      fill: 'orange',
       rx: 10,
       ry: 10,
       stroke: 'black',
       strokeWidth: 1,
     });
-    const group = new fabric.Group([background_and_border, text_group], {});
+
+    const group = new fabric.Group([background_and_border, text_group], {
+      top: top,
+      left: left,
+      // We save the document identifier for finding the document in this.documents whenever we need it for something
+      identifier: { author: fragment.author, title: fragment.title, editor: fragment.editor, name: fragment.name },
+    });
     this.playground.canvas.add(group);
-    this.new_fragment_location += 100;
+  }
+
+  /**
+   * Returns the center of the canvas
+   * @author Ycreak
+   */
+  private find_canvas_center() {
+    const zoom = this.playground.canvas.getZoom();
+    return {
+      x:
+        fabric.util.invertTransform(this.playground.canvas.viewportTransform)[4] +
+        this.playground.canvas.width / zoom / 2,
+      y:
+        fabric.util.invertTransform(this.playground.canvas.viewportTransform)[5] +
+        this.playground.canvas.height / zoom / 2,
+    };
   }
 
   /**
@@ -277,12 +317,18 @@ export class PlaygroundComponent implements OnInit {
         this.lastPosY = e.clientY;
       }
     });
-    this.playground.canvas.on('mouse:up', function () {
+    this.playground.canvas.on('mouse:up', () => {
+      // Whenever we move a fragment, we set its colour. This allows the distinction between existing and new fragments
+      const activeObject = this.playground.canvas.getActiveObject();
+      if (activeObject) {
+        activeObject._objects[0].set('fill', '#9BA8F2'); // Change color to blue
+        this.playground.canvas.renderAll();
+      }
       // on mouse up we want to recalculate new interaction
       // for all objects, so we call setViewportTransform
-      this.setViewportTransform(this.viewportTransform);
-      this.isDragging = false;
-      this.selection = true;
+      this.playground.canvas.setViewportTransform(this.playground.canvas.viewportTransform);
+      this.playground.canvas.isDragging = false;
+      this.playground.canvas.selection = true;
     });
 
     // On object add, delete and modify, save the canvas state for undo and redo
@@ -479,5 +525,32 @@ export class PlaygroundComponent implements OnInit {
         }
       },
     });
+  }
+
+  /**
+   * Requests the commentary for the clicked document. Will check which document has been clicked,
+   * find said document in the this.documents array and then request the commentary component for a commentary.
+   * @author Ycreak
+   */
+  protected request_commentary(): void {
+    const clicked_document = this.playground.canvas.getActiveObjects()[0];
+    if (!this.is_note(clicked_document)) {
+      console.log(clicked_document);
+      const full_document = this.utility.filter_array(this.documents, clicked_document.identifier)[0];
+      this.commentary.request(full_document);
+      window.scroll(0, 0);
+    } else {
+      this.utility.open_snackbar('I am a note.');
+    }
+  }
+
+  /**
+   * Checks if the given object is a note
+   * @param thing (object)
+   * @return boolean
+   * @author Ycreak
+   */
+  private is_note(thing: any): boolean {
+    return thing.backgroundColor == '#F0C086';
   }
 }

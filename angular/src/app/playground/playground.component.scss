@@ -128,13 +128,26 @@ hr.playground-divider-top {
   }
   .menu {
     background-color: white;
-    border-radius: 25px;
+    // border-radius: 25px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     width: 200px;
-    height: 150px;
-    top: 10%;
+    height: 120px;
+    top: 7%;
     left: 2%;
     position: absolute;
-    border: 3px solid red;
+    border: 3px solid #3f51b5;
+    .br-icon {
+      padding: 0.5em;
+      display: flex;
+      align-items: center;
+    }
+    .br-icon:hover {
+      background-color: #ff4886;
+      cursor: pointer;
+    }
+    .menu-icon {
+      margin: 0.2em;
+    }
   }
 }
 .playground-toolbar {

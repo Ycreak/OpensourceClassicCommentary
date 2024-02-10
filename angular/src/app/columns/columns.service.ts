@@ -162,7 +162,6 @@ export class ColumnsService {
       }
     });
     // Prepare the documents for publication
-    documents = documents.sort(this.utility.sort_fragment_array_numerically);
     documents = this.sort(documents);
     return documents;
   }
@@ -175,6 +174,7 @@ export class ColumnsService {
    * @author Ycreak
    */
   public sort(documents: any[]): any[] {
+    documents = documents.sort(this.utility.sort_fragment_array_numerically);
     const normal = this.utility.filter_object_on_key(documents, 'status', 'Certum');
     const incerta = this.utility.filter_object_on_key(documents, 'status', 'Incertum');
     const adesp = this.utility.filter_object_on_key(documents, 'status', 'Adesp.');

@@ -93,7 +93,7 @@ import { CommentaryComponent } from './commentary/commentary.component';
 import { OverviewComponent } from './overview/overview.component';
 import { IntroductionsComponent } from './dashboard/introductions-dashboard/introductions.component';
 import { ExpandableTextComponent } from './other_components/expandable-text/expandable-text.component';
-import { DocumentFilterComponent } from './dialogs/document-filter/document-filter.component';
+import { DocumentFilterComponent } from './filters/document-filter/document-filter.component';
 import { UsersComponent } from './dashboard/users/users.component';
 import { TestimoniaComponent } from './columns/testimonia/testimonia.component';
 import { FragmentComponent } from './columns/fragment/fragment.component';
@@ -108,6 +108,7 @@ import { DeletePlaygroundComponent } from './playground/delete-playground/delete
 import { SharePlaygroundComponent } from './playground/share-playground/share-playground.component';
 import { JoinPlaygroundComponent } from './playground/join-playground/join-playground.component';
 import { LatinTragicFragmentFilterComponent } from './filters/latin-tragic-fragment-filter/latin-tragic-fragment-filter.component';
+import { FragmentTableComponent } from './filters/document-filter/fragment-table/fragment-table.component';
 
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
@@ -155,6 +156,7 @@ const appRoutes: Routes = [
     SharePlaygroundComponent,
     JoinPlaygroundComponent,
     LatinTragicFragmentFilterComponent,
+    FragmentTableComponent,
   ],
   imports: [
     BrowserModule,

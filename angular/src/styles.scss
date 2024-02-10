@@ -2,6 +2,8 @@
 /* @import "./app/app.component.scss"; */
 /* @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 /* @import "~bootstrap/dist/css/bootstrap.css"; */
+@use "@angular/material" as mat;
+
 @import url("app/_mixins.scss");
 
 html,
@@ -40,3 +42,30 @@ div.force-dialog-padding {
 .csl-entry {
   padding-bottom: 0.6em;
 }
+
+/* Dialog header */
+div.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-left: 1em;
+  color: white;
+  background-color: mat.get_color_from_palette(mat.$pink-palette, "A200");
+}
+div.dialog-header h2 {
+  font-size: 1.5em;
+}
+
+div.dialog-header button {
+  display: inline-flex;
+}
+
+/* Disable ripple effect on autofocus */
+div.dialog-header button:focus {
+  --mat-mdc-button-persistent-ripple-color: none;
+}
+/* Reenables the effect on focus */
+div.dialog-header button:hover {
+  --mat-mdc-button-persistent-ripple-color: black !important;
+}
+

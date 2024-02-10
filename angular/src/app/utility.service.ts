@@ -77,6 +77,26 @@ export class UtilityService {
   }
 
   /**
+   * Filters a list of objects on the object filter specified
+   * @param array (list) with objects
+   * @param filter (object)
+   * @return list
+   * @author Ycreak
+   */
+  public filter_array(array: Array<any>, filters: any) {
+    const filter_keys = Object.keys(filters);
+    return array.filter((item: any) => {
+      // Check all filter criteria
+      return filter_keys.every((key) => {
+        // Ignore non-existent properties
+        if (!Object.prototype.hasOwnProperty.call(item, key)) return true;
+        // Compare values
+        return item[key] === filters[key];
+      });
+    });
+  }
+
+  /**
    * Opens Material popup window with the given message
    * @param message information that is showed in the popup
    * @author Ycreak
