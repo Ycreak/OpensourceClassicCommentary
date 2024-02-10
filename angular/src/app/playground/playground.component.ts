@@ -8,8 +8,9 @@ import { fabric } from 'fabric';
 
 // Service imports
 import { ApiService } from '@oscc/api.service';
-import { UtilityService } from '@oscc/utility.service';
 import { AuthService } from '@oscc/auth/auth.service';
+import { CommentaryService } from '@oscc/commentary/commentary.service';
+import { UtilityService } from '@oscc/utility.service';
 
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
@@ -53,9 +54,8 @@ export class PlaygroundComponent implements OnInit {
 
   // Playground column that keeps all data related to said playground
   protected playground: Playground;
-
-  //FIXME: deprecated
-  protected single_fragment_requested: boolean;
+  // We keep track of all documents in the playground. We can then search through this array for data like commentaries.
+  private documents: any[] = [];
 
   // Variables for keeping track of canvas states
   private canvas_states: any[] = [];
@@ -65,6 +65,7 @@ export class PlaygroundComponent implements OnInit {
 
   constructor(
     private auth_service: AuthService,
+    private commentary: CommentaryService,
     protected api: ApiService,
     protected utility: UtilityService,
     protected dialog: DialogService,
@@ -115,21 +116,13 @@ export class PlaygroundComponent implements OnInit {
       const step_next_document = 25;
       let top = this.playground.canvas.vptCoords.tr.y + offset_top;
       documents.forEach((document: any) => {
+        this.documents.push(document);
         this.add_document_to_canvas(document, top, this.playground.canvas.vptCoords.tr.x - offset_left);
         top += step_next_document;
       });
     });
   }
-  /**
-   * Request the API for document names: add them to the playground object
-   * @param column_id (number) in which to add the documents
-   * @param documents (object[]) which to add to the provided column
-   */
-  protected request_document_names(filter: object): void {
-    this.api.get_document_names(filter).subscribe((document_names) => {
-      this.playground.fragment_names = document_names;
-    });
-  }
+  
   /**
    * Processes incoming documents: adds html, sorts documents and puts them in the given column.
    * @param column_id (number) in which to add the documents
@@ -233,7 +226,7 @@ export class PlaygroundComponent implements OnInit {
       left: textBoundingRect.left,
       width: textBoundingRect.width,
       height: textBoundingRect.height,
-      fill: '#9BA8F2',
+      fill: 'orange',
       rx: 10,
       ry: 10,
       stroke: 'black',
@@ -243,6 +236,8 @@ export class PlaygroundComponent implements OnInit {
     const group = new fabric.Group([background_and_border, text_group], {
       top: top,
       left: left,
+      // We save the document identifier for finding the document in this.documents whenever we need it for something
+      identifier: {author: fragment.author, title: fragment.title, editor: fragment.editor, name: fragment.name} 
     });
     this.playground.canvas.add(group);
   }
@@ -322,12 +317,18 @@ export class PlaygroundComponent implements OnInit {
         this.lastPosY = e.clientY;
       }
     });
-    this.playground.canvas.on('mouse:up', function () {
+    this.playground.canvas.on('mouse:up', () => {
+      // Whenever we move a fragment, we set its colour. This allows the distinction between existing and new fragments
+      const activeObject = this.playground.canvas.getActiveObject();
+      if (activeObject) {
+        activeObject._objects[0].set('fill', '#9BA8F2'); // Change color to blue
+        this.playground.canvas.renderAll();
+      }
       // on mouse up we want to recalculate new interaction
       // for all objects, so we call setViewportTransform
-      this.setViewportTransform(this.viewportTransform);
-      this.isDragging = false;
-      this.selection = true;
+      this.playground.canvas.setViewportTransform(this.playground.canvas.viewportTransform);
+      this.playground.canvas.isDragging = false;
+      this.playground.canvas.selection = true;
     });
 
     // On object add, delete and modify, save the canvas state for undo and redo
@@ -526,5 +527,30 @@ export class PlaygroundComponent implements OnInit {
     });
   }
 
-  protected request_commentary(): void {}
+  /**
+   * Requests the commentary for the clicked document. Will check which document has been clicked,
+   * find said document in the this.documents array and then request the commentary component for a commentary.
+   * @author Ycreak
+   */
+  protected request_commentary(): void {
+    const clicked_document = this.playground.canvas.getActiveObjects()[0];
+    if(!this.is_note(clicked_document)){
+      console.log(clicked_document)
+      const full_document = this.utility.filter_array(this.documents, clicked_document.identifier)[0]
+      this.commentary.request(full_document);
+      window.scroll(0,0);
+    } else {
+      this.utility.open_snackbar("I am a note.")
+    }
+  }
+
+  /**
+   * Checks if the given object is a note
+   * @param thing (object)
+   * @return boolean
+   * @author Ycreak
+   */
+  private is_note(thing: any): boolean {
+    return thing.backgroundColor == "#F0C086";
+  }
 }

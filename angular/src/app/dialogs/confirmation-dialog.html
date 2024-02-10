@@ -1,4 +1,11 @@
-<div mat-dialog-content>
+<div class="dialog-header">
+  <h2>Confirmation</h2>
+  <button mat-icon-button [mat-dialog-close]="null" [disableRipple]="true">
+    <mat-icon>clear</mat-icon>
+  </button>
+</div>
+
+<div class="dialog-content" mat-dialog-content>
   {{data.message}}
   <br />
   <b>{{data.item}}</b>
