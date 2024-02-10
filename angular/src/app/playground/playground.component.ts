@@ -320,7 +320,7 @@ export class PlaygroundComponent implements OnInit {
     this.playground.canvas.on('mouse:up', () => {
       // Whenever we move a fragment, we set its colour. This allows the distinction between existing and new fragments
       const activeObject = this.playground.canvas.getActiveObject();
-      if (activeObject) {
+      if (activeObject && !this.is_note(activeObject)) {
         activeObject._objects[0].set('fill', '#9BA8F2'); // Change color to blue
         this.playground.canvas.renderAll();
       }
