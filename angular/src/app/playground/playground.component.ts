@@ -122,7 +122,7 @@ export class PlaygroundComponent implements OnInit {
       });
     });
   }
-  
+
   /**
    * Processes incoming documents: adds html, sorts documents and puts them in the given column.
    * @param column_id (number) in which to add the documents
@@ -237,7 +237,7 @@ export class PlaygroundComponent implements OnInit {
       top: top,
       left: left,
       // We save the document identifier for finding the document in this.documents whenever we need it for something
-      identifier: {author: fragment.author, title: fragment.title, editor: fragment.editor, name: fragment.name} 
+      identifier: { author: fragment.author, title: fragment.title, editor: fragment.editor, name: fragment.name },
     });
     this.playground.canvas.add(group);
   }
@@ -534,13 +534,13 @@ export class PlaygroundComponent implements OnInit {
    */
   protected request_commentary(): void {
     const clicked_document = this.playground.canvas.getActiveObjects()[0];
-    if(!this.is_note(clicked_document)){
-      console.log(clicked_document)
-      const full_document = this.utility.filter_array(this.documents, clicked_document.identifier)[0]
+    if (!this.is_note(clicked_document)) {
+      console.log(clicked_document);
+      const full_document = this.utility.filter_array(this.documents, clicked_document.identifier)[0];
       this.commentary.request(full_document);
-      window.scroll(0,0);
+      window.scroll(0, 0);
     } else {
-      this.utility.open_snackbar("I am a note.")
+      this.utility.open_snackbar('I am a note.');
     }
   }
 
@@ -551,6 +551,6 @@ export class PlaygroundComponent implements OnInit {
    * @author Ycreak
    */
   private is_note(thing: any): boolean {
-    return thing.backgroundColor == "#F0C086";
+    return thing.backgroundColor == '#F0C086';
   }
 }

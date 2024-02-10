@@ -89,7 +89,7 @@ export class UtilityService {
       // Check all filter criteria
       return filter_keys.every((key) => {
         // Ignore non-existent properties
-        if (!item.hasOwnProperty(key)) return true;
+        if (!Object.prototype.hasOwnProperty.call(item, key)) return true;
         // Compare values
         return item[key] === filters[key];
       });
