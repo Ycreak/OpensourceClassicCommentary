@@ -28,6 +28,7 @@ class FragmentField(object):
     APPARATUS = "apparatus"
     COMMENTARY = "commentary"
     RECONSTRUCTION = "reconstruction"
+    METRICAL_ANALYSIS = "metrical_analysis"
     CONTEXT = "context"
     LINES = "lines"
     LINKED_FRAGMENTS = "linked_fragments"
@@ -46,6 +47,7 @@ class Fragment:
     apparatus: str = None
     commentary: str = None
     reconstruction: str = None
+    metrical_analysis: str = None
     context: list = None
     lines: list = None
     linked_fragments: list = None
@@ -80,6 +82,8 @@ class FragmentModel:
                 fragment.commentary = doc[FragmentField.COMMENTARY]
             if FragmentField.RECONSTRUCTION in doc:
                 fragment.reconstruction = doc[FragmentField.RECONSTRUCTION]
+            if FragmentField.METRICAL_ANALYSIS in doc:
+                fragment.metrical_analysis = doc[FragmentField.METRICAL_ANALYSIS]
             if FragmentField.CONTEXT in doc:
                 fragment.context = doc[FragmentField.CONTEXT]
             if FragmentField.LINES in doc:

@@ -162,6 +162,7 @@ def create_fragment():
         apparatus = None
         commentary = None
         reconstruction = None
+        metrical_analysis = None
         context = None
         lines = None
         linked_fragments = None
@@ -180,6 +181,8 @@ def create_fragment():
             commentary = request.get_json()[FragmentField.COMMENTARY]
         if FragmentField.RECONSTRUCTION in request.get_json():
             reconstruction = request.get_json()[FragmentField.RECONSTRUCTION]
+        if FragmentField.METRICAL_ANALYSIS in request.get_json():
+            metrical_analysis = request.get_json()[FragmentField.METRICAL_ANALYSIS]
         if FragmentField.CONTEXT in request.get_json():
             context = request.get_json()[FragmentField.CONTEXT]
         if FragmentField.LINES in request.get_json():
@@ -196,8 +199,8 @@ def create_fragment():
 
     fragment = fragments.create(Fragment(_id=uuid4().hex, author=author, title=title, editor=editor, name=name, status=status,
                                          lock=lock, translation=translation, differences=differences, apparatus=apparatus, 
-                                         commentary=commentary, reconstruction=reconstruction, context=context, lines=lines, 
-                                         linked_fragments=linked_fragments))
+                                         commentary=commentary, reconstruction=reconstruction, metrical_analysis=metrical_analysis, context=context, 
+                                         lines=lines, linked_fragments=linked_fragments))
     if fragment == None:
         return make_response("Server error", 500)
     
@@ -238,6 +241,7 @@ def update_fragment():
         apparatus = None
         commentary = None
         reconstruction = None
+        metrical_analysis = None
         context = None
         lines = None
         linked_fragments = None
@@ -256,6 +260,8 @@ def update_fragment():
             commentary = request.get_json()[FragmentField.COMMENTARY]
         if FragmentField.RECONSTRUCTION in request.get_json():
             reconstruction = request.get_json()[FragmentField.RECONSTRUCTION]
+        if FragmentField.METRICAL_ANALYSIS in request.get_json():
+            metrical_analysis = request.get_json()[FragmentField.METRICAL_ANALYSIS]
         if FragmentField.CONTEXT in request.get_json():
             context = request.get_json()[FragmentField.CONTEXT]
         if FragmentField.LINES in request.get_json():
@@ -274,8 +280,8 @@ def update_fragment():
 
     fragment = fragments.update(Fragment(_id=_id, author=author, title=title, editor=editor, name=name, status=status,
                                          lock=lock, translation=translation, differences=differences, apparatus=apparatus, 
-                                         commentary=commentary, reconstruction=reconstruction, context=context, lines=lines, 
-                                         linked_fragments=linked_fragments))
+                                         commentary=commentary, reconstruction=reconstruction, metrical_analysis=metrical_analysis, context=context, 
+                                         lines=lines, linked_fragments=linked_fragments))
     if fragment == None:
         return make_response("Server error", 500)
 
