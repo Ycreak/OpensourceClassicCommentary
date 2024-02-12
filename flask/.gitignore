@@ -1,7 +1,7 @@
 # Project-specific
 server_credentials.py
 config.py
-
+cache/*
 #Folders
 server_backups
 
