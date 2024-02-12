@@ -319,6 +319,7 @@ export class ApiService {
    * @param filter (object) on which to filter documents
    * @return documents (document[])
    * @author Ycreak
+   * @TODO: needs to be refactored to get_fragments
    */
   public get_documents(filter: any): Observable<any> {
     return new Observable((observer) => {
@@ -327,20 +328,8 @@ export class ApiService {
         const documents: any[] = [];
         data.forEach((value: any) => {
           let new_document: any;
-          if (value.document_type == 'fragment') {
-            new_document = new Fragment({});
-            new_document.set_fragment(value);
-          } else if (value.document_type == 'testimonium') {
-            new_document = new Testimonium({});
-            new_document.set(value);
-          } else {
-            new_document = new Fragment({});
-            new_document.set_fragment(value);
-            console.error('unknown document type', value);
-            this.utility.open_snackbar('Unknown document type received.');
-          }
-          // Retrieve the bib keys from the commentary of the new document
-          new_document.bib_keys = this.bib.get_keys_from_document(new_document);
+          new_document = new Fragment({});
+          new_document.set_fragment(value);
           documents.push(new_document);
         });
         this.spinner_off();

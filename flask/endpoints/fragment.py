@@ -36,7 +36,6 @@ def get_author():
     title = None
     editor = None
     name = None
-    document_type = None
     try:
         if FragmentField.AUTHOR in request.get_json():
             author = request.get_json()[FragmentField.AUTHOR]
@@ -46,12 +45,10 @@ def get_author():
             editor = request.get_json()[FragmentField.EDITOR]
         if FragmentField.NAME in request.get_json():
             name = request.get_json()[FragmentField.NAME]
-        if FragmentField.DOCUMENT_TYPE in request.get_json():
-            document_type = request.get_json()[FragmentField.DOCUMENT_TYPE]
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-    fragment_lst = fragments.filter(Fragment(author=author, title=title, editor=editor, name=name, document_type=document_type), sorted=True)
+    fragment_lst = fragments.filter(Fragment(author=author, title=title, editor=editor, name=name), sorted=True)
     if not fragment_lst:
         return make_response("Not found", 401)
     return jsonify(sorted(set([frag.author for frag in fragment_lst]))), 200
@@ -105,7 +102,6 @@ def get_name():
     title = None
     editor = None
     name = None
-    document_type = None
 
     try:
         if FragmentField.AUTHOR in request.get_json():
@@ -116,12 +112,10 @@ def get_name():
             editor = request.get_json()[FragmentField.EDITOR]
         if FragmentField.NAME in request.get_json():
             name = request.get_json()[FragmentField.NAME]
-        if FragmentField.DOCUMENT_TYPE in request.get_json():
-            document_type = request.get_json()[FragmentField.DOCUMENT_TYPE]
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-    fragment_lst = fragments.filter(Fragment(author=author, title=title, editor=editor, name=name, document_type=document_type), sorted=True)
+    fragment_lst = fragments.filter(Fragment(author=author, title=title, editor=editor, name=name), sorted=True)
     if not fragment_lst:
         return make_response("Not found", 401)
     return jsonify(list(set([frag.name for frag in fragment_lst]))), 200
@@ -131,14 +125,11 @@ def get_fragment():
     title = None
     editor = None
     name = None
-    document_type = None
     status = None
 
     try:
         if FragmentField.STATUS in request.get_json():
             status = request.get_json()[FragmentField.STATUS]
-        if FragmentField.DOCUMENT_TYPE in request.get_json():
-            document_type = request.get_json()[FragmentField.DOCUMENT_TYPE]
         if FragmentField.AUTHOR in request.get_json():
             author = request.get_json()[FragmentField.AUTHOR]
         if FragmentField.TITLE in request.get_json():
@@ -151,7 +142,7 @@ def get_fragment():
         logging.error(e)
         return make_response("Unprocessable entity", 422)
     
-    fragment_lst = fragments.filter(Fragment(author=author, title=title, editor=editor, name=name, document_type=document_type, status=status), sorted=True)
+    fragment_lst = fragments.filter(Fragment(author=author, title=title, editor=editor, name=name, status=status), sorted=True)
     if not fragment_lst:
         return make_response("Not found", 401)
 
@@ -171,21 +162,10 @@ def create_fragment():
         apparatus = None
         commentary = None
         reconstruction = None
+        metrical_analysis = None
         context = None
         lines = None
         linked_fragments = None
-
-        # Testimonia
-        witness = None
-        text = None
-        document_type = None
-
-        if FragmentField.WITNESS in request.get_json():
-            witness = request.get_json()[FragmentField.WITNESS]
-        if FragmentField.TEXT in request.get_json():
-            text = request.get_json()[FragmentField.TEXT]
-        if FragmentField.DOCUMENT_TYPE in request.get_json():
-            document_type = request.get_json()[FragmentField.DOCUMENT_TYPE]
 
         if FragmentField.STATUS in request.get_json():
             status = request.get_json()[FragmentField.STATUS]
@@ -201,6 +181,8 @@ def create_fragment():
             commentary = request.get_json()[FragmentField.COMMENTARY]
         if FragmentField.RECONSTRUCTION in request.get_json():
             reconstruction = request.get_json()[FragmentField.RECONSTRUCTION]
+        if FragmentField.METRICAL_ANALYSIS in request.get_json():
+            metrical_analysis = request.get_json()[FragmentField.METRICAL_ANALYSIS]
         if FragmentField.CONTEXT in request.get_json():
             context = request.get_json()[FragmentField.CONTEXT]
         if FragmentField.LINES in request.get_json():
@@ -217,8 +199,8 @@ def create_fragment():
 
     fragment = fragments.create(Fragment(_id=uuid4().hex, author=author, title=title, editor=editor, name=name, status=status,
                                          lock=lock, translation=translation, differences=differences, apparatus=apparatus, 
-                                         commentary=commentary, reconstruction=reconstruction, context=context, lines=lines, 
-                                         linked_fragments=linked_fragments, witness=witness, text=text, document_type=document_type))
+                                         commentary=commentary, reconstruction=reconstruction, metrical_analysis=metrical_analysis, context=context, 
+                                         lines=lines, linked_fragments=linked_fragments))
     if fragment == None:
         return make_response("Server error", 500)
     
@@ -259,22 +241,11 @@ def update_fragment():
         apparatus = None
         commentary = None
         reconstruction = None
+        metrical_analysis = None
         context = None
         lines = None
         linked_fragments = None
         
-        # Testimonia
-        witness = None
-        text = None
-        document_type = None
-
-        if FragmentField.WITNESS in request.get_json():
-            witness = request.get_json()[FragmentField.WITNESS]
-        if FragmentField.TEXT in request.get_json():
-            text = request.get_json()[FragmentField.TEXT]
-        if FragmentField.DOCUMENT_TYPE in request.get_json():
-            document_type = request.get_json()[FragmentField.DOCUMENT_TYPE]
-
         if FragmentField.STATUS in request.get_json():
             status = request.get_json()[FragmentField.STATUS]
         if FragmentField.LOCK in request.get_json():
@@ -289,6 +260,8 @@ def update_fragment():
             commentary = request.get_json()[FragmentField.COMMENTARY]
         if FragmentField.RECONSTRUCTION in request.get_json():
             reconstruction = request.get_json()[FragmentField.RECONSTRUCTION]
+        if FragmentField.METRICAL_ANALYSIS in request.get_json():
+            metrical_analysis = request.get_json()[FragmentField.METRICAL_ANALYSIS]
         if FragmentField.CONTEXT in request.get_json():
             context = request.get_json()[FragmentField.CONTEXT]
         if FragmentField.LINES in request.get_json():
@@ -307,8 +280,8 @@ def update_fragment():
 
     fragment = fragments.update(Fragment(_id=_id, author=author, title=title, editor=editor, name=name, status=status,
                                          lock=lock, translation=translation, differences=differences, apparatus=apparatus, 
-                                         commentary=commentary, reconstruction=reconstruction, context=context, lines=lines, 
-                                         linked_fragments=linked_fragments, witness=witness, text=text, document_type=document_type))
+                                         commentary=commentary, reconstruction=reconstruction, metrical_analysis=metrical_analysis, context=context, 
+                                         lines=lines, linked_fragments=linked_fragments))
     if fragment == None:
         return make_response("Server error", 500)
 
@@ -316,27 +289,15 @@ def update_fragment():
     return make_response("Revised", 200)
 
 def delete_fragment():
-    document_type = request.get_json()[FragmentField.DOCUMENT_TYPE]
-
-    if document_type == 'testimonium':
-        try:
-            author = request.get_json()[FragmentField.AUTHOR]
-            name = request.get_json()[FragmentField.NAME]
-        except KeyError as e:
-            logging.error(e)
-            return make_response("Unprocessable entity", 422)
-        fragment = fragments.delete(Fragment(author=author, name=name, document_type=document_type))
-
-    elif document_type == 'fragment':
-        try:
-            author = request.get_json()[FragmentField.AUTHOR]
-            title = request.get_json()[FragmentField.TITLE]
-            editor = request.get_json()[FragmentField.EDITOR]
-            name = request.get_json()[FragmentField.NAME]
-        except KeyError as e:
-            logging.error(e)
-            return make_response("Unprocessable entity", 422)
-        fragment = fragments.delete(Fragment(author=author, title=title, editor=editor, name=name, document_type=document_type))
+    try:
+        author = request.get_json()[FragmentField.AUTHOR]
+        title = request.get_json()[FragmentField.TITLE]
+        editor = request.get_json()[FragmentField.EDITOR]
+        name = request.get_json()[FragmentField.NAME]
+    except KeyError as e:
+        logging.error(e)
+        return make_response("Unprocessable entity", 422)
+    fragment = fragments.delete(Fragment(author=author, title=title, editor=editor, name=name))
 
 
     if fragment:

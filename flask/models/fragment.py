@@ -28,13 +28,10 @@ class FragmentField(object):
     APPARATUS = "apparatus"
     COMMENTARY = "commentary"
     RECONSTRUCTION = "reconstruction"
+    METRICAL_ANALYSIS = "metrical_analysis"
     CONTEXT = "context"
     LINES = "lines"
     LINKED_FRAGMENTS = "linked_fragments"
-
-    WITNESS = "witness"
-    TEXT = "text"
-    DOCUMENT_TYPE = "document_type"
 
 @dataclass
 class Fragment:
@@ -50,13 +47,10 @@ class Fragment:
     apparatus: str = None
     commentary: str = None
     reconstruction: str = None
+    metrical_analysis: str = None
     context: list = None
     lines: list = None
     linked_fragments: list = None
-
-    witness: str = None
-    text: str = None
-    document_type: str = None
 
 class FragmentModel:
     def __init__(self, server):
@@ -88,18 +82,14 @@ class FragmentModel:
                 fragment.commentary = doc[FragmentField.COMMENTARY]
             if FragmentField.RECONSTRUCTION in doc:
                 fragment.reconstruction = doc[FragmentField.RECONSTRUCTION]
+            if FragmentField.METRICAL_ANALYSIS in doc:
+                fragment.metrical_analysis = doc[FragmentField.METRICAL_ANALYSIS]
             if FragmentField.CONTEXT in doc:
                 fragment.context = doc[FragmentField.CONTEXT]
             if FragmentField.LINES in doc:
                 fragment.lines = doc[FragmentField.LINES]
             if FragmentField.LINKED_FRAGMENTS in doc:
                 fragment.linked_fragments = doc[FragmentField.LINKED_FRAGMENTS]
-            if FragmentField.WITNESS in doc:
-                fragment.witness = doc[FragmentField.WITNESS]
-            if FragmentField.TEXT in doc:
-                fragment.text = doc[FragmentField.TEXT]
-            if FragmentField.DOCUMENT_TYPE in doc:
-                fragment.document_type = doc[FragmentField.DOCUMENT_TYPE]
             result.append(fragment)
 
         return result
