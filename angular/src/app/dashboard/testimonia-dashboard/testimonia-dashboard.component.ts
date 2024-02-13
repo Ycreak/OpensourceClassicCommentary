@@ -45,7 +45,7 @@ export class TestimoniaDashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.api.request_index();
+    this.api.request_index().subscribe();
   }
 
   /**

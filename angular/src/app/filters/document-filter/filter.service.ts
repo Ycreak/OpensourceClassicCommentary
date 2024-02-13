@@ -14,10 +14,26 @@ import { MatTableDataSource } from '@angular/material/table';
   providedIn: 'root',
 })
 export class FilterService {
+  /** We save each data source in this service for easy requesting from the dialog */
+  public data: any = {
+    fragments: {
+      selection: new SelectionModel<any>(true, []),
+      dataSource: MatTableDataSource<any>,
+    },
+    testimonia: {
+      selection: new SelectionModel<any>(true, []),
+      dataSource: MatTableDataSource<any>,
+    },
+    texts: {
+      selection: new SelectionModel<any>(true, []),
+      dataSource: MatTableDataSource<any>,
+    },
+  };
+
   // Keeps track of the selection made in a table
-  public selection = new SelectionModel<any>(true, []);
+  //public selection = new SelectionModel<any>(true, []);
   // Keeps track of the entire table (including its filtering)
-  public dataSource: MatTableDataSource<any>;
+  //public dataSource: MatTableDataSource<any>;
 
   constructor() {}
 }

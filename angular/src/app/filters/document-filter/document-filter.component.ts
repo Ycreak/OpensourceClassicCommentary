@@ -5,7 +5,7 @@
  */
 import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-
+import { MatTabChangeEvent } from '@angular/material/tabs';
 // Services imports
 import { FilterService } from './filter.service';
 
@@ -15,10 +15,21 @@ import { FilterService } from './filter.service';
   styleUrls: ['./document-filter.component.scss'],
 })
 export class DocumentFilterComponent {
+  private current_tab: string = 'fragments';
+
   constructor(
     private dialogRef: MatDialogRef<DocumentFilterComponent>,
     private filter: FilterService
   ) {}
+
+  /**
+   * Keeps track on the currently opened tab
+   * @param event
+   * @author Ycreak
+   */
+  protected on_tab_change(event: MatTabChangeEvent): void {
+    this.current_tab = event.tab.textLabel.toLowerCase();
+  }
 
   protected exit(): void {
     this.dialogRef.close();
@@ -29,8 +40,10 @@ export class DocumentFilterComponent {
    * @author Ycreak
    */
   protected add_table(): void {
-    const filters = this.filter.dataSource.filteredData;
-    this.dialogRef.close(filters);
+    this.dialogRef.close({
+      endpoint: this.current_tab,
+      filters: this.filter.data[this.current_tab].dataSource.filteredData,
+    });
   }
 
   /**
@@ -38,7 +51,9 @@ export class DocumentFilterComponent {
    * @author Ycreak
    */
   protected add_selection(): void {
-    const filters = this.filter.selection.selected;
-    this.dialogRef.close(filters);
+    this.dialogRef.close({
+      endpoint: this.current_tab,
+      filters: this.filter.data[this.current_tab].selection.selected,
+    });
   }
 }

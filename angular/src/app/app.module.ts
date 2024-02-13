@@ -110,7 +110,7 @@ import { JoinPlaygroundComponent } from './playground/join-playground/join-playg
 import { LatinTragicFragmentFilterComponent } from './filters/latin-tragic-fragment-filter/latin-tragic-fragment-filter.component';
 import { TestimoniumFilterComponent } from './filters/testimonium-filter/testimonium-filter.component';
 import { FragmentTableComponent } from './filters/document-filter/fragment-table/fragment-table.component';
-
+import { TestimoniaTableComponent } from './filters/document-filter/testimonia-table/testimonia-table.component';
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
   { path: '', component: OverviewComponent },
@@ -159,6 +159,7 @@ const appRoutes: Routes = [
     LatinTragicFragmentFilterComponent,
     TestimoniumFilterComponent,
     FragmentTableComponent,
+    TestimoniaTableComponent,
   ],
   imports: [
     BrowserModule,

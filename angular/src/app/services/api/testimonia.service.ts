@@ -33,22 +33,27 @@ export class TestimoniaApiService extends ApiService {
 
   /**
    * Requests the API for the testimonia index
+   * @return Observable
    * @author Ycreak
    */
-  public request_index(): void {
-    this.spinner_on();
-    this.testimonia_index = [];
-    this.post(this.FlaskURL, 'testimonium/get/index', {}).subscribe({
-      next: (data) => {
-        data.forEach((value: any) => {
-          this.testimonia_index.push({
-            author: value[0],
-            name: value[1],
-          } as testimonia_index);
-        });
-        this.spinner_off();
-      },
-      error: (err) => this.handle_error_message(err),
+  public request_index(): Observable<any> {
+    return new Observable((observer) => {
+      this.spinner_on();
+      this.testimonia_index = [];
+      this.post(this.FlaskURL, 'testimonium/get/index', {}).subscribe({
+        next: (data) => {
+          data.forEach((value: any) => {
+            this.testimonia_index.push({
+              author: value[0],
+              name: value[1],
+            } as testimonia_index);
+          });
+          this.spinner_off();
+          observer.next();
+          observer.complete();
+        },
+        error: (err) => this.handle_error_message(err),
+      });
     });
   }
 

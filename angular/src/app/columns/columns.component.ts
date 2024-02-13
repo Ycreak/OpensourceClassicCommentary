@@ -72,11 +72,11 @@ export class ColumnsComponent implements OnInit {
   protected set_custom_filter(column_id: number): void {
     const dialogRef = this.matdialog.open(DocumentFilterComponent, {});
     dialogRef.afterClosed().subscribe({
-      next: (filters) => {
-        if (filters.length) {
+      next: (result) => {
+        if (result.filters.length) {
           //TODO: for now, we need to request every single document from the server.
           // New API update will allow us to request a list of filters
-          filters.forEach((filter: any) => {
+          result.filters.forEach((filter: any) => {
             this.columns.request(filter, column_id, true);
           });
         }
