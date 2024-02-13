@@ -50,7 +50,7 @@
     <!-- Change fragments expansion panel -->
     <mat-expansion-panel
       *ngIf="this.auth_service.current_user_role === 'teacher' || this.auth_service.current_user_role === 'student'"
-      [expanded]="true">
+      [expanded]="false">
       <mat-expansion-panel-header>
         <mat-panel-title> Change fragment data </mat-panel-title>
         <mat-panel-description>
@@ -62,7 +62,7 @@
     </mat-expansion-panel>
     <hr />
     <!-- Change testimonia expansion panel -->
-    <mat-expansion-panel *ngIf="this.auth_service.current_user_role === 'teacher'" [expanded]="false" disabled>
+    <mat-expansion-panel *ngIf="this.auth_service.current_user_role === 'teacher'" [expanded]="true">
       <mat-expansion-panel-header>
         <mat-panel-title> Change testimonia data </mat-panel-title>
         <mat-panel-description>

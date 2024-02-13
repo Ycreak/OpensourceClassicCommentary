@@ -105,7 +105,7 @@ export class BibliographyService {
    * @author Ycreak
    */
   public check_document_bibliography(doc: any): boolean {
-    return doc.bib_keys.length > 0;
+    return doc.commentary.bib_keys.length > 0;
   }
 
   /**

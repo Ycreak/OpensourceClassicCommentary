@@ -1,43 +1,15 @@
-<!-- Selection of testimonium. All the clicks below are to make sure the form field stays in sync with
-    all types of unlogical user routes and inputs -->
-<mat-form-field>
-  <mat-label>Select author</mat-label>
-  <mat-select [(ngModel)]="this.selected_author" ngDefaultControl>
-    <mat-option
-      *ngFor="let author of this.author_list"
-      [value]="author.name"
-      (click)="this.request_testimonia_names(author.name)"
-      (click)="this.selected_name = ''"
-      (click)="this.name_list = []"
-      (click)="this.reset_form()"
-      (click)="this.form.patchValue({ author: author.name })">
-      {{ author.name }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
-
-<mat-form-field>
-  <mat-label>Select name</mat-label>
-  <mat-select [(ngModel)]="this.selected_name" ngDefaultControl>
-    <mat-option
-      *ngFor="let name of this.name_list"
-      [value]="name.name"
-      (click)="this.request_testimonium(this.selected_author, name.name)"
-      (click)="this.form.patchValue({ name: name.name })">
-      {{ name.name }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
-
-<hr />
-
 <!--Buttons to submit testimonium data -->
+<app-testimonium-filter
+  [button_title]="'Select testimonium'"
+  [button_type]="'stroked'"
+  (new_filter)="this.request($event)">
+</app-testimonium-filter>
 <button
   mat-stroked-button
   class="button-margin"
   color="primary"
   [disabled]="!form.valid"
-  (click)="request_create_testimonium(this.form.value)"
+  (click)="create(this.form.value)"
   *ngIf="this.auth_service.current_user_role === 'teacher' || this.auth_service.current_user_role === 'student'">
   Create testimonium
 </button>
@@ -46,7 +18,7 @@
   class="button-margin"
   color="primary"
   [disabled]="!form.valid"
-  (click)="request_revise_testimonium(this.form.value)"
+  (click)="revise(this.form.value)"
   *ngIf="this.auth_service.current_user_role === 'teacher' || this.auth_service.current_user_role === 'student'">
   Save Changes
 </button>
@@ -54,8 +26,8 @@
   mat-stroked-button
   class="button-margin"
   color="warn"
-  [disabled]="!testimonium_selected"
-  (click)="request_delete_testimonium(this.form.value)"
+  [disabled]="!selected"
+  (click)="delete(this.form.value)"
   *ngIf="this.auth_service.current_user_role === 'teacher'">
   Delete testimonium
 </button>

@@ -97,6 +97,23 @@ export class UtilityService {
   }
 
   /**
+   * Returns a unique list of the given key over a list of objects
+   * @param list (array) with objects
+   * @param key (string) of which values to create a Set
+   * @return list of unique values
+   * @author Ycreak
+   */
+  public get_set_of_key_values_from_object_list(list: any, key: string): string[] {
+    return Array.from(
+      new Set(
+        list.map(function (el: any) {
+          return el[key];
+        })
+      )
+    );
+  }
+
+  /**
    * Opens Material popup window with the given message
    * @param message information that is showed in the popup
    * @author Ycreak

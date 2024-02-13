@@ -52,15 +52,18 @@ export interface fragment_name {
   providedIn: 'root',
 })
 export class ApiService {
+  protected http: HttpClient;
+
   network_status: boolean; // Indicates if server is reachable or not
   concurrent_api_calls = 0;
   spinner: boolean;
 
   constructor(
     private bib: BibliographyService,
-    private http: HttpClient,
-    private utility: UtilityService
+    protected utility: UtilityService,
+    http: HttpClient
   ) {
+    this.http = http;
     this.network_status = true; // Assumed online until HttpErrorResponse is received.
   }
 

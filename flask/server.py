@@ -31,7 +31,7 @@ from couch import CouchAuthenticator
 
 from endpoints.user import get_user, login_user, create_user, delete_user, update_user
 from endpoints.fragment import get_author, get_title, get_editor, get_fragment, get_name, create_fragment, update_fragment, delete_fragment
-from endpoints.testimonium import get_author_testimonium, get_title_testimonium, get_witness_testimonium, get_testimonium, get_name_testimonium, create_testimonium, update_testimonium, delete_testimonium
+from endpoints.testimonium import get_author_testimonium, get_title_testimonium, get_witness_testimonium, get_testimonium, get_name_testimonium, create_testimonium, update_testimonium, delete_testimonium, get_index
 from endpoints.text import get_author_text, get_title_text, get_text, create_text, update_text, delete_text
 from endpoints.fragment import link_fragment, get_list_display
 from endpoints.zotero import get_bibliography, sync_bibliography
@@ -76,14 +76,15 @@ app.add_url_rule("/fragment/get/list_display", view_func=get_list_display, metho
 #####
 # TESTIMONIA
 #####
-app.add_url_rule("/testimonia/get/author", view_func=get_author_testimonium, methods=["POST"])
-app.add_url_rule("/testimonia/get/title", view_func=get_title_testimonium, methods=["POST"])
-app.add_url_rule("/testimonia/get/witness", view_func=get_witness_testimonium, methods=["POST"])
-app.add_url_rule("/testimonia/get", view_func=get_testimonium, methods=["POST"])
-app.add_url_rule("/testimonia/get/name", view_func=get_name_testimonium, methods=["POST"])
-app.add_url_rule("/testimonia/create", view_func=create_testimonium, methods=["POST"])
-app.add_url_rule("/testimonia/update", view_func=update_testimonium, methods=["POST"])
-app.add_url_rule("/testimonia/delete", view_func=delete_testimonium, methods=["POST"])
+app.add_url_rule("/testimonium/get/author", view_func=get_author_testimonium, methods=["POST"])
+app.add_url_rule("/testimonium/get/title", view_func=get_title_testimonium, methods=["POST"])
+app.add_url_rule("/testimonium/get/witness", view_func=get_witness_testimonium, methods=["POST"])
+app.add_url_rule("/testimonium/get", view_func=get_testimonium, methods=["POST"])
+app.add_url_rule("/testimonium/get/name", view_func=get_name_testimonium, methods=["POST"])
+app.add_url_rule("/testimonium/get/index", view_func=get_index, methods=["POST"])
+app.add_url_rule("/testimonium/create", view_func=create_testimonium, methods=["POST"])
+app.add_url_rule("/testimonium/update", view_func=update_testimonium, methods=["POST"])
+app.add_url_rule("/testimonium/delete", view_func=delete_testimonium, methods=["POST"])
 
 #####
 # TEXTS

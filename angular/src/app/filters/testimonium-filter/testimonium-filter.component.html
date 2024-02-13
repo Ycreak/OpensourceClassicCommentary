@@ -1,0 +1,29 @@
+<!-- Button to select the text -->
+<button *ngIf="this.button_type === 'stroked'" mat-stroked-button [matMenuTriggerFor]="menu_authors">
+  {{ this.button_title }}
+</button>
+
+<button *ngIf="this.button_type === 'basic'" mat-button [matMenuTriggerFor]="menu_authors">
+  {{ this.button_title }}
+</button>
+
+<!-- Nested menu to select author - title - editor. -->
+<mat-menu #menu_authors="matMenu">
+  <ng-container *ngFor="let author of this.api._authors()">
+    <button
+      mat-menu-item
+      (menuOpened)="this.names = this.api._names(author)"
+      (menuOpened)="this.selected_author = author"
+      [matMenuTriggerFor]="menu_names">
+      {{ author }}
+    </button>
+  </ng-container>
+</mat-menu>
+
+<mat-menu #menu_names="matMenu">
+  <ng-container *ngFor="let name of this.names">
+    <button mat-menu-item (click)="this.selected_name = name" (click)="this.filter()">
+      {{ name }}
+    </button>
+  </ng-container>
+</mat-menu>

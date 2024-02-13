@@ -4,6 +4,7 @@ import { Validators } from '@angular/forms';
 
 // Component imports
 import { ApiService } from '@oscc/api.service';
+import { TestimoniaApiService } from '@oscc/services/api/testimonia.service';
 import { UtilityService } from '@oscc/utility.service';
 import { AuthService } from '@oscc/auth/auth.service';
 import { DialogService } from '@oscc/services/dialog.service';
@@ -18,36 +19,21 @@ import { Testimonium } from '@oscc/models/Testimonium';
   styleUrls: ['./testimonia-dashboard.component.scss'],
 })
 export class TestimoniaDashboardComponent implements OnInit {
-  protected selected_author = '';
-  protected selected_name = '';
+  // Whether a testimonium has been selected
+  protected selected = false;
 
-  // Used in the drop down menus
-  protected author_list = [];
-  protected name_list = [];
-
-  protected selected_testimonium: Testimonium;
-
-  form = new FormGroup({
+  protected form = new FormGroup({
     _id: new FormControl(''),
-    document_type: new FormControl('testimonium'),
     name: new FormControl('', [Validators.required, Validators.pattern('[0-9-_ ]*')]), // numbers and "-" and "_" allowed.
     author: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
     witness: new FormControl(''),
     title: new FormControl(''),
     text: new FormControl(''),
-
     translation: new FormControl(''),
-    differences: new FormControl(''),
-    commentary: new FormControl(''),
-    apparatus: new FormControl(''),
-    metrical_analysis: new FormControl(''),
-    reconstruction: new FormControl(''),
-    published: new FormControl(''),
-    lock: new FormControl(''),
   });
 
   constructor(
-    protected api: ApiService,
+    protected api: TestimoniaApiService,
     protected utility: UtilityService,
     protected dialog: DialogService,
     protected auth_service: AuthService,
@@ -55,21 +41,36 @@ export class TestimoniaDashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.api.get_authors({ document_type: 'testimonium' }).subscribe((authors) => {
-      this.author_list = authors;
+    this.api.request_index();
+  }
+
+  /**
+   * Request the API for documents
+   * @param documents (object[]) which to add to the provided column
+   */
+  protected request(filter: object): void {
+    this.api.request(filter).subscribe((testimonia) => {
+      this.form.reset();
+      this.selected = true;
+      this.model_to_form(testimonia[0]);
     });
   }
 
-  protected request_testimonia_names(author: string): void {
-    this.api.get_names({ document_type: 'testimonium', author: author }).subscribe((names) => {
-      this.name_list = names;
-    });
-  }
-
-  protected request_testimonium(author: string, name: string): void {
-    this.api.get_documents({ document_type: 'testimonium', author: author, name: name }).subscribe((documents) => {
-      this.selected_testimonium = documents[0];
-    });
+  /**
+   * This function takes the Typescript Fragment object retrieved from the server and uses
+   * its data fields to fill in the fragment_form.
+   * @param fragment Fragment object that is to be parsed into the fragment_form
+   * @author Ycreak
+   */
+  private model_to_form(testimonium: Testimonium): void {
+    // This functions updates the form with the provided testimonium
+    for (const item of ['_id', 'name', 'author', 'title', 'witness', 'text']) {
+      this.form.patchValue({ [item]: testimonium[item] });
+    }
+    // Update the form with the commentary
+    for (const item of ['translation']) {
+      this.form.patchValue({ [item]: testimonium.commentary.fields[item] });
+    }
   }
 
   /**
@@ -100,35 +101,63 @@ export class TestimoniaDashboardComponent implements OnInit {
    * @param object which represents a testimonium, edited by the user in the dashboard
    * @author Ycreak
    */
-  protected request_create_testimonium(form: any): void {
+  protected create(form: any): void {
     const item_string = form.author + ', ' + form.witness + ', ' + form.title + ': ' + form.name;
     this.dialog
       .open_confirmation_dialog('Are you sure you want to CREATE this testimonium?', item_string)
       .subscribe((result) => {
         if (result) {
-          this.api.create_fragment(form);
           this.reset_form();
+          this.api.do(form, 'testimonium/create').subscribe(() => {
+            this.request({
+              author: form.author,
+              name: form.name,
+            });
+            this.selected = true;
+          });
+        }
+      });
+  }
+
+  /**
+   * This function requests the api to revise the fragment given the fragment_form.
+   * @param fragment_form which represents a Fragment, edited by the user in the dashboard
+   * @author Ycreak
+   */
+  protected revise(form: any): void {
+    const item_string = form.author + ', ' + form.witness + ', ' + form.title + ': ' + form.name;
+    this.dialog
+      .open_confirmation_dialog('Are you sure you want to SAVE CHANGES to this testimonium?', item_string)
+      .subscribe((result) => {
+        if (result) {
+          this.reset_form();
+          this.api.do(form, 'testimonium/update').subscribe(() => {
+            this.request({
+              author: form.author,
+              name: form.name,
+            });
+            this.selected = true;
+          });
         }
       });
   }
 
   /**
    * Given the form which represents a testimonium, this function requests the api to delete the
-   * selected testimonium. This is done via its id.
-   * @param fragment_form which represents a Fragment, edited by the user in the dashboard
+   * selected testimonium.
+   * @param form which represents a testimonium, edited by the user in the dashboard
    * @author Ycreak
    */
-  protected request_delete_testimonium(form: any): void {
+  protected delete(form: any): void {
     const item_string = form.author + ', ' + form.witness + ', ' + form.title + ': ' + form.name;
     this.dialog
       .open_confirmation_dialog('Are you sure you want to DELETE this testimonium?', item_string)
       .subscribe((result) => {
         if (result) {
           this.reset_form();
-          this.api.delete_fragment({
-            document_type: 'testimonium',
-            author: form.author,
-            name: form.name,
+          this.api.do(form, 'testimonium/delete').subscribe(() => {
+            this.reset_form();
+            this.selected = false;
           });
         }
       });
