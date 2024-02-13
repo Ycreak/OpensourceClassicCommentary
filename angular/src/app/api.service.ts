@@ -16,7 +16,6 @@ import { Fragment } from '@oscc/models/Fragment';
 import { Introduction } from '@oscc/models/Introduction';
 import { Playground } from '@oscc/models/Playground';
 import { Bib } from '@oscc/models/Bib';
-import { Testimonium } from '@oscc/models/Testimonium';
 import { User } from '@oscc/models/User';
 
 export interface fragment_key {
@@ -330,8 +329,7 @@ export class ApiService {
       this.post(this.FlaskURL, 'fragment/get', filter).subscribe((data: any) => {
         const documents: any[] = [];
         data.forEach((value: any) => {
-          let new_document: any;
-          new_document = new Fragment({});
+          const new_document = new Fragment({});
           new_document.set_fragment(value);
           documents.push(new_document);
         });

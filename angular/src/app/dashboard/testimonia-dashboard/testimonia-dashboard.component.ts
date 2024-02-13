@@ -1,14 +1,18 @@
+/**
+ * This component handles the dashboard for creating, editing and deleting testimonia.
+ * @author Ycreak
+ */
+
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Validators } from '@angular/forms';
 
 // Component imports
-import { ApiService } from '@oscc/api.service';
-import { TestimoniaApiService } from '@oscc/services/api/testimonia.service';
-import { UtilityService } from '@oscc/utility.service';
 import { AuthService } from '@oscc/auth/auth.service';
 import { DialogService } from '@oscc/services/dialog.service';
 import { HelperService } from '@oscc/dashboard/helper.service';
+import { TestimoniaApiService } from '@oscc/services/api/testimonia.service';
+import { UtilityService } from '@oscc/utility.service';
 
 // Model imports
 import { Testimonium } from '@oscc/models/Testimonium';
@@ -57,9 +61,9 @@ export class TestimoniaDashboardComponent implements OnInit {
   }
 
   /**
-   * This function takes the Typescript Fragment object retrieved from the server and uses
-   * its data fields to fill in the fragment_form.
-   * @param fragment Fragment object that is to be parsed into the fragment_form
+   * This function takes the Typescript object retrieved from the server and uses
+   * its data fields to fill in the form.
+   * @param testimonium (Testimonium) object that is to be parsed into the form
    * @author Ycreak
    */
   private model_to_form(testimonium: Testimonium): void {
@@ -70,28 +74,6 @@ export class TestimoniaDashboardComponent implements OnInit {
     // Update the form with the commentary
     for (const item of ['translation']) {
       this.form.patchValue({ [item]: testimonium.commentary.fields[item] });
-    }
-  }
-
-  /**
-   * This function requests the api to revise the testimonium given the form.
-   * @param form which represents a testimonium, edited by the user in the dashboard
-   * @author Ycreak
-   */
-  protected request_revise_testimonium(form: any): void {
-    // If the fragment is locked and the user is not a teacher, we will not allow this operation.
-    if (form.value.lock == 'locked' && this.auth_service.current_user_role != 'teacher') {
-      this.utility.open_snackbar('This fragment is locked.');
-    } else {
-      const item_string = form.author + ', ' + form.witness + ', ' + form.title + ': ' + form.name;
-      this.dialog
-        .open_confirmation_dialog('Are you sure you want to SAVE CHANGES to this fragment?', item_string)
-        .subscribe((result) => {
-          if (result) {
-            this.api.revise_fragment(form);
-            this.reset_form();
-          }
-        });
     }
   }
 
@@ -168,7 +150,6 @@ export class TestimoniaDashboardComponent implements OnInit {
    * @author Ycreak
    */
   protected reset_form(): void {
-    // First, remove all data from the form
     this.form.reset();
   }
 }

@@ -1,6 +1,11 @@
+/**
+ * This service handles the server communication regarding testimonia
+ * @author Ycreak
+ */
+
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 
 // Service imports
 import { ApiService } from '@oscc/api.service';
@@ -19,6 +24,7 @@ export interface testimonia_index {
   providedIn: 'root',
 })
 export class TestimoniaApiService extends ApiService {
+  // Index file of all testimonia
   public testimonia_index: any = [];
 
   constructor(bib: BibliographyService, utility: UtilityService, http: HttpClient) {
@@ -58,10 +64,9 @@ export class TestimoniaApiService extends ApiService {
       this.post(this.FlaskURL, 'testimonium/get', filter).subscribe((data: any) => {
         const documents: any[] = [];
         data.forEach((value: any) => {
-          let new_document: any;
-          new_document = new Testimonium({});
-          new_document.set(value);
-          documents.push(new_document);
+          const new_testimonium = new Testimonium({});
+          new_testimonium.set(value);
+          documents.push(new_testimonium);
         });
         this.spinner_off();
         observer.next(documents);
@@ -70,6 +75,13 @@ export class TestimoniaApiService extends ApiService {
     });
   }
 
+  /**
+   * Gives the given endpoint the given testimonium. Used to create, revise and delete documents.
+   * @param testimonium (Testimonium)
+   * @param endpoint (string)
+   * @returns Observable
+   * @author Ycreak
+   */
   public do(testimonium: any, endpoint: string): Observable<any> {
     return new Observable((observer) => {
       this.spinner_on();
@@ -91,6 +103,11 @@ export class TestimoniaApiService extends ApiService {
     });
   }
 
+  /**
+   * Retrieves a unique set of authors from the testimonia index
+   * @return list
+   * @author Ycreak
+   */
   public _authors(): string[] {
     return this.utility.get_set_of_key_values_from_object_list(
       this.utility.filter_array(this.testimonia_index, {}),
@@ -98,6 +115,12 @@ export class TestimoniaApiService extends ApiService {
     );
   }
 
+  /**
+   * Retrieves a unique set of names from the testimonia index, given the author
+   * @param author (string)
+   * @return list
+   * @author Ycreak
+   */
   public _names(author: string): string[] {
     return this.utility.get_set_of_key_values_from_object_list(
       this.utility.filter_array(this.testimonia_index, { author: author }),

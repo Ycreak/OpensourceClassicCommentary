@@ -8,7 +8,7 @@ import { UtilityService } from '@oscc/utility.service';
   templateUrl: './testimonium-filter.component.html',
   styleUrl: './testimonium-filter.component.scss',
 })
-export class TestimoniumFilter {
+export class TestimoniumFilterComponent {
   @Input() button_title: string;
   @Input() button_type: string;
   @Input() endpoint: string;

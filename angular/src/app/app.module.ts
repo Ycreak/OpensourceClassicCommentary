@@ -108,7 +108,7 @@ import { DeletePlaygroundComponent } from './playground/delete-playground/delete
 import { SharePlaygroundComponent } from './playground/share-playground/share-playground.component';
 import { JoinPlaygroundComponent } from './playground/join-playground/join-playground.component';
 import { LatinTragicFragmentFilterComponent } from './filters/latin-tragic-fragment-filter/latin-tragic-fragment-filter.component';
-import { TestimoniumFilter } from './filters/testimonium-filter/testimonium-filter.component';
+import { TestimoniumFilterComponent } from './filters/testimonium-filter/testimonium-filter.component';
 import { FragmentTableComponent } from './filters/document-filter/fragment-table/fragment-table.component';
 
 // Routes to take. Disallows Path Traversal.
@@ -157,7 +157,7 @@ const appRoutes: Routes = [
     SharePlaygroundComponent,
     JoinPlaygroundComponent,
     LatinTragicFragmentFilterComponent,
-    TestimoniumFilter,
+    TestimoniumFilterComponent,
     FragmentTableComponent,
   ],
   imports: [
