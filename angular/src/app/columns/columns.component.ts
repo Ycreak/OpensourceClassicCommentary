@@ -189,7 +189,7 @@ export class ColumnsComponent implements OnInit {
     const column_bib_keys: string[] = [];
     // If there are keys, show the bibliography
     column.documents.forEach((doc: any) => {
-      doc.bib_keys.forEach((key: string) => {
+      doc.commentary.bib_keys.forEach((key: string) => {
         column_bib_keys.push(key);
       });
     });
