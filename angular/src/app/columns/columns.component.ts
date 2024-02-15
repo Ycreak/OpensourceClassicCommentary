@@ -26,6 +26,7 @@ import { DocumentFilterComponent } from '@oscc/filters/document-filter/document-
 import { Column } from '@oscc/models/Column';
 import { Fragment } from '@oscc/models/Fragment';
 import { Linked_fragment } from '@oscc/models/Linked_fragment';
+import {environment} from '@src/environments/environment';
 
 @Component({
   selector: 'app-columns',
@@ -56,7 +57,7 @@ export class ColumnsComponent implements OnInit {
     // Create the first column and push it to the columns list
     if (this.columns.list.length < 1) {
       const column_id = this.columns.add();
-      this.columns.request(
+      this.columns.request(environment.fragments,
         { document_type: 'fragment', author: 'Ennius', title: 'Thyestes', editor: 'TRF' },
         column_id
       );
@@ -74,10 +75,11 @@ export class ColumnsComponent implements OnInit {
     dialogRef.afterClosed().subscribe({
       next: (result) => {
         if (result.filters.length) {
+
           //TODO: for now, we need to request every single document from the server.
           // New API update will allow us to request a list of filters
           result.filters.forEach((filter: any) => {
-            this.columns.request(filter, column_id, true);
+            this.columns.request(result.document_type, filter, column_id, true);
           });
         }
       },
@@ -116,7 +118,7 @@ export class ColumnsComponent implements OnInit {
     if (given_document.linked_fragments.length > 0) {
       const column_id = this.columns.add();
       given_document.linked_fragments.forEach((linked_fragment: Linked_fragment) => {
-        this.columns.request(linked_fragment, column_id, true);
+        this.columns.request(environment.fragments, linked_fragment, column_id, true);
         this.columns.find(column_id).column_name = `Linked ${column_id}`;
       });
     } else {

@@ -55,7 +55,7 @@ export class ApiService {
 
   network_status: boolean; // Indicates if server is reachable or not
   concurrent_api_calls = 0;
-  spinner: boolean;
+  public spinner: boolean;
 
   constructor(
     private bib: BibliographyService,

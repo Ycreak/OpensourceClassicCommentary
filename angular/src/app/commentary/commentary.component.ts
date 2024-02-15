@@ -8,6 +8,7 @@
 
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { environment } from '@src/environments/environment';
 
 // Model imports
 import { Commentary } from '@oscc/models/Commentary';
@@ -124,7 +125,7 @@ export class CommentaryComponent {
    */
   protected request_linked_fragments(fragment: Fragment): void {
     const column_id = this.columns.add();
-    this.columns.request({ author: fragment.author, title: fragment.title, editor: fragment.editor }, column_id);
+    this.columns.request(environment.fragments, { author: fragment.author, title: fragment.title, editor: fragment.editor }, column_id);
     this.columns.find(column_id).column_name = `${fragment.author}-${fragment.title}-${fragment.editor}`;
   }
 

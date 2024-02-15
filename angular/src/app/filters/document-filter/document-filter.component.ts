@@ -41,7 +41,7 @@ export class DocumentFilterComponent {
    */
   protected add_table(): void {
     this.dialogRef.close({
-      endpoint: this.current_tab,
+      document_type: this.current_tab,
       filters: this.filter.data[this.current_tab].dataSource.filteredData,
     });
   }
@@ -52,7 +52,7 @@ export class DocumentFilterComponent {
    */
   protected add_selection(): void {
     this.dialogRef.close({
-      endpoint: this.current_tab,
+      document_type: this.current_tab,
       filters: this.filter.data[this.current_tab].selection.selected,
     });
   }

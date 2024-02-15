@@ -6,5 +6,8 @@ export const environment = {
   current_user_name: '',
   current_user_role: 'guest',
   production: true,
-  debug: false
+  debug: false,
+  
+  fragments: 'fragments',
+  testimonia: 'testimonia'
 };

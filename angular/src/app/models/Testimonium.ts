@@ -3,6 +3,7 @@ import { Commentary } from '@oscc/models/Commentary';
 /** This class represents a testimonium and all its data fields */
 export class Testimonium {
   // Meta data
+  document_type = 'testimonium'
   _id = '';
   name = '';
   author = '';
