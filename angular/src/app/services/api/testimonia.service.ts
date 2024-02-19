@@ -27,6 +27,12 @@ export class TestimoniaApiService extends ApiService {
   // Index file of all testimonia
   public testimonia_index: any = [];
 
+  public remove = 'testimonium/delete';
+  public create = 'testimonium/create';
+  public revise = 'testimonium/update';
+  public retrieve = 'testimonium/get';
+  public index = 'testimonium/get/index';
+
   constructor(bib: BibliographyService, utility: UtilityService, http: HttpClient) {
     super(bib, utility, http);
   }
@@ -38,9 +44,8 @@ export class TestimoniaApiService extends ApiService {
    */
   public request_index(): Observable<any> {
     return new Observable((observer) => {
-      this.spinner_on();
       this.testimonia_index = [];
-      this.post(this.FlaskURL, 'testimonium/get/index', {}).subscribe({
+      this.post(this.FlaskURL, this.index, {}, this.get_header).subscribe({
         next: (data) => {
           data.forEach((value: any) => {
             this.testimonia_index.push({
@@ -48,11 +53,10 @@ export class TestimoniaApiService extends ApiService {
               name: value[1],
             } as testimonia_index);
           });
-          this.spinner_off();
-          observer.next();
+          observer.next(this.testimonia_index);
           observer.complete();
         },
-        error: (err) => this.handle_error_message(err),
+        error: (err) => this.show_server_response(err),
       });
     });
   }
@@ -63,17 +67,15 @@ export class TestimoniaApiService extends ApiService {
    * @return list (Testimonia)
    * @author Ycreak
    */
-  public request(filter: any): Observable<any> {
+  public request_documents(filter: any): Observable<any> {
     return new Observable((observer) => {
-      this.spinner_on();
-      this.post(this.FlaskURL, 'testimonium/get', filter).subscribe((data: any) => {
+      this.post(this.FlaskURL, this.retrieve, filter, this.get_header).subscribe((data: any) => {
         const documents: any[] = [];
         data.forEach((value: any) => {
           const new_testimonium = new Testimonium({});
           new_testimonium.set(value);
           documents.push(new_testimonium);
         });
-        this.spinner_off();
         observer.next(documents);
         observer.complete();
       });
@@ -87,24 +89,19 @@ export class TestimoniaApiService extends ApiService {
    * @returns Observable
    * @author Ycreak
    */
-  public do(testimonium: any, endpoint: string): Observable<any> {
+  public post_document(testimonium: any, endpoint: string): Observable<any> {
     return new Observable((observer) => {
       this.spinner_on();
-      this.http
-        .post<string[]>(this.FlaskURL + endpoint, testimonium, {
-          observe: 'response',
-          responseType: 'text' as 'json',
-        })
-        .subscribe({
-          next: (data) => {
-            this.handle_error_message(data);
-            this.request_index();
-            this.spinner_off();
-            observer.next();
-            observer.complete();
-          },
-          error: (err) => this.handle_error_message(err),
-        });
+      this.post(this.FlaskURL, endpoint, testimonium, this.post_header).subscribe({
+        next: (data) => {
+          this.show_server_response(data);
+          this.request_index();
+          this.spinner_off();
+          observer.next();
+          observer.complete();
+        },
+        error: (err) => this.show_server_response(err),
+      });
     });
   }
 

@@ -9,7 +9,7 @@ import { Column } from '@oscc/models/Column';
 import { Fragment } from '@oscc/models/Fragment';
 
 // Service imports
-import {ApiInterfaceService} from '@oscc/services/api/api-interface.service';
+import { ApiInterfaceService } from '@oscc/services/api/api-interface.service';
 import { BibliographyService } from '@oscc/services/bibliography.service';
 import { UtilityService } from '@oscc/utility.service';
 

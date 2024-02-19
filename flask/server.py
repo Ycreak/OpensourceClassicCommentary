@@ -71,7 +71,7 @@ app.add_url_rule("/fragment/update", view_func=update_fragment, methods=["POST"]
 app.add_url_rule("/fragment/delete", view_func=delete_fragment, methods=["POST"])
 
 app.add_url_rule("/fragment/link", view_func=link_fragment, methods=["POST"])
-app.add_url_rule("/fragment/get/list_display", view_func=get_list_display, methods=["POST"])
+app.add_url_rule("/fragment/get/index", view_func=get_list_display, methods=["POST"])
 
 #####
 # TESTIMONIA

@@ -36,7 +36,7 @@ export class ScansionComponent implements OnInit {
         console.log(data);
         this.api.spinner_off();
       },
-      error: (err) => this.api.handle_error_message(err),
+      error: (err) => this.api.show_server_response(err),
     });
   }
 }

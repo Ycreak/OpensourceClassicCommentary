@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 
 import { FormControl, FormGroup } from '@angular/forms';
-import { ApiService } from '@oscc/api.service';
+
+// Service imports
 import { AuthService } from '@oscc/auth/auth.service';
-import { Introduction } from '@oscc/models/Introduction';
 import { DialogService } from '@oscc/services/dialog.service';
+import { Introduction } from '@oscc/models/Introduction';
+import { IntroductionsApiService } from '@oscc/services/api/introductions.service';
 
 @Component({
   selector: 'app-introductions-dashboard',
@@ -30,7 +32,7 @@ export class IntroductionsComponent implements OnInit {
 
   constructor(
     protected auth_service: AuthService,
-    protected api: ApiService,
+    protected api: IntroductionsApiService,
     protected dialog: DialogService
   ) {}
 

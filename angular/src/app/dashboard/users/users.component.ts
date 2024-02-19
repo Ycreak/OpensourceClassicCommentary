@@ -167,7 +167,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
         this.table_data_loaded = true;
         this.api.spinner_off();
       },
-      error: (err) => this.api.handle_error_message(err),
+      error: (err) => this.api.show_server_response(err),
     });
   }
 
@@ -189,9 +189,9 @@ export class UsersComponent implements OnInit, AfterViewInit {
           });
           this.api.create_user(user).subscribe({
             next: (res) => {
-              this.api.handle_error_message(res), this.request_users();
+              this.api.show_server_response(res), this.request_users();
             },
-            error: (err) => this.api.handle_error_message(err),
+            error: (err) => this.api.show_server_response(err),
           });
         }
       });
@@ -213,9 +213,9 @@ export class UsersComponent implements OnInit, AfterViewInit {
           // We update the user role by providing the api with a username and the new role
           this.api.user_update({ username: user.username, role: user.role }).subscribe({
             next: (res) => {
-              this.api.handle_error_message(res), this.request_users();
+              this.api.show_server_response(res), this.request_users();
             },
-            error: (err) => this.api.handle_error_message(err),
+            error: (err) => this.api.show_server_response(err),
           });
         }
       });
@@ -236,8 +236,8 @@ export class UsersComponent implements OnInit, AfterViewInit {
           if (result) {
             this.api.spinner_on();
             this.api.user_update({ username: username, password: form.value.password1 }).subscribe({
-              next: (res) => this.api.handle_error_message(res),
-              error: (err) => this.api.handle_error_message(err),
+              next: (res) => this.api.show_server_response(res),
+              error: (err) => this.api.show_server_response(err),
             });
           }
         });
@@ -259,9 +259,9 @@ export class UsersComponent implements OnInit, AfterViewInit {
           this.api.spinner_on();
           this.api.delete_user(user).subscribe({
             next: (res) => {
-              this.api.handle_error_message(res), this.request_users();
+              this.api.show_server_response(res), this.request_users();
             },
-            error: (err) => this.api.handle_error_message(err),
+            error: (err) => this.api.show_server_response(err),
           });
         }
       });

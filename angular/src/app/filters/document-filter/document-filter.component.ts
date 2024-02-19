@@ -20,7 +20,9 @@ export class DocumentFilterComponent {
   constructor(
     private dialogRef: MatDialogRef<DocumentFilterComponent>,
     private filter: FilterService
-  ) {}
+  ) {
+    this.filter.init();
+  }
 
   /**
    * Keeps track on the currently opened tab

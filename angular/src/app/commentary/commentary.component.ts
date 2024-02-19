@@ -18,7 +18,7 @@ import { Fragment } from '@oscc/models/Fragment';
 import { IntroductionsComponent } from './introductions/introductions.component';
 
 // Service imports
-import { ApiService } from '@oscc/api.service';
+import { ApiInterfaceService } from '@oscc/services/api/api-interface.service';
 import { BibliographyService } from '@oscc/services/bibliography.service';
 import { CommentaryService } from './commentary.service';
 import { ColumnsService } from '@oscc/columns/columns.service';
@@ -51,7 +51,7 @@ export class CommentaryComponent {
     private bib: BibliographyService,
     private mat_dialog: MatDialog,
     private string_formatter: StringFormatterService,
-    protected api: ApiService,
+    protected api: ApiInterfaceService,
     protected columns: ColumnsService,
     protected commentary_service: CommentaryService,
     protected dialog: DialogService,
@@ -91,7 +91,7 @@ export class CommentaryComponent {
     }
     this.document.linked_fragments.forEach((filter: any) => {
       concurrent_calls += 1;
-      this.api.get_documents(filter).subscribe((documents) => {
+      this.api.get_documents(environment.fragments, filter).subscribe((documents) => {
         const found_document = documents[0];
         concurrent_calls -= 1;
         if (found_document.commentary.has_content()) {
@@ -125,7 +125,11 @@ export class CommentaryComponent {
    */
   protected request_linked_fragments(fragment: Fragment): void {
     const column_id = this.columns.add();
-    this.columns.request(environment.fragments, { author: fragment.author, title: fragment.title, editor: fragment.editor }, column_id);
+    this.columns.request(
+      environment.fragments,
+      { author: fragment.author, title: fragment.title, editor: fragment.editor },
+      column_id
+    );
     this.columns.find(column_id).column_name = `${fragment.author}-${fragment.title}-${fragment.editor}`;
   }
 

@@ -8,14 +8,15 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { environment } from '@src/environments/environment';
 
 // Service imports
-import { ApiService } from '@oscc/api.service';
 import { AuthService } from '@oscc/auth/auth.service';
 import { BibliographyService } from '@oscc/services/bibliography.service';
 import { ColumnsService } from '@oscc/columns/columns.service';
 import { CommentaryService } from '@oscc/commentary/commentary.service';
 import { DialogService } from '@oscc/services/dialog.service';
+import { FragmentsApiService } from '@oscc/services/api/fragments.service';
 import { SettingsService } from '@oscc/services/settings.service';
 import { UtilityService } from '@oscc/utility.service';
 
@@ -26,7 +27,6 @@ import { DocumentFilterComponent } from '@oscc/filters/document-filter/document-
 import { Column } from '@oscc/models/Column';
 import { Fragment } from '@oscc/models/Fragment';
 import { Linked_fragment } from '@oscc/models/Linked_fragment';
-import {environment} from '@src/environments/environment';
 
 @Component({
   selector: 'app-columns',
@@ -39,7 +39,7 @@ export class ColumnsComponent implements OnInit {
   public current_document: any;
 
   constructor(
-    protected api: ApiService,
+    protected api: FragmentsApiService,
     protected auth_service: AuthService,
     protected columns: ColumnsService,
     protected commentary: CommentaryService,
@@ -51,16 +51,13 @@ export class ColumnsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.api.request_authors_titles_editors_blob();
+    this.api.request_index().subscribe({});
     // Create an empty current_document variable to be filled whenever the user clicks a fragment
     this.current_document = new Fragment({});
     // Create the first column and push it to the columns list
     if (this.columns.list.length < 1) {
       const column_id = this.columns.add();
-      this.columns.request(environment.fragments,
-        { document_type: 'fragment', author: 'Ennius', title: 'Thyestes', editor: 'TRF' },
-        column_id
-      );
+      this.columns.request(environment.fragments, { author: 'Ennius', title: 'Thyestes', editor: 'TRF' }, column_id);
       this.columns.find(column_id).column_name = `Ennius-Thyestes-TRF`;
     }
   }
@@ -74,8 +71,7 @@ export class ColumnsComponent implements OnInit {
     const dialogRef = this.matdialog.open(DocumentFilterComponent, {});
     dialogRef.afterClosed().subscribe({
       next: (result) => {
-        if (result.filters.length) {
-
+        if (result && result.filters.length) {
           //TODO: for now, we need to request every single document from the server.
           // New API update will allow us to request a list of filters
           result.filters.forEach((filter: any) => {

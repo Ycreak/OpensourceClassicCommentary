@@ -14,5 +14,7 @@ export const environment = {
   debug: true,
 
   fragments: 'fragments',
-  testimonia: 'testimonia'
+  fragment: 'fragment',
+  testimonia: 'testimonia',
+  testimonium: 'testimonium',
 };

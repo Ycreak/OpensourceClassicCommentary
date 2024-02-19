@@ -9,5 +9,7 @@ export const environment = {
   debug: false,
   
   fragments: 'fragments',
-  testimonia: 'testimonia'
+  fragment: 'fragment',
+  testimonia: 'testimonia',
+  testimonium: 'testimonium',
 };

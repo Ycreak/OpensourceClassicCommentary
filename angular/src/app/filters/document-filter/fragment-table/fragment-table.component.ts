@@ -9,9 +9,9 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 
 // Service imports
-import { ApiService } from '@oscc/api.service';
-import { UtilityService } from '@oscc/utility.service';
+import { FragmentsApiService } from '@oscc/services/api/fragments.service';
 import { FilterService } from '../filter.service';
+import { UtilityService } from '@oscc/utility.service';
 
 @Component({
   selector: 'app-fragment-table',
@@ -38,14 +38,14 @@ export class FragmentTableComponent implements AfterViewInit {
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(
-    protected api: ApiService,
+    protected api: FragmentsApiService,
     protected filter: FilterService,
     protected utility: UtilityService
   ) {
     // Create a master index we use as a read only truth, and a local index which we will use to save the filtering of
     // the master index to.
-    this.master_index = this.api.author_title_editor_blob;
-    this.local_index = this.api.author_title_editor_blob;
+    this.master_index = this.api.fragments_index;
+    this.local_index = this.api.fragments_index;
 
     this._authors = [...new Set(this.master_index.map((element) => element.author))];
     this._titles = [...new Set(this.master_index.map((element) => element.title))];

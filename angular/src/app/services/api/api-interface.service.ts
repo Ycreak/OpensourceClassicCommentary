@@ -6,25 +6,21 @@
  */
 
 import { Injectable } from '@angular/core';
-import {ApiService} from '@oscc/api.service';
 import { Observable } from 'rxjs';
-
-// Service imports
-import {FragmentsApiService} from './fragments.service';
-import {TestimoniaApiService} from './testimonia.service';
-
 import { environment } from '@src/environments/environment';
 
+// Service imports
+import { FragmentsApiService } from './fragments.service';
+import { TestimoniaApiService } from './testimonia.service';
+
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ApiInterfaceService {
-
   constructor(
-    private api: ApiService,
     private fragments_api: FragmentsApiService,
-    private testimonia_api: TestimoniaApiService,
-  ) { }
+    private testimonia_api: TestimoniaApiService
+  ) {}
 
   /**
    * Retrieve documents from the server given the document type and filter
@@ -34,21 +30,23 @@ export class ApiInterfaceService {
    * @author Ycreak
    */
   public get_documents(document_type: string, filter: any): Observable<any> {
-    console.log(document_type, filter)
     return new Observable((observer) => {
-      switch(document_type) {
-        //case environment.fragment:
-          //break;
+      switch (document_type) {
+        case environment.fragments:
+          this.fragments_api.request_documents(filter).subscribe((fragments: any) => {
+            observer.next(fragments);
+            observer.complete();
+          });
+          break;
         case environment.testimonia:
-          this.testimonia_api.request(filter).subscribe((testimonia: any) => {
-            console.log(testimonia)
+          this.testimonia_api.request_documents(filter).subscribe((testimonia: any) => {
             observer.next(testimonia);
             observer.complete();
-          })
-          //break;
+          });
+          break;
         default:
-          console.error('Unknown document type')
-      } 
-    })
+          console.error('Unknown document type', document_type);
+      }
+    });
   }
 }

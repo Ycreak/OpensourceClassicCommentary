@@ -53,7 +53,7 @@ export class TestimoniaDashboardComponent implements OnInit {
    * @param documents (object[]) which to add to the provided column
    */
   protected request(filter: object): void {
-    this.api.request(filter).subscribe((testimonia) => {
+    this.api.request_documents(filter).subscribe((testimonia) => {
       this.form.reset();
       this.selected = true;
       this.model_to_form(testimonia[0]);
@@ -90,7 +90,7 @@ export class TestimoniaDashboardComponent implements OnInit {
       .subscribe((result) => {
         if (result) {
           this.reset_form();
-          this.api.do(form, 'testimonium/create').subscribe(() => {
+          this.api.post_document(form, this.api.create).subscribe(() => {
             this.request({
               author: form.author,
               name: form.name,
@@ -113,7 +113,7 @@ export class TestimoniaDashboardComponent implements OnInit {
       .subscribe((result) => {
         if (result) {
           this.reset_form();
-          this.api.do(form, 'testimonium/update').subscribe(() => {
+          this.api.post_document(form, this.api.revise).subscribe(() => {
             this.request({
               author: form.author,
               name: form.name,
@@ -137,7 +137,7 @@ export class TestimoniaDashboardComponent implements OnInit {
       .subscribe((result) => {
         if (result) {
           this.reset_form();
-          this.api.do(form, 'testimonium/delete').subscribe(() => {
+          this.api.post_document(form, this.api.remove).subscribe(() => {
             this.reset_form();
             this.selected = false;
           });

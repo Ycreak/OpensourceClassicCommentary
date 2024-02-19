@@ -78,7 +78,7 @@ export class LoginComponent {
         this.dialogRef.close(); // Close the login screen overlay
         this.api.spinner_off();
       },
-      error: (err) => this.api.handle_error_message(err),
+      error: (err) => this.api.show_server_response(err),
     });
   }
 
@@ -116,7 +116,7 @@ export class LoginComponent {
                   value: { username: this.create_form.value.username, password: this.create_form.value.password1 },
                 });
               },
-              error: (err) => this.api.handle_error_message(err),
+              error: (err) => this.api.show_server_response(err),
             });
           }
         });
