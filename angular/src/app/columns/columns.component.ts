@@ -8,14 +8,15 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { environment } from '@src/environments/environment';
 
 // Service imports
-import { ApiService } from '@oscc/api.service';
 import { AuthService } from '@oscc/auth/auth.service';
 import { BibliographyService } from '@oscc/services/bibliography.service';
 import { ColumnsService } from '@oscc/columns/columns.service';
 import { CommentaryService } from '@oscc/commentary/commentary.service';
 import { DialogService } from '@oscc/services/dialog.service';
+import { FragmentsApiService } from '@oscc/services/api/fragments.service';
 import { SettingsService } from '@oscc/services/settings.service';
 import { UtilityService } from '@oscc/utility.service';
 
@@ -38,7 +39,7 @@ export class ColumnsComponent implements OnInit {
   public current_document: any;
 
   constructor(
-    protected api: ApiService,
+    protected api: FragmentsApiService,
     protected auth_service: AuthService,
     protected columns: ColumnsService,
     protected commentary: CommentaryService,
@@ -50,16 +51,13 @@ export class ColumnsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.api.request_authors_titles_editors_blob();
+    this.api.request_index().subscribe({});
     // Create an empty current_document variable to be filled whenever the user clicks a fragment
     this.current_document = new Fragment({});
     // Create the first column and push it to the columns list
     if (this.columns.list.length < 1) {
       const column_id = this.columns.add();
-      this.columns.request(
-        { document_type: 'fragment', author: 'Ennius', title: 'Thyestes', editor: 'TRF' },
-        column_id
-      );
+      this.columns.request(environment.fragments, { author: 'Ennius', title: 'Thyestes', editor: 'TRF' }, column_id);
       this.columns.find(column_id).column_name = `Ennius-Thyestes-TRF`;
     }
   }
@@ -72,12 +70,12 @@ export class ColumnsComponent implements OnInit {
   protected set_custom_filter(column_id: number): void {
     const dialogRef = this.matdialog.open(DocumentFilterComponent, {});
     dialogRef.afterClosed().subscribe({
-      next: (filters) => {
-        if (filters.length) {
+      next: (result) => {
+        if (result && result.filters.length) {
           //TODO: for now, we need to request every single document from the server.
           // New API update will allow us to request a list of filters
-          filters.forEach((filter: any) => {
-            this.columns.request(filter, column_id, true);
+          result.filters.forEach((filter: any) => {
+            this.columns.request(result.document_type, filter, column_id, true);
           });
         }
       },
@@ -116,7 +114,7 @@ export class ColumnsComponent implements OnInit {
     if (given_document.linked_fragments.length > 0) {
       const column_id = this.columns.add();
       given_document.linked_fragments.forEach((linked_fragment: Linked_fragment) => {
-        this.columns.request(linked_fragment, column_id, true);
+        this.columns.request(environment.fragments, linked_fragment, column_id, true);
         this.columns.find(column_id).column_name = `Linked ${column_id}`;
       });
     } else {
@@ -189,7 +187,7 @@ export class ColumnsComponent implements OnInit {
     const column_bib_keys: string[] = [];
     // If there are keys, show the bibliography
     column.documents.forEach((doc: any) => {
-      doc.bib_keys.forEach((key: string) => {
+      doc.commentary.bib_keys.forEach((key: string) => {
         column_bib_keys.push(key);
       });
     });

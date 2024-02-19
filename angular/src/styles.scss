@@ -69,3 +69,23 @@ div.dialog-header button:hover {
   --mat-mdc-button-persistent-ripple-color: black !important;
 }
 
+/* TODO: put this somewhere correct. Problem with reusable mat-menu */
+.playground-icon {
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  border: solid transparent;
+  border-bottom-width: 20px;
+  box-sizing: content-box;
+}
+.playground-icon:first-child {
+  border-left-width: 10px;
+}
+.playground-icon:last-child {
+  border-right-width: 10px;
+}
+.playground-icon:hover {
+  transition: transform 0.2s ease-out;
+  transform: scale(1.25);
+}
+

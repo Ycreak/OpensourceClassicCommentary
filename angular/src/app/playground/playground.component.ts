@@ -3,13 +3,16 @@ import { Output, EventEmitter } from '@angular/core';
 //import { WebsocketsService } from '@oscc/playground/websockets.service';
 import { HostListener } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { environment } from '@src/environments/environment';
 
 import { fabric } from 'fabric';
 
 // Service imports
 import { ApiService } from '@oscc/api.service';
+import { ApiInterfaceService } from '@oscc/services/api/api-interface.service';
 import { AuthService } from '@oscc/auth/auth.service';
 import { CommentaryService } from '@oscc/commentary/commentary.service';
+import { FragmentsApiService } from '@oscc/services/api/fragments.service';
 import { UtilityService } from '@oscc/utility.service';
 
 // Model imports
@@ -52,6 +55,12 @@ export class PlaygroundComponent implements OnInit {
     this.resize_canvas();
   }
 
+  // TODO: remove. For the quickfilter
+  protected _author: string;
+  protected _title: string;
+  protected _editor: string;
+  protected _name: string;
+
   // Playground column that keeps all data related to said playground
   protected playground: Playground;
   // We keep track of all documents in the playground. We can then search through this array for data like commentaries.
@@ -64,9 +73,11 @@ export class PlaygroundComponent implements OnInit {
   private redo_status = false;
 
   constructor(
+    private api_interface: ApiInterfaceService,
     private auth_service: AuthService,
     private commentary: CommentaryService,
     protected api: ApiService,
+    protected fragments_api: FragmentsApiService,
     protected utility: UtilityService,
     protected dialog: DialogService,
     private mat_dialog: MatDialog
@@ -89,12 +100,12 @@ export class PlaygroundComponent implements OnInit {
   protected filter_documents(): void {
     const dialogRef = this.mat_dialog.open(DocumentFilterComponent, {});
     dialogRef.afterClosed().subscribe({
-      next: (filters) => {
-        if (filters.length) {
+      next: (result) => {
+        if (result && result.filters.length) {
           //TODO: for now, we need to request every single document from the server.
           // New API update will allow us to request a list of filters
-          filters.forEach((filter: any) => {
-            this.request_documents(filter);
+          result.filters.forEach((filter: any) => {
+            this.request_documents(result.document_type, filter);
           });
         }
       },
@@ -106,8 +117,8 @@ export class PlaygroundComponent implements OnInit {
    * @param column_id (number) in which to add the documents
    * @param documents (object[]) which to add to the provided column
    */
-  protected request_documents(filter: object): void {
-    this.api.get_documents(filter).subscribe((documents) => {
+  protected request_documents(document_type: string, filter: object): void {
+    this.api_interface.get_documents(document_type, filter).subscribe((documents) => {
       this.process_incoming_documents(documents);
       // Place the first document at the following height in the canvas. Every following fragment will be placed a
       // little bit lower to give a stacking effect for newly arrived fragments.
@@ -132,6 +143,9 @@ export class PlaygroundComponent implements OnInit {
   private process_incoming_documents(documents: any[]): void {
     // Replace the <n> tag for spaces by actual spaces
     documents.forEach((doc: any) => {
+      if (doc.document_type == environment.testimonium) {
+        this.utility.open_snackbar('Testimonia not yet supported in the playground.');
+      }
       doc.lines.forEach((line: any) => {
         const matches = line.text.match(/<(\d+)>/);
         // If found, replace it with the correct whitespace number
@@ -226,7 +240,7 @@ export class PlaygroundComponent implements OnInit {
       left: textBoundingRect.left,
       width: textBoundingRect.width,
       height: textBoundingRect.height,
-      fill: 'orange',
+      fill: '#3F51B5',
       rx: 10,
       ry: 10,
       stroke: 'black',

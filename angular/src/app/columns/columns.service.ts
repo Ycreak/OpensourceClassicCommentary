@@ -1,13 +1,15 @@
 /**
  * This service allows for column manipulation within the document component
+ * @author Ycreak
  */
 import { Injectable } from '@angular/core';
 
+// Model imports
 import { Column } from '@oscc/models/Column';
 import { Fragment } from '@oscc/models/Fragment';
 
 // Service imports
-import { ApiService } from '@oscc/api.service';
+import { ApiInterfaceService } from '@oscc/services/api/api-interface.service';
 import { BibliographyService } from '@oscc/services/bibliography.service';
 import { UtilityService } from '@oscc/utility.service';
 
@@ -24,7 +26,7 @@ export class ColumnsService {
   public current: Column = new Column({});
 
   constructor(
-    private api: ApiService,
+    private api: ApiInterfaceService,
     private bib: BibliographyService,
     private utility: UtilityService
   ) {}
@@ -119,13 +121,14 @@ export class ColumnsService {
 
   /**
    * Request the API for documents: add them to the given column
+   * @param document_type (string)
    * @param filter (object) on which to filter the database
    * @param column_id (number) in which to add the documents
    * @param append (boolean) whether we append documents or replace
    * @author Ycreak
    */
-  public request(filter: object, column_id: number, append?: boolean): void {
-    this.api.get_documents(filter).subscribe((documents) => {
+  public request(document_type: string, filter: object, column_id: number, append?: boolean): void {
+    this.api.get_documents(document_type, filter).subscribe((documents) => {
       const column = column_id ? this.find(column_id) : this.find(this.add());
       // Format all documents to look nice on the frontend (little HTML, some beautiful CSS)
       documents = this.format(documents);

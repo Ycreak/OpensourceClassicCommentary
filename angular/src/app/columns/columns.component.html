@@ -11,6 +11,7 @@
       [endpoint]="'editor'"
       (new_filter)="
         this.columns.request(
+          'fragments',
           {
             author: $event.author,
             title: $event.title,
@@ -38,9 +39,6 @@
     <button mat-icon-button (click)="this.columns.current = column_to_display" [matMenuTriggerFor]="columnMenu">
       <mat-icon fontIcon="menu"></mat-icon>
     </button>
-
-    <!-- Separator-->
-    <!--</ng-container>-->
   </mat-toolbar>
 </ng-template>
 

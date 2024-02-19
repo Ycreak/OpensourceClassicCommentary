@@ -2,17 +2,14 @@ import { Commentary } from '@oscc/models/Commentary';
 
 /** This class represents a testimonium and all its data fields */
 export class Testimonium {
-  language = '';
-  genre = '';
-  document_type = 'testimonium';
   // Meta data
+  document_type = 'testimonium';
   _id = '';
   name = '';
   author = '';
   witness = '';
   title = '';
   text = '';
-  translation = '';
   // Commentary
   commentary: Commentary;
 

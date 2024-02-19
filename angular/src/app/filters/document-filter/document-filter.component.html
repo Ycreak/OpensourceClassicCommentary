@@ -6,14 +6,18 @@
 </div>
 
 <div mat-dialog-content>
-  <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+  <mat-tab-group #tab_group (selectedTabChange)="on_tab_change($event)" mat-stretch-tabs="false" mat-align-tabs="start">
     <mat-tab label="Fragments">
       <div style="padding-top: 1em">
         <app-fragment-table></app-fragment-table>
       </div>
     </mat-tab>
-    <mat-tab label="Testimonia"> Content 2 </mat-tab>
-    <mat-tab label="Text"> Content 2 </mat-tab>
+    <mat-tab label="Testimonia">
+      <div style="padding-top: 1em">
+        <app-testimonia-table></app-testimonia-table>
+      </div>
+    </mat-tab>
+    <!--<mat-tab label="Text"> Content 2 </mat-tab>-->
   </mat-tab-group>
 </div>
 <div mat-dialog-actions>

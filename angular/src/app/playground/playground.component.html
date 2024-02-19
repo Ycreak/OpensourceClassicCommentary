@@ -2,36 +2,9 @@
   <hr class="playground-divider-top" />
   <div class="playground-title">PLAYGROUND</div>
   <mat-progress-bar mode="query" *ngIf="this.api.spinner"></mat-progress-bar>
-  <!-- Possibility to add a little note -->
-  <!--<div class="row">-->
-  <!--<div mat-dialog-content class="playground-button-container col-6">-->
-  <!--<mat-form-field class="playground-mat-form-field input-form">-->
-  <!--<input matInput placeholder="Add a note" ngDefaultControl [(ngModel)]="this.playground.note" />-->
-  <!--<button type="button" mat-icon-button matSuffix (click)="this.add_note_to_canvas(this.playground.note)">-->
-  <!--<mat-icon>{{ "add" }}</mat-icon>-->
-  <!--</button>-->
-  <!--<mat-hint>To organise your playground</mat-hint>-->
-  <!--</mat-form-field>-->
-  <!--</div>-->
-  <!--<div class="playground-button-container col-3" *ngIf="this.playground.canvas.isDrawingMode">-->
-  <!--<mat-form-field>-->
-  <!--<mat-label>Pencil colour</mat-label>-->
-  <!--<mat-select [(value)]="this.playground.canvas.freeDrawingBrush.color">-->
-  <!--<mat-option value="black">Black</mat-option>-->
-  <!--<mat-option value="red">Red</mat-option>-->
-  <!--<mat-option value="blue">Blue</mat-option>-->
-  <!--<mat-option value="green">Green</mat-option>-->
-  <!--</mat-select>-->
-  <!--</mat-form-field>-->
-  <!--</div>-->
-  <!--<div class="playground-button-container col-3" *ngIf="this.playground.canvas.isDrawingMode">-->
-  <!--<mat-form-field class="example-margin example-width">-->
-  <!--<mat-label>Pencil width</mat-label>-->
-  <!--<input matInput type="number" [(ngModel)]="this.playground.canvas.freeDrawingBrush.width" />-->
-  <!--</mat-form-field>-->
-  <!--</div>-->
-  <!--</div>-->
+
   <hr class="playground-divider" />
+
   <div class="canvas-container">
     <canvas id="playground_canvas"></canvas>
 
@@ -47,34 +20,17 @@
 
     <div id="playground-main-toolbar" class="playground-toolbar">
       <div id="playground-document-tools" class="playground-tool-group">
-        <img
-          id="playground_authors_btn"
-          class="playground-icon"
-          src="assets\icons\ByteDanceIconPark\9069093_doc_add_icon.png"
-          [matMenuTriggerFor]="menu_authors" />
+        <app-latin-tragic-fragment-filter
+          [button_title]="''"
+          [button_type]="'playground'"
+          [endpoint]="'editor'"
+          (new_filter)="this.request_documents('fragments', $event)">
+        </app-latin-tragic-fragment-filter>
         <img
           id="playground_authors_btn"
           class="playground-icon"
           src="assets\icons\ByteDanceIconPark\9069051_doc_search_icon.png"
           (click)="this.filter_documents()" />
-
-        <!--<img-->
-        <!--id="playground_fragment_btn"-->
-        <!--class="playground-icon"-->
-        <!--src="assets\icons\ByteDanceIconPark\9069051_doc_search_icon.png"-->
-        <!--[matMenuTriggerFor]="fragment_selection" />-->
-        <!--<img-->
-        <!--id="playground_add_documents_btn"-->
-        <!--class="playground-icon"-->
-        <!--src="assets\icons\ByteDanceIconPark\9069093_doc_add_icon.png"-->
-        <!--(click)="-->
-        <!--this.request_documents({-->
-        <!--author: this.playground.author,-->
-        <!--title: this.playground.title,-->
-        <!--editor: this.playground.editor-->
-        <!--})-->
-        <!--"-->
-        <!--(click)="this.single_fragment_requested = false" />-->
         <img
           id="playground_note_btn"
           class="playground-icon"
@@ -154,46 +110,42 @@
 
   <!-- Nested menu to select author - title - editor. -->
   <mat-menu #menu_authors="matMenu">
-    <ng-container *ngFor="let author of this.api.get_author_list(); let i = index">
-      <button
-        mat-menu-item
-        (menuOpened)="this.playground.retrieved_titles = []; this.playground.retrieved_editors = []"
-        (menuOpened)="this.playground.title = ''; this.playground.editor = ''"
-        (menuOpened)="this.playground.author = author"
-        (menuOpened)="this.playground.retrieved_titles = this.api.get_title_list(author)"
-        [matMenuTriggerFor]="menu_titles">
+    <ng-container *ngFor="let author of this.fragments_api._authors()">
+      <button mat-menu-item (menuOpened)="this._author = author" [matMenuTriggerFor]="menu_titles">
         {{ author }}
       </button>
     </ng-container>
   </mat-menu>
 
   <mat-menu #menu_titles="matMenu">
-    <ng-container *ngFor="let title of this.playground.retrieved_titles; let i = index">
-      <button
-        mat-menu-item
-        (menuOpened)="this.playground.retrieved_editors = []"
-        (menuOpened)="this.playground.title = ''"
-        (menuOpened)="this.playground.title = title"
-        (menuOpened)="this.playground.retrieved_editors = this.api.get_editor_list(this.playground.author, title)"
-        [matMenuTriggerFor]="menu_editors">
+    <ng-container *ngFor="let title of this.fragments_api._titles(this._author)">
+      <button mat-menu-item (menuOpened)="this._title = title" [matMenuTriggerFor]="menu_editors">
         {{ title }}
       </button>
     </ng-container>
   </mat-menu>
 
   <mat-menu #menu_editors="matMenu">
-    <ng-container *ngFor="let editor of this.playground.retrieved_editors; let i = index">
-      <button
-        mat-menu-item
-        (click)="this.playground.editor = editor"
-        (click)="
-          this.request_documents({
-            author: this.playground.author,
-            title: this.playground.title,
-            editor: this.playground.editor
-          })
-        ">
+    <ng-container *ngFor="let editor of this.fragments_api._editors(this._author, this._title)">
+      <!--If the endpoint is editor, we return the filter when the editor is clicked-->
+      <button *ngIf="this.endpoint === 'editor'" mat-menu-item (click)="this._editor = editor" (click)="this.filter()">
         {{ editor }}
+      </button>
+      <!--If the endpoint is name, we open another menu name and let that one return the filter-->
+      <button
+        *ngIf="this.endpoint === 'name'"
+        mat-menu-item
+        (menuOpened)="this._editor = editor"
+        [matMenuTriggerFor]="menu_names">
+        {{ editor }}
+      </button>
+    </ng-container>
+  </mat-menu>
+
+  <mat-menu #menu_names="matMenu">
+    <ng-container *ngFor="let name of this.fragments_api._names(this._author, this._title, this._editor)">
+      <button mat-menu-item (click)="this._name = name" (click)="this.filter()">
+        {{ name }}
       </button>
     </ng-container>
   </mat-menu>

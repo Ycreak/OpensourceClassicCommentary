@@ -4,10 +4,10 @@ import { FormControl, FormGroup, FormArray } from '@angular/forms';
 import { Validators } from '@angular/forms';
 
 // Component imports
-import { ApiService } from '@oscc/api.service';
-import { UtilityService } from '@oscc/utility.service';
 import { AuthService } from '@oscc/auth/auth.service';
 import { DialogService } from '@oscc/services/dialog.service';
+import { FragmentsApiService } from '@oscc/services/api/fragments.service';
+import { UtilityService } from '@oscc/utility.service';
 
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
@@ -66,7 +66,7 @@ export class FragmentsDashboardComponent implements OnInit {
   fragment_referencer: Column;
 
   constructor(
-    protected api: ApiService,
+    protected api: FragmentsApiService,
     protected utility: UtilityService,
     protected dialog: DialogService,
     protected auth_service: AuthService
@@ -77,7 +77,7 @@ export class FragmentsDashboardComponent implements OnInit {
     //this.api.request_documents(255, 'Ennius', 'Thyestes', 'TRF', '112');
     //}
 
-    this.api.request_authors_titles_editors_blob();
+    this.api.request_index().subscribe({});
     // We will store all dashboard data in the following data object
     this.selected_fragment_data = new Column({});
     this.fragment_referencer = new Column({});
@@ -108,7 +108,7 @@ export class FragmentsDashboardComponent implements OnInit {
   }
 
   protected test(): void {
-    console.log(this.api.author_title_editor_blob);
+    //console.log(this.api.author_title_editor_blob);
   }
 
   /**
@@ -310,7 +310,7 @@ export class FragmentsDashboardComponent implements OnInit {
    * @param documents (object[]) which to add to the provided column
    */
   protected request_documents(filter: object): void {
-    this.api.get_documents(filter).subscribe((documents) => {
+    this.api.request_documents(filter).subscribe((documents) => {
       this.reset_fragment_form();
       this.convert_Fragment_to_fragment_form(documents[0]);
       // Set the data for the drop down menus
@@ -347,7 +347,7 @@ export class FragmentsDashboardComponent implements OnInit {
             const fragment = this.convert_fragment_form_to_Fragment(fragment_form);
             fragment.document_type = 'fragment';
             this.reset_fragment_form();
-            this.api.revise_fragment(fragment).subscribe(() => {
+            this.api.post_document(fragment, this.api.revise).subscribe(() => {
               // When the has been revised, we will load said fragment and fill the fields again
               this.request_documents({
                 author: fragment.author,
@@ -385,7 +385,7 @@ export class FragmentsDashboardComponent implements OnInit {
           const fragment = this.convert_fragment_form_to_Fragment(fragment_form);
           fragment.document_type = 'fragment'; //FIXME: this is a bug
           this.reset_fragment_form();
-          this.api.create_fragment(fragment).subscribe(() => {
+          this.api.post_document(fragment, this.api.create).subscribe(() => {
             // When the has been created, we will load said fragment and fill the fields again
             this.request_documents({
               author: fragment.author,
@@ -421,13 +421,18 @@ export class FragmentsDashboardComponent implements OnInit {
         if (result) {
           const fragment = this.convert_fragment_form_to_Fragment(fragment_form);
           this.reset_fragment_form();
-          this.api.delete_fragment({
-            document_type: 'fragment',
-            author: fragment.author,
-            title: fragment.title,
-            editor: fragment.editor,
-            name: fragment.name,
-          });
+          this.api
+            .post_document(
+              {
+                document_type: 'fragment',
+                author: fragment.author,
+                title: fragment.title,
+                editor: fragment.editor,
+                name: fragment.name,
+              },
+              this.api.remove
+            )
+            .subscribe({});
           this.fragment_selected = false;
         }
       });
@@ -454,11 +459,11 @@ export class FragmentsDashboardComponent implements OnInit {
         if (result) {
           this.api.automatic_fragment_linker(api_data).subscribe({
             next: (res) => {
-              this.api.handle_error_message(res);
+              this.api.show_server_response(res);
               this.api.spinner_off();
             },
             error: (err) => {
-              this.api.handle_error_message(err);
+              this.api.show_server_response(err);
             },
           });
         }

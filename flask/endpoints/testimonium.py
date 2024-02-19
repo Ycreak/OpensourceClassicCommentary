@@ -2,11 +2,23 @@ from flask import request, make_response
 import logging
 from flask_jsonpify import jsonify
 from uuid import uuid4
+import utilities as util
 
 from couch import CouchAuthenticator
 from models.testimonium import Testimonium, TestimoniumModel, TestimoniumField
 
 testimonia = TestimoniumModel(CouchAuthenticator().couch)
+
+index_file: str = "cache/testimonia/index.json"
+
+def get_index():
+    result = util.read_json(index_file)
+    return jsonify(result)
+
+def refresh_index():
+    testimonia_lst = testimonia.all()
+    testimonia_lst = [(x.author, x.name) for x in testimonia_lst]
+    util.write_json(sorted(list(set(testimonia_lst))), index_file)
 
 def get_author_testimonium():
     author = None
@@ -125,6 +137,7 @@ def get_testimonium():
     return jsonify(testimonium_lst), 200
 
 def create_testimonium():    
+    logging.error("hello there 2")
     try:
         author = request.get_json()[TestimoniumField.AUTHOR]
         title = request.get_json()[TestimoniumField.TITLE]
@@ -151,7 +164,8 @@ def create_testimonium():
                                          translation=translation, text=text))
     if testimonium == None:
         return make_response("Server error", 500)
-    
+   
+    refresh_index() 
     return make_response("Created", 200)
 
 
@@ -180,7 +194,8 @@ def update_testimonium():
                                        text=text))
     if testimonium == None:
         return make_response("Server error", 500)
-
+    
+    refresh_index() 
     return make_response("Revised", 200)
 
 def delete_testimonium():
@@ -197,6 +212,7 @@ def delete_testimonium():
 
 
     if testimonium:
+        refresh_index() 
         return make_response("OK", 200)
     else:
         return make_response("Not found", 401)

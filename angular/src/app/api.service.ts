@@ -13,150 +13,36 @@ import { BibliographyService } from '@oscc/services/bibliography.service';
 
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
-import { Introduction } from '@oscc/models/Introduction';
 import { Playground } from '@oscc/models/Playground';
 import { Bib } from '@oscc/models/Bib';
-import { Testimonium } from '@oscc/models/Testimonium';
 import { User } from '@oscc/models/User';
-
-export interface fragment_key {
-  author?: string;
-  title?: string;
-  editor?: string;
-  name?: string;
-}
-
-export interface text_blob {
-  author: string;
-  title: string;
-  editor: string;
-}
-
-export interface author {
-  name: string;
-}
-
-export interface title {
-  name: string;
-}
-
-export interface editor {
-  name: string;
-}
-
-export interface fragment_name {
-  name: string;
-}
 
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
+  protected http: HttpClient;
+
   network_status: boolean; // Indicates if server is reachable or not
   concurrent_api_calls = 0;
-  spinner: boolean;
+  public spinner: boolean;
+
+  // We define headers for our post() functions. For receiving data we expect a different response
+  // than for post data.
+  public post_header: object = { observe: 'response', responseType: 'text' as 'json' };
+  public get_header: object = { observe: 'body', responseType: 'json' };
 
   constructor(
     private bib: BibliographyService,
-    private http: HttpClient,
-    private utility: UtilityService
+    protected utility: UtilityService,
+    http: HttpClient
   ) {
+    this.http = http;
     this.network_status = true; // Assumed online until HttpErrorResponse is received.
   }
 
-  public author_title_editor_blob: any = [];
-
   FlaskURL: string = environment.flask_api;
   NeuralURL: 'https://oscc.nolden.biz:5002/';
-
-  /**
-   * Requests the API for a blob of all author-title-editor combinations for easy filtering in Angular
-   * @author Ycreak
-   */
-  public request_authors_titles_editors_blob(): void {
-    this.spinner_on();
-    this.author_title_editor_blob = [];
-    this.get_authors_titles_editors_blob().subscribe({
-      next: (data) => {
-        data.forEach((value: any) => {
-          this.author_title_editor_blob.push({
-            author: value[0],
-            title: value[1],
-            editor: value[2],
-            name: value[3],
-          } as text_blob);
-        });
-        this.spinner_off();
-      },
-      error: (err) => this.handle_error_message(err),
-    });
-  }
-
-  /**
-   * Provides a list of authors from the author-title-editor blob
-   * @return author_list (array)
-   * @author Ycreak
-   */
-  public get_author_list(): object {
-    const filtered_objects = this.author_title_editor_blob;
-    const author_list = new Set(
-      filtered_objects.map(function (el: any) {
-        return el.author;
-      })
-    );
-    return author_list;
-  }
-  /**
-   * Provides a list of titles from the author-title-editor blob
-   * @param author (string)
-   * @return title_list (array)
-   * @author Ycreak
-   */
-  public get_title_list(author: string): object {
-    const filtered_objects = this.author_title_editor_blob.filter((x: any) => x.author == author);
-    const title_list = new Set(
-      filtered_objects.map(function (el: any) {
-        return el.title;
-      })
-    );
-    return title_list;
-  }
-  /**
-   * Provides a list of editors from the author-title-editor blob
-   * @param author (string)
-   * @param title (string)
-   * @return title_list (array)
-   * @author Ycreak
-   */
-  public get_editor_list(author: string, title: string): object {
-    const filtered_objects = this.author_title_editor_blob.filter((x: any) => x.author == author && x.title == title);
-    const editor_list = new Set(
-      filtered_objects.map(function (el: any) {
-        return el.editor;
-      })
-    );
-    return editor_list;
-  }
-  /**
-   * Provides a list of document names from the author-title-editor blob
-   * @param author (string)
-   * @param title (string)
-   * @param editor (string)
-   * @return list
-   * @author Ycreak
-   */
-  public get_names_list(author: string, title: string, editor: string): object {
-    const filtered_objects = this.author_title_editor_blob.filter(
-      (x: any) => x.author == author && x.title == title && x.editor == editor
-    );
-    const name_list = new Set(
-      filtered_objects.map(function (el: any) {
-        return el.name;
-      })
-    );
-    // Turn Set into list and sort it
-    return [...name_list].sort(this.utility.sort_array_numerically);
-  }
 
   /**
    * Performs a post with the given data to the given url + endpoint
@@ -164,220 +50,19 @@ export class ApiService {
    * @param endpoint (string)
    * @param data (object)
    */
-  public post(url: string, endpoint: string, data: object): Observable<any> {
-    return this.http.post<string[]>(url + endpoint, data, {
-      observe: 'body',
-      responseType: 'json',
-    });
+  public post(url: string, endpoint: string, data: object, header: object): Observable<any> {
+    return this.http.post<string[]>(url + endpoint, data, header);
   }
 
   /**
-   * Creates the given fragment on the server
-   * @param fragment (Fragment)
+   * Gets a unique list of values from the given key, when applying the given filter
+   * on the index file
+   * @param key (string)
+   * @param filter (object)
    * @author Ycreak
    */
-  public create_fragment(fragment: any): Observable<any> {
-    return new Observable((observer) => {
-      this.spinner_on();
-      this.http
-        .post<string[]>(this.FlaskURL + `fragment/create`, fragment, {
-          observe: 'response',
-          responseType: 'text' as 'json',
-        })
-        .subscribe({
-          next: (data) => {
-            this.handle_error_message(data);
-            this.request_authors_titles_editors_blob();
-            this.spinner_off();
-            observer.next();
-            observer.complete();
-          },
-          error: (err) => this.handle_error_message(err),
-        });
-    });
-  }
-  /**
-   * Revises the given fragment on the server
-   * @param fragment (Fragment)
-   * @return Observable when server has finished
-   * @author Ycreak
-   */
-  public revise_fragment(fragment: any): Observable<any> {
-    return new Observable((observer) => {
-      this.spinner_on();
-      this.http
-        .post<string[]>(this.FlaskURL + `fragment/update`, fragment, {
-          observe: 'response',
-          responseType: 'text' as 'json',
-        })
-        .subscribe({
-          next: (data) => {
-            this.handle_error_message(data);
-            this.request_authors_titles_editors_blob();
-            this.spinner_off();
-            observer.next();
-            observer.complete();
-          },
-          error: (err) => this.handle_error_message(err),
-        });
-    });
-  }
-  /**
-   * Deletes the given fragment on the server
-   * @param fragment (Fragment)
-   * @author Ycreak
-   */
-  public delete_fragment(fragment: any): void {
-    this.spinner_on();
-    this.http
-      .post<string[]>(this.FlaskURL + `fragment/delete`, fragment, {
-        observe: 'response',
-        responseType: 'text' as 'json',
-      })
-      .subscribe({
-        next: (data) => {
-          this.handle_error_message(data);
-          this.request_authors_titles_editors_blob();
-          this.spinner_off();
-        },
-        error: (err) => this.handle_error_message(err),
-      });
-  }
-
-  /**
-   * Retrieves document names from the given key
-   * @param key (object)
-   * @return document_names (list)
-   * @author Ycreak
-   */
-  public get_names(key: any): Observable<any> {
-    return new Observable((observer) => {
-      this.http
-        .post<string[]>(this.FlaskURL + `fragment/get/name`, key, {
-          observe: 'body',
-          responseType: 'json',
-        })
-        .subscribe((data: any) => {
-          const names: fragment_name[] = [];
-          data.forEach((value: any) => {
-            names.push({ name: value } as fragment_name);
-          });
-          observer.next(names);
-          observer.complete();
-        });
-    });
-  }
-
-  /**
-   * Retrieves document authors from the given key
-   * @param key (object)
-   * @return document_names (list)
-   * @author Ycreak
-   */
-  public get_authors(key: any): Observable<any> {
-    return new Observable((observer) => {
-      this.http
-        .post<any>(this.FlaskURL + `fragment/get/author`, key, {
-          observe: 'body',
-          responseType: 'json',
-        })
-        .subscribe((data: any) => {
-          const authors: author[] = [];
-          data.forEach((value: any) => {
-            authors.push({ name: value } as author);
-          });
-          observer.next(authors);
-          observer.complete();
-        });
-    });
-  }
-
-  /**
-   * Retrieves document authors from the given key
-   * @param key (object)
-   * @return document_names (list)
-   * @author Ycreak
-   */
-  public get_document_names(filter: object): Observable<any> {
-    this.spinner_on();
-    return new Observable((observer) => {
-      let document_names: fragment_name[] = [];
-      this.post(this.FlaskURL, 'fragment/get/name', filter).subscribe((data: any) => {
-        data.forEach((value: any) => {
-          document_names.push({ name: value } as fragment_name);
-        });
-        document_names = document_names.sort(this.utility.sort_fragment_array_numerically);
-        this.spinner_off();
-        observer.next(document_names);
-        observer.complete();
-      });
-    });
-  }
-
-  /**
-   * Retrieve documents from the server given the filter
-   * @param filter (object) on which to filter documents
-   * @return documents (document[])
-   * @author Ycreak
-   * @TODO: needs to be refactored to get_fragments
-   */
-  public get_documents(filter: any): Observable<any> {
-    return new Observable((observer) => {
-      this.spinner_on();
-      this.post(this.FlaskURL, 'fragment/get', filter).subscribe((data: any) => {
-        const documents: any[] = [];
-        data.forEach((value: any) => {
-          let new_document: any;
-          new_document = new Fragment({});
-          new_document.set_fragment(value);
-          documents.push(new_document);
-        });
-        this.spinner_off();
-        observer.next(documents);
-        observer.complete();
-      });
-    });
-  }
-
-  /**
-   * Function to request the introduction text for a given author or author + title.
-   * @param intro Introduction object with form data; contains selected author and title data.
-   * @author CptVickers, Ycreak
-   */
-  public get_introduction(filter: any): Observable<any> {
-    return new Observable((observer) => {
-      this.spinner_on();
-      this.post(this.FlaskURL, 'introduction/get', filter).subscribe({
-        next: (data: any) => {
-          const new_introduction = new Introduction({});
-          new_introduction.set(data);
-          this.spinner_off();
-          observer.next(new_introduction);
-          observer.complete();
-        },
-        error: (err) => this.handle_error_message(err),
-      });
-    });
-  }
-  /**
-   * Saves the given introduction on the server
-   * @param introduction (Introduction)
-   * @author Ycreak
-   */
-  public save_introduction(introduction: Introduction): void {
-    this.spinner_on();
-    this.http
-      .post<string[]>(this.FlaskURL + `introduction/update`, introduction, {
-        observe: 'response',
-        responseType: 'text' as 'json',
-      })
-      .subscribe({
-        next: (data) => {
-          this.handle_error_message(data);
-          this.spinner_off();
-        },
-        error: (err) => this.handle_error_message(err),
-      });
+  protected get_from_index(key: string, index: any[], filter: object): string[] {
+    return this.utility.get_set_of_key_values_from_object_list(this.utility.filter_array(index, filter), key);
   }
 
   /**
@@ -443,7 +128,7 @@ export class ApiService {
   public get_playground(filter: object): Observable<any> {
     this.spinner_on();
     return new Observable((observer) => {
-      this.post(this.FlaskURL, 'playground/get', filter).subscribe((data: any) => {
+      this.post(this.FlaskURL, 'playground/get', filter, this.get_header).subscribe((data: any) => {
         this.spinner_off();
         observer.next(data[0]);
         observer.complete();
@@ -459,7 +144,7 @@ export class ApiService {
   public get_shared_playgrounds(filter: object): Observable<any> {
     this.spinner_on();
     return new Observable((observer) => {
-      this.post(this.FlaskURL, 'playground/get/shared', filter).subscribe((data: any) => {
+      this.post(this.FlaskURL, 'playground/get/shared', filter, this.get_header).subscribe((data: any) => {
         this.spinner_off();
         observer.next(data);
         observer.complete();
@@ -475,7 +160,7 @@ export class ApiService {
   public get_playground_names(filter: object): Observable<any> {
     this.spinner_on();
     return new Observable((observer) => {
-      this.post(this.FlaskURL, 'playground/get/name', filter).subscribe((data: any) => {
+      this.post(this.FlaskURL, 'playground/get/name', filter, this.get_header).subscribe((data: any) => {
         this.spinner_off();
         observer.next(data);
         observer.complete();
@@ -497,10 +182,10 @@ export class ApiService {
       })
       .subscribe({
         next: (data) => {
-          this.handle_error_message(data);
+          this.show_server_response(data);
           this.spinner_off();
         },
-        error: (err) => this.handle_error_message(err),
+        error: (err) => this.show_server_response(err),
       });
   }
   /**
@@ -517,10 +202,10 @@ export class ApiService {
       })
       .subscribe({
         next: (data) => {
-          this.handle_error_message(data);
+          this.show_server_response(data);
           this.spinner_off();
         },
-        error: (err) => this.handle_error_message(err),
+        error: (err) => this.show_server_response(err),
       });
   }
   /**
@@ -537,10 +222,10 @@ export class ApiService {
       })
       .subscribe({
         next: (data) => {
-          this.handle_error_message(data);
+          this.show_server_response(data);
           this.spinner_off();
         },
-        error: (err) => this.handle_error_message(err),
+        error: (err) => this.show_server_response(err),
       });
   }
 
@@ -608,20 +293,19 @@ export class ApiService {
   }
 
   /**
-   * Function to handle the error err. Calls Snackbar to show it on screen
-   * @param err the generated error
+   * Function to show the server response. Calls Snackbar to show it on screen
+   * @param the generated error
    * @author Ycreak
    */
-  public handle_error_message(err: any): void {
+  public show_server_response(message: any): void {
+    console.log(message);
     this.spinner_off();
     let output = '';
 
-    console.log(err);
-
-    if (err.ok) {
-      output = err.status + ': ' + err.body;
+    if (message.statusText == 'OK') {
+      output = message.status + ': ' + message.body;
     } else {
-      output = err.status + ': ' + err.error;
+      output = message.status + ': ' + message.error;
     }
     this.utility.open_snackbar(output);
   }

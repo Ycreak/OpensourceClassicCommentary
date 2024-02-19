@@ -1,7 +1,6 @@
 <div *ngIf="this.settings.fragments.show_headers">
-  <b [style.color]="fragment.colour">Fragment {{ this.fragment.name }} </b> &nbsp;
+  <b [style.color]="fragment.colour">Fragment {{ this.fragment.name }}</b> &nbsp; <i>{{ fragment.status }}</i> &nbsp;
   <sup>{{ fragment.author }}, {{ fragment.title }}, {{ fragment.editor }}</sup> &nbsp;
-  <i>{{ fragment.status }}</i>
 </div>
 
 <ng-container *ngIf="this.translated; else fragments_not_translated">

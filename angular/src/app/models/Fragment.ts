@@ -38,7 +38,7 @@ export class Fragment {
    * @param fragment with JSON data received from the server
    * @author Ycreak
    */
-  public set_fragment(fragment: any) {
+  public set(fragment: any) {
     this._id = '_id' in fragment ? fragment['_id'] : '';
     this.author = 'author' in fragment ? fragment['author'] : '';
     this.title = 'title' in fragment ? fragment['title'] : '';

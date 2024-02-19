@@ -62,7 +62,7 @@
     </mat-expansion-panel>
     <hr />
     <!-- Change testimonia expansion panel -->
-    <mat-expansion-panel *ngIf="this.auth_service.current_user_role === 'teacher'" [expanded]="false" disabled>
+    <mat-expansion-panel *ngIf="this.auth_service.current_user_role === 'teacher'" [expanded]="false">
       <mat-expansion-panel-header>
         <mat-panel-title> Change testimonia data </mat-panel-title>
         <mat-panel-description>
@@ -74,7 +74,7 @@
     </mat-expansion-panel>
     <hr />
     <!-- Change author/author+title introduction expansion panel -->
-    <app-introductions-dashboard></app-introductions-dashboard>
+    <!--<app-introductions-dashboard></app-introductions-dashboard>-->
     <hr />
 
     <!-- Change user expansion panel -->
