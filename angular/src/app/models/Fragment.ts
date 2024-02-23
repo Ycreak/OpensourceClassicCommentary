@@ -28,10 +28,7 @@ export class Fragment {
   // designates the css color of the fragment header
   colour = 'black';
 
-  constructor(fragment?: Partial<Fragment>) {
-    // Allow the partial initialisation of a fragment object
-    Object.assign(this, fragment);
-  }
+  constructor() { }
 
   /**
    * Converts the JSON received from the server to a Typescript object
@@ -46,7 +43,10 @@ export class Fragment {
     this.name = 'name' in fragment ? fragment['name'] : '';
     this.status = 'status' in fragment ? fragment['status'] : '';
     this.lines = 'lines' in fragment ? fragment['lines'] : [];
-    this.linked_fragments = 'linked_fragments' in fragment ? fragment['linked_fragments'] : [];
+    
+    this.linked_fragments = this.check_json_entry('linked_fragments', fragment)
+      ? fragment['linked_fragments'] : [];
+    
     this.lock = 'lock' in fragment ? fragment['lock'] : '';
     this.published = '' in fragment ? fragment['published'] : '';
 
@@ -54,6 +54,16 @@ export class Fragment {
     this.commentary.set(fragment);
   }
 
+  /**
+   * Checks the validity of an key in the incoming json object
+   * @param key (string)
+   * @param fragment (json)
+   * @return boolean
+   * @author Ycreak
+   */
+  private check_json_entry(key: string, fragment: object): boolean {
+      return key in fragment && fragment[key] != null;
+  }
   /**
    * This function adds HTML to the lines of the given array. At the moment,
    * it converts white space encoding for every applicable line by looping through

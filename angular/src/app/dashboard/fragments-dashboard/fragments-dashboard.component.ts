@@ -449,7 +449,7 @@ export class FragmentsDashboardComponent implements OnInit {
     this.api.spinner_on();
 
     const item_string = column.selected_fragment_author + ', ' + column.selected_fragment_title;
-    const api_data = new Fragment({});
+    const api_data = new Fragment();
     api_data.author = column.selected_fragment_author;
     api_data.title = column.selected_fragment_title;
 

@@ -77,7 +77,7 @@ export class FragmentsApiService extends ApiService {
         next: (data) => {
           const documents: any[] = [];
           data.forEach((value: any) => {
-            const new_fragment = new Fragment({});
+            const new_fragment = new Fragment();
             new_fragment.set(value);
             documents.push(new_fragment);
           });
