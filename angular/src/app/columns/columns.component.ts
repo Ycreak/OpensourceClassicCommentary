@@ -53,7 +53,7 @@ export class ColumnsComponent implements OnInit {
   ngOnInit(): void {
     this.api.request_index().subscribe({});
     // Create an empty current_document variable to be filled whenever the user clicks a fragment
-    this.current_document = new Fragment({});
+    this.current_document = new Fragment();
     // Create the first column and push it to the columns list
     if (this.columns.list.length < 1) {
       const column_id = this.columns.add();

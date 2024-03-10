@@ -39,7 +39,7 @@ export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit(): void {
     // Sort bib on lastname: FIXME: bibliography has faulty entries
     //this.bib.bibliography.sort((a, b) =>
-      //a.creators[0].lastname > b.creators[0].lastname ? 1 : b.creators[0].lastname > a.creators[0].lastname ? -1 : 0
+    //a.creators[0].lastname > b.creators[0].lastname ? 1 : b.creators[0].lastname > a.creators[0].lastname ? -1 : 0
     //);
     this.fill_table(this.bib.bibliography);
   }
@@ -84,14 +84,14 @@ export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
     this.table_source_data = [];
 
     for (const i in bib) {
-      let name = 'invalid'
-      let lastname = 'invalid'
+      let name = 'invalid';
+      let lastname = 'invalid';
 
       try {
         name = `${bib[i].creators[0].lastname}, ${bib[i].creators[0].firstname}`;
         lastname = `${bib[i].creators[0].lastname}`;
       } catch (e) {
-        console.error('Faulty bib entry:', bib)
+        console.error('Faulty bib entry:', bib[i]);
       }
 
       // Create an object for the table with the specific fields we need
