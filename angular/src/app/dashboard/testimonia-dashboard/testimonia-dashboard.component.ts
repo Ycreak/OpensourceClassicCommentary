@@ -32,6 +32,7 @@ export class TestimoniaDashboardComponent implements OnInit {
     author: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
     witness: new FormControl(''),
     title: new FormControl(''),
+    editor: new FormControl(''),
     text: new FormControl(''),
     translation: new FormControl(''),
   });
@@ -68,7 +69,7 @@ export class TestimoniaDashboardComponent implements OnInit {
    */
   private model_to_form(testimonium: Testimonium): void {
     // This functions updates the form with the provided testimonium
-    for (const item of ['_id', 'name', 'author', 'title', 'witness', 'text']) {
+    for (const item of ['_id', 'name', 'author', 'title', 'witness', 'editor', 'text']) {
       this.form.patchValue({ [item]: testimonium[item] });
     }
     // Update the form with the commentary

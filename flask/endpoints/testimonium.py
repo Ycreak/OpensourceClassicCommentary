@@ -116,6 +116,7 @@ def get_testimonium():
     title = None
     witness = None
     name = None
+    editor = None
 
     try:
         if TestimoniumField.AUTHOR in request.get_json():
@@ -124,13 +125,15 @@ def get_testimonium():
             title = request.get_json()[TestimoniumField.TITLE]
         if TestimoniumField.WITNESS in request.get_json():
             witness = request.get_json()[TestimoniumField.WITNESS]
+        if TestimoniumField.EDITOR in request.get_json():
+            editor = request.get_json()[TestimoniumField.EDITOR]
         if TestimoniumField.NAME in request.get_json():
             name = request.get_json()[TestimoniumField.NAME]
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
     
-    testimonium_lst = testimonia.filter(Testimonium(author=author, title=title, witness=witness, name=name), sorted=True)
+    testimonium_lst = testimonia.filter(Testimonium(author=author, title=title, witness=witness, editor=editor, name=name), sorted=True)
     if not testimonium_lst:
         return make_response("Not found", 401)
 
@@ -144,9 +147,12 @@ def create_testimonium():
         witness = request.get_json()[TestimoniumField.WITNESS]
         name = request.get_json()[TestimoniumField.NAME]
 
+        editor = None
         translation = None
         text = None
 
+        if TestimoniumField.EDITOR in request.get_json():
+            editor = request.get_json()[TestimoniumField.EDITOR]
         if TestimoniumField.TEXT in request.get_json():
             text = request.get_json()[TestimoniumField.TEXT]
         if TestimoniumField.TRANSLATION in request.get_json():
@@ -160,7 +166,7 @@ def create_testimonium():
         logging.error("create_testimonium(): duplicate testimonium")
         return make_response("Forbidden", 403)
 
-    testimonium = testimonia.create(Testimonium(_id=uuid4().hex, author=author, title=title, witness=witness, name=name,
+    testimonium = testimonia.create(Testimonium(_id=uuid4().hex, author=author, title=title, witness=witness, name=name, editor=editor,
                                          translation=translation, text=text))
     if testimonium == None:
         return make_response("Server error", 500)
@@ -177,9 +183,12 @@ def update_testimonium():
         witness = request.get_json()[TestimoniumField.WITNESS]
         name = request.get_json()[TestimoniumField.NAME]
 
+        editor = None
         translation = None
         text = None
 
+        if TestimoniumField.EDITOR in request.get_json():
+            editor = request.get_json()[TestimoniumField.EDITOR]
         if TestimoniumField.TEXT in request.get_json():
             text = request.get_json()[TestimoniumField.TEXT]
         if TestimoniumField.TRANSLATION in request.get_json():
@@ -190,7 +199,7 @@ def update_testimonium():
         logging.error(e)
         return make_response("Unprocessable entity", 422)
     
-    testimonium = testimonia.update(Testimonium(_id=_id, author=author, title=title, witness=witness, name=name, translation=translation, 
+    testimonium = testimonia.update(Testimonium(_id=_id, author=author, title=title, witness=witness, name=name, translation=translation, editor=editor,  
                                        text=text))
     if testimonium == None:
         return make_response("Server error", 500)
