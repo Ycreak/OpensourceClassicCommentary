@@ -10,6 +10,7 @@ export class Testimonium {
   witness = '';
   title = '';
   text = '';
+  editor = '';
   // Commentary
   commentary: Commentary;
 
@@ -32,6 +33,7 @@ export class Testimonium {
     this.title = 'title' in testimonium ? testimonium['title'] : '';
     this.name = 'name' in testimonium ? testimonium['name'] : '';
     this.text = 'text' in testimonium ? testimonium['text'] : '';
+    this.editor = 'editor' in testimonium ? testimonium['editor'] : '';
     this.witness = 'witness' in testimonium ? testimonium['witness'] : '';
 
     this.commentary = new Commentary({});

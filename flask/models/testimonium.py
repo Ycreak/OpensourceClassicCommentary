@@ -11,6 +11,7 @@ class TestimoniumField(object):
     TRANSLATION = "translation"
     WITNESS = "witness"
     TEXT = "text"
+    EDITOR = "editor"
 
 @dataclass
 class Testimonium:
@@ -21,6 +22,7 @@ class Testimonium:
     translation: str = None
     witness: str = None
     text: str = None
+    editor : str = None
 
 class TestimoniumModel:
     def __init__(self, server):
@@ -42,6 +44,8 @@ class TestimoniumModel:
                 testimonium.witness = doc[TestimoniumField.WITNESS]
             if TestimoniumField.TEXT in doc:
                 testimonium.text = doc[TestimoniumField.TEXT]
+            if TestimoniumField.EDITOR in doc:
+                testimonium.editor = doc[TestimoniumField.EDITOR]
             result.append(testimonium)
 
         return result

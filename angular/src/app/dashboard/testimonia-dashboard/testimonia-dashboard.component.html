@@ -83,6 +83,16 @@
       </mat-form-field>
 
       <div class="div-padding-sm"></div>
+
+      <mat-form-field class="input-form-full-width">
+        <mat-label>Editor name</mat-label>
+        <input matInput type="text" formControlName="editor" />
+        <mat-hint>Provide the name of the testimonia's editor (if applicable)</mat-hint>
+        <mat-error *ngIf="form.get('title').errors?.['required']">You must enter a value.</mat-error>
+        <mat-error *ngIf="form.get('title').errors?.['pattern']">You entered disallowed characters.</mat-error>
+      </mat-form-field>
+
+      <div class="div-padding-sm"></div>
     </form>
   </mat-tab>
   <!-- end of the Meta data tab -->

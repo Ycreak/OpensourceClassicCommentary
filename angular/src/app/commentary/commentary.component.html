@@ -4,6 +4,7 @@
 </div>
 
 <ng-template #show_commentary>
+  <!-- Show the currently selected document. Only show relevant information. -->
   <h5>
     Selected
     <a class="a-void" (click)="this.show_introduction(this.document.author)">{{ this.document.author }}</a
@@ -11,7 +12,8 @@
     <a class="a-void" (click)="this.show_introduction(this.document.author, this.document.title)">{{
       this.document.title
     }}</a
-    >, {{ this.document.editor }},
+    >,
+    <ng-container *ngIf="this.document.editor">{{ this.document.editor }},</ng-container>
     {{ this.document.name }}
   </h5>
 
