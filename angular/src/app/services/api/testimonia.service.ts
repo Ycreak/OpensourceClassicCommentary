@@ -44,6 +44,7 @@ export class TestimoniaApiService extends ApiService {
    */
   public request_index(): Observable<any> {
     return new Observable((observer) => {
+      this.spinner_on();
       this.testimonia_index = [];
       this.post(this.FlaskURL, this.index, {}, this.get_header).subscribe({
         next: (data) => {
@@ -53,6 +54,7 @@ export class TestimoniaApiService extends ApiService {
               name: value[1],
             } as testimonia_index);
           });
+          this.spinner_off();
           observer.next(this.testimonia_index);
           observer.complete();
         },
@@ -69,6 +71,7 @@ export class TestimoniaApiService extends ApiService {
    */
   public request_documents(filter: any): Observable<any> {
     return new Observable((observer) => {
+      this.spinner_on();
       this.post(this.FlaskURL, this.retrieve, filter, this.get_header).subscribe((data: any) => {
         const documents: any[] = [];
         data.forEach((value: any) => {
@@ -76,6 +79,7 @@ export class TestimoniaApiService extends ApiService {
           new_testimonium.set(value);
           documents.push(new_testimonium);
         });
+        this.spinner_off();
         observer.next(documents);
         observer.complete();
       });

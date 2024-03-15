@@ -46,6 +46,7 @@ export class FragmentsApiService extends ApiService {
    */
   public request_index(): Observable<any> {
     return new Observable((observer) => {
+      this.spinner_on();
       this.fragments_index = [];
       this.post(this.FlaskURL, this.index, {}, this.get_header).subscribe({
         next: (data) => {
@@ -57,6 +58,7 @@ export class FragmentsApiService extends ApiService {
               name: value[3],
             } as fragments_index);
           });
+          this.spinner_off();
           observer.next(this.fragments_index);
           observer.complete();
         },
@@ -73,6 +75,7 @@ export class FragmentsApiService extends ApiService {
    */
   public request_documents(filter: any): Observable<any> {
     return new Observable((observer) => {
+      this.spinner_on();
       this.post(this.FlaskURL, this.retrieve, filter, this.get_header).subscribe({
         next: (data) => {
           const documents: any[] = [];
@@ -81,6 +84,7 @@ export class FragmentsApiService extends ApiService {
             new_fragment.set(value);
             documents.push(new_fragment);
           });
+          this.spinner_off();
           observer.next(documents);
           observer.complete();
         },
