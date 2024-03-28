@@ -9,8 +9,8 @@
     <canvas id="playground_canvas"></canvas>
 
     <!--Popup window with options for the documents-->
-    <div class="menu" *ngIf="this.canvas_has_selection()">
-      <div class="br-icon" (click)="this.delete_clicked_objects()">
+    <div class="menu" *ngIf="this.playground.has_selection()">
+      <div class="br-icon" (click)="this.playground.delete_selected()">
         <mat-icon class="menu-icon">backspace</mat-icon> delete objects
       </div>
       <div class="br-icon" (click)="this.request_commentary()">
@@ -30,17 +30,17 @@
           id="playground_authors_btn"
           class="playground-icon"
           src="assets\icons\ByteDanceIconPark\9069051_doc_search_icon.png"
-          (click)="this.filter_documents()" />
+          (click)="this.open_advanced_filter()" />
         <img
           id="playground_note_btn"
           class="playground-icon"
           src="assets\icons\ByteDanceIconPark\9068939_notes_icon.png"
-          (click)="this.add_note_to_canvas('edit me')" />
+          (click)="this.playground.add_note('edit me')" />
         <img
           id="playground_clear_btn"
           class="playground-icon"
           src="assets\icons\ByteDanceIconPark\9069117_clear_icon.png"
-          (click)="this.clear_playground()" />
+          (click)="this.open_clear_playground()" />
       </div>
 
       <div id="playground-drawing-tools" class="playground-tool-group">
@@ -48,7 +48,7 @@
           id="playground_draw_btn"
           class="playground-icon"
           src="assets\icons\ByteDanceIconPark\9069780_write_icon.png"
-          (click)="this.toggle_drawing_mode()" />
+          (click)="this.playground.toggle_drawing_mode()" />
         <img
           id="playground_arrow_btn"
           class="playground-icon"
@@ -68,12 +68,12 @@
           id="playground_undo_btn"
           class="playground-icon"
           src="assets\icons\ByteDanceIconPark\9069465_return_icon.png"
-          (click)="this.undo()" />
+          (click)="this.playground.undo()" />
         <img
           id="playground_redo_btn"
           class="playground-icon"
           src="assets\icons\ByteDanceIconPark\9069840_go_on_icon.png"
-          (click)="this.redo()" />
+          (click)="this.playground.redo()" />
       </div>
 
       <div id="playground-load-save-tools" class="playground-tool-group">
