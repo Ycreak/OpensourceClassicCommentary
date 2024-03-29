@@ -1,5 +1,8 @@
-import { environment } from '@src/environments/environment';
 import { fabric } from 'fabric';
+import { environment } from '@src/environments/environment';
+
+// Service imports
+import {FabricService} from '@oscc/playground/services/fabric.service';
 
 export class Playground {
   _id: string;
@@ -32,9 +35,9 @@ export class Playground {
   retrieved_titles: string[];
   retrieved_editors: string[];
 
-  constructor(playground?: Partial<Playground>) {
-    // Allow the partial initialisation of a playground object
-    Object.assign(this, playground);
+  constructor(
+    private fabric: FabricService
+  ) {
   }
 
   /**
@@ -81,7 +84,7 @@ export class Playground {
       if (doc.document_type == environment.fragment) {
         this.add_fragment(doc, top, this.canvas.vptCoords.tr.x - offset_left);
       } else if (doc.document_type == environment.testimonium) {
-        console.log('Not implemented');
+        this.add_testimonium(doc, top, this.canvas.vptCoords.tr.x - offset_left);
       }
 
       top += offset_next_document;
@@ -140,47 +143,45 @@ export class Playground {
    * @author Ycreak
    */
   private add_fragment(fragment: any, top: number, left: number): void {
-    const header_text = `Fragment ${fragment.name}`;
-    const header = new fabric.Text(header_text, {
-      fontSize: this.font_size,
-      fontWeight: 'bold',
-      originX: 'left',
-      originY: 'bottom',
-    });
-    let lines_text = '';
-    fragment.lines.forEach((line: any) => {
-      lines_text += `${line.line_number}: ${line.text}\n`;
-    });
-    const lines = new fabric.IText(lines_text, {
-      fontSize: this.font_size,
-      originX: 'left',
-    });
+    const fill = '#3F51B5';
 
-    // Add formatting to the lines
-    //lines = this.format(lines);
-
+    const header = this.fabric.create_header(fragment, this.font_size)
+    const lines = this.fabric.create_lines(fragment, this.font_size)
     const text_group = new fabric.Group([header, lines], {
       hasBorders: true,
       padding: 10,
     });
-    const textBoundingRect = text_group.getBoundingRect();
-    const background_and_border = new fabric.Rect({
-      top: textBoundingRect.top,
-      left: textBoundingRect.left,
-      width: textBoundingRect.width,
-      height: textBoundingRect.height,
-      fill: '#3F51B5',
-      rx: 10,
-      ry: 10,
-      stroke: 'black',
-      strokeWidth: 1,
-    });
-
-    const group = new fabric.Group([background_and_border, text_group], {
+    const text_bounding_rect = text_group.getBoundingRect();
+    const box = this.fabric.create_box(text_bounding_rect, fill);
+    const group = new fabric.Group([box, text_group], {
       top: top,
       left: left,
       // We save the document identifier for finding the document in this.documents whenever we need it for something
       identifier: { author: fragment.author, title: fragment.title, editor: fragment.editor, name: fragment.name },
+    });
+    this.canvas.add(group);
+  }
+  
+  /**
+   * Adds the given fragment to the canvas
+   * @author Ycreak
+   */
+  private add_testimonium(testimonium: any, top: number, left: number): void {
+    const fill = 'orange';
+
+    const header = this.fabric.create_header(testimonium, this.font_size)
+    const lines = this.fabric.create_text(testimonium, this.font_size)
+    const text_group = new fabric.Group([header, lines], {
+      hasBorders: true,
+      padding: 10,
+    });
+    const text_bounding_rect = text_group.getBoundingRect();
+    const box = this.fabric.create_box(text_bounding_rect, fill);
+    const group = new fabric.Group([box, text_group], {
+      top: top,
+      left: left,
+      // We save the document identifier for finding the document in this.documents whenever we need it for something
+      identifier: { author: testimonium.author, title: testimonium.title, editor: testimonium.editor, name: testimonium.name },
     });
     this.canvas.add(group);
   }
