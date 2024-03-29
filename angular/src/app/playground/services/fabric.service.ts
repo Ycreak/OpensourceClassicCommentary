@@ -4,13 +4,10 @@ import { fabric } from 'fabric';
 import { UtilityService } from '@oscc/utility.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FabricService {
-
-  constructor(
-    private utility: UtilityService
-  ) { }
+  constructor(private utility: UtilityService) {}
 
   /**
    * Creates a document header
@@ -29,7 +26,7 @@ export class FabricService {
     });
     return header;
   }
-  
+
   /**
    * Creates the text for a fabric object
    * @param doc (document)

@@ -2,7 +2,7 @@ import { fabric } from 'fabric';
 import { environment } from '@src/environments/environment';
 
 // Service imports
-import {FabricService} from '@oscc/playground/services/fabric.service';
+import { FabricService } from '@oscc/playground/services/fabric.service';
 
 export class Playground {
   _id: string;
@@ -35,10 +35,7 @@ export class Playground {
   retrieved_titles: string[];
   retrieved_editors: string[];
 
-  constructor(
-    private fabric: FabricService
-  ) {
-  }
+  constructor(private fabric: FabricService) {}
 
   /**
    * Inits various canvas settings
@@ -145,8 +142,8 @@ export class Playground {
   private add_fragment(fragment: any, top: number, left: number): void {
     const fill = '#3F51B5';
 
-    const header = this.fabric.create_header(fragment, this.font_size)
-    const lines = this.fabric.create_lines(fragment, this.font_size)
+    const header = this.fabric.create_header(fragment, this.font_size);
+    const lines = this.fabric.create_lines(fragment, this.font_size);
     const text_group = new fabric.Group([header, lines], {
       hasBorders: true,
       padding: 10,
@@ -161,7 +158,7 @@ export class Playground {
     });
     this.canvas.add(group);
   }
-  
+
   /**
    * Adds the given fragment to the canvas
    * @author Ycreak
@@ -169,8 +166,8 @@ export class Playground {
   private add_testimonium(testimonium: any, top: number, left: number): void {
     const fill = 'orange';
 
-    const header = this.fabric.create_header(testimonium, this.font_size)
-    const lines = this.fabric.create_text(testimonium, this.font_size)
+    const header = this.fabric.create_header(testimonium, this.font_size);
+    const lines = this.fabric.create_text(testimonium, this.font_size);
     const text_group = new fabric.Group([header, lines], {
       hasBorders: true,
       padding: 10,
@@ -181,7 +178,12 @@ export class Playground {
       top: top,
       left: left,
       // We save the document identifier for finding the document in this.documents whenever we need it for something
-      identifier: { author: testimonium.author, title: testimonium.title, editor: testimonium.editor, name: testimonium.name },
+      identifier: {
+        author: testimonium.author,
+        title: testimonium.title,
+        editor: testimonium.editor,
+        name: testimonium.name,
+      },
     });
     this.canvas.add(group);
   }

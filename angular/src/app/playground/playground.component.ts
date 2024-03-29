@@ -13,7 +13,7 @@ import { AuthService } from '@oscc/auth/auth.service';
 import { CommentaryService } from '@oscc/commentary/commentary.service';
 import { FragmentsApiService } from '@oscc/services/api/fragments.service';
 import { UtilityService } from '@oscc/utility.service';
-import {FabricService} from './services/fabric.service';
+import { FabricService } from './services/fabric.service';
 
 import { FormatterService } from './services/formatter.service';
 
@@ -76,7 +76,7 @@ export class PlaygroundComponent implements OnInit {
     protected api: ApiService,
     protected fragments_api: FragmentsApiService,
     protected utility: UtilityService,
-    protected dialog: DialogService,
+    protected dialog: DialogService
   ) {}
 
   ngOnInit(): void {
@@ -181,15 +181,15 @@ export class PlaygroundComponent implements OnInit {
       if (data) {
         // TODO: fix this
         //const playground = new Playground({
-          //_id: this.playground._id,
-          //owner: this.auth_service.current_user_name,
-          //name: data.name,
-          //canvas: this.playground.canvas.toJSON(),
+        //_id: this.playground._id,
+        //owner: this.auth_service.current_user_name,
+        //name: data.name,
+        //canvas: this.playground.canvas.toJSON(),
         //});
         //if (data.button == 'save') {
-          //this.api.save_playground(playground);
+        //this.api.save_playground(playground);
         //} else if (data.button == 'create') {
-          //this.api.create_playground(playground);
+        //this.api.create_playground(playground);
         //}
       }
     });
