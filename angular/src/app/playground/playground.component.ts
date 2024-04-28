@@ -86,6 +86,7 @@ export class PlaygroundComponent implements OnInit {
     this.playground.init();
 
     this.request_documents('fragments', { title: 'Eumenides' });
+    //this.request_documents('testimonia', { author: 'Accius' });
   }
 
   /**

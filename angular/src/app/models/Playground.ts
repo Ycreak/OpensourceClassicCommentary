@@ -83,7 +83,6 @@ export class Playground {
       } else if (doc.document_type == environment.testimonium) {
         this.add_testimonium(doc, top, this.canvas.vptCoords.tr.x - offset_left);
       }
-
       top += offset_next_document;
     });
   }
