@@ -231,7 +231,7 @@ export class Playground {
     this.canvas.on('mouse:up', () => {
       // Whenever we move a fragment, we set its colour. This allows the distinction between existing and new fragments
       const activeObject = this.canvas.getActiveObject();
-      if (activeObject && !this.is_note(activeObject)) {
+      if (activeObject && this.is_document(activeObject)) {
         activeObject._objects[0].set('fill', '#9BA8F2'); // Change color to blue
         this.canvas.renderAll();
       }
@@ -322,5 +322,16 @@ export class Playground {
    */
   public is_note(thing: any): boolean {
     return thing.backgroundColor == '#F0C086';
+  }
+  
+  /**
+   * Checks if the given object is a document
+   * @param thing (object)
+   * @return boolean
+   * @author Ycreak
+   */
+  public is_document(thing: any): boolean {
+    return ('identifier' in thing)
+    //thing.backgroundColor == '#F0C086';
   }
 }
