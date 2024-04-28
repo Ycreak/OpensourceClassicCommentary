@@ -323,7 +323,7 @@ export class Playground {
   public is_note(thing: any): boolean {
     return thing.backgroundColor == '#F0C086';
   }
-  
+
   /**
    * Checks if the given object is a document
    * @param thing (object)
@@ -331,7 +331,7 @@ export class Playground {
    * @author Ycreak
    */
   public is_document(thing: any): boolean {
-    return ('identifier' in thing)
+    return 'identifier' in thing;
     //thing.backgroundColor == '#F0C086';
   }
 }

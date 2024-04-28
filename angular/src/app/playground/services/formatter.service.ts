@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '@src/environments/environment';
 
-import {Fragment} from '@oscc/models/Fragment';
+import { Fragment } from '@oscc/models/Fragment';
 
 @Injectable({
   providedIn: 'root',
@@ -26,9 +26,9 @@ export class FormatterService {
    */
   private convert_italics_encoding(doc: Fragment): Fragment {
     doc.lines.forEach((line: any) => {
-      line.text = line.text.replaceAll('<i>', '$')
-      line.text = line.text.replaceAll('</i>', '$')
-    })
+      line.text = line.text.replaceAll('<i>', '$');
+      line.text = line.text.replaceAll('</i>', '$');
+    });
     return doc;
   }
 
