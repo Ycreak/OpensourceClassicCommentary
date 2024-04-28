@@ -13,6 +13,7 @@ import { AuthService } from '@oscc/auth/auth.service';
 import { CommentaryService } from '@oscc/commentary/commentary.service';
 import { FragmentsApiService } from '@oscc/services/api/fragments.service';
 import { UtilityService } from '@oscc/utility.service';
+import { FabricService } from './services/fabric.service';
 
 import { FormatterService } from './services/formatter.service';
 
@@ -69,21 +70,23 @@ export class PlaygroundComponent implements OnInit {
     private api_interface: ApiInterfaceService,
     private auth_service: AuthService,
     private commentary: CommentaryService,
+    private fabric: FabricService,
     private formatter: FormatterService,
+    private mat_dialog: MatDialog,
     protected api: ApiService,
     protected fragments_api: FragmentsApiService,
     protected utility: UtilityService,
-    protected dialog: DialogService,
-    private mat_dialog: MatDialog
+    protected dialog: DialogService
   ) {}
 
   ngOnInit(): void {
-    this.playground = new Playground({});
+    this.playground = new Playground(this.fabric);
     this.playground.canvas = new fabric.Canvas('playground_canvas');
     this.playground.set_event_handlers();
     this.playground.init();
 
     this.request_documents('fragments', { title: 'Eumenides' });
+    //this.request_documents('testimonia', { author: 'Accius' });
   }
 
   /**
@@ -177,17 +180,18 @@ export class PlaygroundComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((data: any) => {
       if (data) {
-        const playground = new Playground({
-          _id: this.playground._id,
-          owner: this.auth_service.current_user_name,
-          name: data.name,
-          canvas: this.playground.canvas.toJSON(),
-        });
-        if (data.button == 'save') {
-          this.api.save_playground(playground);
-        } else if (data.button == 'create') {
-          this.api.create_playground(playground);
-        }
+        // TODO: fix this
+        //const playground = new Playground({
+        //_id: this.playground._id,
+        //owner: this.auth_service.current_user_name,
+        //name: data.name,
+        //canvas: this.playground.canvas.toJSON(),
+        //});
+        //if (data.button == 'save') {
+        //this.api.save_playground(playground);
+        //} else if (data.button == 'create') {
+        //this.api.create_playground(playground);
+        //}
       }
     });
   }

@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { environment } from '@src/environments/environment';
 
+import { Fragment } from '@oscc/models/Fragment';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -10,7 +12,23 @@ export class FormatterService {
   public format(doc: any): any {
     if (doc.document_type == environment.fragment) {
       doc = this.convert_whitespace_encoding(doc);
+      doc = this.convert_italics_encoding(doc);
     }
+    return doc;
+  }
+
+  /**
+   * Converts the italics encoding to simple $-signs. These are later removed
+   * by FabricJS, their locations turned into delimiters for cursive text
+   * @param doc (Fragment)
+   * @return Fragment
+   * @author Ycreak
+   */
+  private convert_italics_encoding(doc: Fragment): Fragment {
+    doc.lines.forEach((line: any) => {
+      line.text = line.text.replaceAll('<i>', '$');
+      line.text = line.text.replaceAll('</i>', '$');
+    });
     return doc;
   }
 
