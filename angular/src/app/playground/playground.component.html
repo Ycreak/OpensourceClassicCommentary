@@ -76,29 +76,29 @@
           (click)="this.playground.redo()" />
       </div>
 
-      <div id="playground-load-save-tools" class="playground-tool-group">
-        <!--<img-->
-        <!--id="playground_save_btn"-->
-        <!--class="playground-icon"-->
-        <!--src="assets\icons\ByteDanceIconPark\9070374_hard_disk_one_icon.png"-->
-        <!--(click)="this.save_playground()" />-->
-        <!--<img-->
-        <!--id="playground_load_btn"-->
-        <!--class="playground-icon"-->
-        <!--src="assets\icons\ByteDanceIconPark\9068981_folder_open_icon.png"-->
-        <!--(click)="this.load_playground()" />-->
-        <!--<img-->
-        <!--id="playground_delete_btn"-->
-        <!--class="playground-icon"-->
-        <!--src="assets\icons\ByteDanceIconPark\9069053_folder_delete_icon.png"-->
-        <!--(click)="this.delete_playground()" />-->
+      <div id="playground-load-save-tools" class="playground-tool-group" *ngIf="this.auth_service.is_logged_in">
+        <img
+          id="playground_save_btn"
+          class="playground-icon"
+          src="assets\icons\ByteDanceIconPark\9070374_hard_disk_one_icon.png"
+          (click)="this.save_playground()" />
+        <img
+          id="playground_load_btn"
+          class="playground-icon"
+          src="assets\icons\ByteDanceIconPark\9068981_folder_open_icon.png"
+          (click)="this.load_playground()" />
+        <img
+          id="playground_delete_btn"
+          class="playground-icon"
+          src="assets\icons\ByteDanceIconPark\9069053_folder_delete_icon.png"
+          (click)="this.delete_playground()" />
       </div>
-      <div id="playground-sharing-tools" class="playground-tool-group">
-        <!--<img-->
-        <!--id="playground_share_btn"-->
-        <!--class="playground-icon"-->
-        <!--src="assets\icons\ByteDanceIconPark\9071373_people_plus_one_icon.png"-->
-        <!--(click)="this.share_playground()" />-->
+      <div id="playground-sharing-tools" class="playground-tool-group" *ngIf="this.auth_service.is_logged_in">
+        <img
+          id="playground_share_btn"
+          class="playground-icon"
+          src="assets\icons\ByteDanceIconPark\9071373_people_plus_one_icon.png"
+          (click)="this.share_playground()" />
         <!--<img-->
         <!--id="playground_join_btn"-->
         <!--class="playground-icon"-->

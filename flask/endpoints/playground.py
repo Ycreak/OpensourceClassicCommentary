@@ -29,8 +29,6 @@ def get_playgrounds():
         logging.error(e)
         return make_response("Unprocessable entity", 422)
     playground_lst = playgrounds.filter(Playground(owner=owner), sorted=True)
-    if not playground_lst:
-        return make_response("Not found", 401)
     return jsonify(sorted(set([playground.name for playground in playground_lst]))), 200
 
 def get_playground():

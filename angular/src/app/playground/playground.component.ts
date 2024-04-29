@@ -68,12 +68,12 @@ export class PlaygroundComponent implements OnInit {
 
   constructor(
     private api_interface: ApiInterfaceService,
-    private auth_service: AuthService,
     private commentary: CommentaryService,
     private fabric: FabricService,
     private formatter: FormatterService,
     private mat_dialog: MatDialog,
     protected api: ApiService,
+    protected auth_service: AuthService,
     protected fragments_api: FragmentsApiService,
     protected utility: UtilityService,
     protected dialog: DialogService
@@ -180,18 +180,17 @@ export class PlaygroundComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((data: any) => {
       if (data) {
-        // TODO: fix this
-        //const playground = new Playground({
-        //_id: this.playground._id,
-        //owner: this.auth_service.current_user_name,
-        //name: data.name,
-        //canvas: this.playground.canvas.toJSON(),
-        //});
-        //if (data.button == 'save') {
-        //this.api.save_playground(playground);
-        //} else if (data.button == 'create') {
-        //this.api.create_playground(playground);
-        //}
+        const playground = {
+          _id: this.playground._id,
+          owner: this.auth_service.current_user_name,
+          name: data.name,
+          canvas: this.playground.canvas.toJSON(),
+        };
+        if (data.button == 'save') {
+          this.api.save_playground(playground);
+        } else if (data.button == 'create') {
+          this.api.create_playground(playground);
+        }
       }
     });
   }
@@ -228,16 +227,20 @@ export class PlaygroundComponent implements OnInit {
    * @author Ycreak
    */
   protected share_playground(): void {
-    const dialogRef = this.mat_dialog.open(SharePlaygroundComponent, {
-      data: { shared_with: this.playground.shared_with },
-    });
-    dialogRef.afterClosed().subscribe({
-      next: (share_with: any) => {
-        if (share_with) {
-          this.api.save_playground({ _id: this.playground._id, shared_with: share_with });
-        }
-      },
-    });
+    if (this.playground.name) {
+      const dialogRef = this.mat_dialog.open(SharePlaygroundComponent, {
+        data: { shared_with: this.playground.shared_with },
+      });
+      dialogRef.afterClosed().subscribe({
+        next: (share_with: any) => {
+          if (share_with) {
+            this.api.save_playground({ _id: this.playground._id, shared_with: share_with });
+          }
+        },
+      });
+    } else {
+      this.utility.open_snackbar('No playground selected');
+    }
   }
 
   /**
@@ -245,22 +248,25 @@ export class PlaygroundComponent implements OnInit {
    * @author Ycreak
    */
   protected delete_playground(): void {
-    const dialogRef = this.mat_dialog.open(DeletePlaygroundComponent, {
-      data: { name: this.playground.name },
-    });
-    dialogRef.afterClosed().subscribe({
-      next: (name: any) => {
-        if (name) {
-          console.log(this.playground.owner, this.auth_service.current_user_name);
-          // Check if we have the correct rights to delete the playground
-          if (this.playground.owner === this.auth_service.current_user_name) {
-            this.api.delete_playground({ _id: this.playground._id });
-          } else {
-            this.utility.open_snackbar('Not allowed');
+    if (this.playground.name) {
+      const dialogRef = this.mat_dialog.open(DeletePlaygroundComponent, {
+        data: { name: this.playground.name },
+      });
+      dialogRef.afterClosed().subscribe({
+        next: (name: any) => {
+          if (name) {
+            // Check if we have the correct rights to delete the playground
+            if (this.playground.owner === this.auth_service.current_user_name) {
+              this.api.delete_playground({ _id: this.playground._id });
+            } else {
+              this.utility.open_snackbar('Not allowed');
+            }
           }
-        }
-      },
-    });
+        },
+      });
+    } else {
+      this.utility.open_snackbar('No playground selected');
+    }
   }
 
   /**
