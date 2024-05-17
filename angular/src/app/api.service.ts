@@ -173,7 +173,7 @@ export class ApiService {
    * @param playground (Playground)
    * @author Ycreak
    */
-  public create_playground(playground: Playground): void {
+  public create_playground(playground: object): void {
     this.spinner_on();
     this.http
       .post<string[]>(this.FlaskURL + `playground/create`, playground, {
