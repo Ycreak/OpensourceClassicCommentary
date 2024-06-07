@@ -21,14 +21,16 @@ from models.playground import Playground, PlaygroundModel, PlaygroundField
 playgrounds = PlaygroundModel(CouchAuthenticator().couch)
 
 def get_playgrounds():
-    owner = None
+    user = None
     try:
-        if PlaygroundField.OWNER in request.get_json():
-            owner = request.get_json()[PlaygroundField.OWNER]
+        if PlaygroundField.USER in request.get_json():
+            user = request.get_json()[PlaygroundField.USER]
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-    playground_lst = playgrounds.filter(Playground(owner=owner), sorted=True)
+    playground_lst = playgrounds.filter(Playground(user=user), sorted=True)
+    if not playground_lst:
+        return make_response("Not found", 401)
     return jsonify(sorted(set([playground.name for playground in playground_lst]))), 200
 
 def get_playground():
@@ -66,7 +68,7 @@ def get_shared_playgrounds():
 
 def create_playground():    
     try:
-        owner = request.get_json()[PlaygroundField.OWNER]
+        users = request.get_json()[PlaygroundField.USERS]
         name = request.get_json()[PlaygroundField.NAME]
         canvas = request.get_json()[PlaygroundField.CANVAS]
 
@@ -74,11 +76,7 @@ def create_playground():
         logging.error(e)
         return make_response("Unprocessable entity", 422)
   
-    if playgrounds.filter(Playground(name=name,owner=owner)):
-        logging.error("create_playground(): duplicate playground")
-        return make_response("Forbidden", 403)
-
-    playground = playgrounds.create(Playground(_id=uuid4().hex, name=name, owner=owner, canvas=canvas))
+    playground = playgrounds.create(Playground(_id=uuid4().hex, name=name, users=users, canvas=canvas))
     if playground == None:
         return make_response("Server error", 500)
     

@@ -1,4 +1,9 @@
-<h1 mat-dialog-title>Share playground</h1>
+<div class="dialog-header">
+  <h2>Share playground</h2>
+  <button mat-icon-button [mat-dialog-close]="null" [disableRipple]="true">
+    <mat-icon>clear</mat-icon>
+  </button>
+</div>
 <div mat-dialog-content>
   <form [formGroup]="this.form">
     <button mat-stroked-button color="primary" (click)="add_user('', true, false)">Add new user</button>

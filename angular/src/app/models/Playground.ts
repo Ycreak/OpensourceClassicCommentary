@@ -8,7 +8,7 @@ export class Playground {
   _id: string;
   name: string;
   owner: string;
-  user: string;
+  users: object[];
   shared_with: string[];
   canvas: fabric.Canvas;
 

@@ -1,4 +1,9 @@
-<h1 mat-dialog-title>Save playground</h1>
+<div class="dialog-header">
+  <h2>Save playground</h2>
+  <button mat-icon-button [mat-dialog-close]="null" [disableRipple]="true">
+    <mat-icon>clear</mat-icon>
+  </button>
+</div>
 <div mat-dialog-content>
   <mat-form-field>
     <mat-label>Name of the playground</mat-label>

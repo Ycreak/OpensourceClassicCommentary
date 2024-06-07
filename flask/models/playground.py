@@ -19,19 +19,19 @@ import config as conf
 class PlaygroundField(object):
     ID = "_id"
     NAME = "name"
-    OWNER = "owner"
-    CANVAS = "canvas"
-    SHARED_WITH = "shared_with"
+    # To find a playground based on a user
     USER = "user"
+    # To keep track of all users and their permissions
+    USERS = "users"
+    CANVAS = "canvas"
 
 @dataclass
 class Playground:
     _id: str = None
     name: str = None
-    owner: str = None
     canvas: object = None
-    shared_with: list = None
     user: str = None
+    users: list = None
 
 class PlaygroundModel:
     def __init__(self, server):
@@ -43,10 +43,8 @@ class PlaygroundModel:
             playground = Playground(_id=doc.id)
             if PlaygroundField.NAME in doc:
                 playground.name = doc[PlaygroundField.NAME]
-            if PlaygroundField.OWNER in doc:
-                playground.owner = doc[PlaygroundField.OWNER]
-            if PlaygroundField.SHARED_WITH in doc:
-                playground.shared_with = doc[PlaygroundField.SHARED_WITH]
+            if PlaygroundField.USERS in doc:
+                playground.users = doc[PlaygroundField.USERS]
             if (canvas):
                 if PlaygroundField.CANVAS in doc:
                     playground.canvas = doc[PlaygroundField.CANVAS]

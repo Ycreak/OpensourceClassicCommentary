@@ -145,7 +145,7 @@ export class PlaygroundComponent implements OnInit {
    */
   protected load_playground(): void {
     const dialogRef = this.mat_dialog.open(LoadPlaygroundComponent, {
-      data: { owner: this.auth_service.current_user_name },
+      data: { user: this.auth_service.current_user_name },
     });
     dialogRef.afterClosed().subscribe({
       next: (name: any) => {
@@ -154,9 +154,8 @@ export class PlaygroundComponent implements OnInit {
             .get_playground({ owner: this.auth_service.current_user_name, name: name })
             .subscribe((playground) => {
               this.playground.name = playground.name;
-              this.playground.shared_with = playground.shared_with;
               this.playground._id = playground._id;
-              this.playground.owner = playground.owner;
+              this.playground.users = playground.users;
               // Apply data to the canvas
               this.playground.canvas.clear();
               this.playground.canvas.loadFromJSON(
@@ -182,7 +181,7 @@ export class PlaygroundComponent implements OnInit {
       if (data) {
         const playground = {
           _id: this.playground._id,
-          owner: this.auth_service.current_user_name,
+          users: [{ name: this.auth_service.current_user_name, role: 'owner' }],
           name: data.name,
           canvas: this.playground.canvas.toJSON(),
         };

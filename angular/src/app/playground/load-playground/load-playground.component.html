@@ -1,4 +1,9 @@
-<h1 mat-dialog-title>Load playground</h1>
+<div class="dialog-header">
+  <h2>Load playground</h2>
+  <button mat-icon-button [mat-dialog-close]="null" [disableRipple]="true">
+    <mat-icon>clear</mat-icon>
+  </button>
+</div>
 <div mat-dialog-content>
   <mat-progress-bar mode="query" *ngIf="this.api.spinner"></mat-progress-bar>
 
