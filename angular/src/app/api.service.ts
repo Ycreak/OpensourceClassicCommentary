@@ -129,8 +129,9 @@ export class ApiService {
     this.spinner_on();
     return new Observable((observer) => {
       this.post(this.FlaskURL, 'playground/get', filter, this.get_header).subscribe((data: any) => {
+        console.log(data)
         this.spinner_off();
-        observer.next(data[0]);
+        observer.next(data);
         observer.complete();
       });
     });
@@ -146,7 +147,7 @@ export class ApiService {
     return new Observable((observer) => {
       this.post(this.FlaskURL, 'playground/get/shared', filter, this.get_header).subscribe((data: any) => {
         this.spinner_off();
-        observer.next(data);
+        observer.next(data.body);
         observer.complete();
       });
     });

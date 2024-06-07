@@ -148,12 +148,13 @@ export class PlaygroundComponent implements OnInit {
       data: { user: this.auth_service.current_user_name },
     });
     dialogRef.afterClosed().subscribe({
-      next: (name: any) => {
-        if (name) {
+      next: (requested_playground_id: any) => {
+        if (requested_playground_id) {
           this.api
-            .get_playground({ owner: this.auth_service.current_user_name, name: name })
+            .get_playground({ _id: requested_playground_id, user: this.auth_service.current_user_name })
             .subscribe((playground) => {
               this.playground.name = playground.name;
+              this.playground.role = playground.role;
               this.playground._id = playground._id;
               this.playground.users = playground.users;
               // Apply data to the canvas
@@ -181,12 +182,15 @@ export class PlaygroundComponent implements OnInit {
       if (data) {
         const playground = {
           _id: this.playground._id,
-          users: [{ name: this.auth_service.current_user_name, role: 'owner' }],
           name: data.name,
           canvas: this.playground.canvas.toJSON(),
         };
         if (data.button == 'save') {
-          this.api.save_playground(playground);
+          if (this.playground.role == 'owner') {
+            this.api.save_playground(playground);
+          } else {
+            this.utility.open_snackbar('Not permitted')
+          }
         } else if (data.button == 'create') {
           this.api.create_playground(playground);
         }

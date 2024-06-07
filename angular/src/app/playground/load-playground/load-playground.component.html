@@ -12,8 +12,8 @@
   <mat-form-field>
     <mat-label>Select a playground</mat-label>
     <mat-select [(ngModel)]="this.selected_playground">
-      <mat-option *ngFor="let playground of this.playgrounds" [value]="playground">
-        {{ playground }}
+      <mat-option *ngFor="let playground of this.playgrounds" [value]="playground._id">
+        {{ playground.name }}
       </mat-option>
     </mat-select>
   </mat-form-field>

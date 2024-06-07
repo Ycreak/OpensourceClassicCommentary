@@ -7,7 +7,8 @@ import { FabricService } from '@oscc/playground/services/fabric.service';
 export class Playground {
   _id: string;
   name: string;
-  owner: string;
+  owner: string; //DEPRECATED
+  role: string;
   users: object[];
   shared_with: string[];
   canvas: fabric.Canvas;

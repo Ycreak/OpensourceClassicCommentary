@@ -35,7 +35,7 @@ from endpoints.testimonium import get_author_testimonium, get_title_testimonium,
 from endpoints.text import get_author_text, get_title_text, get_text, create_text, update_text, delete_text
 from endpoints.fragment import link_fragment, get_list_display
 from endpoints.zotero import get_bibliography, sync_bibliography
-from endpoints.playground import create_playground, update_playground, delete_playground, get_playgrounds, get_playground, get_shared_playgrounds
+from endpoints.playground import create_playground, update_playground, delete_playground, get_playgrounds_list, get_playground, get_shared_playgrounds
 
 app = Flask(__name__)
 api = Api(app)
@@ -107,7 +107,7 @@ app.add_url_rule("/bibliography/sync", view_func=sync_bibliography, methods=["PO
 #####
 app.add_url_rule("/playground/get", view_func=get_playground, methods=["POST"])
 app.add_url_rule("/playground/get/shared", view_func=get_shared_playgrounds, methods=["POST"])
-app.add_url_rule("/playground/get/name", view_func=get_playgrounds, methods=["POST"])
+app.add_url_rule("/playground/get/name", view_func=get_playgrounds_list, methods=["POST"])
 app.add_url_rule("/playground/create", view_func=create_playground, methods=["POST"])
 app.add_url_rule("/playground/update", view_func=update_playground, methods=["POST"])
 app.add_url_rule("/playground/delete", view_func=delete_playground, methods=["POST"])
