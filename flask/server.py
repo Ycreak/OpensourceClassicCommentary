@@ -36,6 +36,7 @@ from endpoints.text import get_author_text, get_title_text, get_text, create_tex
 from endpoints.fragment import link_fragment, get_list_display
 from endpoints.zotero import get_bibliography, sync_bibliography
 from endpoints.playground import create_playground, update_playground, delete_playground, get_playgrounds, get_playground, get_shared_playgrounds
+from endpoints.introduction import get_author_introduction, get_introduction, get_text_introduction, get_title_introduction, create_introduction, update_introduction, delete_introduction
 
 app = Flask(__name__)
 api = Api(app)
@@ -111,11 +112,17 @@ app.add_url_rule("/playground/get/name", view_func=get_playgrounds, methods=["PO
 app.add_url_rule("/playground/create", view_func=create_playground, methods=["POST"])
 app.add_url_rule("/playground/update", view_func=update_playground, methods=["POST"])
 app.add_url_rule("/playground/delete", view_func=delete_playground, methods=["POST"])
-# @app.route("/automatic_fragment_linker", methods=['POST'])
-# def automatic_fragment_linker():
-#     # Route to allow for the creation of the given fragment
-#     response = frag_db.automatic_fragment_linker(Fragment(request.get_json()))
-#     return response  
+
+#####
+# INTRODUCTIONS
+#####
+app.add_url_rule("/introduction/get/author", view_func=get_author_introduction, methods=["POST"])
+app.add_url_rule("/introduction/get/title", view_func=get_title_introduction, methods=["POST"])
+app.add_url_rule("/introduction/get/text", view_func=get_text_introduction, methods=["POST"])
+app.add_url_rule("/introduction/get", view_func=get_introduction, methods=["POST"])
+app.add_url_rule("/introduction/create", view_func=create_introduction, methods=["POST"])
+app.add_url_rule("/introduction/update", view_func=update_introduction, methods=["POST"])
+app.add_url_rule("/introduction/delete", view_func=delete_introduction, methods=["POST"])
 
 # MAIN
 if __name__ == '__main__':

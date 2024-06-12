@@ -9,6 +9,7 @@ angular/.angular
 /bazel-out
 
 # Python
+/env
 flask/env
 flask/__pycache__
 flask/config.py

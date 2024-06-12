@@ -1,79 +1,149 @@
-import copy
-
 from flask import request, make_response
 import logging
 from flask_jsonpify import jsonify
+from uuid import uuid4
 
-from Server.couch import CouchAuthenticator
-from Server.models.introduction import IntroductionForm, IntroductionFormField, IntroductionFormModel
+from couch import CouchAuthenticator
+from models.introduction import Introduction, IntroductionModel, IntroductionField
 
-introduction = IntroductionFormModel(CouchAuthenticator().couch)
+introductions = IntroductionModel(CouchAuthenticator().couch)
 
-def get_introduction() -> make_response:
+def get_author_introduction():
+    author = None
+    title = None
+    text = None
+
     try:
-        introform = make_introduction_form_object()
+        if IntroductionField.AUTHOR in request.get_json():
+            author = request.get_json()[IntroductionField.AUTHOR]
+        if IntroductionField.TITLE in request.get_json():
+            title = request.get_json()[IntroductionField.TITLE]
+        if IntroductionField.TEXT in request.get_json():
+            text = request.get_json()[IntroductionField.TEXT]
+
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
+    introduction_lst = introductions.filter(Introduction(author=author, title=title, text=text), sorted=True)
+    if not introduction_lst:
+        return make_response("Not found", 401)
+    return jsonify(sorted(set([introduction.author for introduction in introduction_lst]))), 200
 
-    # Get the introduction texts from the database and load it into the introduction object.
-    intro = introduction.get(introform)
-    # Make sure that only one introduction text entry is returned
-    if isinstance(intro, list):
-        intro = intro[0]
+def get_title_introduction():
+    author = None
+    title = None
+    text = None
 
-    # If an author/title combo was not found, look for author only
-    if not intro:
-        author_only = copy.deepcopy(introform)
-        author_only.title = ''
-        intro = introduction.get(author_only)
-        # Make sure that only one introduction text entry is returned
-        if isinstance(intro, list):
-            intro = intro[0]
-            intro['title_text'] = '' # Return only author introduction text
-
-    # Return the introduction text to the user
-    return make_response(jsonify(intro))
-
-
-def set_introduction() -> make_response:
     try:
-        introform = make_introduction_form_object()
+        if IntroductionField.AUTHOR in request.get_json():
+            author = request.get_json()[IntroductionField.AUTHOR]
+        if IntroductionField.TITLE in request.get_json():
+            title = request.get_json()[IntroductionField.TITLE]
+        if IntroductionField.TEXT in request.get_json():
+            text = request.get_json()[IntroductionField.TEXT]
+
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
+    introduction_lst = introductions.filter(Introduction(author=author, title=title, text=text), sorted=True)
+    if not introduction_lst:
+        return make_response("Not found", 401)
+    return jsonify(sorted(set([introduction.title for introduction in introduction_lst]))), 200
 
-    # Send the introduction texts to the database
-    if introduction.update(introform):
+def get_text_introduction():
+    author = None
+    title = None
+    text = None
+
+    try:
+        if IntroductionField.AUTHOR in request.get_json():
+            author = request.get_json()[IntroductionField.AUTHOR]
+        if IntroductionField.TITLE in request.get_json():
+            title = request.get_json()[IntroductionField.TITLE]
+        if IntroductionField.TEXT in request.get_json():
+            text = request.get_json()[IntroductionField.text]
+
+    except KeyError as e:
+        logging.error(e)
+        return make_response("Unprocessable entity", 422)
+    introduction_lst = introductions.filter(Introduction(author=author, title=title, text=text), sorted=True)
+    if not introduction_lst:
+        return make_response("Not found", 401)
+    return jsonify(sorted(set([introduction.text for introduction in introduction_lst]))), 200
+
+def get_introduction():
+    author = None
+    title = None
+    text = None
+
+    try:
+        if IntroductionField.AUTHOR in request.get_json():
+            author = request.get_json()[IntroductionField.AUTHOR]
+        if IntroductionField.TITLE in request.get_json():
+            title = request.get_json()[IntroductionField.TITLE]
+        if IntroductionField.TEXT in request.get_json():
+            text = request.get_json()[IntroductionField.TEXT]
+
+    except KeyError as e:
+        logging.error(e)
+        return make_response("Unprocessable entity", 422)
+    
+    introduction_lst = introductions.filter(Introduction(author=author, title=title, text=text), sorted=True)
+    if not introduction_lst:
+        return make_response("Not found", 401)
+
+    return jsonify(introduction_lst), 200
+
+def create_introduction():    
+    try:
+        author = request.get_json()[IntroductionField.AUTHOR]
+        title = request.get_json()[IntroductionField.TITLE]
+        text = request.get_json()[IntroductionField.TEXT]
+
+    except KeyError as e:
+        logging.error(e)
+        return make_response("Unprocessable entity", 422)
+    
+    if introductions.filter(Introduction(author=author, title=title, text=text)):
+        logging.error("create_introduction(): duplicate introduction")
+        return make_response("Forbidden", 403)
+
+    introduction = introductions.create(Introduction(_id=uuid4().hex, author=author, title=title, text=text))
+    if introduction == None:
+        return make_response("Server error", 500)
+   
+    return make_response("Created", 200)
+
+
+def update_introduction():    
+    try:
+        _id = request.get_json()[IntroductionField.ID]
+        author = request.get_json()[IntroductionField.AUTHOR]
+        title = request.get_json()[IntroductionField.TITLE]
+        text = request.get_json()[IntroductionField.TEXT]
+       
+    except KeyError as e:
+        logging.error(e)
+        return make_response("Unprocessable entity", 422)
+    
+    introduction = introductions.update(Introduction(_id=_id, author=author, title=title, text=text))
+    if introduction == None:
+        return make_response("Server error", 500)
+    
+    return make_response("Revised", 200)
+
+def delete_introduction():
+    try:
+        author = request.get_json()[IntroductionField.AUTHOR]
+        title = request.get_json()[IntroductionField.TITLE]
+        text = request.get_json()[IntroductionField.TEXT]
+    except KeyError as e:
+        logging.error(e)
+        return make_response("Unprocessable entity", 422)
+    introduction = introductions.delete(Introduction(author=author, title=title, text=text))
+
+
+    if introduction:
         return make_response("OK", 200)
     else:
-        return make_response("Access denied; could not update introduction text", 401)
-
-
-def make_introduction_form_object() -> IntroductionForm:
-    # Parse json request into a local object.
-    try:
-        json = request.get_json()
-    except:
-        raise Exception("Error: Could not get request json")
-    try:
-        author = json[IntroductionFormField.AUTHOR]
-    except:
-        author = ''
-    try:
-        title = json[IntroductionFormField.TITLE]
-    except: 
-        title = ''
-    try: # FIXME: This is a hack
-        author_text = json[IntroductionFormField.AUTHOR_TEXT]
-    except:
-        author_text = ''
-    try:
-        title_text = json[IntroductionFormField.TITLE_TEXT]
-    except:
-        title_text = ''
-
-    return IntroductionForm(author=author,
-                            title=title, 
-                            author_text=author_text, 
-                            title_text=title_text)
+        return make_response("Not found", 401)
