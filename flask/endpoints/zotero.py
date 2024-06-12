@@ -2,6 +2,7 @@
 To retrieve data, we use the pyzotero library.
 '''
 
+from flask import make_response
 from pyzotero import zotero as pyzotero
 from flask_jsonpify import jsonify
 
@@ -46,7 +47,7 @@ class Zotero:
         return highest
 
 
-    def update_cached_bibliography(self) -> None:
+    def _update_cached_bibliography(self) -> None:
         """
         Updates the cached bibliography by matching the latest version in cache to the latest
         version known on the server. Will update all items that are new or updated.
@@ -109,8 +110,12 @@ def get_bibliography():
 
 def sync_bibliography():
     zotero = Zotero()
-    zotero.update_cached_bibliography()
-    return jsonify(zotero.bibliography), 200
+    try:
+        zotero._update_cached_bibliography()
+        return jsonify(zotero.bibliography), 200
+    except:
+        return make_response("Problems with Zotero", 408)
+
 
 if __name__ == '__main__':
     # Run with "python3 -m endpoints.zotero"

@@ -72,6 +72,7 @@ export class ApiService {
    * @author Ycreak
    */
   public sync_bibliography(): Observable<any> {
+    this.spinner_on();
     return new Observable((observer) => {
       this.http
         .post<any>(this.FlaskURL + `bibliography/sync`, {
@@ -88,6 +89,7 @@ export class ApiService {
           this.bib.bibliography = bib_list;
           observer.next(data);
           observer.complete();
+          this.spinner_off();
         });
     });
   }
