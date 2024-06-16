@@ -40,6 +40,10 @@ export class IntroductionsComponent implements OnInit {
     this.introduction = new Introduction({});
   }
 
+  protected save_introduction(introduction: Introduction): void {
+    console.log(introduction);
+  }
+
   /**
    * Requests an introduction from the server given the key
    * @param introduction (Introduction) serves as key for the api to filter on
