@@ -139,13 +139,9 @@ export class CommentaryComponent {
    */
   protected show_introduction(author: string, title?: string): void {
     title = title ? title : '';
-    //FIXME: enable when introductions are working.
-    const enabled = false;
-    if (enabled) {
-      this.mat_dialog.open(IntroductionsComponent, {
-        data: { author: author, title: title },
-      });
-    }
+    this.mat_dialog.open(IntroductionsComponent, {
+      data: { author: author, title: title },
+    });
   }
 
   /**
