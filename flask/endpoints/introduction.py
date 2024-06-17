@@ -81,18 +81,16 @@ def get_introduction():
             author = request.get_json()[IntroductionField.AUTHOR]
         if IntroductionField.TITLE in request.get_json():
             title = request.get_json()[IntroductionField.TITLE]
-        if IntroductionField.TEXT in request.get_json():
-            text = request.get_json()[IntroductionField.TEXT]
 
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
     
-    introduction_lst = introductions.filter(Introduction(author=author, title=title, text=text), sorted=True)
+    introduction_lst = introductions.filter(Introduction(author=author, title=title), sorted=True)
     if not introduction_lst:
         return make_response("Not found", 401)
 
-    return jsonify(introduction_lst), 200
+    return jsonify(introduction_lst[0]), 200
 
 def create_introduction():    
     try:

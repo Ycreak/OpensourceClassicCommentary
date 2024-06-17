@@ -10,6 +10,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
+// Model imports
+import { Introduction } from '@oscc/models/Introduction';
+
 // Service imports
 import { IntroductionsApiService } from '@oscc/services/api/introductions.service';
 
@@ -22,6 +25,7 @@ export class IntroductionsComponent implements OnInit {
   protected author: string;
   protected title: string;
   protected content: string;
+
   // Keep track of whether the introduction is about the author or the title
   protected introduction_on: string;
 
@@ -39,11 +43,11 @@ export class IntroductionsComponent implements OnInit {
 
     const filter = this.title == '' ? { author: this.author } : { author: this.author, title: this.title };
 
-    this.api.get_introduction(filter).subscribe((introduction: any) => {
-      if (introduction.content == '') {
+    this.api.get_introduction(filter).subscribe((introduction: Introduction) => {
+      if (introduction.text == '') {
         this.content = 'No introduction found.';
       } else {
-        this.content = introduction.content;
+        this.content = introduction.text;
       }
     });
   }

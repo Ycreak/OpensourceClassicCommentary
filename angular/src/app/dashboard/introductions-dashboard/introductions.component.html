@@ -14,37 +14,33 @@
 </mat-form-field>
 
 <!-- Introduction text with wysiwyg editor -->
-<form [formGroup]="form">
-  <!-- Author introduction text field -->
-  <ng-container *ngIf="this.introduction.author">
-    <mat-form-field class="input-form-full-width">
-      <mat-label *ngIf="this.introduction.author && !this.introduction.title"
-        ><b>Introduction text for Author</b></mat-label
-      >
-      <mat-label *ngIf="this.introduction.author && this.introduction.title"
-        ><b>Introduction text for Author + Title</b></mat-label
-      >
-      <textarea matInput type="text" [(ngModel)]="this.introduction.title"></textarea>
-    </mat-form-field>
-    <!-- Button for opening the wysiwyg editor -->
-    <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('text')">Rich editor</button>
-    <div class="div-padding-lg"></div>
-    <div class="div-padding-sm"></div>
-  </ng-container>
-  <br />
-
-  <!-- Save button -->
-  <button
-    mat-button
-    class="button-margin-extra confirm-button"
-    (click)="this.introduction.author = ''"
-    (click)="this.introduction.title = ''">
-    Reset
-  </button>
-  <button mat-button class="button-margin-extra confirm-button" (click)="this.save_introduction(this.introduction)">
-    Save Changes
-  </button>
-  <mat-label class="mat-label-inline" *ngIf="this.show_changes_saved_hint">Changes saved</mat-label>
+<!-- Author introduction text field -->
+<ng-container *ngIf="this.introduction.author">
+  <mat-form-field class="input-form-full-width">
+    <mat-label *ngIf="this.introduction.author && !this.introduction.title"
+      ><b>Introduction text for author</b></mat-label
+    >
+    <mat-label *ngIf="this.introduction.author && this.introduction.title"
+      ><b>Introduction text for author + title</b></mat-label
+    >
+    <textarea matInput type="text" [(ngModel)]="this.introduction.text"></textarea>
+  </mat-form-field>
   <div class="div-padding-lg"></div>
-  <div class="div-padding-sm"></div>
-</form>
+</ng-container>
+<br />
+
+<!-- Save button -->
+<button
+  mat-button
+  class="button-margin-extra confirm-button"
+  (click)="this.introduction.author = ''"
+  (click)="this.introduction.title = ''"
+  (click)="this.introduction.text = ''">
+  Reset
+</button>
+<button mat-button class="button-margin-extra confirm-button" (click)="this.save_introduction(this.introduction)">
+  Save Changes
+</button>
+<mat-label class="mat-label-inline" *ngIf="this.show_changes_saved_hint">Changes saved</mat-label>
+<div class="div-padding-lg"></div>
+<div class="div-padding-sm"></div>

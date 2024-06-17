@@ -2,7 +2,7 @@
 export class Introduction {
   author: string;
   title: string;
-  content: string;
+  text: string;
 
   constructor(introduction?: Partial<Introduction>) {
     // Allow the partial initialisation of an introduction
@@ -17,6 +17,6 @@ export class Introduction {
   public set(introduction: any) {
     this.author = 'author' in introduction ? introduction['author'] : '';
     this.title = 'title' in introduction ? introduction['title'] : '';
-    this.content = 'content' in introduction ? introduction['content'] : '';
+    this.text = 'text' in introduction ? introduction['text'] : '';
   }
 }

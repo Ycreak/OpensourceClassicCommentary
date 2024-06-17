@@ -14,6 +14,11 @@ import { Introduction } from '@oscc/models/Introduction';
   providedIn: 'root',
 })
 export class IntroductionsApiService extends ApiService {
+  public remove = 'introduction/delete';
+  public create = 'introduction/create';
+  public revise = 'introduction/update';
+  public retrieve = 'introduction/get';
+
   constructor(bib: BibliographyService, utility: UtilityService, http: HttpClient) {
     super(bib, utility, http);
   }
@@ -26,7 +31,7 @@ export class IntroductionsApiService extends ApiService {
   public get_introduction(filter: any): Observable<any> {
     return new Observable((observer) => {
       this.spinner_on();
-      this.post(this.FlaskURL, 'introduction/get', filter, this.get_header).subscribe({
+      this.post(this.FlaskURL, this.retrieve, filter, this.get_header).subscribe({
         next: (data: any) => {
           const new_introduction = new Introduction({});
           new_introduction.set(data);
@@ -38,24 +43,26 @@ export class IntroductionsApiService extends ApiService {
       });
     });
   }
+
   /**
-   * Saves the given introduction on the server
+   * Gives the given endpoint the given introduction. Used to create, revise and delete documents.
    * @param introduction (Introduction)
+   * @param endpoint (string)
+   * @returns Observable
    * @author Ycreak
    */
-  public save_introduction(introduction: Introduction): void {
-    this.spinner_on();
-    this.http
-      .post<string[]>(this.FlaskURL + `introduction/update`, introduction, {
-        observe: 'response',
-        responseType: 'text' as 'json',
-      })
-      .subscribe({
+  public post_document(introduction: Introduction, endpoint: string): Observable<any> {
+    return new Observable((observer) => {
+      this.spinner_on();
+      this.post(this.FlaskURL, endpoint, introduction, this.post_header).subscribe({
         next: (data) => {
           this.show_server_response(data);
           this.spinner_off();
+          observer.next();
+          observer.complete();
         },
         error: (err) => this.show_server_response(err),
       });
+    });
   }
 }

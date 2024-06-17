@@ -94,16 +94,16 @@ export class FragmentsApiService extends ApiService {
   }
 
   /**
-   * Gives the given endpoint the given testimonium. Used to create, revise and delete documents.
-   * @param testimonium (Testimonium)
+   * Gives the given endpoint the given fragment. Used to create, revise and delete documents.
+   * @param fragment (Fragment)
    * @param endpoint (string)
    * @returns Observable
    * @author Ycreak
    */
-  public post_document(testimonium: any, endpoint: string): Observable<any> {
+  public post_document(fragment: any, endpoint: string): Observable<any> {
     return new Observable((observer) => {
       this.spinner_on();
-      this.post(this.FlaskURL, endpoint, testimonium, this.post_header).subscribe({
+      this.post(this.FlaskURL, endpoint, fragment, this.post_header).subscribe({
         next: (data) => {
           this.show_server_response(data);
           this.request_index().subscribe({});
