@@ -75,6 +75,7 @@ export class CommentaryComponent {
       this.commentary.do_on_fields(this.string_formatter.convert_custom_tag_to_html);
       // Create a bibliography for the document
       this.commentary.bibliography = this.create_bibliography(this.document);
+      this.convert_bib_keys_in_commentary();
     });
   }
 
@@ -147,43 +148,22 @@ export class CommentaryComponent {
       });
     }
   }
-
   /**
-   * Converts all Zotero cite entries in a string to proper citations
-   * @param string of text blob with (possibly) Zotero entries
-   * @returns string with its Zotero entries converted to (author, year: from-to)
+   * Converts all bib keys in the commentary to plain text
    * @author Ycreak
    */
-  public convert_bib_keys_in_string(given_string: string): string {
-    let from_page = '';
-    let to_page = '';
-    let bib_key = '';
-    let full_tag = '';
-    let html = '';
-
-    // Convert the bibliography items.
-    const bib_regex = /\[bib-([\s\S]*?)\]/gm;
-    const bib_entries = [...given_string.matchAll(bib_regex)];
-    if (bib_entries?.length) {
-      bib_entries.forEach((entry) => {
-        full_tag = entry[0];
-        const values = entry[1].split('-');
-        bib_key = values[0];
-        const bib_item = this.bib.bibliography.find((o) => o.key === bib_key);
-        // The key looks as follows: [bib-<key>-<lastname>-<date>-<from_page>-<to_page>]
-        if (values.length > 4) {
-          from_page = values[3];
-          to_page = values[4];
-          html = `(${bib_item.creators[0].lastname}, ${bib_item.date}: ${from_page}-${to_page})`;
-        } else if (values.length > 3) {
-          from_page = values[3];
-          html = `(${bib_item.creators[0].lastname}, ${bib_item.date}: ${from_page})`;
-        } else {
-          html = `(${bib_item.creators[0].lastname}, ${bib_item.date})`;
-        }
-        given_string = given_string.replace(full_tag, html);
-      });
-    }
-    return given_string;
+  private convert_bib_keys_in_commentary(): void {
+    const commentary_fields_keys = Object.keys(this.commentary.fields);
+    commentary_fields_keys.forEach((key: string) => {
+      if (this.utility.is_string(this.commentary.fields[key])) {
+        this.commentary.fields[key] = this.bib.convert_bib_keys_in_string(this.commentary.fields[key]);
+      } else if (this.utility.is_array(this.commentary.fields[key])) {
+        this.commentary.fields[key].forEach((obj: any) => {
+          obj.text = this.bib.convert_bib_keys_in_string(obj.text);
+        });
+      } else {
+        console.error('Unsupported type.');
+      }
+    });
   }
 }

@@ -123,4 +123,43 @@ export class BibliographyService {
     });
     return has_bib;
   }
+
+  /**
+   * Converts all Zotero cite entries in a string to proper citations
+   * @param string of text blob with (possibly) Zotero entries
+   * @returns string with its Zotero entries converted to (author, year: from-to)
+   * @author Ycreak
+   */
+  public convert_bib_keys_in_string(given_string: string): string {
+    let from_page = '';
+    let to_page = '';
+    let bib_key = '';
+    let full_tag = '';
+    let html = '';
+
+    // Convert the bibliography items.
+    const bib_regex = /\[bib-([\s\S]*?)\]/gm;
+    const bib_entries = [...given_string.matchAll(bib_regex)];
+    if (bib_entries?.length) {
+      bib_entries.forEach((entry) => {
+        full_tag = entry[0];
+        const values = entry[1].split('-');
+        bib_key = values[0];
+        const bib_item = this.bibliography.find((o) => o.key === bib_key);
+        // The key looks as follows: [bib-<key>-<lastname>-<date>-<from_page>-<to_page>]
+        if (values.length > 4) {
+          from_page = values[3];
+          to_page = values[4];
+          html = `(${bib_item.creators[0].lastname}, ${bib_item.date}: ${from_page}-${to_page})`;
+        } else if (values.length > 3) {
+          from_page = values[3];
+          html = `(${bib_item.creators[0].lastname}, ${bib_item.date}: ${from_page})`;
+        } else {
+          html = `(${bib_item.creators[0].lastname}, ${bib_item.date})`;
+        }
+        given_string = given_string.replace(full_tag, html);
+      });
+    }
+    return given_string;
+  }
 }
