@@ -116,7 +116,7 @@ export class CommentaryComponent {
    * @author Ycreak
    */
   private create_bibliography(doc: any): string {
-    return this.bib.convert_keys_into_bibliography(this.bib.get_keys_from_commentary(doc.commentary));
+    return this.bib.convert_keys_into_bibliography(doc.commentary.bib_keys);
   }
 
   /**
