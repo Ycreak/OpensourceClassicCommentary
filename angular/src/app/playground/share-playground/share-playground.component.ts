@@ -3,7 +3,11 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormControl, FormGroup, FormArray } from '@angular/forms';
 
+// Service imports
 import { ApiService } from '@oscc/api.service';
+
+// Model imports
+import { Playground_user } from '@oscc/models/api/Playground_user';
 
 @Component({
   selector: 'app-share-playground',
@@ -11,7 +15,7 @@ import { ApiService } from '@oscc/api.service';
   styleUrls: ['./share-playground.component.scss'],
 })
 export class SharePlaygroundComponent implements OnInit {
-  protected shared_with: string[] = [];
+  protected users: Playground_user[] = [];
 
   protected form = new FormGroup({
     users: new FormArray([]),
@@ -22,13 +26,13 @@ export class SharePlaygroundComponent implements OnInit {
     public dialogRef: MatDialogRef<SharePlaygroundComponent>,
     protected api: ApiService
   ) {
-    this.shared_with = dialog_data.shared_with;
+    this.users = dialog_data.users;
   }
 
   ngOnInit(): void {
     // Fill the user form field array
-    this.shared_with.forEach((user: any) => {
-      this.add_user(user.name, user.save, user.del);
+    this.users.forEach((user: Playground_user) => {
+      this.add_user(user.name, user.role);
     });
   }
 
@@ -61,11 +65,10 @@ export class SharePlaygroundComponent implements OnInit {
    * @param user (string)
    * @author Ycreak
    */
-  protected add_user(name: string, save: boolean, del: boolean): void {
+  protected add_user(name: string, role: string): void {
     const new_user = new FormGroup({
       name: new FormControl(name),
-      save: new FormControl(save),
-      del: new FormControl(del),
+      role: new FormControl(role),
     });
     const user_array = this.form.get('users') as FormArray;
     user_array.push(new_user);

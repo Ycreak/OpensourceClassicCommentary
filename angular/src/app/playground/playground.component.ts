@@ -12,6 +12,7 @@ import { ApiInterfaceService } from '@oscc/services/api/api-interface.service';
 import { AuthService } from '@oscc/auth/auth.service';
 import { CommentaryService } from '@oscc/commentary/commentary.service';
 import { FragmentsApiService } from '@oscc/services/api/fragments.service';
+import { PlaygroundApiService } from '@oscc/services/api/playground.service';
 import { UtilityService } from '@oscc/utility.service';
 import { FabricService } from './services/fabric.service';
 
@@ -21,6 +22,7 @@ import { FormatterService } from './services/formatter.service';
 import { Fragment } from '@oscc/models/Fragment';
 import { DialogService } from '@oscc/services/dialog.service';
 import { Playground } from '@oscc/models/Playground';
+import { Playground_communicator } from '@oscc/models/api/Playground_communicator';
 
 // Component imports
 import { LoadPlaygroundComponent } from './load-playground/load-playground.component';
@@ -29,6 +31,7 @@ import { DeletePlaygroundComponent } from './delete-playground/delete-playground
 import { SharePlaygroundComponent } from './share-playground/share-playground.component';
 import { JoinPlaygroundComponent } from './join-playground/join-playground.component';
 import { DocumentFilterComponent } from '@oscc/filters/document-filter/document-filter.component';
+import { Playground_user } from '@oscc/models/api/Playground_user';
 
 @Component({
   selector: 'app-playground',
@@ -73,6 +76,7 @@ export class PlaygroundComponent implements OnInit {
     private formatter: FormatterService,
     private mat_dialog: MatDialog,
     protected api: ApiService,
+    private playground_api: PlaygroundApiService,
     protected auth_service: AuthService,
     protected fragments_api: FragmentsApiService,
     protected utility: UtilityService,
@@ -148,10 +152,12 @@ export class PlaygroundComponent implements OnInit {
       data: { user: this.auth_service.current_user_name },
     });
     dialogRef.afterClosed().subscribe({
-      next: (requested_playground_id: any) => {
+      next: (requested_playground_id: string) => {
         if (requested_playground_id) {
-          this.api
-            .get_playground({ _id: requested_playground_id, user: this.auth_service.current_user_name })
+          this.playground_api
+            .load(
+              new Playground_communicator({ _id: requested_playground_id, user: this.auth_service.current_user_name })
+            )
             .subscribe((playground) => {
               this.playground.name = playground.name;
               this.playground.role = playground.role;
@@ -180,19 +186,31 @@ export class PlaygroundComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((data: any) => {
       if (data) {
-        const playground = {
-          _id: this.playground._id,
-          name: data.name,
-          canvas: this.playground.canvas.toJSON(),
-        };
         if (data.button == 'save') {
           if (this.playground.role == 'owner') {
-            this.api.save_playground(playground);
+            this.playground_api.save(
+              new Playground_communicator({
+                name: data.name,
+                canvas: this.playground.canvas.toJSON(),
+                _id: this.playground._id,
+              })
+            );
           } else {
-            this.utility.open_snackbar('Not permitted')
+            this.utility.open_snackbar('Not permitted');
           }
         } else if (data.button == 'create') {
-          this.api.create_playground(playground);
+          this.playground_api.create(
+            new Playground_communicator({
+              name: data.name,
+              canvas: this.playground.canvas.toJSON(),
+              users: [
+                new Playground_user({
+                  name: this.auth_service.current_user_name,
+                  role: 'owner',
+                }),
+              ],
+            })
+          );
         }
       }
     });
@@ -209,18 +227,18 @@ export class PlaygroundComponent implements OnInit {
     dialogRef.afterClosed().subscribe({
       next: (playground: any) => {
         if (playground) {
-          this.api.get_playground({ user: playground.user, name: playground.name }).subscribe((playground) => {
-            this.playground.name = playground.name;
-            this.playground.shared_with = playground.shared_with;
-            this.playground._id = playground._id;
-            this.playground.owner = playground.owner;
-            // Apply data to the canvas
-            this.playground.canvas.clear();
-            this.playground.canvas.loadFromJSON(
-              playground.canvas,
-              this.playground.canvas.renderAll.bind(this.playground.canvas)
-            );
-          });
+          //this.api.get_playground({ user: playground.user, name: playground.name }).subscribe((playground) => {
+          //this.playground.name = playground.name;
+          //this.playground.shared_with = playground.shared_with;
+          //this.playground._id = playground._id;
+          //this.playground.owner = playground.owner;
+          //// Apply data to the canvas
+          //this.playground.canvas.clear();
+          //this.playground.canvas.loadFromJSON(
+          //playground.canvas,
+          //this.playground.canvas.renderAll.bind(this.playground.canvas)
+          //);
+          //});
         }
       },
     });
@@ -231,13 +249,16 @@ export class PlaygroundComponent implements OnInit {
    */
   protected share_playground(): void {
     if (this.playground.name) {
-      const dialogRef = this.mat_dialog.open(SharePlaygroundComponent, {
-        data: { shared_with: this.playground.shared_with },
-      });
+      const dialogRef = this.mat_dialog.open(SharePlaygroundComponent, { data: { users: this.playground.users } });
       dialogRef.afterClosed().subscribe({
-        next: (share_with: any) => {
-          if (share_with) {
-            this.api.save_playground({ _id: this.playground._id, shared_with: share_with });
+        next: (users: Playground_user[]) => {
+          if (users) {
+            this.playground_api.save(
+              new Playground_communicator({
+                _id: this.playground._id,
+                users: users,
+              })
+            );
           }
         },
       });
@@ -259,8 +280,8 @@ export class PlaygroundComponent implements OnInit {
         next: (name: any) => {
           if (name) {
             // Check if we have the correct rights to delete the playground
-            if (this.playground.owner === this.auth_service.current_user_name) {
-              this.api.delete_playground({ _id: this.playground._id });
+            if (this.playground.role === 'owner') {
+              this.api.delete_playground(new Playground_communicator({ _id: this.playground._id }));
             } else {
               this.utility.open_snackbar('Not allowed');
             }

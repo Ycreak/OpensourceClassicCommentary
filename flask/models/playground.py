@@ -111,9 +111,12 @@ class PlaygroundModel:
         if playground == None:
             logging.error("get(): playground could not be found")
       
-        # Get the role the requesting user has
+        # Get the role the requesting user has. We will return this in the request so that 
+        # the frontend knows what permissions the requesting user has on the returned playground.
         result.role = self._find_user_role(user, result.users)
-        del result.users
+        # We remove the users list from the object if the user is not the owner. Only owners can change users permissions
+        if result.role != 'owner':
+            del result.users
 
         return result
 

@@ -55,20 +55,20 @@ def get_playground():
         
     return jsonify(playground), 200
 
-def get_shared_playgrounds():
-    user = None
-    try:
-        if PlaygroundField.USER in request.get_json():
-            user = request.get_json()[PlaygroundField.USER]
-    except KeyError as e:
-        logging.error(e)
-        return make_response("Unprocessable entity", 422)
-    playground_lst = playgrounds.get_shared_playgrounds(Playground(user=user), sorted=True)
+# def get_shared_playgrounds():
+    # user = None
+    # try:
+        # if PlaygroundField.USER in request.get_json():
+            # user = request.get_json()[PlaygroundField.USER]
+    # except KeyError as e:
+        # logging.error(e)
+        # return make_response("Unprocessable entity", 422)
+    # playground_lst = playgrounds.get_shared_playgrounds(Playground(user=user), sorted=True)
 
-    if not playground_lst:
-        return make_response("Not found", 401)
+    # if not playground_lst:
+        # return make_response("Not found", 401)
     
-    return jsonify(playground_lst), 200
+    # return jsonify(playground_lst), 200
 
 def create_playground():    
     try:

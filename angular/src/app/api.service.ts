@@ -120,23 +120,6 @@ export class ApiService {
   }
 
   /**
-   * Retrieves playground from the given key
-   * @param key (object)
-   * @return playground (object)
-   * @author Ycreak
-   */
-  public get_playground(filter: object): Observable<any> {
-    this.spinner_on();
-    return new Observable((observer) => {
-      this.post(this.FlaskURL, 'playground/get', filter, this.get_header).subscribe((data: any) => {
-        console.log(data)
-        this.spinner_off();
-        observer.next(data);
-        observer.complete();
-      });
-    });
-  }
-  /**
    * Retrieves playgrounds shared with the given user
    * @param key (object)
    * @return playgrounds (object)
@@ -178,26 +161,6 @@ export class ApiService {
     this.spinner_on();
     this.http
       .post<string[]>(this.FlaskURL + `playground/create`, playground, {
-        observe: 'response',
-        responseType: 'text' as 'json',
-      })
-      .subscribe({
-        next: (data) => {
-          this.show_server_response(data);
-          this.spinner_off();
-        },
-        error: (err) => this.show_server_response(err),
-      });
-  }
-  /**
-   * Saves the given playground on the server
-   * @param playground (json)
-   * @author Ycreak
-   */
-  public save_playground(playground: any): void {
-    this.spinner_on();
-    this.http
-      .post<string[]>(this.FlaskURL + `playground/update`, playground, {
         observe: 'response',
         responseType: 'text' as 'json',
       })

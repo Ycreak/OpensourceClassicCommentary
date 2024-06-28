@@ -93,7 +93,7 @@
           src="assets\icons\ByteDanceIconPark\9069053_folder_delete_icon.png"
           (click)="this.delete_playground()" />
       </div>
-      <div id="playground-sharing-tools" class="playground-tool-group" *ngIf="this.auth_service.is_logged_in">
+      <div id="playground-sharing-tools" class="playground-tool-group" *ngIf="this.playground.role === 'owner'">
         <img
           id="playground_share_btn"
           class="playground-icon"
