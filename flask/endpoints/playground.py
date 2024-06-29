@@ -55,47 +55,40 @@ def get_playground():
         
     return jsonify(playground), 200
 
-# def get_shared_playgrounds():
-    # user = None
-    # try:
-        # if PlaygroundField.USER in request.get_json():
-            # user = request.get_json()[PlaygroundField.USER]
-    # except KeyError as e:
-        # logging.error(e)
-        # return make_response("Unprocessable entity", 422)
-    # playground_lst = playgrounds.get_shared_playgrounds(Playground(user=user), sorted=True)
-
-    # if not playground_lst:
-        # return make_response("Not found", 401)
-    
-    # return jsonify(playground_lst), 200
-
 def create_playground():    
     try:
         users = request.get_json()[PlaygroundField.USERS]
         name = request.get_json()[PlaygroundField.NAME]
         canvas = request.get_json()[PlaygroundField.CANVAS]
-
+        created_by = request.get_json()[PlaygroundField.CREATED_BY]
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-  
-    playground = playgrounds.create(Playground(_id=uuid4().hex, name=name, users=users, canvas=canvas))
+ 
+    playground = playgrounds.create(Playground(_id=uuid4().hex, name=name, users=users, canvas=canvas, created_by=created_by))
     if playground == None:
         return make_response("Server error", 500)
     
-    return make_response("Created", 200)
+    return jsonify(playground, 200)
 
 def update_playground():    
+    canvas= None
+    users = None
+
     try:
         _id = request.get_json()[PlaygroundField.ID]
-        canvas = request.get_json()[PlaygroundField.CANVAS]
+        if PlaygroundField.USERS in request.get_json():
+            users = request.get_json()[PlaygroundField.USERS]
+        if PlaygroundField.CANVAS in request.get_json():
+            canvas = request.get_json()[PlaygroundField.CANVAS]
 
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
 
-    playground = playgrounds.update(Playground(_id=_id, canvas=canvas))
+    logging.error(users)
+
+    playground = playgrounds.update(Playground(_id=_id, canvas=canvas, users=users))
     if playground == None:
         return make_response("Server error", 500)
 

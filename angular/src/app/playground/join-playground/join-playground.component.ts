@@ -24,13 +24,13 @@ export class JoinPlaygroundComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.api.get_shared_playgrounds({ user: this.name }).subscribe((playgrounds) => {
-      if (playgrounds.length > 0) {
-        this.playgrounds = playgrounds;
-      } else {
-        this.no_playgrounds = true;
-      }
-    });
+    //this.api.get_shared_playgrounds({ user: this.name }).subscribe((playgrounds) => {
+    //if (playgrounds.length > 0) {
+    //this.playgrounds = playgrounds;
+    //} else {
+    //this.no_playgrounds = true;
+    //}
+    //});
   }
 
   protected onNoClick(): void {

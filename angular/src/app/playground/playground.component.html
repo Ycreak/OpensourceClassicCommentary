@@ -88,13 +88,15 @@
           src="assets\icons\ByteDanceIconPark\9068981_folder_open_icon.png"
           (click)="this.load_playground()" />
         <img
+          *ngIf="this.playground.role === 'owner'"
           id="playground_delete_btn"
           class="playground-icon"
           src="assets\icons\ByteDanceIconPark\9069053_folder_delete_icon.png"
           (click)="this.delete_playground()" />
       </div>
-      <div id="playground-sharing-tools" class="playground-tool-group" *ngIf="this.playground.role === 'owner'">
+      <div id="playground-sharing-tools" class="playground-tool-group">
         <img
+          *ngIf="this.playground.role === 'owner'"
           id="playground_share_btn"
           class="playground-icon"
           src="assets\icons\ByteDanceIconPark\9071373_people_plus_one_icon.png"

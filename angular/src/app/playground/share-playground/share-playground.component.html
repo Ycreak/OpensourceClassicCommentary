@@ -17,7 +17,7 @@
             <div [formGroupName]="i">
               <mat-form-field class="input-form-small">
                 <mat-label>User name</mat-label>
-                <input matInput type="text" formControlName="name" />
+                <input matInput type="text" formControlName="name" required />
               </mat-form-field>
             </div>
           </div>
@@ -46,5 +46,6 @@
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="onNoClick()">Cancel</button>
-  <button mat-button (click)="onYesClick()" cdkFocusInitial>Share</button>
+  <button mat-button (click)="onYesClick()" cdkFocusInitial *ngIf="this.form.valid">Share</button>
+  <button mat-button (click)="onYesClick()" cdkFocusInitial *ngIf="!this.form.valid" disabled>Share</button>
 </div>

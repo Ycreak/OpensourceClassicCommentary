@@ -4,14 +4,18 @@ import { environment } from '@src/environments/environment';
 // Service imports
 import { FabricService } from '@oscc/playground/services/fabric.service';
 
+// Model imports
+import { Playground_user } from './api/Playground_user';
+
 export class Playground {
   _id: string;
   name: string;
   owner: string; //DEPRECATED
   role: string;
-  users: object[];
+  users: Playground_user[];
   shared_with: string[];
   canvas: fabric.Canvas;
+  created_by: string;
 
   // Variables for keeping track of canvas states
   private canvas_states: any[] = [];

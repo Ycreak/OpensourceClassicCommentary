@@ -23,6 +23,7 @@ class PlaygroundField(object):
     USER = "user"
     USERS = "users"
     CANVAS = "canvas"
+    CREATED_BY = "created_by"
 
 @dataclass
 class Playground:
@@ -30,6 +31,7 @@ class Playground:
     name: str = None
     canvas: object = None
     user: str = None
+    created_by: str = None
     role: str = None
     users: list = None
 
@@ -43,6 +45,8 @@ class PlaygroundModel:
             playground = Playground(_id=doc.id)
             if PlaygroundField.NAME in doc:
                 playground.name = doc[PlaygroundField.NAME]
+            if PlaygroundField.CREATED_BY in doc:
+                playground.created_by = doc[PlaygroundField.CREATED_BY]
             if (users):
                 if PlaygroundField.USERS in doc:
                     playground.users = doc[PlaygroundField.USERS]

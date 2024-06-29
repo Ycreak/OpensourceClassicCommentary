@@ -10,10 +10,19 @@
   <div *ngIf="this.no_playgrounds" class="alert alert-info" role="alert">No playgrounds found for this user</div>
 
   <mat-form-field>
-    <mat-label>Select a playground</mat-label>
+    <mat-label>Your playgrounds</mat-label>
     <mat-select [(ngModel)]="this.selected_playground">
-      <mat-option *ngFor="let playground of this.playgrounds" [value]="playground._id">
+      <mat-option *ngFor="let playground of this.playgrounds_created_by_me" [value]="playground._id">
         {{ playground.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <hr />
+  <mat-form-field>
+    <mat-label>Shared playgrounds</mat-label>
+    <mat-select [(ngModel)]="this.selected_playground">
+      <mat-option *ngFor="let playground of this.playgrounds_shared_with_me" [value]="playground._id">
+        {{ playground.name }} ({{ playground.created_by }}, #{{ playground._id.substring(0, 3) }})
       </mat-option>
     </mat-select>
   </mat-form-field>

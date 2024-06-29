@@ -1,7 +1,7 @@
 // Library imports
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormControl, FormGroup, FormArray } from '@angular/forms';
+import { FormControl, FormGroup, FormArray, Validators } from '@angular/forms';
 
 // Service imports
 import { ApiService } from '@oscc/api.service';
@@ -46,7 +46,12 @@ export class SharePlaygroundComponent implements OnInit {
    */
   protected onYesClick(): void {
     const users = this.form.get('users') as FormArray;
-    this.dialogRef.close(users.value);
+    const playground_users: Playground_user[] = [];
+    // Cast the form values to a playground user object and return it
+    users.value.forEach((user: any) => {
+      playground_users.push(new Playground_user({ name: user.name, role: user.role }));
+    });
+    this.dialogRef.close(playground_users);
   }
 
   /**
@@ -68,7 +73,12 @@ export class SharePlaygroundComponent implements OnInit {
   protected add_user(name: string, role: string): void {
     const new_user = new FormGroup({
       name: new FormControl(name),
-      role: new FormControl(role),
+      role: new FormControl(role, [
+        Validators.minLength(1),
+        Validators.maxLength(30),
+        Validators.required,
+        Validators.pattern('[a-zA-z0-9]*'),
+      ]),
     });
     const user_array = this.form.get('users') as FormArray;
     user_array.push(new_user);

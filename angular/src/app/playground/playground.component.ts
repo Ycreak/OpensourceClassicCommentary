@@ -159,7 +159,9 @@ export class PlaygroundComponent implements OnInit {
               new Playground_communicator({ _id: requested_playground_id, user: this.auth_service.current_user_name })
             )
             .subscribe((playground) => {
+              this.utility.open_snackbar(`Playground ${playground.name} opened.`);
               this.playground.name = playground.name;
+              this.playground.created_by = playground.created_by;
               this.playground.role = playground.role;
               this.playground._id = playground._id;
               this.playground.users = playground.users;
@@ -187,7 +189,7 @@ export class PlaygroundComponent implements OnInit {
     dialogRef.afterClosed().subscribe((data: any) => {
       if (data) {
         if (data.button == 'save') {
-          if (this.playground.role == 'owner') {
+          if (this.playground.role == 'owner' || this.playground.role == 'collaborator') {
             this.playground_api.save(
               new Playground_communicator({
                 name: data.name,
@@ -196,21 +198,24 @@ export class PlaygroundComponent implements OnInit {
               })
             );
           } else {
-            this.utility.open_snackbar('Not permitted');
+            this.utility.open_snackbar('Not enough permissions');
           }
         } else if (data.button == 'create') {
-          this.playground_api.create(
-            new Playground_communicator({
-              name: data.name,
-              canvas: this.playground.canvas.toJSON(),
-              users: [
-                new Playground_user({
-                  name: this.auth_service.current_user_name,
-                  role: 'owner',
-                }),
-              ],
-            })
-          );
+          this.playground_api
+            .create(
+              new Playground_communicator({
+                name: data.name,
+                canvas: this.playground.canvas.toJSON(),
+                created_by: this.auth_service.current_user_name,
+                users: [
+                  new Playground_user({
+                    name: this.auth_service.current_user_name,
+                    role: 'owner',
+                  }),
+                ],
+              })
+            )
+            .subscribe((playground) => {});
         }
       }
     });
@@ -253,10 +258,11 @@ export class PlaygroundComponent implements OnInit {
       dialogRef.afterClosed().subscribe({
         next: (users: Playground_user[]) => {
           if (users) {
+            this.playground.users = users;
             this.playground_api.save(
               new Playground_communicator({
                 _id: this.playground._id,
-                users: users,
+                users: this.playground.users,
               })
             );
           }
@@ -281,7 +287,7 @@ export class PlaygroundComponent implements OnInit {
           if (name) {
             // Check if we have the correct rights to delete the playground
             if (this.playground.role === 'owner') {
-              this.api.delete_playground(new Playground_communicator({ _id: this.playground._id }));
+              this.playground_api.remove(new Playground_communicator({ _id: this.playground._id }));
             } else {
               this.utility.open_snackbar('Not allowed');
             }
