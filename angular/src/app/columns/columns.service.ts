@@ -145,6 +145,9 @@ export class ColumnsService {
       column.original_fragment_order = []; // Clear first
       documents.forEach((doc: any) => {
         column.original_fragment_order.push(doc.name);
+        // Make a list of bib keys per commentary. We do this to keep track of bibliography entries,
+        // as we will overwrite the keys with citations when a commentary is formatted upon loading.
+        doc.commentary.bib_keys = this.bib.get_keys_from_document(doc);
       });
     });
   }
