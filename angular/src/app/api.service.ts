@@ -204,7 +204,6 @@ export class ApiService {
    * @author Ycreak
    */
   public show_server_response(message: any): void {
-    console.log(message);
     this.spinner_off();
     let output = '';
 
