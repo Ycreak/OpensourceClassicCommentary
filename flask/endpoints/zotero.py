@@ -2,6 +2,7 @@
 To retrieve data, we use the pyzotero library.
 '''
 
+
 from flask import make_response
 from pyzotero import zotero as pyzotero
 from flask_jsonpify import jsonify
@@ -88,6 +89,29 @@ class Zotero:
                 self.bibliography: list = [d for d in self.bibliography if d['key'] != key]
         
         util.write_json(self.bibliography, self.cache_file)
+    
+    def _update_citations(self) -> None:
+        """
+        Dumb function to update citations in sources that do not yet have a citation.
+        """
+        self.bibliography = util.read_json(self.cache_file) 
+        counter = 0
+        for bib_item in self.bibliography:
+            if counter == 15:
+                # Write the changes every 15 citations to prevent the API getting angry
+                util.write_json(self.bibliography, self.cache_file)
+                exit(0)
+            if not "citation" in bib_item or bib_item['citation'] == "":
+                counter += 1
+                key = bib_item['key']
+                print(f'not {bib_item["key"]}')
+                # Retrieve the zotero item data blob
+                bib_item = self.zotero_api.item(bib_item['key'])
+                # Retrieve the zotero item bib blob 
+                self.zotero_api.add_parameters(content='bib')
+                bib_item['citation'] = self.zotero_api.item(key)[0]
+                self.bibliography = [d for d in self.bibliography if d['key'] != key]
+                self.bibliography.append(bib_item)
 
 
     def _update_citations(self) -> None:
@@ -124,7 +148,6 @@ def sync_bibliography():
         return jsonify(zotero.bibliography), 200
     except:
         return make_response("Problems with Zotero", 408)
-
 
 if __name__ == '__main__':
     # Run with "python3 -m endpoints.zotero"

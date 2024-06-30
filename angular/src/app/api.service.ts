@@ -13,7 +13,6 @@ import { BibliographyService } from '@oscc/services/bibliography.service';
 
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
-import { Playground } from '@oscc/models/Playground';
 import { Bib } from '@oscc/models/Bib';
 import { User } from '@oscc/models/User';
 
@@ -122,38 +121,6 @@ export class ApiService {
   }
 
   /**
-   * Retrieves playground from the given key
-   * @param key (object)
-   * @return playground (object)
-   * @author Ycreak
-   */
-  public get_playground(filter: object): Observable<any> {
-    this.spinner_on();
-    return new Observable((observer) => {
-      this.post(this.FlaskURL, 'playground/get', filter, this.get_header).subscribe((data: any) => {
-        this.spinner_off();
-        observer.next(data[0]);
-        observer.complete();
-      });
-    });
-  }
-  /**
-   * Retrieves playgrounds shared with the given user
-   * @param key (object)
-   * @return playgrounds (object)
-   * @author Ycreak
-   */
-  public get_shared_playgrounds(filter: object): Observable<any> {
-    this.spinner_on();
-    return new Observable((observer) => {
-      this.post(this.FlaskURL, 'playground/get/shared', filter, this.get_header).subscribe((data: any) => {
-        this.spinner_off();
-        observer.next(data);
-        observer.complete();
-      });
-    });
-  }
-  /**
    * Retrieves playground names from the given key
    * @param key (object)
    * @return playground_names (list)
@@ -168,67 +135,6 @@ export class ApiService {
         observer.complete();
       });
     });
-  }
-
-  /**
-   * Creates the given playground on the server
-   * @param playground (Playground)
-   * @author Ycreak
-   */
-  public create_playground(playground: object): void {
-    this.spinner_on();
-    this.http
-      .post<string[]>(this.FlaskURL + `playground/create`, playground, {
-        observe: 'response',
-        responseType: 'text' as 'json',
-      })
-      .subscribe({
-        next: (data) => {
-          this.show_server_response(data);
-          this.spinner_off();
-        },
-        error: (err) => this.show_server_response(err),
-      });
-  }
-  /**
-   * Saves the given playground on the server
-   * @param playground (json)
-   * @author Ycreak
-   */
-  public save_playground(playground: any): void {
-    this.spinner_on();
-    this.http
-      .post<string[]>(this.FlaskURL + `playground/update`, playground, {
-        observe: 'response',
-        responseType: 'text' as 'json',
-      })
-      .subscribe({
-        next: (data) => {
-          this.show_server_response(data);
-          this.spinner_off();
-        },
-        error: (err) => this.show_server_response(err),
-      });
-  }
-  /**
-   * Deletes the given playground from the server
-   * @param name (string)
-   * @author Ycreak
-   */
-  public delete_playground(playground: any): void {
-    this.spinner_on();
-    this.http
-      .post<string[]>(this.FlaskURL + `playground/delete`, playground, {
-        observe: 'response',
-        responseType: 'text' as 'json',
-      })
-      .subscribe({
-        next: (data) => {
-          this.show_server_response(data);
-          this.spinner_off();
-        },
-        error: (err) => this.show_server_response(err),
-      });
   }
 
   /**
@@ -300,7 +206,6 @@ export class ApiService {
    * @author Ycreak
    */
   public show_server_response(message: any): void {
-    console.log(message);
     this.spinner_off();
     let output = '';
 

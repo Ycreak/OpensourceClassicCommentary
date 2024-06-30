@@ -1,14 +1,28 @@
-<h1 mat-dialog-title>Load playground</h1>
+<div class="dialog-header">
+  <h2>Load playground</h2>
+  <button mat-icon-button [mat-dialog-close]="null" [disableRipple]="true">
+    <mat-icon>clear</mat-icon>
+  </button>
+</div>
 <div mat-dialog-content>
   <mat-progress-bar mode="query" *ngIf="this.api.spinner"></mat-progress-bar>
 
   <div *ngIf="this.no_playgrounds" class="alert alert-info" role="alert">No playgrounds found for this user</div>
 
   <mat-form-field>
-    <mat-label>Select a playground</mat-label>
+    <mat-label>Your playgrounds</mat-label>
     <mat-select [(ngModel)]="this.selected_playground">
-      <mat-option *ngFor="let playground of this.playgrounds" [value]="playground">
-        {{ playground }}
+      <mat-option *ngFor="let playground of this.playgrounds_created_by_me" [value]="playground._id">
+        {{ playground.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <hr />
+  <mat-form-field>
+    <mat-label>Shared playgrounds</mat-label>
+    <mat-select [(ngModel)]="this.selected_playground">
+      <mat-option *ngFor="let playground of this.playgrounds_shared_with_me" [value]="playground._id">
+        {{ playground.name }} ({{ playground.created_by }}, #{{ playground._id.substring(0, 3) }})
       </mat-option>
     </mat-select>
   </mat-form-field>

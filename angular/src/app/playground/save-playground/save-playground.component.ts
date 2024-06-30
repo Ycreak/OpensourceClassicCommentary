@@ -11,6 +11,8 @@ export class SavePlaygroundComponent {
   protected name: string;
   protected playgrounds: string[];
 
+  // Denote whether the playground we want to save is a new one. If so, we will hide the save button
+  protected new_playground = false;
   protected selected_playground: string;
 
   constructor(
@@ -18,6 +20,9 @@ export class SavePlaygroundComponent {
     public dialogRef: MatDialogRef<SavePlaygroundComponent>
   ) {
     this.name = dialog_data.name;
+    if (this.name == undefined) {
+      this.new_playground = true;
+    }
   }
 
   protected onNoClick(): void {

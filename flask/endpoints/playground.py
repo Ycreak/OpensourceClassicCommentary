@@ -20,36 +20,11 @@ from models.playground import Playground, PlaygroundModel, PlaygroundField
 
 playgrounds = PlaygroundModel(CouchAuthenticator().couch)
 
-def get_playgrounds():
-    owner = None
-    try:
-        if PlaygroundField.OWNER in request.get_json():
-            owner = request.get_json()[PlaygroundField.OWNER]
-    except KeyError as e:
-        logging.error(e)
-        return make_response("Unprocessable entity", 422)
-    playground_lst = playgrounds.filter(Playground(owner=owner), sorted=True)
-    return jsonify(sorted(set([playground.name for playground in playground_lst]))), 200
-
-def get_playground():
-    owner = None
-    name = None
-    try:
-        if PlaygroundField.OWNER in request.get_json():
-            owner = request.get_json()[PlaygroundField.OWNER]
-        if PlaygroundField.NAME in request.get_json():
-            name = request.get_json()[PlaygroundField.NAME]
-    except KeyError as e:
-        logging.error(e)
-        return make_response("Unprocessable entity", 422)
-
-    playground_lst = playgrounds.filter(Playground(name=name, owner=owner), sorted=True)
-    if not playground_lst:
-        return make_response("Not found", 401)
-
-    return jsonify(playground_lst), 200
-
-def get_shared_playgrounds():
+def get_playgrounds_list():
+    """
+    Returns a list of playgrounds the user has access to. The canvas is not included and has to be 
+    retrieved separately with the function get_playground().
+    """
     user = None
     try:
         if PlaygroundField.USER in request.get_json():
@@ -57,49 +32,70 @@ def get_shared_playgrounds():
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-    playground_lst = playgrounds.get_shared_playgrounds(Playground(user=user), sorted=True)
+    playground_lst = playgrounds.list(Playground(user=user), sorted=True)
 
     if not playground_lst:
         return make_response("Not found", 401)
     
     return jsonify(playground_lst), 200
 
-def create_playground():    
-    try:
-        owner = request.get_json()[PlaygroundField.OWNER]
-        name = request.get_json()[PlaygroundField.NAME]
-        canvas = request.get_json()[PlaygroundField.CANVAS]
-
-    except KeyError as e:
-        logging.error(e)
-        return make_response("Unprocessable entity", 422)
-  
-    if playgrounds.filter(Playground(name=name,owner=owner)):
-        logging.error("create_playground(): duplicate playground")
-        return make_response("Forbidden", 403)
-
-    playground = playgrounds.create(Playground(_id=uuid4().hex, name=name, owner=owner, canvas=canvas))
-    if playground == None:
-        return make_response("Server error", 500)
-    
-    return make_response("Created", 200)
-
-def update_playground():    
+def get_playground():
+    _id= None
+    user = None
     try:
         _id = request.get_json()[PlaygroundField.ID]
-        canvas = None 
-        shared_with = None 
-
-        if PlaygroundField.CANVAS in request.get_json():
-            canvas = request.get_json()[PlaygroundField.CANVAS]
-        if PlaygroundField.SHARED_WITH in request.get_json():
-            shared_with = request.get_json()[PlaygroundField.SHARED_WITH]
-    
+        user = request.get_json()[PlaygroundField.USER]
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
 
-    playground = playgrounds.update(Playground(_id=_id, canvas=canvas, shared_with=shared_with))
+    playground = playgrounds.get(Playground(_id=_id), user)
+    if not playground:
+        return make_response("Not found", 401)
+        
+    return jsonify(playground), 200
+
+def create_playground():    
+    try:
+        users = request.get_json()[PlaygroundField.USERS]
+        name = request.get_json()[PlaygroundField.NAME]
+        canvas = request.get_json()[PlaygroundField.CANVAS]
+        created_by = request.get_json()[PlaygroundField.CREATED_BY]
+    except KeyError as e:
+        logging.error(e)
+        return make_response("Unprocessable entity", 422)
+
+    _id: str = uuid4().hex
+
+    playground = playgrounds.create(Playground(_id=_id, name=name, users=users, canvas=canvas, created_by=created_by))
+    if playground == None:
+        return make_response("Server error", 500)
+   
+    # Load the created playground and return it
+    playground = playgrounds.get(Playground(_id=_id), created_by)
+    if not playground:
+        return make_response("Not found", 401)
+    
+    return jsonify(playground), 200
+
+def update_playground():    
+    canvas= None
+    users = None
+
+    try:
+        _id = request.get_json()[PlaygroundField.ID]
+        if PlaygroundField.USERS in request.get_json():
+            users = request.get_json()[PlaygroundField.USERS]
+        if PlaygroundField.CANVAS in request.get_json():
+            canvas = request.get_json()[PlaygroundField.CANVAS]
+
+    except KeyError as e:
+        logging.error(e)
+        return make_response("Unprocessable entity", 422)
+
+    logging.error(users)
+
+    playground = playgrounds.update(Playground(_id=_id, canvas=canvas, users=users))
     if playground == None:
         return make_response("Server error", 500)
 
