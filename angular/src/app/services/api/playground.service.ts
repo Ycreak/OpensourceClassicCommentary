@@ -32,8 +32,7 @@ export class PlaygroundApiService extends ApiService {
   public create(playground: Playground_communicator): Observable<any> {
     this.spinner_on();
     return new Observable((observer) => {
-      this.post(this.FlaskURL, this.endpoint_create, playground, this.post_header).subscribe((data: any) => {
-        console.log('data', data);
+      this.post(this.FlaskURL, this.endpoint_create, playground, this.get_header).subscribe((data: any) => {
         this.spinner_off();
         observer.next(data);
         observer.complete();

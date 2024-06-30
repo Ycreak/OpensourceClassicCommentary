@@ -84,11 +84,7 @@ export class PlaygroundComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.playground = new Playground(this.fabric);
-    this.playground.canvas = new fabric.Canvas('playground_canvas');
-    this.playground.set_event_handlers();
-    this.playground.init();
-
+    this.init_playground();
     this.request_documents('fragments', { title: 'Eumenides' });
     //this.request_documents('testimonia', { author: 'Accius' });
   }
@@ -159,18 +155,8 @@ export class PlaygroundComponent implements OnInit {
               new Playground_communicator({ _id: requested_playground_id, user: this.auth_service.current_user_name })
             )
             .subscribe((playground) => {
-              this.utility.open_snackbar(`Playground ${playground.name} opened.`);
-              this.playground.name = playground.name;
-              this.playground.created_by = playground.created_by;
-              this.playground.role = playground.role;
-              this.playground._id = playground._id;
-              this.playground.users = playground.users;
-              // Apply data to the canvas
-              this.playground.canvas.clear();
-              this.playground.canvas.loadFromJSON(
-                playground.canvas,
-                this.playground.canvas.renderAll.bind(this.playground.canvas)
-              );
+              this.process_incoming_playground(playground);
+              this.utility.open_snackbar(`Playground ${this.playground.name} opened.`);
             });
         }
       },
@@ -215,7 +201,10 @@ export class PlaygroundComponent implements OnInit {
                 ],
               })
             )
-            .subscribe((playground) => {});
+            .subscribe((playground) => {
+              this.process_incoming_playground(playground);
+              this.utility.open_snackbar(`Playground ${this.playground.name} created.`);
+            });
         }
       }
     });
@@ -288,6 +277,9 @@ export class PlaygroundComponent implements OnInit {
             // Check if we have the correct rights to delete the playground
             if (this.playground.role === 'owner') {
               this.playground_api.remove(new Playground_communicator({ _id: this.playground._id }));
+              // Reset the playground to a clean slate
+              this.playground.clear();
+              this.playground.role = undefined;
             } else {
               this.utility.open_snackbar('Not allowed');
             }
@@ -317,5 +309,35 @@ export class PlaygroundComponent implements OnInit {
     } else {
       this.utility.open_snackbar('I am a note.');
     }
+  }
+
+  /**
+   * Sets up everything correctly for an incoming playground
+   * @param playground (Playground) from the API
+   * @author Ycreak
+   */
+  private process_incoming_playground(playground: any): void {
+    this.playground.name = playground.name;
+    this.playground.created_by = playground.created_by;
+    this.playground.role = playground.role;
+    this.playground._id = playground._id;
+    this.playground.users = playground.users;
+    // Apply data to the canvas
+    this.playground.canvas.clear();
+    this.playground.canvas.loadFromJSON(
+      playground.canvas,
+      this.playground.canvas.renderAll.bind(this.playground.canvas)
+    );
+  }
+
+  /**
+   * Inits the playground object
+   * @author Ycreak
+   */
+  private init_playground(): void {
+    this.playground = new Playground(this.fabric);
+    this.playground.canvas = new fabric.Canvas('playground_canvas');
+    this.playground.set_event_handlers();
+    this.playground.init();
   }
 }

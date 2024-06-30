@@ -64,12 +64,19 @@ def create_playground():
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
- 
-    playground = playgrounds.create(Playground(_id=uuid4().hex, name=name, users=users, canvas=canvas, created_by=created_by))
+
+    _id: str = uuid4().hex
+
+    playground = playgrounds.create(Playground(_id=_id, name=name, users=users, canvas=canvas, created_by=created_by))
     if playground == None:
         return make_response("Server error", 500)
+   
+    # Load the created playground and return it
+    playground = playgrounds.get(Playground(_id=_id), created_by)
+    if not playground:
+        return make_response("Not found", 401)
     
-    return jsonify(playground, 200)
+    return jsonify(playground), 200
 
 def update_playground():    
     canvas= None
