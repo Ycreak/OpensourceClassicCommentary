@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Output, EventEmitter } from '@angular/core';
-//import { WebsocketsService } from '@oscc/playground/websockets.service';
+import { WebsocketsService } from '@oscc/playground/websockets.service';
 import { HostListener } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 import { fabric } from 'fabric';
+import { Subscription } from 'rxjs';
 
 // Service imports
 import { ApiService } from '@oscc/api.service';
@@ -38,7 +39,7 @@ import { Playground_user } from '@oscc/models/api/Playground_user';
   templateUrl: './playground.component.html',
   styleUrls: ['./playground.component.scss'],
 })
-export class PlaygroundComponent implements OnInit {
+export class PlaygroundComponent implements OnInit, OnDestroy {
   @Output() document_clicked = new EventEmitter<Fragment>();
   // Listener for key events
   @HostListener('document:keyup', ['$event'])
@@ -69,6 +70,9 @@ export class PlaygroundComponent implements OnInit {
   // Playground column that keeps all data related to said playground
   protected playground: Playground;
 
+  private canvas_change_subscription: Subscription;
+  private canvas_object_identifier: number = 0;
+
   constructor(
     private api_interface: ApiInterfaceService,
     private commentary: CommentaryService,
@@ -80,13 +84,20 @@ export class PlaygroundComponent implements OnInit {
     protected auth_service: AuthService,
     protected fragments_api: FragmentsApiService,
     protected utility: UtilityService,
-    protected dialog: DialogService
+    protected dialog: DialogService,
+    private websockets: WebsocketsService
   ) {}
 
   ngOnInit(): void {
     this.init_playground();
     this.request_documents('fragments', { title: 'Eumenides' });
     //this.request_documents('testimonia', { author: 'Accius' });
+  }
+
+  ngOnDestroy() {
+    if (this.canvas_change_subscription) {
+      this.canvas_change_subscription.unsubscribe();
+    }
   }
 
   /**
@@ -215,28 +226,22 @@ export class PlaygroundComponent implements OnInit {
    * @author Ycreak
    */
   protected join_playground(): void {
-    const dialogRef = this.mat_dialog.open(JoinPlaygroundComponent, {
-      data: { name: this.auth_service.current_user_name },
-    });
-    dialogRef.afterClosed().subscribe({
-      next: (playground: any) => {
-        if (playground) {
-          //this.api.get_playground({ user: playground.user, name: playground.name }).subscribe((playground) => {
-          //this.playground.name = playground.name;
-          //this.playground.shared_with = playground.shared_with;
-          //this.playground._id = playground._id;
-          //this.playground.owner = playground.owner;
-          //// Apply data to the canvas
-          //this.playground.canvas.clear();
-          //this.playground.canvas.loadFromJSON(
-          //playground.canvas,
-          //this.playground.canvas.renderAll.bind(this.playground.canvas)
-          //);
-          //});
-        }
-      },
+    // We simulate the websockets in this function
+    this.websockets.active = true;
+    // First, generate a string and provide it to the user as being the share string
+    const identifier: string = (Math.random() + 1).toString(36).substring(7);
+    this.utility.open_snackbar(`The share code is: ${identifier}`);
+
+    // Next, copy the playground canvas to the websockets service
+    this.websockets.canvas = this.playground.canvas.toJSON();
+
+    // Take a subscription to get notified by any changes to the canvas
+    this.canvas_change_subscription = this.playground.canvas_changed$.subscribe((canvas) => {
+      // Now every time we change anything in the playground, we update the websockets canvas
+      this.websockets.propagate(this.playground.canvas.toJSON());
     });
   }
+
   /**
    * Opens the share playground dialog. If accepted, we share the current playground with the given users.
    * @author Ycreak
