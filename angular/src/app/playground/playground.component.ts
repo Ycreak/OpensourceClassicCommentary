@@ -228,6 +228,8 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   protected join_playground(): void {
     // We simulate the websockets in this function
     this.websockets.active = true;
+    //this.websockets.connect();
+    this.websockets.sendMessage('Hello from Angular!');
     // First, generate a string and provide it to the user as being the share string
     const identifier: string = (Math.random() + 1).toString(36).substring(7);
     this.utility.open_snackbar(`The share code is: ${identifier}`);

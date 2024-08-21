@@ -9,6 +9,8 @@ import { map } from 'rxjs/operators';
 export class WebsocketsService {
   public canvas: object;
   public active: boolean;
+  //private socket: any;
+
 
   constructor(
     private socket: Socket,
@@ -22,7 +24,7 @@ export class WebsocketsService {
   }
 
   public sendMessage(message: any) {
-    this.socket.emit('message', message);
+    this.socket.emit('message', 'hello there');
   }
 
   public getMessage() {

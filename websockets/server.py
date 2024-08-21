@@ -22,6 +22,11 @@ def user_sign_in(user_name, methods=['GET', 'POST']):
     socketio.emit('current_users', users)
     print("New user sign in!", users)
 
+# @socketio.on('message')
+# def handle_message(message):
+    # print('received message: ' + message)
+    # # socketio.emit('response', {'data': 'Message received'})
+
 @socketio.on('message')
 def messaging(message, methods=['GET', 'POST']):
     print('received message: ' + str(message['message']))

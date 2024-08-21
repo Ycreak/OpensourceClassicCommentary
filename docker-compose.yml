@@ -17,3 +17,12 @@ services:
       - "5003:5000"
     volumes:
       - ./flask:/app
+  
+  websockets:
+    build:
+      context: ./websockets
+      dockerfile: Dockerfile.websockets
+    ports:
+      - "5004:5000"
+    volumes:
+      - ./websockets:/app_websockets
