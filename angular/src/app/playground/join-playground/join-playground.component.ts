@@ -1,37 +1,20 @@
+/**
+ * Component shows an input and returns the value that has been provided.
+ */
+
 // Library imports
-import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { ApiService } from '@oscc/api.service';
+import { Component } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-join-playground',
   templateUrl: './join-playground.component.html',
   styleUrls: ['./join-playground.component.scss'],
 })
-export class JoinPlaygroundComponent implements OnInit {
+export class JoinPlaygroundComponent {
   protected name: string;
-  protected playgrounds: string[] = [];
 
-  protected selected_playground: string;
-  protected no_playgrounds = false;
-
-  constructor(
-    @Inject(MAT_DIALOG_DATA) public dialog_data: any,
-    public dialogRef: MatDialogRef<JoinPlaygroundComponent>,
-    protected api: ApiService
-  ) {
-    this.name = dialog_data.name;
-  }
-
-  ngOnInit(): void {
-    //this.api.get_shared_playgrounds({ user: this.name }).subscribe((playgrounds) => {
-    //if (playgrounds.length > 0) {
-    //this.playgrounds = playgrounds;
-    //} else {
-    //this.no_playgrounds = true;
-    //}
-    //});
-  }
+  constructor(public dialogRef: MatDialogRef<JoinPlaygroundComponent>) {}
 
   protected onNoClick(): void {
     this.dialogRef.close();

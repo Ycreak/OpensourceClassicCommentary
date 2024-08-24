@@ -84,7 +84,7 @@ import { QuillModule } from 'ngx-quill';
 
 // Websockets
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
-const config: SocketIoConfig = { url: 'http://localhost:5004', options: {} };
+const config: SocketIoConfig = { url: 'http://localhost:5000', options: {} };
 
 // Allows communication with firebase
 import { ScansionComponent } from './scansion/scansion.component';

@@ -1,41 +1,31 @@
-from flask import Flask, request
-from flask_cors import CORS, cross_origin
-from flask_socketio import SocketIO
+from flask import Flask
+from flask_cors import CORS
+from flask_socketio import SocketIO, join_room, leave_room
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'vnkdjnfjknfl1232#'
 socketio = SocketIO(app, cors_allowed_origins="*")
 CORS(app)
 
-canvas_objects = []
+@socketio.on('json')
+def handle_json(json):
+    print('bouncing json', json)
+    socketio.send(json, json=True)
 
-users = {}
-@socketio.on('disconnect')
-def on_disconnect():
-    users.pop(request.sid,'No user found')
-    socketio.emit('current_users', users)
-    print("User disconnected!\nThe users are: ", users)
+@socketio.on('join')
+def on_join(data):
+    username = data['username']
+    room = data['room']
+    print(f"User {username} has joined room {room}")
+    join_room(room)
+    socketio.send(f'{username} has entered room {room}.', to=room)
 
-@socketio.on('sign_in')
-def user_sign_in(user_name, methods=['GET', 'POST']):
-    users[request.sid] = user_name['name']
-    socketio.emit('current_users', users)
-    print("New user sign in!", users)
-
-# @socketio.on('message')
-# def handle_message(message):
-    # print('received message: ' + message)
-    # # socketio.emit('response', {'data': 'Message received'})
-
-@socketio.on('message')
-def messaging(message, methods=['GET', 'POST']):
-    print('received message: ' + str(message['message']))
-    message['from'] = request.sid
-    socketio.emit('message', message, room=request.sid)
-    socketio.emit('message', message)
-
-    # for item in message['objects']:
-        # canvas_objects.push(item)
+@socketio.on('leave')
+def on_leave(data):
+    username = data['username']
+    room = data['room']
+    leave_room(room)
+    socketio.send(username + ' has left the room.', to=room)
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)

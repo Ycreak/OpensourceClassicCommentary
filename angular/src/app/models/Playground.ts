@@ -248,10 +248,11 @@ export class Playground {
       }
       // on mouse up we want to recalculate new interaction
       // for all objects, so we call setViewportTransform
+      // FIXME: because of this, a selected object does not stay selected...
+      this.canvas_changed_subject.next({});
       this.canvas.setViewportTransform(this.canvas.viewportTransform);
       this.canvas.isDragging = false;
       this.canvas.selection = true;
-      this.canvas_changed_subject.next({});
     });
 
     // On object add, delete and modify, save the canvas state for undo and redo

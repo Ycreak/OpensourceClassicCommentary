@@ -71,21 +71,21 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   protected playground: Playground;
 
   private canvas_change_subscription: Subscription;
-  private canvas_object_identifier: number = 0;
+  private websockets_subscription: Subscription;
 
   constructor(
-    private api_interface: ApiInterfaceService,
-    private commentary: CommentaryService,
-    private fabric: FabricService,
-    private formatter: FormatterService,
-    private mat_dialog: MatDialog,
     protected api: ApiService,
-    private playground_api: PlaygroundApiService,
     protected auth_service: AuthService,
     protected fragments_api: FragmentsApiService,
     protected utility: UtilityService,
     protected dialog: DialogService,
-    private websockets: WebsocketsService
+    protected websockets: WebsocketsService,
+    private api_interface: ApiInterfaceService,
+    private commentary: CommentaryService,
+    private mat_dialog: MatDialog,
+    private fabric: FabricService,
+    private formatter: FormatterService,
+    private playground_api: PlaygroundApiService
   ) {}
 
   ngOnInit(): void {
@@ -97,6 +97,9 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.canvas_change_subscription) {
       this.canvas_change_subscription.unsubscribe();
+    }
+    if (this.websockets_subscription) {
+      this.websockets_subscription.unsubscribe();
     }
   }
 
@@ -222,26 +225,52 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Opens the join playground dialog.
+   * Opens a dialog to join a live room.
+   * @param number of column_id to load documents into
    * @author Ycreak
    */
   protected join_playground(): void {
-    // We simulate the websockets in this function
-    this.websockets.active = true;
-    //this.websockets.connect();
-    this.websockets.sendMessage('Hello from Angular!');
-    // First, generate a string and provide it to the user as being the share string
-    const identifier: string = (Math.random() + 1).toString(36).substring(7);
-    this.utility.open_snackbar(`The share code is: ${identifier}`);
-
-    // Next, copy the playground canvas to the websockets service
-    this.websockets.canvas = this.playground.canvas.toJSON();
-
-    // Take a subscription to get notified by any changes to the canvas
-    this.canvas_change_subscription = this.playground.canvas_changed$.subscribe((canvas) => {
-      // Now every time we change anything in the playground, we update the websockets canvas
-      this.websockets.propagate(this.playground.canvas.toJSON());
+    const dialogRef = this.mat_dialog.open(JoinPlaygroundComponent, {
+      data: { name: this.auth_service.current_user_name },
     });
+    dialogRef.afterClosed().subscribe({
+      next: (room_identifier: string) => {
+        if (room_identifier) {
+          this.join_live_room(room_identifier);
+        }
+      },
+    });
+  }
+  /**
+   * Joins the given websockets room. Will send the playground canvas to the websocket on every
+   * canvas change and will load the playground canvas whenever one is received from the server.
+   */
+  protected join_live_room(room_identifier: string): void {
+    // Join the generated websockets room
+    this.websockets.room_identifier = room_identifier;
+    this.websockets.join(room_identifier);
+
+    // Take a subscription to the websocket with the generated room number
+    this.websockets.active = true;
+    this.websockets.get_messages().subscribe((message) => {
+      console.log('received message', message);
+      this.playground.canvas.loadFromJSON(message, this.playground.canvas.renderAll.bind(this.playground.canvas));
+    });
+    // Take a subscription to canvas changes. These we will send to the websocket
+    this.canvas_change_subscription = this.playground.canvas_changed_subject.subscribe((nothing: any) => {
+      this.websockets.send_json(this.playground.canvas.toJSON());
+    });
+  }
+
+  /**
+   * Creates a live room by generating a room identifier and joining said room.
+   * @author Ycreak
+   */
+  protected create_live_room(): void {
+    // First, generate a string and provide it to the user as being the share string
+    this.websockets.room_identifier = (Math.random() + 1).toString(36).substring(7);
+    this.utility.open_snackbar(`The share code is: ${this.websockets.room_identifier}`);
+    this.join_live_room(this.websockets.room_identifier);
   }
 
   /**

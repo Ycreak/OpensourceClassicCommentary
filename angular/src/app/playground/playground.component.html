@@ -5,6 +5,10 @@
 
   <hr class="playground-divider" />
 
+  <p *ngIf="this.websockets.active">
+    Current room: <b>{{ this.websockets.room_identifier }}</b>
+  </p>
+
   <div class="canvas-container">
     <canvas id="playground_canvas"></canvas>
 
@@ -101,6 +105,11 @@
           class="playground-icon"
           src="assets\icons\ByteDanceIconPark\9071373_people_plus_one_icon.png"
           (click)="this.share_playground()" />
+        <img
+          id="playground_share_btn"
+          class="playground-icon"
+          src="assets\icons\ByteDanceIconPark\9071373_people_plus_one_icon.png"
+          (click)="this.create_live_room()" />
         <img
           id="playground_join_btn"
           class="playground-icon"

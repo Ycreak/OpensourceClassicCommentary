@@ -9,8 +9,7 @@ import { map } from 'rxjs/operators';
 export class WebsocketsService {
   public canvas: object;
   public active: boolean;
-  //private socket: any;
-
+  public room_identifier: string;
 
   constructor(
     private socket: Socket,
@@ -19,21 +18,27 @@ export class WebsocketsService {
     this.active = false;
   }
 
-  public login(): void {
-    this.socket.emit('sign_in', { id: 0, name: this.auth_service.current_user_name });
+  /**
+   * Joins the given websockets room
+   * @param room (string)
+   */
+  public join(room: string): void {
+    this.socket.emit('join', { username: this.auth_service.current_user_name, room: room });
   }
 
-  public sendMessage(message: any) {
-    this.socket.emit('message', 'hello there');
+  public send_json(json: object): void {
+    this.socket.emit('json', json);
   }
 
-  public getMessage() {
-    return this.socket.fromEvent('message').pipe(map((data: any) => data));
+  public send_message(message: any) {
+    this.socket.emit('message', message);
   }
 
-  public propagate(incoming_canvas: object): void {
-    console.log(incoming_canvas);
-
-    console.log(this.canvas);
+  /**
+   * Subscription for the json events send by the websocket
+   * @return Observable
+   */
+  public get_messages() {
+    return this.socket.fromEvent('json').pipe(map((data: any) => data));
   }
 }
