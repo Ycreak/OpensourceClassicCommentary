@@ -98,9 +98,8 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
     if (this.canvas_change_subscription) {
       this.canvas_change_subscription.unsubscribe();
     }
-    if (this.websockets_subscription) {
-      this.websockets_subscription.unsubscribe();
-    }
+    // Close the websocket
+    this.disconnect_from_websocket();
   }
 
   /**
@@ -236,6 +235,9 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe({
       next: (room_identifier: string) => {
         if (room_identifier) {
+          // Disconnect from any existing websocket connections
+          this.disconnect_from_websocket();
+          // And join the newly given live room
           this.join_live_room(room_identifier);
         }
       },
@@ -248,12 +250,11 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   protected join_live_room(room_identifier: string): void {
     // Join the generated websockets room
     this.websockets.room_identifier = room_identifier;
-    this.websockets.join(room_identifier);
+    this.websockets.connect(room_identifier);
 
     // Take a subscription to the websocket with the generated room number
     this.websockets.active = true;
-    this.websockets.get_messages().subscribe((message) => {
-      console.log('received message', message);
+    this.websockets_subscription = this.websockets.get_messages().subscribe((message) => {
       this.playground.canvas.loadFromJSON(message, this.playground.canvas.renderAll.bind(this.playground.canvas));
     });
     // Take a subscription to canvas changes. These we will send to the websocket
@@ -267,10 +268,23 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
    * @author Ycreak
    */
   protected create_live_room(): void {
+    this.disconnect_from_websocket();
     // First, generate a string and provide it to the user as being the share string
     this.websockets.room_identifier = (Math.random() + 1).toString(36).substring(7);
     this.utility.open_snackbar(`The share code is: ${this.websockets.room_identifier}`);
     this.join_live_room(this.websockets.room_identifier);
+  }
+
+  /**
+   * Disconnects fully and gracefully from the currently connected websocket
+   * @author Ycreak
+   */
+  private disconnect_from_websocket(): void {
+    if (this.websockets_subscription) {
+      this.websockets_subscription.unsubscribe();
+      this.websockets.disconnect(this.websockets.room_identifier);
+      this.websockets.active = false;
+    }
   }
 
   /**

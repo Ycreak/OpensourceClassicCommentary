@@ -24,6 +24,7 @@ def on_join(data):
 def on_leave(data):
     username = data['username']
     room = data['room']
+    print(f"User {username} has left room {room}")
     leave_room(room)
     socketio.send(username + ' has left the room.', to=room)
 

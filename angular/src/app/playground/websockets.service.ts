@@ -1,3 +1,7 @@
+/**
+ * This service allow components to connect to the websocket server and send/receive messages
+ */
+
 import { Injectable } from '@angular/core';
 import { AuthService } from '@oscc/auth/auth.service';
 import { Socket } from 'ngx-socket-io';
@@ -7,7 +11,6 @@ import { map } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class WebsocketsService {
-  public canvas: object;
   public active: boolean;
   public room_identifier: string;
 
@@ -22,16 +25,23 @@ export class WebsocketsService {
    * Joins the given websockets room
    * @param room (string)
    */
-  public join(room: string): void {
+  public connect(room: string): void {
     this.socket.emit('join', { username: this.auth_service.current_user_name, room: room });
   }
-
-  public send_json(json: object): void {
-    this.socket.emit('json', json);
+  /**
+   * Disconnects from the given websockets room
+   * @param room (string)
+   */
+  public disconnect(room: string): void {
+    this.socket.emit('leave', { username: this.auth_service.current_user_name, room: room });
   }
 
-  public send_message(message: any) {
-    this.socket.emit('message', message);
+  /**
+   * Sends a json to the json endpoint
+   * @param json (object)
+   */
+  public send_json(json: object): void {
+    this.socket.emit('json', json);
   }
 
   /**
