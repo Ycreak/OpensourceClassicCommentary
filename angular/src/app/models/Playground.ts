@@ -1,5 +1,6 @@
 import { fabric } from 'fabric';
 import { environment } from '@src/environments/environment';
+import { Subject } from 'rxjs';
 
 // Service imports
 import { FabricService } from '@oscc/playground/services/fabric.service';
@@ -39,6 +40,10 @@ export class Playground {
 
   retrieved_titles: string[];
   retrieved_editors: string[];
+
+  // Subscribable variable that tracks changes to the canvas.
+  public canvas_changed_subject: Subject<object> = new Subject<object>();
+  canvas_changed$ = this.canvas_changed_subject.asObservable();
 
   constructor(private fabric: FabricService) {}
 
@@ -160,6 +165,7 @@ export class Playground {
       // We save the document identifier for finding the document in this.documents whenever we need it for something
       identifier: { author: fragment.author, title: fragment.title, editor: fragment.editor, name: fragment.name },
     });
+
     this.canvas.add(group);
   }
 
@@ -242,6 +248,8 @@ export class Playground {
       }
       // on mouse up we want to recalculate new interaction
       // for all objects, so we call setViewportTransform
+      // FIXME: because of this, a selected object does not stay selected...
+      this.canvas_changed_subject.next({});
       this.canvas.setViewportTransform(this.canvas.viewportTransform);
       this.canvas.isDragging = false;
       this.canvas.selection = true;

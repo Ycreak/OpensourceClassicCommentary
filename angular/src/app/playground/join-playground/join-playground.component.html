@@ -1,19 +1,16 @@
-<h1 mat-dialog-title>Join playground</h1>
+<div class="dialog-header">
+  <h2>Join live session</h2>
+  <button mat-icon-button [mat-dialog-close]="null" [disableRipple]="true">
+    <mat-icon>clear</mat-icon>
+  </button>
+</div>
 <div mat-dialog-content>
-  <mat-progress-bar mode="query" *ngIf="this.api.spinner"></mat-progress-bar>
-
-  <div *ngIf="this.no_playgrounds" class="alert alert-info" role="alert">No playgrounds are shared with you</div>
-
   <mat-form-field>
-    <mat-label>Select a playground</mat-label>
-    <mat-select [(ngModel)]="this.selected_playground">
-      <mat-option *ngFor="let playground of this.playgrounds" [value]="playground">
-        {{ playground.name }} ({{ playground.owner }})
-      </mat-option>
-    </mat-select>
+    <mat-label>Name of the live session</mat-label>
+    <input matInput [(ngModel)]="this.name" />
   </mat-form-field>
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="onNoClick()">Cancel</button>
-  <button mat-button [mat-dialog-close]="this.selected_playground" cdkFocusInitial>Load</button>
+  <button mat-button [mat-dialog-close]="this.name" cdkFocusInitial>Join</button>
 </div>
