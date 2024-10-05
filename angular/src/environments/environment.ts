@@ -6,6 +6,7 @@ export const environment = {
   title: 'Open Source Classics Commentary (Development)',
   short_title: 'OSCC (Dev)',
   flask_api: 'http://localhost:5003/',
+  websockets_address: 'http://localhost:5000/',
   //flask_api: 'https://oscc.nolden.biz:5004/',
   is_logged_in: true,
   current_user_name: 'Lucus',

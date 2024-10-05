@@ -30,7 +30,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NgxSimpleTextEditorModule } from 'ngx-simple-text-editor';
-//import { environment } from '../environments/environment';
+import { environment } from '@src/environments/environment';
 
 // Component Imports
 import { AppRoutingModule } from './app-routing.module';
@@ -84,7 +84,7 @@ import { QuillModule } from 'ngx-quill';
 
 // Websockets
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
-const config: SocketIoConfig = { url: 'http://localhost:5000', options: {} };
+const config: SocketIoConfig = { url: environment.websockets_address, options: {} };
 
 // Allows communication with firebase
 import { ScansionComponent } from './scansion/scansion.component';

@@ -72,6 +72,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
 
   private canvas_change_subscription: Subscription;
   private websockets_subscription: Subscription;
+  private websockets_users_subscription: Subscription;
 
   constructor(
     protected api: ApiService,
@@ -237,8 +238,10 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
         if (room_identifier) {
           // Disconnect from any existing websocket connections
           this.disconnect_from_websocket();
-          // And join the newly given live room
-          this.join_live_room(room_identifier);
+          if (room_identifier != 'leave') {
+            // And join the newly given live room
+            this.join_live_room(room_identifier);
+          }
         }
       },
     });
@@ -250,7 +253,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   protected join_live_room(room_identifier: string): void {
     // Join the generated websockets room
     this.websockets.room_identifier = room_identifier;
-    this.websockets.connect(room_identifier);
+    this.websockets_users_subscription = this.websockets.connect(room_identifier).subscribe();
 
     // Take a subscription to the websocket with the generated room number
     this.websockets.active = true;
@@ -259,7 +262,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
     });
     // Take a subscription to canvas changes. These we will send to the websocket
     this.canvas_change_subscription = this.playground.canvas_changed_subject.subscribe((nothing: any) => {
-      this.websockets.send_json(this.playground.canvas.toJSON());
+      this.websockets.send_json(this.playground.canvas.toJSON(), room_identifier);
     });
   }
 
@@ -282,6 +285,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   private disconnect_from_websocket(): void {
     if (this.websockets_subscription) {
       this.websockets_subscription.unsubscribe();
+      this.websockets_users_subscription.unsubscribe();
       this.websockets.disconnect(this.websockets.room_identifier);
       this.websockets.active = false;
     }
