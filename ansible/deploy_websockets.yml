@@ -1,0 +1,24 @@
+---
+- name: Copy flask files to Nox 
+  hosts: nox
+  vars:
+    src_dir: "../websockets"
+    dest_dir: "/home/luukie/OSCC/stable_server/websockets"
+
+  tasks:
+    - name: Ensure destination directory exists
+      file:
+        path: "{{ dest_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Delete old server.py file 
+      file:
+        path: "{{ dest_dir }}/server.py"
+        state: absent
+
+    - name: Copy new server.py file 
+      copy:
+        src: "{{ src_dir }}/server.py"
+        dest: "{{ dest_dir }}/"
+        mode: '0644'

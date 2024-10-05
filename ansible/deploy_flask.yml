@@ -1,0 +1,68 @@
+---
+- name: Copy flask files to Nox 
+  hosts: nox
+  vars:
+    src_dir: "../flask"
+    dest_dir: "/home/luukie/OSCC/stable_server/flask"
+
+  tasks:
+    - name: Ensure destination directory exists
+      file:
+        path: "{{ dest_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Delete old endpoints folder 
+      file:
+        path: "{{ dest_dir }}/endpoints"
+        state: absent
+
+    - name: Copy new endpoints folder 
+      copy:
+        src: "{{ src_dir }}/endpoints"
+        dest: "{{ dest_dir }}/"
+        mode: '0644'
+    
+    - name: Delete old models folder 
+      file:
+        path: "{{ dest_dir }}/models"
+        state: absent
+
+    - name: Copy new models folder 
+      copy:
+        src: "{{ src_dir }}/models"
+        dest: "{{ dest_dir }}/"
+        mode: '0644'
+
+    - name: Delete old couch.py file 
+      file:
+        path: "{{ dest_dir }}/couch.py"
+        state: absent
+
+    - name: Copy new couch.py file 
+      copy:
+        src: "{{ src_dir }}/couch.py"
+        dest: "{{ dest_dir }}/"
+        mode: '0644'
+    
+    - name: Delete old server.py file 
+      file:
+        path: "{{ dest_dir }}/server.py"
+        state: absent
+
+    - name: Copy new server.py file 
+      copy:
+        src: "{{ src_dir }}/server.py"
+        dest: "{{ dest_dir }}/"
+        mode: '0644'
+    
+    - name: Delete old utilities.py file 
+      file:
+        path: "{{ dest_dir }}/utilities.py"
+        state: absent
+
+    - name: Copy new utilities.py file 
+      copy:
+        src: "{{ src_dir }}/utilities.py"
+        dest: "{{ dest_dir }}/"
+        mode: '0644'
