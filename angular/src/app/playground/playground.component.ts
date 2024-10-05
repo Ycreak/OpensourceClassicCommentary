@@ -391,6 +391,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   private init_playground(): void {
     this.playground = new Playground(this.fabric);
     this.playground.canvas = new fabric.Canvas('playground_canvas');
+    this.playground.extend_canvas_properties();
     this.playground.set_event_handlers();
     this.playground.init();
   }

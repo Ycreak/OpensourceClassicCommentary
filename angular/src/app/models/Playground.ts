@@ -129,20 +129,49 @@ export class Playground {
   }
 
   /**
+   * Generates a pseudo-random string that can be used as identifier
+   * @return string
+   * @author Ycreak
+   */
+  private generate_identifier(): string {
+    return (Math.random() + 1).toString(36).substring(7);
+  }
+
+  /**
+   * Adds a created group to the canvas. Provides the group with a unique identifier.
+   * @param fabric.Group to add to the canvas
+   * @author Ycreak
+   */
+  private add_group_to_canvas(group: fabric.Group): void {
+    let identifier: string = this.generate_identifier();
+    // If the identifier is already in use, generate a new one
+    while (this.canvas._objects.some((item: object) => item['identifier'] === identifier)) {
+      identifier = this.generate_identifier();
+    }
+    group.identifier = identifier;
+    this.canvas.add(group);
+  }
+
+  /**
    * Adds the given note to the canvas
    * @author Ycreak
    */
   public add_note(note: string): void {
     const text = new fabric.Textbox(note, {
-      top: this.get_center().y,
-      left: this.get_center().x,
       width: 200,
       fontSize: this.font_size,
       textAlign: 'left', // you can use specify the text align
       backgroundColor: '#F0C086',
       editable: true,
     });
-    this.canvas.add(text);
+    const group = new fabric.Group([text], {
+      top: this.get_center().y,
+      left: this.get_center().x,
+      // We save the document identifier for finding the document in this.documents whenever we need it for something
+      //identifier: { author: fragment.author, title: fragment.title, editor: fragment.editor, name: fragment.name },
+      //identifier: 'hello there'
+    });
+    this.add_group_to_canvas(group);
   }
   /**
    * Adds the given fragment to the canvas
@@ -163,10 +192,11 @@ export class Playground {
       top: top,
       left: left,
       // We save the document identifier for finding the document in this.documents whenever we need it for something
-      identifier: { author: fragment.author, title: fragment.title, editor: fragment.editor, name: fragment.name },
+      //identifier: { author: fragment.author, title: fragment.title, editor: fragment.editor, name: fragment.name },
+      //identifier: 'hello there'
     });
-
-    this.canvas.add(group);
+    this.add_group_to_canvas(group);
+    //this.canvas.add(group);
   }
 
   /**
@@ -188,14 +218,31 @@ export class Playground {
       top: top,
       left: left,
       // We save the document identifier for finding the document in this.documents whenever we need it for something
-      identifier: {
-        author: testimonium.author,
-        title: testimonium.title,
-        editor: testimonium.editor,
-        name: testimonium.name,
-      },
+      //identifier: {
+      //author: testimonium.author,
+      //title: testimonium.title,
+      //editor: testimonium.editor,
+      //name: testimonium.name,
+      //},
+      //identifier: 'hello there'
     });
-    this.canvas.add(group);
+    this.add_group_to_canvas(group);
+    //this.canvas.add(group);
+  }
+
+  /**
+   * Extends the canvas to hold more properties. We add an identifier, so that the websockets
+   * know what objects is moved/changed/etc.
+   * @author Ycreak
+   */
+  public extend_canvas_properties(): void {
+    fabric.Group.prototype.toObject = (function (toObject) {
+      return function () {
+        return fabric.util.object.extend(toObject.call(this), {
+          identifier: this.identifier,
+        });
+      };
+    })(fabric.Group.prototype.toObject);
   }
 
   /**
@@ -246,6 +293,8 @@ export class Playground {
         activeObject._objects[0].set('fill', '#9BA8F2'); // Change color to blue
         this.canvas.renderAll();
       }
+      console.log(this.canvas._objects);
+
       // on mouse up we want to recalculate new interaction
       // for all objects, so we call setViewportTransform
       // FIXME: because of this, a selected object does not stay selected...
