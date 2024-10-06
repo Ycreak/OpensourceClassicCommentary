@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 
 // Service imports
 import { FabricService } from '@oscc/playground/services/fabric.service';
+import { AuthService } from '@oscc/auth/auth.service';
 
 // Model imports
 import { Playground_user } from './api/Playground_user';
@@ -45,7 +46,10 @@ export class Playground {
   public canvas_changed_subject: Subject<object> = new Subject<object>();
   canvas_changed$ = this.canvas_changed_subject.asObservable();
 
-  constructor(private fabric: FabricService) {}
+  constructor(
+    private fabric: FabricService,
+    private auth_service: AuthService
+  ) {}
 
   /**
    * Inits various canvas settings
@@ -103,6 +107,7 @@ export class Playground {
    */
   public delete_selected(): void {
     this.canvas.getActiveObjects().forEach((item: any) => {
+      this.canvas_changed_subject.next({ event: 'remove', fabric_object: JSON.stringify(item) });
       this.canvas.remove(item);
     });
   }
@@ -149,7 +154,55 @@ export class Playground {
       identifier = this.generate_identifier();
     }
     group.identifier = identifier;
+    group.changed_by = this.auth_service.current_user_name;
     this.canvas.add(group);
+    this.canvas_changed_subject.next({
+      event: 'add',
+      fabric_object: JSON.stringify(this.get_object_from_canvas(identifier)),
+    });
+  }
+
+  /**
+   * Retrieves an object from the canvas given its identifier
+   * @param identifier (string)
+   * @return object
+   * @author Ycreak
+   */
+  private get_object_from_canvas(identifier: string): object {
+    return this.canvas.getObjects().find((obj: any) => obj.identifier === identifier);
+  }
+
+  /**
+   * Deletes an object from the canvas given its identifier
+   * @param identifier (string)
+   * @author Ycreak
+   */
+  public delete_object_from_canvas(identifier: string): void {
+    //const object_to_remove = this.get_object_from_canvas(identifier)
+    const object_to_remove = this.canvas.getObjects().find((obj: any) => obj.identifier === identifier);
+    if (object_to_remove) {
+      this.canvas.remove(object_to_remove);
+    }
+  }
+
+  /**
+   * Adds a list of json objects to the canvas
+   * @param list
+   * @author Ycreak
+   */
+  public add_json_object_to_canvas(json_list: object[]): void {
+    console.log('adding!');
+    fabric.util.enlivenObjects(json_list, (objects: object[]) => {
+      const origRenderOnAddRemove = this.canvas.renderOnAddRemove;
+      this.canvas.renderOnAddRemove = false;
+
+      objects.forEach((o: object) => {
+        this.canvas.add(o);
+      });
+
+      this.canvas.renderOnAddRemove = origRenderOnAddRemove;
+      this.canvas.renderAll();
+    });
   }
 
   /**
@@ -240,6 +293,7 @@ export class Playground {
       return function () {
         return fabric.util.object.extend(toObject.call(this), {
           identifier: this.identifier,
+          changed_by: this.changed_by,
         });
       };
     })(fabric.Group.prototype.toObject);
@@ -293,12 +347,9 @@ export class Playground {
         activeObject._objects[0].set('fill', '#9BA8F2'); // Change color to blue
         this.canvas.renderAll();
       }
-      console.log(this.canvas._objects);
-
       // on mouse up we want to recalculate new interaction
       // for all objects, so we call setViewportTransform
       // FIXME: because of this, a selected object does not stay selected...
-      this.canvas_changed_subject.next({});
       this.canvas.setViewportTransform(this.canvas.viewportTransform);
       this.canvas.isDragging = false;
       this.canvas.selection = true;
@@ -306,17 +357,25 @@ export class Playground {
 
     // On object add, delete and modify, save the canvas state for undo and redo
     // The "() =>:" notation preserves the context of THIS.
-    this.canvas.on('object:added', () => {
+    this.canvas.on('object:added', (event: fabric.IEvent) => {
       if (!this.undo_status && !this.redo_status) {
         this.save_state();
       }
     });
-    this.canvas.on('object:modified', () => {
+
+    this.canvas.on('object:modified', (event: fabric.IEvent) => {
+      //if (event.target.changed_by == this.auth_service.current_user_name){
+      event.target.change_by = this.auth_service.current_user_name;
+      this.canvas_changed_subject.next({ event: 'modify', fabric_object: JSON.stringify(event.target) });
+      //}
+
       if (!this.undo_status && !this.redo_status) {
         this.save_state();
       }
     });
-    this.canvas.on('object:removed', () => {
+
+    this.canvas.on('object:removed', (event: fabric.IEvent) => {
+      //this.canvas_changed_subject.next({ event: 'remove', fabric_object: JSON.stringify(event.target) });
       if (!this.undo_status && !this.redo_status) {
         this.save_state();
       }

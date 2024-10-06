@@ -91,7 +91,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.init_playground();
-    this.request_documents('fragments', { title: 'Eumenides' });
+    //this.request_documents('fragments', { title: 'Eumenides' });
     //this.request_documents('testimonia', { author: 'Accius' });
   }
 
@@ -246,6 +246,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
       },
     });
   }
+
   /**
    * Joins the given websockets room. Will send the playground canvas to the websocket on every
    * canvas change and will load the playground canvas whenever one is received from the server.
@@ -258,11 +259,32 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
     // Take a subscription to the websocket with the generated room number
     this.websockets.active = true;
     this.websockets_subscription = this.websockets.get_messages().subscribe((message) => {
-      this.playground.canvas.loadFromJSON(message, this.playground.canvas.renderAll.bind(this.playground.canvas));
+      // Check if the message is not from us (in which case we ignore the directive)
+      if (message.user != this.auth_service.current_user_name) {
+        const fabric_object = JSON.parse(message.fabric_object);
+        console.log('incoming message!', fabric_object);
+        if (message.event == 'modify') {
+          console.log('modify');
+          this.playground.delete_object_from_canvas(JSON.parse(message.fabric_object).identifier);
+          //console.log(2)
+          this.playground.add_json_object_to_canvas([JSON.parse(message.fabric_object)]);
+        } else if (message.event == 'remove') {
+          // Find the object we need to remove in our canvas and remove it.
+          console.log('removing lol');
+          this.playground.delete_object_from_canvas(JSON.parse(message.fabric_object).identifier);
+        } else if (message.event == 'add') {
+          //console.log(1)
+          this.playground.add_json_object_to_canvas([JSON.parse(message.fabric_object)]);
+        } else {
+          console.error('Unknown websocket directive');
+        }
+      }
     });
     // Take a subscription to canvas changes. These we will send to the websocket
-    this.canvas_change_subscription = this.playground.canvas_changed_subject.subscribe((nothing: any) => {
-      this.websockets.send_json(this.playground.canvas.toJSON(), room_identifier);
+    this.canvas_change_subscription = this.playground.canvas_changed_subject.subscribe((change_object: any) => {
+      // Communicate the change on our local playground with the websocket
+      this.websockets.communicate_change(change_object.event, change_object.fabric_object, room_identifier);
+      console.log('i communicate a change');
     });
   }
 
@@ -389,7 +411,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
    * @author Ycreak
    */
   private init_playground(): void {
-    this.playground = new Playground(this.fabric);
+    this.playground = new Playground(this.fabric, this.auth_service);
     this.playground.canvas = new fabric.Canvas('playground_canvas');
     this.playground.extend_canvas_properties();
     this.playground.set_event_handlers();

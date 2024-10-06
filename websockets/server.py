@@ -10,6 +10,17 @@ CORS(app)
 # Dictionary to hold all rooms and its users
 room_dictionary: dict = { }
 
+@socketio.on('communicate_change')
+def communicate_change(data: dict):
+    fabric_object: dict = data['fabric_object']
+    change: str = data['event']
+    room = data['room']
+
+    print(data)
+
+    socketio.emit('communicate_change', data, to=room)
+
+
 @socketio.on('json')
 def handle_json(data: dict):
     print('bouncing json')
