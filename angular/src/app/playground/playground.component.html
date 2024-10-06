@@ -10,7 +10,7 @@
     >. Current users: <i *ngFor="let user of this.websockets.users_in_room">{{ user }} </i>
   </p>
 
-  <button (click)="this.auth_service.current_user_name = 'Frankie'">Change to Frankie</button>
+  <button *ngIf="this.auth_service.is_logged_in" (click)="this.auth_service.current_user_name = 'Frankie'">Change to Frankie</button>
 
   <div class="canvas-container">
     <canvas id="playground_canvas"></canvas>
