@@ -231,7 +231,8 @@ export class Playground {
    * @author Ycreak
    */
   private add_fragment(fragment: any, top: number, left: number): void {
-    const fill = '#3F51B5';
+    //const fill = '#3F51B5';
+    const fill = '#9BA8F2';
 
     const header = this.fabric.create_header(fragment, this.font_size);
     const lines = this.fabric.create_lines(fragment, this.font_size);
@@ -343,10 +344,10 @@ export class Playground {
     this.canvas.on('mouse:up', () => {
       // Whenever we move a fragment, we set its colour. This allows the distinction between existing and new fragments
       const activeObject = this.canvas.getActiveObject();
-      if (activeObject && this.is_document(activeObject)) {
-        activeObject._objects[0].set('fill', '#9BA8F2'); // Change color to blue
-        this.canvas.renderAll();
-      }
+      //if (activeObject && this.is_document(activeObject)) {
+        //activeObject._objects[0].set('fill', '#9BA8F2'); // Change color to blue
+        //this.canvas.renderAll();
+      //}
       // on mouse up we want to recalculate new interaction
       // for all objects, so we call setViewportTransform
       // FIXME: because of this, a selected object does not stay selected...
