@@ -264,17 +264,25 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
         const fabric_object = JSON.parse(message.fabric_object);
         console.log('incoming message!', fabric_object);
         if (message.event == 'modify') {
-          console.log('modify');
-          this.playground.delete_object_from_canvas(JSON.parse(message.fabric_object).identifier);
-          //console.log(2)
-          this.playground.add_json_object_to_canvas([JSON.parse(message.fabric_object)]);
+          console.log('modify', fabric_object);
+          // Check if we modify multiple objects, or only one
+          if (fabric_object.hasOwnProperty('identifier')) {
+            //if ("identifier" in fabric_object) {
+            // This means that we are dealing with a single object
+            this.playground.delete_object_from_canvas(fabric_object.identifier);
+          } else {
+            // We are working with multiple objects, from which we need to extract the identifiers
+            fabric_object.objects.forEach((obj: any) => {
+              this.playground.delete_object_from_canvas(obj.identifier);
+            });
+          }
+          this.playground.delete_object_from_canvas(fabric_object.identifier);
+          this.playground.add_json_object_to_canvas([fabric_object]);
         } else if (message.event == 'remove') {
           // Find the object we need to remove in our canvas and remove it.
-          console.log('removing lol');
-          this.playground.delete_object_from_canvas(JSON.parse(message.fabric_object).identifier);
+          this.playground.delete_object_from_canvas(fabric_object.identifier);
         } else if (message.event == 'add') {
-          //console.log(1)
-          this.playground.add_json_object_to_canvas([JSON.parse(message.fabric_object)]);
+          this.playground.add_json_object_to_canvas([fabric_object]);
         } else {
           console.error('Unknown websocket directive');
         }

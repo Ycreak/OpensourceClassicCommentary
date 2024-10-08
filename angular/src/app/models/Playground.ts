@@ -358,7 +358,7 @@ export class Playground {
 
     // On object add, delete and modify, save the canvas state for undo and redo
     // The "() =>:" notation preserves the context of THIS.
-    this.canvas.on('object:added', (event: fabric.IEvent) => {
+    this.canvas.on('object:added', () => {
       if (!this.undo_status && !this.redo_status) {
         this.save_state();
       }
@@ -366,7 +366,8 @@ export class Playground {
 
     this.canvas.on('object:modified', (event: fabric.IEvent) => {
       //if (event.target.changed_by == this.auth_service.current_user_name){
-      event.target.change_by = this.auth_service.current_user_name;
+      event.target.changed_by = this.auth_service.current_user_name;
+      console.log('event', event);
       this.canvas_changed_subject.next({ event: 'modify', fabric_object: JSON.stringify(event.target) });
       //}
 
@@ -375,7 +376,7 @@ export class Playground {
       }
     });
 
-    this.canvas.on('object:removed', (event: fabric.IEvent) => {
+    this.canvas.on('object:removed', () => {
       //this.canvas_changed_subject.next({ event: 'remove', fabric_object: JSON.stringify(event.target) });
       if (!this.undo_status && !this.redo_status) {
         this.save_state();
