@@ -24,6 +24,7 @@ class FragmentField(object):
     STATUS = "status"
     LOCK = "lock"
     TRANSLATION = "translation"
+    POPULAR_TRANSLATION = "popular_translation"
     DIFFERENCES = "differences"
     APPARATUS = "apparatus"
     COMMENTARY = "commentary"
@@ -43,6 +44,7 @@ class Fragment:
     status: str = None
     lock: int = None
     translation: str = None
+    popular_translation: str = None
     differences: str = None
     apparatus: str = None
     commentary: str = None
@@ -74,6 +76,8 @@ class FragmentModel:
                 fragment.lock = doc[FragmentField.LOCK]
             if FragmentField.TRANSLATION in doc:
                 fragment.translation = doc[FragmentField.TRANSLATION]
+            if FragmentField.POPULAR_TRANSLATION in doc:
+                fragment.popular_translation = doc[FragmentField.POPULAR_TRANSLATION]
             if FragmentField.DIFFERENCES in doc:
                 fragment.differences = doc[FragmentField.DIFFERENCES]
             if FragmentField.APPARATUS in doc:

@@ -8,6 +8,7 @@ export interface Fields {
   metrical_analysis: string;
   reconstruction: string;
   translation: string;
+  popular_translation: string;
 }
 
 /**
@@ -36,6 +37,8 @@ export class Commentary {
 
     const apparatus = 'apparatus' in doc && doc['apparatus'] != null ? doc['apparatus'] : '';
     const translation = 'translation' in doc && doc['translation'] != null ? doc['translation'] : '';
+    const popular_translation =
+      'popular_translation' in doc && doc['popular_translation'] != null ? doc['popular_translation'] : '';
     const commentary = 'commentary' in doc && doc['commentary'] != null ? doc['commentary'] : '';
     const reconstruction = 'reconstruction' in doc && doc['reconstruction'] != null ? doc['reconstruction'] : '';
     const differences = 'differences' in doc && doc['differences'] != null ? doc['differences'] : '';
@@ -51,6 +54,7 @@ export class Commentary {
       metrical_analysis: metrical_analysis,
       reconstruction: reconstruction,
       translation: translation,
+      popular_translation: popular_translation,
     } as Fields;
   }
 
