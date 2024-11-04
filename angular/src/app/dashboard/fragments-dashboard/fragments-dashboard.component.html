@@ -354,4 +354,23 @@
     </form>
   </mat-tab>
   <!-- end of the Fragment lock tab -->
+
+  <mat-tab label="Social media" *ngIf="this.auth_service.current_user_role === 'teacher'"
+    ><br />
+    <!-- This tab allows changing fields related to social media. For now, we can add a popular translation. -->
+
+    <form [formGroup]="fragment_form">
+      <div class="alert alert-info" role="alert">
+        Provide a popular translation to the fragment, which will be shown on our social media accounts
+      </div>
+      <mat-form-field class="input-form-full-width">
+        <mat-label><b>Popular translation</b></mat-label>
+        <textarea matInput type="text" formControlName="popular_translation"></textarea>
+      </mat-form-field>
+      <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('popular_translation')">
+        Rich editor
+      </button>
+    </form>
+  </mat-tab>
+  <!-- end of the Social media -->
 </mat-tab-group>

@@ -48,6 +48,7 @@ export class FragmentsDashboardComponent implements OnInit {
     apparatus: new FormControl(''),
     metrical_analysis: new FormControl(''),
     reconstruction: new FormControl(''),
+    popular_translation: new FormControl(''),
     // This array is dynamically filled by the function push_fragment_context_to_fragment_form().
     // It will contain multiple FormGroups per context, containing an author, location and text.
     context: new FormArray([]),
@@ -178,6 +179,7 @@ export class FragmentsDashboardComponent implements OnInit {
     // Update the fragment form with the commentary of the given fragment
     for (const item of [
       'translation',
+      'popular_translation',
       'differences',
       'commentary',
       'apparatus',

@@ -158,6 +158,7 @@ def create_fragment():
         status = None
         lock = None
         translation = None
+        popular_translation = None
         differences = None
         apparatus = None
         commentary = None
@@ -171,6 +172,8 @@ def create_fragment():
             status = request.get_json()[FragmentField.STATUS]
         if FragmentField.LOCK in request.get_json():
             lock = request.get_json()[FragmentField.LOCK]
+        if FragmentField.POPULAR_TRANSLATION in request.get_json():
+            popular_translation = request.get_json()[FragmentField.POPULAR_TRANSLATION]
         if FragmentField.TRANSLATION in request.get_json():
             translation = request.get_json()[FragmentField.TRANSLATION]
         if FragmentField.DIFFERENCES in request.get_json():
@@ -198,7 +201,7 @@ def create_fragment():
         return make_response("Forbidden", 403)
 
     fragment = fragments.create(Fragment(_id=uuid4().hex, author=author, title=title, editor=editor, name=name, status=status,
-                                         lock=lock, translation=translation, differences=differences, apparatus=apparatus, 
+                                         lock=lock, translation=translation, popular_translation=popular_translation, differences=differences, apparatus=apparatus, 
                                          commentary=commentary, reconstruction=reconstruction, metrical_analysis=metrical_analysis, context=context, 
                                          lines=lines, linked_fragments=linked_fragments))
     if fragment == None:
@@ -237,6 +240,7 @@ def update_fragment():
         status = None
         lock = None
         translation = None
+        popular_translation = None
         differences = None
         apparatus = None
         commentary = None
@@ -252,6 +256,8 @@ def update_fragment():
             lock = request.get_json()[FragmentField.LOCK]
         if FragmentField.TRANSLATION in request.get_json():
             translation = request.get_json()[FragmentField.TRANSLATION]
+        if FragmentField.POPULAR_TRANSLATION in request.get_json():
+            popular_translation = request.get_json()[FragmentField.POPULAR_TRANSLATION]
         if FragmentField.DIFFERENCES in request.get_json():
             differences = request.get_json()[FragmentField.DIFFERENCES]
         if FragmentField.APPARATUS in request.get_json():
@@ -279,7 +285,7 @@ def update_fragment():
     #     return make_response("Forbidden", 403)
 
     fragment = fragments.update(Fragment(_id=_id, author=author, title=title, editor=editor, name=name, status=status,
-                                         lock=lock, translation=translation, differences=differences, apparatus=apparatus, 
+                                         lock=lock, translation=translation, popular_translation=popular_translation, differences=differences, apparatus=apparatus, 
                                          commentary=commentary, reconstruction=reconstruction, metrical_analysis=metrical_analysis, context=context, 
                                          lines=lines, linked_fragments=linked_fragments))
     if fragment == None:
