@@ -343,7 +343,7 @@ export class Playground {
     });
     this.canvas.on('mouse:up', () => {
       // Whenever we move a fragment, we set its colour. This allows the distinction between existing and new fragments
-      const activeObject = this.canvas.getActiveObject();
+      //const activeObject = this.canvas.getActiveObject();
       //if (activeObject && this.is_document(activeObject)) {
         //activeObject._objects[0].set('fill', '#9BA8F2'); // Change color to blue
         //this.canvas.renderAll();
@@ -365,10 +365,15 @@ export class Playground {
     });
 
     this.canvas.on('object:modified', (event: fabric.IEvent) => {
+      this.canvas.getActiveObjects().forEach((item: any) => {
+        console.log(' item', item)
+        this.canvas_changed_subject.next({ event: 'modify', fabric_object: JSON.stringify(item) });
+        //this.canvas.remove(item);
+      });
       //if (event.target.changed_by == this.auth_service.current_user_name){
       event.target.changed_by = this.auth_service.current_user_name;
-      console.log('event', event);
-      this.canvas_changed_subject.next({ event: 'modify', fabric_object: JSON.stringify(event.target) });
+      //console.log('event', event);
+      //this.canvas_changed_subject.next({ event: 'modify', fabric_object: JSON.stringify(event.target) });
       //}
 
       if (!this.undo_status && !this.redo_status) {

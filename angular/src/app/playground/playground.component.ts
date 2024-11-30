@@ -266,18 +266,19 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
         if (message.event == 'modify') {
           console.log('modify', fabric_object);
           // Check if we modify multiple objects, or only one
-          if (fabric_object.hasOwnProperty('identifier')) {
+          //if (fabric_object.hasOwnProperty('identifier')) {
             //if ("identifier" in fabric_object) {
             // This means that we are dealing with a single object
             this.playground.delete_object_from_canvas(fabric_object.identifier);
-          } else {
-            // We are working with multiple objects, from which we need to extract the identifiers
-            fabric_object.objects.forEach((obj: any) => {
-              this.playground.delete_object_from_canvas(obj.identifier);
-            });
-          }
-          this.playground.delete_object_from_canvas(fabric_object.identifier);
-          this.playground.add_json_object_to_canvas([fabric_object]);
+            this.playground.add_json_object_to_canvas([fabric_object]);
+          //} else {
+            //// We are working with multiple objects, from which we need to extract the identifiers
+            //fabric_object.objects.forEach((obj: any) => {
+              //this.playground.delete_object_from_canvas(obj.identifier);
+              //this.playground.add_json_object_to_canvas([[obj]]);
+            //});
+          //}
+          //this.playground.delete_object_from_canvas(fabric_object.identifier);
         } else if (message.event == 'remove') {
           // Find the object we need to remove in our canvas and remove it.
           this.playground.delete_object_from_canvas(fabric_object.identifier);
