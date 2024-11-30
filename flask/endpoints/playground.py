@@ -35,7 +35,7 @@ def get_playgrounds_list():
     playground_lst = playgrounds.list(Playground(user=user), sorted=True)
 
     if not playground_lst:
-        return make_response("Not found", 401)
+        return jsonify([]), 200
     
     return jsonify(playground_lst), 200
 
