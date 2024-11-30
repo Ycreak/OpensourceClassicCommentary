@@ -95,7 +95,7 @@ export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
         name: name,
         lastname: lastname,
         title: bib[i].title ? bib[i].title : 'no title provided',
-        date: bib[i].date ? bib[i].date : '0000',
+        date: bib[i].date ? bib[i].date : 'n.d.',
         key: bib[i].key,
       };
       this.table_source_data.push(table_object);
