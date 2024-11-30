@@ -37,10 +37,6 @@ export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
    * On Init, we just load the list of authors. From here, selection is started
    */
   ngOnInit(): void {
-    // Sort bib on lastname: FIXME: bibliography has faulty entries
-    //this.bib.bibliography.sort((a, b) =>
-    //a.creators[0].lastname > b.creators[0].lastname ? 1 : b.creators[0].lastname > a.creators[0].lastname ? -1 : 0
-    //);
     this.fill_table(this.bib.bibliography);
   }
 
@@ -74,7 +70,7 @@ export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   /**
-   * Function to fill the specimens table with data
+   * Function to fill the zotero table with data
    * @param data received from the API
    * @author Ycreak
    */
@@ -84,8 +80,8 @@ export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
     this.table_source_data = [];
 
     for (const i in bib) {
-      let name = 'invalid';
-      let lastname = 'invalid';
+      let name = 'no author provided';
+      let lastname = 'no author provided';
 
       try {
         name = `${bib[i].creators[0].lastname}, ${bib[i].creators[0].firstname}`;
@@ -98,8 +94,8 @@ export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
       const table_object: any = {
         name: name,
         lastname: lastname,
-        title: bib[i].title,
-        date: bib[i].date,
+        title: bib[i].title ? bib[i].title : 'no title provided',
+        date: bib[i].date ? bib[i].date : '0000',
         key: bib[i].key,
       };
       this.table_source_data.push(table_object);
