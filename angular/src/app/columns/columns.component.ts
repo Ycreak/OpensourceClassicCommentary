@@ -9,6 +9,7 @@ import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { environment } from '@src/environments/environment';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 
 // Service imports
 import { AuthService } from '@oscc/auth/auth.service';
@@ -47,18 +48,31 @@ export class ColumnsComponent implements OnInit {
     protected settings: SettingsService,
     protected utility: UtilityService,
     private bib: BibliographyService,
-    private matdialog: MatDialog
+    private matdialog: MatDialog,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     this.api.request_index().subscribe({});
     // Create an empty current_document variable to be filled whenever the user clicks a fragment
     this.current_document = new Fragment();
+
+    // Receive query parameters
+    let filter: any = {};
+    const params: ParamMap = this.route.snapshot.queryParamMap;
+    if (this.utility.is_empty_object(params['params'])) {
+      // If no query parameters are found, load our default Ennius Thyestes TRF edition
+      filter = { author: 'Ennius', title: 'Thyestes', editor: 'TRF' };
+    } else {
+      filter.author = params.get('author');
+      filter.title = params.get('title');
+      filter.editor = params.get('editor');
+    }
     // Create the first column and push it to the columns list
     if (this.columns.list.length < 1) {
       const column_id = this.columns.add();
-      this.columns.request(environment.fragments, { author: 'Ennius', title: 'Thyestes', editor: 'TRF' }, column_id);
-      this.columns.find(column_id).column_name = `Ennius-Thyestes-TRF`;
+      this.columns.request(environment.fragments, filter, column_id);
+      this.columns.find(column_id).column_name = `${filter.author}-${filter.title}-${filter.editor}`;
     }
   }
 
