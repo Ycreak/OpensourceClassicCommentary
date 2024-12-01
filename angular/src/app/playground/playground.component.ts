@@ -72,6 +72,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
 
   private canvas_change_subscription: Subscription;
   private websockets_subscription: Subscription;
+  private websockets_users_subscription: Subscription;
 
   constructor(
     protected api: ApiService,
@@ -90,7 +91,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.init_playground();
-    this.request_documents('fragments', { title: 'Eumenides' });
+    //this.request_documents('fragments', { title: 'Eumenides' });
     //this.request_documents('testimonia', { author: 'Accius' });
   }
 
@@ -237,12 +238,15 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
         if (room_identifier) {
           // Disconnect from any existing websocket connections
           this.disconnect_from_websocket();
-          // And join the newly given live room
-          this.join_live_room(room_identifier);
+          if (room_identifier != 'leave') {
+            // And join the newly given live room
+            this.join_live_room(room_identifier);
+          }
         }
       },
     });
   }
+
   /**
    * Joins the given websockets room. Will send the playground canvas to the websocket on every
    * canvas change and will load the playground canvas whenever one is received from the server.
@@ -250,16 +254,46 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   protected join_live_room(room_identifier: string): void {
     // Join the generated websockets room
     this.websockets.room_identifier = room_identifier;
-    this.websockets.connect(room_identifier);
+    this.websockets_users_subscription = this.websockets.connect(room_identifier).subscribe();
 
     // Take a subscription to the websocket with the generated room number
     this.websockets.active = true;
     this.websockets_subscription = this.websockets.get_messages().subscribe((message) => {
-      this.playground.canvas.loadFromJSON(message, this.playground.canvas.renderAll.bind(this.playground.canvas));
+      // Check if the message is not from us (in which case we ignore the directive)
+      if (message.user != this.auth_service.current_user_name) {
+        const fabric_object = JSON.parse(message.fabric_object);
+        console.log('incoming message!', fabric_object);
+        if (message.event == 'modify') {
+          console.log('modify', fabric_object);
+          // Check if we modify multiple objects, or only one
+          //if (fabric_object.hasOwnProperty('identifier')) {
+            //if ("identifier" in fabric_object) {
+            // This means that we are dealing with a single object
+            this.playground.delete_object_from_canvas(fabric_object.identifier);
+            this.playground.add_json_object_to_canvas([fabric_object]);
+          //} else {
+            //// We are working with multiple objects, from which we need to extract the identifiers
+            //fabric_object.objects.forEach((obj: any) => {
+              //this.playground.delete_object_from_canvas(obj.identifier);
+              //this.playground.add_json_object_to_canvas([[obj]]);
+            //});
+          //}
+          //this.playground.delete_object_from_canvas(fabric_object.identifier);
+        } else if (message.event == 'remove') {
+          // Find the object we need to remove in our canvas and remove it.
+          this.playground.delete_object_from_canvas(fabric_object.identifier);
+        } else if (message.event == 'add') {
+          this.playground.add_json_object_to_canvas([fabric_object]);
+        } else {
+          console.error('Unknown websocket directive');
+        }
+      }
     });
     // Take a subscription to canvas changes. These we will send to the websocket
-    this.canvas_change_subscription = this.playground.canvas_changed_subject.subscribe((nothing: any) => {
-      this.websockets.send_json(this.playground.canvas.toJSON());
+    this.canvas_change_subscription = this.playground.canvas_changed_subject.subscribe((change_object: any) => {
+      // Communicate the change on our local playground with the websocket
+      this.websockets.communicate_change(change_object.event, change_object.fabric_object, room_identifier);
+      console.log('i communicate a change');
     });
   }
 
@@ -282,6 +316,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   private disconnect_from_websocket(): void {
     if (this.websockets_subscription) {
       this.websockets_subscription.unsubscribe();
+      this.websockets_users_subscription.unsubscribe();
       this.websockets.disconnect(this.websockets.room_identifier);
       this.websockets.active = false;
     }
@@ -385,8 +420,9 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
    * @author Ycreak
    */
   private init_playground(): void {
-    this.playground = new Playground(this.fabric);
+    this.playground = new Playground(this.fabric, this.auth_service);
     this.playground.canvas = new fabric.Canvas('playground_canvas');
+    this.playground.extend_canvas_properties();
     this.playground.set_event_handlers();
     this.playground.init();
   }

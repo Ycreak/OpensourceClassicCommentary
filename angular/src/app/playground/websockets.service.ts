@@ -14,6 +14,8 @@ export class WebsocketsService {
   public active: boolean;
   public room_identifier: string;
 
+  public users_in_room: string[] = [];
+
   constructor(
     private socket: Socket,
     private auth_service: AuthService
@@ -22,11 +24,17 @@ export class WebsocketsService {
   }
 
   /**
-   * Joins the given websockets room
+   * Joins the given websockets room. Next, listens for new users joining this room.
    * @param room (string)
    */
-  public connect(room: string): void {
+  public connect(room: string) {
     this.socket.emit('join', { username: this.auth_service.current_user_name, room: room });
+    return this.socket.fromEvent('user_change').pipe(
+      map((room_information: any) => {
+        this.users_in_room = room_information.users;
+        return room_information;
+      })
+    );
   }
   /**
    * Disconnects from the given websockets room
@@ -40,8 +48,21 @@ export class WebsocketsService {
    * Sends a json to the json endpoint
    * @param json (object)
    */
-  public send_json(json: object): void {
-    this.socket.emit('json', json);
+  public send_json(json: object, room: string): void {
+    this.socket.emit('json', { json: json, room: room });
+  }
+
+  /**
+   * Sends a json to the json endpoint
+   * @param json (object)
+   */
+  public communicate_change(event: string, fabric_object: string, room: string): void {
+    this.socket.emit('communicate_change', {
+      user: this.auth_service.current_user_name,
+      event: event,
+      fabric_object: fabric_object,
+      room: room,
+    });
   }
 
   /**
@@ -49,6 +70,6 @@ export class WebsocketsService {
    * @return Observable
    */
   public get_messages() {
-    return this.socket.fromEvent('json').pipe(map((data: any) => data));
+    return this.socket.fromEvent('communicate_change').pipe(map((data: any) => data));
   }
 }
