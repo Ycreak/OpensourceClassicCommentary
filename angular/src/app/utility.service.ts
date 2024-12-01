@@ -201,6 +201,10 @@ export class UtilityService {
     return array;
   }
 
+  public is_empty_object(obj: object): boolean {
+    return Object.keys(obj).length === 0;
+  }
+
   public is_empty_array(array: Array<any>): boolean {
     if (Array.isArray(array) && array.length) {
       return false;
