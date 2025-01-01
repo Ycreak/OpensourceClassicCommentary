@@ -18,6 +18,7 @@ class IntroductionFields(object):
 class IntroductionModel:
     # Data container. Corresponds to the IntroductionForm on the dashboard.
     _id: str = ''
+    document_type: str = 'introduction'
     author: str = ''
     title: str = ''
     author_text: str = ''
@@ -43,13 +44,7 @@ class Introduction:
         result: list = [] 
         for document in document_list:
             introduction = IntroductionModel()
-
-            introduction._id = document.get(IntroductionFields.ID, None)
-            introduction.author = document.get(IntroductionFields.AUTHOR, None)
-            introduction.title = document.get(IntroductionFields.TITLE, None)
-            introduction.author_text = document.get(IntroductionFields.AUTHOR_TEXT, None)
-            introduction.title_text = document.get(IntroductionFields.TITLE_TEXT, None)
-
+            introduction = self._convert_document_to_introduction(document)
             result.append(introduction)
         
         return result

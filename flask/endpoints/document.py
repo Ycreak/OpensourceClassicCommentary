@@ -9,12 +9,12 @@ document type and redirects the document to the correct endpoint.
 import logging
 from flask import request, make_response
 from flask_jsonpify import jsonify
-from uuid import uuid4
 
 from couch import CouchAuthenticator
 import utilities as util
-from models.document import Document, DocumentModel, DocumentField
 from models.introduction import Introduction
+from models.fragment import Fragment
+from models.testimonium import Testimonium
 
 list_display_cache_file: str = "cache/list_display.json"
 
@@ -23,8 +23,8 @@ def get_index():
     return jsonify(result)
 
 def update_index():
-    result = util.read_json(list_display_cache_file)
-    return jsonify(result)
+    #TODO:
+    pass
 
 def get_document():
     """
@@ -39,9 +39,11 @@ def get_document():
    
     match document_type:
         case "fragment":
-            return "Bad request"
+            fragment = Fragment(CouchAuthenticator().couch)
+            list_with_documents: list = fragment.get(request.get_json())
         case "testimonium":
-            return "Not found"
+            testimonium = Testimonium(CouchAuthenticator().couch)
+            list_with_documents: list = testimonium.get(request.get_json())
         case "introduction":
             introduction = Introduction(CouchAuthenticator().couch)
             list_with_documents: list = introduction.get(request.get_json())
@@ -66,9 +68,11 @@ def create_document() -> make_response:
    
     match document_type:
         case "fragment":
-            return "Bad request"
+            fragment = Fragment(CouchAuthenticator().couch)
+            doc_id: str = fragment.create(request.get_json())
         case "testimonium":
-            return "Not found"
+            testimonium = Testimonium(CouchAuthenticator().couch)
+            doc_id: str = testimonium.create(request.get_json())
         case "introduction":
             introduction = Introduction(CouchAuthenticator().couch)
             doc_id: str = introduction.create(request.get_json())
@@ -94,9 +98,11 @@ def delete_document() -> make_response:
    
     match document_type:
         case "fragment":
-            return "Bad request"
+            fragment = Fragment(CouchAuthenticator().couch)
+            success: bool = fragment.delete(request.get_json())
         case "testimonium":
-            return "Not found"
+            testimonium = Testimonium(CouchAuthenticator().couch)
+            success: bool = testimonium.delete(request.get_json())
         case "introduction":
             introduction = Introduction(CouchAuthenticator().couch)
             success: bool = introduction.delete(request.get_json())
@@ -122,17 +128,18 @@ def update_document() -> make_response:
    
     match document_type:
         case "fragment":
-            return "Bad request"
+            fragment = Fragment(CouchAuthenticator().couch)
+            success: bool = fragment.update(request.get_json())
         case "testimonium":
             return "Not found"
         case "introduction":
             introduction = Introduction(CouchAuthenticator().couch)
-            doc_id: str = introduction.update(request.get_json())
+            success: bool = introduction.update(request.get_json())
         # If an exact match is not confirmed, this last case will be used if provided
         case _:
             logging.error(f"Unknown document type provided: {document_type}")
             return make_response("Unprocessable entity", 422)
 
     update_index()
-    return make_response("Update success", 200) if doc_id else make_response("Unprocessable entity", 422)
+    return make_response("Update success", 200) if success else make_response("Unprocessable entity", 422)
 

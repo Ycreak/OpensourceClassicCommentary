@@ -1,21 +1,12 @@
 """
-                      _      _         ____                                      _                 
-                     | |    | |       / / _|                                    | |                
-  _ __ ___   ___   __| | ___| |___   / / |_ _ __ __ _  __ _ _ __ ___   ___ _ __ | |_   _ __  _   _ 
- | '_ ` _ \ / _ \ / _` |/ _ \ / __| / /|  _| '__/ _` |/ _` | '_ ` _ \ / _ \ '_ \| __| | '_ \| | | |
- | | | | | | (_) | (_| |  __/ \__ \/ / | | | | | (_| | (_| | | | | | |  __/ | | | |_ _| |_) | |_| |
- |_| |_| |_|\___/ \__,_|\___|_|___/_/  |_| |_|  \__,_|\__, |_| |_| |_|\___|_| |_|\__(_) .__/ \__, |
-                                                       __/ |                          | |     __/ |
-                                                      |___/                           |_|    |___/ 
+Model to handle fragments
 """
+from dataclasses import dataclass
+from uuid import uuid4
 
+from database import Database
 
-from dataclasses import dataclass, asdict
-import logging
-
-import config as conf
-
-class FragmentField(object):
+class FragmentFields(object):
     ID = "_id"
     NAME = "name"
     AUTHOR = "author"
@@ -35,8 +26,9 @@ class FragmentField(object):
     LINKED_FRAGMENTS = "linked_fragments"
 
 @dataclass
-class Fragment:
+class FragmentModel:
     _id: str = None
+    document_type: str = 'fragment'
     name: str = None
     author: str = None
     title: str = None
@@ -54,159 +46,90 @@ class Fragment:
     lines: list = None
     linked_fragments: list = None
 
-class FragmentModel:
+class Fragment:
     def __init__(self, server):
-        self.db = server[conf.COUCH_FRAGMENTS]
+        self.database = Database(server)
     
-    def __get_fragments(self, frag_lst):
-        result = list()
-        for doc in frag_lst:
-            fragment = Fragment(_id=doc.id)
-            if FragmentField.NAME in doc:
-                fragment.name = doc[FragmentField.NAME]
-            if FragmentField.AUTHOR in doc:
-                fragment.author = doc[FragmentField.AUTHOR]
-            if FragmentField.TITLE in doc:
-                fragment.title = doc[FragmentField.TITLE]
-            if FragmentField.EDITOR in doc:
-                fragment.editor = doc[FragmentField.EDITOR]
-            if FragmentField.STATUS in doc:
-                fragment.status = doc[FragmentField.STATUS]
-            if FragmentField.LOCK in doc:
-                fragment.lock = doc[FragmentField.LOCK]
-            if FragmentField.TRANSLATION in doc:
-                fragment.translation = doc[FragmentField.TRANSLATION]
-            if FragmentField.POPULAR_TRANSLATION in doc:
-                fragment.popular_translation = doc[FragmentField.POPULAR_TRANSLATION]
-            if FragmentField.DIFFERENCES in doc:
-                fragment.differences = doc[FragmentField.DIFFERENCES]
-            if FragmentField.APPARATUS in doc:
-                fragment.apparatus = doc[FragmentField.APPARATUS]
-            if FragmentField.COMMENTARY in doc:
-                fragment.commentary = doc[FragmentField.COMMENTARY]
-            if FragmentField.RECONSTRUCTION in doc:
-                fragment.reconstruction = doc[FragmentField.RECONSTRUCTION]
-            if FragmentField.METRICAL_ANALYSIS in doc:
-                fragment.metrical_analysis = doc[FragmentField.METRICAL_ANALYSIS]
-            if FragmentField.CONTEXT in doc:
-                fragment.context = doc[FragmentField.CONTEXT]
-            if FragmentField.LINES in doc:
-                fragment.lines = doc[FragmentField.LINES]
-            if FragmentField.LINKED_FRAGMENTS in doc:
-                fragment.linked_fragments = doc[FragmentField.LINKED_FRAGMENTS]
+    def get(self, document: dict) -> list:
+        """
+        Retrieves the fragment given the document filter.
+        """
+        fragment = FragmentModel()
+        # Retrieve the fields on which we allow filtering
+        fragment.name = document.get(FragmentFields.NAME, None)
+        fragment.author = document.get(FragmentFields.AUTHOR, None)
+        fragment.title = document.get(FragmentFields.TITLE, None)
+        fragment.editor = document.get(FragmentFields.EDITOR, None)
+
+        # Convert the model into a dictionary
+        fragment = {key: value for key, value in fragment.__dict__.items()}
+
+        document_list = self.database.filter(fragment)
+        # Process the found documents into proper fragments
+        result: list = [] 
+        for document in document_list:
+            fragment = FragmentModel()
+            fragment = self._convert_document_to_fragment(document)
             result.append(fragment)
-
-        return result
-
-    def all(self, sorted=False):
-        result = self.db.find({
-            "selector": dict(),
-            "limit": conf.COUCH_LIMIT
-        })
-        result = self.__get_fragments(result)
-        if sorted:
-            result.sort(key=lambda Fragment: Fragment.name)
-        return result
         
-    def filter(self, fragment, sorted=False):
-        fragment = {key: value for key, value in fragment.__dict__.items() if value}
-        # @deprecated because of refactoring
-        # if "_id" in fragment: 
-        #     fragment[FragmentField.ID] = fragment.pop("_id")
-        # if "name" in fragment:
-        #     fragment[FragmentField.NAME] = fragment.pop("name")
-        mango = {
-            "selector": fragment,
-            "limit": conf.COUCH_LIMIT
-        }
-        print(mango)
-        result = self.db.find(mango)
-        result = self.__get_fragments(result)
-        if sorted:
-            result.sort(key=lambda Fragment: Fragment.title)
         return result
 
-    def create(self, fragment):
-        fragment = {key: value for key, value in fragment.__dict__.items() if value}
-        # @deprecated because of refactoring
-        # fragment[FragmentField.ID] = fragment.pop("_id") # MongoDB uses "_id" instead of "id"
-        # fragment[FragmentField.NAME] = fragment.pop("name")
-        
-        doc_id, _ = self.db.save(fragment)
-        if not doc_id:
-            logging.error("create(): failed to create fragment")
-            return None
-        return fragment
+    def create(self, document: dict) -> str:
+        """
+        Creates a fragment. For this, a uuid will be generated as identifier.
+        """
+        fragment = self._convert_document_to_fragment(document)
+        fragment._id = uuid4().hex 
 
-    def update(self, fragment):
-        # we update fragments via their _id, so no need for get.
-        # FIXME: is this correct BORS?
-        # fragment = self.get(fragment)
-
-        # if fragment == None:
-        #     logging.error("update(): fragment could not be found")
-        #     return False
-        try:
-            doc = self.db[fragment._id]
-            for key, value in asdict(fragment).items():
-                if value != None:
-                    doc[key] = value
-            print(f'doc: {doc}')
-            self.db.save(doc)
-            return True
-        except Exception as e:
-            logging.error(e)
-        return False
-
-    def delete(self, fragment):
-        fragment = self.get(fragment)
+        # Convert the model into a dictionary
+        fragment = {key: value for key, value in fragment.__dict__.items()}
+       
+        doc_id = self.database.create(fragment)
+        return doc_id 
     
-        if fragment == None:
-            logging.error("delete(): fragment could not be found")
+    def delete(self, document: dict) -> bool:
+        """
+        Deletes the given introduction by its identifier.
+        """
+        fragment = self._convert_document_to_fragment(document)
+        return self.database.delete(fragment._id)
+    
+    def update(self, document: dict) -> bool:
+        """
+        Updates the given introduction. Must receive an identifier to update.
+        """
+        fragment = self._convert_document_to_fragment(document)
+
+        if not fragment._id:
             return False
-        try:
-            doc = self.db[fragment._id]
-            self.db.delete(doc)
-            return True
-        except Exception as e:
-            logging.error(e)
-        return False
 
-    def get(self, fragment):
-        fragment = {key: value for key, value in fragment.__dict__.items() if value}
-        mango = {
-            "selector": fragment,
-            "limit": conf.COUCH_LIMIT
-        }
-        result = self.db.find(mango)
-        result = self.__get_fragments(result)
+        # Convert the model into a dictionary
+        fragment = {key: value for key, value in fragment.__dict__.items()}
 
-        if result:
-            if len(result) > 1:
-                logging.warning("get(): function returned more than 1 object!")
-            return result[0]
-        return None
-
-#     def get_or_create(self, user):
-#         result = self.get(user)
-#         if result is not None:
-#             return result
-#         else:
-#             return self.create(user)
+        return self.database.update(fragment)
     
-#     def update(self, user):
-#         _user = self.get(User(username=user.username))
-#         if _user == None:
-#             logging.error("update(): user could not be found")
-#             return False
-#         try:
-#             doc = self.db[_user.id]
-#             for key, value in asdict(user).items():
-#                 if value != None:
-#                     doc[key] = value
-#             self.db.save(doc)
-#             return True
-#         except Exception as e:
-#             logging.error(e)
-#         return False
+    def _convert_document_to_fragment(self, document: dict) -> FragmentModel:
+        """
+        Converts the received document into a fragment using the FragmentModel
+        """
+        fragment = FragmentModel()
+        fragment._id = document.get(FragmentFields.ID, None)
+        fragment.name = document.get(FragmentFields.NAME, None)
+        fragment.author = document.get(FragmentFields.AUTHOR, None)
+        fragment.title = document.get(FragmentFields.TITLE, None)
+        fragment.editor = document.get(FragmentFields.EDITOR, None)
+        fragment.status = document.get(FragmentFields.STATUS, None)
+        fragment.lock = document.get(FragmentFields.LOCK, None)
+        fragment.translation = document.get(FragmentFields.TRANSLATION, None)
+        fragment.popular_translation = document.get(FragmentFields.POPULAR_TRANSLATION, None)
+        fragment.differences = document.get(FragmentFields.DIFFERENCES, None)
+        fragment.apparatus = document.get(FragmentFields.APPARATUS, None)
+        fragment.commentary = document.get(FragmentFields.COMMENTARY, None)
+        fragment.reconstruction = document.get(FragmentFields.RECONSTRUCTION, None)
+        fragment.metrical_analysis = document.get(FragmentFields.METRICAL_ANALYSIS, None)
+        fragment.context = document.get(FragmentFields.CONTEXT, None)
+        fragment.lines = document.get(FragmentFields.LINES, None)
+        fragment.linked_fragments = document.get(FragmentFields.LINKED_FRAGMENTS, None)
 
+        return fragment
+    
