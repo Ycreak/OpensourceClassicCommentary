@@ -132,4 +132,3 @@ class Fragment:
         fragment.linked_fragments = document.get(FragmentFields.LINKED_FRAGMENTS, None)
 
         return fragment
-    

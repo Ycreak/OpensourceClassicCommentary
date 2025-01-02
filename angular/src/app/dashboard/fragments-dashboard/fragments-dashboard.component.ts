@@ -6,7 +6,7 @@ import { Validators } from '@angular/forms';
 // Component imports
 import { AuthService } from '@oscc/auth/auth.service';
 import { DialogService } from '@oscc/services/dialog.service';
-import { FragmentsApiService } from '@oscc/services/api/fragments.service';
+import { ApiService } from '@oscc/api.service';
 import { UtilityService } from '@oscc/utility.service';
 
 // Model imports
@@ -67,7 +67,7 @@ export class FragmentsDashboardComponent implements OnInit {
   fragment_referencer: Column;
 
   constructor(
-    protected api: FragmentsApiService,
+    protected api: ApiService,
     protected utility: UtilityService,
     protected dialog: DialogService,
     protected auth_service: AuthService
@@ -349,7 +349,7 @@ export class FragmentsDashboardComponent implements OnInit {
             const fragment = this.convert_fragment_form_to_Fragment(fragment_form);
             fragment.document_type = 'fragment';
             this.reset_fragment_form();
-            this.api.post_document(fragment, this.api.revise).subscribe(() => {
+            this.api.post_document(fragment, 'update').subscribe(() => {
               // When the has been revised, we will load said fragment and fill the fields again
               this.request_documents({
                 author: fragment.author,
@@ -387,7 +387,7 @@ export class FragmentsDashboardComponent implements OnInit {
           const fragment = this.convert_fragment_form_to_Fragment(fragment_form);
           fragment.document_type = 'fragment'; //FIXME: this is a bug
           this.reset_fragment_form();
-          this.api.post_document(fragment, this.api.create).subscribe(() => {
+          this.api.post_document(fragment, 'create').subscribe(() => {
             // When the has been created, we will load said fragment and fill the fields again
             this.request_documents({
               author: fragment.author,
@@ -425,14 +425,8 @@ export class FragmentsDashboardComponent implements OnInit {
           this.reset_fragment_form();
           this.api
             .post_document(
-              {
-                document_type: 'fragment',
-                author: fragment.author,
-                title: fragment.title,
-                editor: fragment.editor,
-                name: fragment.name,
-              },
-              this.api.remove
+              fragment,
+              "delete" 
             )
             .subscribe({});
           this.fragment_selected = false;

@@ -1,5 +1,6 @@
 """
 This endpoint handles all document types. At the moment, we support the following:
+    introductions
     fragments
     testimonia
     playgrounds
@@ -12,19 +13,67 @@ from flask_jsonpify import jsonify
 
 from couch import CouchAuthenticator
 import utilities as util
+
+from database import Database
 from models.introduction import Introduction
 from models.fragment import Fragment
 from models.testimonium import Testimonium
+from models.playground import Playground
 
-list_display_cache_file: str = "cache/list_display.json"
+index_file: str = "cache/index.json"
+index: list = []
 
-def get_index():
-    result = util.read_json(list_display_cache_file)
-    return jsonify(result)
+# Initialize all document types
+database = Database(CouchAuthenticator().couch)
+introduction = Introduction(CouchAuthenticator().couch)
+fragment = Fragment(CouchAuthenticator().couch)
+playground = Playground(CouchAuthenticator().couch)
+testimonium = Testimonium(CouchAuthenticator().couch)
 
-def update_index():
-    #TODO:
-    pass
+def get_index() -> object:
+    """ Reads the cache file and returns it """
+    return jsonify(util.read_json(index_file))
+
+def _update_index() -> None:
+    """ Updates the index file and writes it to the cache """
+    documents: list = database.filter({})
+    index: list = []
+    for doc in documents:
+        match doc["document_type"]:
+            case "introduction":
+                index.append({
+                    "document_type": "introduction", 
+                    "author": doc["author"], 
+                    "title": doc["title"]
+                })
+            case "fragment":
+                index.append({
+                    "document_type": "fragment", 
+                    "author": doc["author"], 
+                    "title": doc["title"], 
+                    "editor": doc["editor"], 
+                    "name": doc["name"]
+                })
+            case "playground":
+                index.append({
+                    "document_type": "testimonium", 
+                    "name": doc["name"], 
+                    "created_by": doc["created_by"], 
+                    "users": doc["users"]
+                })
+            case "testimonium":
+                index.append({
+                    "document_type": "testimonium", 
+                    "author": doc["author"], 
+                    "title": doc["title"], 
+                    "editor": doc["editor"], 
+                    "name": doc["name"], 
+                    "witness": doc["witness"]
+                })
+            case _:
+                logging.error(f"Unknown document type: {doc}")
+
+    util.write_json(index, index_file)
 
 def get_document():
     """
@@ -38,16 +87,14 @@ def get_document():
         return make_response("Unprocessable entity", 422)
    
     match document_type:
-        case "fragment":
-            fragment = Fragment(CouchAuthenticator().couch)
-            list_with_documents: list = fragment.get(request.get_json())
-        case "testimonium":
-            testimonium = Testimonium(CouchAuthenticator().couch)
-            list_with_documents: list = testimonium.get(request.get_json())
         case "introduction":
-            introduction = Introduction(CouchAuthenticator().couch)
             list_with_documents: list = introduction.get(request.get_json())
-        # If an exact match is not confirmed, this last case will be used if provided
+        case "fragment":
+            list_with_documents: list = fragment.get(request.get_json())
+        case "playground":
+            list_with_documents: list = playground.get(request.get_json())
+        case "testimonium":
+            list_with_documents: list = testimonium.get(request.get_json())
         case _:
             logging.error(f"Unknown document type provided: {document_type}")
             return make_response("Unprocessable entity", 422)
@@ -67,21 +114,20 @@ def create_document() -> make_response:
         return make_response("Unprocessable entity", 422)
    
     match document_type:
-        case "fragment":
-            fragment = Fragment(CouchAuthenticator().couch)
-            doc_id: str = fragment.create(request.get_json())
-        case "testimonium":
-            testimonium = Testimonium(CouchAuthenticator().couch)
-            doc_id: str = testimonium.create(request.get_json())
         case "introduction":
-            introduction = Introduction(CouchAuthenticator().couch)
             doc_id: str = introduction.create(request.get_json())
+        case "fragment":
+            doc_id: str = fragment.create(request.get_json())
+        case "playground":
+            doc_id: str = playground.create(request.get_json())
+        case "testimonium":
+            doc_id: str = testimonium.create(request.get_json())
         # If an exact match is not confirmed, this last case will be used if provided
         case _:
             logging.error(f"Unknown document type provided: {document_type}")
             return make_response("Unprocessable entity", 422)
 
-    update_index()
+    _update_index()
     return make_response("Create success", 200) if doc_id else make_response("Unprocessable entity", 422)
 
 
@@ -97,21 +143,20 @@ def delete_document() -> make_response:
         return make_response("Unprocessable entity", 422)
    
     match document_type:
-        case "fragment":
-            fragment = Fragment(CouchAuthenticator().couch)
-            success: bool = fragment.delete(request.get_json())
-        case "testimonium":
-            testimonium = Testimonium(CouchAuthenticator().couch)
-            success: bool = testimonium.delete(request.get_json())
         case "introduction":
-            introduction = Introduction(CouchAuthenticator().couch)
             success: bool = introduction.delete(request.get_json())
+        case "fragment":
+            success: bool = fragment.delete(request.get_json())
+        case "playground":
+            success: bool = playground.delete(request.get_json())
+        case "testimonium":
+            success: bool = testimonium.delete(request.get_json())
         # If an exact match is not confirmed, this last case will be used if provided
         case _:
             logging.error(f"Unknown document type provided: {document_type}")
             return make_response("Unprocessable entity", 422)
 
-    update_index()
+    _update_index()
     return make_response("Delete success", 200) if success else make_response("Unprocessable entity", 422)
 
 
@@ -127,19 +172,19 @@ def update_document() -> make_response:
         return make_response("Unprocessable entity", 422)
    
     match document_type:
-        case "fragment":
-            fragment = Fragment(CouchAuthenticator().couch)
-            success: bool = fragment.update(request.get_json())
-        case "testimonium":
-            return "Not found"
         case "introduction":
-            introduction = Introduction(CouchAuthenticator().couch)
             success: bool = introduction.update(request.get_json())
+        case "fragment":
+            success: bool = fragment.update(request.get_json())
+        case "playground":
+            success: bool = playground.update(request.get_json())
+        case "testimonium":
+            success: bool = testimonium.update(request.get_json())
         # If an exact match is not confirmed, this last case will be used if provided
         case _:
             logging.error(f"Unknown document type provided: {document_type}")
             return make_response("Unprocessable entity", 422)
 
-    update_index()
+    _update_index()
     return make_response("Update success", 200) if success else make_response("Unprocessable entity", 422)
 

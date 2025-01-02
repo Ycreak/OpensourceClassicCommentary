@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { ApiService } from '@oscc/api.service';
 import { BibliographyService } from '../bibliography.service';
 import { UtilityService } from '@oscc/utility.service';
+import { FabricService } from '@oscc/playground/services/fabric.service';
 
 // Model imports
 import { Introduction } from '@oscc/models/Introduction';
@@ -14,8 +15,13 @@ import { Introduction } from '@oscc/models/Introduction';
   providedIn: 'root',
 })
 export class IntroductionsApiService extends ApiService {
-  constructor(bib: BibliographyService, utility: UtilityService, http: HttpClient) {
-    super(bib, utility, http);
+  constructor(
+    fabric: FabricService,
+    bib: BibliographyService,
+    utility: UtilityService,
+    http: HttpClient
+  ) {
+    super(fabric, bib, utility, http);
   }
 
   /**

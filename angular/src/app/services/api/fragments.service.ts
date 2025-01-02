@@ -11,7 +11,7 @@ import { Observable } from 'rxjs';
 import { ApiService } from '@oscc/api.service';
 import { BibliographyService } from '../bibliography.service';
 import { UtilityService } from '@oscc/utility.service';
-
+import { FabricService } from '@oscc/playground/services/fabric.service';
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
 
@@ -33,10 +33,15 @@ export class FragmentsApiService extends ApiService {
   public create = 'fragment/create';
   public revise = 'fragment/update';
   public retrieve = 'fragment/get';
-  public index = 'fragment/get/index';
+  public index2 = 'fragment/get/index';
 
-  constructor(bib: BibliographyService, utility: UtilityService, http: HttpClient) {
-    super(bib, utility, http);
+  constructor(
+    fabric: FabricService,
+    bib: BibliographyService,
+    utility: UtilityService,
+    http: HttpClient
+  ) {
+    super(fabric, bib, utility, http);
   }
 
   /**
@@ -48,7 +53,7 @@ export class FragmentsApiService extends ApiService {
     return new Observable((observer) => {
       this.spinner_on();
       this.fragments_index = [];
-      this.post(this.FlaskURL, this.index, {}, this.get_header).subscribe({
+      this.post(this.FlaskURL, this.index2, {}, this.get_header).subscribe({
         next: (data) => {
           data.forEach((value: any) => {
             this.fragments_index.push({
@@ -122,7 +127,7 @@ export class FragmentsApiService extends ApiService {
    * @author Ycreak
    */
   public _authors(): string[] {
-    return this.get_from_index('author', this.fragments_index, {});
+    return this.get_from_index2('author', this.fragments_index, {});
   }
 
   /**
@@ -132,7 +137,7 @@ export class FragmentsApiService extends ApiService {
    * @author Ycreak
    */
   public _titles(author: string): string[] {
-    return this.get_from_index('title', this.fragments_index, { author: author });
+    return this.get_from_index2('title', this.fragments_index, { author: author });
   }
 
   /**
@@ -143,7 +148,7 @@ export class FragmentsApiService extends ApiService {
    * @author Ycreak
    */
   public _editors(author: string, title: string): string[] {
-    return this.get_from_index('editor', this.fragments_index, { author: author, title: title });
+    return this.get_from_index2('editor', this.fragments_index, { author: author, title: title });
   }
 
   /**
@@ -155,7 +160,7 @@ export class FragmentsApiService extends ApiService {
    * @author Ycreak
    */
   public _names(author: string, title: string, editor: string): string[] {
-    return this.get_from_index('name', this.fragments_index, { author: author, title: title, editor: editor }).sort(
+    return this.get_from_index2('name', this.fragments_index, { author: author, title: title, editor: editor }).sort(
       this.utility.sort_array_numerically
     );
   }

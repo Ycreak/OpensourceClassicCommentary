@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { MatMenu } from '@angular/material/menu';
 
 // Service imports
-import { FragmentsApiService } from '@oscc/services/api/fragments.service';
+import { ApiService } from '@oscc/api.service';
 
 @Component({
   selector: 'app-latin-tragic-fragment-filter',
@@ -21,10 +21,11 @@ export class LatinTragicFragmentFilterComponent {
   protected _editor: string;
   protected _name: string;
 
-  constructor(protected api: FragmentsApiService) {}
+  constructor(protected api: ApiService) {}
 
   protected filter() {
     const filter = {
+      document_type: 'fragment',
       author: this._author,
       title: this._title,
       editor: this._editor,

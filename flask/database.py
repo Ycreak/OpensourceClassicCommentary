@@ -1,6 +1,7 @@
-from dataclasses import asdict
+"""
+Class to handle all communication with the database
+"""
 import logging
-
 import config as conf
 
 class Database:

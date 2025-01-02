@@ -1,155 +1,123 @@
 """
-                      _      _         ____                                      _                 
-                     | |    | |       / / _|                                    | |                
-  _ __ ___   ___   __| | ___| |___   / / |_ _ __ __ _  __ _ _ __ ___   ___ _ __ | |_   _ __  _   _ 
- | '_ ` _ \ / _ \ / _` |/ _ \ / __| / /|  _| '__/ _` |/ _` | '_ ` _ \ / _ \ '_ \| __| | '_ \| | | |
- | | | | | | (_) | (_| |  __/ \__ \/ / | | | | | (_| | (_| | | | | | |  __/ | | | |_ _| |_) | |_| |
- |_| |_| |_|\___/ \__,_|\___|_|___/_/  |_| |_|  \__,_|\__, |_| |_| |_|\___|_| |_|\__(_) .__/ \__, |
-                                                       __/ |                          | |     __/ |
-                                                      |___/                           |_|    |___/ 
+Model to handle playgrounds
 """
+from dataclasses import dataclass
+from uuid import uuid4
 
+from database import Database
 
-from dataclasses import dataclass, asdict
-import logging
-
-import config as conf
-
-
-class PlaygroundField(object):
+class PlaygroundFields(object):
     ID = "_id"
+    CANVAS = "canvas"
+    CREATED_BY = "created_by"
     NAME = "name"
     # To find a playground based on a user
     USER = "user"
     USERS = "users"
-    CANVAS = "canvas"
-    CREATED_BY = "created_by"
 
 @dataclass
-class Playground:
-    _id: str = None
-    name: str = None
-    canvas: object = None
-    user: str = None
-    created_by: str = None
-    role: str = None
-    users: list = None
-
 class PlaygroundModel:
+    _id: str = ""
+    canvas: object = None
+    created_by: str = ""
+    name: str = ""
+    role: str = ""
+    user: str = ""
+    users = None
+
+class Playground:
     def __init__(self, server):
-        self.db = server[conf.COUCH_PLAYGROUNDS]
+        self.database = Database(server)
     
-    def __get_playgrounds(self, playground_lst, canvas=True, users=True):
-        result = list()
-        for doc in playground_lst:
-            playground = Playground(_id=doc.id)
-            if PlaygroundField.NAME in doc:
-                playground.name = doc[PlaygroundField.NAME]
-            if PlaygroundField.CREATED_BY in doc:
-                playground.created_by = doc[PlaygroundField.CREATED_BY]
-            if (users):
-                if PlaygroundField.USERS in doc:
-                    playground.users = doc[PlaygroundField.USERS]
-            if (canvas):
-                if PlaygroundField.CANVAS in doc:
-                    playground.canvas = doc[PlaygroundField.CANVAS]
-            result.append(playground)
-        return result
-    
-    def __get_playground(self, playground):
-        # logging.warning(playground)
-        playground = {key: value for key, value in playground.__dict__.items() if value}
-        mango = {
-            "selector": playground,
-            "limit": conf.COUCH_LIMIT
-        }
-        result = self.db.find(mango)
-        result = self.__get_playgrounds(result)
-
-        if result:
-            if len(result) > 1:
-                logging.warning("get(): function returned more than 1 object!")
-            return result[0]
-        return None
-
-    def create(self, playground):
-        playground = {key: value for key, value in playground.__dict__.items() if value}
-        doc_id, _ = self.db.save(playground)
-        if not doc_id:
-            logging.error("create(): failed to create playground")
-            return None
-        return playground
-
-    def update(self, playground):
-        try:
-            doc = self.db[playground._id]
-            for key, value in asdict(playground).items():
-                if value != None:
-                    doc[key] = value
-            print(f'doc: {doc}')
-            self.db.save(doc)
-            return True
-        except Exception as e:
-            logging.error(e)
-        return False
-
-    def delete(self, playground):
-        playground = self.__get_playground(playground)
-    
-        if playground == None:
-            logging.error("delete(): playground could not be found")
-            return False
-        try:
-            doc = self.db[playground._id]
-            self.db.delete(doc)
-            return True
-        except Exception as e:
-            logging.error(e)
-        return False
-
-    def get(self, playground, user):
+    def get(self, document: dict) -> list:
         """
-        Get the playground given the playground and the user.
+        Retrieves the playground given the document filter.
         """
-        result = self.__get_playground(playground)
-        if playground == None:
-            logging.error("get(): playground could not be found")
-      
+        playground = PlaygroundModel()
+        # Retrieve the fields on which we allow filtering
+        playground._id = document.get(PlaygroundFields.ID, None)
+        playground.name = document.get(PlaygroundFields.NAME, None)
+        playground.created_by = document.get(PlaygroundFields.CREATED_BY, None)
+        playground.users = document.get(PlaygroundFields.USERS, None)
+        playground.canvas = document.get(PlaygroundFields.CANVAS, None)
+
+        # Convert the model into a dictionary
+        playground = {key: value for key, value in playground.__dict__.items()}
+
+        document_list = self.database.filter(playground)
+        # We can only find one playground, so just use the first entry in the list
+        try:
+            playground = PlaygroundModel()
+            playground = self._convert_document_to_playground(document_list[0])
+            return [playground]
+        except:
+            return []
+
+        # TODO: 
         # Get the role the requesting user has. We will return this in the request so that 
         # the frontend knows what permissions the requesting user has on the returned playground.
-        result.role = self._find_user_role(user, result.users)
+        # playground.role = self._find_user_role(user, result.users)
         # We remove the users list from the object if the user is not the owner. Only owners can change users permissions
-        if result.role != 'owner':
-            del result.users
+        # if playground.role != 'owner':
+            # del playground.users
+        
+        # return playground
+        
 
-        return result
+    def create(self, document: dict) -> str:
+        """
+        Creates a playground. For this, a uuid will be generated as identifier.
+        """
+        playground = self._convert_document_to_playground(document)
+        playground._id = uuid4().hex 
 
-    def list(self, playground, sorted=False):
-        playground = {key: value for key, value in playground.__dict__.items() if value}
-        # We check whether the requesting user is in any of the users object arrays of the playground.
-        # If so, we return the playground metadata to the frontend for the requester to pick from.
-        mango = {
-           "selector": {
-              "users": {
-                 "$elemMatch": {
-                    "name": playground["user"]
-                 }
-              }
-           },
-            "limit": conf.COUCH_LIMIT
-        }
-        result = self.db.find(mango)
-        # Do not add the canvas or users to this request: we only want meta data
-        result = self.__get_playgrounds(result, canvas=False, users=False)
-        if sorted:
-            result.sort(key=lambda Playground: Playground.name)
+        # Convert the model into a dictionary
+        playground = {key: value for key, value in playground.__dict__.items()}
+       
+        doc_id = self.database.create(playground)
+        return doc_id 
+    
+    def delete(self, document: dict) -> bool:
+        """
+        Deletes the given playground by its identifier.
+        """
+        playground = self._convert_document_to_playground(document)
+        return self.database.delete(playground._id)
+    
+    def update(self, document: dict) -> bool:
+        """
+        Updates the given playground. Must receive an identifier to update.
+        """
+        playground = self._convert_document_to_playground(document)
 
-        return result
+        if not playground._id:
+            return False
 
-    def _find_user_role(self, user_name: str, users) :
+        # Convert the model into a dictionary
+        playground = {key: value for key, value in playground.__dict__.items()}
+
+        return self.database.update(playground)
+    
+    def _convert_document_to_playground(self, document: dict) -> PlaygroundModel:
+        """
+        Converts the received document into a playground using the PlaygroundModel
+        """
+        playground = PlaygroundModel()
+        playground._id = document.get(PlaygroundFields.ID, None)
+        playground.name = document.get(PlaygroundFields.NAME, None)
+        playground.created_by = document.get(PlaygroundFields.CREATED_BY, None)
+        playground.users = document.get(PlaygroundFields.USERS, None)
+        playground.canvas = document.get(PlaygroundFields.CANVAS, None)
+
+        return playground
+
+    def _find_user_role(self, user_name: str, users) -> str:
+        """
+        Returns the role of the given user in the given users list
+        """
         for user in users:
             # logging.warning(user)
             if user['name'] == user_name:
                 return user['role']
-        return None
+        return ""
 
