@@ -42,7 +42,7 @@ class Playground:
         playground.canvas = document.get(PlaygroundFields.CANVAS, None)
 
         # Convert the model into a dictionary
-        playground = {key: value for key, value in playground.__dict__.items()}
+        playground = {key: value for key, value in playground.__dict__.items() if value is not None}
 
         document_list = self.database.filter(playground)
         # We can only find one playground, so just use the first entry in the list
@@ -72,7 +72,7 @@ class Playground:
         playground._id = uuid4().hex 
 
         # Convert the model into a dictionary
-        playground = {key: value for key, value in playground.__dict__.items()}
+        playground = {key: value for key, value in playground.__dict__.items() if value is not None}
        
         doc_id = self.database.create(playground)
         return doc_id 
@@ -94,7 +94,7 @@ class Playground:
             return False
 
         # Convert the model into a dictionary
-        playground = {key: value for key, value in playground.__dict__.items()}
+        playground = {key: value for key, value in playground.__dict__.items() if value is not None}
 
         return self.database.update(playground)
     

@@ -45,7 +45,7 @@ class Testimonium:
         testimonium.witness = document.get(TestimoniumFields.WITNESS, None)
 
         # Convert the model into a dictionary
-        testimonium = {key: value for key, value in testimonium.__dict__.items()}
+        testimonium = {key: value for key, value in testimonium.__dict__.items() if value is not None}
 
         document_list = self.database.filter(testimonium)
         # Process the found documents into proper testimonia
@@ -65,7 +65,7 @@ class Testimonium:
         testimonium._id = uuid4().hex 
 
         # Convert the model into a dictionary
-        testimonium = {key: value for key, value in testimonium.__dict__.items()}
+        testimonium = {key: value for key, value in testimonium.__dict__.items() if value is not None}
        
         doc_id = self.database.create(testimonium)
         return doc_id 
@@ -87,7 +87,7 @@ class Testimonium:
             return False
 
         # Convert the model into a dictionary
-        testimonium = {key: value for key, value in testimonium.__dict__.items()}
+        testimonium = {key: value for key, value in testimonium.__dict__.items() if value is not None}
 
         return self.database.update(testimonium)
     

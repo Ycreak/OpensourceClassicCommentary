@@ -60,10 +60,10 @@ class Fragment:
         fragment.author = document.get(FragmentFields.AUTHOR, None)
         fragment.title = document.get(FragmentFields.TITLE, None)
         fragment.editor = document.get(FragmentFields.EDITOR, None)
-
+   
         # Convert the model into a dictionary
-        fragment = {key: value for key, value in fragment.__dict__.items()}
-
+        fragment = {key: value for key, value in fragment.__dict__.items() if value is not None}
+        
         document_list = self.database.filter(fragment)
         # Process the found documents into proper fragments
         result: list = [] 
@@ -82,7 +82,7 @@ class Fragment:
         fragment._id = uuid4().hex 
 
         # Convert the model into a dictionary
-        fragment = {key: value for key, value in fragment.__dict__.items()}
+        fragment = {key: value for key, value in fragment.__dict__.items() if value is not None}
        
         doc_id = self.database.create(fragment)
         return doc_id 
@@ -104,7 +104,7 @@ class Fragment:
             return False
 
         # Convert the model into a dictionary
-        fragment = {key: value for key, value in fragment.__dict__.items()}
+        fragment = {key: value for key, value in fragment.__dict__.items() if value is not None}
 
         return self.database.update(fragment)
     

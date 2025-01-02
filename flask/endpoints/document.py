@@ -85,7 +85,7 @@ def get_document():
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-   
+
     match document_type:
         case "introduction":
             list_with_documents: list = introduction.get(request.get_json())
@@ -100,7 +100,6 @@ def get_document():
             return make_response("Unprocessable entity", 422)
 
     return jsonify(list_with_documents), 200 if list_with_documents else make_response("Not found", 401)
-    
 
 def create_document() -> make_response:    
     """

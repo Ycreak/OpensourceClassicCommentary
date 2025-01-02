@@ -3,7 +3,7 @@
  * @author Ycreak
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Validators } from '@angular/forms';
 
@@ -11,7 +11,7 @@ import { Validators } from '@angular/forms';
 import { AuthService } from '@oscc/auth/auth.service';
 import { DialogService } from '@oscc/services/dialog.service';
 import { HelperService } from '@oscc/dashboard/helper.service';
-import { TestimoniaApiService } from '@oscc/services/api/testimonia.service';
+import { ApiService } from '@oscc/api.service';
 import { UtilityService } from '@oscc/utility.service';
 
 // Model imports
@@ -22,12 +22,13 @@ import { Testimonium } from '@oscc/models/Testimonium';
   templateUrl: './testimonia-dashboard.component.html',
   styleUrls: ['./testimonia-dashboard.component.scss'],
 })
-export class TestimoniaDashboardComponent implements OnInit {
+export class TestimoniaDashboardComponent {
   // Whether a testimonium has been selected
   protected selected = false;
 
   protected form = new FormGroup({
     _id: new FormControl(''),
+    document_type: new FormControl('testimonium'),
     name: new FormControl('', [Validators.required, Validators.pattern('[0-9-_ ]*')]), // numbers and "-" and "_" allowed.
     author: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
     witness: new FormControl(''),
@@ -38,16 +39,12 @@ export class TestimoniaDashboardComponent implements OnInit {
   });
 
   constructor(
-    protected api: TestimoniaApiService,
+    protected api: ApiService,
     protected utility: UtilityService,
     protected dialog: DialogService,
     protected auth_service: AuthService,
     protected helper: HelperService
   ) {}
-
-  ngOnInit(): void {
-    //this.api.request_index().subscribe();
-  }
 
   /**
    * Request the API for documents
@@ -69,7 +66,7 @@ export class TestimoniaDashboardComponent implements OnInit {
    */
   private model_to_form(testimonium: Testimonium): void {
     // This functions updates the form with the provided testimonium
-    for (const item of ['_id', 'name', 'author', 'title', 'witness', 'editor', 'text']) {
+    for (const item of ['_id', 'document_type', 'name', 'author', 'title', 'witness', 'editor', 'text']) {
       this.form.patchValue({ [item]: testimonium[item] });
     }
     // Update the form with the commentary
@@ -91,8 +88,9 @@ export class TestimoniaDashboardComponent implements OnInit {
       .subscribe((result) => {
         if (result) {
           this.reset_form();
-          this.api.post_document(form, this.api.create).subscribe(() => {
+          this.api.post_document(form, 'create').subscribe(() => {
             this.request({
+              document_type: 'testimonium',
               author: form.author,
               name: form.name,
             });
@@ -113,9 +111,10 @@ export class TestimoniaDashboardComponent implements OnInit {
       .open_confirmation_dialog('Are you sure you want to SAVE CHANGES to this testimonium?', item_string)
       .subscribe((result) => {
         if (result) {
-          this.reset_form();
-          this.api.post_document(form, this.api.revise).subscribe(() => {
+          this.api.post_document(form, 'update').subscribe(() => {
+            this.reset_form();
             this.request({
+              document_type: 'testimonium',
               author: form.author,
               name: form.name,
             });
@@ -138,7 +137,7 @@ export class TestimoniaDashboardComponent implements OnInit {
       .subscribe((result) => {
         if (result) {
           this.reset_form();
-          this.api.post_document(form, this.api.remove).subscribe(() => {
+          this.api.post_document(form, 'delete').subscribe(() => {
             this.reset_form();
             this.selected = false;
           });

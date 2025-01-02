@@ -37,7 +37,7 @@ class Introduction:
         introduction.title = document.get(IntroductionFields.TITLE, None)
 
         # Convert the model into a dictionary
-        introduction = {key: value for key, value in introduction.__dict__.items()}
+        introduction = {key: value for key, value in introduction.__dict__.items() if value is not None}
 
         document_list = self.database.filter(introduction)
         # Process the found documents into proper introductions
@@ -57,7 +57,7 @@ class Introduction:
         introduction._id = uuid4().hex 
 
         # Convert the model into a dictionary
-        introduction = {key: value for key, value in introduction.__dict__.items()}
+        introduction = {key: value for key, value in introduction.__dict__.items() if value is not None}
        
         doc_id = self.database.create(introduction)
         return doc_id 
@@ -79,7 +79,7 @@ class Introduction:
             return False
 
         # Convert the model into a dictionary
-        introduction = {key: value for key, value in introduction.__dict__.items()}
+        introduction = {key: value for key, value in introduction.__dict__.items() if value is not None}
 
         return self.database.update(introduction)
 

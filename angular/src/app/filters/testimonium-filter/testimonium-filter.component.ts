@@ -1,8 +1,8 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 // Service imports
-import { TestimoniaApiService } from '@oscc/services/api/testimonia.service';
-import { UtilityService } from '@oscc/utility.service';
+import { ApiService } from '@oscc/api.service';
+
 @Component({
   selector: 'app-testimonium-filter',
   templateUrl: './testimonium-filter.component.html',
@@ -22,13 +22,13 @@ export class TestimoniumFilterComponent {
   protected names: string[];
 
   constructor(
-    private utility: UtilityService,
-    protected api: TestimoniaApiService
+    protected api: ApiService
   ) {}
 
   /** Emits a filter whenever one is selected */
   protected filter() {
     const filter = {
+      document_type: 'testimonium',
       author: this.selected_author,
       name: this.selected_name,
     };
