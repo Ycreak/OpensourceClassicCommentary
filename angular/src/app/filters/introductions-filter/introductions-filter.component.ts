@@ -19,9 +19,7 @@ export class IntroductionsFilterComponent {
 
   protected titles: string[];
 
-  constructor(
-    protected api: ApiService
-  ) {}
+  constructor(protected api: ApiService) {}
 
   /** Emits a filter whenever one is selected */
   protected filter() {
@@ -31,7 +29,7 @@ export class IntroductionsFilterComponent {
       title: this.selected_title,
     };
     this.new_filter.emit(filter);
-    this.selected_author = "";
-    this.selected_title = "";
+    this.selected_author = '';
+    this.selected_title = '';
   }
 }

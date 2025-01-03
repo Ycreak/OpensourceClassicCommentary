@@ -23,4 +23,3 @@ export class Introduction {
     this.text = 'text' in introduction ? introduction['text'] : '';
   }
 }
-

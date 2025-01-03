@@ -33,12 +33,7 @@ export class TestimoniaApiService extends ApiService {
   public retrieve = 'testimonium/get';
   public index2 = 'testimonium/get/index';
 
-  constructor(
-    fabric: FabricService,
-    bib: BibliographyService,
-    utility: UtilityService,
-    http: HttpClient
-  ) {
+  constructor(fabric: FabricService, bib: BibliographyService, utility: UtilityService, http: HttpClient) {
     super(fabric, bib, utility, http);
   }
 

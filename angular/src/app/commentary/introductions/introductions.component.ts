@@ -14,7 +14,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ApiService } from '@oscc/api.service';
 
 // Model imports
-import {Introduction} from '@oscc/models/Introduction';
+import { Introduction } from '@oscc/models/Introduction';
 
 @Component({
   selector: 'app-introductions',
@@ -32,11 +32,11 @@ export class IntroductionsComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public filter: any,
     public dialogRef: MatDialogRef<IntroductionsComponent>,
     protected api: ApiService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
-    const filter = this.filter
-    filter['document_type'] = 'introduction'
+    const filter = this.filter;
+    filter['document_type'] = 'introduction';
 
     this.api.request_documents(this.filter).subscribe((introductions: any) => {
       if (introductions.length == 0) {
@@ -46,14 +46,14 @@ export class IntroductionsComponent implements OnInit {
         const author_introductions = introductions.filter((introduction: Introduction) => introduction.title === '');
         if (author_introductions.length > 0) {
           this.content = author_introductions[0].text;
-          this.introduction_on = author_introductions[0].title
+          this.introduction_on = author_introductions[0].title;
         } else {
           this.content = 'No introduction found.';
         }
       } else {
         // If both title and author have been provided, pick the only possible introduction
         this.content = introductions[0].text;
-        this.introduction_on =introductions[0].author
+        this.introduction_on = introductions[0].author;
       }
     });
   }

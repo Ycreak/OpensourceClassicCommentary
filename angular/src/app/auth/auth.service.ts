@@ -30,5 +30,4 @@ export class AuthService {
   public is_teacher(): boolean {
     return this.current_user_role == 'teacher' || this.current_user_role == 'admin';
   }
-
 }

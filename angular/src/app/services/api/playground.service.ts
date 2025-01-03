@@ -20,12 +20,7 @@ export class PlaygroundApiService extends ApiService {
   public endpoint_retrieve = 'playground/get';
   //public index = 'fragment/get/index';
 
-  constructor(
-    fabric: FabricService,
-    bib: BibliographyService,
-    utility: UtilityService,
-    http: HttpClient
-  ) {
+  constructor(fabric: FabricService, bib: BibliographyService, utility: UtilityService, http: HttpClient) {
     super(fabric, bib, utility, http);
   }
 

@@ -9,11 +9,11 @@
 
 <!-- Nested menu to select author - title - editor. -->
 <mat-menu #menu_authors="matMenu">
-  <ng-container *ngFor="let author of this.api.get_from_index('author', {document_type: 'introduction'})">
+  <ng-container *ngFor="let author of this.api.get_from_index('author', { document_type: 'introduction' })">
     <button
       mat-menu-item
       (click)="this.filter()"
-      (menuOpened)="this.titles = this.api.get_from_index('title', {document_type: 'introduction', author: author})"
+      (menuOpened)="this.titles = this.api.get_from_index('title', { document_type: 'introduction', author: author })"
       (menuOpened)="this.selected_author = author"
       [matMenuTriggerFor]="menu_names">
       {{ author }}

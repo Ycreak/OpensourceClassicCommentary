@@ -39,14 +39,14 @@ export class IntroductionsComponent implements OnInit {
   protected request_introduction(introduction: Introduction): void {
     this.api.request_documents(introduction).subscribe({});
   }
-  
+
   /**
    * Given the form which represents an introduction, this function requests the api to create a
    * new introduction.
    * @param object which represents an introduction, edited by the user in the dashboard
    */
   protected create(form: any): void {
-    if(this.introduction.title) {
+    if (this.introduction.title) {
       // We create a title introduction
     } else {
       // We create an author introduction
@@ -114,4 +114,3 @@ export class IntroductionsComponent implements OnInit {
       });
   }
 }
-

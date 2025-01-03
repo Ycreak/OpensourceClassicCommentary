@@ -44,8 +44,8 @@ export class FragmentTableComponent implements AfterViewInit {
   ) {
     // Create a master index we use as a read only truth, and a local index which we will use to save the filtering of
     // the master index to.
-    this.master_index = this.api.index.filter(item => item.document_type === 'fragment');
-    this.local_index = this.api.index.filter(item => item.document_type === 'fragment');
+    this.master_index = this.api.index.filter((item) => item.document_type === 'fragment');
+    this.local_index = this.api.index.filter((item) => item.document_type === 'fragment');
 
     this._authors = [...new Set(this.master_index.map((element) => element.author))];
     this._titles = [...new Set(this.master_index.map((element) => element.title))];

@@ -21,9 +21,7 @@ export class TestimoniumFilterComponent {
   protected editors: string[];
   protected names: string[];
 
-  constructor(
-    protected api: ApiService
-  ) {}
+  constructor(protected api: ApiService) {}
 
   /** Emits a filter whenever one is selected */
   protected filter() {

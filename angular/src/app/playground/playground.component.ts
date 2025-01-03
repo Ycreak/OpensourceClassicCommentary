@@ -80,7 +80,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
     private commentary: CommentaryService,
     private mat_dialog: MatDialog,
     private fabric: FabricService,
-    private formatter: FormatterService,
+    private formatter: FormatterService
   ) {}
 
   ngOnInit(): void {
@@ -189,7 +189,8 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
                 canvas: this.playground.canvas.toJSON(),
                 _id: this.playground._id,
               }),
-            'update');
+              'update'
+            );
           } else {
             this.utility.open_snackbar('Not enough permissions');
           }
@@ -206,7 +207,8 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
                     role: 'owner',
                   }),
                 ],
-              }), 'create'
+              }),
+              'create'
             )
             .subscribe((playground) => {
               this.process_incoming_playground(playground);
@@ -297,7 +299,8 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
                 _id: this.playground._id,
                 users: this.playground.users,
               }),
-            'update');
+              'update'
+            );
           }
         },
       });

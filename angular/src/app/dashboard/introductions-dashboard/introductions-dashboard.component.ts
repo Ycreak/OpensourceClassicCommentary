@@ -50,7 +50,7 @@ export class IntroductionsDashboardComponent {
     this.form.reset();
     this.api.request_documents(filter).subscribe((introductions) => {
       // If we want to retrieve an introduction to an author, we send no title filter to
-      // the api. We therefore receive all introductions associated with this author, as the api 
+      // the api. We therefore receive all introductions associated with this author, as the api
       // thinks we are only filtering on authors. Therefore, from all the given introductions,
       // filter the correct introduction, in this case where title == '';
       if (filter.title == '') {
@@ -58,7 +58,7 @@ export class IntroductionsDashboardComponent {
         if (author_introductions.length > 0) {
           this.model_to_form(author_introductions[0]);
         } else {
-          this.utility.open_snackbar('No introduction found for this author.')
+          this.utility.open_snackbar('No introduction found for this author.');
         }
       } else {
         this.model_to_form(introductions[0]);

@@ -18,10 +18,12 @@
 <ng-container *ngIf="this.introduction.author">
   <mat-form-field class="input-form-full-width">
     <mat-label *ngIf="this.introduction.author && !this.introduction.title"
-      ><b>Introduction text for '{{this.introduction.author}}'</b></mat-label
+      ><b>Introduction text for '{{ this.introduction.author }}'</b></mat-label
     >
     <mat-label *ngIf="this.introduction.author && this.introduction.title"
-      ><b>Introduction text for <i>{{this.introduction.title}}</i> from '{{this.introduction.author}}'</b></mat-label
+      ><b
+        >Introduction text for <i>{{ this.introduction.title }}</i> from '{{ this.introduction.author }}'</b
+      ></mat-label
     >
     <textarea matInput type="text" [(ngModel)]="this.introduction.text"></textarea>
   </mat-form-field>
@@ -44,4 +46,3 @@
 <mat-label class="mat-label-inline" *ngIf="this.show_changes_saved_hint">Changes saved</mat-label>
 <div class="div-padding-lg"></div>
 <div class="div-padding-sm"></div>
-

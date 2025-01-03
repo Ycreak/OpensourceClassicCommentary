@@ -10,7 +10,7 @@ import { environment } from '@src/environments/environment';
 // Service imports
 import { UtilityService } from '@oscc/utility.service';
 import { BibliographyService } from '@oscc/services/bibliography.service';
-import {FabricService} from '@oscc/playground/services/fabric.service';
+import { FabricService } from '@oscc/playground/services/fabric.service';
 
 // Model imports
 import { Bib } from '@oscc/models/Bib';
@@ -39,11 +39,11 @@ export class ApiService {
   public index: any[] = [];
 
   public endpoints = new Map<string, string>([
-    ["index", "document/index"],
-    ["get","document/get"],
-    ["create","document/create"],
-    ["delete","document/delete"],
-    ["update","document/update"],
+    ['index', 'document/index'],
+    ['get', 'document/get'],
+    ['create', 'document/create'],
+    ['delete', 'document/delete'],
+    ['update', 'document/update'],
   ]);
 
   constructor(
@@ -68,10 +68,10 @@ export class ApiService {
     return new Observable((observer) => {
       this.spinner_on();
       this.index = [];
-      this.post(this.FlaskURL, this.endpoints.get("index"), {}, this.get_header).subscribe({
+      this.post(this.FlaskURL, this.endpoints.get('index'), {}, this.get_header).subscribe({
         next: (data) => {
           this.index = data;
-          console.log(this.index)
+          console.log(this.index);
           this.spinner_off();
           observer.next(this.index);
           observer.complete();
@@ -89,7 +89,7 @@ export class ApiService {
   public request_documents(filter: any): Observable<any> {
     return new Observable((observer) => {
       this.spinner_on();
-      this.post(this.FlaskURL, this.endpoints.get("get"), filter, this.get_header).subscribe({
+      this.post(this.FlaskURL, this.endpoints.get('get'), filter, this.get_header).subscribe({
         next: (data) => {
           const documents: any[] = [];
           let new_document: any;
@@ -150,8 +150,6 @@ export class ApiService {
       });
     });
   }
-
-
 
   /**
    * Performs a post with the given data to the given url + endpoint

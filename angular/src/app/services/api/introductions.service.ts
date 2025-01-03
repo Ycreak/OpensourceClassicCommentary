@@ -15,12 +15,7 @@ import { Introduction } from '@oscc/models/Introduction';
   providedIn: 'root',
 })
 export class IntroductionsApiService extends ApiService {
-  constructor(
-    fabric: FabricService,
-    bib: BibliographyService,
-    utility: UtilityService,
-    http: HttpClient
-  ) {
+  constructor(fabric: FabricService, bib: BibliographyService, utility: UtilityService, http: HttpClient) {
     super(fabric, bib, utility, http);
   }
 

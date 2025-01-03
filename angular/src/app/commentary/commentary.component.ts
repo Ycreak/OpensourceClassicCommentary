@@ -128,7 +128,12 @@ export class CommentaryComponent {
   protected request_linked_fragments(fragment: Fragment): void {
     const column_id = this.columns.add();
     this.columns.request(
-      { document_type: fragment.document_type, author: fragment.author, title: fragment.title, editor: fragment.editor },
+      {
+        document_type: fragment.document_type,
+        author: fragment.author,
+        title: fragment.title,
+        editor: fragment.editor,
+      },
       column_id
     );
     this.columns.find(column_id).column_name = `${fragment.author}-${fragment.title}-${fragment.editor}`;
