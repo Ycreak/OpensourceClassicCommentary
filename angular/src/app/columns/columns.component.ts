@@ -17,7 +17,7 @@ import { BibliographyService } from '@oscc/services/bibliography.service';
 import { ColumnsService } from '@oscc/columns/columns.service';
 import { CommentaryService } from '@oscc/commentary/commentary.service';
 import { DialogService } from '@oscc/services/dialog.service';
-import { FragmentsApiService } from '@oscc/services/api/fragments.service';
+import { ApiService } from '@oscc/api.service';
 import { SettingsService } from '@oscc/services/settings.service';
 import { UtilityService } from '@oscc/utility.service';
 
@@ -40,7 +40,7 @@ export class ColumnsComponent implements OnInit {
   public current_document: any;
 
   constructor(
-    protected api: FragmentsApiService,
+    protected api: ApiService,
     protected auth_service: AuthService,
     protected columns: ColumnsService,
     protected commentary: CommentaryService,
@@ -68,10 +68,11 @@ export class ColumnsComponent implements OnInit {
       filter.title = params.get('title');
       filter.editor = params.get('editor');
     }
+    filter.document_type = 'fragment';
     // Create the first column and push it to the columns list
     if (this.columns.list.length < 1) {
       const column_id = this.columns.add();
-      this.columns.request(environment.fragments, filter, column_id);
+      this.columns.request(filter, column_id);
       this.columns.find(column_id).column_name = `${filter.author}-${filter.title}-${filter.editor}`;
     }
   }
@@ -89,7 +90,7 @@ export class ColumnsComponent implements OnInit {
           //TODO: for now, we need to request every single document from the server.
           // New API update will allow us to request a list of filters
           result.filters.forEach((filter: any) => {
-            this.columns.request(result.document_type, filter, column_id, true);
+            this.columns.request(filter, column_id, true);
           });
         }
       },
@@ -128,7 +129,7 @@ export class ColumnsComponent implements OnInit {
     if (given_document.linked_fragments.length > 0) {
       const column_id = this.columns.add();
       given_document.linked_fragments.forEach((linked_fragment: Linked_fragment) => {
-        this.columns.request(environment.fragments, linked_fragment, column_id, true);
+        this.columns.request(linked_fragment, column_id, true);
         this.columns.find(column_id).column_name = `Linked ${column_id}`;
       });
     } else {

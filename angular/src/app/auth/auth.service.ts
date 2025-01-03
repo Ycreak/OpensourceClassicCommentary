@@ -23,4 +23,12 @@ export class AuthService {
     this.current_user_role = user.role;
     this.is_logged_in = true;
   }
+
+  /**
+   * Checks if the current user is a teacher
+   */
+  public is_teacher(): boolean {
+    return this.current_user_role == 'teacher' || this.current_user_role == 'admin';
+  }
+
 }

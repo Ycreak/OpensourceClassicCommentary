@@ -11,8 +11,8 @@
       [endpoint]="'editor'"
       (new_filter)="
         this.columns.request(
-          'fragments',
           {
+            document_type: $event.document_type, 
             author: $event.author,
             title: $event.title,
             editor: $event.editor

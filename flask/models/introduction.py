@@ -1,6 +1,7 @@
 """
 Model to handle introductions
 """
+import logging
 from dataclasses import dataclass
 from uuid import uuid4
 
@@ -9,10 +10,9 @@ from database import Database
 class IntroductionFields(object):
     # Container for field names
     ID = '_id'
-    AUTHOR = 'selected_fragment_author'
-    TITLE = 'selected_fragment_title'
-    AUTHOR_TEXT = 'author_text'
-    TITLE_TEXT = 'title_text'
+    AUTHOR = 'author'
+    TITLE = 'title'
+    TEXT = 'text'
 
 @dataclass
 class IntroductionModel:
@@ -21,8 +21,7 @@ class IntroductionModel:
     document_type: str = 'introduction'
     author: str = ''
     title: str = ''
-    author_text: str = ''
-    title_text: str = ''
+    text: str = ''
 
 class Introduction:
     def __init__(self, server):
@@ -33,12 +32,15 @@ class Introduction:
         Retrieves the introduction given the document filter.
         """
         introduction = IntroductionModel()
-        introduction.author = document.get(IntroductionFields.AUTHOR, None)
-        introduction.title = document.get(IntroductionFields.TITLE, None)
+        introduction.author = document.get(IntroductionFields.AUTHOR, '')
+        introduction.title = document.get(IntroductionFields.TITLE, '')
+
+        logging.error(introduction)
 
         # Convert the model into a dictionary
-        introduction = {key: value for key, value in introduction.__dict__.items() if value is not None}
-
+        introduction = {key: value for key, value in introduction.__dict__.items() if value != ''}
+        
+        logging.info(f"Retrieving introduction for filter: {introduction}")
         document_list = self.database.filter(introduction)
         # Process the found documents into proper introductions
         result: list = [] 
@@ -57,8 +59,8 @@ class Introduction:
         introduction._id = uuid4().hex 
 
         # Convert the model into a dictionary
-        introduction = {key: value for key, value in introduction.__dict__.items() if value is not None}
-       
+        introduction = {key: value for key, value in introduction.__dict__.items()}
+      
         doc_id = self.database.create(introduction)
         return doc_id 
     
@@ -91,7 +93,6 @@ class Introduction:
         introduction._id = document.get(IntroductionFields.ID, None) 
         introduction.author = document.get(IntroductionFields.AUTHOR, None)
         introduction.title = document.get(IntroductionFields.TITLE, None)
-        introduction.author_text = document.get(IntroductionFields.AUTHOR_TEXT, None)
-        introduction.title_text = document.get(IntroductionFields.TITLE_TEXT, None)
+        introduction.text = document.get(IntroductionFields.TEXT, None)
 
         return introduction

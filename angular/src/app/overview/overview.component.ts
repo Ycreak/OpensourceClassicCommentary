@@ -27,6 +27,7 @@ import { LoginComponent } from '@oscc/login/login.component';
 export class OverviewComponent implements OnInit, OnDestroy {
   protected commentary_enabled = true;
   protected playground_enabled = true;
+  protected sandbox_enabled = false;
 
   constructor(
     private mat_dialog: MatDialog,
@@ -58,6 +59,14 @@ export class OverviewComponent implements OnInit, OnDestroy {
    */
   protected get_drawer_size(): string {
     return `${this.settings.fragments.commentary_size}%`;
+  }
+
+  /**
+   * Simple function to toggle the sandbox mode
+   * @author Ycreak
+   */
+  protected toggle_sandbox(): void {
+    this.sandbox_enabled = !this.sandbox_enabled;
   }
 
   /**

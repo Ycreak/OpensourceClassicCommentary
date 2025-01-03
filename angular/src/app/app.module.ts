@@ -91,7 +91,7 @@ import { ScansionComponent } from './scansion/scansion.component';
 import { PlaygroundComponent } from './playground/playground.component';
 import { CommentaryComponent } from './commentary/commentary.component';
 import { OverviewComponent } from './overview/overview.component';
-import { IntroductionsComponent } from './dashboard/introductions-dashboard/introductions.component';
+import { IntroductionsDashboardComponent } from './dashboard/introductions-dashboard/introductions-dashboard.component';
 import { ExpandableTextComponent } from './other_components/expandable-text/expandable-text.component';
 import { DocumentFilterComponent } from './filters/document-filter/document-filter.component';
 import { UsersComponent } from './dashboard/users/users.component';
@@ -109,6 +109,7 @@ import { SharePlaygroundComponent } from './playground/share-playground/share-pl
 import { JoinPlaygroundComponent } from './playground/join-playground/join-playground.component';
 import { LatinTragicFragmentFilterComponent } from './filters/latin-tragic-fragment-filter/latin-tragic-fragment-filter.component';
 import { TestimoniumFilterComponent } from './filters/testimonium-filter/testimonium-filter.component';
+import { IntroductionsFilterComponent } from './filters/introductions-filter/introductions-filter.component';
 import { FragmentTableComponent } from './filters/document-filter/fragment-table/fragment-table.component';
 import { TestimoniaTableComponent } from './filters/document-filter/testimonia-table/testimonia-table.component';
 // Routes to take. Disallows Path Traversal.
@@ -139,7 +140,7 @@ const appRoutes: Routes = [
     PlaygroundComponent,
     CommentaryComponent,
     OverviewComponent,
-    IntroductionsComponent,
+    IntroductionsDashboardComponent,
     BibliographyComponent,
     ExpandableTextComponent,
     DocumentFilterComponent,
@@ -158,6 +159,7 @@ const appRoutes: Routes = [
     JoinPlaygroundComponent,
     LatinTragicFragmentFilterComponent,
     TestimoniumFilterComponent,
+    IntroductionsFilterComponent,
     FragmentTableComponent,
     TestimoniaTableComponent,
   ],

@@ -9,7 +9,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 
 // Service imports
-import { TestimoniaApiService } from '@oscc/services/api/testimonia.service';
+import { ApiService } from '@oscc/api.service';
 import { UtilityService } from '@oscc/utility.service';
 import { FilterService } from '../filter.service';
 
@@ -39,7 +39,7 @@ export class TestimoniaTableComponent implements AfterViewInit {
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(
-    protected api: TestimoniaApiService,
+    protected api: ApiService,
     protected filter: FilterService,
     protected utility: UtilityService
   ) {
@@ -49,8 +49,8 @@ export class TestimoniaTableComponent implements AfterViewInit {
     this.api.request_index().subscribe(() => {
       // Create a master index we use as a read only truth, and a local index which we will use to save the filtering of
       // the master index to.
-      this.master_index = this.api.testimonia_index;
-      this.local_index = this.api.testimonia_index;
+      this.master_index = this.api.index.filter(item => item.document_type === 'testimonium');
+      this.local_index = this.api.index.filter(item => item.document_type === 'testimonium');
 
       this._authors = [...new Set(this.master_index.map((element) => element.author))];
       this._names = [...new Set(this.master_index.map((element) => element.name))];

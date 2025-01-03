@@ -9,11 +9,9 @@ import { Subscription } from 'rxjs';
 
 // Service imports
 import { ApiService } from '@oscc/api.service';
-import { ApiInterfaceService } from '@oscc/services/api/api-interface.service';
 import { AuthService } from '@oscc/auth/auth.service';
 import { CommentaryService } from '@oscc/commentary/commentary.service';
-import { FragmentsApiService } from '@oscc/services/api/fragments.service';
-import { PlaygroundApiService } from '@oscc/services/api/playground.service';
+//import { PlaygroundApiService } from '@oscc/services/api/playground.service';
 import { UtilityService } from '@oscc/utility.service';
 import { FabricService } from './services/fabric.service';
 
@@ -76,22 +74,18 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   constructor(
     protected api: ApiService,
     protected auth_service: AuthService,
-    protected fragments_api: FragmentsApiService,
     protected utility: UtilityService,
     protected dialog: DialogService,
     protected websockets: WebsocketsService,
-    private api_interface: ApiInterfaceService,
     private commentary: CommentaryService,
     private mat_dialog: MatDialog,
     private fabric: FabricService,
     private formatter: FormatterService,
-    private playground_api: PlaygroundApiService
   ) {}
 
   ngOnInit(): void {
     this.init_playground();
-    this.request_documents('fragments', { title: 'Eumenides' });
-    //this.request_documents('testimonia', { author: 'Accius' });
+    this.request_documents({ document_type: 'fragment', author: 'Karel' });
   }
 
   ngOnDestroy() {
@@ -115,7 +109,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
           //TODO: for now, we need to request every single document from the server.
           // New API update will allow us to request a list of filters
           result.filters.forEach((filter: any) => {
-            this.request_documents(result.document_type, filter);
+            this.request_documents(filter);
           });
         }
       },
@@ -127,8 +121,8 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
    * @param column_id (number) in which to add the documents
    * @param documents (object[]) which to add to the provided column
    */
-  protected request_documents(document_type: string, filter: object): void {
-    this.api_interface.get_documents(document_type, filter).subscribe((documents) => {
+  protected request_documents(filter: any): void {
+    this.api.request_documents(filter).subscribe((documents) => {
       // Format documents
       documents.forEach((doc: any) => {
         this.formatter.format(doc);
@@ -163,8 +157,8 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe({
       next: (requested_playground_id: string) => {
         if (requested_playground_id) {
-          this.playground_api
-            .load(
+          this.api
+            .request_documents(
               new Playground_communicator({ _id: requested_playground_id, user: this.auth_service.current_user_name })
             )
             .subscribe((playground) => {
@@ -189,19 +183,19 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
       if (data) {
         if (data.button == 'save') {
           if (this.playground.role == 'owner' || this.playground.role == 'collaborator') {
-            this.playground_api.save(
+            this.api.post_document(
               new Playground_communicator({
                 name: data.name,
                 canvas: this.playground.canvas.toJSON(),
                 _id: this.playground._id,
-              })
-            );
+              }),
+            'update');
           } else {
             this.utility.open_snackbar('Not enough permissions');
           }
         } else if (data.button == 'create') {
-          this.playground_api
-            .create(
+          this.api
+            .post_document(
               new Playground_communicator({
                 name: data.name,
                 canvas: this.playground.canvas.toJSON(),
@@ -212,7 +206,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
                     role: 'owner',
                   }),
                 ],
-              })
+              }), 'create'
             )
             .subscribe((playground) => {
               this.process_incoming_playground(playground);
@@ -298,12 +292,12 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
         next: (users: Playground_user[]) => {
           if (users) {
             this.playground.users = users;
-            this.playground_api.save(
+            this.api.post_document(
               new Playground_communicator({
                 _id: this.playground._id,
                 users: this.playground.users,
-              })
-            );
+              }),
+            'update');
           }
         },
       });
@@ -326,7 +320,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
           if (name) {
             // Check if we have the correct rights to delete the playground
             if (this.playground.role === 'owner') {
-              this.playground_api.remove(new Playground_communicator({ _id: this.playground._id }));
+              this.api.post_document(new Playground_communicator({ _id: this.playground._id }), 'delete');
               // Reset the playground to a clean slate
               this.playground.clear();
               this.playground.role = undefined;

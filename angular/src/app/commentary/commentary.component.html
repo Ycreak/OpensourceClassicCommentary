@@ -7,9 +7,9 @@
   <!-- Show the currently selected document. Only show relevant information. -->
   <h5>
     Selected
-    <a class="a-void" (click)="this.show_introduction(this.document.author)">{{ this.document.author }}</a
+    <a class="a-void" (click)="this.show_introduction({author: this.document.author})">{{ this.document.author }}</a
     >,
-    <a class="a-void" (click)="this.show_introduction(this.document.author, this.document.title)">{{
+    <a class="a-void" (click)="this.show_introduction({author: this.document.author, title: this.document.title})">{{
       this.document.title
     }}</a
     >,

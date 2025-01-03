@@ -136,9 +136,6 @@ export class ApiService {
    * @returns Observable
    */
   public post_document(doc: any, endpoint: string): Observable<any> {
-    console.log(doc, endpoint)
-
-
     return new Observable((observer) => {
       this.spinner_on();
       this.post(this.FlaskURL, this.endpoints.get(endpoint), doc, this.post_header).subscribe({

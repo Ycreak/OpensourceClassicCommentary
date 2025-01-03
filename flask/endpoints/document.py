@@ -99,7 +99,10 @@ def get_document():
             logging.error(f"Unknown document type provided: {document_type}")
             return make_response("Unprocessable entity", 422)
 
-    return jsonify(list_with_documents), 200 if list_with_documents else make_response("Not found", 401)
+    logging.error(f"Returning documents: {list_with_documents}")
+
+    return jsonify(list_with_documents), 200
+# if list_with_documents else make_response("Not found", 401)
 
 def create_document() -> make_response:    
     """
