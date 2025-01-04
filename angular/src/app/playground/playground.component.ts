@@ -11,7 +11,6 @@ import { Subscription } from 'rxjs';
 import { ApiService } from '@oscc/api.service';
 import { AuthService } from '@oscc/auth/auth.service';
 import { CommentaryService } from '@oscc/commentary/commentary.service';
-//import { PlaygroundApiService } from '@oscc/services/api/playground.service';
 import { UtilityService } from '@oscc/utility.service';
 import { FabricService } from './services/fabric.service';
 
@@ -158,12 +157,14 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
       next: (requested_playground_id: string) => {
         if (requested_playground_id) {
           this.api
-            .request_documents(
-              new Playground_communicator({ _id: requested_playground_id, user: this.auth_service.current_user_name })
-            )
+            .request_documents(new Playground_communicator({ _id: requested_playground_id }))
             .subscribe((playground) => {
-              this.process_incoming_playground(playground);
-              this.utility.open_snackbar(`Playground ${this.playground.name} opened.`);
+              if (playground.length > 0) {
+                this.process_incoming_playground(playground[0]);
+                this.utility.open_snackbar(`Playground ${this.playground.name} opened.`);
+              } else {
+                this.utility.open_snackbar('Corrupt playground received from server.');
+              }
             });
         }
       },
@@ -221,8 +222,6 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
 
   /**
    * Opens a dialog to join a live room.
-   * @param number of column_id to load documents into
-   * @author Ycreak
    */
   protected join_playground(): void {
     const dialogRef = this.mat_dialog.open(JoinPlaygroundComponent, {
@@ -323,7 +322,10 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
           if (name) {
             // Check if we have the correct rights to delete the playground
             if (this.playground.role === 'owner') {
-              this.api.post_document(new Playground_communicator({ _id: this.playground._id }), 'delete');
+              //this.api.post_document(new Playground_communicator({ _id: this.playground._id }), 'delete');
+              this.api
+                .post_document(new Playground_communicator({ _id: this.playground._id }), 'delete')
+                .subscribe(() => {});
               // Reset the playground to a clean slate
               this.playground.clear();
               this.playground.role = undefined;
@@ -366,7 +368,12 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   private process_incoming_playground(playground: any): void {
     this.playground.name = playground.name;
     this.playground.created_by = playground.created_by;
-    this.playground.role = playground.role;
+
+    // Find the role of the current user in the provided playground
+    this.playground.role = playground.users.filter(
+      (item: any) => item.name === this.auth_service.current_user_name
+    )[0].role;
+
     this.playground._id = playground._id;
     this.playground.users = playground.users;
     // Apply data to the canvas

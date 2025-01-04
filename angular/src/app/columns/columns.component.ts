@@ -8,7 +8,6 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { environment } from '@src/environments/environment';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 
 // Service imports

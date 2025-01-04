@@ -56,7 +56,8 @@ def _update_index() -> None:
                 })
             case "playground":
                 index.append({
-                    "document_type": "testimonium", 
+                    "document_type": "playground", 
+                    "_id": doc["_id"], 
                     "name": doc["name"], 
                     "created_by": doc["created_by"], 
                     "users": doc["users"]
@@ -143,7 +144,7 @@ def delete_document() -> make_response:
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-   
+
     match document_type:
         case "introduction":
             success: bool = introduction.delete(request.get_json())

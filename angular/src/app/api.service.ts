@@ -10,13 +10,11 @@ import { environment } from '@src/environments/environment';
 // Service imports
 import { UtilityService } from '@oscc/utility.service';
 import { BibliographyService } from '@oscc/services/bibliography.service';
-import { FabricService } from '@oscc/playground/services/fabric.service';
 
 // Model imports
 import { Bib } from '@oscc/models/Bib';
 import { Fragment } from '@oscc/models/Fragment';
 import { Introduction } from '@oscc/models/Introduction';
-import { Playground } from '@oscc/models/Playground';
 import { Testimonium } from '@oscc/models/Testimonium';
 import { User } from '@oscc/models/User';
 
@@ -47,7 +45,6 @@ export class ApiService {
   ]);
 
   constructor(
-    private fabric: FabricService,
     private bib: BibliographyService,
     protected utility: UtilityService,
     http: HttpClient
@@ -107,9 +104,8 @@ export class ApiService {
                 documents.push(new_document);
                 break;
               case 'playground':
-                new_document = new Playground(this.fabric);
-                new_document.set(doc);
-                documents.push(new_document);
+                // Push a playground as is. Will be processed by the playground component.
+                documents.push(doc);
                 break;
               case 'testimonium':
                 new_document = new Testimonium();
@@ -136,6 +132,7 @@ export class ApiService {
    * @returns Observable
    */
   public post_document(doc: any, endpoint: string): Observable<any> {
+    console.debug('api post_document():', endpoint, doc);
     return new Observable((observer) => {
       this.spinner_on();
       this.post(this.FlaskURL, this.endpoints.get(endpoint), doc, this.post_header).subscribe({

@@ -1,7 +1,8 @@
 """
 Model to handle playgrounds
 """
-from dataclasses import dataclass
+import logging
+
 from uuid import uuid4
 
 from database import Database
@@ -11,19 +12,16 @@ class PlaygroundFields(object):
     CANVAS = "canvas"
     CREATED_BY = "created_by"
     NAME = "name"
-    # To find a playground based on a user
-    USER = "user"
     USERS = "users"
 
-@dataclass
+# Dataclasses dislike the use of lists, so this is a normal class
 class PlaygroundModel:
     _id: str = ""
+    document_type: str = 'playground'
     canvas: object = None
     created_by: str = ""
     name: str = ""
-    role: str = ""
-    user: str = ""
-    users = None
+    users: list = []
 
 class Playground:
     def __init__(self, server):
@@ -36,33 +34,19 @@ class Playground:
         playground = PlaygroundModel()
         # Retrieve the fields on which we allow filtering
         playground._id = document.get(PlaygroundFields.ID, None)
-        playground.name = document.get(PlaygroundFields.NAME, None)
-        playground.created_by = document.get(PlaygroundFields.CREATED_BY, None)
-        playground.users = document.get(PlaygroundFields.USERS, None)
-        playground.canvas = document.get(PlaygroundFields.CANVAS, None)
 
         # Convert the model into a dictionary
-        playground = {key: value for key, value in playground.__dict__.items() if value is not None}
+        playground = {key: value for key, value in playground.__dict__.items() if value is not None and value != ""}
 
         document_list = self.database.filter(playground)
-        # We can only find one playground, so just use the first entry in the list
-        try:
-            playground = PlaygroundModel()
-            playground = self._convert_document_to_playground(document_list[0])
-            return [playground]
-        except:
-            return []
 
-        # TODO: 
-        # Get the role the requesting user has. We will return this in the request so that 
-        # the frontend knows what permissions the requesting user has on the returned playground.
-        # playground.role = self._find_user_role(user, result.users)
-        # We remove the users list from the object if the user is not the owner. Only owners can change users permissions
-        # if playground.role != 'owner':
-            # del playground.users
-        
-        # return playground
-        
+        result: list = [] 
+        for document in document_list:
+            playground = PlaygroundModel()
+            playground = self._convert_document_to_playground(document)
+            result.append(playground.__dict__)
+
+        return result 
 
     def create(self, document: dict) -> str:
         """
@@ -103,10 +87,11 @@ class Playground:
         Converts the received document into a playground using the PlaygroundModel
         """
         playground = PlaygroundModel()
-        playground._id = document.get(PlaygroundFields.ID, None)
-        playground.name = document.get(PlaygroundFields.NAME, None)
-        playground.created_by = document.get(PlaygroundFields.CREATED_BY, None)
-        playground.users = document.get(PlaygroundFields.USERS, None)
+        playground._id = document.get(PlaygroundFields.ID, "")
+        playground.document_type = "playground"
+        playground.name = document.get(PlaygroundFields.NAME, "")
+        playground.created_by = document.get(PlaygroundFields.CREATED_BY, "")
+        playground.users = document.get(PlaygroundFields.USERS, [])
         playground.canvas = document.get(PlaygroundFields.CANVAS, None)
 
         return playground

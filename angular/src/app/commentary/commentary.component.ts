@@ -8,7 +8,6 @@
 
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { environment } from '@src/environments/environment';
 
 // Model imports
 import { Commentary } from '@oscc/models/Commentary';

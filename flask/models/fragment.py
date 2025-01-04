@@ -78,12 +78,16 @@ class Fragment:
         """
         Creates a fragment. For this, a uuid will be generated as identifier.
         """
+        if self.get(document):
+            # Check if the document already exists.
+            return ""
+
         fragment = self._convert_document_to_fragment(document)
         fragment._id = uuid4().hex 
 
         # Convert the model into a dictionary
         fragment = {key: value for key, value in fragment.__dict__.items() if value is not None}
-       
+
         doc_id = self.database.create(fragment)
         return doc_id 
     

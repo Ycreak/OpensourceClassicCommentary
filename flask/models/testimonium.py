@@ -61,6 +61,10 @@ class Testimonium:
         """
         Creates a testimonium. For this, a uuid will be generated as identifier.
         """
+        if self.get(document):
+            # Check if the document already exists.
+            return ""
+
         testimonium = self._convert_document_to_testimonium(document)
         testimonium._id = uuid4().hex 
 
