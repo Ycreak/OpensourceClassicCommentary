@@ -52,8 +52,8 @@ export class TestimoniaTableComponent implements AfterViewInit {
       this.master_index = this.api.index.filter((item) => item.document_type === 'testimonium');
       this.local_index = this.api.index.filter((item) => item.document_type === 'testimonium');
 
-      this._authors = [...new Set(this.master_index.map((element) => element.author))];
-      this._names = [...new Set(this.master_index.map((element) => element.name))];
+      this._authors = [...new Set(this.master_index.map((element) => element.author))].sort();
+      this._names = [...new Set(this.master_index.map((element) => element.name))].sort();
       // Assign the data to the data source for the table to render
       this.filter.data.testimonia.dataSource = new MatTableDataSource(this.master_index);
     });
