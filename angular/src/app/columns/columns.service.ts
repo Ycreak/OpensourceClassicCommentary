@@ -9,7 +9,7 @@ import { Column } from '@oscc/models/Column';
 import { Fragment } from '@oscc/models/Fragment';
 
 // Service imports
-import { ApiInterfaceService } from '@oscc/services/api/api-interface.service';
+import { ApiService } from '@oscc/api.service';
 import { BibliographyService } from '@oscc/services/bibliography.service';
 import { UtilityService } from '@oscc/utility.service';
 
@@ -26,7 +26,7 @@ export class ColumnsService {
   public current: Column = new Column({});
 
   constructor(
-    private api: ApiInterfaceService,
+    private api: ApiService,
     private bib: BibliographyService,
     private utility: UtilityService
   ) {}
@@ -127,8 +127,8 @@ export class ColumnsService {
    * @param append (boolean) whether we append documents or replace
    * @author Ycreak
    */
-  public request(document_type: string, filter: object, column_id: number, append?: boolean): void {
-    this.api.get_documents(document_type, filter).subscribe((documents) => {
+  public request(filter: object, column_id: number, append?: boolean): void {
+    this.api.request_documents(filter).subscribe((documents) => {
       const column = column_id ? this.find(column_id) : this.find(this.add());
       // Format all documents to look nice on the frontend (little HTML, some beautiful CSS)
       documents = this.format(documents);

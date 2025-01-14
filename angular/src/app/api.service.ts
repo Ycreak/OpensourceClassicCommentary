@@ -12,8 +12,10 @@ import { UtilityService } from '@oscc/utility.service';
 import { BibliographyService } from '@oscc/services/bibliography.service';
 
 // Model imports
-import { Fragment } from '@oscc/models/Fragment';
 import { Bib } from '@oscc/models/Bib';
+import { Fragment } from '@oscc/models/Fragment';
+import { Introduction } from '@oscc/models/Introduction';
+import { Testimonium } from '@oscc/models/Testimonium';
 import { User } from '@oscc/models/User';
 
 @Injectable({
@@ -31,6 +33,17 @@ export class ApiService {
   public post_header: object = { observe: 'response', responseType: 'text' as 'json' };
   public get_header: object = { observe: 'body', responseType: 'json' };
 
+  // The index contains all document meta data received from the api
+  public index: any[] = [];
+
+  public endpoints = new Map<string, string>([
+    ['index', 'document/index'],
+    ['get', 'document/get'],
+    ['create', 'document/create'],
+    ['delete', 'document/delete'],
+    ['update', 'document/update'],
+  ]);
+
   constructor(
     private bib: BibliographyService,
     protected utility: UtilityService,
@@ -42,6 +55,98 @@ export class ApiService {
 
   FlaskURL: string = environment.flask_api;
   NeuralURL: 'https://oscc.nolden.biz:5002/';
+
+  /**
+   * Requests the API for the document index
+   * @return Observable
+   * @author Ycreak
+   */
+  public request_index(): Observable<any> {
+    return new Observable((observer) => {
+      this.spinner_on();
+      this.index = [];
+      this.post(this.FlaskURL, this.endpoints.get('index'), {}, this.get_header).subscribe({
+        next: (data) => {
+          this.index = data;
+          console.log(this.index);
+          this.spinner_off();
+          observer.next(this.index);
+          observer.complete();
+        },
+        error: (err) => this.show_server_response(err),
+      });
+    });
+  }
+
+  /**
+   * Retrieve documents from the server given the filter. It will put the received jsons in typescript models.
+   * @param filter (object) on which to filter documents
+   * @return list (Models)
+   */
+  public request_documents(filter: any): Observable<any> {
+    return new Observable((observer) => {
+      this.spinner_on();
+      this.post(this.FlaskURL, this.endpoints.get('get'), filter, this.get_header).subscribe({
+        next: (data) => {
+          const documents: any[] = [];
+          let new_document: any;
+          // We accept multiple document types from the server. Here we put each type in its corresponding model
+          data.forEach((doc: any) => {
+            switch (doc.document_type) {
+              case 'introduction':
+                new_document = new Introduction();
+                new_document.set(doc);
+                documents.push(new_document);
+                break;
+              case 'fragment':
+                new_document = new Fragment();
+                new_document.set(doc);
+                documents.push(new_document);
+                break;
+              case 'playground':
+                // Push a playground as is. Will be processed by the playground component.
+                documents.push(doc);
+                break;
+              case 'testimonium':
+                new_document = new Testimonium();
+                new_document.set(doc);
+                documents.push(new_document);
+                break;
+              default:
+                console.error('Unknown document type', doc);
+            }
+          });
+          this.spinner_off();
+          observer.next(documents);
+          observer.complete();
+        },
+        error: (err) => this.show_server_response(err),
+      });
+    });
+  }
+
+  /**
+   * Gives the given endpoint the given document. Used to create, revise and delete documents.
+   * @param document (Model)
+   * @param endpoint (string)
+   * @returns Observable
+   */
+  public post_document(doc: any, endpoint: string): Observable<any> {
+    console.debug('api post_document():', endpoint, doc);
+    return new Observable((observer) => {
+      this.spinner_on();
+      this.post(this.FlaskURL, this.endpoints.get(endpoint), doc, this.post_header).subscribe({
+        next: (data) => {
+          this.show_server_response(data);
+          this.request_index().subscribe({});
+          this.spinner_off();
+          observer.next();
+          observer.complete();
+        },
+        error: (err) => this.show_server_response(err),
+      });
+    });
+  }
 
   /**
    * Performs a post with the given data to the given url + endpoint
@@ -60,8 +165,10 @@ export class ApiService {
    * @param filter (object)
    * @author Ycreak
    */
-  protected get_from_index(key: string, index: any[], filter: object): string[] {
-    return this.utility.get_set_of_key_values_from_object_list(this.utility.filter_array(index, filter), key);
+  public get_from_index(key: string, filter: object): string[] {
+    return this.utility
+      .get_set_of_key_values_from_object_list(this.utility.filter_array(this.index, filter), key)
+      .sort();
   }
 
   /**

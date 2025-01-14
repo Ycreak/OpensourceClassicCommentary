@@ -4,32 +4,32 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { ApiService } from '@oscc/api.service';
 
 @Component({
-  selector: 'app-testimonium-filter',
-  templateUrl: './testimonium-filter.component.html',
-  styleUrl: './testimonium-filter.component.scss',
+  selector: 'app-introductions-filter',
+  templateUrl: './introductions-filter.component.html',
+  styleUrl: './introductions-filter.component.scss',
 })
-export class TestimoniumFilterComponent {
+export class IntroductionsFilterComponent {
   @Input() button_title: string;
   @Input() button_type: string;
   @Input() endpoint: string;
   @Output() new_filter = new EventEmitter<object>();
 
-  protected selected_author: string;
-  protected selected_name: string;
+  protected selected_author = '';
+  protected selected_title = '';
 
   protected titles: string[];
-  protected editors: string[];
-  protected names: string[];
 
   constructor(protected api: ApiService) {}
 
   /** Emits a filter whenever one is selected */
   protected filter() {
     const filter = {
-      document_type: 'testimonium',
+      document_type: 'introduction',
       author: this.selected_author,
-      name: this.selected_name,
+      title: this.selected_title,
     };
     this.new_filter.emit(filter);
+    this.selected_author = '';
+    this.selected_title = '';
   }
 }

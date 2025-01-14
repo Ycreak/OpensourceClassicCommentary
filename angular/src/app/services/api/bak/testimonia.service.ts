@@ -11,7 +11,7 @@ import { Observable } from 'rxjs';
 import { ApiService } from '@oscc/api.service';
 import { BibliographyService } from '../bibliography.service';
 import { UtilityService } from '@oscc/utility.service';
-
+import { FabricService } from '@oscc/playground/services/fabric.service';
 // Model imports
 import { Testimonium } from '@oscc/models/Testimonium';
 
@@ -31,10 +31,10 @@ export class TestimoniaApiService extends ApiService {
   public create = 'testimonium/create';
   public revise = 'testimonium/update';
   public retrieve = 'testimonium/get';
-  public index = 'testimonium/get/index';
+  public index2 = 'testimonium/get/index';
 
-  constructor(bib: BibliographyService, utility: UtilityService, http: HttpClient) {
-    super(bib, utility, http);
+  constructor(fabric: FabricService, bib: BibliographyService, utility: UtilityService, http: HttpClient) {
+    super(fabric, bib, utility, http);
   }
 
   /**
@@ -46,7 +46,7 @@ export class TestimoniaApiService extends ApiService {
     return new Observable((observer) => {
       this.spinner_on();
       this.testimonia_index = [];
-      this.post(this.FlaskURL, this.index, {}, this.get_header).subscribe({
+      this.post(this.FlaskURL, this.index2, {}, this.get_header).subscribe({
         next: (data) => {
           data.forEach((value: any) => {
             this.testimonia_index.push({

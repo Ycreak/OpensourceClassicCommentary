@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { ApiService } from '@oscc/api.service';
 import { BibliographyService } from '../bibliography.service';
 import { UtilityService } from '@oscc/utility.service';
-
+import { FabricService } from '@oscc/playground/services/fabric.service';
 // Model imports
 import { Playground_communicator } from '@oscc/models/api/Playground_communicator';
 
@@ -20,8 +20,8 @@ export class PlaygroundApiService extends ApiService {
   public endpoint_retrieve = 'playground/get';
   //public index = 'fragment/get/index';
 
-  constructor(bib: BibliographyService, utility: UtilityService, http: HttpClient) {
-    super(bib, utility, http);
+  constructor(fabric: FabricService, bib: BibliographyService, utility: UtilityService, http: HttpClient) {
+    super(fabric, bib, utility, http);
   }
 
   /**

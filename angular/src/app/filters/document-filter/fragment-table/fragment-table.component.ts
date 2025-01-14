@@ -9,7 +9,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 
 // Service imports
-import { FragmentsApiService } from '@oscc/services/api/fragments.service';
+import { ApiService } from '@oscc/api.service';
 import { FilterService } from '../filter.service';
 import { UtilityService } from '@oscc/utility.service';
 
@@ -38,18 +38,18 @@ export class FragmentTableComponent implements AfterViewInit {
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(
-    protected api: FragmentsApiService,
+    protected api: ApiService,
     protected filter: FilterService,
     protected utility: UtilityService
   ) {
     // Create a master index we use as a read only truth, and a local index which we will use to save the filtering of
     // the master index to.
-    this.master_index = this.api.fragments_index;
-    this.local_index = this.api.fragments_index;
+    this.master_index = this.api.index.filter((item) => item.document_type === 'fragment');
+    this.local_index = this.api.index.filter((item) => item.document_type === 'fragment');
 
-    this._authors = [...new Set(this.master_index.map((element) => element.author))];
-    this._titles = [...new Set(this.master_index.map((element) => element.title))];
-    this._editors = [...new Set(this.master_index.map((element) => element.editor))];
+    this._authors = [...new Set(this.master_index.map((element) => element.author))].sort();
+    this._titles = [...new Set(this.master_index.map((element) => element.title))].sort();
+    this._editors = [...new Set(this.master_index.map((element) => element.editor))].sort();
     // Assign the data to the data source for the table to render
     this.filter.data.fragments.dataSource = new MatTableDataSource(this.master_index);
   }

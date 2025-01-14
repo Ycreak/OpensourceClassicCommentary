@@ -1,9 +1,12 @@
-from dataclasses import dataclass, asdict
-import logging
+"""
+Model to handle testimonia
+"""
+from dataclasses import dataclass
+from uuid import uuid4
 
-import config as conf
+from database import Database
 
-class TestimoniumField(object):
+class TestimoniumFields(object):
     ID = "_id"
     NAME = "name"
     AUTHOR = "author"
@@ -14,8 +17,9 @@ class TestimoniumField(object):
     EDITOR = "editor"
 
 @dataclass
-class Testimonium:
+class TestimoniumModel:
     _id: str = None
+    document_type: str = 'testimonium'
     name: str = None
     author: str = None
     title: str = None
@@ -24,117 +28,85 @@ class Testimonium:
     text: str = None
     editor : str = None
 
-class TestimoniumModel:
+class Testimonium:
     def __init__(self, server):
-        self.db = server[conf.COUCH_TESTIMONIA]
+        self.database = Database(server)
     
-    def __get_testimonia(self, testimonium_lst):
-        result = list()
-        for doc in testimonium_lst:
-            testimonium = Testimonium(_id=doc.id)
-            if TestimoniumField.NAME in doc:
-                testimonium.name = doc[TestimoniumField.NAME]
-            if TestimoniumField.AUTHOR in doc:
-                testimonium.author = doc[TestimoniumField.AUTHOR]
-            if TestimoniumField.TITLE in doc:
-                testimonium.title = doc[TestimoniumField.TITLE]
-            if TestimoniumField.TRANSLATION in doc:
-                testimonium.translation = doc[TestimoniumField.TRANSLATION]
-            if TestimoniumField.WITNESS in doc:
-                testimonium.witness = doc[TestimoniumField.WITNESS]
-            if TestimoniumField.TEXT in doc:
-                testimonium.text = doc[TestimoniumField.TEXT]
-            if TestimoniumField.EDITOR in doc:
-                testimonium.editor = doc[TestimoniumField.EDITOR]
+    def get(self, document: dict) -> list:
+        """
+        Retrieves the testimonium given the document filter.
+        """
+        testimonium = TestimoniumModel()
+        # Retrieve the fields on which we allow filtering
+        testimonium.name = document.get(TestimoniumFields.NAME, None)
+        testimonium.author = document.get(TestimoniumFields.AUTHOR, None)
+        testimonium.title = document.get(TestimoniumFields.TITLE, None)
+        testimonium.editor = document.get(TestimoniumFields.EDITOR, None)
+        testimonium.witness = document.get(TestimoniumFields.WITNESS, None)
+
+        # Convert the model into a dictionary
+        testimonium = {key: value for key, value in testimonium.__dict__.items() if value is not None}
+
+        document_list = self.database.filter(testimonium)
+        # Process the found documents into proper testimonia
+        result: list = [] 
+        for document in document_list:
+            testimonium = TestimoniumModel()
+            testimonium = self._convert_document_to_testimonium(document)
             result.append(testimonium)
-
-        return result
-
-    def all(self, sorted=False):
-        result = self.db.find({
-            "selector": dict(),
-            "limit": conf.COUCH_LIMIT
-        })
-        result = self.__get_testimonia(result)
-        if sorted:
-            result.sort(key=lambda Testimonium: Testimonium.name)
-        return result
         
-    def filter(self, testimonium, sorted=False):
-        testimonium = {key: value for key, value in testimonium.__dict__.items() if value}
-        # @deprecated because of refactoring
-        # if "_id" in testimonium: 
-        #     testimonium[TestimoniumField.ID] = testimonium.pop("_id")
-        # if "name" in testimonium:
-        #     testimonium[TestimoniumField.NAME] = testimonium.pop("name")
-        mango = {
-            "selector": testimonium,
-            "limit": conf.COUCH_LIMIT
-        }
-        print(mango)
-        result = self.db.find(mango)
-        result = self.__get_testimonia(result)
-        if sorted:
-            result.sort(key=lambda Testimonium: Testimonium.title)
         return result
 
-    def create(self, testimonium):
-        testimonium = {key: value for key, value in testimonium.__dict__.items() if value}
-        # @deprecated because of refactoring
-        # testimonium[TestimoniumField.ID] = testimonium.pop("_id") # MongoDB uses "_id" instead of "id"
-        # testimonium[TestimoniumField.NAME] = testimonium.pop("name")
-        
-        doc_id, _ = self.db.save(testimonium)
-        if not doc_id:
-            logging.error("create(): failed to create testimonium")
-            return None
-        return testimonium
+    def create(self, document: dict) -> str:
+        """
+        Creates a testimonium. For this, a uuid will be generated as identifier.
+        """
+        if self.get(document):
+            # Check if the document already exists.
+            return ""
 
-    def update(self, testimonium):
-        # we update testimonia via their _id, so no need for get.
-        # FIXME: is this correct BORS?
-        # testimonium = self.get(testimonium)
+        testimonium = self._convert_document_to_testimonium(document)
+        testimonium._id = uuid4().hex 
 
-        # if testimonium == None:
-        #     logging.error("update(): testimonium could not be found")
-        #     return False
-        try:
-            doc = self.db[testimonium._id]
-            for key, value in asdict(testimonium).items():
-                if value != None:
-                    doc[key] = value
-            print(f'doc: {doc}')
-            self.db.save(doc)
-            return True
-        except Exception as e:
-            logging.error(e)
-        return False
-
-    def delete(self, testimonium):
-        testimonium = self.get(testimonium)
+        # Convert the model into a dictionary
+        testimonium = {key: value for key, value in testimonium.__dict__.items() if value is not None}
+       
+        doc_id = self.database.create(testimonium)
+        return doc_id 
     
-        if testimonium == None:
-            logging.error("delete(): testimonium could not be found")
+    def delete(self, document: dict) -> bool:
+        """
+        Deletes the given introduction by its identifier.
+        """
+        testimonium = self._convert_document_to_testimonium(document)
+        return self.database.delete(testimonium._id)
+    
+    def update(self, document: dict) -> bool:
+        """
+        Updates the given introduction. Must receive an identifier to update.
+        """
+        testimonium = self._convert_document_to_testimonium(document)
+
+        if not testimonium._id:
             return False
-        try:
-            doc = self.db[testimonium._id]
-            self.db.delete(doc)
-            return True
-        except Exception as e:
-            logging.error(e)
-        return False
 
-    def get(self, testimonium):
-        testimonium = {key: value for key, value in testimonium.__dict__.items() if value}
-        mango = {
-            "selector": testimonium,
-            "limit": conf.COUCH_LIMIT
-        }
-        result = self.db.find(mango)
-        result = self.__get_testimonia(result)
+        # Convert the model into a dictionary
+        testimonium = {key: value for key, value in testimonium.__dict__.items() if value is not None}
 
-        if result:
-            if len(result) > 1:
-                logging.warning("get(): function returned more than 1 object!")
-            return result[0]
-        return None
+        return self.database.update(testimonium)
+    
+    def _convert_document_to_testimonium(self, document: dict) -> TestimoniumModel:
+        """
+        Converts the received document into a testimonium using the testimoniumModel
+        """
+        testimonium = TestimoniumModel()
+        testimonium._id = document.get(TestimoniumFields.ID, None)
+        testimonium.name = document.get(TestimoniumFields.NAME, None)
+        testimonium.author = document.get(TestimoniumFields.AUTHOR, None)
+        testimonium.title = document.get(TestimoniumFields.TITLE, None)
+        testimonium.translation = document.get(TestimoniumFields.TRANSLATION, None)
+        testimonium.witness = document.get(TestimoniumFields.WITNESS, None)
+        testimonium.text = document.get(TestimoniumFields.TEXT, None)
+        testimonium.editor = document.get(TestimoniumFields.EDITOR, None)
+
+        return testimonium

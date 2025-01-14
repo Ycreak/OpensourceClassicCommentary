@@ -1,0 +1,48 @@
+<div class="alert alert-info" role="alert">
+  To create an introduction for the author, only enter the author and leave the title empty. To create an introduction
+  for a title, enter both author and title. Press the reset button to reset both fields for a clean slate.
+</div>
+
+<!-- Author and title selection boxes -->
+<mat-form-field>
+  <mat-label>Enter author</mat-label>
+  <input matInput placeholder="Ex. Ennius" value="" [(ngModel)]="this.introduction.author" />
+</mat-form-field>
+<mat-form-field>
+  <mat-label>Enter title</mat-label>
+  <input matInput placeholder="Ex. Thyestes" value="" [(ngModel)]="this.introduction.title" />
+</mat-form-field>
+
+<!-- Introduction text with wysiwyg editor -->
+<!-- Author introduction text field -->
+<ng-container *ngIf="this.introduction.author">
+  <mat-form-field class="input-form-full-width">
+    <mat-label *ngIf="this.introduction.author && !this.introduction.title"
+      ><b>Introduction text for '{{ this.introduction.author }}'</b></mat-label
+    >
+    <mat-label *ngIf="this.introduction.author && this.introduction.title"
+      ><b
+        >Introduction text for <i>{{ this.introduction.title }}</i> from '{{ this.introduction.author }}'</b
+      ></mat-label
+    >
+    <textarea matInput type="text" [(ngModel)]="this.introduction.text"></textarea>
+  </mat-form-field>
+  <div class="div-padding-lg"></div>
+</ng-container>
+<br />
+
+<!-- Save button -->
+<button
+  mat-button
+  class="button-margin-extra confirm-button"
+  (click)="this.introduction.author = ''"
+  (click)="this.introduction.title = ''"
+  (click)="this.introduction.text = ''">
+  Reset
+</button>
+<button mat-button class="button-margin-extra confirm-button" (click)="this.save_introduction(this.introduction)">
+  Save Changes
+</button>
+<mat-label class="mat-label-inline" *ngIf="this.show_changes_saved_hint">Changes saved</mat-label>
+<div class="div-padding-lg"></div>
+<div class="div-padding-sm"></div>

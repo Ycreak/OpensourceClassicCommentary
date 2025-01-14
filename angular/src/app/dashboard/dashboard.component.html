@@ -50,7 +50,7 @@
     <!-- Change fragments expansion panel -->
     <mat-expansion-panel
       *ngIf="this.auth_service.current_user_role === 'teacher' || this.auth_service.current_user_role === 'student'"
-      [expanded]="true">
+      [expanded]="false">
       <mat-expansion-panel-header>
         <mat-panel-title> Change fragment data </mat-panel-title>
         <mat-panel-description>
@@ -74,7 +74,16 @@
     </mat-expansion-panel>
     <hr />
     <!-- Change author/author+title introduction expansion panel -->
-    <!--<app-introductions-dashboard></app-introductions-dashboard>-->
+    <mat-expansion-panel *ngIf="this.auth_service.current_user_role === 'teacher'" [expanded]="false">
+      <mat-expansion-panel-header>
+        <mat-panel-title>Change author and title introductions </mat-panel-title>
+        <mat-panel-description>
+          Create and edit descriptions for authors and associated titles
+          <mat-icon>assignment_ind</mat-icon>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <app-introductions-dashboard></app-introductions-dashboard>
+    </mat-expansion-panel>
     <hr />
 
     <!-- Change user expansion panel -->

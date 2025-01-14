@@ -1,8 +1,10 @@
 /** This class represents an introduction and all its data fields */
 export class Introduction {
+  _id = '';
+  document_type = 'introduction';
   author: string;
   title: string;
-  content: string;
+  text: string;
 
   constructor(introduction?: Partial<Introduction>) {
     // Allow the partial initialisation of an introduction
@@ -15,8 +17,9 @@ export class Introduction {
    * @author Ycreak
    */
   public set(introduction: any) {
+    this._id = '_id' in introduction ? introduction['_id'] : '';
     this.author = 'author' in introduction ? introduction['author'] : '';
     this.title = 'title' in introduction ? introduction['title'] : '';
-    this.content = 'content' in introduction ? introduction['content'] : '';
+    this.text = 'text' in introduction ? introduction['text'] : '';
   }
 }
