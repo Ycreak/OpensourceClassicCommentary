@@ -34,46 +34,48 @@ def get_index() -> object:
     """ Reads the cache file and returns it """
     return jsonify(util.read_json(index_file))
 
-def _update_index() -> None:
+def update_index() -> None:
     """ Updates the index file and writes it to the cache """
     documents: list = database.filter({})
     index: list = []
     for doc in documents:
-        match doc["document_type"]:
-            case "introduction":
-                index.append({
-                    "document_type": "introduction", 
-                    "author": doc["author"], 
-                    "title": doc["title"]
-                })
-            case "fragment":
-                index.append({
-                    "document_type": "fragment", 
-                    "author": doc["author"], 
-                    "title": doc["title"], 
-                    "editor": doc["editor"], 
-                    "name": doc["name"]
-                })
-            case "playground":
-                index.append({
-                    "document_type": "playground", 
-                    "_id": doc["_id"], 
-                    "name": doc["name"], 
-                    "created_by": doc["created_by"], 
-                    "users": doc["users"]
-                })
-            case "testimonium":
-                index.append({
-                    "document_type": "testimonium", 
-                    "author": doc["author"], 
-                    "title": doc["title"], 
-                    "editor": doc["editor"], 
-                    "name": doc["name"], 
-                    "witness": doc["witness"]
-                })
-            case _:
-                logging.error(f"Unknown document type: {doc}")
-
+        try:
+            match doc["document_type"]:
+                case "introduction":
+                    index.append({
+                        "document_type": "introduction", 
+                        "author": doc["author"], 
+                        "title": doc["title"]
+                    })
+                case "fragment":
+                    index.append({
+                        "document_type": "fragment", 
+                        "author": doc["author"], 
+                        "title": doc["title"], 
+                        "editor": doc["editor"], 
+                        "name": doc["name"]
+                    })
+                case "playground":
+                    index.append({
+                        "document_type": "playground", 
+                        "_id": doc["_id"], 
+                        "name": doc["name"], 
+                        "created_by": doc["created_by"], 
+                        "users": doc["users"]
+                    })
+                case "testimonium":
+                    index.append({
+                        "document_type": "testimonium", 
+                        "author": doc["author"], 
+                        "title": doc["title"], 
+                        "editor": doc["editor"], 
+                        "name": doc["name"], 
+                        "witness": doc["witness"]
+                    })
+                case _:
+                    logging.error(f"Unknown document type: {doc}")
+        except Exception as e:
+            logging.error(f"Cannot index document. Error {e} in document: {doc}")
     util.write_json(index, index_file)
 
 def get_document():
@@ -130,7 +132,7 @@ def create_document() -> make_response:
             logging.error(f"Unknown document type provided: {document_type}")
             return make_response("Unprocessable entity", 422)
 
-    _update_index()
+    update_index()
     return make_response("Create success", 200) if doc_id else make_response("Unprocessable entity", 422)
 
 
@@ -159,7 +161,7 @@ def delete_document() -> make_response:
             logging.error(f"Unknown document type provided: {document_type}")
             return make_response("Unprocessable entity", 422)
 
-    _update_index()
+    update_index()
     return make_response("Delete success", 200) if success else make_response("Unprocessable entity", 422)
 
 
@@ -188,6 +190,6 @@ def update_document() -> make_response:
             logging.error(f"Unknown document type provided: {document_type}")
             return make_response("Unprocessable entity", 422)
 
-    _update_index()
+    update_index()
     return make_response("Update success", 200) if success else make_response("Unprocessable entity", 422)
 

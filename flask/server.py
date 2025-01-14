@@ -30,7 +30,7 @@ import config as conf
 from couch import CouchAuthenticator
 
 from endpoints.user import get_user, login_user, create_user, delete_user, update_user
-from endpoints.document import get_document, get_index, create_document, delete_document, update_document
+from endpoints.document import get_document, get_index, update_index, create_document, delete_document, update_document
 from endpoints.zotero import get_bibliography, sync_bibliography
 
 app = Flask(__name__)
@@ -44,6 +44,8 @@ logging.basicConfig(filename=conf.LOG_FILE, level=logging.INFO)
 
 # Authenticate database server
 server = CouchAuthenticator()
+
+update_index()
 
 #########
 # USERS #
