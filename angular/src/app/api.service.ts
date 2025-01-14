@@ -166,10 +166,9 @@ export class ApiService {
    * @author Ycreak
    */
   public get_from_index(key: string, filter: object): string[] {
-    return this.utility.get_set_of_key_values_from_object_list(this.utility.filter_array(this.index, filter), key);
-  }
-  protected get_from_index2(key: string, index: any[], filter: object): string[] {
-    return this.utility.get_set_of_key_values_from_object_list(this.utility.filter_array(index, filter), key);
+    return this.utility
+      .get_set_of_key_values_from_object_list(this.utility.filter_array(this.index, filter), key)
+      .sort();
   }
 
   /**

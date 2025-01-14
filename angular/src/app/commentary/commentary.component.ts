@@ -90,7 +90,6 @@ export class CommentaryComponent {
       this.no_linked_commentary_found = true;
     }
     this.document.linked_fragments.forEach((filter: any) => {
-      filter.document_type = 'fragment';
       concurrent_calls += 1;
       this.api.request_documents(filter).subscribe((documents) => {
         const found_document = documents[0];
