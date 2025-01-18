@@ -17,12 +17,22 @@ services:
       - "5003:5000"
     volumes:
       - ./flask:/app
-  
-  websockets:
+ 
+  angular:
     build:
-      context: ./websockets
-      dockerfile: Dockerfile.websockets
+      context: ./angular
+      dockerfile: Dockerfile
     ports:
-      - "5004:5000"
+      - "4200:4200"
     volumes:
-      - ./websockets:/app_websockets
+      - ./angular:/app
+    command: ["ng", "serve", "--host", "0.0.0.0", "--port", "4200"]
+
+  #websockets:
+    #build:
+      #context: ./websockets
+      #dockerfile: Dockerfile.websockets
+    #ports:
+      #- "5004:5000"
+    #volumes:
+      #- ./websockets:/app_websockets
