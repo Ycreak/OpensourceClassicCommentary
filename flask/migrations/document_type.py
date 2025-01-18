@@ -43,12 +43,14 @@ class Migration:
             doc = self.db[id]
 
             try:
-                print(doc['_id'])
 
                 for linked_fragment in doc['linked_fragments']:
                     linked_fragment['document_type'] = 'fragment'
 
                 doc_id, doc_rev = self.db.save(doc)
+                if(doc_id):
+                    print(f"Updateded {doc_id}")
+
             except:
                 pass
             print('#####################')
@@ -56,15 +58,15 @@ class Migration:
 if __name__ == "__main__":
     migration = Migration()
 
-    # migration.change_db('playgrounds')
-    # migration.add_document_type(
-        # 'playground', 
-    # )
+    migration.change_db('playgrounds')
+    migration.add_document_type(
+        'playground', 
+    )
     
-    # migration.change_db('testimonia')
-    # migration.add_document_type(
-        # 'testimonium', 
-    # )
+    migration.change_db('testimonia')
+    migration.add_document_type(
+        'testimonium', 
+    )
     
     migration.change_db('fragments')
     migration.add_document_type(
