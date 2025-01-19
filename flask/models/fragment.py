@@ -24,6 +24,7 @@ class FragmentFields(object):
     CONTEXT = "context"
     LINES = "lines"
     LINKED_FRAGMENTS = "linked_fragments"
+    SANDBOX = "sandbox"
 
 @dataclass
 class FragmentModel:
@@ -45,6 +46,7 @@ class FragmentModel:
     context: list = None
     lines: list = None
     linked_fragments: list = None
+    sandbox: str = None
 
 class Fragment:
     def __init__(self, server):
@@ -134,5 +136,6 @@ class Fragment:
         fragment.context = document.get(FragmentFields.CONTEXT, None)
         fragment.lines = document.get(FragmentFields.LINES, None)
         fragment.linked_fragments = document.get(FragmentFields.LINKED_FRAGMENTS, None)
+        fragment.sandbox = document.get(FragmentFields.SANDBOX, None)
 
         return fragment

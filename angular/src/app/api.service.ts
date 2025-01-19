@@ -8,8 +8,10 @@ import { tap } from 'rxjs/operators';
 import { environment } from '@src/environments/environment';
 
 // Service imports
+import {AuthService} from '@oscc/auth/auth.service';
 import { UtilityService } from '@oscc/utility.service';
 import { BibliographyService } from '@oscc/services/bibliography.service';
+import {SandboxService} from '@oscc/services/sandbox.service';
 
 // Model imports
 import { Bib } from '@oscc/models/Bib';
@@ -34,7 +36,7 @@ export class ApiService {
   public get_header: object = { observe: 'body', responseType: 'json' };
 
   // The index contains all document meta data received from the api
-  public index: any[] = [];
+  private _index: any[] = [];
 
   public endpoints = new Map<string, string>([
     ['index', 'document/index'],
@@ -45,8 +47,10 @@ export class ApiService {
   ]);
 
   constructor(
-    private bib: BibliographyService,
     protected utility: UtilityService,
+    private auth_service: AuthService,
+    private bib: BibliographyService,
+    private sandbox_service: SandboxService,
     http: HttpClient
   ) {
     this.http = http;
@@ -56,6 +60,20 @@ export class ApiService {
   FlaskURL: string = environment.flask_api;
   NeuralURL: 'https://oscc.nolden.biz:5002/';
 
+  get index() {
+    // Return only sandboxed fragments if we enable the sandbox
+    if(this.sandbox_service.sandbox_enabled){
+      return this._index.filter(
+        (document: any) => document.sandbox === this.auth_service.current_user_name
+      );
+    } else {
+      return this._index
+        .filter(
+        (document: any) => document.sandbox === "" 
+      );
+    }
+  } 
+
   /**
    * Requests the API for the document index
    * @return Observable
@@ -64,11 +82,10 @@ export class ApiService {
   public request_index(): Observable<any> {
     return new Observable((observer) => {
       this.spinner_on();
-      this.index = [];
+      this._index = [];
       this.post(this.FlaskURL, this.endpoints.get('index'), {}, this.get_header).subscribe({
         next: (data) => {
-          this.index = data;
-          console.log(this.index);
+          this._index = data;
           this.spinner_off();
           observer.next(this.index);
           observer.complete();
