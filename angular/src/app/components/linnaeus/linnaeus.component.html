@@ -1,0 +1,140 @@
+<mat-toolbar>
+  <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span>Linnaeus NG NG</span>
+  <span class="example-spacer"></span>
+  <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
+    <mat-icon>favorite</mat-icon>
+  </button>
+  <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
+    <mat-icon>share</mat-icon>
+  </button>
+</mat-toolbar>
+
+<div style='padding: 1em'>
+  <form [formGroup]="search_form" class="example-form">
+    <mat-form-field class="example-full-width">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="search_name" placeholder="Ex. Grutto">
+        <button
+        mat-icon-button
+        matSuffix
+        color="primary"
+        (click)="fetch_taxa(this.search_form.value.search_name)">
+        <mat-icon>search</mat-icon>
+      </button>
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+      <mat-label>Linnaeus identifier</mat-label>
+      <input matInput formControlName="search_id" placeholder="Ex. 119921">
+        <button
+        mat-icon-button
+        matSuffix
+        color="primary"
+        (click)="fetch_taxon(this.search_form.value.search_id)">
+        <mat-icon>search</mat-icon>
+      </button>
+    </mat-form-field>
+  </form>
+
+  <ng-container *ngIf="this.searching_taxa">
+    <div class="card-grid">
+      <mat-card appearance="outlined" *ngFor="let taxon of this.found_taxa" class="card" (click)="this.fetch_taxon(taxon.id)">
+        <mat-card-header>
+          <mat-card-title> {{taxon.taxon_name}} </mat-card-title>
+          <mat-card-subtitle> {{taxon.nsr_id}}, {{taxon.id}}</mat-card-subtitle>
+        </mat-card-header>
+      </mat-card>
+    </div>
+    <p *ngIf="!this.found_taxa.length">No taxa found.</p>
+  </ng-container>
+
+  <ng-container *ngIf="!this.searching_taxa">
+    <div class="cover-container">
+      <img [src]="this.cover_photo" alt="Cover Image" class="cover-image">
+      <div class="cover-text">
+        <p *ngFor="let name of this.current_taxon.names">{{name}}</p>
+      </div>
+    </div>
+
+    <hr>
+
+    <ng-container *ngIf="this.current_taxon.parentage.length">
+      <mat-expansion-panel hideToggle [expanded]="false">
+        <mat-expansion-panel-header>
+          <mat-panel-title> Indeling </mat-panel-title>
+        </mat-expansion-panel-header>
+        <app-tree [newTaxonomicData]="this.current_taxon.parentage" 
+          (request_children)="this.request_children($event)"
+          (request_child)="this.fetch_taxon($event)"
+          ></app-tree>
+      </mat-expansion-panel>
+      <hr>
+    </ng-container>
+
+    <ng-container *ngIf="this.current_taxon.presence || this.current_taxon.habitat">
+      <mat-expansion-panel hideToggle>
+        <mat-expansion-panel-header>
+          <mat-panel-title> Verspreiding </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div *ngIf="this.current_taxon.habitat"><b>Habitat:</b> {{ this.current_taxon.habitat }}</div>
+        <div *ngIf="this.current_taxon.presence"><b>Presence:</b> {{ this.current_taxon.presence }}</div>
+      </mat-expansion-panel>
+      <hr>
+    </ng-container>
+
+    <ng-container *ngIf="this.current_taxon.literature.length">
+      <mat-expansion-panel hideToggle>
+        <mat-expansion-panel-header>
+          <mat-panel-title> Literatuur </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div *ngFor="let entry of this.current_taxon.literature">{{entry}}</div> 
+      </mat-expansion-panel>
+      <hr>
+    </ng-container>
+
+    <ng-container *ngIf="this.current_taxon.pages.length">
+      <mat-accordion>
+        <mat-expansion-panel *ngFor="let entry of this.current_taxon.pages">
+          <mat-expansion-panel-header>
+            <mat-panel-title> {{entry.title}} </mat-panel-title>
+            <!--<mat-panel-description> This is a summary of the content </mat-panel-description>-->
+          </mat-expansion-panel-header>
+          <div [innerHTML]="entry.content"></div>
+        </mat-expansion-panel>
+      </mat-accordion>
+      <hr>
+    </ng-container>
+    
+    <ng-container *ngIf="this.current_taxon.traits.length">
+      <mat-accordion>
+        <mat-expansion-panel *ngFor="let entry of this.current_taxon.traits">
+          <mat-expansion-panel-header>
+            <mat-panel-title> {{entry.title}} </mat-panel-title>
+            <!--<mat-panel-description> This is a summary of the content </mat-panel-description>-->
+          </mat-expansion-panel-header>
+          <div *ngFor="let thing of entry.content">
+            <b> {{thing.trait}}:</b> {{thing.traitValue}}
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+      <hr>
+    </ng-container>
+
+    <ng-container *ngIf="this.current_taxon.media.length">
+      <mat-expansion-panel hideToggle>
+        <mat-expansion-panel-header>
+          <mat-panel-title> Media </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="thumbnail-container">
+          <div *ngFor="let imageUrl of this.current_taxon.media" class="thumbnail">
+            <img [src]="imageUrl" alt="Image thumbnail" class="thumbnail-img"/>
+          </div>
+        </div>
+      </mat-expansion-panel>
+      <hr>
+    </ng-container>
+  </ng-container>
+</div>
+

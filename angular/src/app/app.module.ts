@@ -70,6 +70,7 @@ import { CommentaryComponent } from './commentary/commentary.component';
 import { OverviewComponent } from './overview/overview.component';
 import { IntroductionsDashboardComponent } from './dashboard/introductions-dashboard/introductions-dashboard.component';
 import { ExpandableTextComponent } from './other_components/expandable-text/expandable-text.component';
+import { LinnaeusComponent } from './components/linnaeus/linnaeus.component';
 import { DocumentFilterComponent } from './filters/document-filter/document-filter.component';
 import { UsersComponent } from './dashboard/users/users.component';
 import { TestimoniaComponent } from './columns/testimonia/testimonia.component';
@@ -95,6 +96,7 @@ const appRoutes: Routes = [
   { path: 'fragments', component: OverviewComponent },
   { path: 'bib', component: BibliographyComponent },
   { path: 'playground', component: PlaygroundComponent },
+  { path: 'linnaeus', component: LinnaeusComponent },
   // {path: 'text', component: TextComponent},
   { path: 'scansion', component: ScansionComponent, canActivate: [AuthGuard] },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
