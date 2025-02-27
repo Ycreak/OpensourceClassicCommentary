@@ -4,17 +4,18 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SpringService {
-  private baseUrl = 'https://nsr.dryrun.link/api/v1/taxa';
+  //private baseUrl = 'https://nsr.dryrun.link/api/v1/taxa';
+  private baseUrl = 'https://www-b.nederlandsesoorten.nl/api/v1/taxa';
 
   constructor(private http: HttpClient) {}
 
   public get(query: string): Observable<any> {
     return this.http.get<any>(query);
   }
-  
+
   public get_taxa(name: string): Observable<any> {
     const url = `${this.baseUrl}?taxonName=${name}`;
     return new Observable((observer) => {

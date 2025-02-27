@@ -1,3 +1,6 @@
+h3 {
+  padding-left: 0.2em
+}
 //TOOLBAR
 .example-spacer {
   flex: 1 1 auto;
@@ -10,12 +13,12 @@ mat-form-field {
 
 .example-form {
   display: flex;
-  justify-content: center;  /* Center horizontally */
+  justify-content: center; /* Center horizontally */
 }
 
 mat-toolbar {
-  background-color: #00a050;  /* Custom green color */
-  color: white;  /* White text */
+  background-color: #00a050; /* Custom green color */
+  color: white; /* White text */
 }
 
 // MEDIA
@@ -23,6 +26,8 @@ mat-toolbar {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
+  justify-content: center;
+  align-items: center;
 }
 
 .thumbnail {
@@ -81,3 +86,19 @@ mat-card {
   box-sizing: border-box;
 }
 
+.drawer-container {
+  width: 100%;
+  //max-height: 100vh;
+  height: 100vh;
+}
+
+.overview-sidenav-content {
+  height: 100%;
+}
+
+.overview-sidenav {
+  height: 100%;
+  overflow: scroll;
+  transition: width 0.75s ease-in-out;
+  width: 40%;
+}

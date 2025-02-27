@@ -8,10 +8,9 @@ describe('TreeComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TreeComponent]
-    })
-    .compileComponents();
-    
+      imports: [TreeComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(TreeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

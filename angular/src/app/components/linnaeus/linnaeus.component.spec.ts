@@ -8,10 +8,9 @@ describe('LinnaeusComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LinnaeusComponent]
-    })
-    .compileComponents();
-    
+      imports: [LinnaeusComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(LinnaeusComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

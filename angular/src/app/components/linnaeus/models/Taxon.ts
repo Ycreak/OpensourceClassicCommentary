@@ -52,7 +52,6 @@ export class Taxon {
     this.status = 'status' in fragment ? fragment['status'] : '';
     this.lines = 'lines' in fragment ? fragment['lines'] : [];
 
-
     this.lock = 'lock' in fragment ? fragment['lock'] : '';
     this.published = '' in fragment ? fragment['published'] : '';
 
