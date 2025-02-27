@@ -1,5 +1,7 @@
 <!-- This dialog shows the introduction that comes with an author or text -->
-<div mat-dialog-content>
-  <h3 style="padding-bottom: 0.2em">Introduction on {{ this.introduction_on }}</h3>
+<div class="dialog-header">
+  <h2>Introduction on {{ this.introduction_on }}</h2>
+</div>
+<div class="introduction-body" mat-dialog-content>
   <div [innerHTML]="this.content"></div>
 </div>
