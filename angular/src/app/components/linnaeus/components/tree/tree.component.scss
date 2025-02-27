@@ -1,0 +1,20 @@
+.mat-tree-node {
+  padding-left: 4px !important;
+}
+
+button[mat-icon-button] {
+  margin-right: 4px;
+}
+
+.mat-tree-node span {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.request-children-link {
+  cursor: pointer;
+}
+.request-children-link:hover {
+  color: blue;
+  text-decoration: underline;
+}
