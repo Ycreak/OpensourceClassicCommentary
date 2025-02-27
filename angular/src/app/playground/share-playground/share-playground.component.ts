@@ -10,6 +10,7 @@ import { ApiService } from '@oscc/api.service';
 import { Playground_user } from '@oscc/models/api/Playground_user';
 
 @Component({
+  standalone: false,
   selector: 'app-share-playground',
   templateUrl: './share-playground.component.html',
   styleUrls: ['./share-playground.component.scss'],

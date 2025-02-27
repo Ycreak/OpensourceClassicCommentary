@@ -14,6 +14,7 @@ import { FilterService } from '../filter.service';
 import { UtilityService } from '@oscc/utility.service';
 
 @Component({
+  standalone: false,
   selector: 'app-fragment-table',
   templateUrl: './fragment-table.component.html',
   styleUrl: './fragment-table.component.scss',

@@ -4,7 +4,7 @@ import { WebsocketsService } from '@oscc/playground/websockets.service';
 import { HostListener } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
-import { fabric } from 'fabric';
+import * as fabric from 'fabric';
 import { Subscription } from 'rxjs';
 
 // Service imports
@@ -32,6 +32,7 @@ import { DocumentFilterComponent } from '@oscc/filters/document-filter/document-
 import { Playground_user } from '@oscc/models/api/Playground_user';
 
 @Component({
+  standalone: false,
   selector: 'app-playground',
   templateUrl: './playground.component.html',
   styleUrls: ['./playground.component.scss'],

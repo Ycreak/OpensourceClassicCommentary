@@ -14,6 +14,7 @@ import { UtilityService } from '@oscc/utility.service';
 import { FilterService } from '../filter.service';
 
 @Component({
+  standalone: false,
   selector: 'app-testimonia-table',
   templateUrl: './testimonia-table.component.html',
   styleUrl: './testimonia-table.component.scss',

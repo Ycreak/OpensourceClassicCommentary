@@ -1,4 +1,5 @@
-import { fabric } from 'fabric';
+import * as fabric from 'fabric'; // v6
+
 import { environment } from '@src/environments/environment';
 import { Subject } from 'rxjs';
 

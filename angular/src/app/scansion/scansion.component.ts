@@ -5,6 +5,7 @@ import { ApiService } from '../api.service';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 
 @Component({
+  standalone: false,
   selector: 'app-scansion',
   templateUrl: './scansion.component.html',
   styleUrls: ['./scansion.component.scss'],

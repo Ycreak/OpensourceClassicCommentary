@@ -4,6 +4,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { ApiService } from '@oscc/api.service';
 
 @Component({
+  standalone: false,
   selector: 'app-introductions-filter',
   templateUrl: './introductions-filter.component.html',
   styleUrl: './introductions-filter.component.scss',

@@ -17,6 +17,7 @@ import { ApiService } from '@oscc/api.service';
 import { Introduction } from '@oscc/models/Introduction';
 
 @Component({
+  standalone: false,
   selector: 'app-introductions',
   templateUrl: './introductions.component.html',
   styleUrls: ['./introductions.component.scss'],

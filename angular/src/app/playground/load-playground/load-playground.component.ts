@@ -7,6 +7,7 @@ import { ApiService } from '@oscc/api.service';
 import { AuthService } from '@oscc/auth/auth.service';
 
 @Component({
+  standalone: false,
   selector: 'app-load-playground',
   templateUrl: './load-playground.component.html',
   styleUrls: ['./load-playground.component.scss'],

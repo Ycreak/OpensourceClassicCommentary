@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { fabric } from 'fabric';
+import * as fabric from 'fabric';
 
 import { UtilityService } from '@oscc/utility.service';
 
