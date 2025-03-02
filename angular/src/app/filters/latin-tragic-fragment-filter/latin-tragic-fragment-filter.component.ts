@@ -21,7 +21,7 @@ export class LatinTragicFragmentFilterComponent {
   protected _editor: string;
   protected _name: string;
 
-  constructor(protected api: ApiService) {}
+  constructor(protected api: ApiService) { }
 
   protected filter() {
     const filter = {

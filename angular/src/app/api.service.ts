@@ -48,9 +48,8 @@ export class ApiService {
 
   constructor(
     protected utility: UtilityService,
-    private auth_service: AuthService,
     private bib: BibliographyService,
-    private sandbox_service: SandboxService,
+    private sandbox: SandboxService,
     http: HttpClient
   ) {
     this.http = http;
@@ -62,16 +61,9 @@ export class ApiService {
 
   get index() {
     // Return only sandboxed fragments if we enable the sandbox
-    if(this.sandbox_service.sandbox_enabled){
-      return this._index.filter(
-        (document: any) => document.sandbox === this.auth_service.current_user_name
-      );
-    } else {
-      return this._index
-        .filter(
-        (document: any) => document.sandbox === "" 
-      );
-    }
+    return this._index.filter(
+      (document: any) => document.sandbox === this.sandbox.current_sandbox
+    );
   } 
 
   /**

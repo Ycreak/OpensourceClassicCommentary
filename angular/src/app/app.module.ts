@@ -185,7 +185,7 @@ const appRoutes: Routes = [
     DragDropModule,
     ClipboardModule,
     // MatKeyboardModule,
-    SocketIoModule.forRoot(config),
+    //SocketIoModule.forRoot(config),
 
     // AngularFireModule.initializeApp(environment.firebase),
   ],

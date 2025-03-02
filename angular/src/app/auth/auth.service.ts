@@ -1,27 +1,42 @@
+/**
+ * The auth service handles everything related to the authentication
+ * of a user. Furthermore, it handles the sandbox environment depending
+ * on the role the user has.
+ */
+
 import { Injectable } from '@angular/core';
 import { environment } from '@src/environments/environment';
 
-import { UtilityService } from '../utility.service';
+//Service imports
+import {SandboxService} from '@oscc/services/sandbox.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private utility: UtilityService) {}
+  constructor(private sandbox: SandboxService) {}
 
   redirectUrl: string;
 
-  is_logged_in = environment.is_logged_in;
-  current_user_name: string = environment.current_user_name;
-  current_user_role: string = environment.current_user_role;
+  public is_logged_in = environment.is_logged_in;
+  public current_user_name: string = environment.current_user_name;
+  public current_user_role: string = environment.current_user_role;
 
-  magic_phrase = 'Naevius';
+  public magic_phrase = 'Naevius';
 
-  public login_user(user: any) {
-    // Getting here means the server approved login
+  /**
+   * Login a user based on the data provided.
+   * Getting here means the server approved login
+   * @param user (object)
+   */
+  public login_user(user: any): void {
     this.current_user_name = user.username;
     this.current_user_role = user.role;
     this.is_logged_in = true;
+
+    // Now that we are logged in, let the sandbox service determine 
+    // what sandbox to activate.
+    this.sandbox.activate();
   }
 
   /**

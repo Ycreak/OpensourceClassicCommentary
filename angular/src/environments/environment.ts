@@ -9,7 +9,7 @@ export const environment = {
   //flask_api: 'https://oscc.nolden.biz:5004/',
   is_logged_in: true,
   current_user_name: 'Lucus',
-  current_user_role: 'teacher',
+  current_user_role: 'admin',
   production: false,
   debug: true,
 
