@@ -1,5 +1,14 @@
+<mat-expansion-panel *ngIf="this.user_has_view_permission()" [expanded]="false">
+      <mat-expansion-panel-header>
+        <mat-panel-title> Change fragment data </mat-panel-title>
+        <mat-panel-description>
+          Create, revise and delete fragments
+          <mat-icon>text_snippet</mat-icon>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
 <!-- Buttons to submit fragment data -->
 <app-latin-tragic-fragment-filter
+  *ngIf="this.auth_service.has_permission('read', this.auth_service.current_user_role)"
   [button_title]="'Select fragment'"
   [button_type]="'stroked'"
   [endpoint]="'name'"
@@ -11,7 +20,7 @@
   color="primary"
   [disabled]="!fragment_form.valid"
   (click)="request_create_fragment(this.fragment_form)"
-  *ngIf="this.auth_service.current_user_role === 'teacher' || this.auth_service.current_user_role === 'student'">
+  *ngIf="this.auth_service.has_permission('create', this.auth_service.current_user_role)">
   Create Fragment
 </button>
 <button
@@ -20,7 +29,7 @@
   color="primary"
   [disabled]="!fragment_form.valid"
   (click)="request_revise_fragment(this.fragment_form)"
-  *ngIf="this.auth_service.current_user_role === 'teacher' || this.auth_service.current_user_role === 'student'">
+  *ngIf="this.auth_service.has_permission('update', this.auth_service.current_user_role)">
   Save Changes
 </button>
 <button
@@ -29,7 +38,7 @@
   color="warn"
   [disabled]="!fragment_selected"
   (click)="request_delete_fragment(this.fragment_form)"
-  *ngIf="this.auth_service.current_user_role === 'teacher'">
+  *ngIf="this.auth_service.has_permission('delete', this.auth_service.current_user_role)">
   Delete Fragment
 </button>
 
@@ -374,3 +383,4 @@
   </mat-tab>
   <!-- end of the Social media -->
 </mat-tab-group>
+    </mat-expansion-panel>

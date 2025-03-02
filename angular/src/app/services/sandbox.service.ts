@@ -9,7 +9,6 @@
  */
 
 import { Injectable } from '@angular/core';
-import {AuthService} from '@oscc/auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,25 +19,34 @@ export class SandboxService {
   // sandbox, as that is the one we publish to the outside world.
   public current_sandbox = 'admin';
 
-  constructor(private auth_service: AuthService) { }
+  constructor() { }
 
   /**
    * Activates a sandbox. This is done based on the data in the authService.
    * For example, if the user thas has logged in is a teachter, the sandbox will
    * be set accordingly.
    */
-  public activate(): void {
-    switch(this.auth_service.current_user_role) {
+  public activate(user_name: string, user_role: string): void {
+    switch(user_role) {
       case 'admin':
         // The admin user uses the admin sandbox, which is the main sandbox
-        this.current_sandbox = this.auth_service.current_user_role 
+        this.current_sandbox = user_role 
         break;
       case 'teacher':
         // The teacher user uses a sandbox with the same name as their name
-        this.current_sandbox = this.auth_service.current_user_name 
+        this.current_sandbox = user_name 
         break;
       default:
         console.debug('Sandbox cannot be set yet for this current user role')
     } 
+  }
+
+  /**
+   * Returns the name of the current sandbox. If the current sandbox is the admin one,
+   * we return the string "Main", as it sounds just a bit nicer.
+   * @return string of sandbox name
+   */
+  public get_name(): string {
+    return this.current_sandbox == 'admin' ? 'main' : this.current_sandbox;
   }
 }

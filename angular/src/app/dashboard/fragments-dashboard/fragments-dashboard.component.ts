@@ -19,6 +19,7 @@ import { Column } from '@oscc/models/Column';
   styleUrls: ['./fragments-dashboard.component.scss'],
 })
 export class FragmentsDashboardComponent implements OnInit {
+  private allowed_user_roles = ['admin', 'teacher', 'student'];
   // Fragment referencer variables
   protected referenced_author = '';
   protected referenced_title = '';
@@ -460,5 +461,13 @@ export class FragmentsDashboardComponent implements OnInit {
           });
         }
       });
+  }
+  
+  /**
+   * Defines which users can view this component
+   * @return boolean
+   */
+  protected user_has_view_permission(): boolean {
+    return this.allowed_user_roles.includes(this.auth_service.current_user_role)
   }
 }

@@ -23,6 +23,8 @@ import { Testimonium } from '@oscc/models/Testimonium';
   styleUrls: ['./testimonia-dashboard.component.scss'],
 })
 export class TestimoniaDashboardComponent {
+  private allowed_user_roles = ['admin'];
+
   // Whether a testimonium has been selected
   protected selected = false;
 
@@ -151,5 +153,13 @@ export class TestimoniaDashboardComponent {
    */
   protected reset_form(): void {
     this.form.reset();
+  }
+  
+  /**
+   * Defines which users can view this component
+   * @return boolean
+   */
+  protected user_has_view_permission(): boolean {
+    return this.allowed_user_roles.includes(this.auth_service.current_user_role)
   }
 }

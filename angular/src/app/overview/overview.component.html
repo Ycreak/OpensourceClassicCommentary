@@ -10,21 +10,12 @@
 
   <span class="spacer"></span>
 
-  <!--<ng-container *ngIf="this.auth_service.is_teacher()">-->
-    <!--<button-->
-      <!--mat-stroked-button-->
-      <!--*ngIf="!this.sandbox_service.sandbox_enabled; else sandbox_disabled"-->
-      <!--class="navbar button-margin"-->
-      <!--(click)="this.toggle_sandbox()">-->
-      <!--SANDBOX-->
-    <!--</button>-->
-
-    <!--<ng-template #sandbox_disabled>-->
-      <!--<button mat-flat-button class="navbar button-margin" color="accent" (click)="this.toggle_sandbox()">-->
-        <!--SANDBOX-->
-      <!--</button>-->
-    <!--</ng-template>-->
-  <!--</ng-container>-->
+  <!--Name of the current sandbox-->
+    <button
+      mat-stroked-button
+        class="navbar button-margin">
+      {{this.sandbox.get_name().toUpperCase()}}
+    </button>
 
   <button
     mat-stroked-button

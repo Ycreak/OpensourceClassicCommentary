@@ -23,6 +23,8 @@ import { Introduction } from '@oscc/models/Introduction';
   styleUrls: ['./introductions-dashboard.component.scss'],
 })
 export class IntroductionsDashboardComponent {
+  private allowed_user_roles = ['admin'];
+
   // Whether a introduction has been selected
   protected selected = false;
 
@@ -163,5 +165,13 @@ export class IntroductionsDashboardComponent {
    */
   protected reset_form(): void {
     this.form.reset();
+  }
+
+  /**
+   * Defines which users can view this component
+   * @return boolean
+   */
+  protected user_has_view_permission(): boolean {
+    return this.allowed_user_roles.includes(this.auth_service.current_user_role)
   }
 }

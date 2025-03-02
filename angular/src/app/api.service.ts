@@ -60,7 +60,7 @@ export class ApiService {
   NeuralURL: 'https://oscc.nolden.biz:5002/';
 
   get index() {
-    // Return only sandboxed fragments if we enable the sandbox
+    // Return only documents from the current sandbox. Default sandbox is called 'admin'
     return this._index.filter(
       (document: any) => document.sandbox === this.sandbox.current_sandbox
     );

@@ -1,5 +1,14 @@
+<mat-expansion-panel *ngIf="this.user_has_view_permission()" [expanded]="false">
+      <mat-expansion-panel-header>
+        <mat-panel-title> Change testimonia data </mat-panel-title>
+        <mat-panel-description>
+          Create, revise and delete testimonia
+          <mat-icon>local_library</mat-icon>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
 <!--Buttons to submit testimonium data -->
 <app-testimonium-filter
+  *ngIf="this.auth_service.has_permission('read', this.auth_service.current_user_role)"
   [button_title]="'Select testimonium'"
   [button_type]="'stroked'"
   (new_filter)="this.request($event)">
@@ -10,7 +19,7 @@
   color="primary"
   [disabled]="!form.valid"
   (click)="create(this.form.value)"
-  *ngIf="this.auth_service.current_user_role === 'teacher' || this.auth_service.current_user_role === 'student'">
+  *ngIf="this.auth_service.has_permission('create', this.auth_service.current_user_role)">
   Create testimonium
 </button>
 <button
@@ -19,7 +28,7 @@
   color="primary"
   [disabled]="!form.valid"
   (click)="revise(this.form.value)"
-  *ngIf="this.auth_service.current_user_role === 'teacher' || this.auth_service.current_user_role === 'student'">
+  *ngIf="this.auth_service.has_permission('update', this.auth_service.current_user_role)">
   Save Changes
 </button>
 <button
@@ -28,7 +37,7 @@
   color="warn"
   [disabled]="!selected"
   (click)="delete(this.form.value)"
-  *ngIf="this.auth_service.current_user_role === 'teacher'">
+  *ngIf="this.auth_service.has_permission('delete', this.auth_service.current_user_role)">
   Delete testimonium
 </button>
 
@@ -131,3 +140,4 @@
   </mat-tab>
   <!-- end of the content tab -->
 </mat-tab-group>
+    </mat-expansion-panel>
