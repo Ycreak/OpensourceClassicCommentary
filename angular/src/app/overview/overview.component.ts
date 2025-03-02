@@ -15,7 +15,7 @@ import { DialogService } from '@oscc/services/dialog.service';
 import { SettingsService } from '@oscc/services/settings.service';
 import { WindowSizeWatcherService } from '@oscc/services/window-watcher.service';
 import { AuthService } from '@oscc/auth/auth.service';
-import {SandboxService} from '@oscc/services/sandbox.service';
+import { SandboxService } from '@oscc/services/sandbox.service';
 
 // Component imports
 import { LoginComponent } from '@oscc/login/login.component';
@@ -37,7 +37,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     protected settings: SettingsService,
     protected window_watcher: WindowSizeWatcherService,
     private mat_dialog: MatDialog,
-    private viewportscroller: ViewportScroller,
+    private viewportscroller: ViewportScroller
   ) {}
 
   ngOnInit(): void {

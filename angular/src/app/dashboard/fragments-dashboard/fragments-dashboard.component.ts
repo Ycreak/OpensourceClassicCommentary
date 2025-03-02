@@ -8,12 +8,11 @@ import { AuthService } from '@oscc/auth/auth.service';
 import { DialogService } from '@oscc/services/dialog.service';
 import { ApiService } from '@oscc/api.service';
 import { UtilityService } from '@oscc/utility.service';
-import {SandboxService} from '@oscc/services/sandbox.service';
+import { SandboxService } from '@oscc/services/sandbox.service';
 
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
 import { Column } from '@oscc/models/Column';
-
 
 @Component({
   selector: 'app-fragments-dashboard',
@@ -75,7 +74,7 @@ export class FragmentsDashboardComponent implements OnInit {
     protected utility: UtilityService,
     protected dialog: DialogService,
     protected auth_service: AuthService,
-    private sandbox: SandboxService,
+    private sandbox: SandboxService
   ) {}
 
   ngOnInit(): void {
@@ -466,12 +465,12 @@ export class FragmentsDashboardComponent implements OnInit {
         }
       });
   }
-  
+
   /**
    * Defines which users can view this component
    * @return boolean
    */
   protected user_has_view_permission(): boolean {
-    return this.allowed_user_roles.includes(this.auth_service.current_user_role)
+    return this.allowed_user_roles.includes(this.auth_service.current_user_role);
   }
 }

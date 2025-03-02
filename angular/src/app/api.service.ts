@@ -8,10 +8,9 @@ import { tap } from 'rxjs/operators';
 import { environment } from '@src/environments/environment';
 
 // Service imports
-import {AuthService} from '@oscc/auth/auth.service';
 import { UtilityService } from '@oscc/utility.service';
 import { BibliographyService } from '@oscc/services/bibliography.service';
-import {SandboxService} from '@oscc/services/sandbox.service';
+import { SandboxService } from '@oscc/services/sandbox.service';
 
 // Model imports
 import { Bib } from '@oscc/models/Bib';
@@ -61,10 +60,8 @@ export class ApiService {
 
   get index() {
     // Return only documents from the current sandbox. Default sandbox is called 'admin'
-    return this._index.filter(
-      (document: any) => document.sandbox === this.sandbox.current_sandbox
-    );
-  } 
+    return this._index.filter((document: any) => document.sandbox === this.sandbox.current_sandbox);
+  }
 
   /**
    * Requests the API for the document index

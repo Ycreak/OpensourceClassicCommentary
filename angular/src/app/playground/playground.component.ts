@@ -13,7 +13,7 @@ import { AuthService } from '@oscc/auth/auth.service';
 import { CommentaryService } from '@oscc/commentary/commentary.service';
 import { UtilityService } from '@oscc/utility.service';
 import { FabricService } from './services/fabric.service';
-import {SandboxService} from '@oscc/services/sandbox.service';
+import { SandboxService } from '@oscc/services/sandbox.service';
 
 import { FormatterService } from './services/formatter.service';
 
@@ -81,7 +81,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
     private mat_dialog: MatDialog,
     private fabric: FabricService,
     private formatter: FormatterService,
-    private sandbox: SandboxService,
+    private sandbox: SandboxService
   ) {}
 
   ngOnInit(): void {

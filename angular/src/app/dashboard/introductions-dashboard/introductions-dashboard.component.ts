@@ -13,7 +13,7 @@ import { DialogService } from '@oscc/services/dialog.service';
 import { HelperService } from '@oscc/dashboard/helper.service';
 import { ApiService } from '@oscc/api.service';
 import { UtilityService } from '@oscc/utility.service';
-import {SandboxService} from '@oscc/services/sandbox.service';
+import { SandboxService } from '@oscc/services/sandbox.service';
 
 // Model imports
 import { Introduction } from '@oscc/models/Introduction';
@@ -44,7 +44,7 @@ export class IntroductionsDashboardComponent {
     protected dialog: DialogService,
     protected auth_service: AuthService,
     protected helper: HelperService,
-    private sandbox: SandboxService,
+    private sandbox: SandboxService
   ) {}
 
   /**
@@ -175,6 +175,6 @@ export class IntroductionsDashboardComponent {
    * @return boolean
    */
   protected user_has_view_permission(): boolean {
-    return this.allowed_user_roles.includes(this.auth_service.current_user_role)
+    return this.allowed_user_roles.includes(this.auth_service.current_user_role);
   }
 }

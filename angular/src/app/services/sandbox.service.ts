@@ -11,15 +11,14 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SandboxService {
- 
   // Name of the current sandbox. Always defaults to the admin
   // sandbox, as that is the one we publish to the outside world.
   public current_sandbox = 'admin';
 
-  constructor() { }
+  constructor() {}
 
   /**
    * Activates a sandbox. This is done based on the data in the authService.
@@ -27,18 +26,18 @@ export class SandboxService {
    * be set accordingly.
    */
   public activate(user_name: string, user_role: string): void {
-    switch(user_role) {
+    switch (user_role) {
       case 'admin':
         // The admin user uses the admin sandbox, which is the main sandbox
-        this.current_sandbox = user_role 
+        this.current_sandbox = user_role;
         break;
       case 'teacher':
         // The teacher user uses a sandbox with the same name as their name
-        this.current_sandbox = user_name 
+        this.current_sandbox = user_name;
         break;
       default:
-        console.debug('Sandbox cannot be set yet for this current user role')
-    } 
+        console.debug('Sandbox cannot be set yet for this current user role');
+    }
   }
 
   /**

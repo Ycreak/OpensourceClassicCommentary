@@ -143,9 +143,8 @@ export class LinnaeusComponent implements OnInit {
     this.spring.get_taxon(linnaeus_id, 'page').subscribe({
       next: (data) => {
         // sort data on the title name
-        data = data.sort((a, b) => a.title.localeCompare(b.title)), // Sort by 'trait'
-        this.current_taxon.pages = data;
-
+        (data = data.sort((a, b) => a.title.localeCompare(b.title))), // Sort by 'trait'
+          (this.current_taxon.pages = data);
       },
       error: (error) => {
         console.error('Error fetching metadata:', error);

@@ -13,7 +13,7 @@ import { DialogService } from '@oscc/services/dialog.service';
 import { HelperService } from '@oscc/dashboard/helper.service';
 import { ApiService } from '@oscc/api.service';
 import { UtilityService } from '@oscc/utility.service';
-import {SandboxService} from '@oscc/services/sandbox.service';
+import { SandboxService } from '@oscc/services/sandbox.service';
 
 // Model imports
 import { Testimonium } from '@oscc/models/Testimonium';
@@ -48,7 +48,7 @@ export class TestimoniaDashboardComponent {
     protected dialog: DialogService,
     protected auth_service: AuthService,
     protected helper: HelperService,
-    private sandbox: SandboxService,
+    private sandbox: SandboxService
   ) {}
 
   /**
@@ -157,12 +157,12 @@ export class TestimoniaDashboardComponent {
   protected reset_form(): void {
     this.form.reset();
   }
-  
+
   /**
    * Defines which users can view this component
    * @return boolean
    */
   protected user_has_view_permission(): boolean {
-    return this.allowed_user_roles.includes(this.auth_service.current_user_role)
+    return this.allowed_user_roles.includes(this.auth_service.current_user_role);
   }
 }
