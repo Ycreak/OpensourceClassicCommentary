@@ -3,15 +3,17 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormArray } from '@angular/forms';
 import { Validators } from '@angular/forms';
 
-// Component imports
+// Service imports
 import { AuthService } from '@oscc/auth/auth.service';
 import { DialogService } from '@oscc/services/dialog.service';
 import { ApiService } from '@oscc/api.service';
 import { UtilityService } from '@oscc/utility.service';
+import {SandboxService} from '@oscc/services/sandbox.service';
 
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
 import { Column } from '@oscc/models/Column';
+
 
 @Component({
   selector: 'app-fragments-dashboard',
@@ -39,6 +41,7 @@ export class FragmentsDashboardComponent implements OnInit {
   fragment_form = new FormGroup({
     _id: new FormControl(''),
     document_type: new FormControl('fragment'),
+    sandbox: new FormControl(this.sandbox.current_sandbox),
     name: new FormControl('', [Validators.required, Validators.pattern('[0-9-_ ]*')]), // numbers and "-" and "_" allowed.
     author: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
     title: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
@@ -71,7 +74,8 @@ export class FragmentsDashboardComponent implements OnInit {
     protected api: ApiService,
     protected utility: UtilityService,
     protected dialog: DialogService,
-    protected auth_service: AuthService
+    protected auth_service: AuthService,
+    private sandbox: SandboxService,
   ) {}
 
   ngOnInit(): void {

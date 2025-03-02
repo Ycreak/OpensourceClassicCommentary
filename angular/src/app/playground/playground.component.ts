@@ -13,6 +13,7 @@ import { AuthService } from '@oscc/auth/auth.service';
 import { CommentaryService } from '@oscc/commentary/commentary.service';
 import { UtilityService } from '@oscc/utility.service';
 import { FabricService } from './services/fabric.service';
+import {SandboxService} from '@oscc/services/sandbox.service';
 
 import { FormatterService } from './services/formatter.service';
 
@@ -79,7 +80,8 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
     private commentary: CommentaryService,
     private mat_dialog: MatDialog,
     private fabric: FabricService,
-    private formatter: FormatterService
+    private formatter: FormatterService,
+    private sandbox: SandboxService,
   ) {}
 
   ngOnInit(): void {
@@ -187,6 +189,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
             this.api.post_document(
               new Playground_communicator({
                 name: data.name,
+                sandbox: this.sandbox.current_sandbox,
                 canvas: this.playground.canvas.toJSON(),
                 _id: this.playground._id,
               }),
