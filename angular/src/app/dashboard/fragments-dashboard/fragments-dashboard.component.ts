@@ -352,6 +352,7 @@ export class FragmentsDashboardComponent implements OnInit {
           if (result) {
             const fragment = this.convert_fragment_form_to_Fragment(fragment_form);
             fragment.document_type = 'fragment';
+            fragment.sandbox = this.sandbox.current_sandbox;
             this.reset_fragment_form();
             this.api.post_document(fragment, 'update').subscribe(() => {
               // When the has been revised, we will load said fragment and fill the fields again
@@ -391,6 +392,7 @@ export class FragmentsDashboardComponent implements OnInit {
         if (result) {
           const fragment = this.convert_fragment_form_to_Fragment(fragment_form);
           fragment.document_type = 'fragment'; //FIXME: this is a bug
+          fragment.sandbox = this.sandbox.current_sandbox;
           this.reset_fragment_form();
           this.api.post_document(fragment, 'create').subscribe(() => {
             // When the has been created, we will load said fragment and fill the fields again
