@@ -184,10 +184,7 @@ const appRoutes: Routes = [
     // To allow the drag and drop
     DragDropModule,
     ClipboardModule,
-    // MatKeyboardModule,
-    //SocketIoModule.forRoot(config),
-
-    // AngularFireModule.initializeApp(environment.firebase),
+    SocketIoModule.forRoot(config),
   ],
   providers: [
     SafeHtmlPipe,

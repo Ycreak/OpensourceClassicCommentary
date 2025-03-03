@@ -281,7 +281,7 @@
     </mat-tab>
     <!-- end of the Fragment context tab -->
 
-    <mat-tab *ngIf="this.auth_service.current_user_role === 'teacher'" label="Fragment References"
+    <mat-tab *ngIf="this.auth_service.current_user_role === 'admin'" label="Fragment References"
       ><br />
 
       <div class="alert alert-info" role="alert">
@@ -338,7 +338,7 @@
     </mat-tab>
     <!-- end of the Fragment referencer tab -->
 
-    <mat-tab label="Fragment Access" *ngIf="this.auth_service.current_user_role === 'teacher'"
+    <mat-tab label="Fragment Access" *ngIf="this.auth_service.current_user_role === 'admin'"
       ><br />
       <!-- This tab changes the fragment access. It has to parts. A lock function which disallows change and publish function
           which allows the fragment to show up on the frontend -->
@@ -372,7 +372,7 @@
     </mat-tab>
     <!-- end of the Fragment lock tab -->
 
-    <mat-tab label="Social media" *ngIf="this.auth_service.current_user_role === 'teacher'"
+    <mat-tab label="Social media" *ngIf="this.auth_service.current_user_role === 'admin'"
       ><br />
       <!-- This tab allows changing fields related to social media. For now, we can add a popular translation. -->
 
@@ -392,3 +392,4 @@
     <!-- end of the Social media -->
   </mat-tab-group>
 </mat-expansion-panel>
+<hr />
