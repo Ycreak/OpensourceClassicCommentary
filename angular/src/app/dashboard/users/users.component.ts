@@ -40,6 +40,9 @@ export class UsersComponent implements OnInit, AfterViewInit {
       this.user_table_users.sort = this.table_sort;
     }
   }
+
+  private allowed_user_roles = ['admin'];
+
   // User table specific variables
   user_table_columns_to_display: string[] = ['username', 'role'];
   user_table_users: MatTableDataSource<User>;
@@ -265,5 +268,13 @@ export class UsersComponent implements OnInit, AfterViewInit {
           });
         }
       });
+  }
+
+  /**
+   * Defines which users can view this component
+   * @return boolean
+   */
+  protected user_has_view_permission(): boolean {
+    return this.allowed_user_roles.includes(this.auth_service.current_user_role);
   }
 }

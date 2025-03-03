@@ -10,21 +10,10 @@
 
   <span class="spacer"></span>
 
-  <ng-container *ngIf="this.auth_service.is_teacher()">
-    <button
-      mat-stroked-button
-      *ngIf="!this.sandbox_enabled; else sandbox_disabled"
-      class="navbar button-margin"
-      (click)="this.toggle_sandbox()">
-      SANDBOX
-    </button>
-
-    <ng-template #sandbox_disabled>
-      <button mat-flat-button class="navbar button-margin" color="accent" (click)="this.toggle_sandbox()">
-        SANDBOX
-      </button>
-    </ng-template>
-  </ng-container>
+  <!--Name of the current sandbox-->
+  <button mat-stroked-button class="navbar button-margin">
+    {{ this.sandbox.get_name().toUpperCase() }}
+  </button>
 
   <button
     mat-stroked-button
@@ -72,7 +61,7 @@
   <a href="https://github.com/Ycreak/OpensourceClassicCommentary/" target="_blank" mat-menu-item>Documentation</a>
   <button (click)="this.settings.open_settings()" mat-menu-item>Settings</button>
   <button (click)="this.dialog.open_about_dialog()" mat-menu-item>About</button>
-  <div mat-menu-item>V25.02.27</div>
+  <div mat-menu-item>V25.03.03</div>
 </mat-menu>
 
 <!-- Display for if server is down -->

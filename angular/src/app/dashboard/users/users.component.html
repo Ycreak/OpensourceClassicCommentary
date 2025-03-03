@@ -1,4 +1,4 @@
-<mat-expansion-panel *ngIf="this.auth_service.is_logged_in" [expanded]="false">
+<mat-expansion-panel *ngIf="this.user_has_view_permission()" [expanded]="false">
   <mat-expansion-panel-header>
     <mat-panel-title> Change user data </mat-panel-title>
     <mat-panel-description>
@@ -102,7 +102,7 @@
             <!-- Area to change the user data -->
             <div
               class="table-element-description table-expansion-panel-subcontainer"
-              *ngIf="this.auth_service.current_user_role === 'teacher'">
+              *ngIf="this.auth_service.current_user_role === 'admin'">
               <hr />
               <p>Change the role of the selected user here.</p>
               <mat-form-field appearance="fill">
@@ -110,6 +110,7 @@
                   <mat-option value="guest">Guest</mat-option>
                   <mat-option value="student">Student</mat-option>
                   <mat-option value="teacher">Teacher</mat-option>
+                  <mat-option value="admin">Admin</mat-option>
                 </mat-select>
                 <mat-label>New user role</mat-label>
               </mat-form-field>
@@ -160,7 +161,7 @@
   <hr />
 
   <!-- form to allow admins to create new users -->
-  <div *ngIf="this.auth_service.current_user_role === 'teacher'">
+  <div *ngIf="this.auth_service.current_user_role === 'admin'">
     <form [formGroup]="create_new_user_form" (ngSubmit)="request_create_user(create_new_user_form.value)">
       <mat-form-field class="input-form-half" appearance="fill">
         <mat-label>Provide the name of a new user</mat-label>

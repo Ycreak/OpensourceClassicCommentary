@@ -24,11 +24,11 @@ def get_user():
     if not user:
         return make_response("User not found", 404)
 
-    if (user.role == Role.STUDENT) or (user.role == Role.GUEST):
+    if (user.role == Role.STUDENT) or (user.role == Role.GUEST) or (user.role == Role.TEACHER):
         user.password = None
         user.id = None
         return make_response(jsonify([user]), 200)
-    elif user.role == Role.TEACHER:
+    elif (user.role == Role.ADMIN):
         all_users = users.all(sorted=True)
         for i in all_users:
             i.password = None
@@ -36,7 +36,7 @@ def get_user():
         return make_response(jsonify(all_users), 200)
     else:
         print(user)
-        return make_response("Not found", 404)
+        return make_response("Unknown user role", 404)
 
 def login_user():
     try:

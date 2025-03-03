@@ -71,16 +71,16 @@
             [newTaxonomicData]="this.current_taxon.parentage"
             (request_children)="this.request_children($event)"
             (request_child)="this.fetch_taxon($event)"></app-tree>
-          <hr>
+          <hr />
         </ng-container>
         <ng-container *ngIf="this.current_taxon.media.length">
-            <div class="thumbnail-container">
-              <div *ngFor="let imageUrl of this.current_taxon.media" class="thumbnail">
-                <a href="{{imageUrl}}" target="_blank">
-                  <img [src]="imageUrl" alt="Image thumbnail" class="thumbnail-img"/>
-                </a>
-              </div>
+          <div class="thumbnail-container">
+            <div *ngFor="let imageUrl of this.current_taxon.media" class="thumbnail">
+              <a href="{{ imageUrl }}" target="_blank">
+                <img [src]="imageUrl" alt="Image thumbnail" class="thumbnail-img" />
+              </a>
             </div>
+          </div>
           <hr />
         </ng-container>
       </div>
@@ -132,14 +132,12 @@
         </mat-accordion>
         <hr />
       </ng-container>
-      
+
       <ng-container *ngIf="this.current_taxon.literature.length">
         <h3>Literature</h3>
         <div style="padding-left: 0.2em" *ngFor="let entry of this.current_taxon.literature">{{ entry }}</div>
         <hr />
       </ng-container>
-
-
     </ng-container>
   </div>
 </ng-template>

@@ -1,78 +1,89 @@
-<!--Buttons to submit introduction data -->
-<app-introductions-filter
-  [button_title]="'Select introduction'"
-  [button_type]="'stroked'"
-  (new_filter)="this.request($event)">
-</app-introductions-filter>
-<button
-  mat-stroked-button
-  class="button-margin"
-  color="primary"
-  [disabled]="!form.valid"
-  (click)="create(this.form.value)"
-  *ngIf="this.auth_service.current_user_role === 'teacher' || this.auth_service.current_user_role === 'student'">
-  Create introduction
-</button>
-<button
-  mat-stroked-button
-  class="button-margin"
-  color="primary"
-  [disabled]="!form.valid"
-  (click)="revise(this.form.value)"
-  *ngIf="this.auth_service.current_user_role === 'teacher' || this.auth_service.current_user_role === 'student'">
-  Save Changes
-</button>
-<button
-  mat-stroked-button
-  class="button-margin"
-  color="warn"
-  [disabled]="!selected"
-  (click)="delete(this.form.value)"
-  *ngIf="this.auth_service.current_user_role === 'teacher'">
-  Delete introduction
-</button>
+<mat-expansion-panel *ngIf="this.user_has_view_permission()" [expanded]="false">
+  <mat-expansion-panel-header>
+    <mat-panel-title>Change author and title introductions </mat-panel-title>
+    <mat-panel-description>
+      Create and edit descriptions for authors and associated titles
+      <mat-icon>assignment_ind</mat-icon>
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+  <!--Buttons to submit introduction data -->
+  <app-introductions-filter
+    *ngIf="this.auth_service.has_permission('read', this.auth_service.current_user_role)"
+    [button_title]="'Select introduction'"
+    [button_type]="'stroked'"
+    (new_filter)="this.request($event)">
+  </app-introductions-filter>
+  <button
+    mat-stroked-button
+    class="button-margin"
+    color="primary"
+    [disabled]="!form.valid"
+    (click)="create(this.form.value)"
+    *ngIf="this.auth_service.has_permission('create', this.auth_service.current_user_role)">
+    Create introduction
+  </button>
+  <button
+    mat-stroked-button
+    class="button-margin"
+    color="primary"
+    [disabled]="!form.valid"
+    (click)="revise(this.form.value)"
+    *ngIf="this.auth_service.has_permission('update', this.auth_service.current_user_role)">
+    Save Changes
+  </button>
+  <button
+    mat-stroked-button
+    class="button-margin"
+    color="warn"
+    [disabled]="!selected"
+    (click)="delete(this.form.value)"
+    *ngIf="this.auth_service.has_permission('delete', this.auth_service.current_user_role)">
+    Delete introduction
+  </button>
 
-<hr />
+  <hr />
 
-<div class="alert alert-info" role="alert">
-  To create a new introduction, please provide an author or author + title combination. Press the
-  <b>Create introduction</b> button next. The button won't activate before all meta data fields are filled in correctly.
-  <i>Nota bene:</i> you can select an author in the drop down menu.
-</div>
-
-<form [formGroup]="form">
-  <mat-form-field class="input-form-full-width">
-    <mat-label>Introduction author</mat-label>
-    <input required matInput type="text" formControlName="author" />
-    <mat-hint>Provide the author the introduction is about</mat-hint>
-    <mat-error *ngIf="form.get('author').errors?.['required']">You must enter a value.</mat-error>
-    <mat-error *ngIf="form.get('author').errors?.['pattern']">You entered disallowed characters.</mat-error>
-  </mat-form-field>
-
-  <div class="div-padding-sm"></div>
-
-  <mat-form-field class="input-form-full-width">
-    <mat-label>Introduction title</mat-label>
-    <input matInput type="text" formControlName="title" />
-    <mat-hint>Provide the title the introduction is about</mat-hint>
-    <mat-error *ngIf="form.get('title').errors?.['pattern']">You entered disallowed characters.</mat-error>
-  </mat-form-field>
-
-  <div class="div-padding-sm"></div>
+  <div class="alert alert-info" role="alert">
+    To create a new introduction, please provide an author or author + title combination. Press the
+    <b>Create introduction</b> button next. The button won't activate before all meta data fields are filled in
+    correctly. <i>Nota bene:</i> you can select an author in the drop down menu.
+  </div>
 
   <form [formGroup]="form">
     <mat-form-field class="input-form-full-width">
-      <mat-label>Introduction text</mat-label>
-      <textarea matInput type="text" formControlName="text"></textarea>
-      <mat-hint>Write the introduction here</mat-hint>
+      <mat-label>Introduction author</mat-label>
+      <input required matInput type="text" formControlName="author" />
+      <mat-hint>Provide the author the introduction is about</mat-hint>
+      <mat-error *ngIf="form.get('author').errors?.['required']">You must enter a value.</mat-error>
+      <mat-error *ngIf="form.get('author').errors?.['pattern']">You entered disallowed characters.</mat-error>
     </mat-form-field>
-    <button
-      mat-button
-      class="button-margin-extra"
-      (click)="this.form = this.helper.request_wysiwyg_dialog(this.form, 'text', 'formControl')">
-      Rich editor
-    </button>
-  </form>
 
-  <div class="div-padding-sm"></div>
-</form>
+    <div class="div-padding-sm"></div>
+
+    <mat-form-field class="input-form-full-width">
+      <mat-label>Introduction title</mat-label>
+      <input matInput type="text" formControlName="title" />
+      <mat-hint>Provide the title the introduction is about</mat-hint>
+      <mat-error *ngIf="form.get('title').errors?.['pattern']">You entered disallowed characters.</mat-error>
+    </mat-form-field>
+
+    <div class="div-padding-sm"></div>
+
+    <form [formGroup]="form">
+      <mat-form-field class="input-form-full-width">
+        <mat-label>Introduction text</mat-label>
+        <textarea matInput type="text" formControlName="text"></textarea>
+        <mat-hint>Write the introduction here</mat-hint>
+      </mat-form-field>
+      <button
+        mat-button
+        class="button-margin-extra"
+        (click)="this.form = this.helper.request_wysiwyg_dialog(this.form, 'text', 'formControl')">
+        Rich editor
+      </button>
+    </form>
+
+    <div class="div-padding-sm"></div>
+  </form>
+</mat-expansion-panel>
+<hr />

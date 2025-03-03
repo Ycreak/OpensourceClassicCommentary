@@ -1,3 +1,9 @@
+/**
+ * The login component handles to login of users. When a user logs in,
+ * multiple services are called to set the control for later components
+ * authService: set current_user and current_role
+ */
+
 // Library imports
 import { Component } from '@angular/core';
 import { AuthService } from '@oscc/auth/auth.service';
@@ -6,11 +12,12 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Injectable } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 
-// Component imports
+// Service imports
 import { DialogService } from '@oscc/services/dialog.service';
 import { ApiService } from '@oscc/api.service';
 import { UtilityService } from '@oscc/utility.service';
 
+// Model imports
 import { User } from '@oscc/models/User';
 
 @Injectable({
@@ -63,6 +70,12 @@ export class LoginComponent {
     public dialogRef: MatDialogRef<LoginComponent>
   ) {}
 
+  /**
+   * Requests the api to login the user. If the user is approved,
+   * their role and name will be set in the auth_service. Furthermore,
+   * the corresponding sandbox will be activated.
+   * @param login_form (form)
+   */
   public submit_login(login_form: any): void {
     // Create a user session for the auth_service to fill in
     this.api.spinner_on();
@@ -124,16 +137,4 @@ export class LoginComponent {
       this.utility.open_snackbar('Passwords do not match.'); // TODO: Let FormControl handle this
     }
   }
-
-  //TODO: close login dialog after succesful login
-  // public Login(passwd) {
-  //   this.auth_service.login(passwd)
-  //   // .subscribe((res) => {
-  //   //   if (this.auth_service.isLoggedIn) {
-  //   //     const redirect = this.auth_service.redirectUrl ? this.router.parseUrl(this.auth_service.redirectUrl) : 'login';
-  //   //     this.message = 'status: logged in'
-  //   //     // this.router.navigateByUrl(redirect);
-  //   //   }
-  //   // });
-  // }
 }

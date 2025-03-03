@@ -22,7 +22,7 @@
   <button
     mat-stroked-button
     class="navbar button-margin"
-    *ngIf="this.auth_service.current_user_role === 'teacher'"
+    *ngIf="this.auth_service.current_user_role === 'admin'"
     (click)="test('Navbar')">
     TEST
   </button>
@@ -48,46 +48,15 @@
 <div class="container-fluid">
   <mat-accordion multi>
     <!-- Change fragments expansion panel -->
-    <mat-expansion-panel
-      *ngIf="this.auth_service.current_user_role === 'teacher' || this.auth_service.current_user_role === 'student'"
-      [expanded]="false">
-      <mat-expansion-panel-header>
-        <mat-panel-title> Change fragment data </mat-panel-title>
-        <mat-panel-description>
-          Create, revise and delete fragments
-          <mat-icon>text_snippet</mat-icon>
-        </mat-panel-description>
-      </mat-expansion-panel-header>
-      <app-fragments-dashboard></app-fragments-dashboard>
-    </mat-expansion-panel>
-    <hr />
+    <app-fragments-dashboard></app-fragments-dashboard>
+
     <!-- Change testimonia expansion panel -->
-    <mat-expansion-panel *ngIf="this.auth_service.current_user_role === 'teacher'" [expanded]="false">
-      <mat-expansion-panel-header>
-        <mat-panel-title> Change testimonia data </mat-panel-title>
-        <mat-panel-description>
-          Create, revise and delete testimonia
-          <mat-icon>local_library</mat-icon>
-        </mat-panel-description>
-      </mat-expansion-panel-header>
-      <app-testimonia-dashboard></app-testimonia-dashboard>
-    </mat-expansion-panel>
-    <hr />
+    <app-testimonia-dashboard></app-testimonia-dashboard>
+
     <!-- Change author/author+title introduction expansion panel -->
-    <mat-expansion-panel *ngIf="this.auth_service.current_user_role === 'teacher'" [expanded]="false">
-      <mat-expansion-panel-header>
-        <mat-panel-title>Change author and title introductions </mat-panel-title>
-        <mat-panel-description>
-          Create and edit descriptions for authors and associated titles
-          <mat-icon>assignment_ind</mat-icon>
-        </mat-panel-description>
-      </mat-expansion-panel-header>
-      <app-introductions-dashboard></app-introductions-dashboard>
-    </mat-expansion-panel>
-    <hr />
+    <app-introductions-dashboard></app-introductions-dashboard>
 
     <!-- Change user expansion panel -->
     <app-users></app-users>
-    <hr />
   </mat-accordion>
 </div>

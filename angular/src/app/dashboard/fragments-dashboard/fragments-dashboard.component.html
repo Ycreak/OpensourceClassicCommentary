@@ -1,376 +1,395 @@
-<!-- Buttons to submit fragment data -->
-<app-latin-tragic-fragment-filter
-  [button_title]="'Select fragment'"
-  [button_type]="'stroked'"
-  [endpoint]="'name'"
-  (new_filter)="this.apply_filter($event)">
-</app-latin-tragic-fragment-filter>
-<button
-  mat-stroked-button
-  class="button-margin"
-  color="primary"
-  [disabled]="!fragment_form.valid"
-  (click)="request_create_fragment(this.fragment_form)"
-  *ngIf="this.auth_service.current_user_role === 'teacher' || this.auth_service.current_user_role === 'student'">
-  Create Fragment
-</button>
-<button
-  mat-stroked-button
-  class="button-margin"
-  color="primary"
-  [disabled]="!fragment_form.valid"
-  (click)="request_revise_fragment(this.fragment_form)"
-  *ngIf="this.auth_service.current_user_role === 'teacher' || this.auth_service.current_user_role === 'student'">
-  Save Changes
-</button>
-<button
-  mat-stroked-button
-  class="button-margin"
-  color="warn"
-  [disabled]="!fragment_selected"
-  (click)="request_delete_fragment(this.fragment_form)"
-  *ngIf="this.auth_service.current_user_role === 'teacher'">
-  Delete Fragment
-</button>
+<mat-expansion-panel *ngIf="this.user_has_view_permission()" [expanded]="false">
+  <mat-expansion-panel-header>
+    <mat-panel-title> Change fragment data </mat-panel-title>
+    <mat-panel-description>
+      Create, revise and delete fragments
+      <mat-icon>text_snippet</mat-icon>
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+  <!-- Buttons to submit fragment data -->
+  <app-latin-tragic-fragment-filter
+    *ngIf="this.auth_service.has_permission('read', this.auth_service.current_user_role)"
+    [button_title]="'Select fragment'"
+    [button_type]="'stroked'"
+    [endpoint]="'name'"
+    (new_filter)="this.apply_filter($event)">
+  </app-latin-tragic-fragment-filter>
+  <button
+    mat-stroked-button
+    class="button-margin"
+    color="primary"
+    [disabled]="!fragment_form.valid"
+    (click)="request_create_fragment(this.fragment_form)"
+    *ngIf="this.auth_service.has_permission('create', this.auth_service.current_user_role)">
+    Create Fragment
+  </button>
+  <button
+    mat-stroked-button
+    class="button-margin"
+    color="primary"
+    [disabled]="!fragment_form.valid"
+    (click)="request_revise_fragment(this.fragment_form)"
+    *ngIf="this.auth_service.has_permission('update', this.auth_service.current_user_role)">
+    Save Changes
+  </button>
+  <button
+    mat-stroked-button
+    class="button-margin"
+    color="warn"
+    [disabled]="!fragment_selected"
+    (click)="request_delete_fragment(this.fragment_form)"
+    *ngIf="this.auth_service.has_permission('delete', this.auth_service.current_user_role)">
+    Delete Fragment
+  </button>
 
-<!--TODO: make this a lot prettier 11-->
-<p style="padding-top: 1em; padding-left: 1em">
-  {{ this.fragment_form.value.author }} {{ this.fragment_form.value.title }} {{ this.fragment_form.value.editor }}
-  {{ this.fragment_form.value.name }}
-</p>
+  <!--TODO: make this a lot prettier 11-->
+  <p style="padding-top: 1em; padding-left: 1em">
+    {{ this.fragment_form.value.author }} {{ this.fragment_form.value.title }} {{ this.fragment_form.value.editor }}
+    {{ this.fragment_form.value.name }}
+  </p>
 
-<hr />
+  <hr />
 
-<!-- Data fields -->
-<mat-tab-group>
-  <mat-tab label="Fragment Meta Data"
-    ><br />
+  <!-- Data fields -->
+  <mat-tab-group>
+    <mat-tab label="Fragment Meta Data"
+      ><br />
 
-    <div class="alert alert-info" role="alert">
-      To create a new fragment, please provide all meta data and press the <b>Create Fragment</b> button. The button
-      won't activate before all meta data fields are filled in correctly.
-    </div>
-    <!-- Every mat tab has its own fragment_form call to keep each entity easily separated and organised -->
+      <div class="alert alert-info" role="alert">
+        To create a new fragment, please provide all meta data and press the <b>Create Fragment</b> button. The button
+        won't activate before all meta data fields are filled in correctly.
+      </div>
+      <!-- Every mat tab has its own fragment_form call to keep each entity easily separated and organised -->
 
-    <form [formGroup]="fragment_form">
-      <mat-form-field class="input-form-full-width">
-        <mat-label>Fragment name</mat-label>
-        <input required matInput type="text" formControlName="name" />
-        <!--required> -->
-        <mat-hint><b>Only</b> provide the number of the fragment</mat-hint>
-        <mat-error *ngIf="fragment_form.get('name').errors?.['required']">You must enter a value.</mat-error>
-        <mat-error *ngIf="fragment_form.get('name').errors?.['pattern']">You entered disallowed characters.</mat-error>
-      </mat-form-field>
+      <form [formGroup]="fragment_form">
+        <mat-form-field class="input-form-full-width">
+          <mat-label>Fragment name</mat-label>
+          <input required matInput type="text" formControlName="name" />
+          <!--required> -->
+          <mat-hint><b>Only</b> provide the number of the fragment</mat-hint>
+          <mat-error *ngIf="fragment_form.get('name').errors?.['required']">You must enter a value.</mat-error>
+          <mat-error *ngIf="fragment_form.get('name').errors?.['pattern']"
+            >You entered disallowed characters.</mat-error
+          >
+        </mat-form-field>
 
-      <div class="div-padding-sm"></div>
+        <div class="div-padding-sm"></div>
 
-      <mat-form-field class="input-form-full-width">
-        <mat-label>Author name</mat-label>
-        <input required matInput type="text" formControlName="author" />
-        <mat-hint>Provide the author of the fragment</mat-hint>
-        <!-- i prefer the get function like this to prevent long getters-->
-        <mat-error *ngIf="fragment_form.get('author').errors?.['required']">You must enter a value.</mat-error>
-        <mat-error *ngIf="fragment_form.get('author').errors?.['pattern']"
-          >You entered disallowed characters.</mat-error
-        >
-      </mat-form-field>
+        <mat-form-field class="input-form-full-width">
+          <mat-label>Author name</mat-label>
+          <input required matInput type="text" formControlName="author" />
+          <mat-hint>Provide the author of the fragment</mat-hint>
+          <!-- i prefer the get function like this to prevent long getters-->
+          <mat-error *ngIf="fragment_form.get('author').errors?.['required']">You must enter a value.</mat-error>
+          <mat-error *ngIf="fragment_form.get('author').errors?.['pattern']"
+            >You entered disallowed characters.</mat-error
+          >
+        </mat-form-field>
 
-      <div class="div-padding-sm"></div>
+        <div class="div-padding-sm"></div>
 
-      <mat-form-field class="input-form-full-width">
-        <mat-label>Title name</mat-label>
-        <input required matInput type="text" formControlName="title" />
-        <mat-hint>Provide the name of the book</mat-hint>
-        <mat-error *ngIf="fragment_form.get('title').errors?.['required']">You must enter a value.</mat-error>
-        <mat-error *ngIf="fragment_form.get('title').errors?.['pattern']">You entered disallowed characters.</mat-error>
-      </mat-form-field>
+        <mat-form-field class="input-form-full-width">
+          <mat-label>Title name</mat-label>
+          <input required matInput type="text" formControlName="title" />
+          <mat-hint>Provide the name of the book</mat-hint>
+          <mat-error *ngIf="fragment_form.get('title').errors?.['required']">You must enter a value.</mat-error>
+          <mat-error *ngIf="fragment_form.get('title').errors?.['pattern']"
+            >You entered disallowed characters.</mat-error
+          >
+        </mat-form-field>
 
-      <div class="div-padding-sm"></div>
+        <div class="div-padding-sm"></div>
 
-      <mat-form-field class="input-form-full-width">
-        <mat-label>Editor name</mat-label>
-        <input required matInput type="text" formControlName="editor" />
-        <mat-hint>Provide the name of the editor</mat-hint>
-        <mat-error *ngIf="fragment_form.get('editor').errors?.['required']">You must enter a value.</mat-error>
-        <mat-error *ngIf="fragment_form.get('editor').errors?.['pattern']"
-          >You entered disallowed characters.</mat-error
-        >
-      </mat-form-field>
+        <mat-form-field class="input-form-full-width">
+          <mat-label>Editor name</mat-label>
+          <input required matInput type="text" formControlName="editor" />
+          <mat-hint>Provide the name of the editor</mat-hint>
+          <mat-error *ngIf="fragment_form.get('editor').errors?.['required']">You must enter a value.</mat-error>
+          <mat-error *ngIf="fragment_form.get('editor').errors?.['pattern']"
+            >You entered disallowed characters.</mat-error
+          >
+        </mat-form-field>
 
-      <div class="div-padding-sm"></div>
+        <div class="div-padding-sm"></div>
 
-      <mat-form-field appearance="fill">
-        <mat-select required formControlName="status" ngDefaultControl>
-          <mat-option value="Certum">Certum</mat-option>
-          <mat-option value="Incertum">Incertum</mat-option>
-          <mat-option value="Adesp.">Adespoton</mat-option>
-        </mat-select>
-        <mat-label>Line status</mat-label>
-      </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-select required formControlName="status" ngDefaultControl>
+            <mat-option value="Certum">Certum</mat-option>
+            <mat-option value="Incertum">Incertum</mat-option>
+            <mat-option value="Adesp.">Adespoton</mat-option>
+          </mat-select>
+          <mat-label>Line status</mat-label>
+        </mat-form-field>
 
-      <div class="div-padding"></div>
-    </form>
-  </mat-tab>
-  <!-- end of the Meta data tab -->
+        <div class="div-padding"></div>
+      </form>
+    </mat-tab>
+    <!-- end of the Meta data tab -->
 
-  <mat-tab label="Fragment Lines"
-    ><br />
-    <!-- This piece of code allows users to create fragment lines by providing a line number and line text for each lines. 
+    <mat-tab label="Fragment Lines"
+      ><br />
+      <!-- This piece of code allows users to create fragment lines by providing a line number and line text for each lines. 
                 Lines can be dynamically created using the Add New Fragment Line button. This will create a new form group per line, which will
                 be pushed to the Lines FormArray within fragment_form. -->
-    <div class="alert alert-info" role="alert">
-      Press the <b>Add New Fragment Line</b> button for every single line of the fragment. For example, if your fragment
-      has three lines, press the button thrice and add your lines in plain text to the three fields that have appeared.
-      Do not add HTML for a paragraph here!
-    </div>
-
-    <form [formGroup]="fragment_form">
-      <button mat-stroked-button color="primary" (click)="push_fragment_line_to_fragment_form('', '')">
-        Add New Fragment Line
-      </button>
-
-      <div class="div-padding-lg"></div>
-
-      <div formArrayName="lines" *ngFor="let item of fragment_form.get('lines')['controls']; let i = index">
-        <div [formGroupName]="i">
-          <mat-form-field class="input-form-small">
-            <mat-label>Line name</mat-label>
-            <input matInput type="text" formControlName="line_number" />
-          </mat-form-field>
-
-          <mat-form-field class="input-form-half">
-            <mat-label>Line text</mat-label>
-            <input matInput type="text" formControlName="text" />
-          </mat-form-field>
-
-          <button mat-button (click)="remove_form_item_from_form_array('fragment_form', 'lines', i)">
-            Delete this line
-          </button>
-        </div>
+      <div class="alert alert-info" role="alert">
+        Press the <b>Add New Fragment Line</b> button for every single line of the fragment. For example, if your
+        fragment has three lines, press the button thrice and add your lines in plain text to the three fields that have
+        appeared. Do not add HTML for a paragraph here!
       </div>
-    </form>
-  </mat-tab>
-  <!-- end of the Fragment lines tab -->
 
-  <mat-tab label="Fragment Content"
-    ><br />
-    <!-- This piece of code allows users to provide content for the fragment. It contains simple text fields
+      <form [formGroup]="fragment_form">
+        <button mat-stroked-button color="primary" (click)="push_fragment_line_to_fragment_form('', '')">
+          Add New Fragment Line
+        </button>
+
+        <div class="div-padding-lg"></div>
+
+        <div formArrayName="lines" *ngFor="let item of fragment_form.get('lines')['controls']; let i = index">
+          <div [formGroupName]="i">
+            <mat-form-field class="input-form-small">
+              <mat-label>Line name</mat-label>
+              <input matInput type="text" formControlName="line_number" />
+            </mat-form-field>
+
+            <mat-form-field class="input-form-half">
+              <mat-label>Line text</mat-label>
+              <input matInput type="text" formControlName="text" />
+            </mat-form-field>
+
+            <button mat-button (click)="remove_form_item_from_form_array('fragment_form', 'lines', i)">
+              Delete this line
+            </button>
+          </div>
+        </div>
+      </form>
+    </mat-tab>
+    <!-- end of the Fragment lines tab -->
+
+    <mat-tab label="Fragment Content"
+      ><br />
+      <!-- This piece of code allows users to provide content for the fragment. It contains simple text fields
                 which communicate directly with the fragment_form. -->
-    <form [formGroup]="fragment_form">
-      <mat-form-field class="input-form-full-width">
-        <mat-label><b>Fragment translation</b></mat-label>
-        <textarea matInput type="text" formControlName="translation" id="FT"></textarea>
-      </mat-form-field>
-      <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('translation')">
-        Rich editor
-      </button>
+      <form [formGroup]="fragment_form">
+        <mat-form-field class="input-form-full-width">
+          <mat-label><b>Fragment translation</b></mat-label>
+          <textarea matInput type="text" formControlName="translation" id="FT"></textarea>
+        </mat-form-field>
+        <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('translation')">
+          Rich editor
+        </button>
 
-      <div class="div-padding-lg"></div>
-      <div class="div-padding-sm"></div>
+        <div class="div-padding-lg"></div>
+        <div class="div-padding-sm"></div>
 
-      <mat-form-field class="input-form-full-width">
-        <mat-label><b>Fragment apparatus criticus</b></mat-label>
-        <textarea matInput type="text" formControlName="apparatus" id="FA"></textarea>
-      </mat-form-field>
-      <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('apparatus')">Rich editor</button>
+        <mat-form-field class="input-form-full-width">
+          <mat-label><b>Fragment apparatus criticus</b></mat-label>
+          <textarea matInput type="text" formControlName="apparatus" id="FA"></textarea>
+        </mat-form-field>
+        <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('apparatus')">
+          Rich editor
+        </button>
 
-      <div class="div-padding-lg"></div>
-      <div class="div-padding-sm"></div>
+        <div class="div-padding-lg"></div>
+        <div class="div-padding-sm"></div>
 
-      <mat-form-field class="input-form-full-width">
-        <mat-label><b>Fragment differences</b></mat-label>
-        <textarea matInput type="text" formControlName="differences" id="FD"></textarea>
-      </mat-form-field>
-      <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('differences')">
-        Rich editor
-      </button>
+        <mat-form-field class="input-form-full-width">
+          <mat-label><b>Fragment differences</b></mat-label>
+          <textarea matInput type="text" formControlName="differences" id="FD"></textarea>
+        </mat-form-field>
+        <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('differences')">
+          Rich editor
+        </button>
 
-      <div class="div-padding-lg"></div>
-      <div class="div-padding-sm"></div>
+        <div class="div-padding-lg"></div>
+        <div class="div-padding-sm"></div>
 
-      <mat-form-field class="input-form-full-width">
-        <mat-label><b>Fragment commentary</b></mat-label>
-        <textarea matInput type="text" formControlName="commentary" id="FC"></textarea>
-      </mat-form-field>
-      <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('commentary')">Rich editor</button>
+        <mat-form-field class="input-form-full-width">
+          <mat-label><b>Fragment commentary</b></mat-label>
+          <textarea matInput type="text" formControlName="commentary" id="FC"></textarea>
+        </mat-form-field>
+        <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('commentary')">
+          Rich editor
+        </button>
 
-      <div class="div-padding-lg"></div>
-      <div class="div-padding-sm"></div>
+        <div class="div-padding-lg"></div>
+        <div class="div-padding-sm"></div>
 
-      <mat-form-field class="input-form-full-width">
-        <mat-label><b>Fragment reconstruction</b></mat-label>
-        <textarea matInput type="text" formControlName="reconstruction" id="FR"></textarea>
-      </mat-form-field>
-      <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('reconstruction')">
-        Rich editor
-      </button>
+        <mat-form-field class="input-form-full-width">
+          <mat-label><b>Fragment reconstruction</b></mat-label>
+          <textarea matInput type="text" formControlName="reconstruction" id="FR"></textarea>
+        </mat-form-field>
+        <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('reconstruction')">
+          Rich editor
+        </button>
 
-      <div class="div-padding-lg"></div>
-      <div class="div-padding-sm"></div>
+        <div class="div-padding-lg"></div>
+        <div class="div-padding-sm"></div>
 
-      <mat-form-field class="input-form-full-width">
-        <mat-label><b>Fragment Metrical Analysis</b></mat-label>
-        <textarea matInput type="text" formControlName="metrical_analysis" id="FMA"></textarea>
-      </mat-form-field>
-      <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('metrical_analysis')">
-        Rich editor
-      </button>
-    </form>
-  </mat-tab>
-  <!-- end of the Fragment content tab -->
+        <mat-form-field class="input-form-full-width">
+          <mat-label><b>Fragment Metrical Analysis</b></mat-label>
+          <textarea matInput type="text" formControlName="metrical_analysis" id="FMA"></textarea>
+        </mat-form-field>
+        <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('metrical_analysis')">
+          Rich editor
+        </button>
+      </form>
+    </mat-tab>
+    <!-- end of the Fragment content tab -->
 
-  <mat-tab label="Fragment Context"
-    ><br />
-    <!-- This piece of code allows users to create fragment contexts by providing a location, author and text. 
+    <mat-tab label="Fragment Context"
+      ><br />
+      <!-- This piece of code allows users to create fragment contexts by providing a location, author and text. 
                 Contexts can be dynamically created using the Add New Context button. This will create a new form group per context, which will be pushed to the Context FormArray within fragment_form. -->
-    <div class="alert alert-info" role="alert">
-      Press the <b>Add Fragment Context</b> for each context author. Entries from the same work may be separated or
-      added to the same field.
-    </div>
-
-    <form [formGroup]="fragment_form">
-      <button mat-stroked-button color="primary" (click)="this.push_fragment_context_to_fragment_form('', '', '')">
-        Add Fragment Context
-      </button>
-
-      <div class="div-padding-lg"></div>
-
-      <div formArrayName="context" *ngFor="let item of fragment_form.get('context')['controls']; let i = index">
-        <div [formGroupName]="i">
-          <mat-form-field class="input-form-small">
-            <mat-label>Context author name</mat-label>
-            <input matInput type="text" formControlName="author" />
-            <!--required> -->
-          </mat-form-field>
-
-          <mat-form-field class="input-form-small">
-            <mat-label>Context location</mat-label>
-            <input matInput type="text" formControlName="location" />
-            <!--required> -->
-          </mat-form-field>
-
-          <mat-form-field class="input-form-half">
-            <mat-label>Context text</mat-label>
-            <textarea matInput type="text" formControlName="text"></textarea>
-          </mat-form-field>
-
-          <button mat-button (click)="request_wysiwyg_dialog('context', i)">Rich editor</button>
-          <button mat-button (click)="remove_form_item_from_form_array('fragment_form', 'context', i)">
-            Delete this context
-          </button>
-        </div>
+      <div class="alert alert-info" role="alert">
+        Press the <b>Add Fragment Context</b> for each context author. Entries from the same work may be separated or
+        added to the same field.
       </div>
-    </form>
-  </mat-tab>
-  <!-- end of the Fragment context tab -->
 
-  <mat-tab *ngIf="this.auth_service.current_user_role === 'teacher'" label="Fragment References"
-    ><br />
+      <form [formGroup]="fragment_form">
+        <button mat-stroked-button color="primary" (click)="this.push_fragment_context_to_fragment_form('', '', '')">
+          Add Fragment Context
+        </button>
 
-    <div class="alert alert-info" role="alert">
-      This functionality allows you to link fragments. The selected fragment can point towards other fragments. Select
-      author, text, edition and fragment below to point your fragment to this newly selected fragment. This will allow
-      commentaries from the referenced fragment to be retrieved, as well as highlight the referenced fragment when
-      multiple columns are selected in the frontend. <i>Nota bene:</i> this creates a one-way reference: you will need
-      to link the fragments vice versa too for a true link.
-    </div>
+        <div class="div-padding-lg"></div>
 
-    <hr />
+        <div formArrayName="context" *ngFor="let item of fragment_form.get('context')['controls']; let i = index">
+          <div [formGroupName]="i">
+            <mat-form-field class="input-form-small">
+              <mat-label>Context author name</mat-label>
+              <input matInput type="text" formControlName="author" />
+              <!--required> -->
+            </mat-form-field>
 
-    <app-latin-tragic-fragment-filter
-      [button_title]="'Link fragment'"
-      [button_type]="'stroked'"
-      [endpoint]="'name'"
-      (new_filter)="this.add_linked_fragment($event)">
-    </app-latin-tragic-fragment-filter>
+            <mat-form-field class="input-form-small">
+              <mat-label>Context location</mat-label>
+              <input matInput type="text" formControlName="location" />
+              <!--required> -->
+            </mat-form-field>
 
-    <form [formGroup]="fragment_form">
-      <div class="div-padding-lg"></div>
-      <div
-        formArrayName="linked_fragments"
-        *ngFor="let item of fragment_form.get('linked_fragments')['controls']; let i = index">
-        <div [formGroupName]="i">
-          <mat-form-field>
-            <mat-label>Author</mat-label>
-            <input matInput disabled type="text" formControlName="author" />
-          </mat-form-field>
+            <mat-form-field class="input-form-half">
+              <mat-label>Context text</mat-label>
+              <textarea matInput type="text" formControlName="text"></textarea>
+            </mat-form-field>
 
-          <mat-form-field>
-            <mat-label>Title</mat-label>
-            <input matInput disabled type="text" formControlName="title" />
-          </mat-form-field>
-
-          <mat-form-field>
-            <mat-label>Editor</mat-label>
-            <input matInput disabled type="text" formControlName="editor" />
-          </mat-form-field>
-
-          <mat-form-field>
-            <mat-label>Fragment</mat-label>
-            <input matInput disabled type="text" formControlName="name" />
-          </mat-form-field>
-
-          <button mat-button (click)="remove_form_item_from_form_array('fragment_form', 'linked_fragments', i)">
-            Delete this reference
-          </button>
+            <button mat-button (click)="request_wysiwyg_dialog('context', i)">Rich editor</button>
+            <button mat-button (click)="remove_form_item_from_form_array('fragment_form', 'context', i)">
+              Delete this context
+            </button>
+          </div>
         </div>
+      </form>
+    </mat-tab>
+    <!-- end of the Fragment context tab -->
+
+    <mat-tab *ngIf="this.auth_service.current_user_role === 'admin'" label="Fragment References"
+      ><br />
+
+      <div class="alert alert-info" role="alert">
+        This functionality allows you to link fragments. The selected fragment can point towards other fragments. Select
+        author, text, edition and fragment below to point your fragment to this newly selected fragment. This will allow
+        commentaries from the referenced fragment to be retrieved, as well as highlight the referenced fragment when
+        multiple columns are selected in the frontend. <i>Nota bene:</i> this creates a one-way reference: you will need
+        to link the fragments vice versa too for a true link.
       </div>
-    </form>
 
-    <hr />
-  </mat-tab>
-  <!-- end of the Fragment referencer tab -->
+      <hr />
 
-  <mat-tab label="Fragment Access" *ngIf="this.auth_service.current_user_role === 'teacher'"
-    ><br />
-    <!-- This tab changes the fragment access. It has to parts. A lock function which disallows change and publish function
+      <app-latin-tragic-fragment-filter
+        [button_title]="'Link fragment'"
+        [button_type]="'stroked'"
+        [endpoint]="'name'"
+        (new_filter)="this.add_linked_fragment($event)">
+      </app-latin-tragic-fragment-filter>
+
+      <form [formGroup]="fragment_form">
+        <div class="div-padding-lg"></div>
+        <div
+          formArrayName="linked_fragments"
+          *ngFor="let item of fragment_form.get('linked_fragments')['controls']; let i = index">
+          <div [formGroupName]="i">
+            <mat-form-field>
+              <mat-label>Author</mat-label>
+              <input matInput disabled type="text" formControlName="author" />
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Title</mat-label>
+              <input matInput disabled type="text" formControlName="title" />
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Editor</mat-label>
+              <input matInput disabled type="text" formControlName="editor" />
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Fragment</mat-label>
+              <input matInput disabled type="text" formControlName="name" />
+            </mat-form-field>
+
+            <button mat-button (click)="remove_form_item_from_form_array('fragment_form', 'linked_fragments', i)">
+              Delete this reference
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <hr />
+    </mat-tab>
+    <!-- end of the Fragment referencer tab -->
+
+    <mat-tab label="Fragment Access" *ngIf="this.auth_service.current_user_role === 'admin'"
+      ><br />
+      <!-- This tab changes the fragment access. It has to parts. A lock function which disallows change and publish function
           which allows the fragment to show up on the frontend -->
 
-    <form [formGroup]="fragment_form">
-      <div class="alert alert-info" role="alert">
-        To lock the selected fragment to disallow further change by users, select the lock checkbox.
-      </div>
-      <!-- <mat-checkbox class="padding-left" formControlName="lock">Lock fragment</mat-checkbox> -->
+      <form [formGroup]="fragment_form">
+        <div class="alert alert-info" role="alert">
+          To lock the selected fragment to disallow further change by users, select the lock checkbox.
+        </div>
+        <!-- <mat-checkbox class="padding-left" formControlName="lock">Lock fragment</mat-checkbox> -->
 
-      <mat-form-field appearance="fill">
-        <mat-select formControlName="lock" ngDefaultControl>
-          <mat-option value="locked">Locked</mat-option>
-          <mat-option value="unlocked">Unlocked</mat-option>
-        </mat-select>
-        <mat-label>Fragment lock status</mat-label>
-      </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-select formControlName="lock" ngDefaultControl>
+            <mat-option value="locked">Locked</mat-option>
+            <mat-option value="unlocked">Unlocked</mat-option>
+          </mat-select>
+          <mat-label>Fragment lock status</mat-label>
+        </mat-form-field>
 
-      <div class="div-padding-sm"></div>
+        <div class="div-padding-sm"></div>
 
-      <mat-form-field appearance="fill">
-        <mat-select formControlName="published" ngDefaultControl>
-          <mat-option value="published">Published</mat-option>
-          <mat-option value="unpublished">Unpublished</mat-option>
-        </mat-select>
-        <mat-label>Fragment publish status</mat-label>
-      </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-select formControlName="published" ngDefaultControl>
+            <mat-option value="published">Published</mat-option>
+            <mat-option value="unpublished">Unpublished</mat-option>
+          </mat-select>
+          <mat-label>Fragment publish status</mat-label>
+        </mat-form-field>
 
-      <!-- <mat-checkbox class="padding-left" formControlName="published">Publish fragment</mat-checkbox> -->
-    </form>
-  </mat-tab>
-  <!-- end of the Fragment lock tab -->
+        <!-- <mat-checkbox class="padding-left" formControlName="published">Publish fragment</mat-checkbox> -->
+      </form>
+    </mat-tab>
+    <!-- end of the Fragment lock tab -->
 
-  <mat-tab label="Social media" *ngIf="this.auth_service.current_user_role === 'teacher'"
-    ><br />
-    <!-- This tab allows changing fields related to social media. For now, we can add a popular translation. -->
+    <mat-tab label="Social media" *ngIf="this.auth_service.current_user_role === 'admin'"
+      ><br />
+      <!-- This tab allows changing fields related to social media. For now, we can add a popular translation. -->
 
-    <form [formGroup]="fragment_form">
-      <div class="alert alert-info" role="alert">
-        Provide a popular translation to the fragment, which will be shown on our social media accounts
-      </div>
-      <mat-form-field class="input-form-full-width">
-        <mat-label><b>Popular translation</b></mat-label>
-        <textarea matInput type="text" formControlName="popular_translation"></textarea>
-      </mat-form-field>
-      <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('popular_translation')">
-        Rich editor
-      </button>
-    </form>
-  </mat-tab>
-  <!-- end of the Social media -->
-</mat-tab-group>
+      <form [formGroup]="fragment_form">
+        <div class="alert alert-info" role="alert">
+          Provide a popular translation to the fragment, which will be shown on our social media accounts
+        </div>
+        <mat-form-field class="input-form-full-width">
+          <mat-label><b>Popular translation</b></mat-label>
+          <textarea matInput type="text" formControlName="popular_translation"></textarea>
+        </mat-form-field>
+        <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('popular_translation')">
+          Rich editor
+        </button>
+      </form>
+    </mat-tab>
+    <!-- end of the Social media -->
+  </mat-tab-group>
+</mat-expansion-panel>
+<hr />

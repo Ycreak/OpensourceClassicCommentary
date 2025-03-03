@@ -10,6 +10,7 @@ import { environment } from '@src/environments/environment';
 // Service imports
 import { UtilityService } from '@oscc/utility.service';
 import { BibliographyService } from '@oscc/services/bibliography.service';
+import { SandboxService } from '@oscc/services/sandbox.service';
 
 // Model imports
 import { Bib } from '@oscc/models/Bib';
@@ -34,7 +35,7 @@ export class ApiService {
   public get_header: object = { observe: 'body', responseType: 'json' };
 
   // The index contains all document meta data received from the api
-  public index: any[] = [];
+  private _index: any[] = [];
 
   public endpoints = new Map<string, string>([
     ['index', 'document/index'],
@@ -45,8 +46,9 @@ export class ApiService {
   ]);
 
   constructor(
-    private bib: BibliographyService,
     protected utility: UtilityService,
+    private bib: BibliographyService,
+    private sandbox: SandboxService,
     http: HttpClient
   ) {
     this.http = http;
@@ -56,6 +58,11 @@ export class ApiService {
   FlaskURL: string = environment.flask_api;
   NeuralURL: 'https://oscc.nolden.biz:5002/';
 
+  get index() {
+    // Return only documents from the current sandbox. Default sandbox is called 'admin'
+    return this._index.filter((document: any) => document.sandbox === this.sandbox.current_sandbox);
+  }
+
   /**
    * Requests the API for the document index
    * @return Observable
@@ -64,11 +71,10 @@ export class ApiService {
   public request_index(): Observable<any> {
     return new Observable((observer) => {
       this.spinner_on();
-      this.index = [];
+      this._index = [];
       this.post(this.FlaskURL, this.endpoints.get('index'), {}, this.get_header).subscribe({
         next: (data) => {
-          this.index = data;
-          console.log(this.index);
+          this._index = data;
           this.spinner_off();
           observer.next(this.index);
           observer.complete();
