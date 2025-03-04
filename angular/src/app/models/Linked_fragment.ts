@@ -1,5 +1,5 @@
 /**
- * Represents a linked fragment with its meta data properties. 
+ * Represents a linked fragment with its meta data properties.
  * Is used to later retrieve the entire linked fragment.
  */
 

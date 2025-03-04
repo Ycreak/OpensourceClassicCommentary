@@ -109,7 +109,7 @@ export class FragmentsDashboardComponent implements OnInit {
    * @author Ycreak
    */
   protected add_linked_fragment(filter: any): void {
-    this.push_linked_fragments_to_fragment_form(filter.author, filter.title, filter.editor, filter.name, filter.sandbox);
+    this.push_linked_fragments_to_fragment_form(filter.author, filter.title, filter.editor, filter.name);
   }
 
   protected test(): void {
@@ -210,8 +210,7 @@ export class FragmentsDashboardComponent implements OnInit {
         fragment.linked_fragments[i].author,
         fragment.linked_fragments[i].title,
         fragment.linked_fragments[i].editor,
-        fragment.linked_fragments[i].name,
-        fragment.linked_fragments[i].sandbox,
+        fragment.linked_fragments[i].name
         //fragment.linked_fragments[i].linked_fragment_id
       );
     }
@@ -245,8 +244,7 @@ export class FragmentsDashboardComponent implements OnInit {
     author: string,
     title: string,
     editor: string,
-    name: string,
-    sandbox: string
+    name: string
     //linked_fragment_id?: string
   ): void {
     // First, create a form group to represent a line
