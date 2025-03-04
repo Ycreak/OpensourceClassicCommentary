@@ -253,6 +253,7 @@ export class FragmentsDashboardComponent implements OnInit {
       title: new FormControl(title),
       editor: new FormControl(editor),
       name: new FormControl(name),
+      sandbox: new FormControl(this.sandbox.current_sandbox),
       //linked_fragment_id: new FormControl(linked_fragment_id),
     });
     // Next, push the created form group to the lines FormArray

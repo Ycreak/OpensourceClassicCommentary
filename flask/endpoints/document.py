@@ -76,7 +76,7 @@ def update_index() -> None:
                 case _:
                     logging.error(f"Unknown document type: {doc}")
         except Exception as e:
-            logging.error(f"Cannot index document. Error {e} in document: {doc}")
+            logging.error(f"Cannot index document. Error in document: {doc.id}")
     util.write_json(index, index_file)
 
 def get_document():
