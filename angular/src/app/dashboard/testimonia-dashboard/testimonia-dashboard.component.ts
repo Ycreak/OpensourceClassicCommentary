@@ -96,6 +96,7 @@ export class TestimoniaDashboardComponent {
           this.api.post_document(form, 'create').subscribe(() => {
             this.request({
               document_type: 'testimonium',
+              sandbox: this.sandbox.current_sandbox,
               author: form.author,
               name: form.name,
             });
@@ -120,6 +121,7 @@ export class TestimoniaDashboardComponent {
             this.reset_form();
             this.request({
               document_type: 'testimonium',
+              sandbox: this.sandbox.current_sandbox,
               author: form.author,
               name: form.name,
             });
