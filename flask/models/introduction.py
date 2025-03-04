@@ -13,6 +13,7 @@ class IntroductionFields(object):
     AUTHOR = 'author'
     TITLE = 'title'
     TEXT = 'text'
+    SANDBOX = "sandbox"
 
 @dataclass
 class IntroductionModel:
@@ -22,6 +23,7 @@ class IntroductionModel:
     author: str = ''
     title: str = ''
     text: str = ''
+    sandbox: str = None
 
 class Introduction:
     def __init__(self, server):
@@ -98,5 +100,6 @@ class Introduction:
         introduction.author = document.get(IntroductionFields.AUTHOR, None)
         introduction.title = document.get(IntroductionFields.TITLE, None)
         introduction.text = document.get(IntroductionFields.TEXT, None)
+        introduction.sandbox = document.get(IntroductionFields.SANDBOX, None)
 
         return introduction

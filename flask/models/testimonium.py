@@ -15,6 +15,7 @@ class TestimoniumFields(object):
     WITNESS = "witness"
     TEXT = "text"
     EDITOR = "editor"
+    SANDBOX = "sandbox"
 
 @dataclass
 class TestimoniumModel:
@@ -27,6 +28,7 @@ class TestimoniumModel:
     witness: str = None
     text: str = None
     editor : str = None
+    sandbox: str = None
 
 class Testimonium:
     def __init__(self, server):
@@ -108,5 +110,6 @@ class Testimonium:
         testimonium.witness = document.get(TestimoniumFields.WITNESS, None)
         testimonium.text = document.get(TestimoniumFields.TEXT, None)
         testimonium.editor = document.get(TestimoniumFields.EDITOR, None)
+        testimonium.sandbox = document.get(TestimoniumFields.SANDBOX, None)
 
         return testimonium
