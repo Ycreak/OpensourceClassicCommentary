@@ -13,6 +13,7 @@ class PlaygroundFields(object):
     CREATED_BY = "created_by"
     NAME = "name"
     USERS = "users"
+    SANDBOX = "sandbox"
 
 # Dataclasses dislike the use of lists, so this is a normal class
 class PlaygroundModel:
@@ -22,6 +23,7 @@ class PlaygroundModel:
     created_by: str = ""
     name: str = ""
     users: list = []
+    sandbox: str = None
 
 class Playground:
     def __init__(self, server):
@@ -93,6 +95,7 @@ class Playground:
         playground.created_by = document.get(PlaygroundFields.CREATED_BY, "")
         playground.users = document.get(PlaygroundFields.USERS, [])
         playground.canvas = document.get(PlaygroundFields.CANVAS, None)
+        playground.sandbox = document.get(PlaygroundFields.SANDBOX, None)
 
         return playground
 
