@@ -3,7 +3,7 @@
 
 name: Angular Checks
 
-on: [push]
+on: []
 
 jobs:
   build:
