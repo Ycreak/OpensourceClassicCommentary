@@ -359,6 +359,7 @@ export class FragmentsDashboardComponent implements OnInit {
               // When the has been revised, we will load said fragment and fill the fields again
               this.request_documents({
                 document_type: 'fragment',
+                sandbox: this.sandbox.current_sandbox,
                 author: fragment.author,
                 title: fragment.title,
                 editor: fragment.editor,
@@ -398,6 +399,8 @@ export class FragmentsDashboardComponent implements OnInit {
           this.api.post_document(fragment, 'create').subscribe(() => {
             // When the has been created, we will load said fragment and fill the fields again
             this.request_documents({
+              document_type: 'fragment',
+              sandbox: this.sandbox.current_sandbox,
               author: fragment.author,
               title: fragment.title,
               editor: fragment.editor,
