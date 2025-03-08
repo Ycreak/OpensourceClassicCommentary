@@ -71,7 +71,7 @@ export class TestimoniaDashboardComponent {
    */
   private model_to_form(testimonium: Testimonium): void {
     // This functions updates the form with the provided testimonium
-    for (const item of ['_id', 'document_type', 'name', 'author', 'title', 'witness', 'editor', 'text']) {
+    for (const item of ['_id', 'document_type', 'name', 'author', 'title', 'witness', 'editor', 'sandbox', 'text']) {
       this.form.patchValue({ [item]: testimonium[item] });
     }
     // Update the form with the commentary
@@ -94,12 +94,7 @@ export class TestimoniaDashboardComponent {
         if (result) {
           this.reset_form();
           this.api.post_document(form, 'create').subscribe(() => {
-            this.request({
-              document_type: 'testimonium',
-              sandbox: this.sandbox.current_sandbox,
-              author: form.author,
-              name: form.name,
-            });
+            this.request(form);
             this.selected = true;
           });
         }
@@ -120,7 +115,6 @@ export class TestimoniaDashboardComponent {
           this.api.post_document(form, 'update').subscribe(() => {
             this.reset_form();
             this.request({
-              document_type: 'testimonium',
               sandbox: this.sandbox.current_sandbox,
               author: form.author,
               name: form.name,

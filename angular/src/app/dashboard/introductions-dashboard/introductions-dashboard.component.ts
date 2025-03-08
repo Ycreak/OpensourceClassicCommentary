@@ -80,7 +80,7 @@ export class IntroductionsDashboardComponent {
    */
   private model_to_form(introduction: Introduction): void {
     // This functions updates the form with the provided introduction
-    for (const item of ['_id', 'document_type', 'author', 'title', 'text']) {
+    for (const item of ['_id', 'document_type', 'author', 'sandbox', 'title', 'text']) {
       this.form.patchValue({ [item]: introduction[item] });
     }
   }
@@ -92,7 +92,6 @@ export class IntroductionsDashboardComponent {
    * @author Ycreak
    */
   protected create(form: any): void {
-    form.document_type = 'introduction';
     let item_string = '';
     if (form.title) {
       item_string = `Introduction on title '${form.title}' from author '${form.author}'`;

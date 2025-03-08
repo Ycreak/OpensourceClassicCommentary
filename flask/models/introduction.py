@@ -23,7 +23,7 @@ class IntroductionModel:
     author: str = ''
     title: str = ''
     text: str = ''
-    sandbox: str = None
+    sandbox: str = ''
 
 class Introduction:
     def __init__(self, server):
@@ -36,8 +36,7 @@ class Introduction:
         introduction = IntroductionModel()
         introduction.author = document.get(IntroductionFields.AUTHOR, '')
         introduction.title = document.get(IntroductionFields.TITLE, '')
-
-        logging.error(introduction)
+        introduction.sandbox = document.get(IntroductionFields.SANDBOX, '')
 
         # Convert the model into a dictionary
         introduction = {key: value for key, value in introduction.__dict__.items() if value != ''}
