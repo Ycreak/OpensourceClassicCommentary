@@ -15,9 +15,9 @@
 <div style="padding: 1em">
   <form [formGroup]="search_form" class="example-form">
     <mat-form-field class="example-full-width">
-      <mat-label>Name</mat-label>
+      <mat-label>Scientific name</mat-label>
       <input matInput formControlName="search_name" placeholder="Ex. Grutto" />
-      <button mat-icon-button matSuffix color="primary" (click)="fetch_taxa(this.search_form.value.search_name)">
+      <button mat-icon-button matSuffix color="primary" (click)="this.fetch_taxa(this.search_form.value.search_name)">
         <mat-icon>search</mat-icon>
       </button>
     </mat-form-field>
@@ -41,6 +41,7 @@
           <mat-card-title> {{ taxon.taxon_name }} </mat-card-title>
           <mat-card-subtitle> {{ taxon.nsr_id }}, {{ taxon.id }}</mat-card-subtitle>
         </mat-card-header>
+        <img mat-card-image [src]="taxon.media" alt="test" />
       </mat-card>
     </div>
     <p *ngIf="!this.found_taxa.length">No taxa found.</p>
@@ -66,6 +67,13 @@
     <!--inside of the drawer-->
     <mat-drawer #drawer class="overview-sidenav" mode="side" position="start" opened="true">
       <div style="padding: 0.5em">
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title> Traits </mat-panel-title>
+          </mat-expansion-panel-header>
+          <app-traits (request_taxa)="this.fetch_taxa_on_trait($event)"></app-traits>
+        </mat-expansion-panel>
+        <hr />
         <ng-container *ngIf="this.current_taxon.parentage.length">
           <app-tree
             [newTaxonomicData]="this.current_taxon.parentage"
