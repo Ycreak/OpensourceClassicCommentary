@@ -11,6 +11,7 @@ export class Testimonium {
   title = '';
   text = '';
   editor = '';
+  sandbox: string;
   // Commentary
   commentary: Commentary;
 
@@ -35,6 +36,7 @@ export class Testimonium {
     this.text = 'text' in testimonium ? testimonium['text'] : '';
     this.editor = 'editor' in testimonium ? testimonium['editor'] : '';
     this.witness = 'witness' in testimonium ? testimonium['witness'] : '';
+    this.sandbox = 'sandbox' in testimonium ? testimonium['sandbox'] : '';
 
     this.commentary = new Commentary({});
     this.commentary.set(testimonium);

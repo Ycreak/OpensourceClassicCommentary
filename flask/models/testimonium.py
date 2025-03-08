@@ -45,6 +45,7 @@ class Testimonium:
         testimonium.title = document.get(TestimoniumFields.TITLE, None)
         testimonium.editor = document.get(TestimoniumFields.EDITOR, None)
         testimonium.witness = document.get(TestimoniumFields.WITNESS, None)
+        testimonium.sandbox = document.get(TestimoniumFields.SANDBOX, None)
 
         # Convert the model into a dictionary
         testimonium = {key: value for key, value in testimonium.__dict__.items() if value is not None}

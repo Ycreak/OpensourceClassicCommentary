@@ -45,7 +45,8 @@ def update_index() -> None:
                     index.append({
                         "document_type": "introduction", 
                         "author": doc["author"], 
-                        "title": doc["title"]
+                        "title": doc["title"],
+                        "sandbox": doc["sandbox"]
                     })
                 case "fragment":
                     index.append({
@@ -62,7 +63,8 @@ def update_index() -> None:
                         "_id": doc["_id"], 
                         "name": doc["name"], 
                         "created_by": doc["created_by"], 
-                        "users": doc["users"]
+                        "users": doc["users"],
+                        "sandbox": doc["sandbox"]
                     })
                 case "testimonium":
                     index.append({
@@ -71,7 +73,8 @@ def update_index() -> None:
                         "title": doc["title"], 
                         "editor": doc["editor"], 
                         "name": doc["name"], 
-                        "witness": doc["witness"]
+                        "witness": doc["witness"],
+                        "sandbox": doc["sandbox"]
                     })
                 case _:
                     logging.error(f"Unknown document type: {doc}")

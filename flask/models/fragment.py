@@ -62,6 +62,7 @@ class Fragment:
         fragment.author = document.get(FragmentFields.AUTHOR, None)
         fragment.title = document.get(FragmentFields.TITLE, None)
         fragment.editor = document.get(FragmentFields.EDITOR, None)
+        fragment.sandbox = document.get(FragmentFields.SANDBOX, None)
    
         # Convert the model into a dictionary
         fragment = {key: value for key, value in fragment.__dict__.items() if value is not None}
