@@ -14,6 +14,7 @@ class FragmentFields(object):
     EDITOR = "editor"
     STATUS = "status"
     LOCK = "lock"
+    VISIBLE = "visible"
     TRANSLATION = "translation"
     POPULAR_TRANSLATION = "popular_translation"
     DIFFERENCES = "differences"
@@ -35,7 +36,8 @@ class FragmentModel:
     title: str = None
     editor: str = None
     status: str = None
-    lock: int = None
+    lock: int = 0
+    visible: int = 0
     translation: str = None
     popular_translation: str = None
     differences: str = None
@@ -126,7 +128,8 @@ class Fragment:
         fragment.title = document.get(FragmentFields.TITLE, None)
         fragment.editor = document.get(FragmentFields.EDITOR, None)
         fragment.status = document.get(FragmentFields.STATUS, None)
-        fragment.lock = document.get(FragmentFields.LOCK, None)
+        fragment.lock = document.get(FragmentFields.LOCK, 0)
+        fragment.visible = document.get(FragmentFields.VISIBLE, 0)
         fragment.translation = document.get(FragmentFields.TRANSLATION, None)
         fragment.popular_translation = document.get(FragmentFields.POPULAR_TRANSLATION, None)
         fragment.differences = document.get(FragmentFields.DIFFERENCES, None)
