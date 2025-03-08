@@ -12,6 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { TreeComponent } from './components/tree/tree.component';
+import { TraitsComponent } from './traits/traits.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -24,6 +25,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     MatCardModule,
     CommonModule,
     TreeComponent,
+    TraitsComponent,
     NgIf,
     NgFor,
     FormsModule,
@@ -58,12 +60,10 @@ export class LinnaeusComponent implements OnInit {
   }
 
   protected request_children(linnaeus_id: string): void {
-    console.log(linnaeus_id);
     this.spring.get_taxon(linnaeus_id, 'children').subscribe({
       next: (data) => {
         if (data.length) {
           this.current_taxon.parentage = data;
-          console.log('new children', data);
         } else {
           this._snackBar.open('Has no further children');
         }
@@ -74,6 +74,31 @@ export class LinnaeusComponent implements OnInit {
     });
   }
 
+  /**
+   * Fetches a list of taxa from the server given the search string
+   */
+  protected fetch_taxa_on_trait(trait_id: string): void {
+    this.searching_taxa = true;
+    this.found_taxa = [];
+    this.spring.get_taxa_on_trait(trait_id).subscribe({
+      next: (data) => {
+        const uniqueList = data.filter((value, index, self) => {
+          return (
+            index ===
+            self.findIndex((t) => t.nsr_id === value.nsr_id && t.taxon_name === value.taxon_name && t.id === value.id)
+          );
+        });
+        this.found_taxa = uniqueList;
+        this.found_taxa.forEach((taxon: any) => {
+          taxon.media = 'https://upload.wikimedia.org/wikipedia/commons/a/a3/Image-not-found.png';
+          this.add_media_to_taxon(taxon.id);
+        });
+      },
+      error: (error) => {
+        console.error('Error fetching metadata:', error);
+      },
+    });
+  }
   /**
    * Fetches a list of taxa from the server given the search string
    */
@@ -89,6 +114,31 @@ export class LinnaeusComponent implements OnInit {
           );
         });
         this.found_taxa = uniqueList;
+        this.found_taxa.forEach((taxon: any) => {
+          taxon.media = 'https://upload.wikimedia.org/wikipedia/commons/a/a3/Image-not-found.png';
+          this.add_media_to_taxon(taxon.id);
+        });
+      },
+      error: (error) => {
+        console.error('Error fetching metadata:', error);
+      },
+    });
+  }
+
+  private add_media_to_taxon(id: string): void {
+    this.spring.get_taxon(id, 'media').subscribe({
+      next: (data) => {
+        const media_items = [...new Set(data.map((item) => `https://images.naturalis.nl/original/${item.file_name}`))];
+        const chosen_picture = media_items.length
+          ? media_items[~~(Math.random() * media_items.length)]
+          : 'https://upload.wikimedia.org/wikipedia/commons/a/a3/Image-not-found.png';
+
+        // Now add the picture to the taxa list
+        this.found_taxa.forEach((taxon) => {
+          if (taxon.id === id) {
+            taxon.media = chosen_picture; // Add the 'color' property with value 'yellow'
+          }
+        });
       },
       error: (error) => {
         console.error('Error fetching metadata:', error);
@@ -128,7 +178,6 @@ export class LinnaeusComponent implements OnInit {
               content: groupedData[group].sort((a, b) => a.trait.localeCompare(b.trait)), // Sort by 'trait'
             }));
             this.current_taxon.traits = result;
-            console.log('trait', result);
           },
           error: (error) => {
             console.error('Error fetching metadata:', error);
@@ -192,7 +241,6 @@ export class LinnaeusComponent implements OnInit {
       next: (data) => {
         if (data.length) {
           this.current_taxon.parentage = data;
-          //console.log('new parents', data)
         }
       },
       error: (error) => {

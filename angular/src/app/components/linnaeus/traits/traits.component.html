@@ -1,0 +1,26 @@
+<h3>Traitgroups</h3>
+<!--Create an expansion panel for each trait group-->
+<mat-accordion>
+  <mat-expansion-panel *ngFor="let traitgroup of this.traitgroups">
+    <mat-expansion-panel-header (click)="this.fetch_traits(traitgroup.traitgroup_id)">
+      <mat-panel-title> {{ traitgroup.traitgroup_nl }} </mat-panel-title>
+      <!--<mat-panel-description> This is a summary of the content </mat-panel-description>-->
+    </mat-expansion-panel-header>
+    <!--For each trait, create a dropdown-->
+    <mat-form-field
+      *ngFor="let trait of this.traits"
+      style="width: 100%"
+      (click)="this.fetch_trait_values(trait.trait_id)">
+      <mat-label>{{ trait.trait_nl }}</mat-label>
+      <mat-select>
+        @for (trait_value of this.traitvalues; track trait_value) {
+          <mat-option
+            [value]="trait_value.trait_value_nl"
+            (click)="this.request_taxa.emit(trait_value.trait_value_id)"
+            >{{ trait_value.trait_value_nl }}</mat-option
+          >
+        }
+      </mat-select>
+    </mat-form-field>
+  </mat-expansion-panel>
+</mat-accordion>
