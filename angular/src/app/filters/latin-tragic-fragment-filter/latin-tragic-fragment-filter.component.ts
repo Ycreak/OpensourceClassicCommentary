@@ -3,6 +3,7 @@ import { MatMenu } from '@angular/material/menu';
 
 // Service imports
 import { ApiService } from '@oscc/api.service';
+import { UtilityService } from '@oscc/utility.service';
 
 @Component({
   selector: 'app-latin-tragic-fragment-filter',
@@ -21,7 +22,10 @@ export class LatinTragicFragmentFilterComponent {
   protected _editor: string;
   protected _name: string;
 
-  constructor(protected api: ApiService) {}
+  constructor(
+    protected api: ApiService,
+    protected utility: UtilityService
+  ) {}
 
   protected filter() {
     const filter = {

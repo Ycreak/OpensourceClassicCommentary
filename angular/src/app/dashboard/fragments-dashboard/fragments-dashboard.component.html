@@ -1,4 +1,5 @@
-<mat-expansion-panel *ngIf="this.user_has_view_permission()" [expanded]="false">
+<mat-expansion-panel *ngIf="this.user_has_view_permission()" [expanded]="true">
+  <button color="primary" mat-stroked-button class="button-margin" (click)="test()">TEST</button>
   <mat-expansion-panel-header>
     <mat-panel-title> Change fragment data </mat-panel-title>
     <mat-panel-description>
@@ -351,8 +352,8 @@
 
         <mat-form-field appearance="fill">
           <mat-select formControlName="lock" ngDefaultControl>
-            <mat-option value="locked">Locked</mat-option>
-            <mat-option value="unlocked">Unlocked</mat-option>
+            <mat-option [value]="1">Locked</mat-option>
+            <mat-option [value]="0">Unlocked</mat-option>
           </mat-select>
           <mat-label>Fragment lock status</mat-label>
         </mat-form-field>
@@ -360,11 +361,11 @@
         <div class="div-padding-sm"></div>
 
         <mat-form-field appearance="fill">
-          <mat-select formControlName="published" ngDefaultControl>
-            <mat-option value="published">Published</mat-option>
-            <mat-option value="unpublished">Unpublished</mat-option>
+          <mat-select formControlName="visible" ngDefaultControl>
+            <mat-option [value]="1">Visible</mat-option>
+            <mat-option [value]="0">Invisible</mat-option>
           </mat-select>
-          <mat-label>Fragment publish status</mat-label>
+          <mat-label>Fragment visibility</mat-label>
         </mat-form-field>
 
         <!-- <mat-checkbox class="padding-left" formControlName="published">Publish fragment</mat-checkbox> -->

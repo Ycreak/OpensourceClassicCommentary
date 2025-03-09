@@ -56,12 +56,14 @@
 <mat-menu #menu_names="matMenu">
   <ng-container
     *ngFor="
-      let name of this.api.get_from_index('name', {
-        document_type: 'fragment',
-        author: _author,
-        title: _title,
-        editor: _editor
-      })
+      let name of this.api
+        .get_from_index('name', {
+          document_type: 'fragment',
+          author: _author,
+          title: _title,
+          editor: _editor
+        })
+        .sort(this.utility.sort_array_numerically)
     ">
     <button mat-menu-item (click)="this._name = name" (click)="this.filter()">
       {{ name }}
