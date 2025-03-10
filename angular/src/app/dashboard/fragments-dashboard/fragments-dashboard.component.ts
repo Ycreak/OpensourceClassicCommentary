@@ -61,8 +61,8 @@ export class FragmentsDashboardComponent implements OnInit {
     linked_fragments: new FormArray([]),
     //status: new FormControl('', Validators.required),
     status: new FormControl(''),
-    visible: new FormControl(),
-    lock: new FormControl(),
+    visible: new FormControl(0),
+    lock: new FormControl(0),
   });
 
   // In this object all meta data is stored regarding the currently selected fragment
