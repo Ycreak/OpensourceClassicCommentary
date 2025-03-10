@@ -76,17 +76,17 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
     protected auth_service: AuthService,
     protected utility: UtilityService,
     protected dialog: DialogService,
+    protected sandbox: SandboxService,
     protected websockets: WebsocketsService,
     private commentary: CommentaryService,
     private mat_dialog: MatDialog,
     private fabric: FabricService,
-    private formatter: FormatterService,
-    private sandbox: SandboxService
+    private formatter: FormatterService
   ) {}
 
   ngOnInit(): void {
     this.init_playground();
-    this.request_documents({ document_type: 'fragment', author: 'Karel' });
+    //this.request_documents({ document_type: 'fragment', author: 'Karel' });
   }
 
   ngOnDestroy() {
@@ -123,6 +123,8 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
    * @param documents (object[]) which to add to the provided column
    */
   protected request_documents(filter: any): void {
+    // Only retrieve documents that are visible
+    filter.visible = 1;
     this.api.request_documents(filter).subscribe((documents) => {
       // Format documents
       documents.forEach((doc: any) => {

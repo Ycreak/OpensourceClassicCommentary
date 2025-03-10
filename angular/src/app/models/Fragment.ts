@@ -23,8 +23,8 @@ export class Fragment {
   // Keeps track whether we tranlated this fragment using the column translate functionality
   translated = false;
 
-  lock = '';
-  published = '';
+  lock: number;
+  visible: number;
 
   // designates the css color of the fragment header
   colour = 'black';
@@ -48,8 +48,9 @@ export class Fragment {
 
     this.linked_fragments = this.check_json_entry('linked_fragments', fragment) ? fragment['linked_fragments'] : [];
 
-    this.lock = 'lock' in fragment ? fragment['lock'] : '';
-    this.published = '' in fragment ? fragment['published'] : '';
+    // Let the fragment be locked and visible by default
+    this.lock = 'lock' in fragment ? fragment['lock'] : 1;
+    this.visible = 'visible' in fragment ? fragment['visible'] : 0;
 
     this.commentary = new Commentary({});
     this.commentary.set(fragment);

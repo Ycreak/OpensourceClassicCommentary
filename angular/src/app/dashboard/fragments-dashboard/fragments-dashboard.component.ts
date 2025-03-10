@@ -61,8 +61,8 @@ export class FragmentsDashboardComponent implements OnInit {
     linked_fragments: new FormArray([]),
     //status: new FormControl('', Validators.required),
     status: new FormControl(''),
-    published: new FormControl(''),
-    lock: new FormControl(''),
+    visible: new FormControl(0),
+    lock: new FormControl(0),
   });
 
   // In this object all meta data is stored regarding the currently selected fragment
@@ -113,7 +113,7 @@ export class FragmentsDashboardComponent implements OnInit {
   }
 
   protected test(): void {
-    //console.log(this.api.author_title_editor_blob);
+    console.log(this.fragment_form.value);
   }
 
   /**
@@ -173,7 +173,7 @@ export class FragmentsDashboardComponent implements OnInit {
       'editor',
       'status',
       'lock',
-      'published',
+      'visible',
       'witness',
       'text',
       'document_type',
@@ -335,7 +335,7 @@ export class FragmentsDashboardComponent implements OnInit {
    */
   protected request_revise_fragment(fragment_form: FormGroup): void {
     // If the fragment is locked and the user is not a teacher, we will not allow this operation.
-    if (fragment_form.value.lock == 'locked' && this.auth_service.current_user_role != 'teacher') {
+    if (fragment_form.value.lock != 0 && this.auth_service.current_user_role != 'teacher') {
       this.utility.open_snackbar('This fragment is locked.');
     } else {
       const item_string =
@@ -419,25 +419,29 @@ export class FragmentsDashboardComponent implements OnInit {
    * @author Ycreak
    */
   protected request_delete_fragment(fragment_form: FormGroup): void {
-    const item_string =
-      fragment_form.value.author +
-      ', ' +
-      fragment_form.value.title +
-      ', ' +
-      fragment_form.value.editor +
-      ': ' +
-      fragment_form.value.name;
+    if (fragment_form.value.lock != 0) {
+      this.utility.open_snackbar('Fragment is locked.');
+    } else {
+      const item_string =
+        fragment_form.value.author +
+        ', ' +
+        fragment_form.value.title +
+        ', ' +
+        fragment_form.value.editor +
+        ': ' +
+        fragment_form.value.name;
 
-    this.dialog
-      .open_confirmation_dialog('Are you sure you want to DELETE this fragment?', item_string)
-      .subscribe((result) => {
-        if (result) {
-          const fragment = this.convert_fragment_form_to_Fragment(fragment_form);
-          this.reset_fragment_form();
-          this.api.post_document(fragment, 'delete').subscribe({});
-          this.fragment_selected = false;
-        }
-      });
+      this.dialog
+        .open_confirmation_dialog('Are you sure you want to DELETE this fragment?', item_string)
+        .subscribe((result) => {
+          if (result) {
+            const fragment = this.convert_fragment_form_to_Fragment(fragment_form);
+            this.reset_fragment_form();
+            this.api.post_document(fragment, 'delete').subscribe({});
+            this.fragment_selected = false;
+          }
+        });
+    }
   }
 
   /**

@@ -127,7 +127,10 @@ export class ColumnsService {
    * @param append (boolean) whether we append documents or replace
    * @author Ycreak
    */
-  public request(filter: object, column_id: number, append?: boolean): void {
+  public request(filter: any, column_id: number, append?: boolean): void {
+    // Only retrieve visible fragments
+    filter.visible = 1;
+
     this.api.request_documents(filter).subscribe((documents) => {
       const column = column_id ? this.find(column_id) : this.find(this.add());
       // Format all documents to look nice on the frontend (little HTML, some beautiful CSS)

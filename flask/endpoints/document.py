@@ -55,7 +55,8 @@ def update_index() -> None:
                         "title": doc["title"], 
                         "editor": doc["editor"], 
                         "name": doc["name"],
-                        "sandbox": doc["sandbox"]
+                        "sandbox": doc["sandbox"],
+                        "visible": doc["visible"]
                     })
                 case "playground":
                     index.append({

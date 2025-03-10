@@ -5,7 +5,7 @@
         <mat-label>Author</mat-label>
         <mat-select [(ngModel)]="this._author" ngDefaultControl>
           <mat-option (click)="this.filter_index()" [value]="">-- None --</mat-option>
-          <mat-option (click)="this.filter_index()" *ngFor="let author of this._authors" [value]="author">
+          <mat-option (click)="this.filter_index()" *ngFor="let author of this._authors.sort()" [value]="author">
             {{ author }}
           </mat-option>
         </mat-select>
@@ -16,7 +16,7 @@
         <mat-label>Title</mat-label>
         <mat-select [(ngModel)]="this._title" ngDefaultControl>
           <mat-option (click)="this.filter_index()" [value]="">-- None --</mat-option>
-          <mat-option (click)="this.filter_index()" *ngFor="let title of this._titles" [value]="title">
+          <mat-option (click)="this.filter_index()" *ngFor="let title of this._titles.sort()" [value]="title">
             {{ title }}
           </mat-option>
         </mat-select>
@@ -27,7 +27,7 @@
         <mat-label>Editor</mat-label>
         <mat-select [(ngModel)]="this._editor" ngDefaultControl>
           <mat-option (click)="this.filter_index()" [value]="">-- None --</mat-option>
-          <mat-option (click)="this.filter_index()" *ngFor="let editor of this._editors" [value]="editor">
+          <mat-option (click)="this.filter_index()" *ngFor="let editor of this._editors.sort()" [value]="editor">
             {{ editor }}
           </mat-option>
         </mat-select>
@@ -99,5 +99,5 @@
     </tr>
   </table>
 
-  <mat-paginator [pageSizeOptions]="[5, 25, 100]" aria-label="Select page of users"></mat-paginator>
+  <mat-paginator [pageSizeOptions]="[10, 25, 100]" aria-label="Select page of users"></mat-paginator>
 </div>

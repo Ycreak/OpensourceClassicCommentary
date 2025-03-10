@@ -1,6 +1,8 @@
 """
 Model to handle fragments
 """
+import logging
+
 from dataclasses import dataclass
 from uuid import uuid4
 
@@ -14,6 +16,7 @@ class FragmentFields(object):
     EDITOR = "editor"
     STATUS = "status"
     LOCK = "lock"
+    VISIBLE = "visible"
     TRANSLATION = "translation"
     POPULAR_TRANSLATION = "popular_translation"
     DIFFERENCES = "differences"
@@ -35,7 +38,8 @@ class FragmentModel:
     title: str = None
     editor: str = None
     status: str = None
-    lock: int = None
+    lock: int = None 
+    visible: int = None 
     translation: str = None
     popular_translation: str = None
     differences: str = None
@@ -46,7 +50,7 @@ class FragmentModel:
     context: list = None
     lines: list = None
     linked_fragments: list = None
-    sandbox: str = None
+    sandbox: str = None 
 
 class Fragment:
     def __init__(self, server):
@@ -63,11 +67,14 @@ class Fragment:
         fragment.title = document.get(FragmentFields.TITLE, None)
         fragment.editor = document.get(FragmentFields.EDITOR, None)
         fragment.sandbox = document.get(FragmentFields.SANDBOX, None)
-   
+        fragment.visible = document.get(FragmentFields.VISIBLE, None)
+  
         # Convert the model into a dictionary
         fragment = {key: value for key, value in fragment.__dict__.items() if value is not None}
+        logging.error(f"Hello: {fragment}")
         
         document_list = self.database.filter(fragment)
+
         # Process the found documents into proper fragments
         result: list = [] 
         for document in document_list:
@@ -127,6 +134,7 @@ class Fragment:
         fragment.editor = document.get(FragmentFields.EDITOR, None)
         fragment.status = document.get(FragmentFields.STATUS, None)
         fragment.lock = document.get(FragmentFields.LOCK, None)
+        fragment.visible = document.get(FragmentFields.VISIBLE, None)
         fragment.translation = document.get(FragmentFields.TRANSLATION, None)
         fragment.popular_translation = document.get(FragmentFields.POPULAR_TRANSLATION, None)
         fragment.differences = document.get(FragmentFields.DIFFERENCES, None)
@@ -137,6 +145,6 @@ class Fragment:
         fragment.context = document.get(FragmentFields.CONTEXT, None)
         fragment.lines = document.get(FragmentFields.LINES, None)
         fragment.linked_fragments = document.get(FragmentFields.LINKED_FRAGMENTS, None)
-        fragment.sandbox = document.get(FragmentFields.SANDBOX, None)
+        fragment.sandbox = document.get(FragmentFields.SANDBOX, "")
 
         return fragment
