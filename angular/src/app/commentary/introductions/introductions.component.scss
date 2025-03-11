@@ -5,5 +5,8 @@
 }
 
 .introduction-body {
-  padding: 1rem;
+  padding: 1em;
+  flex-grow: 1;
+  max-height: 90vh;
+  overflow-y: auto;  
 }
