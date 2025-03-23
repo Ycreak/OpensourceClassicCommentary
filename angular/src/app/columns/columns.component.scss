@@ -3,6 +3,16 @@
 @import url("../app.component.scss");
 /* Fragments component specific CSS. For more generic CSS, see ../app.component.scss. */
 
+/* Column title/name */
+.column-name-author-title-editor {
+  color: white;
+  margin: -4px;
+}
+.column-name-author-title-editor:hover {
+  background: #86868626;
+  transition: 0.25s;
+}
+
 /* Fragments toolbar */
 .fragments-toolbar {
   /* Moves the add-column button to the right */

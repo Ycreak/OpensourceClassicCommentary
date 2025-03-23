@@ -52,7 +52,7 @@
     <ng-container *ngFor="let column_to_display of this.columns.list">
       <mat-checkbox ngDefaultControl [(ngModel)]="column_to_display.visible">
         <span
-          style="color: white; margin: -4px"
+          class="column-name-author-title-editor"
           (click)="this.show_introduction({ author: column_to_display.author })"
           (click)="check($event)"
           (mousedown)="$event.stopPropagation()">
@@ -61,7 +61,7 @@
         </span>
         <span style="color: white">-</span>
         <span
-          style="color: white; margin: -4px"
+          class="column-name-author-title-editor"
           (click)="this.show_introduction({ title: column_to_display.title })"
           (click)="check($event)"
           (mousedown)="$event.stopPropagation()">
@@ -69,7 +69,7 @@
         </span>
         <span style="color: white">-</span>
         <span
-          style="color: white; margin: -4px"
+          class="column-name-author-title-editor"
           (click)="this.show_introduction({ editor: column_to_display.editor })"
           (click)="check($event)"
           (mousedown)="$event.stopPropagation()">
