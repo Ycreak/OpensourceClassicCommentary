@@ -27,6 +27,7 @@ import { DocumentFilterComponent } from '@oscc/filters/document-filter/document-
 import { Column } from '@oscc/models/Column';
 import { Fragment } from '@oscc/models/Fragment';
 import { Linked_fragment } from '@oscc/models/Linked_fragment';
+import { IntroductionsComponent } from '@oscc/commentary/introductions/introductions.component';
 
 @Component({
   selector: 'app-columns',
@@ -73,6 +74,9 @@ export class ColumnsComponent implements OnInit {
       const column_id = this.columns.add();
       this.columns.request(filter, column_id);
       this.columns.find(column_id).column_name = `${filter.author}-${filter.title}-${filter.editor}`;
+      this.columns.find(column_id).author = `${filter.author}`;
+      this.columns.find(column_id).title = `${filter.title}`;
+      this.columns.find(column_id).editor = `${filter.editor}`;
     }
   }
 
@@ -272,6 +276,17 @@ export class ColumnsComponent implements OnInit {
 
     // we open the menu
     this.matMenuTrigger.openMenu();
+  }
+
+  /**
+   * Opens the introduction dialog. An introduction can be about either an author or a text.
+   * @author Ycreak
+   */
+  protected show_introduction(filter: any): void {
+    console.log('Fetching introduction for: ' + filter);
+    this.matdialog.open(IntroductionsComponent, {
+      data: filter,
+    });
   }
 
   /**
