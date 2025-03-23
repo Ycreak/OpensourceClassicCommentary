@@ -16,11 +16,14 @@
             author: $event.author,
             title: $event.title,
             editor: $event.editor,
-            sandbox: this.sandbox.current_sandbox
+            sandbox: this.sandbox.current_sandbox,
           },
           column_to_display.column_id
         );
-        column_to_display.column_name = $event.author + '-' + $event.title + '-' + $event.editor
+        column_to_display.column_name = $event.author + '-' + $event.title + '-' + $event.editor;
+        column_to_display.author = $event.author;
+        column_to_display.title = $event.title;
+        column_to_display.editor = $event.editor
       ">
     </app-latin-tragic-fragment-filter>
 
@@ -48,10 +51,31 @@
   <div id="fragments-toolbar-1">
     <ng-container *ngFor="let column_to_display of this.columns.list">
       <mat-checkbox ngDefaultControl [(ngModel)]="column_to_display.visible">
-        <div style="color: white">
-          {{ column_to_display.column_name }}
+        <span
+          style="color: white; margin: -4px"
+          (click)="this.show_introduction({ author: column_to_display.author })"
+          (click)="check($event)"
+          (mousedown)="$event.stopPropagation()">
+          <!-- $event.stopPropagation prevents clicking on the column name to also trigger the checkbox. Instead clicking the column name will only open the introductions screen.-->
+          {{ column_to_display.author }}
+        </span>
+        <span style="color: white">-</span>
+        <span
+          style="color: white; margin: -4px"
+          (click)="this.show_introduction({ title: column_to_display.title })"
+          (click)="check($event)"
+          (mousedown)="$event.stopPropagation()">
+          {{ column_to_display.title }}
+        </span>
+        <span style="color: white">-</span>
+        <span
+          style="color: white; margin: -4px"
+          (click)="this.show_introduction({ editor: column_to_display.editor })"
+          (click)="check($event)"
+          (mousedown)="$event.stopPropagation()">
+          {{ column_to_display.editor }}
           <sup *ngIf="column_to_display.edited">altered</sup>
-        </div>
+        </span>
       </mat-checkbox>
     </ng-container>
   </div>
