@@ -2,6 +2,10 @@
 This script reads the latest documents dump and picks a fragment that is eligable
 for sharing to BlueSky. Yes, we should create a nice endpoint to do this. But for
 now, this also works quite beautifully.
+
+You will need an env file containing the following:
+    PASSWORD=<bluesky password>
+    DUMP_PATH=<path to dump files>
 """
 from atproto import Client
 import json
