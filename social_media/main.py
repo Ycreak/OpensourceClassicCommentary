@@ -6,6 +6,7 @@ now, this also works quite beautifully.
 from bluesky import BlueSky
 from mastadon import Mastadon
 from fragment_picker import FragmentPicker
+from tumblr import Tumblr
 
 # First retrieve a fragment we want to publish
 fragment_picker = FragmentPicker()
@@ -19,3 +20,6 @@ bluesky.post(latin, english)
 mastadon = Mastadon()
 mastadon.post(latin, english)
 
+# Post it to Tumblr
+tumblr = Tumblr()
+tumblr.post(latin, english)
