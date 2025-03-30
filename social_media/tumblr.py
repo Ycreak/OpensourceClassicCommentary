@@ -4,6 +4,10 @@ from dotenv import load_dotenv
 import os
 
 class Tumblr:
+    """
+    We use the pytumblr package to post to Tumblr.
+    https://github.com/tumblr/pytumblr
+    """
     def __init__(self):
         load_dotenv()
         self.consumer_key: str = os.getenv('TUMBLR_CONSUMER_KEY')
