@@ -139,6 +139,37 @@
       <div class="div-padding-lg"></div>
     </mat-tab>
     <!-- end of the content tab -->
+    <mat-tab
+      label="Testimonium Access"
+      *ngIf="this.auth_service.current_user_role === 'admin' || this.auth_service.current_user_role === 'teacher'"
+      ><br />
+      <!-- This tab changes the testimonium access. It has two parts. A lock function which disallows change and publish function
+          which allows the testimonium to show up on the frontend -->
+
+      <form [formGroup]="form">
+        <div class="alert alert-info" role="alert">
+          To lock the selected testimonium to disallow further change by users, select the lock option.
+        </div>
+        <mat-form-field appearance="fill">
+          <mat-select formControlName="lock" ngDefaultControl>
+            <mat-option [value]="1">Locked</mat-option>
+            <mat-option [value]="0">Unlocked</mat-option>
+          </mat-select>
+          <mat-label>Testimonium lock status</mat-label>
+        </mat-form-field>
+
+        <div class="div-padding-sm"></div>
+
+        <mat-form-field appearance="fill">
+          <mat-select formControlName="visible" ngDefaultControl>
+            <mat-option [value]="1">Visible</mat-option>
+            <mat-option [value]="0">Invisible</mat-option>
+          </mat-select>
+          <mat-label>Testimonium visibility</mat-label>
+        </mat-form-field>
+      </form>
+    </mat-tab>
+    <!-- end of the Testimonium lock tab -->
   </mat-tab-group>
 </mat-expansion-panel>
 <hr />

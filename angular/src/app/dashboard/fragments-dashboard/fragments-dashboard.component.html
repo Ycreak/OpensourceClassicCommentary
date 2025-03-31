@@ -342,7 +342,7 @@
       label="Fragment Access"
       *ngIf="this.auth_service.current_user_role === 'admin' || this.auth_service.current_user_role === 'teacher'"
       ><br />
-      <!-- This tab changes the fragment access. It has to parts. A lock function which disallows change and publish function
+      <!-- This tab changes the fragment access. It has two parts. A lock function which disallows change and publish function
           which allows the fragment to show up on the frontend -->
 
       <form [formGroup]="fragment_form">

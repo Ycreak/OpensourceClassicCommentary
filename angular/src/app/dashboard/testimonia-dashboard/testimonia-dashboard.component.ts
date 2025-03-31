@@ -40,6 +40,8 @@ export class TestimoniaDashboardComponent {
     editor: new FormControl(''),
     text: new FormControl(''),
     translation: new FormControl(''),
+    visible: new FormControl(0),
+    lock: new FormControl(0),
   });
 
   constructor(
@@ -71,7 +73,19 @@ export class TestimoniaDashboardComponent {
    */
   private model_to_form(testimonium: Testimonium): void {
     // This functions updates the form with the provided testimonium
-    for (const item of ['_id', 'document_type', 'name', 'author', 'title', 'witness', 'editor', 'sandbox', 'text']) {
+    for (const item of [
+      '_id',
+      'document_type',
+      'name',
+      'author',
+      'title',
+      'witness',
+      'editor',
+      'sandbox',
+      'text',
+      'visible',
+      'lock',
+    ]) {
       this.form.patchValue({ [item]: testimonium[item] });
     }
     // Update the form with the commentary
@@ -107,22 +121,28 @@ export class TestimoniaDashboardComponent {
    * @author Ycreak
    */
   protected revise(form: any): void {
-    const item_string = form.author + ', ' + form.witness + ', ' + form.title + ': ' + form.name;
-    this.dialog
-      .open_confirmation_dialog('Are you sure you want to SAVE CHANGES to this testimonium?', item_string)
-      .subscribe((result) => {
-        if (result) {
-          this.api.post_document(form, 'update').subscribe(() => {
-            this.reset_form();
-            this.request({
-              sandbox: this.sandbox.current_sandbox,
-              author: form.author,
-              name: form.name,
+    if (form.lock != 0) {
+      this.utility.open_snackbar('This testimonium is locked.');
+    } else {
+      const item_string = form.author + ', ' + form.witness + ', ' + form.title + ': ' + form.name;
+      this.dialog
+        .open_confirmation_dialog('Are you sure you want to SAVE CHANGES to this testimonium?', item_string)
+        .subscribe((result) => {
+          if (result) {
+            this.api.post_document(form, 'update').subscribe(() => {
+              this.reset_form();
+              this.request({
+                sandbox: this.sandbox.current_sandbox,
+                document_type: form.document_type,
+                editor: form.editor,
+                author: form.author,
+                name: form.name,
+              });
+              this.selected = true;
             });
-            this.selected = true;
-          });
-        }
-      });
+          }
+        });
+    }
   }
 
   /**
@@ -132,18 +152,22 @@ export class TestimoniaDashboardComponent {
    * @author Ycreak
    */
   protected delete(form: any): void {
-    const item_string = form.author + ', ' + form.witness + ', ' + form.title + ': ' + form.name;
-    this.dialog
-      .open_confirmation_dialog('Are you sure you want to DELETE this testimonium?', item_string)
-      .subscribe((result) => {
-        if (result) {
-          this.reset_form();
-          this.api.post_document(form, 'delete').subscribe(() => {
+    if (form.lock != 0) {
+      this.utility.open_snackbar('This testimonium is locked.');
+    } else {
+      const item_string = form.author + ', ' + form.witness + ', ' + form.title + ': ' + form.name;
+      this.dialog
+        .open_confirmation_dialog('Are you sure you want to DELETE this testimonium?', item_string)
+        .subscribe((result) => {
+          if (result) {
             this.reset_form();
-            this.selected = false;
-          });
-        }
-      });
+            this.api.post_document(form, 'delete').subscribe(() => {
+              this.reset_form();
+              this.selected = false;
+            });
+          }
+        });
+    }
   }
 
   /**

@@ -12,6 +12,8 @@ export class Testimonium {
   text = '';
   editor = '';
   sandbox: string;
+  lock: number;
+  visible: number;
   // Commentary
   commentary: Commentary;
 
@@ -37,6 +39,9 @@ export class Testimonium {
     this.editor = 'editor' in testimonium ? testimonium['editor'] : '';
     this.witness = 'witness' in testimonium ? testimonium['witness'] : '';
     this.sandbox = 'sandbox' in testimonium ? testimonium['sandbox'] : '';
+    // Let the testimonium be locked and visible by default
+    this.lock = 'lock' in testimonium ? testimonium['lock'] : 1;
+    this.visible = 'visible' in testimonium ? testimonium['visible'] : 0;
 
     this.commentary = new Commentary({});
     this.commentary.set(testimonium);
