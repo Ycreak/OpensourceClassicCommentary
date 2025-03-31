@@ -75,7 +75,8 @@ def update_index() -> None:
                         "editor": doc["editor"], 
                         "name": doc["name"], 
                         "witness": doc["witness"],
-                        "sandbox": doc["sandbox"]
+                        "sandbox": doc["sandbox"],
+                        "visible": doc["visible"]
                     })
                 case _:
                     logging.error(f"Unknown document type: {doc}")

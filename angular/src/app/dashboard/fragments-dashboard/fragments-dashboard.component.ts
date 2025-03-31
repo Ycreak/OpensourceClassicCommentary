@@ -334,8 +334,8 @@ export class FragmentsDashboardComponent implements OnInit {
    * @author Ycreak
    */
   protected request_revise_fragment(fragment_form: FormGroup): void {
-    // If the fragment is locked and the user is not a teacher, we will not allow this operation.
-    if (fragment_form.value.lock != 0 && this.auth_service.current_user_role != 'teacher') {
+    // If the fragment is locked, we will not allow this operation.
+    if (fragment_form.value.lock != 0) {
       this.utility.open_snackbar('This fragment is locked.');
     } else {
       const item_string =

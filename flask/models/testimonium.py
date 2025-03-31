@@ -16,6 +16,8 @@ class TestimoniumFields(object):
     TEXT = "text"
     EDITOR = "editor"
     SANDBOX = "sandbox"
+    LOCK = "lock"
+    VISIBLE = "visible"
 
 @dataclass
 class TestimoniumModel:
@@ -29,6 +31,8 @@ class TestimoniumModel:
     text: str = None
     editor : str = None
     sandbox: str = None
+    lock: int = None 
+    visible: int = None 
 
 class Testimonium:
     def __init__(self, server):
@@ -112,5 +116,7 @@ class Testimonium:
         testimonium.text = document.get(TestimoniumFields.TEXT, None)
         testimonium.editor = document.get(TestimoniumFields.EDITOR, None)
         testimonium.sandbox = document.get(TestimoniumFields.SANDBOX, None)
+        testimonium.lock = document.get(TestimoniumFields.LOCK, None)
+        testimonium.visible = document.get(TestimoniumFields.VISIBLE, None)
 
         return testimonium
