@@ -1,7 +1,10 @@
 <!-- This dialog shows the introduction that comes with an author or text -->
-<div class="dialog-header">
+<div id="introductions-dialog-header" class="dialog-header">
   <h2>Introduction on {{ this.introduction_on }}</h2>
+  <button id="close-introductions-dialog-button" mat-icon-button [mat-dialog-close]="null" tabindex="-1">
+    <mat-icon>clear</mat-icon>
+  </button>
 </div>
-<div class="introduction-body" mat-dialog-content>
+<div #introductiontext id="introductions-text-body" class="introduction-body" mat-dialog-content tabindex="0">
   <div [innerHTML]="this.content"></div>
 </div>
