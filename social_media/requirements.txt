@@ -1,0 +1,5 @@
+atproto
+beautifulsoup4
+python-dotenv
+requests
+pytumblr
