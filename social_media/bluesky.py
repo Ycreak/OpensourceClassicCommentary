@@ -24,7 +24,7 @@ class BlueSky:
         tweet: str = f"{latin}\n    {english}"
         print('Posting to BlueSky')
         try:
-            post = client.send_post(tweet)
-            print(f"BlueSky response status code: 200")
-        except Exception as e:
-            print(f"BlueSky response status code: 400")
+            client.send_post(tweet)
+            print("BlueSky response status code: 200")
+        except Exception:
+            print("BlueSky response status code: 400")
