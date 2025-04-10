@@ -1,6 +1,8 @@
 """
 Script to publish fragments to social media.
 Currently, we publish fragments to BlueSky, Mastadon and Tumblr.
+We run this file on our server via a crontab task. This way, a new
+fragment is posted every day at 12 o'clock.
 """
 from bluesky import BlueSky
 from mastadon import Mastadon
