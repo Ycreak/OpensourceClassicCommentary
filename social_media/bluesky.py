@@ -3,7 +3,11 @@ from atproto import Client
 import os
 
 class BlueSky:
-    def __init__(self):
+    """
+    Publishes the given fragment, consisting of a string in Latin and English
+    to BlueSky. To do this, we only need the domain and the password of BlueSky.
+    """
+    def __init__(self) -> None:
         load_dotenv()
         self.domain: str = "oscc753.bsky.social"
         self.password: str = os.getenv('BLUESKY_PASSWORD')
@@ -14,7 +18,6 @@ class BlueSky:
         :param latin (str)
         :param english (str)
         """
-
         client = Client()
         client.login(self.domain, self.password)
 

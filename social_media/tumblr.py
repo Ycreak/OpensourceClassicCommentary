@@ -5,10 +5,12 @@ import os
 
 class Tumblr:
     """
+    Publishes the given fragment, consisting of a string in Latin and Exception
+    to Tumblr. To do this, we need the consumer key/secret and a oauth token/secret.
     We use the pytumblr package to post to Tumblr.
-    https://github.com/tumblr/pytumblr
+    - https://github.com/tumblr/pytumblr
     """
-    def __init__(self):
+    def __init__(self) -> None:
         load_dotenv()
         self.consumer_key: str = os.getenv('TUMBLR_CONSUMER_KEY')
         self.consumer_secret: str = os.getenv('TUMBLR_CONSUMER_SECRET')

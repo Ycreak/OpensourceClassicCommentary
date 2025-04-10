@@ -3,7 +3,11 @@ import requests
 import os
 
 class Mastadon:
-    def __init__(self):
+    """
+    Publishes the given fragment, consisting of a string in Latin and English
+    to Mastadon. To do this, we only need the domain and a token from Mastadon.
+    """
+    def __init__(self) -> None:
         load_dotenv()
         self.domain: str = 'https://mastodon.social/api/v1/statuses'
         self.token: str = os.getenv('MASTADON_TOKEN')

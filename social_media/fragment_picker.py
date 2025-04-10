@@ -7,7 +7,11 @@ import re
 from bs4 import BeautifulSoup
 
 class FragmentPicker:
-    def __init__(self):
+    """
+    This class reads the latest dump of the database and filters a fragment eligable for publishing.
+    At the moment, it will publish any fragment that has a translation. 
+    """
+    def __init__(self) -> None:
         load_dotenv()
         self.documents_dump_path = os.getenv('DUMP_PATH')
 

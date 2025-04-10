@@ -1,7 +1,6 @@
 """
-This script reads the latest documents dump and picks a fragment that is eligable
-for sharing to BlueSky. Yes, we should create a nice endpoint to do this. But for
-now, this also works quite beautifully.
+Script to publish fragments to social media.
+Currently, we publish fragments to BlueSky, Mastadon and Tumblr.
 """
 from bluesky import BlueSky
 from mastadon import Mastadon
