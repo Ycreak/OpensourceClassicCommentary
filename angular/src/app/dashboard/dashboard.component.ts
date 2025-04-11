@@ -1,5 +1,5 @@
 // Library imports
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 // Component imports
 import { ApiService } from '@oscc/api.service';
@@ -11,12 +11,17 @@ import { UtilityService } from '@oscc/utility.service';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
   constructor(
     protected api: ApiService,
     protected auth_service: AuthService,
     private utility: UtilityService
   ) {}
+
+  ngOnInit(): void {
+    // Always make sure we use the correct index for the dashboard
+    this.api.request_index().subscribe({});
+  }
 
   /**
    * Requests Flask to resync the bibliography

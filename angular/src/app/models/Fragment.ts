@@ -14,7 +14,6 @@ export class Fragment {
   editor = '';
   name = '';
   status = '';
-  sandbox = '';
   // Commentary
   commentary: Commentary;
   // Content
@@ -43,7 +42,6 @@ export class Fragment {
     this.editor = 'editor' in fragment ? fragment['editor'] : '';
     this.name = 'name' in fragment ? fragment['name'] : '';
     this.status = 'status' in fragment ? fragment['status'] : '';
-    this.sandbox = 'sandbox' in fragment ? fragment['sandbox'] : '';
     this.lines = 'lines' in fragment ? fragment['lines'] : [];
 
     this.linked_fragments = this.check_json_entry('linked_fragments', fragment) ? fragment['linked_fragments'] : [];

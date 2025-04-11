@@ -24,7 +24,6 @@ import { ColumnsService } from '@oscc/columns/columns.service';
 import { DialogService } from '@oscc/services/dialog.service';
 import { StringFormatterService } from '@oscc/services/string-formatter.service';
 import { UtilityService } from '@oscc/utility.service';
-import { SandboxService } from '@oscc/services/sandbox.service';
 
 @Component({
   selector: 'app-commentary',
@@ -50,7 +49,6 @@ export class CommentaryComponent {
   constructor(
     private bib: BibliographyService,
     private mat_dialog: MatDialog,
-    private sandbox: SandboxService,
     private string_formatter: StringFormatterService,
     protected api: ApiService,
     protected columns: ColumnsService,
@@ -133,7 +131,6 @@ export class CommentaryComponent {
         author: fragment.author,
         title: fragment.title,
         editor: fragment.editor,
-        sandbox: this.sandbox.current_sandbox,
       },
       column_id
     );

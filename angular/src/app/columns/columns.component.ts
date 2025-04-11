@@ -19,7 +19,6 @@ import { DialogService } from '@oscc/services/dialog.service';
 import { ApiService } from '@oscc/api.service';
 import { SettingsService } from '@oscc/services/settings.service';
 import { UtilityService } from '@oscc/utility.service';
-import { SandboxService } from '@oscc/services/sandbox.service';
 
 // Component imports
 import { DocumentFilterComponent } from '@oscc/filters/document-filter/document-filter.component';
@@ -45,7 +44,6 @@ export class ColumnsComponent implements OnInit {
     protected columns: ColumnsService,
     protected commentary: CommentaryService,
     protected dialog: DialogService,
-    protected sandbox: SandboxService,
     protected settings: SettingsService,
     protected utility: UtilityService,
     private bib: BibliographyService,
@@ -63,7 +61,7 @@ export class ColumnsComponent implements OnInit {
     const params: ParamMap = this.route.snapshot.queryParamMap;
     if (this.utility.is_empty_object(params['params'])) {
       // If no query parameters are found, load our default Ennius Thyestes TRF edition
-      filter = { author: 'Ennius', title: 'Thyestes', editor: 'TRF', sandbox: this.sandbox.current_sandbox };
+      filter = { author: 'Ennius', title: 'Thyestes', editor: 'TRF' };
     } else {
       filter.author = params.get('author');
       filter.title = params.get('title');

@@ -31,8 +31,17 @@ playground = Playground(CouchAuthenticator().couch)
 testimonium = Testimonium(CouchAuthenticator().couch)
 
 def get_index() -> object:
-    """ Reads the cache file and returns it """
-    return jsonify(util.read_json(index_file))
+    """ Reads the cache file and returns it. Needs a sandbox as parameter. """
+    try:
+        sandbox: str = request.get_json()["sandbox"]
+        index: list = util.read_json(index_file)
+        print(sandbox)
+        filtered_index = [obj for obj in index if obj['sandbox'] == sandbox]
+        return jsonify(filtered_index)
+    except KeyError as e:
+        logging.error(e)
+        return make_response("No sandbox received.", 422)
+
 
 def update_index() -> None:
     """ Updates the index file and writes it to the cache """

@@ -54,7 +54,7 @@ def write_json(given_object: object, file: str) -> None:
     with open(file, "w") as outfile:
         outfile.write(json_object)
 
-def read_json(file: str) -> object:
+def read_json(file: str) -> list:
     """Reads the requested object from the cache
 
     Args:

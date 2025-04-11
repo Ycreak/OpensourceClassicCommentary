@@ -8,7 +8,6 @@ import { AuthService } from '@oscc/auth/auth.service';
 import { DialogService } from '@oscc/services/dialog.service';
 import { ApiService } from '@oscc/api.service';
 import { UtilityService } from '@oscc/utility.service';
-import { SandboxService } from '@oscc/services/sandbox.service';
 
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
@@ -40,7 +39,6 @@ export class FragmentsDashboardComponent implements OnInit {
   fragment_form = new FormGroup({
     _id: new FormControl(''),
     document_type: new FormControl('fragment'),
-    sandbox: new FormControl(this.sandbox.current_sandbox),
     name: new FormControl('', [Validators.required, Validators.pattern('[0-9-_ ]*')]), // numbers and "-" and "_" allowed.
     author: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
     title: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
@@ -73,16 +71,10 @@ export class FragmentsDashboardComponent implements OnInit {
     protected api: ApiService,
     protected utility: UtilityService,
     protected dialog: DialogService,
-    protected auth_service: AuthService,
-    private sandbox: SandboxService
+    protected auth_service: AuthService
   ) {}
 
   ngOnInit(): void {
-    //if (environment.debug) {
-    //this.api.request_documents(255, 'Ennius', 'Thyestes', 'TRF', '112');
-    //}
-
-    this.api.request_index().subscribe({});
     // We will store all dashboard data in the following data object
     this.selected_fragment_data = new Column({});
     this.fragment_referencer = new Column({});
@@ -253,7 +245,6 @@ export class FragmentsDashboardComponent implements OnInit {
       title: new FormControl(title),
       editor: new FormControl(editor),
       name: new FormControl(name),
-      sandbox: new FormControl(this.sandbox.current_sandbox),
       //linked_fragment_id: new FormControl(linked_fragment_id),
     });
     // Next, push the created form group to the lines FormArray
@@ -353,13 +344,11 @@ export class FragmentsDashboardComponent implements OnInit {
           if (result) {
             const fragment = this.convert_fragment_form_to_Fragment(fragment_form);
             fragment.document_type = 'fragment';
-            fragment.sandbox = this.sandbox.current_sandbox;
             this.reset_fragment_form();
             this.api.post_document(fragment, 'update').subscribe(() => {
               // When the has been revised, we will load said fragment and fill the fields again
               this.request_documents({
                 document_type: 'fragment',
-                sandbox: this.sandbox.current_sandbox,
                 author: fragment.author,
                 title: fragment.title,
                 editor: fragment.editor,
@@ -394,13 +383,11 @@ export class FragmentsDashboardComponent implements OnInit {
         if (result) {
           const fragment = this.convert_fragment_form_to_Fragment(fragment_form);
           fragment.document_type = 'fragment'; //FIXME: this is a bug
-          fragment.sandbox = this.sandbox.current_sandbox;
           this.reset_fragment_form();
           this.api.post_document(fragment, 'create').subscribe(() => {
             // When the has been created, we will load said fragment and fill the fields again
             this.request_documents({
               document_type: 'fragment',
-              sandbox: this.sandbox.current_sandbox,
               author: fragment.author,
               title: fragment.title,
               editor: fragment.editor,
