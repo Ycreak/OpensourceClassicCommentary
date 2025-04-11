@@ -87,6 +87,7 @@ export class LoginComponent {
     this.api.login_user(user).subscribe({
       next: (approved_user) => {
         this.auth_service.login_user(approved_user);
+        this.api.request_index().subscribe({});
         this.utility.open_snackbar('Login successful');
         this.dialogRef.close(); // Close the login screen overlay
         this.api.spinner_off();

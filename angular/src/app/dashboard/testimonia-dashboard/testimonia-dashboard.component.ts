@@ -13,7 +13,6 @@ import { DialogService } from '@oscc/services/dialog.service';
 import { HelperService } from '@oscc/dashboard/helper.service';
 import { ApiService } from '@oscc/api.service';
 import { UtilityService } from '@oscc/utility.service';
-import { SandboxService } from '@oscc/services/sandbox.service';
 
 // Model imports
 import { Testimonium } from '@oscc/models/Testimonium';
@@ -31,7 +30,6 @@ export class TestimoniaDashboardComponent {
 
   protected form = new FormGroup({
     _id: new FormControl(''),
-    sandbox: new FormControl(this.sandbox.current_sandbox),
     document_type: new FormControl('testimonium'),
     name: new FormControl('', [Validators.required, Validators.pattern('[0-9-_ ]*')]), // numbers and "-" and "_" allowed.
     author: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
@@ -49,8 +47,7 @@ export class TestimoniaDashboardComponent {
     protected utility: UtilityService,
     protected dialog: DialogService,
     protected auth_service: AuthService,
-    protected helper: HelperService,
-    private sandbox: SandboxService
+    protected helper: HelperService
   ) {}
 
   /**
@@ -81,7 +78,6 @@ export class TestimoniaDashboardComponent {
       'title',
       'witness',
       'editor',
-      'sandbox',
       'text',
       'visible',
       'lock',
@@ -132,7 +128,6 @@ export class TestimoniaDashboardComponent {
             this.api.post_document(form, 'update').subscribe(() => {
               this.reset_form();
               this.request({
-                sandbox: this.sandbox.current_sandbox,
                 document_type: form.document_type,
                 editor: form.editor,
                 author: form.author,

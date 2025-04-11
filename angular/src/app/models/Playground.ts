@@ -17,7 +17,6 @@ export class Playground {
   shared_with: string[];
   canvas: fabric.Canvas;
   created_by: string;
-  sandbox: string;
 
   // Variables for keeping track of canvas states
   private canvas_states: any[] = [];

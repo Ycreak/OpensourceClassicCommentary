@@ -4,7 +4,6 @@ import { Playground_user } from './Playground_user';
 export class Playground_communicator {
   _id: string;
   document_type = 'playground';
-  sandbox: string;
   name: string;
   canvas: any;
   created_by: string;
