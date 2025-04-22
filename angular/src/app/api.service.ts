@@ -183,6 +183,26 @@ export class ApiService {
   }
 
   /**
+   * Asks Flask to test the Zotero bibliography. 
+   * @param key (object)
+   * @author Ycreak
+   */
+  public test_bibliography(): Observable<any> {
+    this.spinner_on();
+    return new Observable((observer) => {
+      this.http
+        .post<any>(this.FlaskURL + `bibliography/test`, {
+          observe: 'body',
+          responseType: 'json',
+        })
+        .subscribe((data: any) => {
+          observer.next(data);
+          observer.complete();
+          this.spinner_off();
+        });
+    });
+  }
+  /**
    * Asks Flask to resync the Zotero bibliography. Receives synced bibliography
    * @param key (object)
    * @return document_names (list)
