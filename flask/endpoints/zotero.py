@@ -9,7 +9,6 @@ from flask_jsonpify import jsonify
 
 import utilities as util
 import logging
-import time 
 
 class Zotero:
     zotero_api: pyzotero.Zotero
@@ -66,9 +65,10 @@ class Zotero:
 
         keys = keys_dictionary.keys()
         if (len(keys) == 0): 
-            print('Nothing to upate.')
+            logging.error('Nothing to upate.')
 
         for key in keys:
+            logging.error(f"Updated key: {key}")
             # Retrieve the zotero item data blob
             bib_item = self.zotero_api.item(key)
             # Retrieve the zotero item bib blob 
@@ -101,16 +101,8 @@ class Zotero:
         Dumb function to update citations in sources that do not yet have a citation.
         """
         self.bibliography = util.read_json(self.cache_file) 
-        counter = 0
         for bib_item in self.bibliography:
-            if counter > 15:
-                # Write the changes every 15 citations to prevent the API getting angry
-                util.write_json(self.bibliography, self.cache_file)
-                logging.error('sleeping now')
-                time.sleep(10)
-                counter = 0
             if "citation" not in bib_item or bib_item['citation'] == "":
-                counter += 1
                 key = bib_item['key']
                 # Retrieve the citation for this bib item from zotero
                 try:
@@ -119,13 +111,14 @@ class Zotero:
                     citation  = self.zotero_api.item(key)[0]
                     # Paste the citation into the cached bib item
                     bib_item['citation'] = citation 
+                    logging.error(citation)
                     # Remove current item from the self.bibliography and append the updated item
                     self.bibliography = [d for d in self.bibliography if d['key'] != key]
                     self.bibliography.append(bib_item)
+                    util.write_json(self.bibliography, self.cache_file)
                     logging.error(f"Updated key: {key}")
                 except Exception:
                     logging.error("Could not retrieve citation from Zotero: {e}")
-                
 
 def get_bibliography():
     zotero = Zotero()
