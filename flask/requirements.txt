@@ -10,3 +10,4 @@ python-Levenshtein
 pytest
 pyzotero
 wheel
+ruff

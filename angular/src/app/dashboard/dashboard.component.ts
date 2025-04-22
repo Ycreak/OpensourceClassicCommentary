@@ -36,4 +36,18 @@ export class DashboardComponent implements OnInit {
       },
     });
   }
+
+  /**
+   * Runs a test function on the bibliography endpoint
+   */
+  protected request_bibliography_test(): void {
+    this.api.test_bibliography().subscribe({
+      next: () => {
+        this.utility.open_snackbar('Bibliography tested');
+      },
+      error: () => {
+        this.utility.open_snackbar('Zotero did not like that.');
+      },
+    });
+  }
 }
