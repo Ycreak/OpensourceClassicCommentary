@@ -15,11 +15,12 @@
             document_type: $event.document_type,
             author: $event.author,
             title: $event.title,
-            editor: $event.editor
+            editor: $event.editor,
           },
           column_to_display.column_id
         );
-        column_to_display.column_name = $event.author + '-' + $event.title + '-' + $event.editor
+        column_to_display.column_name = $event.author + '-' + $event.title + '-' + $event.editor;
+        this.columns.set_edited_flag_false(column_to_display.column_id)
       ">
     </app-latin-tragic-fragment-filter>
 
@@ -103,7 +104,7 @@
         "
         cdkDrag
         [cdkDragDisabled]="this.settings.fragments.dragging_disabled"
-        (cdkDragDropped)="this.columns.set_edited_flag($event)"
+        (cdkDragDropped)="this.columns.set_edited_flag_true($event.container.id, $event.previousContainer.id)"
         [attr.id]="fragment.fragment_id"
         [style.background-color]="
           this.generate_document_gradient_background_color(
