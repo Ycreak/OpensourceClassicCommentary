@@ -34,7 +34,15 @@ $toolbar-height: 64px;
 }
 
 /* MENU */
+$social-media-icon-color: lightgray;
+
 .social-media-icon {
-  color: lightgray;
+  color: $social-media-icon-color;
   width: 16px;
+}
+
+.social-media-icon:hover {
+  transform: scale(1.1);
+  transition: 0.5s;
+  color: darken($color: $social-media-icon-color, $amount: 30);
 }
