@@ -19,6 +19,8 @@ import { SandboxService } from '@oscc/services/sandbox.service';
 
 // Component imports
 import { LoginComponent } from '@oscc/login/login.component';
+import { MatIconRegistry } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-overview',
@@ -37,8 +39,24 @@ export class OverviewComponent implements OnInit, OnDestroy {
     protected settings: SettingsService,
     protected window_watcher: WindowSizeWatcherService,
     private mat_dialog: MatDialog,
-    private viewportscroller: ViewportScroller
-  ) {}
+    private viewportscroller: ViewportScroller,
+    private matIconRegistry: MatIconRegistry,
+    private domSanitizer: DomSanitizer
+  ) {
+    // Adding icons to matIconRegistry
+    this.matIconRegistry.addSvgIcon(
+      'bluesky',
+      this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/icons/Bluesky_Logo.svg')
+    );
+    this.matIconRegistry.addSvgIcon(
+      'mastodon',
+      this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/icons/Mastodon_Logo.svg')
+    );
+    this.matIconRegistry.addSvgIcon(
+      'tumblr',
+      this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/icons/Tumblr_Logo.svg')
+    );
+  }
 
   ngOnInit(): void {
     // Create the window watcher for mobile devices
