@@ -90,6 +90,8 @@ export class ColumnsComponent implements OnInit {
           // New API update will allow us to request a list of filters
           result.filters.forEach((filter: any) => {
             this.columns.request(filter, column_id, true);
+            // Also reset the 'edited/altered' status for these columns to false
+            this.columns.set_edited_flag_false(column_id);
           });
         }
       },

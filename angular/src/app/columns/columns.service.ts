@@ -198,18 +198,32 @@ export class ColumnsService {
   /**
    * We keep track of dragging and dropping within or between columns. If an edit occurs,
    * we set the corresponding document_column boolean 'edited' to true.
-   * @param event containing the column identifiers of those that are edited
+   * @param column1 the first edited column
+   * @param column2 the second edited column
    * @author Ycreak
-   * @TODO: what type is 'event'? CdkDragDrop<string[]> does not allow reading.
    */
-  public set_edited_flag(event: any): void {
+  public set_edited_flag_true(column1: number, column2: number): void {
     // First, find the corresponding columns in this.list using the column_id that is used
     // in this.connected used by cdkDrag (and encoded in event)
-    const edited_column_1 = this.list.find((i) => i.column_id === Number(event.container.id));
-    const edited_column_2 = this.list.find((i) => i.column_id === Number(event.previousContainer.id));
+    const edited_column_1 = this.list.find((i) => i.column_id === Number(column1));
+    const edited_column_2 = this.list.find((i) => i.column_id === Number(column2));
     // Next, set the edited flag to true.
     edited_column_1.edited = true;
     edited_column_2.edited = true;
+  }
+
+  /**
+   * Related to the method above; when loading a column's data freshly from memory, the 'edited' flag will be set to false.
+   * (After all the loaded data has not been edited yet by the user.)
+   * @param column_id identifier of the column that has been refreshed.
+   * @author sajvanwijk
+   */
+  public set_edited_flag_false(column_id: number): void {
+    // First, find the corresponding columns in this.list using the column_id that is used
+    // in this.connected used by cdkDrag (and encoded in event)
+    const column = this.list.find((i) => i.column_id === column_id);
+    // Next, set the edited flag to false.
+    column.edited = false;
   }
 
   /**
