@@ -214,14 +214,13 @@ export class ColumnsService {
 
   /**
    * Related to the method above; when loading a column's data freshly from memory, the 'edited' flag will be set to false.
-   * (After all the laoded data has not been edited yet by the user.)
+   * (After all the loaded data has not been edited yet by the user.)
    * @param column_id identifier of the column that has been refreshed.
    * @author sajvanwijk
    */
   public set_edited_flag_false(column_id: number): void {
     // First, find the corresponding columns in this.list using the column_id that is used
     // in this.connected used by cdkDrag (and encoded in event)
-    console.log('test');
     const column = this.list.find((i) => i.column_id === column_id);
     // Next, set the edited flag to false.
     column.edited = false;
