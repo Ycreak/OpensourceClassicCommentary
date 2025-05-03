@@ -32,3 +32,23 @@ $toolbar-height: 64px;
   overflow: scroll;
   transition: width 0.75s ease-in-out;
 }
+
+/* MENU */
+/* Social media icons */
+$social-media-icon-color: lightgray;
+
+.social-media-icon {
+  color: $social-media-icon-color;
+  width: 16px;
+}
+
+.social-media-icon:hover {
+  transform: scale(1.1);
+  transition: 0.5s;
+  color: darken($color: $social-media-icon-color, $amount: 30);
+}
+
+.social-media-icons-div {
+  display: flex;
+  justify-content: space-evenly;
+}
