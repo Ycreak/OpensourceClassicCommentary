@@ -12,6 +12,7 @@ class IntroductionFields(object):
     ID = '_id'
     AUTHOR = 'author'
     TITLE = 'title'
+    EDITOR = 'editor'
     TEXT = 'text'
     SANDBOX = "sandbox"
 
@@ -22,6 +23,7 @@ class IntroductionModel:
     document_type: str = 'introduction'
     author: str = ''
     title: str = ''
+    editor: str = ''
     text: str = ''
     sandbox: str = ''
 
@@ -36,6 +38,7 @@ class Introduction:
         introduction = IntroductionModel()
         introduction.author = document.get(IntroductionFields.AUTHOR, '')
         introduction.title = document.get(IntroductionFields.TITLE, '')
+        introduction.editor = document.get(IntroductionFields.EDITOR, '')
         introduction.sandbox = document.get(IntroductionFields.SANDBOX, '')
 
         # Convert the model into a dictionary
@@ -98,6 +101,7 @@ class Introduction:
         introduction._id = document.get(IntroductionFields.ID, None) 
         introduction.author = document.get(IntroductionFields.AUTHOR, None)
         introduction.title = document.get(IntroductionFields.TITLE, None)
+        introduction.editor = document.get(IntroductionFields.EDITOR, None)
         introduction.text = document.get(IntroductionFields.TEXT, None)
         introduction.sandbox = document.get(IntroductionFields.SANDBOX, None)
 
