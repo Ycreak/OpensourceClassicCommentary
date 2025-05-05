@@ -55,6 +55,7 @@ def update_index() -> None:
                         "document_type": "introduction", 
                         "author": doc["author"], 
                         "title": doc["title"],
+                        "editor": doc["editor"],
                         "sandbox": doc["sandbox"]
                     })
                 case "fragment":
