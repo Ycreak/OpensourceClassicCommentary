@@ -9,22 +9,42 @@
 
 <!-- Nested menu to select author - title - editor. -->
 <mat-menu #menu_authors="matMenu">
-  <ng-container *ngFor="let author of this.api.get_from_index('author', { document_type: 'introduction' })">
+  <ng-container
+    *ngFor="let introduction_type of ['Author introductions', 'Title introductions', 'Editor introductions']">
     <button
       mat-menu-item
-      (click)="this.filter()"
-      (menuOpened)="this.titles = this.api.get_from_index('title', { document_type: 'introduction', author: author })"
-      (menuOpened)="this.selected_author = author"
+      (menuOpened)="this.set_introduction_type(introduction_type)"
+      (menuOpened)="this.titles = this.get_introductions_based_on_type(introduction_type)"
       [matMenuTriggerFor]="menu_names">
-      {{ author }}
+      {{ introduction_type }}
     </button>
   </ng-container>
 </mat-menu>
 
 <mat-menu #menu_names="matMenu">
-  <ng-container *ngFor="let title of this.titles">
-    <button mat-menu-item [hidden]="title.trim() === ''" (click)="this.selected_title = title" (click)="this.filter()">
-      {{ title }}
-    </button>
+  <ng-container *ngIf="this.introduction_type === 'Author introductions'">
+    <ng-container *ngFor="let author of this.titles">
+      <button mat-menu-item (click)="this.selected_author = author" (click)="this.filter(introduction_type)">
+        {{ author }}
+      </button>
+    </ng-container>
+  </ng-container>
+  <ng-container *ngIf="this.introduction_type === 'Title introductions'">
+    <ng-container *ngFor="let title of this.titles">
+      <button
+        mat-menu-item
+        [hidden]="title.trim() === ''"
+        (click)="this.selected_title = title"
+        (click)="this.filter(introduction_type)">
+        {{ title }}
+      </button>
+    </ng-container>
+  </ng-container>
+  <ng-container *ngIf="this.introduction_type === 'Editor introductions'">
+    <ng-container *ngFor="let editor of this.titles">
+      <button mat-menu-item (click)="this.selected_editor = editor" (click)="this.filter(introduction_type)">
+        {{ editor }}
+      </button>
+    </ng-container>
   </ng-container>
 </mat-menu>

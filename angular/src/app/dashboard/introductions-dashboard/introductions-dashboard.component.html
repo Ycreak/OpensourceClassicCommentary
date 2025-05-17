@@ -7,14 +7,15 @@
     </mat-panel-description>
   </mat-expansion-panel-header>
 
-  <mat-tab-group>
+  <mat-tab-group [(selectedIndex)]="selected_tab">
     <mat-tab label="Author introduction">
       <!--Buttons to submit introduction data -->
       <app-introductions-filter
         *ngIf="this.auth_service.has_permission('read', this.auth_service.current_user_role)"
         [button_title]="'Select introduction'"
         [button_type]="'stroked'"
-        (new_filter)="this.request(this.author_intro_form, $event)">
+        (set_introduction_tab)="this.set_introductions_tab($event)"
+        (new_filter)="this.request($event)">
       </app-introductions-filter>
       <button
         mat-stroked-button
@@ -85,6 +86,7 @@
         *ngIf="this.auth_service.has_permission('read', this.auth_service.current_user_role)"
         [button_title]="'Select introduction'"
         [button_type]="'stroked'"
+        (set_introduction_tab)="this.set_introductions_tab($event)"
         (new_filter)="this.request($event)">
       </app-introductions-filter>
       <button
@@ -167,6 +169,7 @@
         *ngIf="this.auth_service.has_permission('read', this.auth_service.current_user_role)"
         [button_title]="'Select introduction'"
         [button_type]="'stroked'"
+        (set_introduction_tab)="this.set_introductions_tab($event)"
         (new_filter)="this.request($event)">
       </app-introductions-filter>
       <button
