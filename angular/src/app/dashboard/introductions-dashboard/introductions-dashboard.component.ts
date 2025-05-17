@@ -29,6 +29,8 @@ export class IntroductionsDashboardComponent {
   // Whether a introduction has been selected
   protected selected = false;
 
+  public selected_tab = 0; //Default value
+
   protected author_intro_form = new FormGroup({
     _id: new FormControl(''),
     sandbox: new FormControl(this.sandbox.current_sandbox, { nonNullable: true }),
@@ -56,6 +58,7 @@ export class IntroductionsDashboardComponent {
     editor: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
     text: new FormControl(''),
   });
+  protected current_form = this.author_intro_form;
 
   constructor(
     protected api: ApiService,
@@ -72,7 +75,7 @@ export class IntroductionsDashboardComponent {
    * @param filter (any) Object containing information with which to search for matching introduction texts.
    * @author Ycreak sajvanwijk
    */
-  protected request(form: FormGroup, filter: any): void {
+  protected request(filter: any, form = this.current_form): void {
     form.reset();
     this.api.request_documents(filter).subscribe((introductions) => {
       // If we want to retrieve an introduction to an author, we send no title filter to
@@ -129,7 +132,7 @@ export class IntroductionsDashboardComponent {
       .subscribe((result) => {
         if (result) {
           this.api.post_document(form.value, 'create').subscribe(() => {
-            this.request(form, form.value);
+            this.request(form.value, form);
             this.selected = true;
           });
         }
@@ -157,7 +160,7 @@ export class IntroductionsDashboardComponent {
       .subscribe((result) => {
         if (result) {
           this.api.post_document(form.value, 'update').subscribe(() => {
-            this.request(form, form.value);
+            this.request(form.value, form);
             this.selected = true;
           });
         }
@@ -185,7 +188,7 @@ export class IntroductionsDashboardComponent {
       .open_confirmation_dialog('Are you sure you want to DELETE this introduction?', item_string)
       .subscribe((result) => {
         if (result) {
-          this.api.post_document(form, 'delete').subscribe(() => {
+          this.api.post_document(form.value, 'delete').subscribe(() => {
             form.reset();
             this.selected = false;
           });
@@ -199,5 +202,26 @@ export class IntroductionsDashboardComponent {
    */
   protected user_has_view_permission(): boolean {
     return this.allowed_user_roles.includes(this.auth_service.current_user_role);
+  }
+
+  public set_introductions_tab(introduction_type: string): void {
+    console.log('received introduction type:' + introduction_type);
+    switch (introduction_type) {
+      case 'Author introductions':
+        this.selected_tab = 0;
+        this.current_form = this.author_intro_form;
+        console.log('switching to author introduction tab');
+        break;
+      case 'Title introductions':
+        this.selected_tab = 1;
+        this.current_form = this.title_intro_form;
+        console.log('switching to title introduction tab');
+        break;
+      case 'Editor introductions':
+        this.selected_tab = 2;
+        this.current_form = this.editor_intro_form;
+        console.log('switching to editor introduction tab');
+        break;
+    }
   }
 }
