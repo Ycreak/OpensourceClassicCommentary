@@ -34,7 +34,15 @@ class Tumblr:
         today: str = datetime.now().strftime('%Y-%m-%d')
         body: str = f"<i>{latin}</i><br><br>{english}"
 
-        client.create_text('opensourceclassicscommentary',
+        result = client.create_text('opensourceclassicscommentary',
             state="published",
             slug=today,
             body=body)
+
+        # Save the post url. We might need to reference it on other social media if their character limit is surpassed.
+        if result:
+            tumblr_post_url: str = f"https://www.tumblr.com/opensourceclassicscommentary/{result["id_string"]}/{today}"
+        else: 
+            tumblr_post_url: str = f"https://www.tumblr.com/opensourceclassicscommentary/"
+
+        return tumblr_post_url

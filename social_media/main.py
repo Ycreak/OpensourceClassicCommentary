@@ -13,14 +13,18 @@ from tumblr import Tumblr
 fragment_picker = FragmentPicker()
 latin, english = fragment_picker.pick()
 
-# Post it to BlueSky
-bluesky = BlueSky()
-bluesky.post(latin, english)
-
-# Post it to Mastadon
-mastadon = Mastadon()
-mastadon.post(latin, english)
+# Check the length of the tweet. If it is too long for Mastadon (500 characters) and BlueSky (300 characters), 
+# we tweet to Tumblr and let BlueSky and Mastadon reference the Tumblr post.
 
 # Post it to Tumblr
 tumblr = Tumblr()
-tumblr.post(latin, english)
+tumblr_post_url = tumblr.post(latin, english)
+
+# Post it to BlueSky
+bluesky = BlueSky()
+bluesky.post(latin, english, tumblr_post_url)
+
+# Post it to Mastadon
+mastadon = Mastadon()
+mastadon.post(latin, english, tumblr_post_url)
+
