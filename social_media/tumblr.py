@@ -19,6 +19,8 @@ class Tumblr:
         self.oauth_token: str = os.getenv('TUMBLR_OAUTH_TOKEN')
         self.oauth_secret: str = os.getenv('TUMBLR_OAUTH_SECRET')
 
+        self.oscc_url: str = os.getenv('OSCC_URL')
+
     def post(self, fragment: Fragment) -> None:
         """
         Publishes the given text to Tumblr
@@ -37,7 +39,7 @@ class Tumblr:
         tumblr_latin: str = fragment.latin.replace(" ", "&nbsp;").replace("\n", "<br>")
 
         today: str = datetime.now().strftime('%Y-%m-%d')
-        body: str = f"<i>{tumblr_latin}</i><br>{fragment.english}<br><br>{fragment.author}, <i>{fragment.title}</i>, {fragment.editor}: {fragment.name}. <a href='https://oscc.lucdh.nl/?author={fragment.author}&title={fragment.title}&editor={fragment.editor}'>See this fragment on the OSCC.</a>"
+        body: str = f"<i>{tumblr_latin}</i><br>{fragment.english}<br><br>{fragment.author}, <i>{fragment.title}</i>, {fragment.editor}: {fragment.name}. <a href='{self.oscc_url}/?author={fragment.author}&title={fragment.title}&editor={fragment.editor}'>Find this fragment on the OSCC.</a>"
 
         result = client.create_text('opensourceclassicscommentary',
             state="published",
