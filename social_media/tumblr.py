@@ -3,6 +3,8 @@ from datetime import datetime
 from dotenv import load_dotenv
 import os
 
+from fragment_picker import Fragment
+
 class Tumblr:
     """
     Publishes the given fragment, consisting of a string in Latin and Exception
@@ -17,11 +19,10 @@ class Tumblr:
         self.oauth_token: str = os.getenv('TUMBLR_OAUTH_TOKEN')
         self.oauth_secret: str = os.getenv('TUMBLR_OAUTH_SECRET')
 
-    def post(self, latin: str, english: str) -> None:
+    def post(self, fragment: Fragment) -> None:
         """
         Publishes the given text to Tumblr
-        :param latin (str)
-        :param english (str)
+        :param fragment (Fragment)
         """
         # Authenticate via OAuth
         client = pytumblr.TumblrRestClient(
@@ -31,8 +32,12 @@ class Tumblr:
             self.oauth_secret
         )
 
+        # Tumblr does not correctly show string formatting. Replace the spaces and carriage returns
+        # to tokens Tumblr can cope with. Sadly, the <pre> tag does not seem to work.
+        tumblr_latin: str = fragment.latin.replace(" ", "&nbsp;").replace("\n", "<br>")
+
         today: str = datetime.now().strftime('%Y-%m-%d')
-        body: str = f"<i>{latin}</i><br><br>{english}"
+        body: str = f"<i>{tumblr_latin}</i><br>{fragment.english}<br><br>{fragment.author}, <i>{fragment.title}</i>, {fragment.editor}: {fragment.name}. <a href='https://oscc.lucdh.nl/?author={fragment.author}&title={fragment.title}&editor={fragment.editor}'>See this fragment on the OSCC.</a>"
 
         result = client.create_text('opensourceclassicscommentary',
             state="published",

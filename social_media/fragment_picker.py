@@ -6,6 +6,18 @@ from datetime import datetime
 import re 
 from bs4 import BeautifulSoup
 
+class Fragment:
+    """
+    Simple object to represent a Fragment. Will be used by all social media publishers
+    """
+    def __init__(self, author: str, title: str, editor: str, name: str, latin: str, english: str):
+        self.author: str = author
+        self.title: str = title
+        self.editor: str = editor
+        self.name: str = name
+        self.latin: str = latin
+        self.english: str = english
+
 class FragmentPicker:
     """
     This class reads the latest dump of the database and filters a fragment eligable for publishing.
@@ -15,7 +27,7 @@ class FragmentPicker:
         load_dotenv()
         self.documents_dump_path = os.getenv('DUMP_PATH')
 
-    def pick(self) -> tuple[str, str]:
+    def pick(self) -> Fragment:
         # Get the latest documents dump
         files = os.listdir(self.documents_dump_path)
         # Filter only the files that match the pattern "documents-YYYY-MM-DD.json"
@@ -54,8 +66,11 @@ class FragmentPicker:
                 fragments_list.append(document)
 
         # Now we need to check which fragments we already posted. We do not want to post them again (if unposted fragments yet remain). Make sure the file exists.
-        with open('published_fragments.json', 'r') as file:
-            published_fragments = json.load(file)
+        try:
+            with open('published_fragments.json', 'r') as file:
+                published_fragments = json.load(file)
+        except:
+            print("Make sure a published_fragments.json exists in the root.")
 
         # The candidate fragments are those that are not yet posted. 
         candidate_fragments: list[str] = []
@@ -67,12 +82,12 @@ class FragmentPicker:
             # If no candidate fragments exist, it means we ran out of fragments. 
             # Empty the published fragments stack and let the loop begin anew. 
             print('No more candidate fragments. Emptying stack and starting anew!')
-            fragment_id = random.choice(fragments_identifiers_list)
+            fragment_id: str = random.choice(fragments_identifiers_list)
             with open('published_fragments.json', "w") as outfile:
                 outfile.write(json.dumps([]))
 
-        # Pick Atreus
-        # fragment_id = '208d3144dee74b358fd01d48b5650acb'
+        # fragment_id = '208d3144dee74b358fd01d48b5650acb' # long atreus fragment
+        # fragment_id = "e479498cd84a4d6085b8a917ed05b774" # left space fragment
         # Retrieve the fragment from the list based on the id we selected as a candidate
         fragment = next((item for item in fragments_list if item['_id'] == fragment_id), None)
         
@@ -97,4 +112,14 @@ class FragmentPicker:
 
             print(latin, english)
         
-            return latin, english
+            # Now create a nice Fragment object to share with the other choice
+            fragment_object = Fragment(
+                fragment['author'],
+                fragment['title'],
+                fragment['editor'],
+                fragment['name'],
+                latin,
+                english
+            )
+            
+            return fragment_object 

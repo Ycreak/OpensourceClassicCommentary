@@ -2,6 +2,8 @@ from dotenv import load_dotenv
 from atproto import Client, models
 import os
 
+from fragment_picker import Fragment
+
 class BlueSky:
     """
     Publishes the given fragment, consisting of a string in Latin and English
@@ -13,17 +15,16 @@ class BlueSky:
         self.password: str = os.getenv('BLUESKY_PASSWORD')
         self.character_limit: int = 300
 
-    def post(self, latin: str, english: str, tumblr_url: str) -> None:
+    def post(self, fragment: Fragment, tumblr_url: str) -> None:
         """
         Publishes the given text to BlueSky
-        :param latin (str)
-        :param english (str)
+        :param fragment (Fragment)
         """
         client = Client()
         client.login(self.domain, self.password)
 
         # If we cannot post today's tweet, reference the Tumblr post.
-        if (len(latin) + len(english) > self.character_limit - 10):
+        if (len(fragment.latin) + len(fragment.english) > self.character_limit - 10):
             print('Too long for BlueSky! Referencing Tumblr!')
             text = "Today's fragment is too long for BlueSky! Please check out our Tumblr for today's fragment."
             # Of course BlueSky does not support hyperlinks. We need to do some nice programming to create one.
@@ -46,7 +47,7 @@ class BlueSky:
 
 
         else:
-            tweet: str = f"{latin}\n    {english}"
+            tweet: str = f"{fragment.latin}\n    {fragment.english}"
 
             print('Posting to BlueSky')
             try:
