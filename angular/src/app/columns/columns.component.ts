@@ -28,6 +28,7 @@ import { Column } from '@oscc/models/Column';
 import { Fragment } from '@oscc/models/Fragment';
 import { Linked_fragment } from '@oscc/models/Linked_fragment';
 import { IntroductionsComponent } from '@oscc/commentary/introductions/introductions.component';
+import { SandboxService } from '@oscc/services/sandbox.service';
 
 @Component({
   selector: 'app-columns',
@@ -49,7 +50,8 @@ export class ColumnsComponent implements OnInit {
     protected utility: UtilityService,
     private bib: BibliographyService,
     private matdialog: MatDialog,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    protected sandbox: SandboxService
   ) {}
 
   ngOnInit(): void {

@@ -16,6 +16,7 @@ import { UtilityService } from '@oscc/utility.service';
 
 // Model imports
 import { Introduction } from '@oscc/models/Introduction';
+import { SandboxService } from '@oscc/services/sandbox.service';
 
 @Component({
   selector: 'app-introductions-dashboard',
@@ -64,7 +65,8 @@ export class IntroductionsDashboardComponent {
     protected utility: UtilityService,
     protected dialog: DialogService,
     protected auth_service: AuthService,
-    protected helper: HelperService
+    protected helper: HelperService,
+    protected sandbox: SandboxService
   ) {}
 
   /**
