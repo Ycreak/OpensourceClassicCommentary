@@ -20,8 +20,8 @@
           },
           column_to_display.column_id
         );
-        column_to_display.column_name = $event.author + '-' + $event.title + '-' + $event.editor;
         this.columns.set_edited_flag_false(column_to_display.column_id);
+        column_to_display.column_name = $event.author + '-' + $event.title + '-' + $event.editor;
         column_to_display.author = $event.author;
         column_to_display.title = $event.title;
         column_to_display.editor = $event.editor
