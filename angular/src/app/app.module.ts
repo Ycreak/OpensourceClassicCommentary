@@ -13,6 +13,7 @@ import { NgxSimpleTextEditorModule } from 'ngx-simple-text-editor';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ColumnsComponent } from './columns/columns.component';
+import { EditableColumnNameComponent } from './columns/column-name-editable/column-name-editable.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './auth/auth.guard';
@@ -63,6 +64,11 @@ import { QuillModule } from 'ngx-quill';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 const config: SocketIoConfig = { url: 'http://localhost:5000', options: {} };
 
+//Directives
+import { OnCopyDirective } from './directives/on-copy.directive';
+import { ViewModeDirective } from './columns/column-name-editable/view-mode.directive';
+import { EditModeDirective } from './columns/column-name-editable/edit-mode.directive';
+
 // Allows communication with firebase
 import { ScansionComponent } from './scansion/scansion.component';
 import { PlaygroundComponent } from './playground/playground.component';
@@ -75,7 +81,6 @@ import { DocumentFilterComponent } from './filters/document-filter/document-filt
 import { UsersComponent } from './dashboard/users/users.component';
 import { TestimoniaComponent } from './columns/testimonia/testimonia.component';
 import { FragmentComponent } from './columns/fragment/fragment.component';
-import { OnCopyDirective } from './directives/on-copy.directive';
 import { TestimoniaDashboardComponent } from './dashboard/testimonia-dashboard/testimonia-dashboard.component';
 import { TranslationComponent } from './commentary/translation/translation.component';
 import { GeneralCommentaryFieldComponent } from './commentary/general-commentary-field/general-commentary-field.component';
@@ -91,6 +96,7 @@ import { IntroductionsFilterComponent } from './filters/introductions-filter/int
 import { FragmentTableComponent } from './filters/document-filter/fragment-table/fragment-table.component';
 import { TestimoniaTableComponent } from './filters/document-filter/testimonia-table/testimonia-table.component';
 import { IntroductionsComponent } from './commentary/introductions/introductions.component';
+import { EditableOnEnterDirective } from './columns/column-name-editable/on-enter.directive';
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
   { path: '', component: OverviewComponent },
@@ -108,6 +114,10 @@ const appRoutes: Routes = [
   declarations: [
     AppComponent,
     ColumnsComponent,
+    EditableColumnNameComponent,
+    ViewModeDirective,
+    EditModeDirective,
+    EditableOnEnterDirective,
     SafeHtmlPipe,
     DashboardComponent,
     LoginComponent,

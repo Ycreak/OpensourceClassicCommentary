@@ -29,6 +29,8 @@ import { Fragment } from '@oscc/models/Fragment';
 import { Linked_fragment } from '@oscc/models/Linked_fragment';
 import { IntroductionsComponent } from '@oscc/commentary/introductions/introductions.component';
 import { SandboxService } from '@oscc/services/sandbox.service';
+import { EditableColumnNameComponent } from './column-name-editable/column-name-editable.component';
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-columns',
@@ -39,6 +41,10 @@ import { SandboxService } from '@oscc/services/sandbox.service';
 export class ColumnsComponent implements OnInit {
   // Variable to store the clicked fragment and its data. Used for the context menu
   public current_document: any;
+
+  fragment_form = new FormGroup({
+    columnName: new FormControl(''),
+  });
 
   constructor(
     protected api: ApiService,
@@ -316,6 +322,14 @@ export class ColumnsComponent implements OnInit {
     });
   }
 
+  @ViewChild('testColumnName') test: EditableColumnNameComponent;
+  protected trigger_column_name_edit_mode(): void {
+    this.test.toEditMode();
+  }
+
+  protected updateField() {
+    console.log('testUpdate');
+  }
   /**
    * Given the fragment, this function checks whether its linked fragments appear in the
    * other opened columns. If so, the columns are scrolled to put the linked fragment in view
