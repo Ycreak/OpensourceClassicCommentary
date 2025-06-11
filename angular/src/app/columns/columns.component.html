@@ -51,7 +51,10 @@
 <mat-toolbar class="fragments-toolbar">
   <div id="fragments-toolbar-1">
     <ng-container *ngFor="let column_to_display of this.columns.list">
-      <mat-checkbox ngDefaultControl [(ngModel)]="column_to_display.visible">
+      <mat-checkbox
+        ngDefaultControl
+        [(ngModel)]="column_to_display.visible"
+        (contextmenu)="onRightClickColumnName($event, this.columns.current)">
         <span
           class="column-name-author-title-editor"
           (click)="this.show_introduction({ author: column_to_display.author })"
@@ -75,8 +78,8 @@
           (click)="check($event)"
           (mousedown)="$event.stopPropagation()">
           {{ column_to_display.editor }}
-          <sup *ngIf="column_to_display.edited">altered</sup>
         </span>
+        <span style="color: white; margin-left: 3px"><sup *ngIf="column_to_display.edited">altered</sup></span>
       </mat-checkbox>
     </ng-container>
   </div>
@@ -125,7 +128,7 @@
         (click)="handle_document_click(fragment, given_column)"
         (contextmenu)="
           handle_document_click(fragment, given_column);
-          onRightClick($event, this.current_document, this.columns.current)
+          onRightClickFragment($event, this.current_document, this.columns.current)
         "
         cdkDrag
         [cdkDragDisabled]="this.settings.fragments.dragging_disabled"
@@ -148,22 +151,36 @@
   </div>
 </ng-template>
 
-<!-- Context menu for right click actions on fragments -->
-<mat-menu #rightMenu="matMenu">
+<!-- Context menu for right click actions on column name -->
+<mat-menu #columnNameContextMenu="matMenu">
   <ng-template matMenuContent let-item="item">
-    <button (click)="this.copy_document_content(matMenuTrigger.menuData.document)" mat-menu-item>Copy text</button>
-    <button (click)="this.show_linked_documents(matMenuTrigger.menuData.document)" mat-menu-item>
+    <button mat-menu-item>Rename column</button>
+  </ng-template>
+</mat-menu>
+<!-- hidden helper div used for the column name context menu -->
+<button
+  #columnNameContextMenuWrapper="matMenuTrigger"
+  style="visibility: hidden; position: fixed"
+  [style.left]="columnNameContextMenuTopLeftPosition.x"
+  [style.top]="columnNameContextMenuTopLeftPosition.y"
+  [matMenuTriggerFor]="columnNameContextMenu"></button>
+
+<!-- Context menu for right click actions on fragments -->
+<mat-menu #fragmentContextMenu="matMenu">
+  <ng-template matMenuContent let-item="item">
+    <button (click)="this.copy_document_content(fragmentContextMenu.menuData.document)" mat-menu-item>Copy text</button>
+    <button (click)="this.show_linked_documents(fragmentContextMenu.menuData.document)" mat-menu-item>
       Linked documents
     </button>
   </ng-template>
 </mat-menu>
-
-<!-- hidden helper div used for the context menu -->
-<div
+<!-- hidden helper button used for the fragments context menu -->
+<button
+  #fragmentContextMenuWrapper="matMenuTrigger"
   style="visibility: hidden; position: fixed"
-  [style.left]="menuTopLeftPosition.x"
-  [style.top]="menuTopLeftPosition.y"
-  [matMenuTriggerFor]="rightMenu"></div>
+  [style.left]="fragmentContextMenuTopLeftPosition.x"
+  [style.top]="fragmentContextMenuTopLeftPosition.y"
+  [matMenuTriggerFor]="fragmentContextMenu"></button>
 
 <mat-menu #columnMenu="matMenu">
   <button (click)="this.show_column_bibliography(this.columns.current)" mat-menu-item>Column Bibliography</button>

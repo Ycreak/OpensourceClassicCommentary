@@ -251,33 +251,58 @@ export class ColumnsComponent implements OnInit {
     }
   }
 
+  // ###### Context menus ######
+  /**
+   * Method called when user right clicks a column name.
+   * Currently used for the rename column action.#3F51B5
+   * @param event MouseEvent, used for preventing default right click action from browser
+   * @param column The selected column
+   * @author sajvanwijk
+   */
+  // we create an object that contains coordinates of this context menu
+  columnNameContextMenuTopLeftPosition = { x: '0', y: '0' };
+  // viewChild decorator gives access to child context menu in the DOM
+  @ViewChild('columnNameContextMenu', { static: true }) columnNameContextMenu: MatMenuTrigger;
+  @ViewChild('columnNameContextMenuWrapper', { static: true }) columnNameContextMenuWrapper: MatMenuTrigger;
+  protected onRightClickColumnName(event: MouseEvent, column: Column) {
+    // preventDefault avoids to show the visualization of the right-click menu of the browser
+    event.preventDefault();
+
+    // we record the mouse position in our object (context menu will spawn here)
+    this.columnNameContextMenuTopLeftPosition.x = event.clientX + 'px';
+    this.columnNameContextMenuTopLeftPosition.y = event.clientY + 'px';
+
+    // we pass to the menu the information about our document and column
+    this.columnNameContextMenu.menuData = { column };
+    // we open the menu
+    this.columnNameContextMenuWrapper.openMenu();
+  }
+
   /**
    * Method called when the user click with the right button
    * Used to open a context menu as described in this component's html
    * @param event MouseEvent, it contains the coordinates
-   * @param item Our data contained in the row of the table
+   * @param document The selected fragment/document
+   * @param column The column where the selected fragment/document is from
    * @author sajvanwijk
    */
-  // we create an object that contains coordinates
-  menuTopLeftPosition = { x: '0', y: '0' };
-
-  // reference to the MatMenuTrigger in the DOM
-  @ViewChild(MatMenuTrigger, { static: true }) matMenuTrigger: MatMenuTrigger;
-
-  protected onRightClick(event: MouseEvent, document: any, column: Column) {
+  // we create an object that contains coordinates of this context menu
+  fragmentContextMenuTopLeftPosition = { x: '0', y: '0' };
+  // viewChild decorator gives access to child context menu in the DOM
+  @ViewChild('fragmentContextMenu', { static: true }) fragmentContextMenu: MatMenuTrigger;
+  @ViewChild('fragmentContextMenuWrapper', { static: true }) fragmentContextMenuWrapper: MatMenuTrigger;
+  protected onRightClickFragment(event: MouseEvent, document: any, column: Column) {
     // preventDefault avoids to show the visualization of the right-click menu of the browser
     event.preventDefault();
 
-    // we record the mouse position in our object
-    this.menuTopLeftPosition.x = event.clientX + 'px';
-    this.menuTopLeftPosition.y = event.clientY + 'px';
+    // we record the mouse position in our object (context menu will spawn here)
+    this.fragmentContextMenuTopLeftPosition.x = event.clientX + 'px';
+    this.fragmentContextMenuTopLeftPosition.y = event.clientY + 'px';
 
-    // we open the menu
     // we pass to the menu the information about our document and column
-    this.matMenuTrigger.menuData = { document, column };
-
+    this.fragmentContextMenu.menuData = { document, column };
     // we open the menu
-    this.matMenuTrigger.openMenu();
+    this.fragmentContextMenuWrapper.openMenu();
   }
 
   /**
