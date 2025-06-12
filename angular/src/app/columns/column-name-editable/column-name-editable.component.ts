@@ -31,7 +31,7 @@ export class EditableColumnNameComponent implements OnInit, OnDestroy {
   }
 
   public toViewMode() {
-    this.update.emit();
+    this.update.emit(this.column);
     this.mode = 'view';
   }
 

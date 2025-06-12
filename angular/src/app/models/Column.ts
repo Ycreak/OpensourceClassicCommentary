@@ -12,6 +12,7 @@ export class Column {
   }
 
   column_name = 'New column';
+  column_name_edited = false;
 
   author: string;
   title: string;

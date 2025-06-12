@@ -46,6 +46,8 @@ export class ColumnsComponent implements OnInit {
     columnName: new FormControl(''),
   });
 
+  newColumnName = ''; //used for renaming columns
+
   constructor(
     protected api: ApiService,
     protected auth_service: AuthService,
@@ -330,12 +332,19 @@ export class ColumnsComponent implements OnInit {
   protected trigger_column_name_edit_mode(column: Column): void {
     // First get the column to edit; this is the one that matches the id of the currently selected column.
     const column_to_edit = this.columnNameFields.toArray().filter((c) => c.column.column_id == column.column_id)[0];
+
+    //set newName var to current name of this column.
+    this.newColumnName = column_to_edit.column.column_name;
+
     // Switch this column to edit mode
     column_to_edit.toEditMode();
   }
 
-  protected updateField() {
-    console.log('testUpdate');
+  protected updateColumnName(column: Column, newColumnName: string) {
+    console.log(`New column name set for column ${column.column_id}: ${newColumnName}`);
+    // Update the column name
+    column.column_name = newColumnName;
+    column.column_name_edited = true;
   }
   /**
    * Given the fragment, this function checks whether its linked fragments appear in the
