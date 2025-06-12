@@ -53,8 +53,12 @@
     <mat-checkbox
       ngDefaultControl
       [(ngModel)]="column_to_display.visible"
-      (contextmenu)="onRightClickColumnName($event, this.columns.current)">
-      <app-editable-column-name #testColumnName id="fragments-toolbar-1" (update)="updateField(index, 'name')">
+      (contextmenu)="onRightClickColumnName($event, column_to_display)">
+      <app-editable-column-name
+        #ColumnNameField
+        class="fragments-toolbar-1"
+        [column]="column_to_display"
+        (update)="updateField(index, 'name')">
         <ng-template appViewMode>
           <span
             class="column-name-author-title-editor"
@@ -160,7 +164,7 @@
 <!-- Context menu for right click actions on column name -->
 <mat-menu #columnNameContextMenu="matMenu">
   <ng-template matMenuContent let-item="item">
-    <button mat-menu-item (click)="this.trigger_column_name_edit_mode()">Rename column</button>
+    <button mat-menu-item (click)="this.trigger_column_name_edit_mode(this.columns.current)">Rename column</button>
   </ng-template>
 </mat-menu>
 <!-- hidden helper div used for the column name context menu -->

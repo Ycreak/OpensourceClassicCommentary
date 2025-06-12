@@ -5,7 +5,7 @@
  */
 
 // Library imports
-import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ViewChild, ViewChildren, QueryList } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { ActivatedRoute, ParamMap } from '@angular/router';
@@ -278,8 +278,12 @@ export class ColumnsComponent implements OnInit {
     this.columnNameContextMenuTopLeftPosition.x = event.clientX + 'px';
     this.columnNameContextMenuTopLeftPosition.y = event.clientY + 'px';
 
-    // we pass to the menu the information about our document and column
+    // we pass to the menu the information about column
     this.columnNameContextMenu.menuData = { column };
+
+    // also set this column as the currently selected column
+    this.columns.current = column;
+
     // we open the menu
     this.columnNameContextMenuWrapper.openMenu();
   }
@@ -322,9 +326,12 @@ export class ColumnsComponent implements OnInit {
     });
   }
 
-  @ViewChild('testColumnName') test: EditableColumnNameComponent;
-  protected trigger_column_name_edit_mode(): void {
-    this.test.toEditMode();
+  @ViewChildren('ColumnNameField') columnNameFields: QueryList<EditableColumnNameComponent>;
+  protected trigger_column_name_edit_mode(column: Column): void {
+    // First get the column to edit; this is the one that matches the id of the currently selected column.
+    const column_to_edit = this.columnNameFields.toArray().filter((c) => c.column.column_id == column.column_id)[0];
+    // Switch this column to edit mode
+    column_to_edit.toEditMode();
   }
 
   protected updateField() {
