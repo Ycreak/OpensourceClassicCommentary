@@ -119,14 +119,14 @@ export class FragmentsDashboardComponent implements OnInit {
   protected request_wysiwyg_dialog(field: string, index = 0): void {
     if (field == 'context') {
       // For the context, retrieve the context text field from the fragment form and pass that to the dialog
-      const form_array_field = this.fragment_form.value.context[index].text;
+      const form_array_field = this.fragment_form.value.context[index].commentary;
       this.dialog.open_wysiwyg_dialog(form_array_field).subscribe((result) => {
         if (result) {
           // Result will only be provided when the user has acceped the changes
           // Now update the correct field. This is done by getting the FormArray and patching the correct
           // FormGroup within this array. This is to ensure dynamic updating on the frontend
           const context_array = this.fragment_form.controls['context'] as FormArray;
-          context_array.controls[index].patchValue({ ['text']: result });
+          context_array.controls[index].patchValue({ ['commentary']: result });
         }
       });
     } else {
@@ -189,7 +189,8 @@ export class FragmentsDashboardComponent implements OnInit {
       this.push_fragment_context_to_fragment_form(
         fragment.commentary.fields.context[i].author,
         fragment.commentary.fields.context[i].location,
-        fragment.commentary.fields.context[i].text
+        fragment.commentary.fields.context[i].text,
+        fragment.commentary.fields.context[i].commentary
       );
     }
     // Fill the fragment lines array
@@ -260,12 +261,18 @@ export class FragmentsDashboardComponent implements OnInit {
    * @param text text of the actual context in which the fragment appears
    * @author Ycreak
    */
-  protected push_fragment_context_to_fragment_form(_author: string, _location: string, _text: string): void {
+  protected push_fragment_context_to_fragment_form(
+    _author: string,
+    _location: string,
+    _text: string,
+    _commentary: string
+  ): void {
     // First, create a form group to represent a context
     const new_context = new FormGroup({
       author: new FormControl(_author),
       location: new FormControl(_location),
       text: new FormControl(_text),
+      commentary: new FormControl(_commentary),
     });
     // Next, push the created form group to the context FormArray
     const fragment_context_array = this.fragment_form.get('context') as FormArray;

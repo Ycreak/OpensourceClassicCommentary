@@ -253,7 +253,7 @@
         <div class="div-padding-lg"></div>
 
         <div formArrayName="context" *ngFor="let item of fragment_form.get('context')['controls']; let i = index">
-          <div [formGroupName]="i">
+          <div class="context-item" [formGroupName]="i">
             <mat-form-field class="input-form-small">
               <mat-label>Context author name</mat-label>
               <input matInput type="text" formControlName="author" />
@@ -271,7 +271,12 @@
               <textarea matInput type="text" formControlName="text"></textarea>
             </mat-form-field>
 
-            <button mat-button (click)="request_wysiwyg_dialog('context', i)">Rich editor</button>
+            <mat-form-field class="input-form-half">
+              <mat-label>Context commentary</mat-label>
+              <textarea matInput type="text" formControlName="commentary"></textarea>
+            </mat-form-field>
+
+            <button mat-button (click)="request_wysiwyg_dialog('context', i)">Edit context commentary</button>
             <button mat-button (click)="remove_form_item_from_form_array('fragment_form', 'context', i)">
               Delete this context
             </button>

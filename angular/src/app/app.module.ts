@@ -74,6 +74,7 @@ import { LinnaeusComponent } from './components/linnaeus/linnaeus.component';
 import { DocumentFilterComponent } from './filters/document-filter/document-filter.component';
 import { UsersComponent } from './dashboard/users/users.component';
 import { TestimoniaComponent } from './columns/testimonia/testimonia.component';
+import { ContextComponent } from './columns/context/context.component';
 import { FragmentComponent } from './columns/fragment/fragment.component';
 import { OnCopyDirective } from './directives/on-copy.directive';
 import { TestimoniaDashboardComponent } from './dashboard/testimonia-dashboard/testimonia-dashboard.component';
@@ -125,6 +126,7 @@ const appRoutes: Routes = [
     DocumentFilterComponent,
     UsersComponent,
     TestimoniaComponent,
+    ContextComponent,
     FragmentComponent,
     OnCopyDirective,
     TestimoniaDashboardComponent,
