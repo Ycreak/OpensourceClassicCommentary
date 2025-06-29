@@ -97,6 +97,7 @@ import { FragmentTableComponent } from './filters/document-filter/fragment-table
 import { TestimoniaTableComponent } from './filters/document-filter/testimonia-table/testimonia-table.component';
 import { IntroductionsComponent } from './commentary/introductions/introductions.component';
 import { EditableOnKeypressDirective } from './columns/column-name-editable/on-keypress.directive';
+import { AutofocusDirective } from './directives/autofocus.directive';
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
   { path: '', component: OverviewComponent },
@@ -115,6 +116,7 @@ const appRoutes: Routes = [
     AppComponent,
     ColumnsComponent,
     EditableColumnNameComponent,
+    AutofocusDirective,
     ViewModeDirective,
     EditModeDirective,
     EditableOnKeypressDirective,
