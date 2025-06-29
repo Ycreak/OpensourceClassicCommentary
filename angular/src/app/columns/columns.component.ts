@@ -127,8 +127,11 @@ export class ColumnsComponent implements OnInit {
    * @param given_document with possible broader context
    */
   protected show_broader_context(given_document: any): void {
-    console.log(given_document);
-    if (given_document.commentary.fields.context.length > 0) {
+    if (
+      // First check if the given document has broader context.
+      given_document.commentary.fields.context.length > 0 &&
+      given_document.commentary.fields.context.some((item) => item.text && item.text.trim() !== '')
+    ) {
       const column_id = this.columns.add();
       const column = this.columns.find(column_id);
       given_document.commentary.fields.context.forEach((context: any) => {
