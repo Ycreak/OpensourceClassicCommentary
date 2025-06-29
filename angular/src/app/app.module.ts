@@ -96,7 +96,7 @@ import { IntroductionsFilterComponent } from './filters/introductions-filter/int
 import { FragmentTableComponent } from './filters/document-filter/fragment-table/fragment-table.component';
 import { TestimoniaTableComponent } from './filters/document-filter/testimonia-table/testimonia-table.component';
 import { IntroductionsComponent } from './commentary/introductions/introductions.component';
-import { EditableOnEnterDirective } from './columns/column-name-editable/on-enter.directive';
+import { EditableOnKeypressDirective } from './columns/column-name-editable/on-keypress.directive';
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
   { path: '', component: OverviewComponent },
@@ -117,7 +117,7 @@ const appRoutes: Routes = [
     EditableColumnNameComponent,
     ViewModeDirective,
     EditModeDirective,
-    EditableOnEnterDirective,
+    EditableOnKeypressDirective,
     SafeHtmlPipe,
     DashboardComponent,
     LoginComponent,
