@@ -1,15 +1,14 @@
-import { Component, ContentChild, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, ContentChild, ElementRef, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
 import { ViewModeDirective } from './view-mode.directive';
 import { EditModeDirective } from './edit-mode.directive';
-import { fromEvent, Subject } from 'rxjs';
-import { filter, take, switchMapTo } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import { Column } from '@oscc/models/Column';
 
 @Component({
   selector: 'app-editable-column-name',
   template: ` <ng-container [column]="column" *ngTemplateOutlet="currentView"></ng-container> `,
 })
-export class EditableColumnNameComponent implements OnInit, OnDestroy {
+export class EditableColumnNameComponent implements OnDestroy {
   @ContentChild(ViewModeDirective) viewModeTpl: ViewModeDirective;
   @ContentChild(EditModeDirective) editModeTpl: EditModeDirective;
   @Input() column: Column;
@@ -26,10 +25,6 @@ export class EditableColumnNameComponent implements OnInit, OnDestroy {
 
   constructor(private el: ElementRef) {}
 
-  ngOnInit() {
-    this.editModeHandler();
-  }
-
   public toViewMode(confirmEdit: boolean) {
     if (confirmEdit) {
       this.update.emit(this.column);
@@ -43,16 +38,6 @@ export class EditableColumnNameComponent implements OnInit, OnDestroy {
 
   private get element() {
     return this.el.nativeElement;
-  }
-
-  private editModeHandler() {
-    const clickOutside$ = fromEvent(document, 'click').pipe(
-      filter(({ target }) => this.element.contains(target) === false),
-      take(1)
-    );
-
-    //TODO replace this with a directive?
-    this.editModeSubscription = this.editMode$.pipe(switchMapTo(clickOutside$)).subscribe(() => this.toViewMode(false));
   }
 
   get currentView() {

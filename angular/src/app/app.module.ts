@@ -98,6 +98,7 @@ import { TestimoniaTableComponent } from './filters/document-filter/testimonia-t
 import { IntroductionsComponent } from './commentary/introductions/introductions.component';
 import { EditableOnKeypressDirective } from './columns/column-name-editable/on-keypress.directive';
 import { AutofocusDirective } from './directives/autofocus.directive';
+import { OutsideClickDirective } from './columns/column-name-editable/click-outside-element.directive';
 // Routes to take. Disallows Path Traversal.
 const appRoutes: Routes = [
   { path: '', component: OverviewComponent },
@@ -117,6 +118,7 @@ const appRoutes: Routes = [
     ColumnsComponent,
     EditableColumnNameComponent,
     AutofocusDirective,
+    OutsideClickDirective,
     ViewModeDirective,
     EditModeDirective,
     EditableOnKeypressDirective,
