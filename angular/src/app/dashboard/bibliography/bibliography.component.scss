@@ -1,25 +1,3 @@
-@use "../../mixins" as *;
-@import url("../dashboard.component.scss");
-
-/* Create, revise, delete buttons */
-.bibliography-button {
-  margin-right: 0.5rem;
-  color: $theme-secondary;
-}
-
-#create-bibliography-button {
-  border-style: dashed;
-}
-
-#delete-bibliography-button:enabled {
-  @include button-dashed-background-red;
-}
-
-#delete-bibliography-button:disabled {
-  @include button-dashed-background-gray;
-  color: darkgray;
-}
-
 .bib-select:hover td {
   background-color: yellow;
   cursor: pointer;
@@ -34,7 +12,12 @@ table {
   width: 100%;
 }
 
-td,
-th {
-  width: 25%;
+.mat-cell, .mat-header-cell {
+  overflow: hidden;
+  word-wrap: break-word;  /* or 'break-word' / 'break-all' depending on your content */
 }
+
+//td,
+//th {
+  //width: 25%;
+//}

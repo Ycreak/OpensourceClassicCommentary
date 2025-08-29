@@ -7,7 +7,7 @@
 
   <mat-form-field class="example-form-field">
     <mat-label>Pages</mat-label>
-    <input matInput type="text" [(ngModel)]="this.pages" />
+    <input matInput type="text" [(ngModel)]="pages" />
     <mat-hint>Add a single page number or a range, e.g. 10 or 10-12 respectively.</mat-hint>
   </mat-form-field>
 
@@ -15,41 +15,41 @@
 
   <mat-form-field appearance="outline" class="table-filter-form-field">
     <mat-label>Filter...</mat-label>
-    <input matInput (keyup)="this.apply_sort_filter($event)" placeholder="..." #input />
+    <input matInput (keyup)="apply_sort_filter($event)" placeholder="..." #input />
   </mat-form-field>
 
   <div class="mat-elevation-z1">
-    <table mat-table [dataSource]="this.table_data" matSort>
+    <table mat-table [dataSource]="table_data" matSort>
       <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header class="col-4">Author</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Author</th>
         <td mat-cell *matCellDef="let row">
           {{ row.name }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="title">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header class="col-5">Title</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Title</th>
         <td mat-cell *matCellDef="let row">
           <i>{{ row.title }}</i>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="date">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header class="col-5">Date</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
         <td mat-cell *matCellDef="let row">
           {{ row.date }}
         </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="this.table_columns"></tr>
+      <tr mat-header-row *matHeaderRowDef="table_columns"></tr>
       <tr
         mat-row
         class="bib-select"
-        [mat-dialog-close]="this.get_bib_key(row.key, row.lastname, row.date, this.pages)"
-        *matRowDef="let row; columns: this.table_columns"></tr>
+        [mat-dialog-close]="get_bib_key(row.key, row.lastname, row.date,pages)"
+        *matRowDef="let row; columns:table_columns"></tr>
 
       <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell" colspan="4">No data matches filter.</td>
+        <td class="mat-cell" colspan="3">No data matches filter.</td>
       </tr>
     </table>
     <mat-paginator [pageSizeOptions]="[25, 100, 1000]" #paginator="matPaginator"> </mat-paginator>

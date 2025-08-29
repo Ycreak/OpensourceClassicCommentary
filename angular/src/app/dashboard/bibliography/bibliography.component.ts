@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 
 import { ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
@@ -16,12 +16,12 @@ import { DialogService } from '@oscc/services/dialog.service';
   templateUrl: './bibliography.component.html',
   styleUrls: ['./bibliography.component.scss'],
 })
-export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
+export class BibliographyComponent implements OnDestroy {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   table_columns: string[] = ['name', 'title', 'date'];
   table_data: MatTableDataSource<any>;
-  table_source_data: any[];
+  table_source_data: any[] = [];
 
   private bib_subscription: any;
   protected pages: string;
@@ -31,20 +31,7 @@ export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
     protected auth_service: AuthService,
     protected dialog: DialogService
   ) {
-    this.table_data = new MatTableDataSource(this.table_source_data);
-  }
-
-  /**
-   * On Init, we just load the list of authors. From here, selection is started
-   */
-  ngOnInit(): void {
     this.fill_table(this.bib.bibliography);
-  }
-
-  ngAfterViewInit(): void {
-    // Sort and paginator prefer an init AfterViewInit
-    this.table_data.paginator = this.paginator;
-    this.table_data.sort = this.sort;
   }
 
   ngOnDestroy(): void {
@@ -60,7 +47,6 @@ export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param date (string)
    * @param pages (string)
    * @return bib_key (string)
-   * @author Ycreak
    */
   protected get_bib_key(key: string, author: string, date: string, pages: string): string {
     if (pages) {
@@ -73,13 +59,8 @@ export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
   /**
    * Function to fill the zotero table with data
    * @param data received from the API
-   * @author Ycreak
    */
   private fill_table(bib: any) {
-    this.table_data.paginator = this.paginator;
-    this.table_data.sort = this.sort;
-    this.table_source_data = [];
-
     for (const i in bib) {
       let name = 'no author provided';
       let lastname = 'no author provided';
@@ -110,7 +91,6 @@ export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
    * Applies the sorting and filtering of the given table. Handles pagination if necessary.
    * @param event handles the filtering if provided
    * @param table that needs to be sorted/filtered
-   * @author Ycreak
    */
   public apply_sort_filter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value;
