@@ -14,6 +14,7 @@ import { Fragment } from '@oscc/models/Fragment';
 import { Column } from '@oscc/models/Column';
 
 @Component({
+  standalone: false,
   selector: 'app-fragments-dashboard',
   templateUrl: './fragments-dashboard.component.html',
   styleUrls: ['./fragments-dashboard.component.scss'],

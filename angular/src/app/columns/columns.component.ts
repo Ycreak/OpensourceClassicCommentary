@@ -29,6 +29,7 @@ import { Fragment } from '@oscc/models/Fragment';
 import { Linked_fragment } from '@oscc/models/Linked_fragment';
 
 @Component({
+  standalone: false,
   selector: 'app-columns',
   templateUrl: './columns.component.html',
   styleUrls: ['./columns.component.scss'],

@@ -18,6 +18,7 @@ import { UtilityService } from '@oscc/utility.service';
 import { Introduction } from '@oscc/models/Introduction';
 
 @Component({
+  standalone: false,
   selector: 'app-introductions-dashboard',
   templateUrl: './introductions-dashboard.component.html',
   styleUrls: ['./introductions-dashboard.component.scss'],

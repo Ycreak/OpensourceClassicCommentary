@@ -18,6 +18,7 @@ import { UtilityService } from '@oscc/utility.service';
 import { Testimonium } from '@oscc/models/Testimonium';
 
 @Component({
+  standalone: false,
   selector: 'app-testimonia-dashboard',
   templateUrl: './testimonia-dashboard.component.html',
   styleUrls: ['./testimonia-dashboard.component.scss'],

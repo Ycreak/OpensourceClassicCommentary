@@ -1,6 +1,7 @@
 import { Directive, Output, EventEmitter, HostListener } from '@angular/core';
 
 @Directive({
+  standalone: false,
   selector: '[appOnCopy]',
 })
 export class OnCopyDirective {

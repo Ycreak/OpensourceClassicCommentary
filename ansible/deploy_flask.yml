@@ -56,6 +56,17 @@
         dest: "{{ dest_dir }}/"
         mode: '0644'
     
+    - name: Delete old database.py file 
+      file:
+        path: "{{ dest_dir }}/database.py"
+        state: absent
+
+    - name: Copy new database.py file 
+      copy:
+        src: "{{ src_dir }}/database.py"
+        dest: "{{ dest_dir }}/"
+        mode: '0644'
+
     - name: Delete old utilities.py file 
       file:
         path: "{{ dest_dir }}/utilities.py"
