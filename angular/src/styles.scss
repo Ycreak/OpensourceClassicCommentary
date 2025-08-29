@@ -50,7 +50,9 @@ div.dialog-header {
   align-items: flex-end;
   padding-left: 1em;
   color: white;
-  background-color: mat.m2-get_color_from_palette(mat.$m2-pink-palette, "A200");
+  /*TODO: duplicate with dialogs.scss */
+  /*background-color: mat.m2-get_color_from_palette(mat.$m2-pink-palette, "A200"); */
+  background-color: pink
 }
 div.dialog-header h2 {
   font-size: 1.5em;
