@@ -1,10 +1,17 @@
+/* The playground component holds all logic regarding the playground, including the fabricjs canvas,
+ * the save and open buttons and all other components that are part of the playground. These components
+ * are found inside this folder, but are not in this file. This component should just be the host to all
+ * these individual components. Additionally, it holds information about the currently loaded playground,
+ * like its name and its users. The canvas is fully handled by the fabric service.
+ */
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Output, EventEmitter } from '@angular/core';
 import { WebsocketsService } from '@oscc/playground/websockets.service';
 import { HostListener } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
-import * as fabric from 'fabric';
+//import * as fabric from 'fabric';
+import { fabric } from 'fabric';
 import { Subscription } from 'rxjs';
 
 // Service imports
@@ -19,7 +26,6 @@ import { FormatterService } from './services/formatter.service';
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
 import { DialogService } from '@oscc/services/dialog.service';
-import { Playground } from '@oscc/models/Playground';
 import { Playground_communicator } from '@oscc/models/api/Playground_communicator';
 
 // Component imports
@@ -43,30 +49,29 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   @HostListener('document:keyup', ['$event'])
   handleDeleteKeyboardEvent(event: KeyboardEvent) {
     if (event.key === 'Delete') {
-      this.playground.delete_selected();
+      this.fabric.delete_selected();
     } else if ((event.ctrlKey || event.metaKey) && event.key == 'Z') {
       // Redo the canvas on Ctrl+Shift+Z
-      this.playground.redo();
+      this.fabric.redo();
     } else if ((event.ctrlKey || event.metaKey) && event.key == 'z') {
       // Undo the canvas on Ctrl+Z
-      this.playground.undo();
+      this.fabric.undo();
     }
   }
   // Listener for window resize evenets
   @HostListener('window:resize', ['$event'])
   onResize() {
     // If we resize the window, we want the canvas to resize as well
-    this.playground.resize();
+    this.fabric.resize();
   }
 
-  // TODO: remove. For the quickfilter
-  protected _author: string;
-  protected _title: string;
-  protected _editor: string;
-  protected _name: string;
-
-  // Playground column that keeps all data related to said playground
-  protected playground: Playground;
+  // Information about the current playground
+  private _id: string;
+  private name: string;
+  protected role: string;
+  private users: Playground_user[];
+  private shared_with: string[];
+  private created_by: string;
 
   private canvas_change_subscription: Subscription;
   private websockets_subscription: Subscription;
@@ -74,13 +79,13 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   constructor(
     protected api: ApiService,
     protected auth_service: AuthService,
-    protected utility: UtilityService,
     protected dialog: DialogService,
+    protected fabric: FabricService,
+    protected utility: UtilityService,
     protected websockets: WebsocketsService,
     private commentary: CommentaryService,
-    private mat_dialog: MatDialog,
-    private fabric: FabricService,
-    private formatter: FormatterService
+    private formatter: FormatterService,
+    private mat_dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -130,7 +135,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
         this.formatter.format(doc);
       });
       // Place the documents on the canvas
-      this.playground.add(documents);
+      this.fabric.add(documents);
     });
   }
 
@@ -141,7 +146,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
     this.dialog.open_confirmation_dialog('Are you sure you want to clear the playground?', '').subscribe({
       next: (res) => {
         if (res) {
-          this.playground.clear();
+          this.fabric.clear();
         }
       },
     });
@@ -164,7 +169,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
             .subscribe((playground) => {
               if (playground.length > 0) {
                 this.process_incoming_playground(playground[0]);
-                this.utility.open_snackbar(`Playground ${this.playground.name} opened.`);
+                this.utility.open_snackbar(`Playground ${this.name} opened.`);
               } else {
                 this.utility.open_snackbar('Corrupt playground received from server.');
               }
@@ -181,17 +186,17 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
    */
   protected save_playground(): void {
     const dialogRef = this.mat_dialog.open(SavePlaygroundComponent, {
-      data: { name: this.playground.name },
+      data: { name: this.name },
     });
     dialogRef.afterClosed().subscribe((data: any) => {
       if (data) {
         if (data.button == 'save') {
-          if (this.playground.role == 'owner' || this.playground.role == 'collaborator') {
+          if (this.role == 'owner' || this.role == 'collaborator') {
             this.api.post_document(
               new Playground_communicator({
                 name: data.name,
-                canvas: this.playground.canvas.toJSON(),
-                _id: this.playground._id,
+                canvas: this.fabric.canvas.toJSON(),
+                _id: this._id,
               }),
               'update'
             );
@@ -203,7 +208,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
             .post_document(
               new Playground_communicator({
                 name: data.name,
-                canvas: this.playground.canvas.toJSON(),
+                canvas: this.fabric.canvas.toJSON(),
                 created_by: this.auth_service.current_user_name,
                 users: [
                   new Playground_user({
@@ -216,7 +221,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
             )
             .subscribe((playground) => {
               this.process_incoming_playground(playground);
-              this.utility.open_snackbar(`Playground ${this.playground.name} created.`);
+              this.utility.open_snackbar(`Playground ${this.name} created.`);
             });
         }
       }
@@ -253,11 +258,11 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
     // Take a subscription to the websocket with the generated room number
     this.websockets.active = true;
     this.websockets_subscription = this.websockets.get_messages().subscribe((message) => {
-      this.playground.canvas.loadFromJSON(message, this.playground.canvas.renderAll.bind(this.playground.canvas));
+      this.fabric.canvas.loadFromJSON(message, this.fabric.canvas.renderAll.bind(this.fabric.canvas));
     });
     // Take a subscription to canvas changes. These we will send to the websocket
-    this.canvas_change_subscription = this.playground.canvas_changed_subject.subscribe((nothing: any) => {
-      this.websockets.send_json(this.playground.canvas.toJSON());
+    this.canvas_change_subscription = this.fabric.canvas_changed_subject.subscribe(() => {
+      this.websockets.send_json(this.fabric.canvas.toJSON());
     });
   }
 
@@ -290,16 +295,16 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
    * @author Ycreak
    */
   protected share_playground(): void {
-    if (this.playground.name) {
-      const dialogRef = this.mat_dialog.open(SharePlaygroundComponent, { data: { users: this.playground.users } });
+    if (this.name) {
+      const dialogRef = this.mat_dialog.open(SharePlaygroundComponent, { data: { users: this.users } });
       dialogRef.afterClosed().subscribe({
         next: (users: Playground_user[]) => {
           if (users) {
-            this.playground.users = users;
+            this.users = users;
             this.api.post_document(
               new Playground_communicator({
-                _id: this.playground._id,
-                users: this.playground.users,
+                _id: this._id,
+                users: this.users,
               }),
               'update'
             );
@@ -316,22 +321,20 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
    * @author Ycreak
    */
   protected delete_playground(): void {
-    if (this.playground.name) {
+    if (this.name) {
       const dialogRef = this.mat_dialog.open(DeletePlaygroundComponent, {
-        data: { name: this.playground.name },
+        data: { name: this.name },
       });
       dialogRef.afterClosed().subscribe({
         next: (name: any) => {
           if (name) {
             // Check if we have the correct rights to delete the playground
-            if (this.playground.role === 'owner') {
-              //this.api.post_document(new Playground_communicator({ _id: this.playground._id }), 'delete');
-              this.api
-                .post_document(new Playground_communicator({ _id: this.playground._id }), 'delete')
-                .subscribe(() => {});
+            if (this.role === 'owner') {
+              //this.api.post_document(new Playground_communicator({ _id: this._id }), 'delete');
+              this.api.post_document(new Playground_communicator({ _id: this._id }), 'delete').subscribe(() => {});
               // Reset the playground to a clean slate
-              this.playground.clear();
-              this.playground.role = undefined;
+              this.fabric.clear();
+              this.role = undefined;
             } else {
               this.utility.open_snackbar('Not allowed');
             }
@@ -349,9 +352,9 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
    * @author Ycreak
    */
   protected request_commentary(): void {
-    const clicked_document = this.playground.canvas.getActiveObjects()[0];
-    if (!this.playground.is_note(clicked_document)) {
-      const full_document = this.utility.filter_array(this.playground.documents, clicked_document.identifier)[0];
+    const clicked_document = this.fabric.canvas.getActiveObjects()[0];
+    if (!this.fabric.is_note(clicked_document)) {
+      const full_document = this.utility.filter_array(this.fabric.documents, clicked_document.identifier)[0];
       if (full_document) {
         this.commentary.request(full_document);
         window.scroll(0, 0);
@@ -369,22 +372,17 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
    * @author Ycreak
    */
   private process_incoming_playground(playground: any): void {
-    this.playground.name = playground.name;
-    this.playground.created_by = playground.created_by;
+    this.name = playground.name;
+    this.created_by = playground.created_by;
 
     // Find the role of the current user in the provided playground
-    this.playground.role = playground.users.filter(
-      (item: any) => item.name === this.auth_service.current_user_name
-    )[0].role;
+    this.role = playground.users.filter((item: any) => item.name === this.auth_service.current_user_name)[0].role;
 
-    this.playground._id = playground._id;
-    this.playground.users = playground.users;
+    this._id = playground._id;
+    this.users = playground.users;
     // Apply data to the canvas
-    this.playground.canvas.clear();
-    this.playground.canvas.loadFromJSON(
-      playground.canvas,
-      this.playground.canvas.renderAll.bind(this.playground.canvas)
-    );
+    this.fabric.canvas.clear();
+    this.fabric.canvas.loadFromJSON(playground.canvas, this.fabric.canvas.renderAll.bind(this.fabric.canvas));
   }
 
   /**
@@ -392,9 +390,8 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
    * @author Ycreak
    */
   private init_playground(): void {
-    this.playground = new Playground(this.fabric);
-    this.playground.canvas = new fabric.Canvas('playground_canvas');
-    this.playground.set_event_handlers();
-    this.playground.init();
+    this.fabric.canvas = new fabric.Canvas('playground_canvas');
+    this.fabric.set_event_handlers();
+    this.fabric.init();
   }
 }

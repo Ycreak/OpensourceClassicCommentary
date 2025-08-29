@@ -13,8 +13,8 @@
     <canvas id="playground_canvas"></canvas>
 
     <!--Popup window with options for the documents-->
-    <div class="menu" *ngIf="this.playground.has_selection()">
-      <div class="br-icon" (click)="this.playground.delete_selected()">
+    <div class="menu" *ngIf="this.fabric.has_selection()">
+      <div class="br-icon" (click)="this.fabric.delete_selected()">
         <mat-icon class="menu-icon">backspace</mat-icon> delete objects
       </div>
       <div class="br-icon" (click)="this.request_commentary()">
@@ -39,7 +39,7 @@
           id="playground_note_btn"
           class="playground-icon"
           src="assets\icons\ByteDanceIconPark\9068939_notes_icon.png"
-          (click)="this.playground.add_note('edit me')" />
+          (click)="this.fabric.add_note('edit me')" />
         <img
           id="playground_clear_btn"
           class="playground-icon"
@@ -52,7 +52,7 @@
           id="playground_draw_btn"
           class="playground-icon"
           src="assets\icons\ByteDanceIconPark\9069780_write_icon.png"
-          (click)="this.playground.toggle_drawing_mode()" />
+          (click)="this.fabric.toggle_drawing_mode()" />
         <!--<img-->
         <!--id="playground_arrow_btn"-->
         <!--class="playground-icon"-->
@@ -72,12 +72,12 @@
           id="playground_undo_btn"
           class="playground-icon"
           src="assets\icons\ByteDanceIconPark\9069465_return_icon.png"
-          (click)="this.playground.undo()" />
+          (click)="this.fabric.undo()" />
         <img
           id="playground_redo_btn"
           class="playground-icon"
           src="assets\icons\ByteDanceIconPark\9069840_go_on_icon.png"
-          (click)="this.playground.redo()" />
+          (click)="this.fabric.redo()" />
       </div>
 
       <div id="playground-load-save-tools" class="playground-tool-group" *ngIf="this.auth_service.is_logged_in">
@@ -92,7 +92,7 @@
           src="assets\icons\ByteDanceIconPark\9068981_folder_open_icon.png"
           (click)="this.load_playground()" />
         <img
-          *ngIf="this.playground.role === 'owner'"
+          *ngIf="this.role === 'owner'"
           id="playground_delete_btn"
           class="playground-icon"
           src="assets\icons\ByteDanceIconPark\9069053_folder_delete_icon.png"
@@ -100,7 +100,7 @@
       </div>
       <div id="playground-sharing-tools" class="playground-tool-group">
         <img
-          *ngIf="this.playground.role === 'owner'"
+          *ngIf="this.role === 'owner'"
           id="playground_share_btn"
           class="playground-icon"
           src="assets\icons\ByteDanceIconPark\9071373_people_plus_one_icon.png"
