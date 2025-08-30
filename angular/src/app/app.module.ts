@@ -18,9 +18,9 @@ import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './auth/auth.guard';
 import { SafeHtmlPipe } from './pipes/safeHtml.pipe';
 
-import { ConfirmationDialogComponent } from './services/dialog.service';
+//import { ConfirmationDialogComponent } from './dialogs/confirmation/confirmation-dialog.component';
 import { WYSIWYGDialogComponent } from './services/dialog.service';
-import { SettingsDialogComponent } from './services/dialog.service';
+//import { SettingsDialogComponent} from './services/dialog.service';
 import { BibliographyComponent } from './dashboard/bibliography/bibliography.component';
 import { CustomDialogComponent } from './services/dialog.service';
 import { ColumnBibliographyComponent } from './services/dialog.service';
@@ -113,9 +113,9 @@ const appRoutes: Routes = [
     DashboardComponent,
     LoginComponent,
     ScansionComponent,
-    ConfirmationDialogComponent,
+    //ConfirmationDialogComponent,
     WYSIWYGDialogComponent,
-    SettingsDialogComponent,
+    //SettingsDialogComponent,
     CustomDialogComponent,
     ColumnBibliographyComponent,
     PlaygroundComponent,

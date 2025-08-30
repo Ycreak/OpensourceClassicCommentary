@@ -3,10 +3,10 @@
  * For example, settings saved in the fragments component will be saved when entering
  * the dashboard.
  */
-
 import { Injectable } from '@angular/core';
 import { LocalStorageService } from '@oscc/services/local-storage.service';
-import { DialogService } from '@oscc/services/dialog.service';
+import { MatDialog } from '@angular/material/dialog';
+import { SettingsDialogComponent } from '@oscc/dialogs/settings/settings-dialog.component';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +23,7 @@ export class SettingsService {
 
   constructor(
     private localstorage: LocalStorageService,
-    protected dialog: DialogService
+    protected dialog: MatDialog
   ) {}
 
   /**
@@ -31,7 +31,13 @@ export class SettingsService {
    * @author Ycreak
    */
   public open_settings(): void {
-    this.dialog.open_settings_dialog(this.fragments).subscribe(() => {
+    const dialogRef = this.dialog.open(SettingsDialogComponent, {
+      width: 'auto',
+      height: 'auto',
+      data: this.fragments,
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
       // Also save the settings in local storage
       this.save_settings();
     });

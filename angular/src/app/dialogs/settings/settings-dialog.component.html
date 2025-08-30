@@ -1,0 +1,126 @@
+<!-- This dialog is used to change system settings. It receives an oscc_settings object called data,
+  which can be changed using the toggles defined below. -->
+<div class="dialog-header">
+  <h2>OSCC Settings</h2>
+  <button mat-icon-button [mat-dialog-close]="null" [disableRipple]="true">
+    <mat-icon>clear</mat-icon>
+  </button>
+</div>
+
+<div class="dialog-content" mat-dialog-content>
+  <!-- <br> -->
+
+  <p>
+    <mat-slide-toggle [(ngModel)]="data.dragging_disabled">
+      <span class="text-tooltip" [matTooltip]="this.tooltips.dragging_disabled" matTooltipShowDelay="1000"
+        >Disable fragment dragging</span
+      >
+    </mat-slide-toggle>
+    &nbsp;
+    <mat-icon
+      class="icon-tooltip"
+      #dragtooltip_icon="matTooltip"
+      [matTooltip]="this.tooltips.dragging_disabled"
+      [matTooltipDisabled]="true"
+      (click)="this.toggle_tooltip(dragtooltip_icon)"
+      (mouseenter)="(null)"
+      (mouseleave)="this.disable_tooltip(dragtooltip_icon)"
+      >help_outline</mat-icon
+    >
+  </p>
+
+  <br />
+
+  <p>
+    <mat-slide-toggle [(ngModel)]="data.fragment_order_gradient">
+      <span class="text-tooltip" [matTooltip]="this.tooltips.fragment_order_gradient" matTooltipShowDelay="1000"
+        >Show fragment order gradient</span
+      >
+    </mat-slide-toggle>
+    &nbsp;
+    <mat-icon
+      class="icon-tooltip"
+      #gradienttooltip_icon="matTooltip"
+      [matTooltip]="this.tooltips.fragment_order_gradient"
+      [matTooltipDisabled]="true"
+      (click)="this.toggle_tooltip(gradienttooltip_icon)"
+      (mouseenter)="(null)"
+      (mouseleave)="this.disable_tooltip(gradienttooltip_icon)"
+      >help_outline</mat-icon
+    >
+  </p>
+
+  <br />
+
+  <p>
+    <mat-slide-toggle [(ngModel)]="data.show_headers">
+      <span class="text-tooltip" [matTooltip]="this.tooltips.show_headers" matTooltipShowDelay="1000"
+        >Show fragments headers</span
+      >
+    </mat-slide-toggle>
+    &nbsp;
+    <mat-icon
+      class="icon-tooltip"
+      #headertooltip_icon="matTooltip"
+      [matTooltip]="this.tooltips.show_headers"
+      [matTooltipDisabled]="true"
+      (click)="this.toggle_tooltip(headertooltip_icon)"
+      (mouseenter)="(null)"
+      (mouseleave)="this.disable_tooltip(headertooltip_icon)"
+      >help_outline</mat-icon
+    >
+  </p>
+
+  <br />
+
+  <p>
+    <mat-slide-toggle [(ngModel)]="data.show_line_names">
+      <span class="text-tooltip" [matTooltip]="this.tooltips.show_line_names" matTooltipShowDelay="1000"
+        >Show fragment line names</span
+      >
+    </mat-slide-toggle>
+    &nbsp;
+    <mat-icon
+      class="icon-tooltip"
+      #linenametooltip_icon="matTooltip"
+      [matTooltip]="this.tooltips.show_line_names"
+      [matTooltipDisabled]="true"
+      (click)="this.toggle_tooltip(linenametooltip_icon)"
+      (mouseenter)="(null)"
+      (mouseleave)="this.disable_tooltip(linenametooltip_icon)"
+      >help_outline</mat-icon
+    >
+  </p>
+
+  <br />
+
+  <p>
+    <mat-slide-toggle [(ngModel)]="data.auto_scroll_linked_fragments">
+      <span class="text-tooltip" [matTooltip]="this.tooltips.auto_scroll_linked_fragments" matTooltipShowDelay="1000"
+        >Auto scroll to linked fragments</span
+      >
+    </mat-slide-toggle>
+    &nbsp;
+    <mat-icon
+      class="icon-tooltip"
+      #autoscrolllinkedtooltip_icon="matTooltip"
+      [matTooltip]="this.tooltips.auto_scroll_linked_fragments"
+      [matTooltipDisabled]="true"
+      (click)="this.toggle_tooltip(autoscrolllinkedtooltip_icon)"
+      (mouseenter)="(null)"
+      (mouseleave)="this.disable_tooltip(autoscrolllinkedtooltip_icon)"
+      >help_outline</mat-icon
+    >
+  </p>
+
+  <hr />
+
+  <p>Change size of the commentary window</p>
+  <div class="center">
+    <mat-slider min="20" max="80" step="10" value="50" discrete color="accent">
+      <input matSliderThumb [(ngModel)]="data.commentary_size" />
+    </mat-slider>
+  </div>
+
+  <br />
+</div>

@@ -1,9 +1,14 @@
+/**
+ * This service allows components to easily open a dialog and interact with them.
+ */
 import { Injectable, Inject, Component, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { ApiService } from '@oscc/api.service';
 import { BibliographyComponent } from '@oscc/dashboard/bibliography/bibliography.component';
 import { MatTooltip } from '@angular/material/tooltip';
+import { ConfirmationDialogComponent } from '@oscc/dialogs/confirmation/confirmation-dialog.component';
+import { AboutDialogComponent } from '@oscc/dialogs/about/about-dialog.component';
 
 /**
  * This service handles the dialogs used in the OSCC
@@ -16,11 +21,11 @@ export class DialogService {
   constructor(private dialog: MatDialog) {}
 
   /**
-   * Function to open the about dialog
-   * @author Ycreak
+   * Function to handle the about dialog
    */
   public open_about_dialog(): void {
-    this.dialog.open(ShowAboutDialogComponent, {
+    //this.mat_dialog.open(AboutDialogComponent, {});
+    this.dialog.open(AboutDialogComponent, {
       autoFocus: false, // To allow scrolling in the dialog
       maxHeight: '90vh', //you can adjust the value as per your view
     });
@@ -32,7 +37,7 @@ export class DialogService {
    * @param item the item that is about to change
    * @author Ycreak
    */
-  public open_confirmation_dialog(message, item): Observable<boolean> {
+  public open_confirmation_dialog(message: string, item: string): Observable<boolean> {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: 'auto',
       data: {
@@ -56,22 +61,6 @@ export class DialogService {
       data: {
         content: content,
       },
-    });
-    return dialogRef.afterClosed(); // Returns observable.
-  }
-
-  /**
-   * This function handles the settings dialog. Settings are passed in the data object.
-   * @param settings oscc_settings object with all settings that can be changed
-   * @returns Observable with the oscc_settings object if successful
-   * @author Ycreak
-   * TODO: have a close button that discards changes?
-   */
-  public open_settings_dialog(settings): Observable<string> {
-    const dialogRef = this.dialog.open(SettingsDialogComponent, {
-      width: 'auto',
-      height: 'auto',
-      data: settings,
     });
     return dialogRef.afterClosed(); // Returns observable.
   }
@@ -103,38 +92,6 @@ export class DialogService {
         content: content,
       },
     });
-  }
-}
-
-/**
- * Class to show the about dialogs
- */
-@Component({
-  standalone: false,
-  selector: 'app-about-dialog',
-  templateUrl: '../dialogs/about-dialog.html',
-  styleUrls: ['../dialogs/dialogs.scss'],
-})
-export class ShowAboutDialogComponent {}
-
-/**
- * Class to show a confirmation dialog when needed.
- * Shows whatever data is given via the public variable 'data'
- */
-@Component({
-  standalone: false,
-  selector: 'app-confirmation-dialog',
-  templateUrl: '../dialogs/confirmation-dialog.html',
-  styleUrls: ['../dialogs/dialogs.scss'],
-})
-export class ConfirmationDialogComponent {
-  constructor(
-    public dialogRef: MatDialogRef<ConfirmationDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data
-  ) {}
-
-  onNoClick(): void {
-    this.dialogRef.close();
   }
 }
 
@@ -247,47 +204,4 @@ export class ColumnBibliographyComponent {
     public dialogRef: MatDialogRef<ColumnBibliographyComponent>,
     @Inject(MAT_DIALOG_DATA) public data
   ) {}
-}
-
-/**
- * Class to show the settings dialog.
- * The provided 'data' is used to communicate the settings.
- */
-@Component({
-  standalone: false,
-  selector: 'app-settings-dialog',
-  templateUrl: '../dialogs/settings-dialog.html',
-  styleUrls: ['../dialogs/dialogs.scss'],
-})
-export class SettingsDialogComponent {
-  @ViewChild('dragtooltip_icon') dragtooltip_icon: MatTooltip;
-
-  protected tooltips = {
-    dragging_disabled: 'Disallows moving fragments by dragging them',
-    fragment_order_gradient:
-      'Enables a color gradient that shows the original order of the fragments, from a lighter to a darker color',
-    show_headers: 'Show fragment headers that include data about the fragment',
-    show_line_names: 'Show the name or number of each line of each fragment',
-    auto_scroll_linked_fragments: 'Automatically scrolls linked fragments into view if possible',
-  };
-
-  constructor(
-    public dialogRef: MatDialogRef<SettingsDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data
-  ) {}
-
-  protected toggle_tooltip(tooltip) {
-    if (tooltip.disabled) {
-      tooltip.disabled = false;
-      tooltip.show();
-    } else {
-      tooltip.disabled = true;
-      tooltip.hide();
-    }
-  }
-
-  protected disable_tooltip(tooltip) {
-    tooltip.disabled = true;
-    tooltip.hide();
-  }
 }

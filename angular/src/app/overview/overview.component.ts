@@ -15,12 +15,12 @@ import { SettingsService } from '@oscc/services/settings.service';
 import { WindowSizeWatcherService } from '@oscc/services/window-watcher.service';
 import { AuthService } from '@oscc/auth/auth.service';
 import { SandboxService } from '@oscc/services/sandbox.service';
+import { DialogService } from '@oscc/services/dialog.service';
 
 // Component imports
 import { LoginComponent } from '@oscc/login/login.component';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
-import { AboutDialogComponent } from '@oscc/dialogs/about/about-dialog.component';
 
 @Component({
   standalone: false,
@@ -35,6 +35,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   constructor(
     protected api: ApiService,
     protected auth_service: AuthService,
+    protected dialog_service: DialogService,
     protected sandbox: SandboxService,
     protected settings: SettingsService,
     protected window_watcher: WindowSizeWatcherService,
@@ -102,18 +103,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
    */
   protected login(): void {
     this.mat_dialog.open(LoginComponent, {});
-  }
-
-  /**
-   * Function to handle the login dialog
-   * @author Ycreak
-   */
-  protected open_about_dialog(): void {
-    //this.mat_dialog.open(AboutDialogComponent, {});
-    this.mat_dialog.open(AboutDialogComponent, {
-      autoFocus: false, // To allow scrolling in the dialog
-      maxHeight: '90vh', //you can adjust the value as per your view
-    });
   }
 
   /**
