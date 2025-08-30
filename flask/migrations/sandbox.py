@@ -31,7 +31,7 @@ class Migration:
                 doc["sandbox"] = "admin"
 
                 doc_id, doc_rev = self.db.save(doc)
-            except:
+            except Exception:
                 pass
             print("#####################")
 

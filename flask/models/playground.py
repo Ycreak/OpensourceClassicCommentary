@@ -2,7 +2,6 @@
 Model to handle playgrounds
 """
 
-import logging
 
 from uuid import uuid4
 

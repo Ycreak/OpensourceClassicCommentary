@@ -1,1 +1,0 @@
-This folder contains the bibliography functionality that is still under construction.
