@@ -1,10 +1,12 @@
 """
 Model to handle testimonia
 """
+
 from dataclasses import dataclass
 from uuid import uuid4
 
 from database import Database
+
 
 class TestimoniumFields(object):
     ID = "_id"
@@ -19,25 +21,27 @@ class TestimoniumFields(object):
     LOCK = "lock"
     VISIBLE = "visible"
 
+
 @dataclass
 class TestimoniumModel:
     _id: str = None
-    document_type: str = 'testimonium'
+    document_type: str = "testimonium"
     name: str = None
     author: str = None
     title: str = None
     translation: str = None
     witness: str = None
     text: str = None
-    editor : str = None
+    editor: str = None
     sandbox: str = None
-    lock: int = None 
-    visible: int = None 
+    lock: int = None
+    visible: int = None
+
 
 class Testimonium:
     def __init__(self, server):
         self.database = Database(server)
-    
+
     def get(self, document: dict) -> list:
         """
         Retrieves the testimonium given the document filter.
@@ -52,16 +56,20 @@ class Testimonium:
         testimonium.sandbox = document.get(TestimoniumFields.SANDBOX, None)
 
         # Convert the model into a dictionary
-        testimonium = {key: value for key, value in testimonium.__dict__.items() if value is not None}
+        testimonium = {
+            key: value
+            for key, value in testimonium.__dict__.items()
+            if value is not None
+        }
 
         document_list = self.database.filter(testimonium)
         # Process the found documents into proper testimonia
-        result: list = [] 
+        result: list = []
         for document in document_list:
             testimonium = TestimoniumModel()
             testimonium = self._convert_document_to_testimonium(document)
             result.append(testimonium)
-        
+
         return result
 
     def create(self, document: dict) -> str:
@@ -73,21 +81,25 @@ class Testimonium:
             return ""
 
         testimonium = self._convert_document_to_testimonium(document)
-        testimonium._id = uuid4().hex 
+        testimonium._id = uuid4().hex
 
         # Convert the model into a dictionary
-        testimonium = {key: value for key, value in testimonium.__dict__.items() if value is not None}
-       
+        testimonium = {
+            key: value
+            for key, value in testimonium.__dict__.items()
+            if value is not None
+        }
+
         doc_id = self.database.create(testimonium)
-        return doc_id 
-    
+        return doc_id
+
     def delete(self, document: dict) -> bool:
         """
         Deletes the given introduction by its identifier.
         """
         testimonium = self._convert_document_to_testimonium(document)
         return self.database.delete(testimonium._id)
-    
+
     def update(self, document: dict) -> bool:
         """
         Updates the given introduction. Must receive an identifier to update.
@@ -98,10 +110,14 @@ class Testimonium:
             return False
 
         # Convert the model into a dictionary
-        testimonium = {key: value for key, value in testimonium.__dict__.items() if value is not None}
+        testimonium = {
+            key: value
+            for key, value in testimonium.__dict__.items()
+            if value is not None
+        }
 
         return self.database.update(testimonium)
-    
+
     def _convert_document_to_testimonium(self, document: dict) -> TestimoniumModel:
         """
         Converts the received document into a testimonium using the testimoniumModel

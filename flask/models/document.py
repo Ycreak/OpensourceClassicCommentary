@@ -1,10 +1,12 @@
 """
 Super class for all document related documents
 """
+
 from dataclasses import dataclass, asdict
 import logging
 
 import config as conf
+
 
 class DocumentField(object):
     ID = "_id"
@@ -24,6 +26,7 @@ class DocumentField(object):
     CONTEXT = "context"
     LINES = "lines"
     LINKED_FRAGMENTS = "linked_fragments"
+
 
 @dataclass
 class Document:
@@ -45,10 +48,11 @@ class Document:
     lines: list = None
     linked_fragments: list = None
 
+
 class FragmentModel:
     def __init__(self, server):
         self.db = server[conf.COUCH_FRAGMENTS]
-    
+
     def __get_fragments(self, frag_lst):
         result = list()
         for doc in frag_lst:
@@ -90,26 +94,20 @@ class FragmentModel:
         return result
 
     def all(self, sorted=False):
-        result = self.db.find({
-            "selector": dict(),
-            "limit": conf.COUCH_LIMIT
-        })
+        result = self.db.find({"selector": dict(), "limit": conf.COUCH_LIMIT})
         result = self.__get_fragments(result)
         if sorted:
             result.sort(key=lambda Fragment: Fragment.name)
         return result
-        
+
     def filter(self, fragment, sorted=False):
         fragment = {key: value for key, value in fragment.__dict__.items() if value}
         # @deprecated because of refactoring
-        # if "_id" in fragment: 
+        # if "_id" in fragment:
         #     fragment[FragmentField.ID] = fragment.pop("_id")
         # if "name" in fragment:
         #     fragment[FragmentField.NAME] = fragment.pop("name")
-        mango = {
-            "selector": fragment,
-            "limit": conf.COUCH_LIMIT
-        }
+        mango = {"selector": fragment, "limit": conf.COUCH_LIMIT}
         print(mango)
         result = self.db.find(mango)
         result = self.__get_fragments(result)
@@ -122,7 +120,7 @@ class FragmentModel:
         # @deprecated because of refactoring
         # fragment[FragmentField.ID] = fragment.pop("_id") # MongoDB uses "_id" instead of "id"
         # fragment[FragmentField.NAME] = fragment.pop("name")
-        
+
         doc_id, _ = self.db.save(fragment)
         if not doc_id:
             logging.error("create(): failed to create fragment")
@@ -142,7 +140,7 @@ class FragmentModel:
             for key, value in asdict(fragment).items():
                 if value != None:
                     doc[key] = value
-            print(f'doc: {doc}')
+            print(f"doc: {doc}")
             self.db.save(doc)
             return True
         except Exception as e:
@@ -151,7 +149,7 @@ class FragmentModel:
 
     def delete(self, fragment):
         fragment = self.get(fragment)
-    
+
         if fragment == None:
             logging.error("delete(): fragment could not be found")
             return False
@@ -165,10 +163,7 @@ class FragmentModel:
 
     def get(self, fragment):
         fragment = {key: value for key, value in fragment.__dict__.items() if value}
-        mango = {
-            "selector": fragment,
-            "limit": conf.COUCH_LIMIT
-        }
+        mango = {"selector": fragment, "limit": conf.COUCH_LIMIT}
         result = self.db.find(mango)
         result = self.__get_fragments(result)
 
@@ -178,13 +173,14 @@ class FragmentModel:
             return result[0]
         return None
 
+
 #     def get_or_create(self, user):
 #         result = self.get(user)
 #         if result is not None:
 #             return result
 #         else:
 #             return self.create(user)
-    
+
 #     def update(self, user):
 #         _user = self.get(User(username=user.username))
 #         if _user == None:
@@ -200,4 +196,3 @@ class FragmentModel:
 #         except Exception as e:
 #             logging.error(e)
 #         return False
-

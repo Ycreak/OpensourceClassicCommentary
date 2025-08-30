@@ -5,9 +5,14 @@ import logging
 from flask_jsonpify import jsonify
 
 from Server.couch import CouchAuthenticator
-from Server.models.introduction import IntroductionForm, IntroductionFormField, IntroductionFormModel
+from Server.models.introduction import (
+    IntroductionForm,
+    IntroductionFormField,
+    IntroductionFormModel,
+)
 
 introduction = IntroductionFormModel(CouchAuthenticator().couch)
+
 
 def get_introduction() -> make_response:
     try:
@@ -25,12 +30,12 @@ def get_introduction() -> make_response:
     # If an author/title combo was not found, look for author only
     if not intro:
         author_only = copy.deepcopy(introform)
-        author_only.title = ''
+        author_only.title = ""
         intro = introduction.get(author_only)
         # Make sure that only one introduction text entry is returned
         if isinstance(intro, list):
             intro = intro[0]
-            intro['title_text'] = '' # Return only author introduction text
+            intro["title_text"] = ""  # Return only author introduction text
 
     # Return the introduction text to the user
     return make_response(jsonify(intro))
@@ -59,21 +64,20 @@ def make_introduction_form_object() -> IntroductionForm:
     try:
         author = json[IntroductionFormField.AUTHOR]
     except:
-        author = ''
+        author = ""
     try:
         title = json[IntroductionFormField.TITLE]
-    except: 
-        title = ''
-    try: # FIXME: This is a hack
+    except:
+        title = ""
+    try:  # FIXME: This is a hack
         author_text = json[IntroductionFormField.AUTHOR_TEXT]
     except:
-        author_text = ''
+        author_text = ""
     try:
         title_text = json[IntroductionFormField.TITLE_TEXT]
     except:
-        title_text = ''
+        title_text = ""
 
-    return IntroductionForm(author=author,
-                            title=title, 
-                            author_text=author_text, 
-                            title_text=title_text)
+    return IntroductionForm(
+        author=author, title=title, author_text=author_text, title_text=title_text
+    )
