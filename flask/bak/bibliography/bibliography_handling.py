@@ -22,7 +22,7 @@
 
 #         # Select the database we need
 #         self.bib_db = database['bibliography']
-        
+
 
 #     def add_entry(self, bib_entry):
 #         """Adds a new bibliography entry to the database. Checks first if the entry all exists
@@ -37,11 +37,11 @@
 
 #         Returns:
 #             flask response: whether the operation was succesful
-#         """        
+#         """
 #         check_exist = False
 #         #TODO: check if the title already exists
 #         if check_exist:
-#             EQUALITY_RATIO = 90 
+#             EQUALITY_RATIO = 90
 #             for id in self.bib_db:
 #                 author = self.bib_db[id]['author']
 #                 title = self.bib_db[id]['title']
@@ -49,7 +49,7 @@
 #                 if fuzz.ratio(bib_entry['author'], author) > EQUALITY_RATIO and fuzz.ratio(bib_entry['title'], title) > EQUALITY_RATIO:
 #                     return make_response(f'Similar bibliography entry already exists: {author}, {title}', 403)
 
-#         # depending on the entry type, create a template. 
+#         # depending on the entry type, create a template.
 #         if bib_entry.bib_entry_type == 'book': new_entry = copy.deepcopy(bib_entry.book_empty)
 #         elif bib_entry.bib_entry_type == 'article': new_entry = copy.deepcopy(bib_entry.article_empty)
 #         elif bib_entry.bib_entry_type == 'incollection': new_entry = copy.deepcopy(bib_entry.incollection_empty)
@@ -74,19 +74,19 @@
 
 #         Returns:
 #             flask response: response on successful execution
-#         """                  
+#         """
 #         doc = self.bib_db[bib_entry._id]
 
 #         # Take the document and replace its fields with the new data received
 #         for field in doc:
 #             if hasattr(bib_entry, field):
 #                 doc[field] = getattr(bib_entry, field)
-        
+
 #         doc_id, doc_rev = self.bib_db.save(doc)
-        
+
 #         print('Succesfully revised bibliography entry!')
 #         return make_response('Succesfully revised bibliography entry!', 200)
-        
+
 
 #     def delete_entry(self, bib_entry):
 #         """Deletes the given bibliography entry using its id
@@ -96,7 +96,7 @@
 
 #         Returns:
 #             flask response: with information about the status
-#         """      
+#         """
 #         doc = self.bib_db[bib_entry._id]
 #         self.bib_db.delete(doc)
 
@@ -127,10 +127,10 @@
 #         bib_list = []
 
 #         for bibliography in bibliographies:
-            
+
 #             bib_object = Bib_entry(bibliography)
 #             bib_entry = {'_id' : bib_object._id, 'bib_entry_type': bib_object.bib_entry_type}
-            
+
 #             if hasattr(bib_object, 'author'): bib_entry['author'] = bib_object.author
 #             if hasattr(bib_object, 'title'): bib_entry['title'] = bib_object.title
 #             if hasattr(bib_object, 'year'): bib_entry['year'] = bib_object.year
@@ -142,7 +142,7 @@
 #             if hasattr(bib_object, 'volume'): bib_entry['volume'] = bib_object.volume
 #             if hasattr(bib_object, 'pages'): bib_entry['pages'] = bib_object.pages
 
-#             bib_list.append(bib_entry) 
+#             bib_list.append(bib_entry)
 
 #         return bib_list
 
@@ -156,11 +156,11 @@
 #             bib_list(list): list of bibliography objects linked to the given id
 #         """
 #         bibliographies = Retrieve_data_from_db(self.bib_db, {'_id': _id}, [])
-  
-#         for bibliography in bibliographies:   # This needs to be a loop for some reason     
-#             bib_object = Bib_entry(bibliography)  
+
+#         for bibliography in bibliographies:   # This needs to be a loop for some reason
+#             bib_object = Bib_entry(bibliography)
 #             bib_entry = {'_id' : bib_object._id, 'bib_entry_type': bib_object.bib_entry_type}
-            
+
 #             if hasattr(bib_object, 'author'): bib_entry['author'] = bib_object.author
 #             if hasattr(bib_object, 'title'): bib_entry['title'] = bib_object.title
 #             if hasattr(bib_object, 'year'): bib_entry['year'] = bib_object.year
@@ -175,14 +175,13 @@
 #             return bib_entry # there can be only one
 
 
-
 # if __name__ == "__main__":
 #     bib_handler = Bibliography_handler()
-    
+
 #     bib_handler.retrieve_bibliography_from_author('Ribbeck')
 #     exit(0)
 
-#     bib_json = { 
+#     bib_json = {
 #         "bib_entry_type" : "book",
 #         "author" : "Ribbeck, O.",
 #         "title" : "Scaenicae Romanorum poesis fragmenta",
@@ -194,7 +193,7 @@
 #     } # received from OSCC
 
 #     bib_json = {
-#         "_id" : '00c50a53d7644e11aa99e6a3b409e32f', 
+#         "_id" : '00c50a53d7644e11aa99e6a3b409e32f',
 #         "bib_entry_type" : "article",
 #         "author" : "Pietersen, P.",
 #         "title" : "A Proto-Lucan basis for the Gospel according to the Hebrews",
@@ -210,9 +209,9 @@
 #     bib_handler.delete_entry(cleaned_bib_entry)
 
 
-'''
+"""
 Bibliography interface
-'''
+"""
 # @app.route("/get_bibliography_authors")
 # def get_bibliography_authors():
 #     # Route to retrieve a list of all authors in the bibliography database

@@ -3,6 +3,7 @@ import logging
 
 import config as conf
 
+
 class TextField(object):
     ID = "_id"
     AUTHOR = "author"
@@ -11,6 +12,7 @@ class TextField(object):
     APPARATUS = "apparatus"
     TEXT = "text"
     LINKED_DOCUMENTS = "linked_documents"
+
 
 @dataclass
 class Text:
@@ -22,10 +24,11 @@ class Text:
     text: str = None
     linked_documents: list = None
 
+
 class TextModel:
     def __init__(self, server):
         self.db = server[conf.COUCH_TEXTS]
-    
+
     def __get_texts(self, text_lst):
         result = list()
         for doc in text_lst:
@@ -47,26 +50,20 @@ class TextModel:
         return result
 
     def all(self, sorted=False):
-        result = self.db.find({
-            "selector": dict(),
-            "limit": conf.COUCH_LIMIT
-        })
+        result = self.db.find({"selector": dict(), "limit": conf.COUCH_LIMIT})
         result = self.__get_texts(result)
         if sorted:
             result.sort(key=lambda Text: Text.name)
         return result
-        
+
     def filter(self, text, sorted=False):
         text = {key: value for key, value in text.__dict__.items() if value}
         # @deprecated because of refactoring
-        # if "_id" in text: 
+        # if "_id" in text:
         #     text[TextField.ID] = text.pop("_id")
         # if "name" in text:
         #     text[TextField.NAME] = text.pop("name")
-        mango = {
-            "selector": text,
-            "limit": conf.COUCH_LIMIT
-        }
+        mango = {"selector": text, "limit": conf.COUCH_LIMIT}
         print(mango)
         result = self.db.find(mango)
         result = self.__get_texts(result)
@@ -79,7 +76,7 @@ class TextModel:
         # @deprecated because of refactoring
         # text[TextField.ID] = text.pop("_id") # MongoDB uses "_id" instead of "id"
         # text[TextField.NAME] = text.pop("name")
-        
+
         doc_id, _ = self.db.save(text)
         if not doc_id:
             logging.error("create(): failed to create text")
@@ -99,7 +96,7 @@ class TextModel:
             for key, value in asdict(text).items():
                 if value != None:
                     doc[key] = value
-            print(f'doc: {doc}')
+            print(f"doc: {doc}")
             self.db.save(doc)
             return True
         except Exception as e:
@@ -108,7 +105,7 @@ class TextModel:
 
     def delete(self, text):
         text = self.get(text)
-    
+
         if text == None:
             logging.error("delete(): text could not be found")
             return False
@@ -122,10 +119,7 @@ class TextModel:
 
     def get(self, text):
         text = {key: value for key, value in text.__dict__.items() if value}
-        mango = {
-            "selector": text,
-            "limit": conf.COUCH_LIMIT
-        }
+        mango = {"selector": text, "limit": conf.COUCH_LIMIT}
         result = self.db.find(mango)
         result = self.__get_texts(result)
 

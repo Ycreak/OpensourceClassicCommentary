@@ -1,12 +1,12 @@
 """
-                 _             _       _           ____                                      _                 
-                | |           (_)     | |         / / _|                                    | |                
-   ___ _ __   __| |_ __   ___  _ _ __ | |_ ___   / / |_ _ __ __ _  __ _ _ __ ___   ___ _ __ | |_   _ __  _   _ 
-  / _ \ '_ \ / _` | '_ \ / _ \| | '_ \| __/ __| / /|  _| '__/ _` |/ _` | '_ ` _ \ / _ \ '_ \| __| | '_ \| | | |
- |  __/ | | | (_| | |_) | (_) | | | | | |_\__ \/ / | | | | | (_| | (_| | | | | | |  __/ | | | |_ _| |_) | |_| |
-  \___|_| |_|\__,_| .__/ \___/|_|_| |_|\__|___/_/  |_| |_|  \__,_|\__, |_| |_| |_|\___|_| |_|\__(_) .__/ \__, |
-                  | |                                              __/ |                          | |     __/ |
-                  |_|                                             |___/                           |_|    |___/ 
+                _             _       _           ____                                      _
+               | |           (_)     | |         / / _|                                    | |
+  ___ _ __   __| |_ __   ___  _ _ __ | |_ ___   / / |_ _ __ __ _  __ _ _ __ ___   ___ _ __ | |_   _ __  _   _
+ / _ \ '_ \ / _` | '_ \ / _ \| | '_ \| __/ __| / /|  _| '__/ _` |/ _` | '_ ` _ \ / _ \ '_ \| __| | '_ \| | | |
+|  __/ | | | (_| | |_) | (_) | | | | | |_\__ \/ / | | | | | (_| | (_| | | | | | |  __/ | | | |_ _| |_) | |_| |
+ \___|_| |_|\__,_| .__/ \___/|_|_| |_|\__|___/_/  |_| |_|  \__,_|\__, |_| |_| |_|\___|_| |_|\__(_) .__/ \__, |
+                 | |                                              __/ |                          | |     __/ |
+                 |_|                                             |___/                           |_|    |___/
 """
 
 from flask import request, make_response
@@ -22,14 +22,17 @@ fragments = FragmentModel(CouchAuthenticator().couch)
 
 list_display_cache_file: str = "cache/list_display.json"
 
+
 def get_list_display():
     result = util.read_json(list_display_cache_file)
     return jsonify(result)
+
 
 def refresh_list_display():
     fragment_lst = fragments.all()
     fragment_lst = [(x.author, x.title, x.editor, x.name) for x in fragment_lst]
     util.write_json(sorted(list(set(fragment_lst))), list_display_cache_file)
+
 
 def get_author():
     author = None
@@ -48,10 +51,13 @@ def get_author():
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-    fragment_lst = fragments.filter(Fragment(author=author, title=title, editor=editor, name=name), sorted=True)
+    fragment_lst = fragments.filter(
+        Fragment(author=author, title=title, editor=editor, name=name), sorted=True
+    )
     if not fragment_lst:
         return make_response("Not found", 401)
     return jsonify(sorted(set([frag.author for frag in fragment_lst]))), 200
+
 
 def get_title():
     author = None
@@ -70,10 +76,13 @@ def get_title():
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-    fragment_lst = fragments.filter(Fragment(author=author, title=title, editor=editor, name=name), sorted=True)
+    fragment_lst = fragments.filter(
+        Fragment(author=author, title=title, editor=editor, name=name), sorted=True
+    )
     if not fragment_lst:
         return make_response("Not found", 401)
     return jsonify(sorted(set([frag.title for frag in fragment_lst]))), 200
+
 
 def get_editor():
     author = None
@@ -92,10 +101,13 @@ def get_editor():
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-    fragment_lst = fragments.filter(Fragment(author=author, title=title, editor=editor, name=name), sorted=True)
+    fragment_lst = fragments.filter(
+        Fragment(author=author, title=title, editor=editor, name=name), sorted=True
+    )
     if not fragment_lst:
         return make_response("Not found", 401)
     return jsonify(sorted(set([frag.editor for frag in fragment_lst]))), 200
+
 
 def get_name():
     author = None
@@ -115,10 +127,13 @@ def get_name():
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-    fragment_lst = fragments.filter(Fragment(author=author, title=title, editor=editor, name=name), sorted=True)
+    fragment_lst = fragments.filter(
+        Fragment(author=author, title=title, editor=editor, name=name), sorted=True
+    )
     if not fragment_lst:
         return make_response("Not found", 401)
     return jsonify(list(set([frag.name for frag in fragment_lst]))), 200
+
 
 def get_fragment():
     author = None
@@ -141,14 +156,18 @@ def get_fragment():
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-    
-    fragment_lst = fragments.filter(Fragment(author=author, title=title, editor=editor, name=name, status=status), sorted=True)
+
+    fragment_lst = fragments.filter(
+        Fragment(author=author, title=title, editor=editor, name=name, status=status),
+        sorted=True,
+    )
     if not fragment_lst:
         return make_response("Not found", 401)
 
     return jsonify(fragment_lst), 200
 
-def create_fragment():    
+
+def create_fragment():
     try:
         author = request.get_json()[FragmentField.AUTHOR]
         title = request.get_json()[FragmentField.TITLE]
@@ -195,20 +214,38 @@ def create_fragment():
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-    
+
     if fragments.filter(Fragment(author=author, title=title, editor=editor, name=name)):
         logging.error("create_fragment(): duplicate fragment")
         return make_response("Forbidden", 403)
 
-    fragment = fragments.create(Fragment(_id=uuid4().hex, author=author, title=title, editor=editor, name=name, status=status,
-                                         lock=lock, translation=translation, popular_translation=popular_translation, differences=differences, apparatus=apparatus, 
-                                         commentary=commentary, reconstruction=reconstruction, metrical_analysis=metrical_analysis, context=context, 
-                                         lines=lines, linked_fragments=linked_fragments))
+    fragment = fragments.create(
+        Fragment(
+            _id=uuid4().hex,
+            author=author,
+            title=title,
+            editor=editor,
+            name=name,
+            status=status,
+            lock=lock,
+            translation=translation,
+            popular_translation=popular_translation,
+            differences=differences,
+            apparatus=apparatus,
+            commentary=commentary,
+            reconstruction=reconstruction,
+            metrical_analysis=metrical_analysis,
+            context=context,
+            lines=lines,
+            linked_fragments=linked_fragments,
+        )
+    )
     if fragment == None:
         return make_response("Server error", 500)
-    
-    refresh_list_display() 
+
+    refresh_list_display()
     return make_response("Created", 200)
+
 
 def link_fragment():
     try:
@@ -217,19 +254,20 @@ def link_fragment():
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-    
+
     fragment_lst = fragments.filter(Fragment(author=author, title=title))
     if not fragment_lst:
         return make_response("Not found", 401)
 
-    while(fragment_lst):
+    while fragment_lst:
         fragment = fragment_lst.pop()
         for line in fragment.lines:
             for other in fragment_lst:
                 for other_line in other:
                     return "hello", 200
 
-def update_fragment():    
+
+def update_fragment():
     try:
         _id = request.get_json()[FragmentField.ID]
         author = request.get_json()[FragmentField.AUTHOR]
@@ -249,7 +287,7 @@ def update_fragment():
         context = None
         lines = None
         linked_fragments = None
-        
+
         if FragmentField.STATUS in request.get_json():
             status = request.get_json()[FragmentField.STATUS]
         if FragmentField.LOCK in request.get_json():
@@ -274,7 +312,7 @@ def update_fragment():
             lines = request.get_json()[FragmentField.LINES]
         if FragmentField.LINKED_FRAGMENTS in request.get_json():
             linked_fragments = request.get_json()[FragmentField.LINKED_FRAGMENTS]
-    
+
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
@@ -284,15 +322,33 @@ def update_fragment():
     #     logging.error("revise_fragment(): fragment does not exist")
     #     return make_response("Forbidden", 403)
 
-    fragment = fragments.update(Fragment(_id=_id, author=author, title=title, editor=editor, name=name, status=status,
-                                         lock=lock, translation=translation, popular_translation=popular_translation, differences=differences, apparatus=apparatus, 
-                                         commentary=commentary, reconstruction=reconstruction, metrical_analysis=metrical_analysis, context=context, 
-                                         lines=lines, linked_fragments=linked_fragments))
+    fragment = fragments.update(
+        Fragment(
+            _id=_id,
+            author=author,
+            title=title,
+            editor=editor,
+            name=name,
+            status=status,
+            lock=lock,
+            translation=translation,
+            popular_translation=popular_translation,
+            differences=differences,
+            apparatus=apparatus,
+            commentary=commentary,
+            reconstruction=reconstruction,
+            metrical_analysis=metrical_analysis,
+            context=context,
+            lines=lines,
+            linked_fragments=linked_fragments,
+        )
+    )
     if fragment == None:
         return make_response("Server error", 500)
 
-    refresh_list_display() 
+    refresh_list_display()
     return make_response("Revised", 200)
+
 
 def delete_fragment():
     try:
@@ -303,11 +359,12 @@ def delete_fragment():
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-    fragment = fragments.delete(Fragment(author=author, title=title, editor=editor, name=name))
-
+    fragment = fragments.delete(
+        Fragment(author=author, title=title, editor=editor, name=name)
+    )
 
     if fragment:
-        refresh_list_display() 
+        refresh_list_display()
         return make_response("OK", 200)
     else:
         return make_response("Not found", 401)

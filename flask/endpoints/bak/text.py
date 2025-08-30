@@ -8,6 +8,7 @@ from models.text import Text, TextModel, TextField
 
 texts = TextModel(CouchAuthenticator().couch)
 
+
 def get_author_text():
     author = None
     title = None
@@ -25,6 +26,7 @@ def get_author_text():
     if not text_lst:
         return make_response("Not found", 401)
     return jsonify(sorted(set([text.author for text in text_lst]))), 200
+
 
 def get_title_text():
     author = None
@@ -44,6 +46,7 @@ def get_title_text():
         return make_response("Not found", 401)
     return jsonify(sorted(set([text.title for text in text_lst]))), 200
 
+
 def get_text():
     author = None
     title = None
@@ -57,14 +60,15 @@ def get_text():
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-    
+
     text_lst = texts.filter(Text(author=author, title=title), sorted=True)
     if not text_lst:
         return make_response("Not found", 401)
 
     return jsonify(text_lst), 200
 
-def create_text():    
+
+def create_text():
     try:
         author = request.get_json()[TextField.AUTHOR]
         title = request.get_json()[TextField.TITLE]
@@ -86,20 +90,29 @@ def create_text():
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-    
+
     if texts.filter(Text(author=author, title=title)):
         logging.error("create_text(): duplicate text")
         return make_response("Forbidden", 403)
 
-    text = texts.create(Text(_id=uuid4().hex, author=author, title=title, apparatus=apparatus, linked_documents=linked_documents,
-                                         translation=translation, text=text))
+    text = texts.create(
+        Text(
+            _id=uuid4().hex,
+            author=author,
+            title=title,
+            apparatus=apparatus,
+            linked_documents=linked_documents,
+            translation=translation,
+            text=text,
+        )
+    )
     if text == None:
         return make_response("Server error", 500)
-    
+
     return make_response("Created", 200)
 
 
-def update_text():    
+def update_text():
     try:
         _id = request.get_json()[TextField.ID]
         author = request.get_json()[TextField.AUTHOR]
@@ -118,21 +131,29 @@ def update_text():
             apparatus = request.get_json()[TextField.APPARATUS]
         if TextField.LINKED_DOCUMENTS in request.get_json():
             linked_documents = request.get_json()[TextField.LINKED_DOCUMENTS]
-       
-       
+
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-    
-    text = texts.update(Text(_id=_id, author=author, title=title, apparatus=apparatus, linked_documents=linked_documents, translation=translation, 
-                                       text=text))
+
+    text = texts.update(
+        Text(
+            _id=_id,
+            author=author,
+            title=title,
+            apparatus=apparatus,
+            linked_documents=linked_documents,
+            translation=translation,
+            text=text,
+        )
+    )
     if text == None:
         return make_response("Server error", 500)
 
     return make_response("Revised", 200)
 
-def delete_text():
 
+def delete_text():
     try:
         author = request.get_json()[TextField.AUTHOR]
         title = request.get_json()[TextField.TITLE]
@@ -141,7 +162,6 @@ def delete_text():
         logging.error(e)
         return make_response("Unprocessable entity", 422)
     text = texts.delete(Text(author=author, title=title))
-
 
     if text:
         return make_response("OK", 200)
