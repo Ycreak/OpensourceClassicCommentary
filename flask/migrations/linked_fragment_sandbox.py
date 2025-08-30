@@ -36,7 +36,7 @@ class Migration:
                 if doc_id:
                     print(f"Updated {doc_id}")
 
-            except:
+            except Exception:
                 pass
             print("#####################")
 

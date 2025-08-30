@@ -30,7 +30,7 @@ class Migration:
                     doc["visible"] = 1
 
                 doc_id, doc_rev = self.db.save(doc)
-            except:
+            except Exception:
                 pass
             print("#####################")
 

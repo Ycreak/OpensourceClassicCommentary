@@ -16,18 +16,18 @@ class TestUsers:
 
     def test_user(self):
         user = User(id="abc", username="Jantje", password="helloworld")
-        assert user.id != None
-        assert user.username != None
-        assert user.password != None
-        assert user.role == None
+        assert user.id is not None
+        assert user.username is not None
+        assert user.password is not None
+        assert user.role is None
 
     def test_from_json(self):
         user_json = {"id": "abc", "username": "Jantje", "password": "helloworld"}
         user = User().from_json(user_json)
-        assert user.id != None
-        assert user.username != None
-        assert user.password != None
-        assert user.role == None
+        assert user.id is not None
+        assert user.username is not None
+        assert user.password is not None
+        assert user.role is None
 
     def test_all(self, fixture):
         result = fixture.all()

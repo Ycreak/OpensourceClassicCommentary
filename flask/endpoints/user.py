@@ -75,7 +75,7 @@ def login_user():
 def create_user():
     user = User().from_json(request.get_json())
 
-    if users.get(User(username=user.username)) != None:
+    if users.get(User(username=user.username)) is not None:
         return make_response("Forbidden", 403)
 
     user = users.create(
@@ -86,7 +86,7 @@ def create_user():
             role=Role.GUEST,
         )
     )
-    if user == None:
+    if user is None:
         return make_response("Server error", 500)
 
     return make_response("Created", 201)

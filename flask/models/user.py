@@ -107,13 +107,13 @@ class UserModel:
 
     def update(self, user):
         _user = self.get(User(username=user.username))
-        if _user == None:
+        if _user is None:
             logging.error("update(): user could not be found")
             return False
         try:
             doc = self.db[_user.id]
             for key, value in asdict(user).items():
-                if value != None:
+                if value is not None:
                     doc[key] = value
             self.db.save(doc)
             return True
@@ -124,7 +124,7 @@ class UserModel:
     def delete(self, user):
         user = self.get(user)
 
-        if user == None:
+        if user is None:
             logging.error("delete(): user could not be found")
             return False
         try:

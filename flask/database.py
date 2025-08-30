@@ -42,7 +42,7 @@ class Database:
         try:
             doc = self.db[document["_id"]]
             for key, value in document.items():
-                if value != None:
+                if value is not None:
                     doc[key] = value
             logging.info(f"Updated document: {doc}")
             self.db.save(doc)

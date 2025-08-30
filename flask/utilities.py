@@ -11,7 +11,10 @@
 
 """
 
-import hashlib, binascii, os, string
+import hashlib
+import binascii
+import os
+import string
 from fuzzywuzzy import fuzz
 import json
 

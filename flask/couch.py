@@ -36,7 +36,7 @@ class CouchAuthenticator:
                     exit(1)
                 not_connected = False
 
-            except:
+            except Exception:
                 logging.error(
                     "Couch server not (yet) available or out of sync. Retrying..."
                 )
