@@ -5,8 +5,11 @@ import { SettingsService } from '@oscc/services/settings.service';
 
 import { Fragment } from '@oscc/models/Fragment';
 
+import { SafeHtmlPipe } from '@oscc/pipes/safeHtml.pipe';
+
 @Component({
-  standalone: false,
+  standalone: true,
+  imports: [SafeHtmlPipe],
   selector: 'app-fragment',
   templateUrl: './fragment.component.html',
   styleUrls: ['./fragment.component.scss'],

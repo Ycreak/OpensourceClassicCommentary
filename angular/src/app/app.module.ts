@@ -16,14 +16,14 @@ import { ColumnsComponent } from './columns/columns.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './auth/auth.guard';
-import { SafeHtmlPipe } from './pipes/safeHtml.pipe';
+//import { SafeHtmlPipe } from './pipes/safeHtml.pipe';
 
 //import { ConfirmationDialogComponent } from './dialogs/confirmation/confirmation-dialog.component';
 import { WYSIWYGDialogComponent } from './services/dialog.service';
 //import { SettingsDialogComponent} from './services/dialog.service';
 import { BibliographyComponent } from './dashboard/bibliography/bibliography.component';
-import { CustomDialogComponent } from './services/dialog.service';
-import { ColumnBibliographyComponent } from './services/dialog.service';
+//import { CustomDialogComponent } from './services/dialog.service';
+//import { ColumnBibliographyComponent } from './services/dialog.service';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorInterceptor } from './api.service';
@@ -75,7 +75,7 @@ import { DocumentFilterComponent } from './filters/document-filter/document-filt
 import { UsersComponent } from './dashboard/users/users.component';
 import { TestimoniaComponent } from './columns/testimonia/testimonia.component';
 import { ContextComponent } from './columns/context/context.component';
-import { FragmentComponent } from './columns/fragment/fragment.component';
+//import { FragmentComponent } from './columns/fragment/fragment.component';
 import { OnCopyDirective } from './directives/on-copy.directive';
 import { TestimoniaDashboardComponent } from './dashboard/testimonia-dashboard/testimonia-dashboard.component';
 import { TranslationComponent } from './commentary/translation/translation.component';
@@ -109,15 +109,15 @@ const appRoutes: Routes = [
   declarations: [
     AppComponent,
     ColumnsComponent,
-    SafeHtmlPipe,
+    //SafeHtmlPipe,
     DashboardComponent,
     LoginComponent,
     ScansionComponent,
     //ConfirmationDialogComponent,
     WYSIWYGDialogComponent,
     //SettingsDialogComponent,
-    CustomDialogComponent,
-    ColumnBibliographyComponent,
+    //CustomDialogComponent,
+    //ColumnBibliographyComponent,
     PlaygroundComponent,
     CommentaryComponent,
     OverviewComponent,
@@ -128,7 +128,7 @@ const appRoutes: Routes = [
     UsersComponent,
     TestimoniaComponent,
     ContextComponent,
-    FragmentComponent,
+    //FragmentComponent,
     OnCopyDirective,
     TestimoniaDashboardComponent,
     TranslationComponent,
@@ -191,7 +191,7 @@ const appRoutes: Routes = [
     SocketIoModule.forRoot(config),
   ],
   providers: [
-    SafeHtmlPipe,
+    //SafeHtmlPipe,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpErrorInterceptor,

@@ -1,11 +1,12 @@
-import { Component, Inject, ViewChild } from '@angular/core';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, ViewChild } from '@angular/core';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatTooltip, MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSliderModule } from '@angular/material/slider';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { SettingsService } from '@oscc/services/settings.service';
 
 @Component({
   selector: 'app-settings-dialog',
@@ -35,8 +36,8 @@ export class SettingsDialogComponent {
   };
 
   constructor(
-    public dialogRef: MatDialogRef<SettingsDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    protected settings: SettingsService
+    //public dialogRef: MatDialogRef<SettingsDialogComponent>,
   ) {}
 
   protected toggle_tooltip(tooltip: any) {

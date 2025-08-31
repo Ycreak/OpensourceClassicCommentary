@@ -6,7 +6,6 @@
 import { Injectable } from '@angular/core';
 import { LocalStorageService } from '@oscc/services/local-storage.service';
 import { MatDialog } from '@angular/material/dialog';
-import { SettingsDialogComponent } from '@oscc/dialogs/settings/settings-dialog.component';
 
 @Injectable({
   providedIn: 'root',
@@ -25,23 +24,6 @@ export class SettingsService {
     private localstorage: LocalStorageService,
     protected dialog: MatDialog
   ) {}
-
-  /**
-   * Function to handle the settings dialog. Will save changes via the oscc_settings object
-   * @author Ycreak
-   */
-  public open_settings(): void {
-    const dialogRef = this.dialog.open(SettingsDialogComponent, {
-      width: 'auto',
-      height: 'auto',
-      data: this.fragments,
-    });
-
-    dialogRef.afterClosed().subscribe(() => {
-      // Also save the settings in local storage
-      this.save_settings();
-    });
-  }
 
   /**
    * Function used to load the user's previously used settings from local storage using the LocalStorageService service
@@ -82,7 +64,7 @@ export class SettingsService {
    * Function used to load the user's previously used settings from local storage using the LocalStorageService service
    * @author Sajvanwijk
    */
-  private save_settings(): void {
+  public save_settings(): void {
     // Save all the fragments settings
     this.localstorage.saveData('auto_scroll_linked_fragments', String(this.fragments['auto_scroll_linked_fragments']));
     this.localstorage.saveData('commentary_size', String(this.fragments['commentary_size']));

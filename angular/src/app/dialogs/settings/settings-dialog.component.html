@@ -1,4 +1,4 @@
-<!-- This dialog is used to change system settings. It receives an oscc_settings object called data,
+<!-- This dialog is used to change system settings. It directly modifies the oscc_settings object called fragments,
   which can be changed using the toggles defined below. -->
 <div class="dialog-header">
   <h2>OSCC Settings</h2>
@@ -11,7 +11,7 @@
   <!-- <br> -->
 
   <p>
-    <mat-slide-toggle [(ngModel)]="data.dragging_disabled">
+    <mat-slide-toggle [(ngModel)]="settings.fragments.dragging_disabled">
       <span class="text-tooltip" [matTooltip]="this.tooltips.dragging_disabled" matTooltipShowDelay="1000"
         >Disable fragment dragging</span
       >
@@ -32,7 +32,7 @@
   <br />
 
   <p>
-    <mat-slide-toggle [(ngModel)]="data.fragment_order_gradient">
+    <mat-slide-toggle [(ngModel)]="settings.fragments.fragment_order_gradient">
       <span class="text-tooltip" [matTooltip]="this.tooltips.fragment_order_gradient" matTooltipShowDelay="1000"
         >Show fragment order gradient</span
       >
@@ -53,7 +53,7 @@
   <br />
 
   <p>
-    <mat-slide-toggle [(ngModel)]="data.show_headers">
+    <mat-slide-toggle [(ngModel)]="settings.fragments.show_headers">
       <span class="text-tooltip" [matTooltip]="this.tooltips.show_headers" matTooltipShowDelay="1000"
         >Show fragments headers</span
       >
@@ -74,7 +74,7 @@
   <br />
 
   <p>
-    <mat-slide-toggle [(ngModel)]="data.show_line_names">
+    <mat-slide-toggle [(ngModel)]="settings.fragments.show_line_names">
       <span class="text-tooltip" [matTooltip]="this.tooltips.show_line_names" matTooltipShowDelay="1000"
         >Show fragment line names</span
       >
@@ -95,7 +95,7 @@
   <br />
 
   <p>
-    <mat-slide-toggle [(ngModel)]="data.auto_scroll_linked_fragments">
+    <mat-slide-toggle [(ngModel)]="settings.fragments.auto_scroll_linked_fragments">
       <span class="text-tooltip" [matTooltip]="this.tooltips.auto_scroll_linked_fragments" matTooltipShowDelay="1000"
         >Auto scroll to linked fragments</span
       >
@@ -118,7 +118,7 @@
   <p>Change size of the commentary window</p>
   <div class="center">
     <mat-slider min="20" max="80" step="10" value="50" discrete color="accent">
-      <input matSliderThumb [(ngModel)]="data.commentary_size" />
+      <input matSliderThumb [(ngModel)]="settings.fragments.commentary_size" />
     </mat-slider>
   </div>
 
