@@ -1,6 +1,6 @@
 """
-This migration adds document types to all documents. Next, it moves all documents
-from their own databases to the new all-purpose database called "documents".
+This migration migrates the context.text to context.commentary, so that we can use the text field for
+broad context information.
 """
 
 import couchdb
@@ -19,25 +19,25 @@ class Migration:
             doc = db[id]
             print(doc)
 
-    def add_sandbox(self) -> None:
+    def migrate_context(self) -> None:
         """
         Adds the sandbox property to all documents in the current database
         """
         for id in self.db:
             doc = self.db[id]
 
-            try:
-                print(doc["_id"])
-                doc["sandbox"] = "admin"
-
-                doc_id, doc_rev = self.db.save(doc)
-            except Exception:
-                pass
-            print("#####################")
+            if doc["document_type"] == "fragment":
+                if "context" in doc and doc["context"]:
+                    for context in doc["context"]:
+                        context["commentary"] = context["text"]
+                        context["text"] = ""
+                    print(doc["_id"])
+                    # print(doc['context'])
+                    doc_id, doc_rev = self.db.save(doc)
 
 
 if __name__ == "__main__":
     migration = Migration()
 
     migration.change_db("documents")
-    migration.add_sandbox()
+    migration.migrate_context()

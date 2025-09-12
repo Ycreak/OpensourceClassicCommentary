@@ -3,6 +3,7 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
+  standalone: false,
   selector: 'app-save-playground',
   templateUrl: './save-playground.component.html',
   styleUrls: ['./save-playground.component.scss'],

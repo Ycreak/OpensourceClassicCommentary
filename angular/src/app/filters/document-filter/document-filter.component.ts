@@ -10,6 +10,7 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { FilterService } from './filter.service';
 
 @Component({
+  standalone: false,
   selector: 'app-document-filter',
   templateUrl: './document-filter.component.html',
   styleUrls: ['./document-filter.component.scss'],

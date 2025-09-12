@@ -7,6 +7,7 @@ This endpoint handles all document types. At the moment, we support the followin
 These are differentiated via the 'type' parameter. This endpoint checks the incoming
 document type and redirects the document to the correct endpoint.
 """
+
 import logging
 from flask import request, make_response
 from flask_jsonpify import jsonify
@@ -30,13 +31,14 @@ fragment = Fragment(CouchAuthenticator().couch)
 playground = Playground(CouchAuthenticator().couch)
 testimonium = Testimonium(CouchAuthenticator().couch)
 
+
 def get_index() -> object:
-    """ Reads the cache file and returns it. Needs a sandbox as parameter. """
+    """Reads the cache file and returns it. Needs a sandbox as parameter."""
     try:
         sandbox: str = request.get_json()["sandbox"]
         index: list = util.read_json(index_file)
         print(sandbox)
-        filtered_index = [obj for obj in index if obj['sandbox'] == sandbox]
+        filtered_index = [obj for obj in index if obj["sandbox"] == sandbox]
         return jsonify(filtered_index)
     except KeyError as e:
         logging.error(e)
@@ -44,7 +46,7 @@ def get_index() -> object:
 
 
 def update_index() -> None:
-    """ Updates the index file and writes it to the cache """
+    """Updates the index file and writes it to the cache"""
     documents: list = database.filter({})
     index: list = []
     for doc in documents:
@@ -58,41 +60,49 @@ def update_index() -> None:
                         "editor": doc["editor"],
                         "sandbox": doc["sandbox"]
                     })
+
                 case "fragment":
-                    index.append({
-                        "document_type": "fragment", 
-                        "author": doc["author"], 
-                        "title": doc["title"], 
-                        "editor": doc["editor"], 
-                        "name": doc["name"],
-                        "sandbox": doc["sandbox"],
-                        "visible": doc["visible"]
-                    })
+                    index.append(
+                        {
+                            "document_type": "fragment",
+                            "author": doc["author"],
+                            "title": doc["title"],
+                            "editor": doc["editor"],
+                            "name": doc["name"],
+                            "sandbox": doc["sandbox"],
+                            "visible": doc["visible"],
+                        }
+                    )
                 case "playground":
-                    index.append({
-                        "document_type": "playground", 
-                        "_id": doc["_id"], 
-                        "name": doc["name"], 
-                        "created_by": doc["created_by"], 
-                        "users": doc["users"],
-                        "sandbox": doc["sandbox"]
-                    })
+                    index.append(
+                        {
+                            "document_type": "playground",
+                            "_id": doc["_id"],
+                            "name": doc["name"],
+                            "created_by": doc["created_by"],
+                            "users": doc["users"],
+                            "sandbox": doc["sandbox"],
+                        }
+                    )
                 case "testimonium":
-                    index.append({
-                        "document_type": "testimonium", 
-                        "author": doc["author"], 
-                        "title": doc["title"], 
-                        "editor": doc["editor"], 
-                        "name": doc["name"], 
-                        "witness": doc["witness"],
-                        "sandbox": doc["sandbox"],
-                        "visible": doc["visible"]
-                    })
+                    index.append(
+                        {
+                            "document_type": "testimonium",
+                            "author": doc["author"],
+                            "title": doc["title"],
+                            "editor": doc["editor"],
+                            "name": doc["name"],
+                            "witness": doc["witness"],
+                            "sandbox": doc["sandbox"],
+                            "visible": doc["visible"],
+                        }
+                    )
                 case _:
                     logging.error(f"Unknown document type: {doc}")
-        except Exception as e:
+        except Exception:
             logging.error(f"Cannot index document. Error in document: {doc.id}")
     util.write_json(index, index_file)
+
 
 def get_document():
     """
@@ -121,9 +131,12 @@ def get_document():
     logging.error(f"Returning documents: {list_with_documents}")
 
     return jsonify(list_with_documents), 200
+
+
 # if list_with_documents else make_response("Not found", 401)
 
-def create_document() -> make_response:    
+
+def create_document() -> make_response:
     """
     Create the given document. First we check what document type we received. Based on the type,
     different documents can be created. This is handled by the switch statement.
@@ -133,7 +146,7 @@ def create_document() -> make_response:
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-   
+
     match document_type:
         case "introduction":
             doc_id: str = introduction.create(request.get_json())
@@ -149,7 +162,11 @@ def create_document() -> make_response:
             return make_response("Unprocessable entity", 422)
 
     update_index()
-    return make_response("Create success", 200) if doc_id else make_response("Unprocessable entity", 422)
+    return (
+        make_response("Create success", 200)
+        if doc_id
+        else make_response("Unprocessable entity", 422)
+    )
 
 
 def delete_document() -> make_response:
@@ -178,7 +195,11 @@ def delete_document() -> make_response:
             return make_response("Unprocessable entity", 422)
 
     update_index()
-    return make_response("Delete success", 200) if success else make_response("Unprocessable entity", 422)
+    return (
+        make_response("Delete success", 200)
+        if success
+        else make_response("Unprocessable entity", 422)
+    )
 
 
 def update_document() -> make_response:
@@ -191,7 +212,7 @@ def update_document() -> make_response:
     except KeyError as e:
         logging.error(e)
         return make_response("Unprocessable entity", 422)
-   
+
     match document_type:
         case "introduction":
             success: bool = introduction.update(request.get_json())
@@ -207,5 +228,8 @@ def update_document() -> make_response:
             return make_response("Unprocessable entity", 422)
 
     update_index()
-    return make_response("Update success", 200) if success else make_response("Unprocessable entity", 422)
-
+    return (
+        make_response("Update success", 200)
+        if success
+        else make_response("Unprocessable entity", 422)
+    )

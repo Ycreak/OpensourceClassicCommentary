@@ -6,6 +6,7 @@ import { ApiService } from '@oscc/api.service';
 import { UtilityService } from '@oscc/utility.service';
 
 @Component({
+  standalone: false,
   selector: 'app-latin-tragic-fragment-filter',
   templateUrl: './latin-tragic-fragment-filter.component.html',
   styleUrl: './latin-tragic-fragment-filter.component.scss',

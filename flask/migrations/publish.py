@@ -2,12 +2,14 @@
 This migration adds document types to all documents. Next, it moves all documents
 from their own databases to the new all-purpose database called "documents".
 """
+
 import couchdb
+
 
 class Migration:
     def __init__(self):
-        self.couch = couchdb.Server('http://admin:secret@localhost:5984/')
-        self.db = self.couch['documents']
+        self.couch = couchdb.Server("http://admin:secret@localhost:5984/")
+        self.db = self.couch["documents"]
 
     def change_db(self, db: str) -> None:
         self.db = self.couch[db]
@@ -15,25 +17,26 @@ class Migration:
     def print_all_documents(self, db):
         for id in db:
             doc = db[id]
-            print(doc)    
+            print(doc)
 
     def migrate_publish(self) -> None:
         for id in self.db:
             doc = self.db[id]
 
             try:
-                print(doc['_id'])
-                if doc["document_type"] == 'fragment':
-                    doc['lock'] = 0 
-                    doc['visible'] = 1 
+                print(doc["_id"])
+                if doc["document_type"] == "fragment":
+                    doc["lock"] = 0
+                    doc["visible"] = 1
 
                 doc_id, doc_rev = self.db.save(doc)
-            except:
+            except Exception:
                 pass
-            print('#####################')
-    
+            print("#####################")
+
+
 if __name__ == "__main__":
     migration = Migration()
 
-    migration.change_db('documents')
+    migration.change_db("documents")
     migration.migrate_publish()

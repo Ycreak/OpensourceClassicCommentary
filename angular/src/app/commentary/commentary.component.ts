@@ -26,6 +26,7 @@ import { StringFormatterService } from '@oscc/services/string-formatter.service'
 import { UtilityService } from '@oscc/utility.service';
 
 @Component({
+  standalone: false,
   selector: 'app-commentary',
   templateUrl: './commentary.component.html',
   styleUrls: ['./commentary.component.scss'],

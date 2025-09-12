@@ -2,7 +2,8 @@ export class Context {
   constructor(
     public author: string,
     public location: string,
-    public text: string
+    public text: string,
+    public commentary: string
   ) {
     // this.id = id;
     // this.fragment = fragmentID;

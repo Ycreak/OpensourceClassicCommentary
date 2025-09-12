@@ -7,6 +7,7 @@ import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
+  standalone: false,
   selector: 'app-join-playground',
   templateUrl: './join-playground.component.html',
   styleUrls: ['./join-playground.component.scss'],

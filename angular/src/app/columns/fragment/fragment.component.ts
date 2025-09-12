@@ -6,6 +6,7 @@ import { SettingsService } from '@oscc/services/settings.service';
 import { Fragment } from '@oscc/models/Fragment';
 
 @Component({
+  standalone: false,
   selector: 'app-fragment',
   templateUrl: './fragment.component.html',
   styleUrls: ['./fragment.component.scss'],

@@ -3,7 +3,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 // Pipe to allow whitespaces in HTML which is labeled as safe.
 
-@Pipe({ name: 'safeHtml' })
+@Pipe({ name: 'safeHtml', standalone: false })
 export class SafeHtmlPipe implements PipeTransform {
   constructor(private sanitized: DomSanitizer) {}
 

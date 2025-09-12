@@ -4,6 +4,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { ApiService } from '@oscc/api.service';
 
 @Component({
+  standalone: false,
   selector: 'app-testimonium-filter',
   templateUrl: './testimonium-filter.component.html',
   styleUrl: './testimonium-filter.component.scss',

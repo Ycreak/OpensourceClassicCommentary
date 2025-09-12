@@ -19,6 +19,7 @@ import { Introduction } from '@oscc/models/Introduction';
 import { SandboxService } from '@oscc/services/sandbox.service';
 
 @Component({
+  standalone: false,
   selector: 'app-introductions-dashboard',
   templateUrl: './introductions-dashboard.component.html',
   styleUrls: ['./introductions-dashboard.component.scss'],
