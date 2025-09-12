@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'app-general-commentary-field',
   templateUrl: './general-commentary-field.component.html',
   styleUrls: ['./general-commentary-field.component.scss'],

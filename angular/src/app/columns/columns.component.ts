@@ -31,6 +31,7 @@ import { IntroductionsComponent } from '@oscc/commentary/introductions/introduct
 import { SandboxService } from '@oscc/services/sandbox.service';
 
 @Component({
+  standalone: false,
   selector: 'app-columns',
   templateUrl: './columns.component.html',
   styleUrls: ['./columns.component.scss'],
@@ -126,6 +127,30 @@ export class ColumnsComponent implements OnInit {
     document.colour = '#3F51B5';
     // Lastly, colour the linked documents
     this.columns.colour_linked_fragments(document);
+  }
+
+  /**
+   * Shows broader context of the selected fragment based on the text fields of its commentary.context.
+   * @param given_document with possible broader context
+   */
+  protected show_broader_context(given_document: any): void {
+    if (
+      // First check if the given document has broader context.
+      given_document.commentary.fields.context.length > 0 &&
+      given_document.commentary.fields.context.some((item) => item.text && item.text.trim() !== '')
+    ) {
+      const column_id = this.columns.add();
+      const column = this.columns.find(column_id);
+      given_document.commentary.fields.context.forEach((context: any) => {
+        if (context.text != '') {
+          // Add a document type so the frontend will know how to handle this context
+          context.document_type = 'context';
+          column.documents.push(context);
+        }
+      });
+    } else {
+      this.utility.open_snackbar('No broader context found');
+    }
   }
 
   /**

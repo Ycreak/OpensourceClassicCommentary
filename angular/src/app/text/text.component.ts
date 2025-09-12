@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { TemplateRef, ViewChild } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'app-text',
   templateUrl: './text.component.html',
   styleUrls: ['./text.component.scss'],

@@ -11,6 +11,7 @@ import { BibliographyService } from '@oscc/services/bibliography.service';
 import { DialogService } from '@oscc/services/dialog.service';
 
 @Component({
+  standalone: false,
   selector: 'app-bibliography',
   templateUrl: './bibliography.component.html',
   styleUrls: ['./bibliography.component.scss'],

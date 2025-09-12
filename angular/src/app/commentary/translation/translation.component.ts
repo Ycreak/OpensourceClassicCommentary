@@ -8,6 +8,7 @@ import { Commentary } from '@oscc/models/Commentary';
 import { Line } from '@oscc/models/Line';
 
 @Component({
+  standalone: false,
   selector: 'app-translation',
   templateUrl: './translation.component.html',
   styleUrls: ['./translation.component.scss'],

@@ -17,6 +17,7 @@ import { DialogService } from '@oscc/services/dialog.service';
 import { User } from '@oscc/models/User';
 
 @Component({
+  standalone: false,
   selector: 'app-users',
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss'],

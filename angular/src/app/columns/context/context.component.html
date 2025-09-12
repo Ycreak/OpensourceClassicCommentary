@@ -1,0 +1,4 @@
+<div *ngIf="this.settings.fragments.show_headers">
+  <b>{{ this.context.author }} </b> <i>{{ this.context.location }}</i> &nbsp;
+</div>
+<p [innerHTML]="this.context.text"></p>

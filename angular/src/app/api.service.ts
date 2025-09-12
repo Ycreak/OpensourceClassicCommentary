@@ -183,7 +183,7 @@ export class ApiService {
   }
 
   /**
-   * Asks Flask to test the Zotero bibliography. 
+   * Asks Flask to test the Zotero bibliography.
    * @param key (object)
    * @author Ycreak
    */

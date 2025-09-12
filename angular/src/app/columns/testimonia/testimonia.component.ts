@@ -6,6 +6,7 @@ import { SettingsService } from '@oscc/services/settings.service';
 import { Testimonium } from '@oscc/models/Testimonium';
 
 @Component({
+  standalone: false,
   selector: 'app-testimonia',
   templateUrl: './testimonia.component.html',
   styleUrls: ['./testimonia.component.scss'],

@@ -110,6 +110,7 @@ export class DialogService {
  * Class to show the about dialogs
  */
 @Component({
+  standalone: false,
   selector: 'app-about-dialog',
   templateUrl: '../dialogs/about-dialog.html',
   styleUrls: ['../dialogs/dialogs.scss'],
@@ -121,6 +122,7 @@ export class ShowAboutDialogComponent {}
  * Shows whatever data is given via the public variable 'data'
  */
 @Component({
+  standalone: false,
   selector: 'app-confirmation-dialog',
   templateUrl: '../dialogs/confirmation-dialog.html',
   styleUrls: ['../dialogs/dialogs.scss'],
@@ -141,6 +143,7 @@ export class ConfirmationDialogComponent {
  * The provided 'data' is shown inside this editor.
  */
 @Component({
+  standalone: false,
   selector: 'app-wysiwyg-dialog',
   templateUrl: '../dialogs/wysiwyg-dialog.html',
   styleUrls: ['../dialogs/dialogs.scss'],
@@ -219,6 +222,7 @@ export class WYSIWYGDialogComponent {
  * The provided 'data' is shown inside this editor.
  */
 @Component({
+  standalone: false,
   selector: 'app-custom-dialog',
   templateUrl: '../dialogs/custom-dialog.html',
   styleUrls: ['../dialogs/dialogs.scss'],
@@ -233,6 +237,7 @@ export class CustomDialogComponent {
  * Class to show the bibliography of a column.
  */
 @Component({
+  standalone: false,
   selector: 'app-column-bibliopgraphy',
   templateUrl: '../dialogs/column-bibliography.html',
   styleUrls: ['../dialogs/dialogs.scss'],
@@ -249,6 +254,7 @@ export class ColumnBibliographyComponent {
  * The provided 'data' is used to communicate the settings.
  */
 @Component({
+  standalone: false,
   selector: 'app-settings-dialog',
   templateUrl: '../dialogs/settings-dialog.html',
   styleUrls: ['../dialogs/dialogs.scss'],

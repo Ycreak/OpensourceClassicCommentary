@@ -143,6 +143,9 @@
         <div *ngIf="fragment.document_type === 'fragment'">
           <app-fragment [fragment]="fragment" [translated]="given_column.translated"> </app-fragment>
         </div>
+        <div *ngIf="fragment.document_type === 'context'">
+          <app-context [context]="fragment"> </app-context>
+        </div>
       </div>
     </div>
   </div>
@@ -152,6 +155,7 @@
 <mat-menu #rightMenu="matMenu">
   <ng-template matMenuContent let-item="item">
     <button (click)="this.copy_document_content(matMenuTrigger.menuData.document)" mat-menu-item>Copy text</button>
+    <button (click)="this.show_broader_context(matMenuTrigger.menuData.document)" mat-menu-item>Broader context</button>
     <button (click)="this.show_linked_documents(matMenuTrigger.menuData.document)" mat-menu-item>
       Linked documents
     </button>

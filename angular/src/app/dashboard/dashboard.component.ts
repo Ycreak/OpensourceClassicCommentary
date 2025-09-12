@@ -7,6 +7,7 @@ import { AuthService } from '@oscc/auth/auth.service';
 import { UtilityService } from '@oscc/utility.service';
 
 @Component({
+  standalone: false,
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
