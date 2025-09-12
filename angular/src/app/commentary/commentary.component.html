@@ -13,7 +13,10 @@
       this.document.title
     }}</a
     >,
-    <ng-container *ngIf="this.document.editor">{{ this.document.editor }},</ng-container>
+    <ng-container *ngIf="this.document.editor">
+      <a class="a-void" (click)="this.show_introduction({ editor: this.document.editor })">{{ this.document.editor }}</a
+      >,
+    </ng-container>
     {{ this.document.name }}
   </h5>
 

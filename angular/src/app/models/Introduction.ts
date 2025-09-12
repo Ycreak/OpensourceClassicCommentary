@@ -4,6 +4,7 @@ export class Introduction {
   document_type = 'introduction';
   author: string;
   title: string;
+  editor: string;
   text: string;
 
   constructor(introduction?: Partial<Introduction>) {
@@ -20,6 +21,7 @@ export class Introduction {
     this._id = '_id' in introduction ? introduction['_id'] : '';
     this.author = 'author' in introduction ? introduction['author'] : '';
     this.title = 'title' in introduction ? introduction['title'] : '';
+    this.editor = 'editor' in introduction ? introduction['editor'] : '';
     this.text = 'text' in introduction ? introduction['text'] : '';
   }
 }

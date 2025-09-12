@@ -16,6 +16,7 @@ import { UtilityService } from '@oscc/utility.service';
 
 // Model imports
 import { Introduction } from '@oscc/models/Introduction';
+import { SandboxService } from '@oscc/services/sandbox.service';
 
 @Component({
   standalone: false,
@@ -29,28 +30,54 @@ export class IntroductionsDashboardComponent {
   // Whether a introduction has been selected
   protected selected = false;
 
-  protected form = new FormGroup({
+  public selected_tab = 0; //Default value
+
+  protected author_intro_form = new FormGroup({
     _id: new FormControl(''),
-    document_type: new FormControl('introduction'),
+    sandbox: new FormControl(this.sandbox.current_sandbox, { nonNullable: true }),
+    document_type: new FormControl('introduction', { nonNullable: true }),
     author: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
-    title: new FormControl('', [Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
+    title: new FormControl(''),
+    editor: new FormControl(''),
     text: new FormControl(''),
   });
+  protected title_intro_form = new FormGroup({
+    _id: new FormControl(''),
+    sandbox: new FormControl(this.sandbox.current_sandbox, { nonNullable: true }),
+    document_type: new FormControl('introduction', { nonNullable: true }),
+    author: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
+    title: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
+    editor: new FormControl(''),
+    text: new FormControl(''),
+  });
+  protected editor_intro_form = new FormGroup({
+    _id: new FormControl(''),
+    sandbox: new FormControl(this.sandbox.current_sandbox, { nonNullable: true }),
+    document_type: new FormControl('introduction', { nonNullable: true }),
+    author: new FormControl(''),
+    title: new FormControl(''),
+    editor: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
+    text: new FormControl(''),
+  });
+  protected current_form = this.author_intro_form;
 
   constructor(
     protected api: ApiService,
     protected utility: UtilityService,
     protected dialog: DialogService,
     protected auth_service: AuthService,
-    protected helper: HelperService
+    protected helper: HelperService,
+    protected sandbox: SandboxService
   ) {}
 
   /**
    * Request the API for documents
-   * @param documents (object[]) which to add to the provided column
+   * @param form (FormGroup) at which to add to the provided introduction text data
+   * @param filter (any) Object containing information with which to search for matching introduction texts.
+   * @author Ycreak sajvanwijk
    */
-  protected request(filter: any): void {
-    this.form.reset();
+  protected request(filter: any, form = this.current_form): void {
+    form.reset();
     this.api.request_documents(filter).subscribe((introductions) => {
       // If we want to retrieve an introduction to an author, we send no title filter to
       // the api. We therefore receive all introductions associated with this author, as the api
@@ -59,12 +86,12 @@ export class IntroductionsDashboardComponent {
       if (filter.title == '') {
         const author_introductions = introductions.filter((introduction: Introduction) => introduction.title === '');
         if (author_introductions.length > 0) {
-          this.model_to_form(author_introductions[0]);
+          this.model_to_form(form, author_introductions[0]);
         } else {
           this.utility.open_snackbar('No introduction found for this author.');
         }
       } else {
-        this.model_to_form(introductions[0]);
+        this.model_to_form(form, introductions[0]);
       }
       this.selected = true;
     });
@@ -73,36 +100,40 @@ export class IntroductionsDashboardComponent {
   /**
    * This function takes the Typescript object retrieved from the server and uses
    * its data fields to fill in the form.
+   * @param form (FormGroup) Form field in which to add the retrieved introduction data
    * @param introduction (Introduction) object that is to be parsed into the form
-   * @author Ycreak
+   * @author Ycreak sajvanwijk
    */
-  private model_to_form(introduction: Introduction): void {
+  private model_to_form(form: FormGroup, introduction: Introduction): void {
     // This functions updates the form with the provided introduction
-    for (const item of ['_id', 'document_type', 'author', 'title', 'text']) {
-      this.form.patchValue({ [item]: introduction[item] });
+    for (const item of ['_id', 'document_type', 'author', 'sandbox', 'title', 'editor', 'text']) {
+      form.patchValue({ [item]: introduction[item] });
     }
   }
 
   /**
    * Given the form which represents a Introduction, this function requests the api to create a
    * new introduction.
-   * @param object which represents a introduction, edited by the user in the dashboard
-   * @author Ycreak
+   * @param form (FormGroup) form containing the data of the to-be-created introduction
+   * @author Ycreak sajvanwijk
    */
-  protected create(form: any): void {
+  protected create(form: FormGroup): void {
     let item_string = '';
-    if (form.title) {
-      item_string = `Introduction on title '${form.title}' from author '${form.author}'`;
+    if (form.get('author')?.value && !form.get('title')?.value) {
+      item_string = `Introduction on author '${form.controls.author.value}'`;
+    } else if (form.get('author')?.value && form.get('title')?.value) {
+      item_string = `Introduction on title '${form.get('title')?.value}' from author '${form.get('author')?.value}'`;
+    } else if (form.get('editor').value) {
+      item_string = `Introduction on editor '${form.get('editor')?.value}'`;
     } else {
-      item_string = `Introduction on author '${form.author}'`;
+      throw Error('Unable to revise Introduction: Introduction details missing');
     }
     this.dialog
       .open_confirmation_dialog('Are you sure you want to CREATE this introduction?', item_string)
       .subscribe((result) => {
         if (result) {
-          this.reset_form();
-          this.api.post_document(form, 'create').subscribe(() => {
-            this.request(form);
+          this.api.post_document(form.value, 'create').subscribe(() => {
+            this.request(form.value, form);
             this.selected = true;
           });
         }
@@ -110,23 +141,27 @@ export class IntroductionsDashboardComponent {
   }
 
   /**
-   * This function requests the api to revise the introduction given the form.
-   * @param form which represents an introduction, edited by the user in the dashboard
+   * This function requests the api to revise/update the introduction given in the form.
+   * @param form (FormGroup) form containing the data of the to-be-created introduction
+   * @author Ycreak sajvanwijk
    */
-  protected revise(form: any): void {
+  protected revise(form: FormGroup): void {
     let item_string = '';
-    if (form.title) {
-      item_string = `Introduction on title '${form.title}' from author '${form.author}'`;
+    if (form.get('author')?.value && !form.get('title')?.value) {
+      item_string = `Introduction on author '${form.controls.author.value}'`;
+    } else if (form.get('author')?.value && form.get('title')?.value) {
+      item_string = `Introduction on title '${form.get('title')?.value}' from author '${form.get('author')?.value}'`;
+    } else if (form.get('editor').value) {
+      item_string = `Introduction on editor '${form.get('editor')?.value}'`;
     } else {
-      item_string = `Introduction on author '${form.author}'`;
+      throw Error('Unable to revise Introduction: Introduction details missing');
     }
     this.dialog
       .open_confirmation_dialog('Are you sure you want to SAVE CHANGES to this introduction?', item_string)
       .subscribe((result) => {
         if (result) {
-          this.api.post_document(form, 'update').subscribe(() => {
-            this.reset_form();
-            this.request(form);
+          this.api.post_document(form.value, 'update').subscribe(() => {
+            this.request(form.value, form);
             this.selected = true;
           });
         }
@@ -136,35 +171,30 @@ export class IntroductionsDashboardComponent {
   /**
    * Given the form which represents a introduction, this function requests the api to delete the
    * selected introduction.
-   * @param form which represents a introduction, edited by the user in the dashboard
-   * @author Ycreak
+   * @param form (FormGroup) form containing the data of the to-be-created introduction
+   * @author Ycreak sajvanwijk
    */
-  protected delete(form: any): void {
+  protected delete(form: FormGroup): void {
     let item_string = '';
-    if (form.title) {
-      item_string = `Introduction on title '${form.title}' from author '${form.author}'`;
+    if (form.get('author')?.value && !form.get('title')?.value) {
+      item_string = `Introduction on author '${form.controls.author.value}'`;
+    } else if (form.get('author')?.value && form.get('title')?.value) {
+      item_string = `Introduction on title '${form.get('title')?.value}' from author '${form.get('author')?.value}'`;
+    } else if (form.get('editor').value) {
+      item_string = `Introduction on editor '${form.get('editor')?.value}'`;
     } else {
-      item_string = `Introduction on author '${form.author}'`;
+      throw Error('Unable to revise Introduction: Introduction details missing');
     }
     this.dialog
       .open_confirmation_dialog('Are you sure you want to DELETE this introduction?', item_string)
       .subscribe((result) => {
         if (result) {
-          this.reset_form();
-          this.api.post_document(form, 'delete').subscribe(() => {
-            this.reset_form();
+          this.api.post_document(form.value, 'delete').subscribe(() => {
+            form.reset();
             this.selected = false;
           });
         }
       });
-  }
-
-  /**
-   * Function to reset the fragment form
-   * @author Ycreak
-   */
-  protected reset_form(): void {
-    this.form.reset();
   }
 
   /**
@@ -173,5 +203,26 @@ export class IntroductionsDashboardComponent {
    */
   protected user_has_view_permission(): boolean {
     return this.allowed_user_roles.includes(this.auth_service.current_user_role);
+  }
+
+  public set_introductions_tab(introduction_type: string): void {
+    console.log('received introduction type:' + introduction_type);
+    switch (introduction_type) {
+      case 'Author introductions':
+        this.selected_tab = 0;
+        this.current_form = this.author_intro_form;
+        console.log('switching to author introduction tab');
+        break;
+      case 'Title introductions':
+        this.selected_tab = 1;
+        this.current_form = this.title_intro_form;
+        console.log('switching to title introduction tab');
+        break;
+      case 'Editor introductions':
+        this.selected_tab = 2;
+        this.current_form = this.editor_intro_form;
+        console.log('switching to editor introduction tab');
+        break;
+    }
   }
 }
