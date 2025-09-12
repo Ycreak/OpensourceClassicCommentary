@@ -4,7 +4,7 @@
  */
 
 import { Component } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Validators } from '@angular/forms';
 
 // Service imports
@@ -16,12 +16,36 @@ import { UtilityService } from '@oscc/utility.service';
 
 // Model imports
 import { Testimonium } from '@oscc/models/Testimonium';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatButtonModule } from '@angular/material/button';
+import { TestimoniumFilterComponent } from '../../filters/testimonium-filter/testimonium-filter.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { NgIf } from '@angular/common';
 
 @Component({
-  standalone: false,
   selector: 'app-testimonia-dashboard',
   templateUrl: './testimonia-dashboard.component.html',
   styleUrls: ['./testimonia-dashboard.component.scss'],
+  standalone: true,
+  imports: [
+    NgIf,
+    MatExpansionModule,
+    MatIconModule,
+    TestimoniumFilterComponent,
+    MatButtonModule,
+    MatTabsModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatOptionModule,
+  ],
 })
 export class TestimoniaDashboardComponent {
   private allowed_user_roles = ['admin'];

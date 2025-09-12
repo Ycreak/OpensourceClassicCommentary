@@ -8,7 +8,7 @@ describe('BibliographyComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [BibliographyComponent],
+      imports: [BibliographyComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(BibliographyComponent);

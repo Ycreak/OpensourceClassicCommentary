@@ -7,8 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule, HttpClientModule],
-      declarations: [AppComponent],
+      imports: [RouterTestingModule, HttpClientModule, AppComponent],
     }).compileComponents();
   });
 

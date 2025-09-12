@@ -1,16 +1,44 @@
 // Library imports
 import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialogClose,
+  MatDialogContent,
+  MatDialogActions,
+} from '@angular/material/dialog';
 
 // Service imports
 import { ApiService } from '@oscc/api.service';
 import { AuthService } from '@oscc/auth/auth.service';
+import { MatOptionModule } from '@angular/material/core';
+import { FormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { NgIf, NgFor } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  standalone: false,
   selector: 'app-load-playground',
   templateUrl: './load-playground.component.html',
   styleUrls: ['./load-playground.component.scss'],
+  standalone: true,
+  imports: [
+    MatButtonModule,
+    MatDialogClose,
+    MatIconModule,
+    MatDialogContent,
+    NgIf,
+    MatProgressBarModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    FormsModule,
+    NgFor,
+    MatOptionModule,
+    MatDialogActions,
+  ],
 })
 export class LoadPlaygroundComponent implements OnInit {
   protected name: string;

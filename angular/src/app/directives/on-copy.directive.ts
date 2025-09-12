@@ -1,8 +1,8 @@
 import { Directive, Output, EventEmitter, HostListener } from '@angular/core';
 
 @Directive({
-  standalone: false,
   selector: '[appOnCopy]',
+  standalone: true,
 })
 export class OnCopyDirective {
   @Output() copyFragment = new EventEmitter();

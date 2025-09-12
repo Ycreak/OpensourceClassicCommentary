@@ -8,7 +8,7 @@ describe('GeneralCommentaryFieldComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [GeneralCommentaryFieldComponent],
+      imports: [GeneralCommentaryFieldComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(GeneralCommentaryFieldComponent);

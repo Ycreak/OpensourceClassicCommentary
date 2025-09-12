@@ -4,16 +4,30 @@
  * @author Ycreak
  */
 import { Component } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
-import { MatTabChangeEvent } from '@angular/material/tabs';
+import { MatDialogRef, MatDialogClose, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
+import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
 // Services imports
 import { FilterService } from './filter.service';
+import { TestimoniaTableComponent } from './testimonia-table/testimonia-table.component';
+import { FragmentTableComponent } from './fragment-table/fragment-table.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  standalone: false,
   selector: 'app-document-filter',
   templateUrl: './document-filter.component.html',
   styleUrls: ['./document-filter.component.scss'],
+  standalone: true,
+  imports: [
+    MatButtonModule,
+    MatDialogClose,
+    MatIconModule,
+    MatDialogContent,
+    MatTabsModule,
+    FragmentTableComponent,
+    TestimoniaTableComponent,
+    MatDialogActions,
+  ],
 })
 export class DocumentFilterComponent {
   private current_tab: string = 'fragments';

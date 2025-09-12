@@ -2,7 +2,7 @@
  * This service allows components to easily open a dialog and interact with them.
  */
 import { Injectable, Inject, Component } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogContent, MatDialogClose } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { ApiService } from '@oscc/api.service';
 import { BibliographyComponent } from '@oscc/dashboard/bibliography/bibliography.component';
@@ -12,6 +12,9 @@ import { SettingsDialogComponent } from '@oscc/dialogs/settings/settings-dialog.
 import { SettingsService } from './settings.service';
 import { ColumnBibliographyComponent } from '@oscc/dialogs/column-bibliography/column-bibliography.component';
 import { CustomDialogComponent } from '@oscc/dialogs/custom-dialog/custom-dialog.component';
+import { MatButtonModule } from '@angular/material/button';
+import { FormsModule } from '@angular/forms';
+import { QuillEditorComponent } from 'ngx-quill';
 
 /**
  * This service handles the dialogs used in the OSCC
@@ -118,10 +121,11 @@ export class DialogService {
  * The provided 'data' is shown inside this editor.
  */
 @Component({
-  standalone: false,
   selector: 'app-wysiwyg-dialog',
   templateUrl: '../dialogs/wysiwyg-dialog.html',
   styleUrls: ['../dialogs/dialogs.scss'],
+  standalone: true,
+  imports: [MatDialogContent, QuillEditorComponent, FormsModule, MatButtonModule, MatDialogClose],
 })
 export class WYSIWYGDialogComponent {
   constructor(

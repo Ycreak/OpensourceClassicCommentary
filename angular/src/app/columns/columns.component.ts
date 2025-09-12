@@ -7,7 +7,7 @@
 // Library imports
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatMenuTrigger } from '@angular/material/menu';
+import { MatMenuTrigger, MatMenuModule } from '@angular/material/menu';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 
 // Service imports
@@ -29,13 +29,47 @@ import { Fragment } from '@oscc/models/Fragment';
 import { Linked_fragment } from '@oscc/models/Linked_fragment';
 import { IntroductionsComponent } from '@oscc/commentary/introductions/introductions.component';
 import { SandboxService } from '@oscc/services/sandbox.service';
+import { ContextComponent } from './context/context.component';
+import { TestimoniaComponent } from './testimonia/testimonia.component';
+import { FragmentComponent } from './fragment/fragment.component';
+import { OnCopyDirective } from '../directives/on-copy.directive';
+import { CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { FormsModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { LatinTragicFragmentFilterComponent } from '../filters/latin-tragic-fragment-filter/latin-tragic-fragment-filter.component';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
-  standalone: false,
   selector: 'app-columns',
   templateUrl: './columns.component.html',
   styleUrls: ['./columns.component.scss'],
   encapsulation: ViewEncapsulation.None,
+  standalone: true,
+  imports: [
+    MatToolbarModule,
+    LatinTragicFragmentFilterComponent,
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+    NgFor,
+    MatCheckboxModule,
+    FormsModule,
+    NgIf,
+    MatProgressBarModule,
+    CdkScrollable,
+    NgTemplateOutlet,
+    CdkDropList,
+    OnCopyDirective,
+    CdkDrag,
+    TestimoniaComponent,
+    FragmentComponent,
+    ContextComponent,
+  ],
 })
 export class ColumnsComponent implements OnInit {
   // Variable to store the clicked fragment and its data. Used for the context menu

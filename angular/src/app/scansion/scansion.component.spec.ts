@@ -8,7 +8,7 @@ describe('ScansionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ScansionComponent],
+      imports: [ScansionComponent],
     }).compileComponents();
   });
 

@@ -8,7 +8,7 @@ describe('DeletePlaygroundComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [DeletePlaygroundComponent],
+      imports: [DeletePlaygroundComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DeletePlaygroundComponent);

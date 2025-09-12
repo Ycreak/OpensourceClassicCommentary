@@ -24,12 +24,28 @@ import { ColumnsService } from '@oscc/columns/columns.service';
 import { DialogService } from '@oscc/services/dialog.service';
 import { StringFormatterService } from '@oscc/services/string-formatter.service';
 import { UtilityService } from '@oscc/utility.service';
+import { ExpandableTextComponent } from '../other_components/expandable-text/expandable-text.component';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { GeneralCommentaryFieldComponent } from './general-commentary-field/general-commentary-field.component';
+import { TranslationComponent } from './translation/translation.component';
+import { MatButtonModule } from '@angular/material/button';
+import { NgIf, NgTemplateOutlet, NgFor } from '@angular/common';
 
 @Component({
-  standalone: false,
   selector: 'app-commentary',
   templateUrl: './commentary.component.html',
   styleUrls: ['./commentary.component.scss'],
+  standalone: true,
+  imports: [
+    NgIf,
+    NgTemplateOutlet,
+    MatButtonModule,
+    NgFor,
+    TranslationComponent,
+    GeneralCommentaryFieldComponent,
+    MatExpansionModule,
+    ExpandableTextComponent,
+  ],
 })
 export class CommentaryComponent {
   // The document given to the commentary to show its commentary

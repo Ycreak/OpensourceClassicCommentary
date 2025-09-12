@@ -8,9 +8,9 @@
 import { Component } from '@angular/core';
 import { AuthService } from '@oscc/auth/auth.service';
 import { Router } from '@angular/router';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Injectable } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MatDialogClose, MatDialogContent } from '@angular/material/dialog';
 
 // Service imports
 import { DialogService } from '@oscc/services/dialog.service';
@@ -19,15 +19,35 @@ import { UtilityService } from '@oscc/utility.service';
 
 // Model imports
 import { User } from '@oscc/models/User';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { NgIf } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Injectable({
   providedIn: 'root',
 })
 @Component({
-  standalone: false,
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
+  standalone: true,
+  imports: [
+    MatButtonModule,
+    MatDialogClose,
+    MatIconModule,
+    MatDialogContent,
+    NgIf,
+    MatProgressBarModule,
+    MatExpansionModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+  ],
 })
 export class LoginComponent {
   hide_password = true; // password hiding in dialog

@@ -4,7 +4,7 @@
  */
 
 import { Component } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Validators } from '@angular/forms';
 
 // Service imports
@@ -17,12 +17,32 @@ import { UtilityService } from '@oscc/utility.service';
 // Model imports
 import { Introduction } from '@oscc/models/Introduction';
 import { SandboxService } from '@oscc/services/sandbox.service';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
+import { IntroductionsFilterComponent } from '../../filters/introductions-filter/introductions-filter.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatIconModule } from '@angular/material/icon';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { NgIf } from '@angular/common';
 
 @Component({
-  standalone: false,
   selector: 'app-introductions-dashboard',
   templateUrl: './introductions-dashboard.component.html',
   styleUrls: ['./introductions-dashboard.component.scss'],
+  standalone: true,
+  imports: [
+    NgIf,
+    MatExpansionModule,
+    MatIconModule,
+    MatTabsModule,
+    IntroductionsFilterComponent,
+    MatButtonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+  ],
 })
 export class IntroductionsDashboardComponent {
   private allowed_user_roles = ['admin'];

@@ -1,15 +1,18 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { MatMenu } from '@angular/material/menu';
+import { MatMenu, MatMenuModule } from '@angular/material/menu';
 
 // Service imports
 import { ApiService } from '@oscc/api.service';
 import { UtilityService } from '@oscc/utility.service';
+import { MatButtonModule } from '@angular/material/button';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-  standalone: false,
   selector: 'app-latin-tragic-fragment-filter',
   templateUrl: './latin-tragic-fragment-filter.component.html',
   styleUrl: './latin-tragic-fragment-filter.component.scss',
+  standalone: true,
+  imports: [NgIf, MatButtonModule, MatMenuModule, NgFor],
 })
 export class LatinTragicFragmentFilterComponent {
   @Input() matMenu: MatMenu;

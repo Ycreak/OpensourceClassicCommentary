@@ -8,19 +8,22 @@
 
 // Library imports
 import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogClose, MatDialogContent } from '@angular/material/dialog';
 
 // Service imports
 import { ApiService } from '@oscc/api.service';
 
 // Model imports
 import { Introduction } from '@oscc/models/Introduction';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  standalone: false,
   selector: 'app-introductions',
   templateUrl: './introductions.component.html',
   styleUrls: ['./introductions.component.scss'],
+  standalone: true,
+  imports: [MatButtonModule, MatDialogClose, MatIconModule, MatDialogContent],
 })
 export class IntroductionsComponent implements OnInit {
   protected author: string;

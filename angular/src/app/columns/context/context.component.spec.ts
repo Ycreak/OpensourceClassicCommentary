@@ -8,7 +8,7 @@ describe('ContextComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ContextComponent],
+      imports: [ContextComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ContextComponent);

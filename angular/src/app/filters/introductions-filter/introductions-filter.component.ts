@@ -2,12 +2,16 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 // Service imports
 import { ApiService } from '@oscc/api.service';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-  standalone: false,
   selector: 'app-introductions-filter',
   templateUrl: './introductions-filter.component.html',
   styleUrl: './introductions-filter.component.scss',
+  standalone: true,
+  imports: [NgIf, MatButtonModule, MatMenuModule, NgFor],
 })
 export class IntroductionsFilterComponent {
   @Input() button_title: string;
