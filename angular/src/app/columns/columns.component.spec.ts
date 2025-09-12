@@ -8,7 +8,7 @@ describe('FragmentsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FragmentsComponent],
+      imports: [FragmentsComponent],
     }).compileComponents();
   });
 

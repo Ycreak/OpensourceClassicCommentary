@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LinnaeusComponent } from './linnaeus.component';
+import { CustomDialogComponent } from './custom-dialog.component';
 
-describe('LinnaeusComponent', () => {
-  let component: LinnaeusComponent;
-  let fixture: ComponentFixture<LinnaeusComponent>;
+describe('CustomDialogComponent', () => {
+  let component: CustomDialogComponent;
+  let fixture: ComponentFixture<CustomDialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LinnaeusComponent],
+      imports: [CustomDialogComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(LinnaeusComponent);
+    fixture = TestBed.createComponent(CustomDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

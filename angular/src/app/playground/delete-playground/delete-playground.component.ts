@@ -1,11 +1,20 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialogClose,
+  MatDialogContent,
+  MatDialogActions,
+} from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  standalone: false,
   selector: 'app-delete-playground',
   templateUrl: './delete-playground.component.html',
   styleUrls: ['./delete-playground.component.scss'],
+  standalone: true,
+  imports: [MatButtonModule, MatDialogClose, MatIconModule, MatDialogContent, MatDialogActions],
 })
 export class DeletePlaygroundComponent {
   protected name: string;

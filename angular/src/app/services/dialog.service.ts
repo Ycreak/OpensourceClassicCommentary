@@ -1,9 +1,20 @@
-import { Injectable, Inject, Component, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+/**
+ * This service allows components to easily open a dialog and interact with them.
+ */
+import { Injectable, Inject, Component } from '@angular/core';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogContent, MatDialogClose } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { ApiService } from '@oscc/api.service';
 import { BibliographyComponent } from '@oscc/dashboard/bibliography/bibliography.component';
-import { MatTooltip } from '@angular/material/tooltip';
+import { ConfirmationDialogComponent } from '@oscc/dialogs/confirmation/confirmation-dialog.component';
+import { AboutDialogComponent } from '@oscc/dialogs/about/about-dialog.component';
+import { SettingsDialogComponent } from '@oscc/dialogs/settings/settings-dialog.component';
+import { SettingsService } from './settings.service';
+import { ColumnBibliographyComponent } from '@oscc/dialogs/column-bibliography/column-bibliography.component';
+import { CustomDialogComponent } from '@oscc/dialogs/custom-dialog/custom-dialog.component';
+import { MatButtonModule } from '@angular/material/button';
+import { FormsModule } from '@angular/forms';
+import { QuillEditorComponent } from 'ngx-quill';
 
 /**
  * This service handles the dialogs used in the OSCC
@@ -13,14 +24,16 @@ import { MatTooltip } from '@angular/material/tooltip';
   providedIn: 'root',
 })
 export class DialogService {
-  constructor(private dialog: MatDialog) {}
+  constructor(
+    private settings: SettingsService,
+    private dialog: MatDialog
+  ) {}
 
   /**
-   * Function to open the about dialog
-   * @author Ycreak
+   * Function to handle the about dialog
    */
   public open_about_dialog(): void {
-    this.dialog.open(ShowAboutDialogComponent, {
+    this.dialog.open(AboutDialogComponent, {
       autoFocus: false, // To allow scrolling in the dialog
       maxHeight: '90vh', //you can adjust the value as per your view
     });
@@ -30,9 +43,8 @@ export class DialogService {
    * Opens a confirmation dialog with the provided message
    * @param message shows text about what is happening
    * @param item the item that is about to change
-   * @author Ycreak
    */
-  public open_confirmation_dialog(message, item): Observable<boolean> {
+  public open_confirmation_dialog(message: string, item: string): Observable<boolean> {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: 'auto',
       data: {
@@ -41,6 +53,20 @@ export class DialogService {
       },
     });
     return dialogRef.afterClosed(); // Returns observable.
+  }
+
+  /**
+   * Function to handle the settings dialog. Will save changes to the settings object in the service.
+   */
+  public open_settings_dialog(): void {
+    const dialogRef = this.dialog.open(SettingsDialogComponent, {
+      width: 'auto',
+      height: 'auto',
+    });
+    dialogRef.afterClosed().subscribe(() => {
+      // Also save the settings in local storage
+      this.settings.save_settings();
+    });
   }
 
   /**
@@ -61,27 +87,11 @@ export class DialogService {
   }
 
   /**
-   * This function handles the settings dialog. Settings are passed in the data object.
-   * @param settings oscc_settings object with all settings that can be changed
-   * @returns Observable with the oscc_settings object if successful
-   * @author Ycreak
-   * TODO: have a close button that discards changes?
-   */
-  public open_settings_dialog(settings): Observable<string> {
-    const dialogRef = this.dialog.open(SettingsDialogComponent, {
-      width: 'auto',
-      height: 'auto',
-      data: settings,
-    });
-    return dialogRef.afterClosed(); // Returns observable.
-  }
-
-  /**
    * Opens a dialog that shows the bibliography for a column
    * @param content that is to be shown
    * @author Ycreak
    */
-  public open_column_bibliography(content): void {
+  public open_column_bibliography(content: any): void {
     this.dialog.open(ColumnBibliographyComponent, {
       width: '90%',
       height: '75%',
@@ -95,7 +105,7 @@ export class DialogService {
    * @param content that is to be shown
    * @author Ycreak
    */
-  public open_custom_dialog(content): void {
+  public open_custom_dialog(content: any): void {
     this.dialog.open(CustomDialogComponent, {
       width: '90%',
       height: '75%',
@@ -107,46 +117,15 @@ export class DialogService {
 }
 
 /**
- * Class to show the about dialogs
- */
-@Component({
-  standalone: false,
-  selector: 'app-about-dialog',
-  templateUrl: '../dialogs/about-dialog.html',
-  styleUrls: ['../dialogs/dialogs.scss'],
-})
-export class ShowAboutDialogComponent {}
-
-/**
- * Class to show a confirmation dialog when needed.
- * Shows whatever data is given via the public variable 'data'
- */
-@Component({
-  standalone: false,
-  selector: 'app-confirmation-dialog',
-  templateUrl: '../dialogs/confirmation-dialog.html',
-  styleUrls: ['../dialogs/dialogs.scss'],
-})
-export class ConfirmationDialogComponent {
-  constructor(
-    public dialogRef: MatDialogRef<ConfirmationDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data
-  ) {}
-
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
-}
-
-/**
  * Class to show the rich text editor dialog.
  * The provided 'data' is shown inside this editor.
  */
 @Component({
-  standalone: false,
   selector: 'app-wysiwyg-dialog',
   templateUrl: '../dialogs/wysiwyg-dialog.html',
   styleUrls: ['../dialogs/dialogs.scss'],
+  standalone: true,
+  imports: [MatDialogContent, QuillEditorComponent, FormsModule, MatButtonModule, MatDialogClose],
 })
 export class WYSIWYGDialogComponent {
   constructor(
@@ -214,80 +193,5 @@ export class WYSIWYGDialogComponent {
         }
       }
     }
-  }
-}
-
-/**
- * Class to show a dialog with the provided content.
- * The provided 'data' is shown inside this editor.
- */
-@Component({
-  standalone: false,
-  selector: 'app-custom-dialog',
-  templateUrl: '../dialogs/custom-dialog.html',
-  styleUrls: ['../dialogs/dialogs.scss'],
-})
-export class CustomDialogComponent {
-  constructor(
-    public dialogRef: MatDialogRef<CustomDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data
-  ) {}
-}
-/**
- * Class to show the bibliography of a column.
- */
-@Component({
-  standalone: false,
-  selector: 'app-column-bibliopgraphy',
-  templateUrl: '../dialogs/column-bibliography.html',
-  styleUrls: ['../dialogs/dialogs.scss'],
-})
-export class ColumnBibliographyComponent {
-  constructor(
-    public dialogRef: MatDialogRef<ColumnBibliographyComponent>,
-    @Inject(MAT_DIALOG_DATA) public data
-  ) {}
-}
-
-/**
- * Class to show the settings dialog.
- * The provided 'data' is used to communicate the settings.
- */
-@Component({
-  standalone: false,
-  selector: 'app-settings-dialog',
-  templateUrl: '../dialogs/settings-dialog.html',
-  styleUrls: ['../dialogs/dialogs.scss'],
-})
-export class SettingsDialogComponent {
-  @ViewChild('dragtooltip_icon') dragtooltip_icon: MatTooltip;
-
-  protected tooltips = {
-    dragging_disabled: 'Disallows moving fragments by dragging them',
-    fragment_order_gradient:
-      'Enables a color gradient that shows the original order of the fragments, from a lighter to a darker color',
-    show_headers: 'Show fragment headers that include data about the fragment',
-    show_line_names: 'Show the name or number of each line of each fragment',
-    auto_scroll_linked_fragments: 'Automatically scrolls linked fragments into view if possible',
-  };
-
-  constructor(
-    public dialogRef: MatDialogRef<SettingsDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data
-  ) {}
-
-  protected toggle_tooltip(tooltip) {
-    if (tooltip.disabled) {
-      tooltip.disabled = false;
-      tooltip.show();
-    } else {
-      tooltip.disabled = true;
-      tooltip.hide();
-    }
-  }
-
-  protected disable_tooltip(tooltip) {
-    tooltip.disabled = true;
-    tooltip.hide();
   }
 }

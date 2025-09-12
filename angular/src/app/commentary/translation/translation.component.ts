@@ -6,12 +6,15 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { Commentary } from '@oscc/models/Commentary';
 import { Line } from '@oscc/models/Line';
+import { ExpandableTextComponent } from '../../other_components/expandable-text/expandable-text.component';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @Component({
-  standalone: false,
   selector: 'app-translation',
   templateUrl: './translation.component.html',
   styleUrls: ['./translation.component.scss'],
+  standalone: true,
+  imports: [MatExpansionModule, ExpandableTextComponent],
 })
 export class TranslationComponent implements OnChanges {
   @Input() document: any;

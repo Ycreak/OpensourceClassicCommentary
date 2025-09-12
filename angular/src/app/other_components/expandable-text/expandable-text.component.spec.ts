@@ -8,7 +8,7 @@ describe('ExpandableTextComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ExpandableTextComponent],
+      imports: [ExpandableTextComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ExpandableTextComponent);

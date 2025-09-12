@@ -5,12 +5,34 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '@oscc/api.service';
 import { AuthService } from '@oscc/auth/auth.service';
 import { UtilityService } from '@oscc/utility.service';
+import { UsersComponent } from './users/users.component';
+import { IntroductionsDashboardComponent } from './introductions-dashboard/introductions-dashboard.component';
+import { TestimoniaDashboardComponent } from './testimonia-dashboard/testimonia-dashboard.component';
+import { FragmentsDashboardComponent } from './fragments-dashboard/fragments-dashboard.component';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { RouterLink } from '@angular/router';
+import { NgIf } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
-  standalone: false,
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
+  standalone: true,
+  imports: [
+    MatToolbarModule,
+    MatButtonModule,
+    NgIf,
+    RouterLink,
+    MatProgressBarModule,
+    MatExpansionModule,
+    FragmentsDashboardComponent,
+    TestimoniaDashboardComponent,
+    IntroductionsDashboardComponent,
+    UsersComponent,
+  ],
 })
 export class DashboardComponent implements OnInit {
   constructor(

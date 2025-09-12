@@ -59,8 +59,8 @@
   <button mat-menu-item routerLink="/dashboard" *ngIf="this.auth_service.is_logged_in">Dashboard</button>
   <button mat-menu-item routerLink="/scansion" *ngIf="this.auth_service.is_logged_in">Scansion</button>
   <a href="https://github.com/Ycreak/OpensourceClassicCommentary/" target="_blank" mat-menu-item>Documentation</a>
-  <button (click)="this.settings.open_settings()" mat-menu-item>Settings</button>
-  <button (click)="this.dialog.open_about_dialog()" mat-menu-item>About</button>
+  <button (click)="this.dialog_service.open_settings_dialog()" mat-menu-item>Settings</button>
+  <button (click)="this.dialog_service.open_about_dialog()" mat-menu-item>About</button>
   <div mat-menu-item>V25.06.29</div>
   <div class="social-media-icons-div">
     <a href="https://bsky.app/profile/oscc753.bsky.social" target="_blank"

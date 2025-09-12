@@ -5,28 +5,49 @@
 
 // Library imports
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ViewportScroller } from '@angular/common';
+import { ViewportScroller, NgIf, NgStyle } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { environment } from '@src/environments/environment';
 
 // Service imports
 import { ApiService } from '@oscc/api.service';
-import { DialogService } from '@oscc/services/dialog.service';
 import { SettingsService } from '@oscc/services/settings.service';
 import { WindowSizeWatcherService } from '@oscc/services/window-watcher.service';
 import { AuthService } from '@oscc/auth/auth.service';
 import { SandboxService } from '@oscc/services/sandbox.service';
+import { DialogService } from '@oscc/services/dialog.service';
 
 // Component imports
 import { LoginComponent } from '@oscc/login/login.component';
-import { MatIconRegistry } from '@angular/material/icon';
+import { MatIconRegistry, MatIconModule } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
+import { PlaygroundComponent } from '../playground/playground.component';
+import { CommentaryComponent } from '../commentary/commentary.component';
+import { ColumnsComponent } from '../columns/columns.component';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { RouterLink } from '@angular/router';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
-  standalone: false,
   selector: 'app-overview',
   templateUrl: './overview.component.html',
   styleUrls: ['./overview.component.scss'],
+  standalone: true,
+  imports: [
+    MatToolbarModule,
+    NgIf,
+    MatButtonModule,
+    MatMenuModule,
+    MatIconModule,
+    RouterLink,
+    MatSidenavModule,
+    ColumnsComponent,
+    NgStyle,
+    CommentaryComponent,
+    PlaygroundComponent,
+  ],
 })
 export class OverviewComponent implements OnInit, OnDestroy {
   protected commentary_enabled = true;
@@ -35,7 +56,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   constructor(
     protected api: ApiService,
     protected auth_service: AuthService,
-    protected dialog: DialogService,
+    protected dialog_service: DialogService,
     protected sandbox: SandboxService,
     protected settings: SettingsService,
     protected window_watcher: WindowSizeWatcherService,

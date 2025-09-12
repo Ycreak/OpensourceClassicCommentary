@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 
 import { ApiService } from '@oscc/api.service';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
-  standalone: false,
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  standalone: true,
+  imports: [RouterOutlet],
 })
 export class AppComponent implements OnInit {
   title = 'OpenSourceClassicCommentary';

@@ -1,12 +1,35 @@
 // Library imports
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialogClose,
+  MatDialogContent,
+  MatDialogActions,
+} from '@angular/material/dialog';
+import { NgIf } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  standalone: false,
   selector: 'app-save-playground',
   templateUrl: './save-playground.component.html',
   styleUrls: ['./save-playground.component.scss'],
+  standalone: true,
+  imports: [
+    MatButtonModule,
+    MatDialogClose,
+    MatIconModule,
+    MatDialogContent,
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    MatDialogActions,
+    NgIf,
+  ],
 })
 export class SavePlaygroundComponent {
   protected name: string;
