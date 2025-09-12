@@ -7,7 +7,6 @@ import { Introduction } from '@oscc/models/Introduction';
 import { ApiService } from '@oscc/api.service';
 
 @Component({
-  standalone: false,
   selector: 'app-introductions-dashboard',
   templateUrl: './introductions.component.html',
   styleUrls: ['./introductions.component.scss'],

@@ -1,20 +1,33 @@
 import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 
 import { ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 
 // Services imports
 import { AuthService } from '@oscc/auth/auth.service';
 import { BibliographyService } from '@oscc/services/bibliography.service';
 import { DialogService } from '@oscc/services/dialog.service';
+import { MatDialogClose } from '@angular/material/dialog';
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
-  standalone: false,
   selector: 'app-bibliography',
   templateUrl: './bibliography.component.html',
   styleUrls: ['./bibliography.component.scss'],
+  standalone: true,
+  imports: [
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    MatTableModule,
+    MatSortModule,
+    MatDialogClose,
+    MatPaginatorModule,
+  ],
 })
 export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;

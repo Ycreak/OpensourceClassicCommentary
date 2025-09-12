@@ -8,7 +8,7 @@ describe('CommentaryComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CommentaryComponent],
+      imports: [CommentaryComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CommentaryComponent);

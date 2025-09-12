@@ -1,6 +1,6 @@
 // Library imports
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormArray } from '@angular/forms';
+import { FormControl, FormGroup, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Validators } from '@angular/forms';
 
 // Service imports
@@ -12,12 +12,37 @@ import { UtilityService } from '@oscc/utility.service';
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';
 import { Column } from '@oscc/models/Column';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatButtonModule } from '@angular/material/button';
+import { LatinTragicFragmentFilterComponent } from '../../filters/latin-tragic-fragment-filter/latin-tragic-fragment-filter.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-  standalone: false,
   selector: 'app-fragments-dashboard',
   templateUrl: './fragments-dashboard.component.html',
   styleUrls: ['./fragments-dashboard.component.scss'],
+  standalone: true,
+  imports: [
+    NgIf,
+    MatExpansionModule,
+    MatIconModule,
+    LatinTragicFragmentFilterComponent,
+    MatButtonModule,
+    MatTabsModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatOptionModule,
+    NgFor,
+  ],
 })
 export class FragmentsDashboardComponent implements OnInit {
   private allowed_user_roles = ['admin', 'teacher', 'student'];

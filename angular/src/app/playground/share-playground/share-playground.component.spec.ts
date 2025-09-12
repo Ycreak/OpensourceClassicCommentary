@@ -8,7 +8,7 @@ describe('SharePlaygroundComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SharePlaygroundComponent],
+      imports: [SharePlaygroundComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SharePlaygroundComponent);

@@ -8,7 +8,7 @@ describe('SavePlaygroundComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SavePlaygroundComponent],
+      imports: [SavePlaygroundComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SavePlaygroundComponent);

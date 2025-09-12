@@ -8,7 +8,7 @@ describe('DocumentFilterComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [DocumentFilterComponent],
+      imports: [DocumentFilterComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DocumentFilterComponent);

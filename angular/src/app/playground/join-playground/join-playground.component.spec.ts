@@ -8,7 +8,7 @@ describe('JoinPlaygroundComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [JoinPlaygroundComponent],
+      imports: [JoinPlaygroundComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(JoinPlaygroundComponent);

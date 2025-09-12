@@ -1,11 +1,14 @@
 import { Component, Input, ElementRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { NgIf } from '@angular/common';
 //import { CommentaryComponent } from '../../commentary/commentary.component';
 
 @Component({
-  standalone: false,
   selector: 'app-expandable-text',
   templateUrl: './expandable-text.component.html',
   styleUrls: ['./expandable-text.component.scss'],
+  standalone: true,
+  imports: [NgIf, MatButtonModule],
 })
 export class ExpandableTextComponent implements AfterViewInit {
   @Input() content: string; // HTML content

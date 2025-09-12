@@ -8,7 +8,7 @@ describe('FragmentComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FragmentComponent],
+      imports: [FragmentComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FragmentComponent);

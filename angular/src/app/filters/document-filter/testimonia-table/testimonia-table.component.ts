@@ -4,20 +4,39 @@
  */
 
 import { AfterViewInit, Component, ViewChild, Output, EventEmitter } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 
 // Service imports
 import { ApiService } from '@oscc/api.service';
 import { UtilityService } from '@oscc/utility.service';
 import { FilterService } from '../filter.service';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatInputModule } from '@angular/material/input';
+import { NgFor } from '@angular/common';
+import { MatOptionModule } from '@angular/material/core';
+import { FormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
-  standalone: false,
   selector: 'app-testimonia-table',
   templateUrl: './testimonia-table.component.html',
   styleUrl: './testimonia-table.component.scss',
+  standalone: true,
+  imports: [
+    MatFormFieldModule,
+    MatSelectModule,
+    FormsModule,
+    MatOptionModule,
+    NgFor,
+    MatInputModule,
+    MatTableModule,
+    MatSortModule,
+    MatCheckboxModule,
+    MatPaginatorModule,
+  ],
 })
 export class TestimoniaTableComponent implements AfterViewInit {
   @Output() collection = new EventEmitter<any>();

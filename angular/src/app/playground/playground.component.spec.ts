@@ -8,7 +8,7 @@ describe('PlaygroundComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [PlaygroundComponent],
+      imports: [PlaygroundComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PlaygroundComponent);
