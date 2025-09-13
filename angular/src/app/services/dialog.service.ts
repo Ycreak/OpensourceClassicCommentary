@@ -1,11 +1,9 @@
 /**
  * This service allows components to easily open a dialog and interact with them.
  */
-import { Injectable, Inject, Component } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogContent, MatDialogClose } from '@angular/material/dialog';
+import { Injectable } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
-import { ApiService } from '@oscc/api.service';
-import { BibliographyComponent } from '@oscc/dashboard/bibliography/bibliography.component';
 import { ConfirmationDialogComponent } from '@oscc/dialogs/confirmation/confirmation-dialog.component';
 import { AboutDialogComponent } from '@oscc/dialogs/about/about-dialog.component';
 import { SettingsDialogComponent } from '@oscc/dialogs/settings/settings-dialog.component';
@@ -13,13 +11,6 @@ import { SettingsService } from './settings.service';
 import { ColumnBibliographyComponent } from '@oscc/dialogs/column-bibliography/column-bibliography.component';
 import { CustomDialogComponent } from '@oscc/dialogs/custom-dialog/custom-dialog.component';
 import { WYSIWYGDialogComponent } from '@oscc/dialogs/wysiwyg/wysiwyg-dialog.component';
-import { MatButtonModule } from '@angular/material/button';
-import { FormsModule } from '@angular/forms';
-import { QuillEditorComponent } from 'ngx-quill';
-
-/**
- * This service handles the dialogs used in the OSCC
- */
 
 @Injectable({
   providedIn: 'root',
@@ -75,9 +66,8 @@ export class DialogService {
    * @param content that is to be edited by the editor
    * @param config settings that are interpreted by the editor
    * @returns content that is edited by the editor
-   * @author Ycreak
    */
-  public open_wysiwyg_dialog(content): Observable<string> {
+  public open_wysiwyg_dialog(content: any): Observable<string> {
     const dialogRef = this.dialog.open(WYSIWYGDialogComponent, {
       disableClose: true,
       data: {
@@ -116,4 +106,3 @@ export class DialogService {
     });
   }
 }
-

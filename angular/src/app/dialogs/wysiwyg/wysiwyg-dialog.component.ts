@@ -17,7 +17,8 @@ import { QuillEditorComponent } from 'ngx-quill';
   templateUrl: './wysiwyg-dialog.component.html',
   styleUrl: '../dialogs.scss',
 })
-export class WYSIWYGDialogComponent { constructor(
+export class WYSIWYGDialogComponent {
+  constructor(
     private dialog: MatDialog,
     public dialogRef: MatDialogRef<WYSIWYGDialogComponent>,
     @Inject(MAT_DIALOG_DATA)

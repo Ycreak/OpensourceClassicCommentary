@@ -8,10 +8,9 @@ describe('WysiwygComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [WysiwygComponent]
-    })
-    .compileComponents();
-    
+      imports: [WysiwygComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(WysiwygComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
