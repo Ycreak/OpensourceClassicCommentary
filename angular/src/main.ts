@@ -25,9 +25,7 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
   providers: [
-    importProvidersFrom(
-      SocketIoModule.forRoot(config)
-    ),
+    importProvidersFrom(SocketIoModule.forRoot(config)),
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpErrorInterceptor,
