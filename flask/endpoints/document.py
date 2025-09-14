@@ -140,6 +140,18 @@ def create_document() -> make_response:
     """
     Create the given document. First we check what document type we received. Based on the type,
     different documents can be created. This is handled by the switch statement.
+    ---
+    parameters:
+      - name: filter
+        in: path
+        type: object
+        required: true
+        description: object on which to filter the documents in the database
+    responses:
+      200:
+        description: List of documents for the given filter 
+        examples:
+          application/json: [{_id: 456, author: "Ennius"}, {_id: 123, author: "Naevius"}] 
     """
     try:
         document_type: str = request.get_json()["document_type"]
