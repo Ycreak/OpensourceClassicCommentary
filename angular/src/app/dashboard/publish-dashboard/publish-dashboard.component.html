@@ -1,1 +1,51 @@
-Hello
+<mat-form-field>
+  <mat-label>Filter</mat-label>
+  <input matInput (keyup)="applyFilter($event)" placeholder="Search..." />
+</mat-form-field>
+
+<button mat-stroked-button class="button-margin" color="primary" (click)="update_toggled_fragments()">Update</button>
+
+<div class="mat-elevation-z8">
+  <table mat-table [dataSource]="dataSource" matSort>
+    <!-- Visible Column -->
+    <ng-container matColumnDef="visible">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Visible</th>
+      <td mat-cell *matCellDef="let fragment">
+        <mat-checkbox
+          [checked]="fragment.visible === 1"
+          (change)="toggleVisible(fragment)"
+          (click)="$event.stopPropagation()">
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <!-- Author Column -->
+    <ng-container matColumnDef="author">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Author</th>
+      <td mat-cell *matCellDef="let fragment">{{ fragment.author }}</td>
+    </ng-container>
+
+    <!-- Title Column -->
+    <ng-container matColumnDef="title">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Title</th>
+      <td mat-cell *matCellDef="let fragment">{{ fragment.title }}</td>
+    </ng-container>
+
+    <!-- Editor Column -->
+    <ng-container matColumnDef="editor">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Editor</th>
+      <td mat-cell *matCellDef="let fragment">{{ fragment.editor }}</td>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+      <td mat-cell *matCellDef="let fragment">{{ fragment.name }}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[10, 20, 100]" showFirstLastButtons></mat-paginator>
+</div>

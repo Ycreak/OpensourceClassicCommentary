@@ -11,6 +11,7 @@ import { SettingsService } from './settings.service';
 import { ColumnBibliographyComponent } from '@oscc/dialogs/column-bibliography/column-bibliography.component';
 import { CustomDialogComponent } from '@oscc/dialogs/custom-dialog/custom-dialog.component';
 import { WYSIWYGDialogComponent } from '@oscc/dialogs/wysiwyg/wysiwyg-dialog.component';
+import { PublishDashboardComponent } from '@oscc/dashboard/publish-dashboard/publish-dashboard.component';
 
 @Injectable({
   providedIn: 'root',
@@ -46,12 +47,12 @@ export class DialogService {
     });
     return dialogRef.afterClosed(); // Returns observable.
   }
-  
+
   /**
    * Function to handle the fragment publish dialog
    */
   public open_fragment_publish_dialog(): void {
-    this.dialog.open(AboutDialogComponent, {
+    this.dialog.open(PublishDashboardComponent, {
       autoFocus: false, // To allow scrolling in the dialog
       maxHeight: '90vh', //you can adjust the value as per your view
     });
