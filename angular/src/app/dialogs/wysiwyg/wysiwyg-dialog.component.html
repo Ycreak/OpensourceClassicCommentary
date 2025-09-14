@@ -2,6 +2,10 @@
 The configuration for the editor is given via data.config. When accept is clicked, the updated data is returned to the caller
 in plain HTML. -->
 <div mat-dialog-content>
+  <div class="alert alert-info" role="alert">
+    Please do not use the angle brackets (<b>&lt;</b> and <b>&gt;</b>): these will be filtered by the system as HTML
+    notation. Do use the provided brackets: <b>⟨</b> and <b>⟩</b>.
+  </div>
   <quill-editor [(ngModel)]="data.content" (onEditorCreated)="this.editor_instance = $event">
     <div quill-editor-toolbar>
       <!-- Add a bold and italics buttons -->
