@@ -21,6 +21,13 @@ This database will provide a clear and accessible overview of the scholarly trad
 ## Getting started
 See [the manual]() and the [Fragment component overview](#Fragment_component) on how to work with the OSCC.
 
+To kickstart docker, run the following command:
+```
+docker compose up --build
+```
+
+This will install all components and packages. Later you can just do a docker compose up.
+
 <a name="project_overview"/>
 
 ## Project overview

@@ -23,6 +23,7 @@
 from flask import Flask
 from flask_cors import CORS
 from flask_restful import Api
+from flasgger import Swagger
 import logging
 
 # Class imports
@@ -42,6 +43,7 @@ from endpoints.zotero import get_bibliography, sync_bibliography, test_bibliogra
 
 app = Flask(__name__)
 api = Api(app)
+swagger = Swagger(app) # localhost:5003/apidocs/#/
 
 # Only allow requests from these specific origins
 CORS(app, origins=conf.TRUSTED_ORIGINS)
