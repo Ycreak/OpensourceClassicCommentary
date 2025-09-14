@@ -11,3 +11,4 @@ pytest
 pyzotero
 wheel
 ruff
+flasgger
