@@ -46,6 +46,16 @@ export class DialogService {
     });
     return dialogRef.afterClosed(); // Returns observable.
   }
+  
+  /**
+   * Function to handle the fragment publish dialog
+   */
+  public open_fragment_publish_dialog(): void {
+    this.dialog.open(AboutDialogComponent, {
+      autoFocus: false, // To allow scrolling in the dialog
+      maxHeight: '90vh', //you can adjust the value as per your view
+    });
+  }
 
   /**
    * Function to handle the settings dialog. Will save changes to the settings object in the service.
