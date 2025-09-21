@@ -41,6 +41,14 @@
     *ngIf="this.auth_service.has_permission('delete', this.auth_service.current_user_role)">
     Delete Fragment
   </button>
+  <button
+    mat-stroked-button
+    class="button-margin"
+    color="primary"
+    (click)="this.dialog.open_fragment_publish_dialog()"
+    *ngIf="this.auth_service.has_permission('publish', this.auth_service.current_user_role)">
+    Publish Fragments
+  </button>
 
   <!--TODO: make this a lot prettier 11-->
   <p style="padding-top: 1em; padding-left: 1em">

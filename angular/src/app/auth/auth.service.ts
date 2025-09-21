@@ -17,7 +17,7 @@ export class AuthService {
   constructor(private sandbox: SandboxService) {}
 
   private permissions = {
-    admin: ['create', 'read', 'update', 'delete'],
+    admin: ['create', 'read', 'update', 'delete', 'publish'],
     teacher: ['create', 'read', 'update', 'delete'],
     student: ['create', 'read', 'update'],
   };
@@ -60,22 +60,6 @@ export class AuthService {
    * @return boolean
    */
   public has_permission(request: string, role: string): boolean {
-    switch (request) {
-      case 'create':
-        // The admin user uses the admin sandbox, which is the main sandbox
-        return this.permissions[role].includes(request);
-      case 'read':
-        // The admin user uses the admin sandbox, which is the main sandbox
-        return this.permissions[role].includes(request);
-      case 'update':
-        // The teacher user uses a sandbox with the same name as their name
-        return this.permissions[role].includes(request);
-      case 'delete':
-        // The admin user uses the admin sandbox, which is the main sandbox this.current_sandbox = user_role
-        return this.permissions[role].includes(request);
-      default:
-        console.debug('Unknown request.');
-    }
-    return false;
+    return this.permissions[role].includes(request);
   }
 }
