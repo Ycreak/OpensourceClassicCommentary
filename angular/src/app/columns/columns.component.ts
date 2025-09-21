@@ -328,23 +328,39 @@ export class ColumnsComponent implements OnInit {
     });
   }
 
+  /**
+   * Sets the column to edit mode so the user can rename the column.
+   *
+   * After editing the text in edit mode, the column must be set back to view mode
+   * to complete the edit. In this case this can be done by pressing enter
+   * (saves the change) or clicking anywhere outside the edit field/pressing escape
+   * (cancels the change).
+   * @author sajvanwijk
+   */
   @ViewChildren('ColumnNameField') columnNameFields: QueryList<EditableColumnNameComponent>;
   protected trigger_column_name_edit_mode(column: Column): void {
     // First get the column to edit; this is the one that matches the id of the currently selected column.
     const column_to_edit = this.columnNameFields.toArray().filter((c) => c.column.column_id == column.column_id)[0];
 
-    //set newName var to current name of this column.
+    //Init newName var by setting it to the current name of this column.
     this.newColumnName = column_to_edit.column.column_name;
 
     // Switch this column to edit mode
     column_to_edit.toEditMode();
   }
 
+  /**
+   * Method for updating a column name in the system after it has been edited. (See trigger_column_name_edit_mode)
+   * @author sajvanwijk
+   */
   protected updateColumnName(column: Column, newColumnName: string) {
     console.log(`New column name set for column ${column.column_id}: ${newColumnName}`);
     // Update the column name
     column.column_name = newColumnName;
     column.column_name_edited = true;
+
+    //TODO this is still lacking an implementation that saves the new column somewhere
+    //so that it persists between sessions.
   }
   /**
    * Given the fragment, this function checks whether its linked fragments appear in the
