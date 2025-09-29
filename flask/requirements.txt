@@ -1,14 +1,13 @@
-numpy
 flask
 flask_cors
 flask_restful
 flask_jsonpify
 couchdb
-jsonpickle
 fuzzywuzzy
 python-Levenshtein
-pytest
+#pytest
 pyzotero
-wheel
+#wheel
 ruff
 flasgger
+python-dotenv
