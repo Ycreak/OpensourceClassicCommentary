@@ -1,4 +1,6 @@
 import os
+from dotenv import load_dotenv  
+load_dotenv('.env') 
 
 # Trusted origins for CORS purposes
 LOCAL_HOST_RESOLVED = "http://localhost:4200"
