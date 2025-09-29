@@ -2,7 +2,6 @@
 Model to handle playgrounds
 """
 
-
 from uuid import uuid4
 
 from database import Database

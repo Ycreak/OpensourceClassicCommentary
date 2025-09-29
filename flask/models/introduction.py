@@ -11,24 +11,25 @@ from database import Database
 
 class IntroductionFields(object):
     # Container for field names
-    ID = '_id'
-    AUTHOR = 'author'
-    TITLE = 'title'
-    EDITOR = 'editor'
-    TEXT = 'text'
+    ID = "_id"
+    AUTHOR = "author"
+    TITLE = "title"
+    EDITOR = "editor"
+    TEXT = "text"
     SANDBOX = "sandbox"
 
 
 @dataclass
 class IntroductionModel:
     # Data container. Corresponds to the IntroductionForm on the dashboard.
-    _id: str = ''
-    document_type: str = 'introduction'
-    author: str = ''
-    title: str = ''
-    editor: str = ''
-    text: str = ''
-    sandbox: str = ''
+    _id: str = ""
+    document_type: str = "introduction"
+    author: str = ""
+    title: str = ""
+    editor: str = ""
+    text: str = ""
+    sandbox: str = ""
+
 
 class Introduction:
     def __init__(self, server):
@@ -39,10 +40,10 @@ class Introduction:
         Retrieves the introduction given the document filter.
         """
         introduction = IntroductionModel()
-        introduction.author = document.get(IntroductionFields.AUTHOR, '')
-        introduction.title = document.get(IntroductionFields.TITLE, '')
-        introduction.editor = document.get(IntroductionFields.EDITOR, '')
-        introduction.sandbox = document.get(IntroductionFields.SANDBOX, '')
+        introduction.author = document.get(IntroductionFields.AUTHOR, "")
+        introduction.title = document.get(IntroductionFields.TITLE, "")
+        introduction.editor = document.get(IntroductionFields.EDITOR, "")
+        introduction.sandbox = document.get(IntroductionFields.SANDBOX, "")
 
         # Convert the model into a dictionary
         introduction = {

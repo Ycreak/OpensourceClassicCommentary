@@ -53,13 +53,15 @@ def update_index() -> None:
         try:
             match doc["document_type"]:
                 case "introduction":
-                    index.append({
-                        "document_type": "introduction", 
-                        "author": doc["author"], 
-                        "title": doc["title"],
-                        "editor": doc["editor"],
-                        "sandbox": doc["sandbox"]
-                    })
+                    index.append(
+                        {
+                            "document_type": "introduction",
+                            "author": doc["author"],
+                            "title": doc["title"],
+                            "editor": doc["editor"],
+                            "sandbox": doc["sandbox"],
+                        }
+                    )
 
                 case "fragment":
                     index.append(
@@ -149,9 +151,9 @@ def create_document() -> make_response:
         description: object on which to filter the documents in the database
     responses:
       200:
-        description: List of documents for the given filter 
+        description: List of documents for the given filter
         examples:
-          application/json: [{_id: 456, author: "Ennius"}, {_id: 123, author: "Naevius"}] 
+          application/json: [{_id: 456, author: "Ennius"}, {_id: 123, author: "Naevius"}]
     """
     try:
         document_type: str = request.get_json()["document_type"]
