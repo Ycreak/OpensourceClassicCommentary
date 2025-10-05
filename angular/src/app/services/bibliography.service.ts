@@ -95,7 +95,12 @@ export class BibliographyService {
   public convert_bib_key_into_citation(bib_key: string): string {
     const bib_item = this.bibliography.find((o) => o.key === bib_key);
     //Add the item to the bibliography for easy printing in an expansion panel
-    return bib_item.citation;
+    if (bib_item) {
+      return bib_item.citation;
+    } else {
+      console.error(`bib_key ${bib_key} could not be found in the bibliography.`);
+      return '';
+    }
   }
 
   /**
