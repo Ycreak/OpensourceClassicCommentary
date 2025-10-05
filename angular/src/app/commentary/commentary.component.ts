@@ -89,9 +89,11 @@ export class CommentaryComponent {
       this.linked_commentaries = [];
       // Add additional formatting to the commentary
       this.commentary.do_on_fields(this.string_formatter.convert_custom_tag_to_html);
-      // Create a bibliography for the document
-      this.commentary.bibliography = this.create_bibliography(this.document);
-      this.convert_bib_keys_in_commentary();
+      // Construct the bibliography if we did not do that already for the click document.
+      if (this.commentary.bibliography === '') {
+        this.commentary.bibliography = this.create_bibliography(this.document);
+        this.convert_bib_keys_in_commentary();
+      }
     });
   }
 
@@ -132,7 +134,7 @@ export class CommentaryComponent {
    * @author Ycreak
    */
   private create_bibliography(doc: any): string {
-    return this.bib.convert_keys_into_bibliography(this.bib.get_keys_from_commentary(doc.commentary));
+    return this.bib.convert_keys_into_bibliography(doc.commentary.bib_keys);
   }
 
   /**
