@@ -105,11 +105,9 @@ export class UtilityService {
    */
   public get_set_of_key_values_from_object_list(list: any, key: string): string[] {
     return Array.from(
-      new Set(
-        list.map(function (el: any) {
-          return el[key];
-        })
-      )
+      list.map(function (el: any) {
+        return el[key];
+      })
     );
   }
 

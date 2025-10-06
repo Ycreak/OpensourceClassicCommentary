@@ -51,15 +51,40 @@ export class IntroductionsFilterComponent {
 
   /**  */
   protected get_introductions_based_on_type(introduction_type: string): string[] {
-    let retrieved_introductions: Array<string> = [];
+    const retrieved_introductions: Array<string> = [];
+    let retrieved_introductions_titles: Array<string> = [];
+    const retrieved_introductions_authors: Array<string> = [];
     switch (introduction_type) {
       case 'Author introductions':
         return this.api.get_from_index('author', { document_type: 'introduction', title: '', editor: '' });
 
       case 'Title introductions':
-        retrieved_introductions = this.api.get_from_index('title', { document_type: 'introduction', editor: '' });
+        retrieved_introductions_titles = this.api.get_from_index('title', {
+          document_type: 'introduction',
+          editor: '',
+        });
         // Filter out any author introductions (these will have title="")
-        retrieved_introductions = retrieved_introductions.filter((intro) => intro != '');
+        retrieved_introductions_titles = retrieved_introductions_titles.filter((intro) => intro != '');
+
+        // Look up the corresponding author for each title
+        for (let i = 0; i < retrieved_introductions_titles.length; ) {
+          const authors: Array<string> = this.api.get_from_index('author', {
+            document_type: 'introduction',
+            title: retrieved_introductions_titles[i],
+            editor: '',
+          });
+          // Multiple authors might be found for a single title. Push all these to the list of retrieved authors.
+          for (const author of authors) {
+            retrieved_introductions_authors.push(author);
+            i++;
+          }
+        }
+        // Put the authors in brackets behind the title name
+        for (let i = 0; i < retrieved_introductions_titles.length; i++) {
+          retrieved_introductions.push(
+            retrieved_introductions_titles[i] + ' (' + retrieved_introductions_authors[i] + ')'
+          );
+        }
         return retrieved_introductions;
 
       case 'Editor introductions':
