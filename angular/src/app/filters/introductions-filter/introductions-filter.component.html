@@ -34,7 +34,8 @@
       <button
         mat-menu-item
         [hidden]="title.trim() === ''"
-        (click)="this.selected_title = title"
+        (click)="this.selected_title = title.split(' (')[0]"
+        (click)="this.selected_author = title.split(' (')[1].split(')')[0]"
         (click)="this.filter(introduction_type)">
         {{ title }}
       </button>
