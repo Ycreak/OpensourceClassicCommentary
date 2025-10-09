@@ -59,7 +59,7 @@ export class IntroductionsFilterComponent {
         return this.api.get_from_index('author', { document_type: 'introduction', title: '', editor: '' });
 
       case 'Title introductions':
-        retrieved_introductions_titles = this.api.get_from_index('title', {
+        retrieved_introductions_titles = this.api.get_from_index_non_unique('title', {
           document_type: 'introduction',
           editor: '',
         });

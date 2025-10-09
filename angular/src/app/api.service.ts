@@ -183,6 +183,19 @@ export class ApiService {
   }
 
   /**
+   * Gets a non-unique list of values from the given key, when applying the given filter
+   * on the index file
+   * @param key (string)
+   * @param filter (object)
+   * @author sajvanwijk
+   */
+  public get_from_index_non_unique(key: string, filter: object): string[] {
+    return this.utility
+      .get_list_of_key_values_from_object_list(this.utility.filter_array(this.index, filter), key)
+      .sort();
+  }
+
+  /**
    * Asks Flask to test the Zotero bibliography.
    * @param key (object)
    * @author Ycreak

@@ -97,13 +97,30 @@ export class UtilityService {
   }
 
   /**
-   * Returns a unique list of the given key over a list of objects
+   * For each given object, gets the property that matches the key and returns this as an unique list.
    * @param list (array) with objects
    * @param key (string) of which values to create a Set
    * @return list of unique values
    * @author Ycreak
    */
   public get_set_of_key_values_from_object_list(list: any, key: string): string[] {
+    return Array.from(
+      new Set(
+        list.map(function (el: any) {
+          return el[key];
+        })
+      )
+    );
+  }
+
+  /**
+   * For each given object, gets the property that matches the key. Returns these as a list.
+   * @param list (array) with objects
+   * @param key (string) of which property to get from the objects
+   * @return list of retrieved values
+   * @author sajvanwijk
+   */
+  public get_list_of_key_values_from_object_list(list: any, key: string): string[] {
     return Array.from(
       list.map(function (el: any) {
         return el[key];
