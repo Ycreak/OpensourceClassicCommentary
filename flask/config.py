@@ -29,7 +29,7 @@ COUCH_TABLES = [
 ]
 
 PWD_HASH_NAME=os.getenv("PWD_HASH_NAME")
-PWD_HASH_ITERATIONS=os.getenv("PWD_HASH_ITERATIONS")
+PWD_HASH_ITERATIONS=int(os.getenv("PWD_HASH_ITERATIONS"))
 COUCH_LIMIT = 1000
 COUCH_VERSION = os.getenv("COUCH_VERSION") # Keep up-to-date. Used for authentication
 
