@@ -22,7 +22,7 @@ import { LatinTragicFragmentFilterComponent } from '../../filters/latin-tragic-f
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { NgIf, NgFor } from '@angular/common';
-
+import { QuillComponent } from '@oscc/components/quill/quill.component';
 @Component({
   selector: 'app-fragments-dashboard',
   templateUrl: './fragments-dashboard.component.html',
@@ -42,6 +42,7 @@ import { NgIf, NgFor } from '@angular/common';
     MatSelectModule,
     MatOptionModule,
     NgFor,
+    QuillComponent,
   ],
 })
 export class FragmentsDashboardComponent implements OnInit {
@@ -130,8 +131,8 @@ export class FragmentsDashboardComponent implements OnInit {
     this.push_linked_fragments_to_fragment_form(filter.author, filter.title, filter.editor, filter.name);
   }
 
-  protected test(): void {
-    console.log(this.fragment_form.value);
+  protected test(thing): void {
+    console.log(thing);
   }
 
   /**

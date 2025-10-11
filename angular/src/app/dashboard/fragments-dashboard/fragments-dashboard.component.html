@@ -186,6 +186,10 @@
           Rich editor
         </button>
 
+        <app-quill
+          [value]="fragment_form.value.translation"
+          (valueChange)="this.fragment_form.patchValue({ translation: $event })"></app-quill>
+
         <div class="div-padding-lg"></div>
         <div class="div-padding-sm"></div>
 
