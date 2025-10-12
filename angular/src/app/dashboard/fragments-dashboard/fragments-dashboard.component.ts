@@ -23,6 +23,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { NgIf, NgFor } from '@angular/common';
 import { QuillComponent } from '@oscc/components/quill/quill.component';
+
+// Simple interface for a mat select
+interface mat_select_interface {
+  value: string;
+  view_value: string;
+}
+
 @Component({
   selector: 'app-fragments-dashboard',
   templateUrl: './fragments-dashboard.component.html',
@@ -89,6 +96,18 @@ export class FragmentsDashboardComponent implements OnInit {
     visible: new FormControl(0),
     lock: new FormControl(0),
   });
+
+  // Here we declare the fields we allow to be edited with the Quill editor.
+  protected quill_fields: mat_select_interface[] = [
+    { value: 'apparatus', view_value: 'Apparatus Criticus' },
+    { value: 'commentary', view_value: 'Commentary' },
+    { value: 'differences', view_value: 'Differences' },
+    { value: 'metrical_analysis', view_value: 'Metrical Analysis' },
+    { value: 'reconstruction', view_value: 'Reconstruction' },
+    { value: 'translation', view_value: 'Translation' },
+  ];
+  // To keep track of the currently selected field for Quill editing
+  protected selected_field_for_quill: string;
 
   // In this object all meta data is stored regarding the currently selected fragment
   selected_fragment_data: Column;
@@ -503,5 +522,18 @@ export class FragmentsDashboardComponent implements OnInit {
    */
   protected user_has_view_permission(): boolean {
     return this.allowed_user_roles.includes(this.auth_service.current_user_role);
+  }
+
+  /**
+   * Handles what happens when quill changes it value. In this case, we update the
+   * fragment form using patchValue. We cannot do this from HTML, as we dynamically select
+   * which value to patch.
+   * @param value (string) which to patch to the fragment form
+   * @param field (string) which field to patch.
+   */
+  protected on_quill_value_change(value: string, field: string): void {
+    this.fragment_form.patchValue({
+      [field]: value,
+    });
   }
 }
