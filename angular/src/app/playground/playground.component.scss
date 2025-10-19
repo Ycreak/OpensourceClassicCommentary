@@ -1,5 +1,13 @@
 /* Playground related CSS */
 @use "../_mixins.scss" as *;
+#playground {
+  background-color: white; // This is specifically needed in fullscreen mode.
+}
+
+#playground-canvas {
+  height: 85vh !important; // Sets the height of the canvas in relation to the user's viewport.
+  //TODO make this more elegant for example by having the canvas inherit height from its container.
+}
 
 #playground {
   background-color: white; // This is specifically needed in fullscreen mode.
@@ -254,4 +262,8 @@ hr.playground-divider-top {
 .playground-icon:hover {
   transition: transform 0.2s ease-out;
   transform: scale(1.25);
+}
+
+.playground-fullscreen-mode-button {
+  background-color: transparent;
 }

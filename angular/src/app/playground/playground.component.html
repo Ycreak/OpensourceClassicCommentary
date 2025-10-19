@@ -10,7 +10,7 @@
   </p>
 
   <div class="canvas-container">
-    <canvas id="playground_canvas"></canvas>
+    <canvas id="playground-canvas"></canvas>
 
     <!--Popup window with options for the documents-->
     <div class="menu" *ngIf="this.fabric.has_selection()">
@@ -127,6 +127,22 @@
       <div id="playground-help-menu" class="playground-tool-group">
         <button id="playground-help-menu-button" mat-stroked-button class="navbar" [matMenuTriggerFor]="helpmenu">
           <mat-icon fontIcon="question_mark"></mat-icon>
+        </button>
+      </div>
+      <div id="playground-fullscreen-mode-button-container" class="playground-tool-group">
+        <button
+          *ngIf="!this.is_fullscreen"
+          mat-icon-button
+          class="playground-icon playground-fullscreen-mode-button"
+          (click)="this.make_playground_fullscreen()">
+          <mat-icon>fullscreen</mat-icon>
+        </button>
+        <button
+          *ngIf="this.is_fullscreen"
+          mat-icon-button
+          class="playground-icon playground-fullscreen-mode-button"
+          (click)="this.exit_playground_fullscreen()">
+          <mat-icon>fullscreen_exit</mat-icon>
         </button>
       </div>
     </div>
