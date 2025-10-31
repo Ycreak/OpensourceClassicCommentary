@@ -267,3 +267,13 @@ hr.playground-divider-top {
 .playground-fullscreen-mode-button {
   background-color: transparent;
 }
+
+.playground-fullscreen-mode-button .mat-icon {
+  font-size: 32px;
+  vertical-align: middle;
+  height: 100%;
+  width: 100%;
+  display: inline-flex;
+  justify-content: center;
+  line-height: 0.95;
+}
