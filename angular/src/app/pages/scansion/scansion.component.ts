@@ -52,6 +52,7 @@ export class ScansionComponent implements OnInit {
   ngOnInit(): void {
     this.http.get<any>('assets/syllable_probabilities.json').subscribe(data => {
       this.neural_data = data;
+      console.log(data)
       // No padding please
       this.neural_data = this.neural_data.filter(item => item.syllable !== '@');
 
@@ -85,13 +86,20 @@ export class ScansionComponent implements OnInit {
   }
 
   public scan_lines(given_line: string) {
-    this.api.spinner_on();
     this.api.scan_lines({ "scansion": given_line }).subscribe({
-
       next: (data) => {
         this.neural_data = data;
+        // Remove the padding label
+        this.neural_data = this.neural_data.filter(item => item.syllable !== '@');
+        // Replace the space label with a dash (looks better on the frontend)
+        this.neural_data = this.neural_data.map(item => {
+          const newItem = {...item};
+          if (newItem.prediction === "space") {
+            newItem.prediction = "-";
+          }
+          return newItem;
+        });
         console.log(data);
-        this.api.spinner_off();
       },
       error: (err) => this.api.show_server_response(err),
     });
