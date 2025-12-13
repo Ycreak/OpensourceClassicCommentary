@@ -12,19 +12,11 @@
 <mat-toolbar color="primary">
   <h3 class="h3-title">Latin Scansion with Neural Networks</h3>
   <span class="spacer"></span>
-  <!-- <button mat-button class="btn" (click)="this.api.request_authors(this.selected_fragment_data)">RELOAD AUTHORS</button> -->
-  <!-- <mat-checkbox class="btn" [(ngModel)]="syllabified" ngDefaultControl>SYLLABIFIED</mat-checkbox> -->
-
-  <!-- <mat-radio-group [(ngModel)]="network_type" ngDefaultControl>
-    <mat-radio-button value="FLAIR">FLAIR</mat-radio-button>
-    <mat-radio-button value="LSTM">LSTM</mat-radio-button>
-    <mat-radio-button value="CRF">CRF</mat-radio-button>
-  </mat-radio-group> -->
 </mat-toolbar>
 
 <!-- Loading spinner to show data is being retrieved from the server -->
 <!--<mat-toolbar *ngIf="this.api.spinner === false" class="progress-toolbar"></mat-toolbar>-->
-<!--<mat-progress-bar *ngIf="this.api.spinner" mode="query"></mat-progress-bar>-->
+<mat-progress-bar *ngIf="this.api.spinner" mode="query"></mat-progress-bar>
 
 <br />
 
@@ -49,47 +41,58 @@
   <p><b>After syllabifying your lines, the neural network scanned them as follows:</b></p>
 </div>
 
-  <mat-grid-list cols="{{ this.neural_data.length }}" rowHeight="1em">
-    <mat-grid-tile
-      *ngFor="let object of this.neural_data"
-      [colspan]="1"
-      [rowspan]="2"
-      [style.background]="'#DDDDDD'"
-      (click)="this.show_confidence(object)"
-      style="cursor: pointer">
-      <b>{{ object.syllable }}</b>
-    </mat-grid-tile>
-  </mat-grid-list>
+<mat-grid-list cols="{{ this.neural_data.length }}" rowHeight="1em">
+  <mat-grid-tile
+    *ngFor="let object of this.neural_data"
+    [colspan]="1"
+    [rowspan]="2"
+    [style.background]="object.confidence"
+    (click)="this.show_confidence(object)"
+    style="cursor: pointer">
+    <b>{{ object.symbol }}</b>
+  </mat-grid-tile>
+</mat-grid-list>
 
-  <mat-grid-list cols="{{ this.neural_data.length }}" rowHeight="1em">
-    <mat-grid-tile
-      *ngFor="let object of this.neural_data"
-      [colspan]="1"
-      [rowspan]="2"
-      [style.background]="'lightgreen'"
-      (click)="this.show_confidence(object)"
-      style="cursor: pointer">
-      <b>{{ object.prediction }}</b>
-    </mat-grid-tile>
-  </mat-grid-list>
+<mat-grid-list cols="{{ this.neural_data.length }}" rowHeight="1em">
+  <mat-grid-tile
+    *ngFor="let object of this.neural_data"
+    [colspan]="1"
+    [rowspan]="2"
+    [style.background]="'#DDDDDD'"
+    (click)="this.show_confidence(object)"
+    style="cursor: pointer">
+    <b>{{ object.syllable }}</b>
+  </mat-grid-tile>
+</mat-grid-list>
 
-  <!-- <mat-grid-list cols="{{sentence.length}}" rowHeight="1em">
-    <mat-grid-tile
-        *ngFor="let score of sentence.score"
-        
-        [colspan]="1"
-        [rowspan]="2"
-        [style.background]="'orange'">
-      <b>{{score}}</b>
-      
-    </mat-grid-tile>
-  </mat-grid-list>   -->
+<mat-grid-list cols="{{ this.neural_data.length }}" rowHeight="1em">
+  <mat-grid-tile
+    *ngFor="let object of this.neural_data"
+    [colspan]="1"
+    [rowspan]="2"
+    [style.background]="object.confidence"
+    (click)="this.show_confidence(object)"
+    style="cursor: pointer">
+    <b>{{ object.prediction }}</b>
+  </mat-grid-tile>
+</mat-grid-list>
 
-<hr>
+<mat-grid-list cols="{{ this.neural_data.length }}" rowHeight="1em">
+  <mat-grid-tile
+    *ngFor="let object of this.neural_data"
+    [colspan]="1"
+    [rowspan]="2"
+    [style.background]="object.confidence"
+    (click)="this.show_confidence(object)"
+    style="cursor: pointer">
+    <b *ngIf="object.confidence">{{ object[object.prediction].toFixed(0) }}%</b>
+  </mat-grid-tile>
+</mat-grid-list>
+
+<hr />
 
 <div>
   <div *ngFor="let conf of this.current_confidence">
-    <p style='padding-left: 2em'>{{ conf.key }}: {{ conf.value.toFixed(2) }}%</p>
+    <p style="padding-left: 2em">{{ conf.key }}: {{ conf.value.toFixed(2) }}%</p>
   </div>
 </div>
-

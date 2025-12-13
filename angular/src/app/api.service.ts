@@ -56,7 +56,7 @@ export class ApiService {
   }
 
   FlaskURL: string = environment.flask_api;
-  ScansionURL: string = 'http://nolden.biz:5004';
+  ScansionURL: string = 'http://nolden.biz:5004/';
 
   get index() {
     // Return only documents from the current sandbox. Default sandbox is called 'admin'
