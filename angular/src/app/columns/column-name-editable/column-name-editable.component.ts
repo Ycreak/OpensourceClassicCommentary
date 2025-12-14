@@ -1,4 +1,4 @@
-import { Component, ContentChild, ElementRef, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
+import { Component, ContentChild, ElementRef, EventEmitter, Input, Output } from '@angular/core';
 import { ViewModeDirective } from './view-mode.directive';
 import { EditModeDirective } from './edit-mode.directive';
 import { Subject } from 'rxjs';
@@ -8,7 +8,7 @@ import { Column } from '@oscc/models/Column';
   selector: 'app-editable-column-name',
   template: ` <ng-container [column]="column" *ngTemplateOutlet="currentView"></ng-container> `,
 })
-export class EditableColumnNameComponent implements OnDestroy {
+export class EditableColumnNameComponent {
   @ContentChild(ViewModeDirective) viewModeTpl: ViewModeDirective;
   @ContentChild(EditModeDirective) editModeTpl: EditModeDirective;
   @Input() column: Column;
@@ -19,9 +19,6 @@ export class EditableColumnNameComponent implements OnDestroy {
   editMode$ = this.editMode.asObservable();
 
   mode: 'view' | 'edit' = 'view';
-
-  viewModeSubscription;
-  editModeSubscription;
 
   constructor(private el: ElementRef) {}
 
@@ -42,10 +39,5 @@ export class EditableColumnNameComponent implements OnDestroy {
 
   get currentView() {
     return this.mode === 'view' ? this.viewModeTpl.tpl : this.editModeTpl.tpl;
-  }
-
-  ngOnDestroy() {
-    this.viewModeSubscription.unsubscribe();
-    this.editModeSubscription.unsubscribe();
   }
 }
