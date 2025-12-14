@@ -4,6 +4,11 @@ import { EditModeDirective } from './edit-mode.directive';
 import { Subject } from 'rxjs';
 import { Column } from '@oscc/models/Column';
 
+/**
+ * This component displays the name of a column. It has aa view mode for displaying the name and
+ * an edit mode for editing the name. It will use different html templates (ng-templates) based on the mode.
+ * @author sajvanwijk
+ */
 @Component({
   selector: 'app-editable-column-name',
   template: ` <ng-container [column]="column" *ngTemplateOutlet="currentView"></ng-container> `,
@@ -22,6 +27,11 @@ export class EditableColumnNameComponent {
 
   constructor(private el: ElementRef) {}
 
+  /**
+   * Sets the column back to default view mode and emits the particular column
+   * that has been edited.
+   * @author sajvanwijk
+   */
   public toViewMode(confirmEdit: boolean) {
     if (confirmEdit) {
       this.update.emit(this.column);
