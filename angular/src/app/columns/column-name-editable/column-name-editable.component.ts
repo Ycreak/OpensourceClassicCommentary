@@ -24,7 +24,7 @@ export class EditableColumnNameComponent implements OnInit, OnDestroy {
   viewModeSubscription;
   editModeSubscription;
 
-  constructor(private host: ElementRef) {}
+  constructor(private el: ElementRef) {}
 
   ngOnInit() {
     this.editModeHandler();
@@ -42,7 +42,7 @@ export class EditableColumnNameComponent implements OnInit, OnDestroy {
   }
 
   private get element() {
-    return this.host.nativeElement;
+    return this.el.nativeElement;
   }
 
   private editModeHandler() {
