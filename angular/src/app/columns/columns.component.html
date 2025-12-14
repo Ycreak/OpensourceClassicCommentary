@@ -92,6 +92,7 @@
           <span class="column-name-author-title-editor">
             {{ column_to_display.column_name }}
           </span>
+          <span style="color: white; margin-left: 3px"><sup *ngIf="column_to_display.edited">altered</sup></span>
         </ng-template>
         <ng-template appEditMode>
           <input matInput type="text" [(ngModel)]="newColumnName" appEditableKeypressHandler appAutoFocus />
