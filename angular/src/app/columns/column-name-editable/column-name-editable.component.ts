@@ -1,16 +1,18 @@
-import { Component, ContentChild, ElementRef, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, ContentChild, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ViewModeDirective } from './view-mode.directive';
 import { EditModeDirective } from './edit-mode.directive';
 import { fromEvent, Subject } from 'rxjs';
 import { filter, take, switchMapTo } from 'rxjs/operators';
+import { Column } from '@oscc/models/Column';
 
 @Component({
   selector: 'app-editable-column-name',
-  template: ` <ng-container *ngTemplateOutlet="currentView"></ng-container> `,
+  template: ` <ng-container [column]="column" *ngTemplateOutlet="currentView"></ng-container> `,
 })
 export class EditableColumnNameComponent implements OnInit, OnDestroy {
   @ContentChild(ViewModeDirective) viewModeTpl: ViewModeDirective;
   @ContentChild(EditModeDirective) editModeTpl: EditModeDirective;
+  @Input() column: Column;
   @Output() update = new EventEmitter();
 
   editMode = new Subject();
@@ -29,14 +31,13 @@ export class EditableColumnNameComponent implements OnInit, OnDestroy {
   }
 
   public toViewMode() {
-    this.update.next(true);
+    this.update.emit();
     this.mode = 'view';
   }
 
   public toEditMode(): void {
     console.log('test');
     this.mode = 'edit';
-    // this.editMode.next(true);
   }
 
   private get element() {
