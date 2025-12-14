@@ -75,6 +75,10 @@ export class ColumnsComponent implements OnInit {
   // Variable to store the clicked fragment and its data. Used for the context menu
   public current_document: any;
 
+  fragment_form = new FormGroup({
+    columnName: new FormControl(''),
+  });
+
   constructor(
     protected api: ApiService,
     protected auth_service: AuthService,
@@ -374,6 +378,14 @@ export class ColumnsComponent implements OnInit {
     });
   }
 
+  @ViewChild('testColumnName') test: EditableColumnNameComponent;
+  protected trigger_column_name_edit_mode(): void {
+    this.test.toEditMode();
+  }
+
+  protected updateField() {
+    console.log('testUpdate');
+  }
   /**
    * Given the fragment, this function checks whether its linked fragments appear in the
    * other opened columns. If so, the columns are scrolled to put the linked fragment in view
