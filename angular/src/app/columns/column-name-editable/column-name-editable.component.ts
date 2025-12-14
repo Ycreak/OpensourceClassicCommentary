@@ -30,13 +30,14 @@ export class EditableColumnNameComponent implements OnInit, OnDestroy {
     this.editModeHandler();
   }
 
-  public toViewMode() {
-    this.update.emit(this.column);
+  public toViewMode(confirmEdit: boolean) {
+    if (confirmEdit) {
+      this.update.emit(this.column);
+    }
     this.mode = 'view';
   }
 
   public toEditMode(): void {
-    console.log('test');
     this.mode = 'edit';
   }
 
@@ -50,7 +51,8 @@ export class EditableColumnNameComponent implements OnInit, OnDestroy {
       take(1)
     );
 
-    this.editModeSubscription = this.editMode$.pipe(switchMapTo(clickOutside$)).subscribe(() => this.toViewMode());
+    //TODO replace this with a directive?
+    this.editModeSubscription = this.editMode$.pipe(switchMapTo(clickOutside$)).subscribe(() => this.toViewMode(false));
   }
 
   get currentView() {
