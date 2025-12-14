@@ -59,10 +59,10 @@
         #ColumnNameField
         class="fragments-toolbar-1"
         [column]="column_to_display"
-        (update)="updateField(index, 'name')">
-        <ng-template appViewMode>
+        (update)="updateColumnName($event, newColumnName)">
+        <ng-template appViewMode *ngIf="column_to_display.column_name_edited === false">
           <span
-            class="column-name-author-title-editor"
+            class="column-name-author-title-editor introduction-link-hover"
             (click)="this.show_introduction({ author: column_to_display.author })"
             (click)="check($event)"
             (mousedown)="$event.stopPropagation()">
@@ -71,7 +71,7 @@
           </span>
           <span style="color: white">-</span>
           <span
-            class="column-name-author-title-editor"
+            class="column-name-author-title-editor introduction-link-hover"
             (click)="this.show_introduction({ title: column_to_display.title })"
             (click)="check($event)"
             (mousedown)="$event.stopPropagation()">
@@ -79,7 +79,7 @@
           </span>
           <span style="color: white">-</span>
           <span
-            class="column-name-author-title-editor"
+            class="column-name-author-title-editor introduction-link-hover"
             (click)="this.show_introduction({ editor: column_to_display.editor })"
             (click)="check($event)"
             (mousedown)="$event.stopPropagation()">
@@ -87,8 +87,13 @@
           </span>
           <span style="color: white; margin-left: 3px"><sup *ngIf="column_to_display.edited">altered</sup></span>
         </ng-template>
+        <ng-template appViewMode *ngIf="column_to_display.column_name_edited === true">
+          <span class="column-name-author-title-editor">
+            {{ column_to_display.column_name }}
+          </span>
+        </ng-template>
         <ng-template appEditMode>
-          <input matInput type="text" appEditableOnEnter />
+          <input matInput type="text" [(ngModel)]="newColumnName" appEditableOnEnter />
           <!--TODO Add directives focusable editableonenter here?-->
         </ng-template>
       </app-editable-column-name>
