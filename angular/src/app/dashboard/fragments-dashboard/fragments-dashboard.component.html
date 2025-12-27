@@ -175,72 +175,27 @@
 
     <mat-tab label="Fragment Content"
       ><br />
-      <!-- This piece of code allows users to provide content for the fragment. It contains simple text fields
-                which communicate directly with the fragment_form. -->
-      <form [formGroup]="fragment_form">
-        <mat-form-field class="input-form-full-width">
-          <mat-label><b>Fragment translation</b></mat-label>
-          <textarea matInput type="text" formControlName="translation" id="FT"></textarea>
+
+      <!--We create a selector to select the field we want to edit. The quill editor then edits this form field. -->
+      <div>
+        <mat-form-field>
+          <mat-label>Field to edit</mat-label>
+          <mat-select [(value)]="selected_field_for_quill">
+            @for (field of quill_fields; track field) {
+              <mat-option [value]="field.value">{{ field.view_value }}</mat-option>
+            }
+          </mat-select>
         </mat-form-field>
-        <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('translation')">
-          Rich editor
-        </button>
-
-        <div class="div-padding-lg"></div>
-        <div class="div-padding-sm"></div>
-
-        <mat-form-field class="input-form-full-width">
-          <mat-label><b>Fragment apparatus criticus</b></mat-label>
-          <textarea matInput type="text" formControlName="apparatus" id="FA"></textarea>
-        </mat-form-field>
-        <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('apparatus')">
-          Rich editor
-        </button>
-
-        <div class="div-padding-lg"></div>
-        <div class="div-padding-sm"></div>
-
-        <mat-form-field class="input-form-full-width">
-          <mat-label><b>Fragment differences</b></mat-label>
-          <textarea matInput type="text" formControlName="differences" id="FD"></textarea>
-        </mat-form-field>
-        <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('differences')">
-          Rich editor
-        </button>
-
-        <div class="div-padding-lg"></div>
-        <div class="div-padding-sm"></div>
-
-        <mat-form-field class="input-form-full-width">
-          <mat-label><b>Fragment commentary</b></mat-label>
-          <textarea matInput type="text" formControlName="commentary" id="FC"></textarea>
-        </mat-form-field>
-        <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('commentary')">
-          Rich editor
-        </button>
-
-        <div class="div-padding-lg"></div>
-        <div class="div-padding-sm"></div>
-
-        <mat-form-field class="input-form-full-width">
-          <mat-label><b>Fragment reconstruction</b></mat-label>
-          <textarea matInput type="text" formControlName="reconstruction" id="FR"></textarea>
-        </mat-form-field>
-        <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('reconstruction')">
-          Rich editor
-        </button>
-
-        <div class="div-padding-lg"></div>
-        <div class="div-padding-sm"></div>
-
-        <mat-form-field class="input-form-full-width">
-          <mat-label><b>Fragment Metrical Analysis</b></mat-label>
-          <textarea matInput type="text" formControlName="metrical_analysis" id="FMA"></textarea>
-        </mat-form-field>
-        <button mat-button class="button-margin-extra" (click)="request_wysiwyg_dialog('metrical_analysis')">
-          Rich editor
-        </button>
-      </form>
+      </div>
+      <div class="quill-wrapper">
+        <div class="alert alert-info" role="alert">
+          Please do not use the angle brackets (<b>&lt;</b> and <b>&gt;</b>): these will be filtered by the system as
+          HTML notation. Do use the provided brackets: <b>⟨</b> and <b>⟩</b>.
+        </div>
+        <app-quill
+          [value]="fragment_form.value[selected_field_for_quill]"
+          (valueChange)="on_quill_value_change($event, selected_field_for_quill)"></app-quill>
+      </div>
     </mat-tab>
     <!-- end of the Fragment content tab -->
 

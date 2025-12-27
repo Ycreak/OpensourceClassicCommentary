@@ -90,3 +90,9 @@ div.dialog-header button:hover {
   transition: transform 0.2s ease-out;
   transform: scale(1.25);
 }
+
+/*Make the font size for the Quill editor bigger*/
+.ql-editor {
+  font-size: 18px;
+}
+
