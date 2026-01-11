@@ -3,6 +3,7 @@ import { EditableColumnNameComponent } from './column-name-editable.component';
 
 @Directive({
   selector: '[appEditableKeypressHandler]',
+  standalone: true,
 })
 export class EditableOnKeypressDirective {
   constructor(private editable: EditableColumnNameComponent) {}

@@ -36,13 +36,18 @@ import { OnCopyDirective } from '../directives/on-copy.directive';
 import { CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { LatinTragicFragmentFilterComponent } from '../filters/latin-tragic-fragment-filter/latin-tragic-fragment-filter.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { EditableColumnNameComponent } from './column-name-editable/column-name-editable.component';
+import { EditModeDirective } from './column-name-editable/edit-mode.directive';
+import { ViewModeDirective } from './column-name-editable/view-mode.directive';
+import { EditableOnKeypressDirective } from './column-name-editable/on-keypress.directive';
+import { OutsideClickDirective } from './column-name-editable/click-outside-element.directive';
 
 @Component({
   selector: 'app-columns',
@@ -69,6 +74,12 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     TestimoniaComponent,
     FragmentComponent,
     ContextComponent,
+    EditableColumnNameComponent,
+    EditModeDirective,
+    ViewModeDirective,
+    EditableOnKeypressDirective,
+    OutsideClickDirective,
+    NgTemplateOutlet,
   ],
 })
 export class ColumnsComponent implements OnInit {

@@ -3,6 +3,7 @@ import { EditableColumnNameComponent } from '@oscc/columns/column-name-editable/
 
 @Directive({
   selector: '[appOutsideClick]',
+  standalone: true,
 })
 export class OutsideClickDirective {
   @Output()

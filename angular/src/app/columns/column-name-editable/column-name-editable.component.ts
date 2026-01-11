@@ -3,6 +3,7 @@ import { ViewModeDirective } from './view-mode.directive';
 import { EditModeDirective } from './edit-mode.directive';
 import { Subject } from 'rxjs';
 import { Column } from '@oscc/models/Column';
+import { NgTemplateOutlet } from '@angular/common';
 
 /**
  * This component displays the name of a column. It has aa view mode for displaying the name and
@@ -11,6 +12,10 @@ import { Column } from '@oscc/models/Column';
  */
 @Component({
   selector: 'app-editable-column-name',
+  standalone: true,
+  imports: [NgTemplateOutlet],
+  // hostDirectives: [ViewModeDirective, EditModeDirective],
+  // providers: [ViewModeDirective, EditModeDirective],
   template: ` <ng-container [column]="column" *ngTemplateOutlet="currentView"></ng-container> `,
 })
 export class EditableColumnNameComponent {
