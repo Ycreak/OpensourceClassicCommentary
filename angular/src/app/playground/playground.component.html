@@ -27,7 +27,6 @@
       <div id="playground-hamburger-menu" class="playground-tool-group">
         <button id="playground-hamburger-menu-button" mat-stroked-button class="navbar" [matMenuTriggerFor]="menu">
           <mat-icon fontIcon="menu"></mat-icon>
-          <!-- <span *ngIf="this.window_watcher.size > 850">MENU</span> -->
         </button>
       </div>
       <div id="playground-document-tools" class="playground-tool-group">
@@ -125,13 +124,18 @@
           src="assets\icons\ByteDanceIconPark\9071420_people_download_icon.png"
           (click)="this.join_playground()" />
       </div>
+      <div id="playground-help-menu" class="playground-tool-group">
+        <button id="playground-help-menu-button" mat-stroked-button class="navbar" [matMenuTriggerFor]="helpmenu">
+          <mat-icon fontIcon="question_mark"></mat-icon>
+        </button>
+      </div>
     </div>
   </div>
 </div>
 <!-- Hamburger menu content -->
 <mat-menu #menu="matMenu">
   <button mat-menu-item (click)="this.load_playground()">
-    <div class="hamburger-menu-item-icon-wrapper">
+    <div class="menu-item-icon-wrapper">
       <img
         id="playground_load_btn"
         class="playground-icon"
@@ -140,7 +144,7 @@
     Load Playground
   </button>
   <button mat-menu-item (click)="this.save_playground()">
-    <div class="hamburger-menu-item-icon-wrapper">
+    <div class="menu-item-icon-wrapper">
       <img
         id="playground_save_btn"
         class="playground-icon"
@@ -149,7 +153,7 @@
     Save Playground
   </button>
   <button mat-menu-item (click)="this.create_live_room()">
-    <div class="hamburger-menu-item-icon-wrapper">
+    <div class="menu-item-icon-wrapper">
       <img
         *ngIf="this.auth_service.is_logged_in"
         id="playground_share_btn"
@@ -159,7 +163,7 @@
     Create Shared Session
   </button>
   <button mat-menu-item (click)="this.join_playground()">
-    <div class="hamburger-menu-item-icon-wrapper">
+    <div class="menu-item-icon-wrapper">
       <img
         *ngIf="this.auth_service.is_logged_in"
         id="playground_join_btn"
@@ -169,7 +173,12 @@
     Join Shared Session
   </button>
   <button mat-menu-item>
-    <div class="hamburger-menu-item-icon-wrapper"></div>
+    <div class="menu-item-icon-wrapper"></div>
     Settings
   </button>
+</mat-menu>
+
+<mat-menu #helpmenu="matMenu">
+  <button mat-menu-item (click)="this.show_helpmenu('a')">What is the playground</button>
+  <button mat-menu-item (click)="this.show_helpmenu('b')">How to use the playground</button>
 </mat-menu>

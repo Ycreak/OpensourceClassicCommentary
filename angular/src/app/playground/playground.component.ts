@@ -409,4 +409,37 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
     this.fabric.set_event_handlers();
     this.fabric.init();
   }
+
+  /**
+   * Shows the help menu for the playground
+   * @author sajvanwijk
+   */
+  protected show_helpmenu(helpmenuoption: string): void {
+    let helptext;
+    if (helpmenuoption == 'a') {
+      helptext = `<div><b>This is the playground</b><br><br>
+      This is a place to take fragments and move them around in a freeform way, as to gain new insights. 
+      It is also possible to add notes where you can place your thoughts.
+      <br><br>
+      You can also add other users to your playground in order to collaborate together! This way you will
+      both be able to work on the same fragments and to share insights and connections.
+      </div>`;
+    }
+    if (helpmenuoption == 'b') {
+      helptext = `<div>
+      FIXME See how we can best add icons/images here for additional clarity.<br><br>
+
+      <b>Loading fragments</b><br>
+      Lorem ipsum dolor sit amet 
+      <br><br>
+      <b>Drawing on the playground</b><br><br>
+      <b>Undo/Redo</b><br><br>
+      <b>Saving your playground</b><br><br>
+      <b>Loading a saved playground</b><br><br>
+      <b>Sharing a playground session</b><br><br>
+      <b>Joining a playground session</b><br><br>
+      </div>`;
+    }
+    this.dialog.open_custom_dialog(helptext);
+  }
 }
