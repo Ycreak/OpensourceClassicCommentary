@@ -23,6 +23,13 @@
     </div>
 
     <div id="playground-main-toolbar" class="playground-toolbar">
+      <!-- Hamburger menu -->
+      <div id="playground-hamburger-menu" class="playground-tool-group">
+        <button id="playground-hamburger-menu-button" mat-stroked-button class="navbar" [matMenuTriggerFor]="menu">
+          <mat-icon fontIcon="menu"></mat-icon>
+          <!-- <span *ngIf="this.window_watcher.size > 850">MENU</span> -->
+        </button>
+      </div>
       <div id="playground-document-tools" class="playground-tool-group">
         <app-latin-tragic-fragment-filter
           [button_title]="''"
@@ -121,3 +128,48 @@
     </div>
   </div>
 </div>
+<!-- Hamburger menu content -->
+<mat-menu #menu="matMenu">
+  <button mat-menu-item (click)="this.load_playground()">
+    <div class="hamburger-menu-item-icon-wrapper">
+      <img
+        id="playground_load_btn"
+        class="playground-icon"
+        src="assets\icons\ByteDanceIconPark\9068981_folder_open_icon.png" />
+    </div>
+    Load Playground
+  </button>
+  <button mat-menu-item (click)="this.save_playground()">
+    <div class="hamburger-menu-item-icon-wrapper">
+      <img
+        id="playground_save_btn"
+        class="playground-icon"
+        src="assets\icons\ByteDanceIconPark\9070374_hard_disk_one_icon.png" />
+    </div>
+    Save Playground
+  </button>
+  <button mat-menu-item (click)="this.create_live_room()">
+    <div class="hamburger-menu-item-icon-wrapper">
+      <img
+        *ngIf="this.auth_service.is_logged_in"
+        id="playground_share_btn"
+        class="playground-icon"
+        src="assets\icons\ByteDanceIconPark\9071373_people_plus_one_icon.png" />
+    </div>
+    Create Shared Session
+  </button>
+  <button mat-menu-item (click)="this.join_playground()">
+    <div class="hamburger-menu-item-icon-wrapper">
+      <img
+        *ngIf="this.auth_service.is_logged_in"
+        id="playground_join_btn"
+        class="playground-icon"
+        src="assets\icons\ByteDanceIconPark\9071420_people_download_icon.png" />
+    </div>
+    Join Shared Session
+  </button>
+  <button mat-menu-item>
+    <div class="hamburger-menu-item-icon-wrapper"></div>
+    Settings
+  </button>
+</mat-menu>

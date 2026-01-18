@@ -20,6 +20,7 @@ import { AuthService } from '@oscc/auth/auth.service';
 import { CommentaryService } from '@oscc/commentary/commentary.service';
 import { UtilityService } from '@oscc/utility.service';
 import { FabricService } from './services/fabric.service';
+import { WindowSizeWatcherService } from '@oscc/services/window-watcher.service';
 
 import { FormatterService } from './services/formatter.service';
 
@@ -40,13 +41,14 @@ import { LatinTragicFragmentFilterComponent } from '../filters/latin-tragic-frag
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { NgIf } from '@angular/common';
+import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
   selector: 'app-playground',
   templateUrl: './playground.component.html',
   styleUrls: ['./playground.component.scss'],
   standalone: true,
-  imports: [NgIf, MatProgressBarModule, MatIconModule, LatinTragicFragmentFilterComponent],
+  imports: [NgIf, MatProgressBarModule, MatIconModule, LatinTragicFragmentFilterComponent, MatMenuModule],
 })
 export class PlaygroundComponent implements OnInit, OnDestroy {
   @Output() document_clicked = new EventEmitter<Fragment>();
@@ -90,12 +92,16 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
     protected websockets: WebsocketsService,
     private commentary: CommentaryService,
     private formatter: FormatterService,
-    private mat_dialog: MatDialog
+    private mat_dialog: MatDialog,
+    protected window_watcher: WindowSizeWatcherService
   ) {}
 
   ngOnInit(): void {
     this.init_playground();
     //this.request_documents({ document_type: 'fragment', author: 'Karel' });
+
+    // Create the window watcher for checking viewport size
+    this.window_watcher.init(window.innerWidth);
   }
 
   ngOnDestroy() {
@@ -104,6 +110,10 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
     }
     // Close the websocket
     this.disconnect_from_websocket();
+
+    if (this.window_watcher.subscription$) {
+      this.window_watcher.subscription$.unsubscribe();
+    }
   }
 
   /**
