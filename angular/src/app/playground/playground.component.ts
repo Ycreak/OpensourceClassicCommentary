@@ -66,7 +66,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
     }
   }
   // Listener for window resize evenets
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')
   onResize() {
     // If we resize the window, we want the canvas to resize as well
     this.fabric.resize();
