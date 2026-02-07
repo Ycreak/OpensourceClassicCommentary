@@ -12,7 +12,7 @@ import { SafeHtmlPipe } from '@oscc/pipes/safeHtml.pipe';
   standalone: true,
   imports: [SafeHtmlPipe],
   templateUrl: './custom-dialog.component.html',
-  styleUrls: ['../dialogs.scss'],
+  styleUrls: ['../dialogs.scss', './custom-dialog.component.scss'],
 })
 export class CustomDialogComponent {
   constructor(

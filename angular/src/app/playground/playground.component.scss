@@ -1,6 +1,82 @@
 /* Playground related CSS */
 @use "../_mixins.scss" as *;
 
+#playground {
+  background-color: white; // This is specifically needed in fullscreen mode.
+}
+
+#playground-canvas {
+  height: 85vh !important; // Sets the height of the canvas in relation to the user's viewport.
+  //TODO make this more elegant for example by having the canvas inherit height from its container.
+}
+
+#playground-hamburger-menu {
+  display: inline-flex;
+  position: absolute;
+  left: 16px;
+  flex-wrap: nowrap;
+}
+
+@property --hamburgerMenuColor {
+  syntax: "<color>";
+  initial-value: rgba(159, 161, 254, 0.31);
+  inherits: false;
+}
+
+#playground-hamburger-menu-button {
+  border-radius: 4px;
+  border-color: transparent;
+  transition: --hamburgerMenuColor 0.2s;
+  transition-timing-function: cubic-bezier(0.65, 0.05, 0.18, 1.09);
+  background: radial-gradient(circle at center, rgba(159, 161, 254, 0.7) 0%, var(--hamburgerMenuColor) 100%);
+  width: 32px;
+  justify-content: center;
+}
+
+#playground-hamburger-menu-button:hover {
+  --hamburgerMenuColor: rgba(159, 161, 254, 0.7);
+}
+
+.menu-item-icon-wrapper {
+  display: inline-block;
+  width: 50px;
+  position: relative;
+  top: 7px;
+  left: -7px;
+}
+
+#playground-help-menu {
+  display: inline-flex;
+  position: absolute;
+  // right: 16px;
+  right: 4px;
+  top: -16px;
+  flex-wrap: nowrap;
+}
+
+@property --helpMenuColor {
+  syntax: "<color>";
+  initial-value: rgba(160, 162, 168, 0.116);
+  inherits: false;
+}
+
+#playground-help-menu-button {
+  // border-radius: 4px;
+  border-radius: 0px 0px 0px 50px;
+  border-color: transparent;
+  transition: --helpMenuColor 0.2s;
+  transition-timing-function: cubic-bezier(0.65, 0.05, 0.18, 1.09);
+  background: radial-gradient(circle at center, rgba(150, 150, 189, 0.288) 0%, var(--helpMenuColor) 70%);
+  width: 32px;
+  justify-content: center;
+  padding-left: 5px;
+  padding-top: 5px;
+}
+
+#playground-help-menu-button:hover {
+  --helpMenuColor: rgba(159, 161, 254, 0.7);
+}
+
 .note {
   // width: auto;
   // height: auto;
@@ -152,14 +228,11 @@ hr.playground-divider-top {
 }
 .playground-toolbar {
   width: 100%;
-  left: 1rem;
   top: 1rem;
   position: absolute;
   display: flex;
   flex-wrap: nowrap;
   place-content: center;
-  margin-left: auto;
-  margin-right: auto;
 }
 .playground-tool-group {
   display: inline-flex;

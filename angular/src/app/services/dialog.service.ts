@@ -110,7 +110,6 @@ export class DialogService {
   public open_custom_dialog(content: any): void {
     this.dialog.open(CustomDialogComponent, {
       width: '90%',
-      height: '75%',
       data: {
         content: content,
       },
