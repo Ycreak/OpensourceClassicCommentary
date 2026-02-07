@@ -10,10 +10,11 @@ import { provideRouter, Routes } from '@angular/router';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { HttpErrorInterceptor } from './app/api.service';
 import { HTTP_INTERCEPTORS, withInterceptorsFromDi, provideHttpClient } from '@angular/common/http';
+import {ScansionComponent} from '@oscc/pages/scansion/scansion.component';
 
 const appRoutes: Routes = [
   { path: '', component: OverviewComponent },
-  //{ path: 'scansion', component: ScansionComponent, canActivate: [AuthGuard] },
+  { path: 'scansion', component: ScansionComponent, canActivate: [AuthGuard] },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '' },
 ];

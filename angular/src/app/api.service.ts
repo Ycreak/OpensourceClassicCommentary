@@ -56,7 +56,7 @@ export class ApiService {
   }
 
   FlaskURL: string = environment.flask_api;
-  NeuralURL: 'https://oscc.nolden.biz:5002/';
+  ScansionURL: string = 'http://nolden.biz:5004/';
 
   get index() {
     // Return only documents from the current sandbox. Default sandbox is called 'admin'
@@ -344,7 +344,7 @@ export class ApiService {
   }
   // Neural networks part
   public scan_lines(lines: object): Observable<any> {
-    return this.http.post<any>(this.NeuralURL + `scan_lines`, lines, { observe: 'body', responseType: 'json' });
+    return this.http.post<any>(this.ScansionURL + `scansion/get`, lines, { observe: 'body', responseType: 'json' });
   }
 
   public get(url: string): Observable<any> {

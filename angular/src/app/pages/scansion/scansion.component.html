@@ -1,0 +1,98 @@
+<!-- I think this can be removed. -->
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway" />
+
+<!-- Maybe we should get a local stylesheet? -->
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+
+<!-- Simple toolbar with all the different buttons and the title -->
+<mat-toolbar color="primary">
+  <h3 class="h3-title">Latin Scansion with Neural Networks</h3>
+  <span class="spacer"></span>
+</mat-toolbar>
+
+<!-- Loading spinner to show data is being retrieved from the server -->
+<!--<mat-toolbar *ngIf="this.api.spinner === false" class="progress-toolbar"></mat-toolbar>-->
+<mat-progress-bar *ngIf="this.api.spinner" mode="query"></mat-progress-bar>
+
+<br />
+
+<div class="center">
+  <p><b>Input your lines below, separated by a carriage return (enter).</b></p>
+</div>
+
+<form [formGroup]="line_form" class="lines-form">
+  <mat-form-field class="full-width raleway" appearance="fill">
+    <textarea matInput formControlName="lines" placeholder="e.g. Arma virumque cano" class="center"></textarea>
+  </mat-form-field>
+</form>
+
+<button mat-raised-button color="primary" class="lines-form" (click)="scan_lines(line_form.value.lines)">
+  Scan lines
+</button>
+
+<hr />
+
+<!-- <div class="center"><p><b>The confidence of the network for the given label is denoted by the float in the last row (score between 0 and 1).</b></p></div> -->
+<div class="center">
+  <p><b>After syllabifying your lines, the neural network scanned them as follows:</b></p>
+</div>
+
+<mat-grid-list cols="{{ this.neural_data.length }}" rowHeight="1em">
+  <mat-grid-tile
+    *ngFor="let object of this.neural_data"
+    [colspan]="1"
+    [rowspan]="2"
+    [style.background]="object.confidence"
+    (click)="this.show_confidence(object)"
+    style="cursor: pointer">
+    <b>{{ object.symbol }}</b>
+  </mat-grid-tile>
+</mat-grid-list>
+
+<mat-grid-list cols="{{ this.neural_data.length }}" rowHeight="1em">
+  <mat-grid-tile
+    *ngFor="let object of this.neural_data"
+    [colspan]="1"
+    [rowspan]="2"
+    [style.background]="'#DDDDDD'"
+    (click)="this.show_confidence(object)"
+    style="cursor: pointer">
+    <b>{{ object.syllable }}</b>
+  </mat-grid-tile>
+</mat-grid-list>
+
+<mat-grid-list cols="{{ this.neural_data.length }}" rowHeight="1em">
+  <mat-grid-tile
+    *ngFor="let object of this.neural_data"
+    [colspan]="1"
+    [rowspan]="2"
+    [style.background]="object.confidence"
+    (click)="this.show_confidence(object)"
+    style="cursor: pointer">
+    <b>{{ object.prediction }}</b>
+  </mat-grid-tile>
+</mat-grid-list>
+
+<mat-grid-list cols="{{ this.neural_data.length }}" rowHeight="1em">
+  <mat-grid-tile
+    *ngFor="let object of this.neural_data"
+    [colspan]="1"
+    [rowspan]="2"
+    [style.background]="object.confidence"
+    (click)="this.show_confidence(object)"
+    style="cursor: pointer">
+    <b *ngIf="object.confidence">{{ object[object.prediction].toFixed(0) }}%</b>
+  </mat-grid-tile>
+</mat-grid-list>
+
+<hr />
+
+<div>
+  <div *ngFor="let conf of this.current_confidence">
+    <p style="padding-left: 2em">{{ conf.key }}: {{ conf.value.toFixed(2) }}%</p>
+  </div>
+</div>
