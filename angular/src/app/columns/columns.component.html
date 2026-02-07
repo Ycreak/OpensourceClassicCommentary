@@ -16,12 +16,13 @@
             author: $event.author,
             title: $event.title,
             editor: $event.editor,
-            sandbox: this.sandbox.current_sandbox
+            sandbox: this.sandbox.current_sandbox,
           },
           column_to_display.column_id
         );
         this.columns.set_edited_flag_false(column_to_display.column_id);
         column_to_display.column_name = $event.author + '-' + $event.title + '-' + $event.editor;
+        this.columns.set_edited_flag_false(column_to_display.column_id);
         column_to_display.author = $event.author;
         column_to_display.title = $event.title;
         column_to_display.editor = $event.editor
@@ -49,37 +50,56 @@
 
 <!-- Toolbar for the fragments section -->
 <mat-toolbar class="fragments-toolbar">
-  <div id="fragments-toolbar-1">
-    <ng-container *ngFor="let column_to_display of this.columns.list">
-      <mat-checkbox ngDefaultControl [(ngModel)]="column_to_display.visible">
-        <span
-          class="column-name-author-title-editor"
-          (click)="this.show_introduction({ author: column_to_display.author })"
-          (click)="check($event)"
-          (mousedown)="$event.stopPropagation()">
-          <!-- $event.stopPropagation prevents clicking on the column name to also trigger the checkbox. Instead clicking the column name will only open the introductions screen.-->
-          {{ column_to_display.author }}
-        </span>
-        <span style="color: white">-</span>
-        <span
-          class="column-name-author-title-editor"
-          (click)="this.show_introduction({ title: column_to_display.title })"
-          (click)="check($event)"
-          (mousedown)="$event.stopPropagation()">
-          {{ column_to_display.title }}
-        </span>
-        <span style="color: white">-</span>
-        <span
-          class="column-name-author-title-editor"
-          (click)="this.show_introduction({ editor: column_to_display.editor })"
-          (click)="check($event)"
-          (mousedown)="$event.stopPropagation()">
-          {{ column_to_display.editor }}
-          <sup *ngIf="column_to_display.edited">altered</sup>
-        </span>
-      </mat-checkbox>
-    </ng-container>
-  </div>
+  <ng-container *ngFor="let column_to_display of this.columns.list">
+    <mat-checkbox
+      ngDefaultControl
+      [(ngModel)]="column_to_display.visible"
+      (contextmenu)="onRightClickColumnName($event, column_to_display)">
+      <app-editable-column-name
+        #ColumnNameField
+        class="fragments-toolbar-1"
+        [column]="column_to_display"
+        (update)="updateColumnName($event, newColumnName)"
+        appOutsideClick>
+        <ng-template appViewMode *ngIf="column_to_display.column_name_edited === false">
+          <span
+            class="column-name-author-title-editor introduction-link-hover"
+            (click)="this.show_introduction({ author: column_to_display.author })"
+            (click)="check($event)"
+            (mousedown)="$event.stopPropagation()">
+            <!-- $event.stopPropagation prevents clicking on the column name to also trigger the checkbox. Instead clicking the column name will only open the introductions screen.-->
+            {{ column_to_display.author }}
+          </span>
+          <span style="color: white">-</span>
+          <span
+            class="column-name-author-title-editor introduction-link-hover"
+            (click)="this.show_introduction({ title: column_to_display.title })"
+            (click)="check($event)"
+            (mousedown)="$event.stopPropagation()">
+            {{ column_to_display.title }}
+          </span>
+          <span style="color: white">-</span>
+          <span
+            class="column-name-author-title-editor introduction-link-hover"
+            (click)="this.show_introduction({ editor: column_to_display.editor })"
+            (click)="check($event)"
+            (mousedown)="$event.stopPropagation()">
+            {{ column_to_display.editor }}
+          </span>
+          <span style="color: white; margin-left: 3px"><sup *ngIf="column_to_display.edited">altered</sup></span>
+        </ng-template>
+        <ng-template appViewMode *ngIf="column_to_display.column_name_edited === true">
+          <span class="column-name-author-title-editor">
+            {{ column_to_display.column_name }}
+          </span>
+          <span style="color: white; margin-left: 3px"><sup *ngIf="column_to_display.edited">altered</sup></span>
+        </ng-template>
+        <ng-template appEditMode>
+          <input matInput type="text" [(ngModel)]="newColumnName" appEditableKeypressHandler appAutoFocus />
+        </ng-template>
+      </app-editable-column-name>
+    </mat-checkbox>
+  </ng-container>
   <div id="fragments-toolbar-2">
     |
     <button class="navbar" mat-button (click)="this.columns.add()">Add column</button>
@@ -125,7 +145,7 @@
         (click)="handle_document_click(fragment, given_column)"
         (contextmenu)="
           handle_document_click(fragment, given_column);
-          onRightClick($event, this.current_document, this.columns.current)
+          onRightClickFragment($event, this.current_document, this.columns.current)
         "
         cdkDrag
         [cdkDragDisabled]="this.settings.fragments.dragging_disabled"
@@ -151,8 +171,22 @@
   </div>
 </ng-template>
 
+<!-- Context menu for right click actions on column name -->
+<mat-menu #columnNameContextMenu="matMenu">
+  <ng-template matMenuContent let-item="item">
+    <button mat-menu-item (click)="this.trigger_column_name_edit_mode(this.columns.current)">Rename column</button>
+  </ng-template>
+</mat-menu>
+<!-- hidden helper div used for the column name context menu -->
+<button
+  #columnNameContextMenuWrapper="matMenuTrigger"
+  style="visibility: hidden; position: fixed"
+  [style.left]="columnNameContextMenuTopLeftPosition.x"
+  [style.top]="columnNameContextMenuTopLeftPosition.y"
+  [matMenuTriggerFor]="columnNameContextMenu"></button>
+
 <!-- Context menu for right click actions on fragments -->
-<mat-menu #rightMenu="matMenu">
+<mat-menu #fragmentContextMenu="matMenu">
   <ng-template matMenuContent let-item="item">
     <button (click)="this.copy_document_content(matMenuTrigger.menuData.document)" mat-menu-item>Copy text</button>
     <button (click)="this.show_broader_context(matMenuTrigger.menuData.document)" mat-menu-item>Broader context</button>
@@ -161,13 +195,13 @@
     </button>
   </ng-template>
 </mat-menu>
-
-<!-- hidden helper div used for the context menu -->
-<div
+<!-- hidden helper button used for the fragments context menu -->
+<button
+  #fragmentContextMenuWrapper="matMenuTrigger"
   style="visibility: hidden; position: fixed"
-  [style.left]="menuTopLeftPosition.x"
-  [style.top]="menuTopLeftPosition.y"
-  [matMenuTriggerFor]="rightMenu"></div>
+  [style.left]="fragmentContextMenuTopLeftPosition.x"
+  [style.top]="fragmentContextMenuTopLeftPosition.y"
+  [matMenuTriggerFor]="fragmentContextMenu"></button>
 
 <mat-menu #columnMenu="matMenu">
   <button (click)="this.show_column_bibliography(this.columns.current)" mat-menu-item>Column Bibliography</button>

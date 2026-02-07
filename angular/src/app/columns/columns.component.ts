@@ -5,7 +5,7 @@
  */
 
 // Library imports
-import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ViewChild, ViewChildren, QueryList } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger, MatMenuModule } from '@angular/material/menu';
 import { ActivatedRoute, ParamMap } from '@angular/router';
@@ -36,13 +36,18 @@ import { OnCopyDirective } from '../directives/on-copy.directive';
 import { CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { LatinTragicFragmentFilterComponent } from '../filters/latin-tragic-fragment-filter/latin-tragic-fragment-filter.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { EditableColumnNameComponent } from './column-name-editable/column-name-editable.component';
+import { EditModeDirective } from './column-name-editable/edit-mode.directive';
+import { ViewModeDirective } from './column-name-editable/view-mode.directive';
+import { EditableOnKeypressDirective } from './column-name-editable/on-keypress.directive';
+import { OutsideClickDirective } from './column-name-editable/click-outside-element.directive';
 
 @Component({
   selector: 'app-columns',
@@ -69,11 +74,23 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     TestimoniaComponent,
     FragmentComponent,
     ContextComponent,
+    EditableColumnNameComponent,
+    EditModeDirective,
+    ViewModeDirective,
+    EditableOnKeypressDirective,
+    OutsideClickDirective,
+    NgTemplateOutlet,
   ],
 })
 export class ColumnsComponent implements OnInit {
   // Variable to store the clicked fragment and its data. Used for the context menu
   public current_document: any;
+
+  fragment_form = new FormGroup({
+    columnName: new FormControl(''),
+  });
+
+  newColumnName = ''; //used for renaming columns
 
   constructor(
     protected api: ApiService,
@@ -309,33 +326,62 @@ export class ColumnsComponent implements OnInit {
     }
   }
 
+  // ###### Context menus ######
+  /**
+   * Method called when user right clicks a column name.
+   * Currently used for the rename column action.#3F51B5
+   * @param event MouseEvent, used for preventing default right click action from browser
+   * @param column The selected column
+   * @author sajvanwijk
+   */
+  // we create an object that contains coordinates of this context menu
+  columnNameContextMenuTopLeftPosition = { x: '0', y: '0' };
+  // viewChild decorator gives access to child context menu in the DOM
+  @ViewChild('columnNameContextMenu', { static: true }) columnNameContextMenu: MatMenuTrigger;
+  @ViewChild('columnNameContextMenuWrapper', { static: true }) columnNameContextMenuWrapper: MatMenuTrigger;
+  protected onRightClickColumnName(event: MouseEvent, column: Column) {
+    // preventDefault avoids to show the visualization of the right-click menu of the browser
+    event.preventDefault();
+
+    // we record the mouse position in our object (context menu will spawn here)
+    this.columnNameContextMenuTopLeftPosition.x = event.clientX + 'px';
+    this.columnNameContextMenuTopLeftPosition.y = event.clientY + 'px';
+
+    // we pass to the menu the information about column
+    this.columnNameContextMenu.menuData = { column };
+
+    // also set this column as the currently selected column
+    this.columns.current = column;
+
+    // we open the menu
+    this.columnNameContextMenuWrapper.openMenu();
+  }
+
   /**
    * Method called when the user click with the right button
    * Used to open a context menu as described in this component's html
    * @param event MouseEvent, it contains the coordinates
-   * @param item Our data contained in the row of the table
+   * @param document The selected fragment/document
+   * @param column The column where the selected fragment/document is from
    * @author sajvanwijk
    */
-  // we create an object that contains coordinates
-  menuTopLeftPosition = { x: '0', y: '0' };
-
-  // reference to the MatMenuTrigger in the DOM
-  @ViewChild(MatMenuTrigger, { static: true }) matMenuTrigger: MatMenuTrigger;
-
-  protected onRightClick(event: MouseEvent, document: any, column: Column) {
+  // we create an object that contains coordinates of this context menu
+  fragmentContextMenuTopLeftPosition = { x: '0', y: '0' };
+  // viewChild decorator gives access to child context menu in the DOM
+  @ViewChild('fragmentContextMenu', { static: true }) fragmentContextMenu: MatMenuTrigger;
+  @ViewChild('fragmentContextMenuWrapper', { static: true }) fragmentContextMenuWrapper: MatMenuTrigger;
+  protected onRightClickFragment(event: MouseEvent, document: any, column: Column) {
     // preventDefault avoids to show the visualization of the right-click menu of the browser
     event.preventDefault();
 
-    // we record the mouse position in our object
-    this.menuTopLeftPosition.x = event.clientX + 'px';
-    this.menuTopLeftPosition.y = event.clientY + 'px';
+    // we record the mouse position in our object (context menu will spawn here)
+    this.fragmentContextMenuTopLeftPosition.x = event.clientX + 'px';
+    this.fragmentContextMenuTopLeftPosition.y = event.clientY + 'px';
 
-    // we open the menu
     // we pass to the menu the information about our document and column
-    this.matMenuTrigger.menuData = { document, column };
-
+    this.fragmentContextMenu.menuData = { document, column };
     // we open the menu
-    this.matMenuTrigger.openMenu();
+    this.fragmentContextMenuWrapper.openMenu();
   }
 
   /**
@@ -349,6 +395,40 @@ export class ColumnsComponent implements OnInit {
     });
   }
 
+  /**
+   * Sets the column to edit mode so the user can rename the column.
+   *
+   * After editing the text in edit mode, the column must be set back to view mode
+   * to complete the edit. In this case this can be done by pressing enter
+   * (saves the change) or clicking anywhere outside the edit field/pressing escape
+   * (cancels the change).
+   * @author sajvanwijk
+   */
+  @ViewChildren('ColumnNameField') columnNameFields: QueryList<EditableColumnNameComponent>;
+  protected trigger_column_name_edit_mode(column: Column): void {
+    // First get the column to edit; this is the one that matches the id of the currently selected column.
+    const column_to_edit = this.columnNameFields.toArray().filter((c) => c.column.column_id == column.column_id)[0];
+
+    //Init newName var by setting it to the current name of this column.
+    this.newColumnName = column_to_edit.column.column_name;
+
+    // Switch this column to edit mode
+    column_to_edit.toEditMode();
+  }
+
+  /**
+   * Method for updating a column name in the system after it has been edited. (See trigger_column_name_edit_mode)
+   * @author sajvanwijk
+   */
+  protected updateColumnName(column: Column, newColumnName: string) {
+    console.log(`New column name set for column ${column.column_id}: ${newColumnName}`);
+    // Update the column name
+    column.column_name = newColumnName;
+    column.column_name_edited = true;
+
+    //TODO this is still lacking an implementation that saves the new column somewhere
+    //so that it persists between sessions.
+  }
   /**
    * Given the fragment, this function checks whether its linked fragments appear in the
    * other opened columns. If so, the columns are scrolled to put the linked fragment in view
