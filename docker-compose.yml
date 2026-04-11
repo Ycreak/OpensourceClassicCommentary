@@ -1,4 +1,3 @@
-version: '3.7'
 services:
   couchdb:
     build:
@@ -17,7 +16,9 @@ services:
       - "5003:5000"
     volumes:
       - ./flask:/app
- 
+    environment:
+      - PYTHONPATH=/app
+
   angular:
     build:
       context: ./angular
