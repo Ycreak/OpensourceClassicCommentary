@@ -53,13 +53,15 @@ def update_index() -> None:
         try:
             match doc["document_type"]:
                 case "introduction":
-                    index.append({
-                        "document_type": "introduction", 
-                        "author": doc["author"], 
-                        "title": doc["title"],
-                        "editor": doc["editor"],
-                        "sandbox": doc["sandbox"]
-                    })
+                    index.append(
+                        {
+                            "document_type": "introduction",
+                            "author": doc["author"],
+                            "title": doc["title"],
+                            "editor": doc["editor"],
+                            "sandbox": doc["sandbox"],
+                        }
+                    )
                 case "fragment":
                     index.append(
                         {
