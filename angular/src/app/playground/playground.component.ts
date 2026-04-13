@@ -405,17 +405,16 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
    * @author Ycreak
    */
   private init_playground(): void {
-    this.fabric.canvas = new fabric.Canvas('playground_canvas');
+    this.fabric.canvas = new fabric.Canvas('playground-canvas');
     this.fabric.set_event_handlers();
     this.fabric.init();
   }
 
   /**
    * Shows the help menu for the playground
-   * @author sajvanwijk
    */
   protected show_helpmenu(helpmenuoption: string): void {
-    let helptext;
+    let helptext = "";
     if (helpmenuoption == 'a') {
       helptext = `<div><b>This is the playground</b><br><br>
       This is a place to take fragments and move them around in a freeform way, as to gain new insights. 
@@ -441,5 +440,17 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
       </div>`;
     }
     this.dialog.open_custom_dialog(helptext);
+  }
+
+  protected make_playground_fullscreen(): void {
+    document.querySelector('#playground').requestFullscreen();
+  }
+
+  protected exit_playground_fullscreen(): void {
+    if (document) document.exitFullscreen();
+  }
+
+  get is_fullscreen(): boolean {
+    return document.fullscreenElement !== null;
   }
 }
