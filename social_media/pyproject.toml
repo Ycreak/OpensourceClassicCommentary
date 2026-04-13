@@ -1,0 +1,13 @@
+[project]
+name = "oscc-social-media-bots"
+version = "0.1.0"
+description = "A little project to post fragments to social medias."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "atproto>=0.0.65",
+    "beautifulsoup4>=4.14.3",
+    "python-dotenv>=1.2.2",
+    "pytumblr>=0.1.2",
+    "requests>=2.33.1",
+]
