@@ -7,8 +7,9 @@ from uuid import uuid4
 from flask import request, make_response, Response
 from flask_jsonpify import jsonify
 
-from couch import CouchAuthenticator
-import utilities as util
+from common.couch import CouchAuthenticator
+import common.hashing as hashing
+
 from models.user import User, UserField, UserModel, Role
 
 # Initialize the User Model with a CouchDB connection
@@ -82,7 +83,7 @@ def login_user() -> Response:
         logging.error(f"Error during fetching user: {e}")
         return make_response("Server error", 500)
 
-    if util.verify_password(stored_pwd=user.password, provided_pwd=password):
+    if hashing.verify_password(stored_pwd=user.password, provided_pwd=password):
         return make_response(
             jsonify({"username": user.username, "role": user.role}), 200
         )
@@ -107,7 +108,7 @@ def create_user() -> Response:
         User(
             id=uuid4().hex,
             username=user_data.username,
-            password=util.hash_password(user_data.password),
+            password=hashing.hash_password(user_data.password),
             role=Role.GUEST,
         )
     )
@@ -159,7 +160,7 @@ def update_user() -> Response:
         user.role = req_data[UserField.ROLE]
 
     if UserField.PASSWORD in req_data:
-        user.password = util.hash_password(req_data[UserField.PASSWORD])
+        user.password = hashing.hash_password(req_data[UserField.PASSWORD])
 
     if users.update(user):
         return make_response("OK", 200)

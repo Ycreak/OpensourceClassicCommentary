@@ -9,7 +9,7 @@ from flask import make_response, Response
 from flask_jsonpify import jsonify
 from pyzotero import zotero as pyzotero
 
-import utilities as util
+import common.utilities as util
 
 
 class Zotero:

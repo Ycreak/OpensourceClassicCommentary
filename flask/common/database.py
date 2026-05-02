@@ -4,7 +4,6 @@ Class to handle all communication with the database
 
 import logging
 from typing import Any, Optional
-import config as conf
 
 
 class Database:
@@ -15,7 +14,7 @@ class Database:
     operations and Mango queries against our CouchDB database.
     """
 
-    def __init__(self, server: Any):
+    def __init__(self, server: Any, database: str):
         """
         Initializes the Database instance.
 
@@ -23,7 +22,8 @@ class Database:
             server (Any): The CouchDB server instance used to access
                 the document collection.
         """
-        self.db = server[conf.COUCH_DOCUMENTS]
+        self.db = server[database]
+        self.LIMIT = 1000
 
     def all(self) -> Any:
         """
@@ -32,7 +32,7 @@ class Database:
         Returns:
             Any: A result set containing all documents matching the empty selector.
         """
-        return self.db.find({"selector": dict(), "limit": conf.COUCH_LIMIT})
+        return self.db.find({"selector": dict(), "limit": self.LIMIT})
 
     def filter(self, selector: dict) -> Any:
         """
@@ -45,7 +45,7 @@ class Database:
         Returns:
             Any: A result set containing documents that match the selector.
         """
-        mango = {"selector": selector, "limit": conf.COUCH_LIMIT}
+        mango = {"selector": selector, "limit": self.LIMIT}
         return self.db.find(mango)
 
     def create(self, document: dict) -> Optional[str]:

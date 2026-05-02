@@ -7,7 +7,7 @@ from dataclasses import dataclass, asdict, fields, field
 from uuid import uuid4
 from typing import Optional, Any, List
 
-from database import Database
+from common.database import Database
 
 
 class FragmentFields:
@@ -105,7 +105,7 @@ class Fragment:
         Args:
             server (Any): The CouchDB server instance.
         """
-        self.database = Database(server)
+        self.database = Database(server, "documents")
 
     def get(self, query_filter: dict) -> List[FragmentModel]:
         """

@@ -2,7 +2,11 @@ import couchdb
 import logging
 import time
 from typing import Any
-import config as conf
+
+import os
+from dotenv import load_dotenv
+
+load_dotenv(".env")
 
 
 class CouchAuthenticator:
@@ -21,10 +25,20 @@ class CouchAuthenticator:
         It verifies that the server version matches the expected version
         defined in the configuration.
         """
+        COUCH_USER = os.getenv("COUCH_USER")
+        COUCH_PASSWORD = os.getenv("COUCH_PASSWORD")
+        COUCH_HOST = os.getenv("COUCH_HOST")
+        COUCH_PORT = int(os.getenv("COUCH_PORT"))
+        COUCH_VERSION = os.getenv(
+            "COUCH_VERSION"
+        )  # Keep up-to-date. Used for authentication
+
         not_connected: bool = True
 
         # Updated to f-string as requested
-        self.url: str = f"http://{conf.COUCH_USER}:{conf.COUCH_PASSWORD}@{conf.COUCH_HOST}:{conf.COUCH_PORT}/"
+        self.url: str = (
+            f"http://{COUCH_USER}:{COUCH_PASSWORD}@{COUCH_HOST}:{COUCH_PORT}/"
+        )
 
         logging.info("CouchDB initialization started.")
 
@@ -35,7 +49,7 @@ class CouchAuthenticator:
                 self.couch: Any = couchdb.Server(self.url)
                 request = self.couch.version()
 
-                if not str(request).startswith(conf.COUCH_VERSION):
+                if not str(request).startswith(COUCH_VERSION):
                     logging.error("Wrong Couch server version. Stopping...")
                     exit(1)
 

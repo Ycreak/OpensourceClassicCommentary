@@ -12,10 +12,11 @@ import logging
 from flask import request, make_response
 from flask_jsonpify import jsonify
 
-from couch import CouchAuthenticator
-import utilities as util
+from common.couch import CouchAuthenticator
+import common.utilities as util
 
-from database import Database
+
+from common.database import Database
 from models.introduction import Introduction
 from models.fragment import Fragment
 from models.testimonium import Testimonium

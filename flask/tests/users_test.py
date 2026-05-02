@@ -3,7 +3,7 @@ import pytest
 
 sys.path.append("../Server")
 
-from couch import CouchAuthenticator
+from common.couch import CouchAuthenticator
 from models.user import User, UserModel
 
 

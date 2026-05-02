@@ -10,8 +10,8 @@ from flask_restful import Api
 from flasgger import Swagger
 import logging
 
-import config as conf
-from couch import CouchAuthenticator
+
+from common.couch import CouchAuthenticator
 
 from endpoints.user import get_user, login_user, create_user, delete_user, update_user
 from endpoints.document import (
@@ -24,15 +24,27 @@ from endpoints.document import (
 )
 from endpoints.zotero import get_bibliography, sync_bibliography, test_bibliography
 
+import os
+from dotenv import load_dotenv
+
+load_dotenv(".env")
+
 app = Flask(__name__)
 api = Api(app)
 swagger = Swagger(app)  # localhost:5003/apidocs/#/
 
 # Only allow requests from these specific origins
-CORS(app, origins=conf.TRUSTED_ORIGINS)
+TRUSTED_ORIGINS = [
+    "http://127.0.0.1:4200",
+    "http://localhost:4200",
+    os.getenv("REMOTE_HOST"),
+    os.getenv("STAGING_HOST"),
+]
+CORS(app, origins=TRUSTED_ORIGINS)
 
 # Initialize logging
-logging.basicConfig(filename=conf.LOG_FILE, level=logging.INFO)
+LOG_FILE = "server.log"
+logging.basicConfig(filename=LOG_FILE, level=logging.INFO)
 
 # Authenticate database server
 server = CouchAuthenticator()
