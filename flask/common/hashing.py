@@ -35,7 +35,7 @@ def verify_password(stored_pwd: str, provided_pwd: str) -> bool:
         os.getenv("PWD_HASH_NAME"),
         provided_pwd.encode("utf-8"),
         salt.encode("ascii"),
-        os.getenv("PWD_HASH_ITERATIONS"),
+        int(os.getenv("PWD_HASH_ITERATIONS")),
     )
 
     # Convert binary hash to hex string for comparison
@@ -67,7 +67,7 @@ def hash_password(password: str) -> str:
         os.getenv("PWD_HASH_NAME"),
         password.encode("utf-8"),
         salt,
-        os.getenv("PWD_HASH_ITERATIONS"),
+        int(os.getenv("PWD_HASH_ITERATIONS")),
     )
 
     # Convert binary hash to hex

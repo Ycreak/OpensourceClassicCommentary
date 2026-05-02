@@ -16,7 +16,6 @@ user_blueprint = Blueprint("user_blueprint", __name__)
 couch_server = CouchConnection.connect()
 user_handler = User(couch_server)
 
-
 @user_blueprint.route("/get", methods=["POST"])
 def get_user() -> Response:
     """
@@ -64,7 +63,7 @@ def login_user() -> Response:
 
     user_list = user_handler.get({UserField.USERNAME: username})
     if not user_list:
-        return make_response("Not found", 401)
+        return make_response("User not found", 401)
 
     user = user_list[0]
 
@@ -94,7 +93,7 @@ def create_user() -> Response:
     doc_id = user_handler.create(new_user_data)
 
     if doc_id:
-        return make_response("Created", 201)
+        return make_response("User created", 201)
 
     return make_response("User already exists or server error", 403)
 
@@ -112,9 +111,9 @@ def delete_user() -> Response:
 
     # delete() in your model can handle a model with just a username
     if user_handler.delete(UserModel(username=username)):
-        return make_response("OK", 200)
+        return make_response("User deleted", 200)
 
-    return make_response("Not found", 401)
+    return make_response("User not found", 401)
 
 
 @user_blueprint.route("/update", methods=["POST"])
@@ -137,6 +136,6 @@ def update_user() -> Response:
 
     # The update logic in your model handles finding the _id by username automatically
     if user_handler.update(update_model):
-        return make_response("OK", 200)
+        return make_response("User updated", 200)
 
-    return make_response("Not found", 401)
+    return make_response("User not found", 401)

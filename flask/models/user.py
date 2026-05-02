@@ -24,7 +24,6 @@ class UserField:
     USERNAME = "username"
     PASSWORD = "password"
     ROLE = "role"
-    DOC_TYPE = "document_type"
 
 
 @dataclass
@@ -96,7 +95,6 @@ class User:
             List[UserModel]: A list of matching UserModel instances.
         """
         search_criteria = {k: v for k, v in query_filter.items() if v is not None}
-        search_criteria[UserField.DOC_TYPE] = "user"
 
         logging.info(f"Retrieving users for filter: {search_criteria}")
         document_list = self.database.filter(search_criteria)
