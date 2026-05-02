@@ -48,7 +48,6 @@ app.register_blueprint(user_blueprint, url_prefix="/user")
 app.register_blueprint(zotero_blueprint, url_prefix="/bibliography")
 app.register_blueprint(document_blueprint, url_prefix="/document")
 
-
 # MAIN
 if __name__ == "__main__":
     # we run a debugging session whenever this file is invoked directly
