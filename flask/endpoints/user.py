@@ -16,6 +16,7 @@ user_blueprint = Blueprint("user_blueprint", __name__)
 couch_server = CouchConnection.connect()
 user_handler = User(couch_server)
 
+
 @user_blueprint.route("/get", methods=["POST"])
 def get_user() -> Response:
     """
