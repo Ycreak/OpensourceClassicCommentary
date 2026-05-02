@@ -4,15 +4,14 @@ Endpoint handlers for user-related communication and authentication.
 
 from flask import request, make_response, Response
 from flask_jsonpify import jsonify
-
-from common.couch import CouchAuthenticator
 import common.hashing as hashing
+from common.couch import CouchConnection
 
 from models.user import User, UserField, UserModel, Role
 
 # Initialize the User CRUD handler with a CouchDB connection
-# CouchAuthenticator().couch provides the server instance
-user_handler = User(CouchAuthenticator().couch)
+couch_server = CouchConnection.connect()
+user_handler = User(couch_server)
 
 
 def get_user() -> Response:

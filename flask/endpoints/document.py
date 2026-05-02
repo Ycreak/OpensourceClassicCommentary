@@ -9,14 +9,12 @@ document type and redirects the document to the correct endpoint.
 """
 
 import logging
-from flask import request, make_response
+from flask import request, make_response, Response
 from flask_jsonpify import jsonify
 
-from common.couch import CouchAuthenticator
 import common.utilities as util
+from common.couch import CouchConnection
 
-
-from common.database import Database
 from models.introduction import Introduction
 from models.fragment import Fragment
 from models.testimonium import Testimonium
@@ -25,14 +23,11 @@ from models.playground import Playground
 index_file: str = "cache/index.json"
 index: list = []
 
-# Initialize all document types
-server = CouchAuthenticator().couch
-
-database = Database(server, "documents")
-introduction = Introduction(server)
-fragment = Fragment(server)
-playground = Playground(server)
-testimonium = Testimonium(server)
+couch_server = CouchConnection.connect()
+introduction = Introduction(couch_server)
+fragment = Fragment(couch_server)
+playground = Playground(couch_server)
+testimonium = Testimonium(couch_server)
 
 
 def get_index() -> Response:

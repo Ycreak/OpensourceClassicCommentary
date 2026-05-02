@@ -5,7 +5,7 @@ Model to handle user logic and database persistence.
 import logging
 from dataclasses import dataclass, asdict, fields
 from typing import Optional, Any, List
-from common.database import Database
+from common.couch import Couch
 
 
 class Role:
@@ -82,7 +82,7 @@ class User:
         Args:
             server (Any): The CouchDB server instance.
         """
-        self.database = Database(server, "users")
+        self.database = Couch(server, "users")
 
     def get(self, query_filter: dict) -> List[UserModel]:
         """

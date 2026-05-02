@@ -3,7 +3,7 @@ import pytest
 
 sys.path.append("../Server")
 
-from common.couch import CouchAuthenticator
+from common.couch import Couch
 from models.user import User, UserModel
 
 
@@ -11,7 +11,7 @@ from models.user import User, UserModel
 class TestUsers:
     @pytest.fixture
     def fixture(self):
-        server = CouchAuthenticator()
+        server = Couch.connect()
         return UserModel(server.couch)
 
     def test_user(self):

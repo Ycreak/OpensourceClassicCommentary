@@ -9,9 +9,7 @@ from flask_cors import CORS
 from flask_restful import Api
 from flasgger import Swagger
 import logging
-
-
-from common.couch import CouchAuthenticator
+from common.couch import CouchConnection
 
 from endpoints.user import get_user, login_user, create_user, delete_user, update_user
 from endpoints.document import (
@@ -46,10 +44,11 @@ CORS(app, origins=TRUSTED_ORIGINS)
 LOG_FILE = "server.log"
 logging.basicConfig(filename=LOG_FILE, level=logging.INFO)
 
-# Authenticate database server
-server = CouchAuthenticator()
+# Connect to the database server
+couch_server = CouchConnection.connect()
 
-update_index()
+# Update the document index such that we always have an up-to-date list of documents
+# update_index()
 
 #########
 # USERS #

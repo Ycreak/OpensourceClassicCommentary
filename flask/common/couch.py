@@ -1,64 +1,124 @@
-import couchdb
-import logging
-import time
-from typing import Any
+"""
+Logic to handle CouchDB connection and CRUD operations.
+"""
 
 import os
+import time
+import logging
+import couchdb
+from typing import Any, Optional, List
 from dotenv import load_dotenv
 
 load_dotenv(".env")
 
 
-class CouchAuthenticator:
+class CouchConnection:
     """
-    Handles authentication and connection persistence for a CouchDB server.
-
-    This class manages the initial handshake with CouchDB, performs a version
-    integrity check, and retries the connection until the server is available.
+    Handles the physical connection to the CouchDB server.
+    This should be initialized once.
     """
 
-    def __init__(self) -> None:
+    server: Optional[couchdb.Server] = None
+
+    @classmethod
+    def connect(cls) -> couchdb.Server:
         """
-        Initializes the CouchAuthenticator and establishes a server connection.
-
-        The initialization process will block until a connection is successful.
-        It verifies that the server version matches the expected version
-        defined in the configuration.
+        Establishes a connection to the CouchDB server with retry logic.
         """
-        COUCH_USER = os.getenv("COUCH_USER")
-        COUCH_PASSWORD = os.getenv("COUCH_PASSWORD")
-        COUCH_HOST = os.getenv("COUCH_HOST")
-        COUCH_PORT = int(os.getenv("COUCH_PORT"))
-        COUCH_VERSION = os.getenv(
-            "COUCH_VERSION"
-        )  # Keep up-to-date. Used for authentication
+        if cls.server is not None:
+            return cls.server
 
-        not_connected: bool = True
+        user = os.getenv("COUCH_USER", "admin")
+        password = os.getenv("COUCH_PASSWORD", "password")
+        host = os.getenv("COUCH_HOST", "localhost")
+        port = os.getenv("COUCH_PORT", "5984")
+        version = os.getenv("COUCH_VERSION", "3")
 
-        # Updated to f-string as requested
-        self.url: str = (
-            f"http://{COUCH_USER}:{COUCH_PASSWORD}@{COUCH_HOST}:{COUCH_PORT}"
-        )
+        url = f"http://{user}:{password}@{host}:{port}/"
+        logging.info(f"Connecting to CouchDB at {host}:{port}...")
 
-        logging.info("CouchDB initialization started.")
-
-        # Version check for availability
-        while not_connected:
+        while True:
             try:
-                # Try to connect
-                self.couch: Any = couchdb.Server(self.url)
-                request = self.couch.version()
-
-                if not str(request).startswith(COUCH_VERSION):
-                    logging.error("Wrong Couch server version. Stopping...")
+                server = couchdb.Server(url)
+                # Verify connection and version
+                if not str(server.version()).startswith(version):
+                    logging.error(f"Wrong CouchDB version. Expected {version}")
                     exit(1)
 
-                not_connected = False
-
+                cls.server = server
+                logging.info("Successfully connected to CouchDB.")
+                return cls.server
             except Exception as e:
-                logging.error(f"Couch server error: {e} {self.url}. Retrying...")
+                logging.error(f"CouchDB connection failed: {e}. Retrying in 3s...")
                 time.sleep(3)
 
-        logging.info(
-            f"CouchDB initialization completed. {len(self.couch)} tables found."
-        )
+
+class Couch:
+    """
+    Handles CRUD operations for a specific CouchDB database (table).
+    """
+
+    def __init__(self, server: couchdb.Server, db_name: str):
+        """
+        Args:
+            server (couchdb.Server): The active server connection.
+            db_name (str): Name of the database (e.g., 'documents' or 'users').
+        """
+        try:
+            self.db = server[db_name]
+        except couchdb.ResourceNotFound:
+            # Optionally create the database if it doesn't exist
+            logger.error(f"Database {db_name} not found")
+
+        self.LIMIT = 1000
+
+    def filter(self, selector: dict) -> List[dict]:
+        """
+        Filters documents using a Mango selector.
+
+        Args:
+            selector (dict): Mongo-style query.
+
+        Returns:
+            List[dict]: Matching documents.
+        """
+        results = self.db.find({"selector": selector, "limit": self.LIMIT})
+        return [doc for doc in results]
+
+    def all(self) -> List[dict]:
+        """Returns all documents."""
+        return self.filter({})
+
+    def create(self, document: dict) -> Optional[str]:
+        """Creates a document and returns the new ID."""
+        try:
+            doc_id, _ = self.db.save(document)
+            return doc_id
+        except Exception as e:
+            logging.error(f"create() error: {e}")
+            return None
+
+    def update(self, document: dict) -> bool:
+        """Updates an existing document by merging fields."""
+        if "_id" not in document:
+            return False
+        try:
+            doc = self.db[document["_id"]]
+            for k, v in document.items():
+                if v is not None:
+                    doc[k] = v
+            self.db.save(doc)
+            return True
+        except Exception as e:
+            logging.error(f"update() error: {e}")
+            return False
+
+    def delete(self, identifier: str) -> bool:
+        """Deletes a document by ID."""
+        try:
+            doc = self.db[identifier]
+            self.db.delete(doc)
+            return True
+        except Exception as e:
+            logging.error(f"delete() error: {e}")
+            return False

@@ -7,7 +7,7 @@ from dataclasses import dataclass, asdict, fields, field
 from uuid import uuid4
 from typing import Optional, Any, List
 
-from common.database import Database
+from common.couch import Couch
 
 
 class PlaygroundFields:
@@ -59,7 +59,7 @@ class Playground:
 
     def __init__(self, server: Any):
         """Initializes the Playground handler with a database connection."""
-        self.database = Database(server, "documents")
+        self.database = Couch(server, "documents")
 
     def index(self) -> list:
         """
