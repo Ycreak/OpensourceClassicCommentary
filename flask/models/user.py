@@ -98,13 +98,6 @@ class UserModel:
             return None
         return user
 
-    def get_or_create(self, user):
-        result = self.get(user)
-        if result is not None:
-            return result
-        else:
-            return self.create(user)
-
     def update(self, user):
         _user = self.get(User(username=user.username))
         if _user is None:

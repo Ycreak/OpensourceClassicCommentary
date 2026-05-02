@@ -1,14 +1,18 @@
 """
-Model to handle testimonia
+Model to handle testimonia and database persistence.
 """
 
-from dataclasses import dataclass
+import logging
+from dataclasses import dataclass, asdict, fields
 from uuid import uuid4
+from typing import Optional, Any, List
 
 from database import Database
 
 
-class TestimoniumFields(object):
+class TestimoniumFields:
+    """Container for field name constants to avoid magic strings."""
+
     ID = "_id"
     NAME = "name"
     AUTHOR = "author"
@@ -20,119 +24,145 @@ class TestimoniumFields(object):
     SANDBOX = "sandbox"
     LOCK = "lock"
     VISIBLE = "visible"
+    DOC_TYPE = "document_type"
 
 
 @dataclass
 class TestimoniumModel:
-    _id: str = None
+    """
+    Data container representing a Testimonium document.
+    """
+
+    _id: Optional[str] = None
     document_type: str = "testimonium"
-    name: str = None
-    author: str = None
-    title: str = None
-    translation: str = None
-    witness: str = None
-    text: str = None
-    editor: str = None
-    sandbox: str = None
-    lock: int = None
-    visible: int = None
+    name: Optional[str] = None
+    author: Optional[str] = None
+    title: Optional[str] = None
+    translation: Optional[str] = None
+    witness: Optional[str] = None
+    text: Optional[str] = None
+    editor: Optional[str] = None
+    sandbox: Optional[str] = None
+    lock: Optional[int] = None
+    visible: Optional[int] = None
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "TestimoniumModel":
+        """
+        Creates a model instance from a dictionary, ignoring extra keys.
+
+        Args:
+            data (dict): The raw dictionary from the database or request.
+
+        Returns:
+            TestimoniumModel: An instance of this dataclass.
+        """
+        class_fields = {f.name for f in fields(cls)}
+        filtered_data = {k: v for k, v in data.items() if k in class_fields}
+        return cls(**filtered_data)
+
+    def to_dict(self, exclude_none: bool = False) -> dict:
+        """
+        Converts the model to a dictionary for database storage.
+
+        Args:
+            exclude_none (bool): If True, keys with None values will be removed.
+
+        Returns:
+            dict: The dictionary representation of the model.
+        """
+        data = asdict(self)
+        if exclude_none:
+            return {k: v for k, v in data.items() if v is not None}
+        return data
 
 
 class Testimonium:
-    def __init__(self, server):
+    """
+    Handles CRUD operations for Testimonium documents.
+    """
+
+    def __init__(self, server: Any):
+        """
+        Initializes the Testimonium handler with a database connection.
+
+        Args:
+            server (Any): The CouchDB server instance.
+        """
         self.database = Database(server)
 
-    def get(self, document: dict) -> list:
+    def get(self, query_filter: dict) -> List[TestimoniumModel]:
         """
-        Retrieves the testimonium given the document filter.
+        Retrieves testimonia matching the filter.
+
+        Args:
+            query_filter (dict): Dictionary containing search criteria like
+                author, title, or editor.
+
+        Returns:
+            List[TestimoniumModel]: A list of matching TestimoniumModel instances.
         """
-        testimonium = TestimoniumModel()
-        # Retrieve the fields on which we allow filtering
-        testimonium.name = document.get(TestimoniumFields.NAME, None)
-        testimonium.author = document.get(TestimoniumFields.AUTHOR, None)
-        testimonium.title = document.get(TestimoniumFields.TITLE, None)
-        testimonium.editor = document.get(TestimoniumFields.EDITOR, None)
-        testimonium.witness = document.get(TestimoniumFields.WITNESS, None)
-        testimonium.sandbox = document.get(TestimoniumFields.SANDBOX, None)
+        search_criteria = {k: v for k, v in query_filter.items() if v is not None}
+        search_criteria[TestimoniumFields.DOC_TYPE] = "testimonium"
 
-        # Convert the model into a dictionary
-        testimonium = {
-            key: value
-            for key, value in testimonium.__dict__.items()
-            if value is not None
-        }
+        logging.info(f"Retrieving testimonia for filter: {search_criteria}")
+        document_list = self.database.filter(search_criteria)
 
-        document_list = self.database.filter(testimonium)
-        # Process the found documents into proper testimonia
-        result: list = []
-        for document in document_list:
-            testimonium = TestimoniumModel()
-            testimonium = self._convert_document_to_testimonium(document)
-            result.append(testimonium)
+        return [TestimoniumModel.from_dict(doc) for doc in document_list]
 
-        return result
-
-    def create(self, document: dict) -> str:
+    def create(self, document_data: dict) -> Optional[str]:
         """
-        Creates a testimonium. For this, a uuid will be generated as identifier.
+        Creates a new testimonium with a unique UUID.
+
+        Args:
+            document_data (dict): The dictionary containing the testimonium
+                data to be stored.
+
+        Returns:
+            Optional[str]: The new document ID string if successful,
+                or an empty string if it already exists.
         """
-        if self.get(document):
-            # Check if the document already exists.
+        if self.get(document_data):
+            logging.warning("create(): Testimonium already exists.")
             return ""
 
-        testimonium = self._convert_document_to_testimonium(document)
-        testimonium._id = uuid4().hex
+        model = TestimoniumModel.from_dict(document_data)
+        model._id = uuid4().hex
 
-        # Convert the model into a dictionary
-        testimonium = {
-            key: value
-            for key, value in testimonium.__dict__.items()
-            if value is not None
-        }
+        return self.database.create(model.to_dict(exclude_none=True))
 
-        doc_id = self.database.create(testimonium)
-        return doc_id
-
-    def delete(self, document: dict) -> bool:
+    def delete(self, document_data: dict) -> bool:
         """
-        Deletes the given introduction by its identifier.
-        """
-        testimonium = self._convert_document_to_testimonium(document)
-        return self.database.delete(testimonium._id)
+        Deletes a testimonium by its identifier.
 
-    def update(self, document: dict) -> bool:
-        """
-        Updates the given introduction. Must receive an identifier to update.
-        """
-        testimonium = self._convert_document_to_testimonium(document)
+        Args:
+            document_data (dict): A dictionary containing at least the
+                '_id' key of the document to delete.
 
-        if not testimonium._id:
+        Returns:
+            bool: True if deletion was successful, False otherwise.
+        """
+        doc_id = document_data.get(TestimoniumFields.ID)
+        if not doc_id:
+            return False
+        return self.database.delete(doc_id)
+
+    def update(self, document_data: dict) -> bool:
+        """
+        Updates an existing testimonium. Requires an '_id' in the input data.
+
+        Args:
+            document_data (dict): Updated data fields, including the
+                mandatory '_id' field.
+
+        Returns:
+            bool: True if updated successfully, False if '_id' is missing
+                or update failed.
+        """
+        model = TestimoniumModel.from_dict(document_data)
+
+        if not model._id:
+            logging.error("update(): Missing document _id.")
             return False
 
-        # Convert the model into a dictionary
-        testimonium = {
-            key: value
-            for key, value in testimonium.__dict__.items()
-            if value is not None
-        }
-
-        return self.database.update(testimonium)
-
-    def _convert_document_to_testimonium(self, document: dict) -> TestimoniumModel:
-        """
-        Converts the received document into a testimonium using the testimoniumModel
-        """
-        testimonium = TestimoniumModel()
-        testimonium._id = document.get(TestimoniumFields.ID, None)
-        testimonium.name = document.get(TestimoniumFields.NAME, None)
-        testimonium.author = document.get(TestimoniumFields.AUTHOR, None)
-        testimonium.title = document.get(TestimoniumFields.TITLE, None)
-        testimonium.translation = document.get(TestimoniumFields.TRANSLATION, None)
-        testimonium.witness = document.get(TestimoniumFields.WITNESS, None)
-        testimonium.text = document.get(TestimoniumFields.TEXT, None)
-        testimonium.editor = document.get(TestimoniumFields.EDITOR, None)
-        testimonium.sandbox = document.get(TestimoniumFields.SANDBOX, None)
-        testimonium.lock = document.get(TestimoniumFields.LOCK, None)
-        testimonium.visible = document.get(TestimoniumFields.VISIBLE, None)
-
-        return testimonium
+        return self.database.update(model.to_dict(exclude_none=True))
