@@ -1,32 +1,15 @@
-"""
- ___  ___ _ ____   _____ _ __ _ __  _   _
-/ __|/ _ \ '__\ \ / / _ \ '__| '_ \| | | |
-\__ \  __/ |   \ V /  __/ |_ | |_) | |_| |
-|___/\___|_|    \_/ \___|_(_)| .__/ \__, |
-                             | |     __/ |
-                             |_|    |___/
-"""
-
 # # # # # #
 # OSCC FLASK Server. Handles requests from the OSCC Angular Front end
-#      -- As of now is able to handle fragments and users --
 #                                                                       #
 #                        RUN INSTRUCTIONS                               #
 #   docker compose up                                                   #
 # # # # # #
-
-# TODO Token authentication between server and front-end
-# TODO Input sanitation
-# TODO Dont send passwords in plain text to the server
-
-# Library imports
 from flask import Flask
 from flask_cors import CORS
 from flask_restful import Api
 from flasgger import Swagger
 import logging
 
-# Class imports
 import config as conf
 from couch import CouchAuthenticator
 

@@ -129,8 +129,6 @@ def get_document():
             logging.error(f"Unknown document type provided: {document_type}")
             return make_response("Unprocessable entity", 422)
 
-    logging.error(f"Returning documents: {list_with_documents}")
-
     return jsonify(list_with_documents), 200
 
 
