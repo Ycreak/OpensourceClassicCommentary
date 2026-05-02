@@ -26,84 +26,69 @@ index_file: str = "cache/index.json"
 index: list = []
 
 # Initialize all document types
-database = Database(CouchAuthenticator().couch)
-introduction = Introduction(CouchAuthenticator().couch)
-fragment = Fragment(CouchAuthenticator().couch)
-playground = Playground(CouchAuthenticator().couch)
-testimonium = Testimonium(CouchAuthenticator().couch)
+server = CouchAuthenticator().couch
+
+database = Database(server, "documents")
+introduction = Introduction(server)
+fragment = Fragment(server)
+playground = Playground(server)
+testimonium = Testimonium(server)
 
 
-def get_index() -> object:
-    """Reads the cache file and returns it. Needs a sandbox as parameter."""
+def get_index() -> Response:
+    """
+    Reads the cached index file and returns items filtered by the requested sandbox.
+    """
     try:
-        sandbox: str = request.get_json()["sandbox"]
-        index: list = util.read_json(index_file)
-        print(sandbox)
-        filtered_index = [obj for obj in index if obj["sandbox"] == sandbox]
+        data = request.get_json()
+        target_sandbox = data.get("sandbox")
+
+        if not target_sandbox:
+            return make_response("No sandbox received.", 422)
+
+        full_index: list = util.read_json(index_file)
+
+        # Filter the index based on the provided sandbox string
+        filtered_index = [
+            obj for obj in full_index if obj.get("sandbox") == target_sandbox
+        ]
+
         return jsonify(filtered_index)
-    except KeyError as e:
-        logging.error(e)
-        return make_response("No sandbox received.", 422)
+
+    except Exception as e:
+        logging.error(f"get_index(): {e}")
+        return make_response("Server error", 500)
 
 
-def update_index() -> None:
-    """Updates the index file and writes it to the cache"""
-    documents: list = database.filter({})
-    index: list = []
-    for doc in documents:
-        try:
-            match doc["document_type"]:
-                case "introduction":
-                    index.append(
-                        {
-                            "document_type": "introduction",
-                            "author": doc["author"],
-                            "title": doc["title"],
-                            "editor": doc["editor"],
-                            "sandbox": doc["sandbox"],
-                        }
-                    )
-                case "fragment":
-                    index.append(
-                        {
-                            "document_type": "fragment",
-                            "author": doc["author"],
-                            "title": doc["title"],
-                            "editor": doc["editor"],
-                            "name": doc["name"],
-                            "sandbox": doc["sandbox"],
-                            "visible": doc["visible"],
-                        }
-                    )
-                case "playground":
-                    index.append(
-                        {
-                            "document_type": "playground",
-                            "_id": doc["_id"],
-                            "name": doc["name"],
-                            "created_by": doc["created_by"],
-                            "users": doc["users"],
-                            "sandbox": doc["sandbox"],
-                        }
-                    )
-                case "testimonium":
-                    index.append(
-                        {
-                            "document_type": "testimonium",
-                            "author": doc["author"],
-                            "title": doc["title"],
-                            "editor": doc["editor"],
-                            "name": doc["name"],
-                            "witness": doc["witness"],
-                            "sandbox": doc["sandbox"],
-                            "visible": doc["visible"],
-                        }
-                    )
-                case _:
-                    logging.error(f"Unknown document type: {doc}")
-        except Exception:
-            logging.error(f"Cannot index document. Error in document: {doc.id}")
-    util.write_json(index, index_file)
+def update_index() -> Response:
+    """
+    Updates the index file by gathering index data from all model handlers
+    and writing the consolidated list to the cache.
+
+    Returns:
+        Response: 200 OK on successful write, or 500 on server error.
+    """
+    try:
+        # Collect sub-indices from each specialized handler
+        # These now use the clean list comprehensions we just wrote.
+        combined_index: list = []
+
+        combined_index.extend(introduction.index())
+        combined_index.extend(fragment.index())
+        combined_index.extend(playground.index())
+        combined_index.extend(testimonium.index())
+
+        # Write the consolidated list to your JSON cache file
+        util.write_json(combined_index, index_file)
+
+        logging.info(
+            f"Index updated successfully with {len(combined_index)} documents."
+        )
+        return make_response("Index Updated", 200)
+
+    except Exception as e:
+        logging.error(f"update_index(): Failed to update index file. Error: {e}")
+        return make_response("Internal Server Error", 500)
 
 
 def get_document():

@@ -66,6 +66,26 @@ class Introduction:
         """
         self.database = Database(server, "documents")
 
+    def index(self) -> list:
+        """
+        Retrieves a summarized list of all introduction documents.
+
+        Returns:
+            list: A list of dictionaries containing basic metadata for each document.
+        """
+        documents: list = self.database.filter({"document_type": "introduction"})
+
+        return [
+            {
+                "document_type": "introduction",
+                "author": doc.get(IntroductionFields.AUTHOR, ""),
+                "title": doc.get(IntroductionFields.TITLE, ""),
+                "editor": doc.get(IntroductionFields.EDITOR, ""),
+                "sandbox": doc.get(IntroductionFields.SANDBOX, ""),
+            }
+            for doc in documents
+        ]
+
     def get(self, query_filter: dict) -> List[IntroductionModel]:
         """
         Retrieves introductions matching the provided filter.

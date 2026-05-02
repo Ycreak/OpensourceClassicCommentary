@@ -61,6 +61,27 @@ class Playground:
         """Initializes the Playground handler with a database connection."""
         self.database = Database(server, "documents")
 
+    def index(self) -> list:
+        """
+        Retrieves a summarized list of all playgrounds.
+
+        Returns:
+            list: List of dictionaries containing playground metadata.
+        """
+        documents = self.database.filter({"document_type": "playground"})
+
+        return [
+            {
+                "document_type": "playground",
+                "_id": doc.get(PlaygroundFields.ID, ""),
+                "name": doc.get(PlaygroundFields.NAME, ""),
+                "created_by": doc.get(PlaygroundFields.CREATED_BY, ""),
+                "users": doc.get(PlaygroundFields.USERS, []),
+                "sandbox": doc.get(PlaygroundFields.SANDBOX, ""),
+            }
+            for doc in documents
+        ]
+
     def get(self, query_filter: dict) -> List[dict]:
         """
         Retrieves playgrounds matching the filter and returns them as dictionaries.

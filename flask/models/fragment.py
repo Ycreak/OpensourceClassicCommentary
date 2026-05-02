@@ -107,6 +107,28 @@ class Fragment:
         """
         self.database = Database(server, "documents")
 
+    def index(self) -> list:
+        """
+        Retrieves a summarized list of all fragments.
+
+        Returns:
+            list: List of dictionaries containing fragment metadata.
+        """
+        documents = self.database.filter({FragmentFields.DOC_TYPE: "fragment"})
+
+        return [
+            {
+                "document_type": "fragment",
+                "author": doc.get(FragmentFields.AUTHOR, ""),
+                "title": doc.get(FragmentFields.TITLE, ""),
+                "editor": doc.get(FragmentFields.EDITOR, ""),
+                "name": doc.get(FragmentFields.NAME, ""),
+                "sandbox": doc.get(FragmentFields.SANDBOX, ""),
+                "visible": doc.get(FragmentFields.VISIBLE, 0),
+            }
+            for doc in documents
+        ]
+
     def get(self, query_filter: dict) -> List[FragmentModel]:
         """
         Retrieves fragments matching the provided filter criteria.

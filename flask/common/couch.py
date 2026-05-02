@@ -37,7 +37,7 @@ class CouchAuthenticator:
 
         # Updated to f-string as requested
         self.url: str = (
-            f"http://{COUCH_USER}:{COUCH_PASSWORD}@{COUCH_HOST}:{COUCH_PORT}/"
+            f"http://{COUCH_USER}:{COUCH_PASSWORD}@{COUCH_HOST}:{COUCH_PORT}"
         )
 
         logging.info("CouchDB initialization started.")
@@ -55,10 +55,8 @@ class CouchAuthenticator:
 
                 not_connected = False
 
-            except Exception:
-                logging.error(
-                    "Couch server not (yet) available or out of sync. Retrying..."
-                )
+            except Exception as e:
+                logging.error(f"Couch server error: {e} {self.url}. Retrying...")
                 time.sleep(3)
 
         logging.info(

@@ -91,6 +91,29 @@ class Testimonium:
         """
         self.database = Database(server, "documents")
 
+    def index(self) -> list:
+        """
+        Retrieves a summarized list of all testimonia.
+
+        Returns:
+            list: List of dictionaries containing testimonium metadata.
+        """
+        documents = self.database.filter({TestimoniumFields.DOC_TYPE: "testimonium"})
+
+        return [
+            {
+                "document_type": "testimonium",
+                "author": doc.get(TestimoniumFields.AUTHOR, ""),
+                "title": doc.get(TestimoniumFields.TITLE, ""),
+                "editor": doc.get(TestimoniumFields.EDITOR, ""),
+                "name": doc.get(TestimoniumFields.NAME, ""),
+                "witness": doc.get(TestimoniumFields.WITNESS, ""),
+                "sandbox": doc.get(TestimoniumFields.SANDBOX, ""),
+                "visible": doc.get(TestimoniumFields.VISIBLE, 0),
+            }
+            for doc in documents
+        ]
+
     def get(self, query_filter: dict) -> List[TestimoniumModel]:
         """
         Retrieves testimonia matching the filter.
