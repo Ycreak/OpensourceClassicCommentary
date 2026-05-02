@@ -11,16 +11,9 @@ from flasgger import Swagger
 import logging
 from common.couch import CouchConnection
 
-from endpoints.user import get_user, login_user, create_user, delete_user, update_user
-from endpoints.document import (
-    get_document,
-    get_index,
-    update_index,
-    create_document,
-    delete_document,
-    update_document,
-)
-from endpoints.zotero import get_bibliography, sync_bibliography, test_bibliography
+from endpoints.user import user_blueprint
+from endpoints.document import document_blueprint
+from endpoints.zotero import zotero_blueprint
 
 import os
 from dotenv import load_dotenv
@@ -50,30 +43,11 @@ couch_server = CouchConnection.connect()
 # Update the document index such that we always have an up-to-date list of documents
 # update_index()
 
-#########
-# USERS #
-#########
-app.add_url_rule("/user/get", view_func=get_user, methods=["POST"])
-app.add_url_rule("/user/login", view_func=login_user, methods=["POST"])
-app.add_url_rule("/user/create", view_func=create_user, methods=["POST"])
-app.add_url_rule("/user/delete", view_func=delete_user, methods=["POST"])
-app.add_url_rule("/user/update", view_func=update_user, methods=["POST"])
+# Paths
+app.register_blueprint(user_blueprint, url_prefix="/user")
+app.register_blueprint(zotero_blueprint, url_prefix="/bibliography")
+app.register_blueprint(document_blueprint, url_prefix="/document")
 
-#############
-# DOCUMENTS #
-#############
-app.add_url_rule("/document/get", view_func=get_document, methods=["POST"])
-app.add_url_rule("/document/create", view_func=create_document, methods=["POST"])
-app.add_url_rule("/document/update", view_func=update_document, methods=["POST"])
-app.add_url_rule("/document/delete", view_func=delete_document, methods=["POST"])
-app.add_url_rule("/document/index", view_func=get_index, methods=["POST"])
-
-################
-# BIBLIOGRAPHY #
-################
-app.add_url_rule("/bibliography/get", view_func=get_bibliography, methods=["POST"])
-app.add_url_rule("/bibliography/sync", view_func=sync_bibliography, methods=["POST"])
-app.add_url_rule("/bibliography/test", view_func=test_bibliography, methods=["POST"])
 
 # MAIN
 if __name__ == "__main__":

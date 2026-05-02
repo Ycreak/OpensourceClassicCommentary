@@ -2,18 +2,22 @@
 Endpoint handlers for user-related communication and authentication.
 """
 
-from flask import request, make_response, Response
+from flask import Blueprint, request, make_response, Response
 from flask_jsonpify import jsonify
 import common.hashing as hashing
 from common.couch import CouchConnection
 
 from models.user import User, UserField, UserModel, Role
 
+# Initialize the Blueprint
+user_blueprint = Blueprint("user_blueprint", __name__)
+
 # Initialize the User CRUD handler with a CouchDB connection
 couch_server = CouchConnection.connect()
 user_handler = User(couch_server)
 
 
+@user_blueprint.route("/get", methods=["POST"])
 def get_user() -> Response:
     """
     Retrieves user information based on a provided username.
@@ -21,7 +25,7 @@ def get_user() -> Response:
     try:
         data = request.get_json()
         username = data.get(UserField.USERNAME)
-    except Exception as e:
+    except Exception:
         return make_response("Unprocessable entity", 422)
 
     # Use the handler to find the user
@@ -46,6 +50,7 @@ def get_user() -> Response:
     return jsonify([requesting_user.to_dict(exclude_none=True)]), 200
 
 
+@user_blueprint.route("/login", methods=["POST"])
 def login_user() -> Response:
     """
     Authenticates a user by checking provided credentials.
@@ -69,6 +74,7 @@ def login_user() -> Response:
     return make_response("Unauthorized", 403)
 
 
+@user_blueprint.route("/create", methods=["POST"])
 def create_user() -> Response:
     """
     Registers a new user with a hashed password and default GUEST role.
@@ -93,6 +99,7 @@ def create_user() -> Response:
     return make_response("User already exists or server error", 403)
 
 
+@user_blueprint.route("/delete", methods=["POST"])
 def delete_user() -> Response:
     """
     Deletes a user from the database based on the provided username.
@@ -110,6 +117,7 @@ def delete_user() -> Response:
     return make_response("Not found", 401)
 
 
+@user_blueprint.route("/update", methods=["POST"])
 def update_user() -> Response:
     """
     Updates user attributes (Role or Password) for a specific username.

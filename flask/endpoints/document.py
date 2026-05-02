@@ -9,7 +9,7 @@ document type and redirects the document to the correct endpoint.
 """
 
 import logging
-from flask import request, make_response, Response
+from flask import Blueprint, request, make_response, Response
 from flask_jsonpify import jsonify
 
 import common.utilities as util
@@ -19,6 +19,9 @@ from models.introduction import Introduction
 from models.fragment import Fragment
 from models.testimonium import Testimonium
 from models.playground import Playground
+
+# Initialize the Blueprint
+document_blueprint = Blueprint("document_blueprint", __name__)
 
 index_file: str = "cache/index.json"
 index: list = []
@@ -30,6 +33,7 @@ playground = Playground(couch_server)
 testimonium = Testimonium(couch_server)
 
 
+@document_blueprint.route("/index", methods=["POST"])
 def get_index() -> Response:
     """
     Reads the cached index file and returns items filtered by the requested sandbox.
@@ -55,6 +59,7 @@ def get_index() -> Response:
         return make_response("Server error", 500)
 
 
+@document_blueprint.route("/update_index", methods=["POST"])
 def update_index() -> Response:
     """
     Updates the index file by gathering index data from all model handlers
@@ -64,8 +69,6 @@ def update_index() -> Response:
         Response: 200 OK on successful write, or 500 on server error.
     """
     try:
-        # Collect sub-indices from each specialized handler
-        # These now use the clean list comprehensions we just wrote.
         combined_index: list = []
 
         combined_index.extend(introduction.index())
@@ -86,10 +89,10 @@ def update_index() -> Response:
         return make_response("Internal Server Error", 500)
 
 
+@document_blueprint.route("/get", methods=["POST"])
 def get_document():
     """
-    Get the given document. First we check what document type we received. Based on the type,
-    different documents can be retrieved. This is handled by the switch statement.
+    Get the given document based on the 'document_type' parameter.
     """
     try:
         document_type: str = request.get_json()["document_type"]
@@ -113,25 +116,10 @@ def get_document():
     return jsonify(list_with_documents), 200
 
 
-# if list_with_documents else make_response("Not found", 401)
-
-
-def create_document() -> make_response:
+@document_blueprint.route("/create", methods=["POST"])
+def create_document() -> Response:
     """
-    Create the given document. First we check what document type we received. Based on the type,
-    different documents can be created. This is handled by the switch statement.
-    ---
-    parameters:
-      - name: filter
-        in: path
-        type: object
-        required: true
-        description: object on which to filter the documents in the database
-    responses:
-      200:
-        description: List of documents for the given filter
-        examples:
-          application/json: [{_id: 456, author: "Ennius"}, {_id: 123, author: "Naevius"}]
+    Create the given document.
     """
     try:
         document_type: str = request.get_json()["document_type"]
@@ -148,7 +136,6 @@ def create_document() -> make_response:
             doc_id: str = playground.create(request.get_json())
         case "testimonium":
             doc_id: str = testimonium.create(request.get_json())
-        # If an exact match is not confirmed, this last case will be used if provided
         case _:
             logging.error(f"Unknown document type provided: {document_type}")
             return make_response("Unprocessable entity", 422)
@@ -161,10 +148,10 @@ def create_document() -> make_response:
     )
 
 
-def delete_document() -> make_response:
+@document_blueprint.route("/delete", methods=["POST"])
+def delete_document() -> Response:
     """
-    Delete the given document. First we check what document type we received. Based on the type,
-    different documents can be deleted. This is handled by the switch statement.
+    Delete the given document.
     """
     try:
         document_type: str = request.get_json()["document_type"]
@@ -181,7 +168,6 @@ def delete_document() -> make_response:
             success: bool = playground.delete(request.get_json())
         case "testimonium":
             success: bool = testimonium.delete(request.get_json())
-        # If an exact match is not confirmed, this last case will be used if provided
         case _:
             logging.error(f"Unknown document type provided: {document_type}")
             return make_response("Unprocessable entity", 422)
@@ -194,10 +180,10 @@ def delete_document() -> make_response:
     )
 
 
-def update_document() -> make_response:
+@document_blueprint.route("/update", methods=["POST"])
+def update_document() -> Response:
     """
-    Update the given document. First we check what document type we received. Based on the type,
-    different documents can be updated. This is handled by the switch statement.
+    Update the given document.
     """
     try:
         document_type: str = request.get_json()["document_type"]
@@ -214,7 +200,6 @@ def update_document() -> make_response:
             success: bool = playground.update(request.get_json())
         case "testimonium":
             success: bool = testimonium.update(request.get_json())
-        # If an exact match is not confirmed, this last case will be used if provided
         case _:
             logging.error(f"Unknown document type provided: {document_type}")
             return make_response("Unprocessable entity", 422)
