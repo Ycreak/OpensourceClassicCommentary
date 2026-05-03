@@ -371,10 +371,10 @@ export class ColumnsComponent implements OnInit {
   @ViewChild('fragmentContextMenu', { static: true }) fragmentContextMenu: MatMenuTrigger;
   @ViewChild('fragmentContextMenuWrapper', { static: true }) fragmentContextMenuWrapper: MatMenuTrigger;
   protected onRightClickFragment(event: MouseEvent, document: any, column: Column) {
-    // Prevent the default browser context menu
+    // preventDefault avoids to show the visualization of the right-click menu of the browser
     event.preventDefault();
 
-    // Record mouse position for the "anchor" element
+    // we record the mouse position in our object (context menu will spawn here)
     this.fragmentContextMenuTopLeftPosition.x = event.clientX + 'px';
     this.fragmentContextMenuTopLeftPosition.y = event.clientY + 'px';
 
