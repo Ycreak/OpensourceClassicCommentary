@@ -15,10 +15,16 @@ zotero_blueprint = Blueprint("zotero_blueprint", __name__)
 @zotero_blueprint.route("/get", methods=["POST"])
 def get_bibliography() -> Response:
     """
-    Endpoint to retrieve the current cached bibliography.
-
-    Returns:
-        Response: JSON representation of the bibliography.
+    Retrieve the current cached bibliography.
+    ---
+    tags:
+      - Zotero
+    description: Returns the bibliography currently stored in the local server cache.
+    responses:
+      200:
+        description: A JSON object containing the cached bibliography.
+        schema:
+          type: object
     """
     zotero = Zotero()
     return jsonify(zotero.bibliography), 200
@@ -27,10 +33,18 @@ def get_bibliography() -> Response:
 @zotero_blueprint.route("/sync", methods=["POST"])
 def sync_bibliography() -> Response:
     """
-    Endpoint to trigger a synchronization between Zotero and the local cache.
-
-    Returns:
-        Response: Updated JSON bibliography or an error message.
+    Trigger a synchronization with Zotero.
+    ---
+    tags:
+      - Zotero
+    description: Forces the server to fetch the latest citations from the Zotero API and update the local cache.
+    responses:
+      200:
+        description: Synchronization successful. Returns the updated bibliography.
+        schema:
+          type: object
+      408:
+        description: Request Timeout or Connection Error with Zotero API.
     """
     zotero = Zotero()
     try:
@@ -44,7 +58,20 @@ def sync_bibliography() -> Response:
 @zotero_blueprint.route("/test", methods=["GET"])
 def test_bibliography() -> Response:
     """
-    Endpoint to manually trigger the test/update_citations logic.
+    Manually trigger citation test logic.
+    ---
+    tags:
+      - Zotero
+    description: Utility endpoint to manually invoke the citation testing and update internal logic.
+    responses:
+      200:
+        description: Test logic triggered successfully.
+        schema:
+          type: object
+          properties:
+            status:
+              type: string
+              example: test triggered
     """
     zotero = Zotero()
     zotero.test()
