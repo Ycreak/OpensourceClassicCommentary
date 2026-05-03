@@ -51,7 +51,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 })
 export class OverviewComponent implements OnInit, OnDestroy {
   protected commentary_enabled = true;
-  protected playground_enabled = true;
+  protected playground_enabled = false;
 
   constructor(
     protected api: ApiService,
