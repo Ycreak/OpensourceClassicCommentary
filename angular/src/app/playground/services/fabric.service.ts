@@ -204,6 +204,44 @@ export class FabricService {
   }
 
   /**
+   * Scatters all document groups to random positions within the currently visible viewport.
+   * @returns void
+   */
+  public randomize_positions(): void {
+    const objects = this.canvas.getObjects().filter((obj) => this.is_document(obj));
+
+    // Get the current visible boundaries of the canvas
+    const vpt = this.canvas.viewportTransform;
+    const invVpt = fabric.util.invertTransform(vpt!);
+
+    // Determine the edges of the visible area
+    const minX = invVpt[4];
+    const minY = invVpt[5];
+    const maxX = minX + this.canvas.width! / this.canvas.getZoom();
+    const maxY = minY + this.canvas.height! / this.canvas.getZoom();
+
+    // Padding to ensure documents don't get stuck exactly on the edge
+    const padding = 50;
+
+    objects.forEach((obj) => {
+      // Generate random coordinates within the visible bounds
+      const randomX = Math.random() * (maxX - minX - (obj.width! + padding)) + minX;
+      const randomY = Math.random() * (maxY - minY - (obj.height! + padding)) + minY;
+
+      obj.set({
+        left: randomX,
+        top: randomY,
+      });
+
+      // Ensure coordinates are updated for selection/interaction
+      obj.setCoords();
+    });
+
+    this.canvas.renderAll();
+    this.save_state(); // Save this move to Undo history
+  }
+
+  /**
    * Calculates the character positions between delimiters for styling.
    * @param text The raw string containing delimiters.
    * @param delimiter The character used to mark styles (e.g., '$').
