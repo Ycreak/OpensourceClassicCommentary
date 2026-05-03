@@ -1,40 +1,37 @@
-/**
- * This service handles everything related to fabric and its canvas. The playground component will use
- * this service to visualise this.canvas, which is the fabricjs canvas to show our documents on.
- */
 import { Injectable } from '@angular/core';
 import { fabric } from 'fabric';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 import { UtilityService } from '@oscc/utility.service';
 import { environment } from '@src/environments/environment';
 
+/**
+ * This service handles everything related to fabric and its canvas.
+ * The playground component uses this service to visualize and manipulate documents on a fabricjs canvas.
+ */
 @Injectable({
   providedIn: 'root',
 })
 export class FabricService {
   public canvas: fabric.Canvas;
 
-  // Variables for keeping track of canvas states
-  private canvas_states: any[] = [];
-  private current_state_index = -1;
-  private undo_status = false;
-  private redo_status = false;
+  // State Management for Undo/Redo
+  private canvas_states: string[] = [];
+  private current_state_index: number = -1;
+  private undo_status: boolean = false;
+  private redo_status: boolean = false;
 
-  // Subscribable variable that tracks changes to the canvas.
   public canvas_changed_subject: Subject<object> = new Subject<object>();
-  canvas_changed$ = this.canvas_changed_subject.asObservable();
+  public canvas_changed$: Observable<object> = this.canvas_changed_subject.asObservable();
 
-  font_size = 16;
-
-  note_array: any[];
-  fragment_names: string[];
-  documents: any[] = [];
+  readonly font_size: number = 16;
+  public documents: any[] = [];
 
   constructor(private utility: UtilityService) {}
 
   /**
-   * Inits various canvas settings
+   * Initializes various canvas settings such as drawing brush properties.
+   * @returns void
    */
   public init(): void {
     this.resize();
@@ -43,42 +40,41 @@ export class FabricService {
   }
 
   /**
-   * Resizes the canvas based on the dimensions of the browser window
+   * Resizes the canvas based on the dimensions of the browser window.
+   * @returns void
    */
   public resize(): void {
     this.canvas.setDimensions({ width: window.innerWidth - 25, height: window.innerHeight });
   }
 
   /**
-   * Sets the event handlers for the canvas, such as scrolling, zooming,
-   * panning and selecting.
+   * Sets the event handlers for the canvas, including wheel zooming,
+   * shift-key panning, and object selection styling.
+   * @returns void
    */
   public set_event_handlers(): void {
     this.canvas.on('mouse:wheel', (opt: any) => {
       const delta = opt.e.deltaY;
       let zoom = this.canvas.getZoom();
       zoom *= 0.999 ** delta;
-      if (zoom > 20) zoom = 20;
-      if (zoom < 0.01) zoom = 0.01;
+      zoom = Math.min(Math.max(0.01, zoom), 20);
+
       this.canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
       opt.e.preventDefault();
       opt.e.stopPropagation();
-      this.canvas.requestRenderAll();
     });
-    /**
-     * When control is pressed down, we will drag the canvas
-     * If not, we allow selection of multiple objects
-     */
-    this.canvas.on('mouse:down', function (opt: any) {
+
+    this.canvas.on('mouse:down', function (this: any, opt: any) {
       const evt = opt.e;
-      if (evt.shiftKey === true) {
+      if (evt.shiftKey) {
         this.isDragging = true;
         this.selection = false;
         this.lastPosX = evt.clientX;
         this.lastPosY = evt.clientY;
       }
     });
-    this.canvas.on('mouse:move', function (opt: any) {
+
+    this.canvas.on('mouse:move', function (this: any, opt: any) {
       if (this.isDragging) {
         const e = opt.e;
         const vpt = this.viewportTransform;
@@ -89,258 +85,200 @@ export class FabricService {
         this.lastPosY = e.clientY;
       }
     });
+
     this.canvas.on('mouse:up', () => {
-      // Whenever we move a fragment, we set its colour. This allows the distinction between existing and new fragments
-      const activeObject = this.canvas.getActiveObject();
-      if (activeObject && this.is_document(activeObject)) {
-        activeObject._objects[0].set('fill', '#9BA8F2'); // Change color to blue
-        this.canvas.renderAll();
+      if (this.canvas.isDragging) {
+        this.canvas.setViewportTransform(this.canvas.viewportTransform);
+        this.canvas.isDragging = false;
       }
-      // on mouse up we want to recalculate new interaction
-      // for all objects, so we call setViewportTransform
-      // FIXME: because of this, a selected object does not stay selected...
-      this.canvas_changed_subject.next({});
-      this.canvas.setViewportTransform(this.canvas.viewportTransform);
-      this.canvas.isDragging = false;
+
       this.canvas.selection = true;
+      this.canvas_changed_subject.next({});
     });
 
-    // On object add, delete and modify, save the canvas state for undo and redo
-    // The "() =>:" notation preserves the context of THIS.
-    this.canvas.on('object:added', () => {
-      if (!this.undo_status && !this.redo_status) {
-        this.save_state();
-      }
-    });
-    this.canvas.on('object:modified', () => {
-      if (!this.undo_status && !this.redo_status) {
-        this.save_state();
-      }
-    });
-    this.canvas.on('object:removed', () => {
-      if (!this.undo_status && !this.redo_status) {
-        this.save_state();
-      }
+    // Save state for undo/redo on major changes
+    const stateEvents = ['object:added', 'object:modified', 'object:removed'];
+    stateEvents.forEach((event) => {
+      this.canvas.on(event, () => {
+        if (!this.undo_status && !this.redo_status) {
+          this.save_state();
+        }
+      });
     });
   }
 
   /**
-   * Toggles canvas drawing mode
+   * Universal internal method to construct and add a document (Fragment or Testimonium) to the canvas.
+   * @param doc The document data object.
+   * @param top The vertical coordinate for placement.
+   * @param left The horizontal coordinate for placement.
+   * @param color The background fill color for the document box.
+   * @returns void
    */
-  public toggle_drawing_mode(): void {
-    this.canvas.isDrawingMode = !this.canvas.isDrawingMode;
+  private add_document_to_canvas(doc: any, top: number, left: number, color: string): void {
+    //const header = this.create_header(doc, this.font_size);
+    const content = doc.lines ? this.create_lines(doc, this.font_size) : this.create_text(doc, this.font_size);
+
+    //content.set({ top: header.height + 5 });
+
+    const text_group = new fabric.Group([content], { padding: 10 });
+    const box = this.create_box(text_group.getBoundingRect(), color);
+
+    const group = new fabric.Group([box, text_group], {
+      top,
+      left,
+      // Metadata stored on the fabric object for future reference
+      identifier: {
+        author: doc.author,
+        title: doc.title,
+        editor: doc.editor,
+        name: doc.name,
+      },
+    } as any);
+
+    this.canvas.add(group);
   }
 
   /**
-   * Creates a document header
-   * @param doc (document)
-   * @param font_size (number)
-   * @return fabric.Text
+   * Creates the header text for a document.
+   * @param doc The document object.
+   * @param fontSize The size of the font.
+   * @returns A fabric.Text object.
    */
-  public create_header(doc: any, font_size: number): fabric.Text {
-    const header_text = `${this.utility.capitalize_word(doc.document_type)} ${doc.name}`;
-    const header = new fabric.Text(header_text, {
-      fontSize: font_size,
+  public create_header(doc: any, fontSize: number): fabric.Text {
+    const text = `${this.utility.capitalize_word(doc.document_type)} ${doc.name}`;
+    return new fabric.Text(text, {
+      fontSize,
       fontWeight: 'bold',
       originX: 'left',
-      originY: 'bottom',
     });
-    return header;
   }
 
   /**
-   * Creates the text for a fabric object
-   * @param doc (document)
-   * @param font_size (number)
-   * @return fabric.Text
+   * Creates a standard Textbox for document types that use a block of text (like Testimonia).
+   * @param doc The document object.
+   * @param fontSize The size of the font.
+   * @returns A fabric.Textbox object.
    */
-  public create_text(doc: any, font_size: number): fabric.Text {
+  public create_text(doc: any, fontSize: number): fabric.Textbox {
     return new fabric.Textbox(doc.text, {
+      fontSize,
       originX: 'left',
       width: 300,
-      fontSize: font_size,
     });
   }
 
   /**
-   * Creates the lines for a fabric object
-   * @param doc (document)
-   * @param font_size (number)
-   * @return fabric.Text
+   * Creates structured lines for a document with a dynamic width.
+   * The box will shrink to fit short text, but wrap at a set maximum.
+   * @param doc The document object containing a 'lines' array.
+   * @param fontSize The size of the font.
+   * @returns A fabric.Textbox object with dynamic width.
    */
-  public create_lines(doc: any, font_size: number): fabric.Text {
-    let lines_text = '';
-    doc.lines.forEach((line: any) => {
-      lines_text += `${line.line_number}: ${line.text}\n`;
-    });
-    // Remove the last superfluous carriage return (I have no idea why -1 instead of -2)
-    lines_text = lines_text.slice(0, -1);
+  public create_lines(doc: any, fontSize: number): fabric.Textbox {
+    const rawText = doc.lines.map((l: any) => `${l.text}`).join('\n');
+    const positions = this.get_style_positions(rawText, '$');
+    const cleanText = rawText.replace(/\$/g, '');
 
-    // Get the positions of the cursive text
-    const positions = this.get_style_positions(lines_text, '$');
-    // Remove the delimiters from the text
-    lines_text = lines_text.split('$').join('');
+    // Create a dummy IText to measure the "natural" width of the longest line
+    const measurer = new fabric.IText(cleanText, { fontSize });
+    const naturalWidth = measurer.width || 0;
 
-    const lines = new fabric.IText(lines_text, {
-      fontSize: font_size,
+    // Determine the dynamic width (minimum of the text's width or our limit)
+    // We add a small buffer (e.g., 5-10px) to prevent accidental wrapping due to rounding
+    const maxWidth = 450;
+    const dynamicWidth = naturalWidth > maxWidth ? maxWidth : naturalWidth + 5;
+
+    const lines = new fabric.Textbox(cleanText, {
+      fontSize,
       originX: 'left',
+      width: dynamicWidth,
+      splitByGrapheme: false,
     });
 
-    // We removed the delimiters, so after every tuple, we need to subtract two additional positions from
-    // the positions inside the tuples to compensate for the removed delimiters.
-    let tuple_counter = 0;
-    positions.forEach((tuple: any) => {
-      lines.setSelectionStyles({ fontStyle: 'italic' }, tuple[0] - tuple_counter, tuple[1] - tuple_counter);
-      tuple_counter += 2;
+    positions.forEach(([start, end]) => {
+      lines.setSelectionStyles({ fontStyle: 'italic' }, start, end);
     });
+
     return lines;
   }
 
   /**
-   * Returns the positions where style delimiters are in the given string.
-   * For example, for the string "h$e$llo $there$", [[1,3],[8,14]] is returned
-   * @param text (string)
-   * @param delmiter (string)
-   * @return list of tuples
+   * Scatters all document groups to random positions within the currently visible viewport.
+   * @returns void
    */
-  private get_style_positions(lines_text: string, delimiter: string) {
-    const positions: number[] = [];
-    let index = lines_text.indexOf(delimiter);
+  public randomize_positions(): void {
+    const objects = this.canvas.getObjects().filter((obj) => this.is_document(obj));
 
-    while (index !== -1) {
-      positions.push(index);
-      index = lines_text.indexOf(delimiter, index + 1);
-    }
+    // Get the current visible boundaries of the canvas
+    const vpt = this.canvas.viewportTransform;
+    const invVpt = fabric.util.invertTransform(vpt!);
 
-    const tuples = positions.reduce((acc: [number][], value: number, index: number) => {
-      if (index % 2 === 0) {
-        // Start a new tuple with the current number
-        acc.push([value]);
-      } else {
-        // Add the current number to the last tuple in acc
-        const lastTuple = acc[acc.length - 1];
-        lastTuple.push(value);
+    // Determine the edges of the visible area
+    const minX = invVpt[4];
+    const minY = invVpt[5];
+    const maxX = minX + this.canvas.width! / this.canvas.getZoom();
+    const maxY = minY + this.canvas.height! / this.canvas.getZoom();
+
+    // Padding to ensure documents don't get stuck exactly on the edge
+    const padding = 50;
+
+    objects.forEach((obj) => {
+      // Generate random coordinates within the visible bounds
+      const randomX = Math.random() * (maxX - minX - (obj.width! + padding)) + minX;
+      const randomY = Math.random() * (maxY - minY - (obj.height! + padding)) + minY;
+
+      obj.set({
+        left: randomX,
+        top: randomY,
+      });
+
+      // Ensure coordinates are updated for selection/interaction
+      obj.setCoords();
+    });
+
+    this.canvas.renderAll();
+    this.save_state(); // Save this move to Undo history
+  }
+
+  /**
+   * Calculates the character positions between delimiters for styling.
+   * @param text The raw string containing delimiters.
+   * @param delimiter The character used to mark styles (e.g., '$').
+   * @returns An array of tuples representing start and end indices.
+   */
+  private get_style_positions(text: string, delimiter: string): number[][] {
+    const parts = text.split(delimiter);
+    const tuples: number[][] = [];
+    let currentPos = 0;
+
+    for (let i = 0; i < parts.length; i++) {
+      if (i % 2 === 1) {
+        tuples.push([currentPos, currentPos + parts[i].length]);
       }
-      return acc;
-    }, []);
-
+      currentPos += parts[i].length;
+    }
     return tuples;
   }
 
-  public create_box(text_bounding_rect: any, fill: string): fabric.Rect {
+  /**
+   * Creates a background rectangle for a group of text.
+   * @param rect The bounding dimensions for the box.
+   * @param fill The background color.
+   * @returns A fabric.Rect object.
+   */
+  public create_box(rect: any, fill: string): fabric.Rect {
     return new fabric.Rect({
-      top: text_bounding_rect.top,
-      left: text_bounding_rect.left,
-      width: text_bounding_rect.width,
-      height: text_bounding_rect.height,
-      fill: fill,
+      top: rect.top,
+      left: rect.left,
+      width: rect.width,
+      height: rect.height,
+      fill,
       rx: 10,
       ry: 10,
       stroke: 'black',
       strokeWidth: 1,
     });
-  }
-
-  /**
-   * Checks if the given object is a document
-   * @param thing (object)
-   * @return boolean
-   */
-  public is_document(thing: any): boolean {
-    return 'identifier' in thing;
-    //thing.backgroundColor == '#F0C086';
-  }
-
-  /**
-   * Saves the current canvas state to the canvas_states class property
-   */
-  private save_state(): void {
-    if (this.current_state_index < this.canvas_states.length - 1) {
-      const indexToBeInserted = this.current_state_index + 1;
-      this.canvas_states.splice(indexToBeInserted, this.canvas_states.length - indexToBeInserted);
-    }
-    this.canvas_states.push(JSON.stringify(this.canvas));
-    this.current_state_index = this.canvas_states.length - 1;
-  }
-
-  /**
-   * This function allows the playground to delete documents from the canvas
-   */
-  public delete_selected(): void {
-    const activeObject = this.canvas.getActiveObject();
-    if (activeObject) {
-      if (activeObject.type === 'activeSelection') {
-        // If it's a group of objects, remove each one
-        activeObject.getObjects().forEach((item: any) => {
-          this.canvas.remove(item);
-        });
-        // Discard the active selection too
-        this.canvas.discardActiveObject();
-      } else {
-        // If it's a single object, remove it
-        this.canvas.remove(activeObject);
-      }
-    }
-  }
-
-  /**
-   * Undoes the canvas by moving back in the saved states
-   */
-  public undo(): void {
-    if (this.current_state_index <= 0) {
-      return;
-    }
-    this.undo_status = true;
-    this.canvas.loadFromJSON(this.canvas_states[this.current_state_index - 1], () => {
-      this.canvas.renderAll();
-      this.undo_status = false;
-      this.current_state_index -= 1;
-    });
-  }
-
-  /**
-   * Redoes the canvas by moving forward in the saved states
-   */
-  public redo(): void {
-    if (this.current_state_index >= this.canvas_states.length - 1) {
-      return;
-    }
-    this.redo_status = true;
-    this.canvas.loadFromJSON(this.canvas_states[this.current_state_index + 1], () => {
-      this.canvas.renderAll();
-      this.redo_status = false;
-      this.current_state_index += 1;
-    });
-  }
-
-  /**
-   * Adds the given documents to the playground
-   * @param documents (list)
-   */
-  public add(documents: any): void {
-    const offset_top = 60;
-    const offset_left = 150;
-    const offset_next_document = 25;
-    let top = this.canvas.vptCoords.tr.y + offset_top;
-
-    documents.forEach((doc: any) => {
-      this.documents.push(doc);
-      if (doc.document_type == environment.fragment) {
-        this.add_fragment(doc, top, this.canvas.vptCoords.tr.x - offset_left);
-      } else if (doc.document_type == environment.testimonium) {
-        this.add_testimonium(doc, top, this.canvas.vptCoords.tr.x - offset_left);
-      }
-      top += offset_next_document;
-    });
-  }
-
-  /**
-   * Clears the entire playground
-   */
-  public clear() {
-    this.documents = [];
-    this.note_array = [];
-    this.canvas.clear();
   }
 
   /**
@@ -353,15 +291,123 @@ export class FabricService {
   }
 
   /**
-   * Adds the given note to the canvas
+   * Determines if the given fabric object is a document based on the presence of an identifier.
+   * @param thing The fabric object to check.
+   * @returns True if it is a document.
+   */
+  public is_document(thing: any): boolean {
+    return !!thing.identifier;
+  }
+
+  /**
+   * Toggles the canvas drawing mode.
+   * @returns void
+   */
+  public toggle_drawing_mode(): void {
+    this.canvas.isDrawingMode = !this.canvas.isDrawingMode;
+  }
+
+  /**
+   * Serializes the current canvas state and adds it to the history stack.
+   * @returns void
+   */
+  private save_state(): void {
+    if (this.current_state_index < this.canvas_states.length - 1) {
+      this.canvas_states.splice(this.current_state_index + 1);
+    }
+    this.canvas_states.push(JSON.stringify(this.canvas));
+    this.current_state_index = this.canvas_states.length - 1;
+  }
+
+  /**
+   * Reverts the canvas to the previous state in history.
+   * @returns void
+   */
+  public undo(): void {
+    if (this.current_state_index > 0) {
+      this.undo_status = true;
+      this.current_state_index--;
+      this.canvas.loadFromJSON(this.canvas_states[this.current_state_index], () => {
+        this.canvas.renderAll();
+        this.undo_status = false;
+      });
+    }
+  }
+
+  /**
+   * Advances the canvas to the next state in history.
+   * @returns void
+   */
+  public redo(): void {
+    if (this.current_state_index < this.canvas_states.length - 1) {
+      this.redo_status = true;
+      this.current_state_index++;
+      this.canvas.loadFromJSON(this.canvas_states[this.current_state_index], () => {
+        this.canvas.renderAll();
+        this.redo_status = false;
+      });
+    }
+  }
+
+  /**
+   * Adds multiple documents to the playground with calculated offsets.
+   * @param documents An array of document objects.
+   * @returns void
+   */
+  public add(documents: any[]): void {
+    const offset_top = 60;
+    const offset_left = 150;
+    const spacing = 25;
+
+    let top = (this.canvas.vptCoords as any).tr.y + offset_top;
+    const left = (this.canvas.vptCoords as any).tr.x - offset_left;
+
+    documents.forEach((doc) => {
+      this.documents.push(doc);
+      const color = doc.document_type === environment.fragment ? '#9BA8F2' : 'orange';
+      this.add_document_to_canvas(doc, top, left, color);
+      top += spacing;
+    });
+  }
+
+  /**
+   * Deletes the currently selected object(s) from the canvas.
+   * @returns void
+   */
+  public delete_selected(): void {
+    const active = this.canvas.getActiveObject();
+    if (!active) return;
+
+    if (active.type === 'activeSelection') {
+      (active as fabric.ActiveSelection).forEachObject((obj) => this.canvas.remove(obj));
+      this.canvas.discardActiveObject();
+    } else {
+      this.canvas.remove(active);
+    }
+    this.canvas.requestRenderAll();
+  }
+
+  /**
+   * Clears all objects and document references from the canvas.
+   * @returns void
+   */
+  public clear(): void {
+    this.documents = [];
+    this.canvas.clear();
+  }
+
+  /**
+   * Adds a sticky-note style text box to the center of the current view.
+   * @param note The text content for the note.
+   * @returns void
    */
   public add_note(note: string): void {
+    const center = this.get_center();
     const text = new fabric.Textbox(note, {
-      top: this.get_center().y,
-      left: this.get_center().x,
+      top: center.y,
+      left: center.x,
       width: 200,
       fontSize: this.font_size,
-      textAlign: 'left', // you can use specify the text align
       backgroundColor: '#F0C086',
       editable: true,
     });
@@ -369,75 +415,23 @@ export class FabricService {
   }
 
   /**
-   * Adds the given fragment to the canvas
+   * Calculates the visual center of the canvas taking zoom and pan into account.
+   * @returns An object with x and y coordinates.
    */
-  private add_fragment(fragment: any, top: number, left: number): void {
-    const fill = '#3F51B5';
-
-    const header = this.create_header(fragment, this.font_size);
-    const lines = this.create_lines(fragment, this.font_size);
-    const text_group = new fabric.Group([header, lines], {
-      hasBorders: true,
-      padding: 10,
-    });
-    const text_bounding_rect = text_group.getBoundingRect();
-    const box = this.create_box(text_bounding_rect, fill);
-    const group = new fabric.Group([box, text_group], {
-      top: top,
-      left: left,
-      // We save the document identifier for finding the document in this.documents whenever we need it for something
-      identifier: { author: fragment.author, title: fragment.title, editor: fragment.editor, name: fragment.name },
-    });
-
-    this.canvas.add(group);
-  }
-
-  /**
-   * Adds the given fragment to the canvas
-   * @author Ycreak
-   */
-  private add_testimonium(testimonium: any, top: number, left: number): void {
-    const fill = 'orange';
-
-    const header = this.create_header(testimonium, this.font_size);
-    const lines = this.create_text(testimonium, this.font_size);
-    const text_group = new fabric.Group([header, lines], {
-      hasBorders: true,
-      padding: 10,
-    });
-    const text_bounding_rect = text_group.getBoundingRect();
-    const box = this.create_box(text_bounding_rect, fill);
-    const group = new fabric.Group([box, text_group], {
-      top: top,
-      left: left,
-      // We save the document identifier for finding the document in this.documents whenever we need it for something
-      identifier: {
-        author: testimonium.author,
-        title: testimonium.title,
-        editor: testimonium.editor,
-        name: testimonium.name,
-      },
-    });
-    this.canvas.add(group);
-  }
-
-  /**
-   * Returns the center of the canvas
-   */
-  private get_center() {
-    const zoom = this.canvas.getZoom();
+  private get_center(): { x: number; y: number } {
+    const vpt = this.canvas.viewportTransform;
+    const inv = fabric.util.invertTransform(vpt!);
     return {
-      x: fabric.util.invertTransform(this.canvas.viewportTransform)[4] + this.canvas.width / zoom / 2,
-      y: fabric.util.invertTransform(this.canvas.viewportTransform)[5] + this.canvas.height / zoom / 2,
+      x: inv[4] + this.canvas.width! / this.canvas.getZoom() / 2,
+      y: inv[5] + this.canvas.height! / this.canvas.getZoom() / 2,
     };
   }
 
   /**
-   * Checks whether the canvas has selected items
-   * @return boolean
+   * Checks whether the canvas has any items currently selected.
+   * @returns boolean
    */
   public has_selection(): boolean {
-    const activeObject = this.canvas.getActiveObject();
-    return activeObject !== null && activeObject !== undefined;
+    return !!this.canvas.getActiveObject();
   }
 }
