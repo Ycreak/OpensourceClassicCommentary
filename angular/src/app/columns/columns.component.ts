@@ -371,16 +371,20 @@ export class ColumnsComponent implements OnInit {
   @ViewChild('fragmentContextMenu', { static: true }) fragmentContextMenu: MatMenuTrigger;
   @ViewChild('fragmentContextMenuWrapper', { static: true }) fragmentContextMenuWrapper: MatMenuTrigger;
   protected onRightClickFragment(event: MouseEvent, document: any, column: Column) {
-    // preventDefault avoids to show the visualization of the right-click menu of the browser
+    // Prevent the default browser context menu
     event.preventDefault();
 
-    // we record the mouse position in our object (context menu will spawn here)
+    // Record mouse position for the "anchor" element
     this.fragmentContextMenuTopLeftPosition.x = event.clientX + 'px';
     this.fragmentContextMenuTopLeftPosition.y = event.clientY + 'px';
 
-    // we pass to the menu the information about our document and column
-    this.fragmentContextMenu.menuData = { document, column };
-    // we open the menu
+    /**
+     * Use 'fragmentContextMenuWrapper' for both the data and the open command.
+     * This ensures the menu template receives the object correctly.
+     */
+    this.fragmentContextMenuWrapper.menuData = { item: { document, column } };
+
+    // Open the menu via the wrapper trigger
     this.fragmentContextMenuWrapper.openMenu();
   }
 
