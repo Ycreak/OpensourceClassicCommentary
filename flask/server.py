@@ -1,85 +1,52 @@
-"""
- ___  ___ _ ____   _____ _ __ _ __  _   _
-/ __|/ _ \ '__\ \ / / _ \ '__| '_ \| | | |
-\__ \  __/ |   \ V /  __/ |_ | |_) | |_| |
-|___/\___|_|    \_/ \___|_(_)| .__/ \__, |
-                             | |     __/ |
-                             |_|    |___/
-"""
-
 # # # # # #
 # OSCC FLASK Server. Handles requests from the OSCC Angular Front end
-#      -- As of now is able to handle fragments and users --
 #                                                                       #
 #                        RUN INSTRUCTIONS                               #
 #   docker compose up                                                   #
 # # # # # #
-
-# TODO Token authentication between server and front-end
-# TODO Input sanitation
-# TODO Dont send passwords in plain text to the server
-
-# Library imports
 from flask import Flask
 from flask_cors import CORS
 from flask_restful import Api
 from flasgger import Swagger
 import logging
+from common.couch import CouchConnection
 
-# Class imports
-import config as conf
-from couch import CouchAuthenticator
+from endpoints.user import user_blueprint
+from endpoints.document import document_blueprint
+from endpoints.zotero import zotero_blueprint
 
-from endpoints.user import get_user, login_user, create_user, delete_user, update_user
-from endpoints.document import (
-    get_document,
-    get_index,
-    update_index,
-    create_document,
-    delete_document,
-    update_document,
-)
-from endpoints.zotero import get_bibliography, sync_bibliography, test_bibliography
+import os
+from dotenv import load_dotenv
+
+load_dotenv(".env")
 
 app = Flask(__name__)
 api = Api(app)
 swagger = Swagger(app)  # localhost:5003/apidocs/#/
 
 # Only allow requests from these specific origins
-CORS(app, origins=conf.TRUSTED_ORIGINS)
+TRUSTED_ORIGINS = [
+    "http://127.0.0.1:4200",
+    "http://localhost:4200",
+    os.getenv("REMOTE_HOST"),
+    os.getenv("STAGING_HOST"),
+]
+CORS(app, origins=TRUSTED_ORIGINS)
 
 # Initialize logging
-logging.basicConfig(filename=conf.LOG_FILE, level=logging.INFO)
+LOG_FILE = "server.log"
+logging.basicConfig(filename=LOG_FILE, level=logging.INFO)
 
-# Authenticate database server
-server = CouchAuthenticator()
+# Connect to the database server
+couch_server = CouchConnection.connect()
 
-update_index()
+# Update the document index such that we always have an up-to-date list of documents
+# update_index()
 
-#########
-# USERS #
-#########
-app.add_url_rule("/user/get", view_func=get_user, methods=["POST"])
-app.add_url_rule("/user/login", view_func=login_user, methods=["POST"])
-app.add_url_rule("/user/create", view_func=create_user, methods=["POST"])
-app.add_url_rule("/user/delete", view_func=delete_user, methods=["POST"])
-app.add_url_rule("/user/update", view_func=update_user, methods=["POST"])
-
-#############
-# DOCUMENTS #
-#############
-app.add_url_rule("/document/get", view_func=get_document, methods=["POST"])
-app.add_url_rule("/document/create", view_func=create_document, methods=["POST"])
-app.add_url_rule("/document/update", view_func=update_document, methods=["POST"])
-app.add_url_rule("/document/delete", view_func=delete_document, methods=["POST"])
-app.add_url_rule("/document/index", view_func=get_index, methods=["POST"])
-
-################
-# BIBLIOGRAPHY #
-################
-app.add_url_rule("/bibliography/get", view_func=get_bibliography, methods=["POST"])
-app.add_url_rule("/bibliography/sync", view_func=sync_bibliography, methods=["POST"])
-app.add_url_rule("/bibliography/test", view_func=test_bibliography, methods=["POST"])
+# Paths
+app.register_blueprint(user_blueprint, url_prefix="/user")
+app.register_blueprint(zotero_blueprint, url_prefix="/bibliography")
+app.register_blueprint(document_blueprint, url_prefix="/document")
 
 # MAIN
 if __name__ == "__main__":

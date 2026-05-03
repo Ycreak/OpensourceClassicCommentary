@@ -4,111 +4,135 @@ This endpoint handles all document types. At the moment, we support the followin
     fragments
     testimonia
     playgrounds
-These are differentiated via the 'type' parameter. This endpoint checks the incoming
-document type and redirects the document to the correct endpoint.
 """
 
 import logging
-from flask import request, make_response
+from flask import Blueprint, request, make_response, Response
 from flask_jsonpify import jsonify
 
-from couch import CouchAuthenticator
-import utilities as util
+import common.utilities as util
+from common.couch import CouchConnection
 
-from database import Database
 from models.introduction import Introduction
 from models.fragment import Fragment
 from models.testimonium import Testimonium
 from models.playground import Playground
 
+# Initialize the Blueprint
+document_blueprint = Blueprint("document_blueprint", __name__)
+
 index_file: str = "cache/index.json"
 index: list = []
 
-# Initialize all document types
-database = Database(CouchAuthenticator().couch)
-introduction = Introduction(CouchAuthenticator().couch)
-fragment = Fragment(CouchAuthenticator().couch)
-playground = Playground(CouchAuthenticator().couch)
-testimonium = Testimonium(CouchAuthenticator().couch)
+couch_server = CouchConnection.connect()
+introduction = Introduction(couch_server)
+fragment = Fragment(couch_server)
+playground = Playground(couch_server)
+testimonium = Testimonium(couch_server)
 
 
-def get_index() -> object:
-    """Reads the cache file and returns it. Needs a sandbox as parameter."""
+@document_blueprint.route("/index", methods=["POST"])
+def get_index() -> Response:
+    """
+    Retrieve a filtered index of documents.
+    ---
+    tags:
+      - Documents
+    parameters:
+      - in: body
+        name: body
+        schema:
+          type: object
+          required:
+            - sandbox
+          properties:
+            sandbox:
+              type: string
+              example: "my_project_sandbox"
+    responses:
+      200:
+        description: A list of documents belonging to the specified sandbox.
+        schema:
+          type: array
+          items:
+            type: object
+      422:
+        description: No sandbox parameter received.
+      500:
+        description: Internal server error while reading index cache.
+    """
     try:
-        sandbox: str = request.get_json()["sandbox"]
-        index: list = util.read_json(index_file)
-        print(sandbox)
-        filtered_index = [obj for obj in index if obj["sandbox"] == sandbox]
+        data = request.get_json()
+        target_sandbox = data.get("sandbox")
+
+        if not target_sandbox:
+            return make_response("No sandbox received.", 422)
+
+        full_index: list = util.read_json(index_file)
+        filtered_index = [
+            obj for obj in full_index if obj.get("sandbox") == target_sandbox
+        ]
         return jsonify(filtered_index)
-    except KeyError as e:
-        logging.error(e)
-        return make_response("No sandbox received.", 422)
+
+    except Exception as e:
+        logging.error(f"get_index(): {e}")
+        return make_response("Server error", 500)
 
 
-def update_index() -> None:
-    """Updates the index file and writes it to the cache"""
-    documents: list = database.filter({})
-    index: list = []
-    for doc in documents:
-        try:
-            match doc["document_type"]:
-                case "introduction":
-                    index.append(
-                        {
-                            "document_type": "introduction",
-                            "author": doc["author"],
-                            "title": doc["title"],
-                            "editor": doc["editor"],
-                            "sandbox": doc["sandbox"],
-                        }
-                    )
-                case "fragment":
-                    index.append(
-                        {
-                            "document_type": "fragment",
-                            "author": doc["author"],
-                            "title": doc["title"],
-                            "editor": doc["editor"],
-                            "name": doc["name"],
-                            "sandbox": doc["sandbox"],
-                            "visible": doc["visible"],
-                        }
-                    )
-                case "playground":
-                    index.append(
-                        {
-                            "document_type": "playground",
-                            "_id": doc["_id"],
-                            "name": doc["name"],
-                            "created_by": doc["created_by"],
-                            "users": doc["users"],
-                            "sandbox": doc["sandbox"],
-                        }
-                    )
-                case "testimonium":
-                    index.append(
-                        {
-                            "document_type": "testimonium",
-                            "author": doc["author"],
-                            "title": doc["title"],
-                            "editor": doc["editor"],
-                            "name": doc["name"],
-                            "witness": doc["witness"],
-                            "sandbox": doc["sandbox"],
-                            "visible": doc["visible"],
-                        }
-                    )
-                case _:
-                    logging.error(f"Unknown document type: {doc}")
-        except Exception:
-            logging.error(f"Cannot index document. Error in document: {doc.id}")
-    util.write_json(index, index_file)
+@document_blueprint.route("/update_index", methods=["POST"])
+def update_index() -> Response:
+    """
+    Rebuild the document index cache.
+    ---
+    tags:
+      - Documents
+    description: Aggregates index data from all models and saves it to the local cache file.
+    responses:
+      200:
+        description: Index updated successfully.
+      500:
+        description: Failed to write to index cache.
+    """
+    try:
+        combined_index: list = []
+        combined_index.extend(introduction.index())
+        combined_index.extend(fragment.index())
+        combined_index.extend(playground.index())
+        combined_index.extend(testimonium.index())
+
+        util.write_json(combined_index, index_file)
+
+        logging.info(f"Index updated successfully with {len(combined_index)} documents.")
+        return make_response("Index Updated", 200)
+
+    except Exception as e:
+        logging.error(f"update_index(): Failed to update index file. Error: {e}")
+        return make_response("Internal Server Error", 500)
 
 
+@document_blueprint.route("/get", methods=["POST"])
 def get_document():
     """
-    Get the given document. First we check what document type we received. Based on the type,
-    different documents can be retrieved. This is handled by the switch statement.
+    Fetch a document by type.
+    ---
+    tags:
+      - Documents
+    parameters:
+      - in: body
+        name: body
+        schema:
+          type: object
+          required:
+            - document_type
+          properties:
+            document_type:
+              type: string
+              enum: [introduction, fragment, playground, testimonium]
+    responses:
+      200:
+        description: Document data retrieved successfully.
+      422:
+        description: Invalid or missing document_type.
     """
     try:
         document_type: str = request.get_json()["document_type"]
@@ -129,30 +153,33 @@ def get_document():
             logging.error(f"Unknown document type provided: {document_type}")
             return make_response("Unprocessable entity", 422)
 
-    logging.error(f"Returning documents: {list_with_documents}")
-
     return jsonify(list_with_documents), 200
 
 
-# if list_with_documents else make_response("Not found", 401)
-
-
-def create_document() -> make_response:
+@document_blueprint.route("/create", methods=["POST"])
+def create_document() -> Response:
     """
-    Create the given document. First we check what document type we received. Based on the type,
-    different documents can be created. This is handled by the switch statement.
+    Create a new document.
     ---
+    tags:
+      - Documents
+    description: Creates a document of the specified type and triggers an index update.
     parameters:
-      - name: filter
-        in: path
-        type: object
-        required: true
-        description: object on which to filter the documents in the database
+      - in: body
+        name: body
+        schema:
+          type: object
+          required:
+            - document_type
+          properties:
+            document_type:
+              type: string
+              enum: [introduction, fragment, playground, testimonium]
     responses:
       200:
-        description: List of documents for the given filter
-        examples:
-          application/json: [{_id: 456, author: "Ennius"}, {_id: 123, author: "Naevius"}]
+        description: Document created and index updated.
+      422:
+        description: Missing document_type or creation failed.
     """
     try:
         document_type: str = request.get_json()["document_type"]
@@ -169,7 +196,6 @@ def create_document() -> make_response:
             doc_id: str = playground.create(request.get_json())
         case "testimonium":
             doc_id: str = testimonium.create(request.get_json())
-        # If an exact match is not confirmed, this last case will be used if provided
         case _:
             logging.error(f"Unknown document type provided: {document_type}")
             return make_response("Unprocessable entity", 422)
@@ -182,10 +208,29 @@ def create_document() -> make_response:
     )
 
 
-def delete_document() -> make_response:
+@document_blueprint.route("/delete", methods=["POST"])
+def delete_document() -> Response:
     """
-    Delete the given document. First we check what document type we received. Based on the type,
-    different documents can be deleted. This is handled by the switch statement.
+    Delete a document.
+    ---
+    tags:
+      - Documents
+    parameters:
+      - in: body
+        name: body
+        schema:
+          type: object
+          required:
+            - document_type
+          properties:
+            document_type:
+              type: string
+              enum: [introduction, fragment, playground, testimonium]
+    responses:
+      200:
+        description: Document deleted and index updated.
+      422:
+        description: Missing document_type or deletion failed.
     """
     try:
         document_type: str = request.get_json()["document_type"]
@@ -202,7 +247,6 @@ def delete_document() -> make_response:
             success: bool = playground.delete(request.get_json())
         case "testimonium":
             success: bool = testimonium.delete(request.get_json())
-        # If an exact match is not confirmed, this last case will be used if provided
         case _:
             logging.error(f"Unknown document type provided: {document_type}")
             return make_response("Unprocessable entity", 422)
@@ -215,10 +259,29 @@ def delete_document() -> make_response:
     )
 
 
-def update_document() -> make_response:
+@document_blueprint.route("/update", methods=["POST"])
+def update_document() -> Response:
     """
-    Update the given document. First we check what document type we received. Based on the type,
-    different documents can be updated. This is handled by the switch statement.
+    Update an existing document.
+    ---
+    tags:
+      - Documents
+    parameters:
+      - in: body
+        name: body
+        schema:
+          type: object
+          required:
+            - document_type
+          properties:
+            document_type:
+              type: string
+              enum: [introduction, fragment, playground, testimonium]
+    responses:
+      200:
+        description: Document updated and index updated.
+      422:
+        description: Missing document_type or update failed.
     """
     try:
         document_type: str = request.get_json()["document_type"]
@@ -235,7 +298,6 @@ def update_document() -> make_response:
             success: bool = playground.update(request.get_json())
         case "testimonium":
             success: bool = testimonium.update(request.get_json())
-        # If an exact match is not confirmed, this last case will be used if provided
         case _:
             logging.error(f"Unknown document type provided: {document_type}")
             return make_response("Unprocessable entity", 422)

@@ -1,118 +1,160 @@
 """
-Model to handle introductions
+Model to handle introductions and database persistence.
 """
 
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict, fields
 from uuid import uuid4
+from typing import Optional, Any, List
 
-from database import Database
+from common.couch import Couch
 
 
-class IntroductionFields(object):
-    # Container for field names
+class IntroductionFields:
+    """Container for field name constants to avoid magic strings."""
+
     ID = "_id"
     AUTHOR = "author"
     TITLE = "title"
     EDITOR = "editor"
     TEXT = "text"
     SANDBOX = "sandbox"
+    DOC_TYPE = "document_type"
 
 
 @dataclass
 class IntroductionModel:
-    # Data container. Corresponds to the IntroductionForm on the dashboard.
-    _id: str = ""
+    """
+    Data container representing an Introduction document.
+    """
+
+    _id: Optional[str] = None
     document_type: str = "introduction"
-    author: str = ""
-    title: str = ""
-    editor: str = ""
-    text: str = ""
-    sandbox: str = ""
+    author: Optional[str] = None
+    title: Optional[str] = None
+    editor: Optional[str] = None
+    text: Optional[str] = None
+    sandbox: Optional[str] = None
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "IntroductionModel":
+        """Creates a model instance from a dictionary, ignoring extra keys."""
+        # Only take keys that exist in the dataclass definition
+        class_fields = {f.name for f in fields(cls)}
+        filtered_data = {k: v for k, v in data.items() if k in class_fields}
+        return cls(**filtered_data)
+
+    def to_dict(self, exclude_none: bool = False) -> dict:
+        """Converts the model to a dictionary."""
+        data = asdict(self)
+        if exclude_none:
+            return {k: v for k, v in data.items() if v is not None}
+        return data
 
 
 class Introduction:
-    def __init__(self, server):
-        self.database = Database(server)
+    """
+    Handles CRUD operations for Introduction documents in the database.
+    """
 
-    def get(self, document: dict) -> list:
+    def __init__(self, server: Any):
         """
-        Retrieves the introduction given the document filter.
+        Initializes the Introduction handler with a database connection.
+
+        Args:
+            server (Any): The CouchDB server instance.
         """
-        introduction = IntroductionModel()
-        introduction.author = document.get(IntroductionFields.AUTHOR, "")
-        introduction.title = document.get(IntroductionFields.TITLE, "")
-        introduction.editor = document.get(IntroductionFields.EDITOR, "")
-        introduction.sandbox = document.get(IntroductionFields.SANDBOX, "")
+        self.database = Couch(server, "documents")
 
-        # Convert the model into a dictionary
-        introduction = {
-            key: value for key, value in introduction.__dict__.items() if value != ""
-        }
-
-        logging.info(f"Retrieving introduction for filter: {introduction}")
-        document_list = self.database.filter(introduction)
-        # Process the found documents into proper introductions
-        result: list = []
-        for document in document_list:
-            introduction = IntroductionModel()
-            introduction = self._convert_document_to_introduction(document)
-            result.append(introduction)
-
-        return result
-
-    def create(self, document: dict) -> str:
+    def index(self) -> list:
         """
-        Creates a document. For this, a uuid will be generated as identifier.
+        Retrieves a summarized list of all introduction documents.
+
+        Returns:
+            list: A list of dictionaries containing basic metadata for each document.
         """
-        if self.get(document):
-            # Check if the document already exists.
+        documents: list = self.database.filter({"document_type": "introduction"})
+
+        return [
+            {
+                "document_type": "introduction",
+                "author": doc.get(IntroductionFields.AUTHOR, ""),
+                "title": doc.get(IntroductionFields.TITLE, ""),
+                "editor": doc.get(IntroductionFields.EDITOR, ""),
+                "sandbox": doc.get(IntroductionFields.SANDBOX, ""),
+            }
+            for doc in documents
+        ]
+
+    def get(self, query_filter: dict) -> List[IntroductionModel]:
+        """
+        Retrieves introductions matching the provided filter.
+
+        Args:
+            query_filter (dict): Dictionary containing filter criteria.
+
+        Returns:
+            List[IntroductionModel]: A list of matching IntroductionModel instances.
+        """
+        # Clean the filter to only include provided values
+        search_criteria = {k: v for k, v in query_filter.items() if v}
+        search_criteria[IntroductionFields.DOC_TYPE] = "introduction"
+
+        logging.info(f"Retrieving introductions for filter: {search_criteria}")
+        document_list = self.database.filter(search_criteria)
+
+        return [IntroductionModel.from_dict(doc) for doc in document_list]
+
+    def create(self, document_data: dict) -> Optional[str]:
+        """
+        Creates a new introduction document with a unique UUID.
+
+        Args:
+            document_data (dict): The data for the new introduction.
+
+        Returns:
+            Optional[str]: The new document ID, or None/empty string if creation fails.
+        """
+        if self.get(document_data):
+            logging.warning("create(): Document already exists.")
             return ""
 
-        introduction = self._convert_document_to_introduction(document)
-        introduction._id = uuid4().hex
+        model = IntroductionModel.from_dict(document_data)
+        model._id = uuid4().hex
 
-        # Convert the model into a dictionary
-        introduction = {key: value for key, value in introduction.__dict__.items()}
+        return self.database.create(model.to_dict())
 
-        doc_id = self.database.create(introduction)
-        return doc_id
-
-    def delete(self, document: dict) -> bool:
+    def delete(self, document_data: dict) -> bool:
         """
-        Deletes the given introduction by its identifier.
-        """
-        introduction = self._convert_document_to_introduction(document)
-        return self.database.delete(introduction._id)
+        Deletes an introduction by its ID.
 
-    def update(self, document: dict) -> bool:
-        """
-        Updates the given introduction. Must receive an identifier to update.
-        """
-        introduction = self._convert_document_to_introduction(document)
+        Args:
+            document_data (dict): Data containing at least the '_id'.
 
-        if not introduction._id:
+        Returns:
+            bool: True if deleted successfully, False otherwise.
+        """
+        doc_id = document_data.get(IntroductionFields.ID)
+        if not doc_id:
+            logging.error("delete(): No identifier provided.")
+            return False
+        return self.database.delete(doc_id)
+
+    def update(self, document_data: dict) -> bool:
+        """
+        Updates an existing introduction. Requires an '_id'.
+
+        Args:
+            document_data (dict): Updated data fields.
+
+        Returns:
+            bool: True if updated successfully, False otherwise.
+        """
+        model = IntroductionModel.from_dict(document_data)
+
+        if not model._id:
+            logging.error("update(): Missing document _id.")
             return False
 
-        # Convert the model into a dictionary
-        introduction = {
-            key: value
-            for key, value in introduction.__dict__.items()
-            if value is not None
-        }
-
-        return self.database.update(introduction)
-
-    def _convert_document_to_introduction(self, document: dict) -> IntroductionModel:
-        """
-        Converts the received document into an introduction using the IntroductionModel
-        """
-        introduction = IntroductionModel()
-        introduction._id = document.get(IntroductionFields.ID, None)
-        introduction.author = document.get(IntroductionFields.AUTHOR, None)
-        introduction.title = document.get(IntroductionFields.TITLE, None)
-        introduction.editor = document.get(IntroductionFields.EDITOR, None)
-        introduction.text = document.get(IntroductionFields.TEXT, None)
-        introduction.sandbox = document.get(IntroductionFields.SANDBOX, None)
-
-        return introduction
+        # Convert to dict, excluding None values so we don't overwrite with nulls
+        return self.database.update(model.to_dict(exclude_none=True))

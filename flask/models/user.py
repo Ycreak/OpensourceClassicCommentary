@@ -1,136 +1,185 @@
 """
-Model to handle users
+Model to handle user logic and database persistence.
 """
 
-from dataclasses import dataclass, asdict
 import logging
+from dataclasses import dataclass, asdict, fields
+from typing import Optional, Any, List
+from common.couch import Couch
 
-import config as conf
+
+class Role:
+    """Constants for user roles."""
+
+    ADMIN = "admin"
+    TEACHER = "teacher"
+    STUDENT = "student"
+    GUEST = "guest"
 
 
-class UserField(object):
+class UserField:
+    """Container for field name constants to avoid magic strings."""
+
     ID = "_id"
     USERNAME = "username"
     PASSWORD = "password"
     ROLE = "role"
 
 
-class Role(object):
-    STUDENT = "student"
-    TEACHER = "teacher"
-    ADMIN = "admin"
-    GUEST = "guest"
-
-
 @dataclass
-class User:
-    id: str = None
-    username: str = None
-    password: str = None
-    role: str = None
+class UserModel:
+    """
+    Data container representing a User document.
+    """
+
+    _id: Optional[str] = None
+    document_type: str = "user"
+    username: Optional[str] = None
+    password: Optional[str] = None
+    role: str = Role.GUEST
 
     @classmethod
-    def from_json(self, data):
-        if UserField.ID in data:
-            self.id = data[UserField.ID]
-        if UserField.USERNAME in data:
-            self.username = data[UserField.USERNAME]
-        if UserField.PASSWORD in data:
-            self.password = data[UserField.PASSWORD]
-        if UserField.ROLE in data:
-            self.role = data[UserField.ROLE]
-        return self
+    def from_dict(cls, data: dict) -> "UserModel":
+        """
+        Creates a model instance from a dictionary, ignoring extra keys.
+
+        Args:
+            data (dict): The raw dictionary from the database or request.
+
+        Returns:
+            UserModel: An initialized instance of the dataclass.
+        """
+        class_fields = {f.name for f in fields(cls)}
+        filtered_data = {k: v for k, v in data.items() if k in class_fields}
+        return cls(**filtered_data)
+
+    def to_dict(self, exclude_none: bool = False) -> dict:
+        """
+        Converts the model to a dictionary for database storage.
+
+        Args:
+            exclude_none (bool): If True, keys with None values will be removed.
+
+        Returns:
+            dict: The dictionary representation of the model.
+        """
+        data = asdict(self)
+        if exclude_none:
+            return {k: v for k, v in data.items() if v is not None}
+        return data
 
 
-class UserModel:
-    def __init__(self, server):
-        self.db = server[conf.COUCH_USERS]
+class User:
+    """
+    Handles CRUD operations for User documents in the database.
+    """
 
-    def __get_users(self, usr_lst):
-        result = list()
-        for doc in usr_lst:
-            user = User(id=doc.id)
-            if UserField.USERNAME in doc:
-                user.username = doc[UserField.USERNAME]
-            if UserField.PASSWORD in doc:
-                user.password = doc[UserField.PASSWORD]
-            if UserField.ROLE in doc:
-                user.role = doc[UserField.ROLE]
-            result.append(user)
-        return result
+    def __init__(self, server: Any):
+        """
+        Initializes the User handler with a database connection.
 
-    def all(self, sorted=False):
-        result = self.db.find({"selector": dict(), "limit": conf.COUCH_LIMIT})
-        result = self.__get_users(result)
+        Args:
+            server (Any): The CouchDB server instance.
+        """
+        self.database = Couch(server, "users")
+
+    def get(self, query_filter: dict) -> List[UserModel]:
+        """
+        Retrieves users matching the provided filter criteria.
+
+        Args:
+            query_filter (dict): Dictionary containing filter criteria like
+                username or role.
+
+        Returns:
+            List[UserModel]: A list of matching UserModel instances.
+        """
+        search_criteria = {k: v for k, v in query_filter.items() if v is not None}
+
+        logging.info(f"Retrieving users for filter: {search_criteria}")
+        document_list = self.database.filter(search_criteria)
+
+        return [UserModel.from_dict(doc) for doc in document_list]
+
+    def all(self, sorted: bool = False) -> List[UserModel]:
+        """
+        Retrieves all users from the database.
+
+        Args:
+            sorted (bool): Whether to sort the users by username.
+
+        Returns:
+            List[UserModel]: A list of all users.
+        """
+        document_list = self.database.all()
+        # Filter for only 'user' document types in case the view returns mixed results
+        users = [UserModel.from_dict(doc) for doc in document_list]
+
         if sorted:
-            result.sort(key=lambda User: User.username)
-        return result
+            users.sort(key=lambda x: x.username if x.username else "")
 
-    def filter(self, user, sorted=False):
-        user = {key: value for key, value in user.__dict__.items() if value}
-        if "id" in user:
-            user[UserField.ID] = user.pop("id")
-        mango = {"selector": user, "limit": conf.COUCH_LIMIT}
-        result = self.db.find(mango)
-        result = self.__get_users(result)
-        if sorted:
-            result.sort(key=lambda User: User.username)
-        return result
+        return users
 
-    def get(self, user):
-        user = {key: value for key, value in user.__dict__.items() if value}
-        mango = {"selector": user, "limit": conf.COUCH_LIMIT}
-        result = self.db.find(mango)
-        result = self.__get_users(result)
+    def create(self, user_model: UserModel) -> Optional[str]:
+        """
+        Creates a new user document.
 
-        if result:
-            if len(result) > 1:
-                logging.warning("get(): function returned more than 1 object!")
-            return result[0]
-        return None
+        Args:
+            user_model (UserModel): The UserModel instance to store.
 
-    def create(self, user):
-        user = {key: value for key, value in user.__dict__.items() if value}
-        user[UserField.ID] = user.pop("id")  # MongoDB uses "_id" instead of "id"
-        doc_id, _ = self.db.save(user)
-        if not doc_id:
-            logging.error("create(): failed to create user: {}".format(user.username))
+        Returns:
+            Optional[str]: The new document ID if successful,
+                None if a user with that username already exists.
+        """
+        # Check if username is taken
+        if self.get({UserField.USERNAME: user_model.username}):
+            logging.warning(f"create(): User '{user_model.username}' already exists.")
             return None
-        return user
 
-    def get_or_create(self, user):
-        result = self.get(user)
-        if result is not None:
-            return result
-        else:
-            return self.create(user)
+        return self.database.create(user_model.to_dict(exclude_none=True))
 
-    def update(self, user):
-        _user = self.get(User(username=user.username))
-        if _user is None:
-            logging.error("update(): user could not be found")
+    def delete(self, user_model: UserModel) -> bool:
+        """
+        Deletes a user document by its unique identifier or username.
+
+        Args:
+            user_model (UserModel): Model containing either the _id or username.
+
+        Returns:
+            bool: True if deletion was successful, False otherwise.
+        """
+        doc_id = user_model._id
+
+        # If no ID, find the ID by username first
+        if not doc_id and user_model.username:
+            existing = self.get({UserField.USERNAME: user_model.username})
+            if existing:
+                doc_id = existing[0]._id
+
+        if not doc_id:
+            logging.error("delete(): Could not find user ID to delete.")
             return False
-        try:
-            doc = self.db[_user.id]
-            for key, value in asdict(user).items():
-                if value is not None:
-                    doc[key] = value
-            self.db.save(doc)
-            return True
-        except Exception as e:
-            logging.error(e)
-        return False
 
-    def delete(self, user):
-        user = self.get(user)
+        return self.database.delete(doc_id)
 
-        if user is None:
-            logging.error("delete(): user could not be found")
-            return False
-        try:
-            doc = self.db[user.id]
-            self.db.delete(doc)
-            return True
-        except Exception as e:
-            logging.error(e)
-        return False
+    def update(self, user_model: UserModel) -> bool:
+        """
+        Updates an existing user. Requires an '_id'.
+
+        Args:
+            user_model (UserModel): Instance containing the fields to update
+                and the mandatory '_id'.
+
+        Returns:
+            bool: True if the update was successful, False otherwise.
+        """
+        if not user_model._id:
+            # Try to find the ID by username if it was omitted but exists
+            existing = self.get({UserField.USERNAME: user_model.username})
+            if existing:
+                user_model._id = existing[0]._id
+            else:
+                logging.error("update(): Missing document _id and user not found.")
+                return False
+
+        return self.database.update(user_model.to_dict(exclude_none=True))

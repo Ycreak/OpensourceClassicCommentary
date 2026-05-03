@@ -1,16 +1,18 @@
 """
-Model to handle fragments
+Model to handle fragment logic and database persistence.
 """
 
 import logging
-
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict, fields, field
 from uuid import uuid4
+from typing import Optional, Any, List
 
-from database import Database
+from common.couch import Couch
 
 
-class FragmentFields(object):
+class FragmentFields:
+    """Container for field name constants to avoid magic strings."""
+
     ID = "_id"
     NAME = "name"
     AUTHOR = "author"
@@ -30,135 +32,173 @@ class FragmentFields(object):
     LINES = "lines"
     LINKED_FRAGMENTS = "linked_fragments"
     SANDBOX = "sandbox"
+    DOC_TYPE = "document_type"
 
 
 @dataclass
 class FragmentModel:
-    _id: str = None
+    """
+    Data container representing a Fragment document.
+    """
+
+    _id: Optional[str] = None
     document_type: str = "fragment"
-    name: str = None
-    author: str = None
-    title: str = None
-    editor: str = None
-    status: str = None
-    lock: int = None
-    visible: int = None
-    translation: str = None
-    popular_translation: str = None
-    differences: str = None
-    apparatus: str = None
-    commentary: str = None
-    reconstruction: str = None
-    metrical_analysis: str = None
-    context: list = None
-    lines: list = None
-    linked_fragments: list = None
-    sandbox: str = None
+    name: Optional[str] = None
+    author: Optional[str] = None
+    title: Optional[str] = None
+    editor: Optional[str] = None
+    status: Optional[str] = None
+    lock: Optional[int] = None
+    visible: Optional[int] = None
+    translation: Optional[str] = None
+    popular_translation: Optional[str] = None
+    differences: Optional[str] = None
+    apparatus: Optional[str] = None
+    commentary: Optional[str] = None
+    reconstruction: Optional[str] = None
+    metrical_analysis: Optional[str] = None
+    context: List[Any] = field(default_factory=list)
+    lines: List[Any] = field(default_factory=list)
+    linked_fragments: List[Any] = field(default_factory=list)
+    sandbox: Optional[str] = None
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "FragmentModel":
+        """
+        Creates a model instance from a dictionary, ignoring extra keys.
+
+        Args:
+            data (dict): The raw dictionary from the database or request.
+
+        Returns:
+            FragmentModel: An initialized instance of the dataclass.
+        """
+        class_fields = {f.name for f in fields(cls)}
+        filtered_data = {k: v for k, v in data.items() if k in class_fields}
+        return cls(**filtered_data)
+
+    def to_dict(self, exclude_none: bool = False) -> dict:
+        """
+        Converts the model to a dictionary for database storage.
+
+        Args:
+            exclude_none (bool): If True, keys with None values will be removed.
+
+        Returns:
+            dict: The dictionary representation of the model.
+        """
+        data = asdict(self)
+        if exclude_none:
+            return {k: v for k, v in data.items() if v is not None}
+        return data
 
 
 class Fragment:
-    def __init__(self, server):
-        self.database = Database(server)
+    """
+    Handles CRUD operations for Fragment documents in the database.
+    """
 
-    def get(self, document: dict) -> list:
+    def __init__(self, server: Any):
         """
-        Retrieves the fragment given the document filter.
+        Initializes the Fragment handler with a database connection.
+
+        Args:
+            server (Any): The CouchDB server instance.
         """
-        fragment = FragmentModel()
-        # Retrieve the fields on which we allow filtering
-        fragment.name = document.get(FragmentFields.NAME, None)
-        fragment.author = document.get(FragmentFields.AUTHOR, None)
-        fragment.title = document.get(FragmentFields.TITLE, None)
-        fragment.editor = document.get(FragmentFields.EDITOR, None)
-        fragment.sandbox = document.get(FragmentFields.SANDBOX, None)
-        fragment.visible = document.get(FragmentFields.VISIBLE, None)
+        self.database = Couch(server, "documents")
 
-        # Convert the model into a dictionary
-        fragment = {
-            key: value for key, value in fragment.__dict__.items() if value is not None
-        }
-        logging.error(f"Hello: {fragment}")
-
-        document_list = self.database.filter(fragment)
-
-        # Process the found documents into proper fragments
-        result: list = []
-        for document in document_list:
-            fragment = FragmentModel()
-            fragment = self._convert_document_to_fragment(document)
-            result.append(fragment)
-
-        return result
-
-    def create(self, document: dict) -> str:
+    def index(self) -> list:
         """
-        Creates a fragment. For this, a uuid will be generated as identifier.
+        Retrieves a summarized list of all fragments.
+
+        Returns:
+            list: List of dictionaries containing fragment metadata.
         """
-        if self.get(document):
-            # Check if the document already exists.
+        documents = self.database.filter({FragmentFields.DOC_TYPE: "fragment"})
+
+        return [
+            {
+                "document_type": "fragment",
+                "author": doc.get(FragmentFields.AUTHOR, ""),
+                "title": doc.get(FragmentFields.TITLE, ""),
+                "editor": doc.get(FragmentFields.EDITOR, ""),
+                "name": doc.get(FragmentFields.NAME, ""),
+                "sandbox": doc.get(FragmentFields.SANDBOX, ""),
+                "visible": doc.get(FragmentFields.VISIBLE, 0),
+            }
+            for doc in documents
+        ]
+
+    def get(self, query_filter: dict) -> List[FragmentModel]:
+        """
+        Retrieves fragments matching the provided filter criteria.
+
+        Args:
+            query_filter (dict): Dictionary containing filter criteria like
+                author, name, or visibility.
+
+        Returns:
+            List[FragmentModel]: A list of matching FragmentModel instances.
+        """
+        # Build search criteria, filtering out None values
+        search_criteria = {k: v for k, v in query_filter.items() if v is not None}
+        search_criteria[FragmentFields.DOC_TYPE] = "fragment"
+
+        logging.info(f"Retrieving fragments for filter: {search_criteria}")
+        document_list = self.database.filter(search_criteria)
+
+        return [FragmentModel.from_dict(doc) for doc in document_list]
+
+    def create(self, document_data: dict) -> Optional[str]:
+        """
+        Creates a new fragment document with a unique identifier.
+
+        Args:
+            document_data (dict): The raw data for the new fragment.
+
+        Returns:
+            Optional[str]: The new document ID if successful,
+                or an empty string if a match already exists.
+        """
+        if self.get(document_data):
+            logging.warning("create(): Fragment already exists.")
             return ""
 
-        fragment = self._convert_document_to_fragment(document)
-        fragment._id = uuid4().hex
+        model = FragmentModel.from_dict(document_data)
+        model._id = uuid4().hex
 
-        # Convert the model into a dictionary
-        fragment = {
-            key: value for key, value in fragment.__dict__.items() if value is not None
-        }
+        return self.database.create(model.to_dict(exclude_none=True))
 
-        doc_id = self.database.create(fragment)
-        return doc_id
-
-    def delete(self, document: dict) -> bool:
+    def delete(self, document_data: dict) -> bool:
         """
-        Deletes the given introduction by its identifier.
-        """
-        fragment = self._convert_document_to_fragment(document)
-        return self.database.delete(fragment._id)
+        Deletes a fragment document by its unique identifier.
 
-    def update(self, document: dict) -> bool:
-        """
-        Updates the given introduction. Must receive an identifier to update.
-        """
-        fragment = self._convert_document_to_fragment(document)
+        Args:
+            document_data (dict): Dictionary containing the '_id' to delete.
 
-        if not fragment._id:
+        Returns:
+            bool: True if deletion was successful, False otherwise.
+        """
+        doc_id = document_data.get(FragmentFields.ID)
+        if not doc_id:
+            return False
+        return self.database.delete(doc_id)
+
+    def update(self, document_data: dict) -> bool:
+        """
+        Updates an existing fragment. Requires an '_id' in the input data.
+
+        Args:
+            document_data (dict): Dictionary containing the fields to update
+                and the mandatory '_id'.
+
+        Returns:
+            bool: True if the update was successful, False otherwise.
+        """
+        model = FragmentModel.from_dict(document_data)
+
+        if not model._id:
+            logging.error("update(): Missing document _id.")
             return False
 
-        # Convert the model into a dictionary
-        fragment = {
-            key: value for key, value in fragment.__dict__.items() if value is not None
-        }
-
-        return self.database.update(fragment)
-
-    def _convert_document_to_fragment(self, document: dict) -> FragmentModel:
-        """
-        Converts the received document into a fragment using the FragmentModel
-        """
-        fragment = FragmentModel()
-        fragment._id = document.get(FragmentFields.ID, None)
-        fragment.name = document.get(FragmentFields.NAME, None)
-        fragment.author = document.get(FragmentFields.AUTHOR, None)
-        fragment.title = document.get(FragmentFields.TITLE, None)
-        fragment.editor = document.get(FragmentFields.EDITOR, None)
-        fragment.status = document.get(FragmentFields.STATUS, None)
-        fragment.lock = document.get(FragmentFields.LOCK, None)
-        fragment.visible = document.get(FragmentFields.VISIBLE, None)
-        fragment.translation = document.get(FragmentFields.TRANSLATION, None)
-        fragment.popular_translation = document.get(
-            FragmentFields.POPULAR_TRANSLATION, None
-        )
-        fragment.differences = document.get(FragmentFields.DIFFERENCES, None)
-        fragment.apparatus = document.get(FragmentFields.APPARATUS, None)
-        fragment.commentary = document.get(FragmentFields.COMMENTARY, None)
-        fragment.reconstruction = document.get(FragmentFields.RECONSTRUCTION, None)
-        fragment.metrical_analysis = document.get(
-            FragmentFields.METRICAL_ANALYSIS, None
-        )
-        fragment.context = document.get(FragmentFields.CONTEXT, None)
-        fragment.lines = document.get(FragmentFields.LINES, None)
-        fragment.linked_fragments = document.get(FragmentFields.LINKED_FRAGMENTS, None)
-        fragment.sandbox = document.get(FragmentFields.SANDBOX, "")
-
-        return fragment
+        return self.database.update(model.to_dict(exclude_none=True))
