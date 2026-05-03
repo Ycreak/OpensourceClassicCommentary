@@ -84,13 +84,16 @@
 </div>
 
 <div>
+  <!--We have two drawers: one for the commentary which is shown along side the columns, and one for the playground,-->
+  <!--which moves over the columns and commentary.-->
   <mat-drawer-container class="drawer-container" autosize>
-    <div class="overview-sidenav-content">
-      <app-columns> </app-columns>
-    </div>
+    <mat-drawer-content>
+      <div class="overview-sidenav-content">
+        <app-columns></app-columns>
+      </div>
+    </mat-drawer-content>
 
-    <hr />
-
+    <!-- Side Drawer (Commentary) -->
     <mat-drawer
       #drawer
       class="overview-sidenav"
@@ -99,10 +102,14 @@
       position="end"
       opened="true">
       <div style="padding: 0.5em">
-        <!--Show the commentary via the commentary component -->
         <app-commentary #commentary> </app-commentary>
       </div>
     </mat-drawer>
+
+    <!-- Bottom Drawer (Playground) -->
+    <mat-drawer #bottomDrawer mode="over" position="bottom" [opened]="playground_enabled">
+      <!--<app-playground (clicked_document)="this.clicked_document = $event"></app-playground>-->
+      <app-playground></app-playground>
+    </mat-drawer>
   </mat-drawer-container>
-  <app-playground *ngIf="this.playground_enabled" (clicked_document)="this.clicked_document = $event"></app-playground>
 </div>

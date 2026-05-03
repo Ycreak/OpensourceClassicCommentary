@@ -1,9 +1,5 @@
 <div id="playground" class="container-fluid playground-height-padding">
-  <hr class="playground-divider-top" />
-  <div class="playground-title">PLAYGROUND</div>
   <mat-progress-bar mode="query" *ngIf="this.api.spinner"></mat-progress-bar>
-
-  <hr class="playground-divider" />
 
   <p *ngIf="this.websockets.active">
     Current room: <b>{{ this.websockets.room_identifier }}</b>
