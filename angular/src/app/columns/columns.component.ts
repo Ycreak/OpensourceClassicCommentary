@@ -378,9 +378,13 @@ export class ColumnsComponent implements OnInit {
     this.fragmentContextMenuTopLeftPosition.x = event.clientX + 'px';
     this.fragmentContextMenuTopLeftPosition.y = event.clientY + 'px';
 
-    // we pass to the menu the information about our document and column
-    this.fragmentContextMenu.menuData = { document, column };
-    // we open the menu
+    /**
+     * Use 'fragmentContextMenuWrapper' for both the data and the open command.
+     * This ensures the menu template receives the object correctly.
+     */
+    this.fragmentContextMenuWrapper.menuData = { item: { document, column } };
+
+    // Open the menu via the wrapper trigger
     this.fragmentContextMenuWrapper.openMenu();
   }
 
