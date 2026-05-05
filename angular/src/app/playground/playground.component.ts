@@ -412,7 +412,6 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
 
   /**
    * Shows the help menu for the playground
-   * @author sajvanwijk
    */
   protected show_helpmenu(helpmenuoption: string): void {
     let helptext = "";
