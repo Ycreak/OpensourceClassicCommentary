@@ -52,7 +52,7 @@ div.dialog-header {
   color: white;
   /*TODO: duplicate with dialogs.scss */
   /*background-color: mat.m2-get_color_from_palette(mat.$m2-pink-palette, "A200"); */
-  background-color: pink
+  background-color: pink;
 }
 div.dialog-header h2 {
   font-size: 1.5em;
@@ -96,3 +96,11 @@ div.dialog-header button:hover {
   font-size: 18px;
 }
 
+/* Drawer behaviour */
+#playground-drawer {
+  height: 100%;
+}
+
+#playground-drawer div.mat-drawer-inner-container {
+  overflow-y: hidden;
+}

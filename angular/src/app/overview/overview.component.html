@@ -107,7 +107,7 @@
     </mat-drawer>
 
     <!-- Bottom Drawer (Playground) -->
-    <mat-drawer #bottomDrawer mode="over" position="bottom" [opened]="playground_enabled">
+    <mat-drawer id="playground-drawer" #bottomDrawer mode="over" position="bottom" [opened]="playground_enabled">
       <!--<app-playground (clicked_document)="this.clicked_document = $event"></app-playground>-->
       <app-playground></app-playground>
     </mat-drawer>
