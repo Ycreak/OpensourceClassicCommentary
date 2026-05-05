@@ -188,13 +188,15 @@
 <!-- Context menu for right click actions on fragments -->
 <mat-menu #fragmentContextMenu="matMenu">
   <ng-template matMenuContent let-item="item">
-    <button (click)="this.copy_document_content(matMenuTrigger.menuData.document)" mat-menu-item>Copy text</button>
-    <button (click)="this.show_broader_context(matMenuTrigger.menuData.document)" mat-menu-item>Broader context</button>
-    <button (click)="this.show_linked_documents(matMenuTrigger.menuData.document)" mat-menu-item>
-      Linked documents
-    </button>
+    <!-- Use 'item' directly instead of 'matMenuTrigger.menuData.document' -->
+    <button (click)="this.copy_document_content(item.document)" mat-menu-item>Copy text</button>
+
+    <button (click)="this.show_broader_context(item.document)" mat-menu-item>Broader context</button>
+
+    <button (click)="this.show_linked_documents(item.document)" mat-menu-item>Linked documents</button>
   </ng-template>
 </mat-menu>
+
 <!-- hidden helper button used for the fragments context menu -->
 <button
   #fragmentContextMenuWrapper="matMenuTrigger"
