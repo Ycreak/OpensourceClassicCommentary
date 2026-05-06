@@ -2,7 +2,8 @@
 - name: Deploy Flask application to Dux
   hosts: dux
   vars:
-    src_dir: "../flask"
+    # Use a trailing slash on src to sync the CONTENTS of the folder
+    src_dir: "../flask/"
     dest_dir: "/home/luukie/servers/oscc/flask"
 
   tasks:
@@ -12,39 +13,14 @@
         state: directory
         mode: '0755'
 
-    # Use synchronize for directories (more efficient than copy)
-    - name: Update endpoints directory
+    - name: Deploy application (excluding cache and .env)
       synchronize:
-        src: "{{ src_dir }}/endpoints/"
-        dest: "{{ dest_dir }}/endpoints/"
-        delete: yes  # Remove files in dest that don't exist in src
+        src: "{{ src_dir }}"
+        dest: "{{ dest_dir }}"
         recursive: yes
-        rsync_opts:
-          - "--chmod=D755,F644"
-      become: yes  # Only needed if you need elevated permissions
-
-    - name: Update models directory
-      synchronize:
-        src: "{{ src_dir }}/models/"
-        dest: "{{ dest_dir }}/models/"
         delete: yes
-        recursive: yes
         rsync_opts:
+          - "--exclude=cache/"
+          - "--exclude=.env"
+          - "--exclude=__pycache__/"
           - "--chmod=D755,F644"
-
-    # Use copy with force for individual files (simpler than synchronize)
-    - name: Update Python files
-      copy:
-        src: "{{ src_dir }}/{{ item }}"
-        dest: "{{ dest_dir }}/{{ item }}"
-        mode: '0644'
-        force: yes  # Overwrite if file exists
-      loop:
-        - Dockerfile
-        - config.py
-        - couch.py
-        - server.py
-        - database.py
-        - requirements.txt
-        - utilities.py
-
