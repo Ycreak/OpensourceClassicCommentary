@@ -12,6 +12,7 @@ dependencies = [
     "flask-jsonpify>=1.5.0",
     "flask-restful>=0.3.10",
     "fuzzywuzzy>=0.18.0",
+    "gunicorn>=26.0.0",
     "python-dotenv>=1.2.2",
     "python-levenshtein>=0.27.3",
     "pyzotero>=1.11.0",
