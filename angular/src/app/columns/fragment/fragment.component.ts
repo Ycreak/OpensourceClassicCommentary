@@ -19,6 +19,6 @@ export class FragmentComponent {
   @Input() translated: boolean;
 
   constructor(protected settings: SettingsService) {
-    console.log(this.fragment);
+    //console.log(this.fragment);
   }
 }
