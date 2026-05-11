@@ -273,7 +273,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
     // Take a subscription to the websocket with the generated room number
     this.websockets.active = true;
     //this.websockets_subscription = this.websockets.get_messages().subscribe((message) => {
-      //this.fabric.canvas.loadFromJSON(message, this.fabric.canvas.renderAll.bind(this.fabric.canvas));
+    //this.fabric.canvas.loadFromJSON(message, this.fabric.canvas.renderAll.bind(this.fabric.canvas));
     //});
     // Take a subscription to canvas changes. These we will send to the websocket
     this.canvas_change_subscription = this.fabric.canvas_changed_subject.subscribe(() => {
