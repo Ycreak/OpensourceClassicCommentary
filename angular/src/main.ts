@@ -17,7 +17,7 @@ const appRoutes: Routes = [
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '' },
 ];
-const config: SocketIoConfig = { url: 'http://localhost:5000', options: {} };
+//const config: SocketIoConfig = { url: 'http://localhost:5000', options: {} };
 
 if (environment.production) {
   enableProdMode();
@@ -25,7 +25,7 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
   providers: [
-    importProvidersFrom(SocketIoModule.forRoot(config)),
+    //importProvidersFrom(SocketIoModule.forRoot(config)),
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpErrorInterceptor,
