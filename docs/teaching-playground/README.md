@@ -44,11 +44,27 @@ This matches only Ennius' Thyestes:
 "expected": [{ "author": "Ennius", "title": "Thyestes" }]
 ```
 
-## Playground component changes
+## Architecture after isolation
 
-`angular/src/app/playground/playground.component.ts` now owns lesson flow state:
+![Teaching playground architecture](./architecture.svg)
 
-- `PlaygroundComponent` is kept as the adapter for the existing playground UI, Fabric canvas setup, and commentary navigation.
+The teaching flow is intentionally kept behind a small set of seams so normal playground behaviour stays easy to reason about:
+
+- `PlaygroundComponent` remains the host for the existing playground UI and Fabric canvas creation.
+- `TeachingPlaygroundService` owns lesson lifecycle state and actions.
+- `TeachingCommentaryBridgeComponent` owns lesson-only selection, double-click handling, the floating per-fragment commentary button, and the bridge into the existing columns/commentary stack.
+- `FabricService` remains the canvas boundary for zones, scoring, scattering, and feedback rendering.
+
+The normal playground host no longer imports `ColumnsService`, no longer resolves Fabric child objects back to lesson documents, and no longer stores lesson commentary button state. Its intentional teaching dependencies are limited to:
+
+- the `TeachingPlaygroundService` used by the banner and lesson menu action;
+- the `TeachingCommentaryBridgeComponent` used as a template adapter;
+- the `commentary_requested` output that lets `OverviewComponent` switch drawers.
+
+## Teaching modules and playground adapter
+
+`angular/src/app/playground/playground.component.ts` is kept as the adapter for the existing playground UI, Fabric canvas setup, and normal commentary navigation.
+
 - `angular/src/app/playground/teaching/teaching-playground.service.ts` owns lesson flow state and behaviour:
   - `lesson_mode`
   - `current_lesson`
@@ -65,7 +81,7 @@ The teaching module coordinates the lesson lifecycle behind a small interface:
 - `exit_lesson`
 - readonly getters for current prompt, total steps, and current score
 
-`PlaygroundComponent` still coordinates commentary navigation from the canvas:
+`angular/src/app/playground/teaching/commentary-bridge/teaching-commentary-bridge.component.ts` coordinates lesson commentary navigation from the canvas:
 
 - selected lesson fragments are tracked after `Controleer`;
 - the small floating commentary button is positioned near the selected fragment;
@@ -78,15 +94,16 @@ The teaching module coordinates the lesson lifecycle behind a small interface:
 
 - the lesson banner;
 - the `Controleer`, `Volgende stap`, and exit controls;
-- the floating per-fragment commentary button;
+- the teaching commentary bridge component;
 - the `Start les` menu entry.
 
 `angular/src/app/playground/playground.component.scss` adds styling for:
 
 - the lesson banner;
 - lesson action buttons;
-- the floating commentary button;
 - teaching dialogs and layout polish.
+
+`angular/src/app/playground/teaching/commentary-bridge/teaching-commentary-bridge.component.scss` owns the floating commentary button styling.
 
 ## Fabric service changes
 

@@ -4,7 +4,7 @@
  * these individual components. Additionally, it holds information about the currently loaded playground,
  * like its name and its users. The canvas is fully handled by the fabric service.
  */
-import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Output, EventEmitter } from '@angular/core';
 import { WebsocketsService } from '@oscc/playground/websockets.service';
 import { HostListener } from '@angular/core';
@@ -16,7 +16,6 @@ import { Subscription } from 'rxjs';
 // Service imports
 import { ApiService } from '@oscc/api.service';
 import { AuthService } from '@oscc/auth/auth.service';
-import { ColumnsService } from '@oscc/columns/columns.service';
 import { CommentaryService } from '@oscc/commentary/commentary.service';
 import { UtilityService } from '@oscc/utility.service';
 import { FabricService } from './services/fabric.service';
@@ -41,16 +40,25 @@ import { Playground_user } from '@oscc/models/api/Playground_user';
 import { LatinTragicFragmentFilterComponent } from '../filters/latin-tragic-fragment-filter/latin-tragic-fragment-filter.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { NgIf, NgStyle } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
+import { TeachingCommentaryBridgeComponent } from './teaching/commentary-bridge/teaching-commentary-bridge.component';
 
 @Component({
   selector: 'app-playground',
   templateUrl: './playground.component.html',
   styleUrls: ['./playground.component.scss'],
   standalone: true,
-  imports: [NgIf, NgStyle, MatProgressBarModule, MatIconModule, LatinTragicFragmentFilterComponent, MatMenuModule, MatButtonModule],
+  imports: [
+    NgIf,
+    MatProgressBarModule,
+    MatIconModule,
+    LatinTragicFragmentFilterComponent,
+    MatMenuModule,
+    MatButtonModule,
+    TeachingCommentaryBridgeComponent,
+  ],
 })
 export class PlaygroundComponent implements OnInit, OnDestroy {
   @Output() document_clicked = new EventEmitter<Fragment>();
@@ -83,17 +91,10 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
 
   private canvas_change_subscription: Subscription;
   private websockets_subscription: Subscription;
-  private lesson_double_click_handler: (event: any) => void;
-  private native_lesson_double_click_handler: (event: MouseEvent) => void;
-  private last_lesson_double_click_time = 0;
-  private selected_lesson_document: any = null;
-  protected lesson_commentary_button_visible = false;
-  protected lesson_commentary_button_style: { left: string; top: string } = { left: '0px', top: '0px' };
 
   constructor(
     protected api: ApiService,
     protected auth_service: AuthService,
-    protected columns: ColumnsService,
     protected dialog: DialogService,
     protected fabric: FabricService,
     protected utility: UtilityService,
@@ -101,7 +102,6 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
     private commentary: CommentaryService,
     private formatter: FormatterService,
     private mat_dialog: MatDialog,
-    private ng_zone: NgZone,
     protected teaching: TeachingPlaygroundService,
     protected window_watcher: WindowSizeWatcherService
   ) {}
@@ -117,12 +117,6 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.canvas_change_subscription) {
       this.canvas_change_subscription.unsubscribe();
-    }
-    if (this.lesson_double_click_handler && this.fabric.canvas) {
-      this.fabric.canvas.off('mouse:dblclick' as any, this.lesson_double_click_handler);
-    }
-    if (this.native_lesson_double_click_handler && this.fabric.canvas?.upperCanvasEl) {
-      this.fabric.canvas.upperCanvasEl.removeEventListener('dblclick', this.native_lesson_double_click_handler);
     }
     // Close the websocket
     this.disconnect_from_websocket();
@@ -384,23 +378,6 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
    */
   protected request_commentary(): void {
     const clicked_document = this.fabric.canvas.getActiveObjects()[0];
-    this.request_commentary_for_canvas_object(clicked_document);
-  }
-
-  /**
-   * Sends the currently selected lesson fragment to the commentary column.
-   */
-  protected request_selected_lesson_commentary(): void {
-    const selected_document = this.selected_lesson_document ?? this.fabric.canvas.getActiveObjects()[0];
-    this.request_commentary_for_canvas_object(selected_document);
-  }
-
-  /**
-   * Requests commentary for a specific canvas object.
-   * @param clicked_document Fabric object representing a document.
-   */
-  private request_commentary_for_canvas_object(clicked_document: any): void {
-    clicked_document = this.resolve_document_canvas_object(clicked_document);
     if (!clicked_document) {
       this.utility.open_snackbar('Commentary not found.');
       return;
@@ -409,9 +386,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
     if (!this.fabric.is_note(clicked_document)) {
       const full_document = this.utility.filter_array(this.fabric.documents, (clicked_document as any).identifier)[0];
       if (full_document) {
-        const selected_column_document = this.columns.select_document(full_document);
-        this.commentary.request(selected_column_document?.document ?? full_document, { highlight: true });
-        this.commentary_requested.emit();
+        this.commentary.request(full_document);
         window.scroll(0, 0);
       } else {
         this.utility.open_snackbar('Commentary not found.');
@@ -447,140 +422,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   private init_playground(): void {
     this.fabric.canvas = new fabric.Canvas('playground_canvas');
     this.fabric.set_event_handlers();
-    this.set_lesson_commentary_event_handlers();
     this.fabric.init();
-  }
-
-  /**
-   * Allows students to inspect checked lesson fragments by double-clicking them.
-   * Single-click still selects fragments on the canvas; double-click sends the
-   * matching full document back to the regular commentary column.
-   */
-  private set_lesson_commentary_event_handlers(): void {
-    this.lesson_double_click_handler = (event: any) => {
-      this.handle_lesson_double_click(event);
-    };
-    this.native_lesson_double_click_handler = (event: MouseEvent) => {
-      this.handle_lesson_double_click({ e: event });
-    };
-
-    this.fabric.canvas.upperCanvasEl.addEventListener('dblclick', this.native_lesson_double_click_handler);
-    this.fabric.canvas.on('mouse:dblclick' as any, this.lesson_double_click_handler);
-    this.fabric.canvas.on('selection:created' as any, () => this.update_selected_lesson_document());
-    this.fabric.canvas.on('selection:updated' as any, () => this.update_selected_lesson_document());
-    this.fabric.canvas.on('selection:cleared' as any, () => {
-      this.ng_zone.run(() => {
-        this.selected_lesson_document = null;
-        this.lesson_commentary_button_visible = false;
-      });
-    });
-    this.fabric.canvas.on('object:moving' as any, () => this.update_lesson_commentary_button_position());
-    this.fabric.canvas.on('object:modified' as any, () => this.update_lesson_commentary_button_position());
-    this.fabric.canvas.on('after:render' as any, () => this.update_lesson_commentary_button_position());
-  }
-
-  private handle_lesson_double_click(event: any): void {
-    if (!this.teaching.lesson_mode || !this.teaching.step_checked) return;
-
-    const now = Date.now();
-    if (now - this.last_lesson_double_click_time < 100) return;
-    this.last_lesson_double_click_time = now;
-
-    const target = this.get_lesson_double_click_target(event);
-    if (!target) return;
-    this.selected_lesson_document = target;
-    this.request_commentary_for_canvas_object(target);
-  }
-
-  /**
-   * Stores the selected lesson document so an HTML button can request commentary
-   * even when Fabric selection events do not trigger Angular template updates.
-   */
-  private update_selected_lesson_document(): void {
-    this.ng_zone.run(() => {
-      if (!this.teaching.lesson_mode || !this.teaching.step_checked) return;
-      this.selected_lesson_document = this.resolve_document_canvas_object(this.fabric.canvas.getActiveObjects()[0]);
-      this.update_lesson_commentary_button_position();
-    });
-  }
-
-  /**
-   * Positions the small commentary button near the selected lesson fragment.
-   */
-  private update_lesson_commentary_button_position(): void {
-    if (!this.teaching.lesson_mode || !this.teaching.step_checked || !this.selected_lesson_document) {
-      this.lesson_commentary_button_visible = false;
-      return;
-    }
-
-    const rect = this.selected_lesson_document.getBoundingRect();
-    const viewport_transform = this.fabric.canvas.viewportTransform;
-    const top_right = fabric.util.transformPoint(new fabric.Point(rect.left + rect.width, rect.top), viewport_transform);
-    const canvas_width = this.fabric.canvas.width ?? window.innerWidth;
-
-    this.lesson_commentary_button_style = {
-      left: `${Math.min(Math.max(top_right.x - 16, 8), canvas_width - 56)}px`,
-      top: `${Math.max(top_right.y - 44, 8)}px`,
-    };
-    this.lesson_commentary_button_visible = true;
-  }
-
-  protected exit_lesson(): void {
-    this.teaching.exit_lesson();
-    this.selected_lesson_document = null;
-    this.lesson_commentary_button_visible = false;
-  }
-
-  /**
-   * Fabric can report a double-click target as the group, a child object, an
-   * active selection, or no direct target depending on the current selection.
-   * Normalize those cases back to the document group that carries `identifier`.
-   */
-  private get_lesson_double_click_target(event: any): any {
-    const pointer_target = event?.e ? this.fabric.canvas.findTarget(event.e) : null;
-    const candidates = [
-      event?.target,
-      event?.currentTarget,
-      pointer_target,
-      ...(event?.subTargets ?? []),
-      ...(this.fabric.canvas.getActiveObjects() ?? []),
-    ];
-
-    for (const candidate of candidates) {
-      const document_object = this.resolve_document_canvas_object(candidate);
-      if (document_object) return document_object;
-    }
-
-    return null;
-  }
-
-  /**
-   * Walks from a Fabric object, child object, or active selection to a document group.
-   */
-  private resolve_document_canvas_object(candidate: any): any {
-    if (!candidate) return null;
-
-    if (this.fabric.is_document(candidate)) {
-      return candidate;
-    }
-
-    const child_objects = candidate.getObjects ? candidate.getObjects() : candidate._objects;
-    if (child_objects?.length) {
-      for (const child of child_objects) {
-        const document_object = this.resolve_document_canvas_object(child);
-        if (document_object) return document_object;
-      }
-    }
-
-    if (candidate.group) {
-      return this.resolve_document_canvas_object(candidate.group);
-    }
-
-    if (candidate.parent) {
-      return this.resolve_document_canvas_object(candidate.parent);
-    }
-
-    return null;
   }
 
   /**

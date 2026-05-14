@@ -18,15 +18,9 @@
       </div>
     </div>
 
-    <button
-      *ngIf="this.teaching.lesson_mode && this.lesson_commentary_button_visible"
-      mat-mini-fab
-      class="lesson-fragment-commentary-button"
-      [ngStyle]="this.lesson_commentary_button_style"
-      title="Naar commentary"
-      (click)="this.request_selected_lesson_commentary()">
-      <mat-icon>notes</mat-icon>
-    </button>
+    <app-teaching-commentary-bridge
+      (commentary_requested)="this.commentary_requested.emit()">
+    </app-teaching-commentary-bridge>
 
     <!-- Lesson-mode banner -->
     <div class="lesson-banner" *ngIf="this.teaching.lesson_mode">
@@ -55,7 +49,7 @@
         (click)="this.teaching.next_step()">
         {{ this.teaching.current_step_index + 1 < this.teaching.total_steps ? 'Volgende stap' : 'Afronden' }}
       </button>
-      <button mat-icon-button class="lesson-exit" (click)="this.exit_lesson()">
+      <button mat-icon-button class="lesson-exit" (click)="this.teaching.exit_lesson()">
         <mat-icon>close</mat-icon>
       </button>
     </div>
