@@ -169,15 +169,7 @@ export class ColumnsComponent implements OnInit {
     this.current_document = document;
     this.columns.current = column;
 
-    // The next part handles the colouring of clicked and referenced documents.
-    // First, restore all documents to their original black colour when a new document is clicked
-    this.columns.list.forEach((column: Column) => {
-      this.columns.blacken(column);
-    });
-    // Second, colour the clicked document
-    document.colour = '#3F51B5';
-    // Lastly, colour the linked documents
-    this.columns.colour_linked_fragments(document);
+    this.columns.select_document(document);
   }
 
   /**

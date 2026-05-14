@@ -110,6 +110,68 @@ export class ColumnsService {
   }
 
   /**
+   * Marks a document as the selected document in the visible columns and colours
+   * linked fragments the same way as a direct click in the fragment column.
+   */
+  public select_document(document: any): { document: any; column: Column } | null {
+    const match = this.find_visible_document(document);
+    if (!match) return null;
+
+    this.list.forEach((column: Column) => {
+      this.blacken(column);
+    });
+    match.document.colour = '#3F51B5';
+    this.current = match.column;
+    this.colour_linked_fragments(match.document);
+    this.scroll_to_document(match.document);
+    return match;
+  }
+
+  /**
+   * Returns a stable DOM id for a document rendered in a column.
+   */
+  public get_document_element_id(document: any): string {
+    const raw_id =
+      document._id || `${document.document_type}-${document.author}-${document.title}-${document.editor}-${document.name}`;
+    return `document-${String(raw_id).replace(/[^A-Za-z0-9_-]/g, '-')}`;
+  }
+
+  /**
+   * Finds the instance of a document currently rendered in the columns.
+   */
+  public find_visible_document(document: any): { document: any; column: Column } | null {
+    const keys = ['_id', 'author', 'title', 'editor', 'name'];
+
+    for (const column of this.list) {
+      const found_document = column.documents.find((candidate: any) => {
+        if (document._id && candidate._id) {
+          return candidate._id === document._id;
+        }
+        return keys
+          .filter((key) => document[key] !== undefined && document[key] !== '')
+          .every((key) => candidate[key] === document[key]);
+      });
+
+      if (found_document) {
+        return { document: found_document, column };
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Scrolls the selected column document into view after Angular has rendered
+   * the colour change.
+   */
+  private scroll_to_document(document: any): void {
+    setTimeout(() => {
+      const element = window.document.getElementById(this.get_document_element_id(document));
+      element?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    });
+  }
+
+  /**
    * Returns the column given its id
    * @param id (number)
    * @returns Column

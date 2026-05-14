@@ -150,7 +150,7 @@
         cdkDrag
         [cdkDragDisabled]="this.settings.fragments.dragging_disabled"
         (cdkDragDropped)="this.columns.set_edited_flag_true($event.container.id, $event.previousContainer.id)"
-        [attr.id]="fragment.fragment_id"
+        [attr.id]="this.columns.get_document_element_id(fragment)"
         [style.background-color]="
           this.generate_document_gradient_background_color(
             given_column.documents.length,

@@ -1,0 +1,37 @@
+.step-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.step-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.step-label {
+  font-family: monospace;
+}
+
+.step-status {
+  font-weight: bold;
+  font-size: 0.9em;
+}
+
+.step-status-good {
+  color: #2e7d32;
+}
+
+.step-status-bad {
+  color: #c62828;
+}
+
+.total-row {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+  font-weight: bold;
+}

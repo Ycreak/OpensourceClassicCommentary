@@ -6,7 +6,7 @@
  * @author Ycreak
  */
 
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 // Model imports
@@ -30,6 +30,7 @@ import { GeneralCommentaryFieldComponent } from './general-commentary-field/gene
 import { TranslationComponent } from './translation/translation.component';
 import { MatButtonModule } from '@angular/material/button';
 import { NgIf, NgTemplateOutlet, NgFor } from '@angular/common';
+import { SafeHtmlPipe } from '@oscc/pipes/safeHtml.pipe';
 
 @Component({
   selector: 'app-commentary',
@@ -45,9 +46,10 @@ import { NgIf, NgTemplateOutlet, NgFor } from '@angular/common';
     GeneralCommentaryFieldComponent,
     MatExpansionModule,
     ExpandableTextComponent,
+    SafeHtmlPipe,
   ],
 })
-export class CommentaryComponent {
+export class CommentaryComponent implements OnDestroy {
   // The document given to the commentary to show its commentary
   protected document: any;
   // Commentary from the given document
@@ -62,6 +64,8 @@ export class CommentaryComponent {
   protected linked_commentary_retrieved = false;
   // List to hold multiple retrieved linked commentaries
   protected linked_commentaries: Commentary[] = [];
+  protected highlight_selected_document = false;
+  private highlight_timeout: ReturnType<typeof setTimeout>;
 
   constructor(
     private bib: BibliographyService,
@@ -78,11 +82,14 @@ export class CommentaryComponent {
       this.translated = !this.translated;
     });
     // Subscribe to the commentary service to listen for new incoming documents
-    this.commentary_service.doc.subscribe((doc) => {
+    this.commentary_service.doc.subscribe((request) => {
+      const doc = request?.doc ?? request;
+      const highlight = request?.highlight === true;
       // The commentary service has received a new document. We process the incoming document here.
       this.document = doc;
       this.commentary = this.document.commentary;
       this.document_clicked = true;
+      this.set_highlight_selected_document(highlight);
       // Reset linked commentary status and lists
       this.no_linked_commentary_found = false;
       this.linked_commentary_retrieved = false;
@@ -95,6 +102,24 @@ export class CommentaryComponent {
         this.convert_bib_keys_in_commentary();
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.highlight_timeout) {
+      clearTimeout(this.highlight_timeout);
+    }
+  }
+
+  private set_highlight_selected_document(highlight: boolean): void {
+    if (this.highlight_timeout) {
+      clearTimeout(this.highlight_timeout);
+    }
+    this.highlight_selected_document = highlight;
+    if (highlight) {
+      this.highlight_timeout = setTimeout(() => {
+        this.highlight_selected_document = false;
+      }, 3500);
+    }
   }
 
   /**

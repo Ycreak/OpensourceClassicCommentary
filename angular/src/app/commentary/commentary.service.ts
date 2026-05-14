@@ -14,8 +14,8 @@ export class CommentaryService {
 
   constructor() {}
 
-  public request(doc: any): void {
-    this.doc.next(doc);
+  public request(doc: any, options?: { highlight?: boolean }): void {
+    this.doc.next({ doc, highlight: options?.highlight === true });
   }
 
   public translate(): void {

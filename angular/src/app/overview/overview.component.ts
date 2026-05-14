@@ -24,7 +24,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { PlaygroundComponent } from '../playground/playground.component';
 import { CommentaryComponent } from '../commentary/commentary.component';
 import { ColumnsComponent } from '../columns/columns.component';
-import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 import { RouterLink } from '@angular/router';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
@@ -116,6 +116,18 @@ export class OverviewComponent implements OnInit, OnDestroy {
    */
   protected toggle_playground(): void {
     this.playground_enabled = !this.playground_enabled;
+  }
+
+  /**
+   * Closes the playground overlay and makes sure the commentary side drawer is visible.
+   */
+  protected show_commentary_from_playground(drawer: MatDrawer): void {
+    this.playground_enabled = false;
+    if (!drawer.opened) {
+      drawer.open();
+    }
+    this.commentary_enabled = true;
+    window.scroll(0, 0);
   }
 
   /**

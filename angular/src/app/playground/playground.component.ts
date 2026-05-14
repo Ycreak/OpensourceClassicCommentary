@@ -4,23 +4,24 @@
  * these individual components. Additionally, it holds information about the currently loaded playground,
  * like its name and its users. The canvas is fully handled by the fabric service.
  */
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Output, EventEmitter } from '@angular/core';
 import { WebsocketsService } from '@oscc/playground/websockets.service';
 import { HostListener } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
-//import * as fabric from 'fabric';
-import { fabric } from 'fabric';
-import { Subscription } from 'rxjs';
+import * as fabric from 'fabric';
+import { Subscription, forkJoin } from 'rxjs';
 
 // Service imports
 import { ApiService } from '@oscc/api.service';
 import { AuthService } from '@oscc/auth/auth.service';
+import { ColumnsService } from '@oscc/columns/columns.service';
 import { CommentaryService } from '@oscc/commentary/commentary.service';
 import { UtilityService } from '@oscc/utility.service';
 import { FabricService } from './services/fabric.service';
 import { WindowSizeWatcherService } from '@oscc/services/window-watcher.service';
+import { LessonService } from './teaching/lesson.service';
 
 import { FormatterService } from './services/formatter.service';
 
@@ -28,6 +29,7 @@ import { FormatterService } from './services/formatter.service';
 import { Fragment } from '@oscc/models/Fragment';
 import { DialogService } from '@oscc/services/dialog.service';
 import { Playground_communicator } from '@oscc/models/api/Playground_communicator';
+import { Lesson } from './teaching/lesson.model';
 
 // Component imports
 import { LoadPlaygroundComponent } from './load-playground/load-playground.component';
@@ -38,30 +40,32 @@ import { JoinPlaygroundComponent } from './join-playground/join-playground.compo
 import { DocumentFilterComponent } from '@oscc/filters/document-filter/document-filter.component';
 import { Playground_user } from '@oscc/models/api/Playground_user';
 import { LatinTragicFragmentFilterComponent } from '../filters/latin-tragic-fragment-filter/latin-tragic-fragment-filter.component';
+import { StartLessonComponent } from './teaching/start-lesson/start-lesson.component';
+import { LessonSummaryComponent } from './teaching/lesson-summary/lesson-summary.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { NgIf } from '@angular/common';
+import { NgIf, NgStyle } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-playground',
   templateUrl: './playground.component.html',
   styleUrls: ['./playground.component.scss'],
   standalone: true,
-  imports: [NgIf, MatProgressBarModule, MatIconModule, LatinTragicFragmentFilterComponent, MatMenuModule],
+  imports: [NgIf, NgStyle, MatProgressBarModule, MatIconModule, LatinTragicFragmentFilterComponent, MatMenuModule, MatButtonModule],
 })
 export class PlaygroundComponent implements OnInit, OnDestroy {
   @Output() document_clicked = new EventEmitter<Fragment>();
+  @Output() commentary_requested = new EventEmitter<void>();
   // Listener for key events
   @HostListener('document:keyup', ['$event'])
   handleDeleteKeyboardEvent(event: KeyboardEvent) {
-    if (event.key === 'Delete') {
+    if (event.key === 'Delete' && !this.lesson_mode) {
       this.fabric.delete_selected();
     } else if ((event.ctrlKey || event.metaKey) && event.key == 'Z') {
-      // Redo the canvas on Ctrl+Shift+Z
       this.fabric.redo();
     } else if ((event.ctrlKey || event.metaKey) && event.key == 'z') {
-      // Undo the canvas on Ctrl+Z
       this.fabric.undo();
     }
   }
@@ -82,17 +86,34 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
 
   private canvas_change_subscription: Subscription;
   private websockets_subscription: Subscription;
+  private lesson_double_click_handler: (event: any) => void;
+  private native_lesson_double_click_handler: (event: MouseEvent) => void;
+  private last_lesson_double_click_time = 0;
+  private selected_lesson_document: any = null;
+  protected lesson_commentary_button_visible = false;
+  protected lesson_commentary_button_style: { left: string; top: string } = { left: '0px', top: '0px' };
+
+  // Lesson-mode state
+  protected lesson_mode = false;
+  protected current_lesson: Lesson | null = null;
+  protected current_step_index = 0;
+  protected step_scores: { correct: number; total: number; misplaced: number }[] = [];
+  protected step_checked = false;
+  private lesson_documents: any[] = [];
 
   constructor(
     protected api: ApiService,
     protected auth_service: AuthService,
+    protected columns: ColumnsService,
     protected dialog: DialogService,
     protected fabric: FabricService,
     protected utility: UtilityService,
     protected websockets: WebsocketsService,
     private commentary: CommentaryService,
     private formatter: FormatterService,
+    private lesson_service: LessonService,
     private mat_dialog: MatDialog,
+    private ng_zone: NgZone,
     protected window_watcher: WindowSizeWatcherService
   ) {}
 
@@ -107,6 +128,12 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.canvas_change_subscription) {
       this.canvas_change_subscription.unsubscribe();
+    }
+    if (this.lesson_double_click_handler && this.fabric.canvas) {
+      this.fabric.canvas.off('mouse:dblclick' as any, this.lesson_double_click_handler);
+    }
+    if (this.native_lesson_double_click_handler && this.fabric.canvas?.upperCanvasEl) {
+      this.fabric.canvas.upperCanvasEl.removeEventListener('dblclick', this.native_lesson_double_click_handler);
     }
     // Close the websocket
     this.disconnect_from_websocket();
@@ -368,10 +395,34 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
    */
   protected request_commentary(): void {
     const clicked_document = this.fabric.canvas.getActiveObjects()[0];
+    this.request_commentary_for_canvas_object(clicked_document);
+  }
+
+  /**
+   * Sends the currently selected lesson fragment to the commentary column.
+   */
+  protected request_selected_lesson_commentary(): void {
+    const selected_document = this.selected_lesson_document ?? this.fabric.canvas.getActiveObjects()[0];
+    this.request_commentary_for_canvas_object(selected_document);
+  }
+
+  /**
+   * Requests commentary for a specific canvas object.
+   * @param clicked_document Fabric object representing a document.
+   */
+  private request_commentary_for_canvas_object(clicked_document: any): void {
+    clicked_document = this.resolve_document_canvas_object(clicked_document);
+    if (!clicked_document) {
+      this.utility.open_snackbar('Commentary not found.');
+      return;
+    }
+
     if (!this.fabric.is_note(clicked_document)) {
-      const full_document = this.utility.filter_array(this.fabric.documents, clicked_document.identifier)[0];
+      const full_document = this.utility.filter_array(this.fabric.documents, (clicked_document as any).identifier)[0];
       if (full_document) {
-        this.commentary.request(full_document);
+        const selected_column_document = this.columns.select_document(full_document);
+        this.commentary.request(selected_column_document?.document ?? full_document, { highlight: true });
+        this.commentary_requested.emit();
         window.scroll(0, 0);
       } else {
         this.utility.open_snackbar('Commentary not found.');
@@ -407,7 +458,318 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   private init_playground(): void {
     this.fabric.canvas = new fabric.Canvas('playground_canvas');
     this.fabric.set_event_handlers();
+    this.set_lesson_commentary_event_handlers();
     this.fabric.init();
+  }
+
+  /**
+   * Allows students to inspect checked lesson fragments by double-clicking them.
+   * Single-click still selects fragments on the canvas; double-click sends the
+   * matching full document back to the regular commentary column.
+   */
+  private set_lesson_commentary_event_handlers(): void {
+    this.lesson_double_click_handler = (event: any) => {
+      this.handle_lesson_double_click(event);
+    };
+    this.native_lesson_double_click_handler = (event: MouseEvent) => {
+      this.handle_lesson_double_click({ e: event });
+    };
+
+    this.fabric.canvas.upperCanvasEl.addEventListener('dblclick', this.native_lesson_double_click_handler);
+    this.fabric.canvas.on('mouse:dblclick' as any, this.lesson_double_click_handler);
+    this.fabric.canvas.on('selection:created' as any, () => this.update_selected_lesson_document());
+    this.fabric.canvas.on('selection:updated' as any, () => this.update_selected_lesson_document());
+    this.fabric.canvas.on('selection:cleared' as any, () => {
+      this.ng_zone.run(() => {
+        this.selected_lesson_document = null;
+        this.lesson_commentary_button_visible = false;
+      });
+    });
+    this.fabric.canvas.on('object:moving' as any, () => this.update_lesson_commentary_button_position());
+    this.fabric.canvas.on('object:modified' as any, () => this.update_lesson_commentary_button_position());
+    this.fabric.canvas.on('after:render' as any, () => this.update_lesson_commentary_button_position());
+  }
+
+  private handle_lesson_double_click(event: any): void {
+    if (!this.lesson_mode || !this.step_checked) return;
+
+    const now = Date.now();
+    if (now - this.last_lesson_double_click_time < 100) return;
+    this.last_lesson_double_click_time = now;
+
+    const target = this.get_lesson_double_click_target(event);
+    if (!target) return;
+    this.selected_lesson_document = target;
+    this.request_commentary_for_canvas_object(target);
+  }
+
+  /**
+   * Stores the selected lesson document so an HTML button can request commentary
+   * even when Fabric selection events do not trigger Angular template updates.
+   */
+  private update_selected_lesson_document(): void {
+    this.ng_zone.run(() => {
+      if (!this.lesson_mode || !this.step_checked) return;
+      this.selected_lesson_document = this.resolve_document_canvas_object(this.fabric.canvas.getActiveObjects()[0]);
+      this.update_lesson_commentary_button_position();
+    });
+  }
+
+  /**
+   * Positions the small commentary button near the selected lesson fragment.
+   */
+  private update_lesson_commentary_button_position(): void {
+    if (!this.lesson_mode || !this.step_checked || !this.selected_lesson_document) {
+      this.lesson_commentary_button_visible = false;
+      return;
+    }
+
+    const rect = this.selected_lesson_document.getBoundingRect();
+    const viewport_transform = this.fabric.canvas.viewportTransform;
+    const top_right = fabric.util.transformPoint(new fabric.Point(rect.left + rect.width, rect.top), viewport_transform);
+    const canvas_width = this.fabric.canvas.width ?? window.innerWidth;
+
+    this.lesson_commentary_button_style = {
+      left: `${Math.min(Math.max(top_right.x - 16, 8), canvas_width - 56)}px`,
+      top: `${Math.max(top_right.y - 44, 8)}px`,
+    };
+    this.lesson_commentary_button_visible = true;
+  }
+
+  /**
+   * Fabric can report a double-click target as the group, a child object, an
+   * active selection, or no direct target depending on the current selection.
+   * Normalize those cases back to the document group that carries `identifier`.
+   */
+  private get_lesson_double_click_target(event: any): any {
+    const pointer_target = event?.e ? this.fabric.canvas.findTarget(event.e) : null;
+    const candidates = [
+      event?.target,
+      event?.currentTarget,
+      pointer_target,
+      ...(event?.subTargets ?? []),
+      ...(this.fabric.canvas.getActiveObjects() ?? []),
+    ];
+
+    for (const candidate of candidates) {
+      const document_object = this.resolve_document_canvas_object(candidate);
+      if (document_object) return document_object;
+    }
+
+    return null;
+  }
+
+  /**
+   * Walks from a Fabric object, child object, or active selection to a document group.
+   */
+  private resolve_document_canvas_object(candidate: any): any {
+    if (!candidate) return null;
+
+    if (this.fabric.is_document(candidate)) {
+      return candidate;
+    }
+
+    const child_objects = candidate.getObjects ? candidate.getObjects() : candidate._objects;
+    if (child_objects?.length) {
+      for (const child of child_objects) {
+        const document_object = this.resolve_document_canvas_object(child);
+        if (document_object) return document_object;
+      }
+    }
+
+    if (candidate.group) {
+      return this.resolve_document_canvas_object(candidate.group);
+    }
+
+    if (candidate.parent) {
+      return this.resolve_document_canvas_object(candidate.parent);
+    }
+
+    return null;
+  }
+
+  /**
+   * Opens the lesson picker. On selection, loads the lesson JSON, requests its fragments,
+   * scatters them, captures the initial canvas state, and enters the first step.
+   */
+  protected start_lesson(): void {
+    const dialogRef = this.mat_dialog.open(StartLessonComponent, { data: {} });
+    dialogRef.afterClosed().subscribe({
+      next: (lesson_id: string | null) => {
+        if (!lesson_id) return;
+        this.lesson_service.load_lesson(lesson_id).subscribe({
+          next: (lesson: Lesson) => {
+            this.current_lesson = lesson;
+            this.lesson_mode = true;
+            this.current_step_index = 0;
+            this.step_scores = [];
+            this.step_checked = false;
+            this.fabric.clear_zones();
+            this.fabric.clear_feedback();
+            this.fabric.clear();
+            this.load_lesson_fragments(lesson);
+          },
+        });
+      },
+    });
+  }
+
+  /**
+   * For each fragment-pool in the lesson, fetches all matching fragments from the API and
+   * randomly samples the configured count. Caches the sampled documents and enters step 0,
+   * which rebuilds the canvas from scratch with the step's zone centered in the viewport.
+   */
+  private load_lesson_fragments(lesson: Lesson): void {
+    if (lesson.fragment_pools.length === 0) {
+      this.utility.open_snackbar('Lesson has no fragment pools.');
+      this.exit_lesson();
+      return;
+    }
+    const calls = lesson.fragment_pools.map((pool) =>
+      this.api.request_documents({ ...pool.criterion, document_type: 'fragment', visible: 1 })
+    );
+    forkJoin(calls).subscribe({
+      next: (results: any[]) => {
+        const all_docs: any[] = [];
+        results.forEach((docs: any[], i: number) => {
+          if (!docs || docs.length === 0) return;
+          const pool = lesson.fragment_pools[i];
+          const shuffled = [...docs].sort(() => Math.random() - 0.5);
+          const sampled = shuffled.slice(0, pool.count);
+          sampled.forEach((doc) => {
+            this.formatter.format(doc);
+            all_docs.push(doc);
+          });
+        });
+        if (all_docs.length === 0) {
+          this.utility.open_snackbar('No matching fragments returned by the server.');
+          this.exit_lesson();
+          return;
+        }
+        this.lesson_documents = all_docs;
+        this.enter_step(0);
+      },
+    });
+  }
+
+  /**
+   * Rebuilds the canvas from scratch for the given step: clears everything, re-adds the
+   * cached lesson documents, adds the step's zone (centered in viewport), then scatters
+   * the fragments around the zone within the visible viewport.
+   */
+  private enter_step(i: number): void {
+    if (!this.current_lesson) return;
+    this.step_checked = false;
+    this.fabric.clear_zones();
+    this.fabric.clear_feedback();
+    this.fabric.clear();
+    this.fabric.add(this.lesson_documents);
+    const zones = this.current_lesson.steps[i].zones;
+    this.fabric.add_zones(zones);
+    this.fabric.scatter_around_zones(zones);
+  }
+
+  /**
+   * Evaluates the current step, paints per-fragment feedback, and records the step score.
+   * The score counts only target fragments (those that belong in a zone): correct = number
+   * of target fragments placed in their expected zone; total = number of target fragments.
+   * Distractor fragments dropped into a zone are tracked separately as `misplaced`.
+   */
+  protected check_step(): void {
+    if (!this.current_lesson) return;
+    const step = this.current_lesson.steps[this.current_step_index];
+    const results = this.fabric.evaluate_step(step.zones);
+    this.fabric.apply_feedback(results);
+    const target_results = results.filter((r) => r.should_zone_label !== null);
+    const correct = target_results.filter((r) => r.is_correct).length;
+    const misplaced = results.filter(
+      (r) => r.should_zone_label === null && r.placed_zone_label !== null
+    ).length;
+    this.step_scores[this.current_step_index] = { correct, total: target_results.length, misplaced };
+    this.step_checked = true;
+  }
+
+  /**
+   * Advances to the next step (which rebuilds the canvas with the new zone),
+   * or ends the lesson if the last step is complete.
+   */
+  protected next_step(): void {
+    if (!this.current_lesson) return;
+    if (this.current_step_index + 1 < this.current_lesson.steps.length) {
+      this.current_step_index++;
+      this.enter_step(this.current_step_index);
+    } else {
+      this.end_lesson();
+    }
+  }
+
+  /**
+   * Opens the summary dialog at lesson completion. On close, either restarts the picker
+   * or exits lesson mode entirely.
+   */
+  private end_lesson(): void {
+    if (!this.current_lesson) return;
+    const dialogRef = this.mat_dialog.open(LessonSummaryComponent, {
+      data: {
+        lesson_title: this.current_lesson.title,
+        step_scores: this.step_scores,
+      },
+    });
+    dialogRef.afterClosed().subscribe({
+      next: (action: string) => {
+        this.exit_lesson();
+        if (action === 'restart_list') {
+          this.start_lesson();
+        }
+      },
+    });
+  }
+
+  /**
+   * Tears down lesson state and restores the playground to free-play mode.
+   */
+  protected exit_lesson(): void {
+    this.lesson_mode = false;
+    this.current_lesson = null;
+    this.current_step_index = 0;
+    this.step_scores = [];
+    this.step_checked = false;
+    this.lesson_documents = [];
+    this.selected_lesson_document = null;
+    this.lesson_commentary_button_visible = false;
+    this.fabric.clear_zones();
+    this.fabric.clear_feedback();
+    this.fabric.clear();
+  }
+
+  /**
+   * Returns the prompt text for the current step, or an empty string if no lesson is active.
+   */
+  protected get current_prompt(): string {
+    if (!this.current_lesson) return '';
+    return this.current_lesson.steps[this.current_step_index]?.prompt ?? '';
+  }
+
+  /**
+   * Returns the total number of steps in the current lesson, or 0 if none.
+   */
+  protected get total_steps(): number {
+    return this.current_lesson?.steps.length ?? 0;
+  }
+
+  /**
+   * Returns the explanation text for the current step (if authored), or an empty string.
+   */
+  protected get current_explanation(): string {
+    if (!this.current_lesson) return '';
+    return this.current_lesson.steps[this.current_step_index]?.explanation ?? '';
+  }
+
+  /**
+   * Returns the current step's score (correct/total/misplaced), or null if not yet checked.
+   */
+  protected get current_step_score(): { correct: number; total: number; misplaced: number } | null {
+    return this.step_scores[this.current_step_index] ?? null;
   }
 
   /**

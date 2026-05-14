@@ -16,3 +16,23 @@
   font-weight: 400;
   font-style: oblique;
 }
+
+.commentary-selected-fragment-highlight {
+  margin: 0.75rem 0 1rem;
+  padding: 0.75rem;
+  border-left: 4px solid #3f51b5;
+  background: #fff59d;
+  animation: commentary-highlight-fade 3.5s ease-out forwards;
+}
+
+@keyframes commentary-highlight-fade {
+  0% {
+    background: #fff176;
+  }
+  70% {
+    background: #fffde7;
+  }
+  100% {
+    background: transparent;
+  }
+}

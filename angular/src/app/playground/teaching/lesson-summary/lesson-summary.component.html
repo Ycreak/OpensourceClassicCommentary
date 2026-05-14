@@ -1,0 +1,22 @@
+<div class="dialog-header">
+  <h2>{{ this.lesson_title }}</h2>
+</div>
+<div mat-dialog-content>
+  <div class="step-rows">
+    <div *ngFor="let score of this.step_scores; let i = index" class="step-row">
+      <span class="step-label">Stap {{ i + 1 }}: {{ score.correct }}/{{ score.total }}</span>
+      <span
+        class="step-status"
+        [class.step-status-good]="score.correct === score.total"
+        [class.step-status-bad]="score.correct !== score.total"
+      >
+        {{ step_label(score) }}
+      </span>
+    </div>
+  </div>
+  <div class="total-row">Totaal: {{ this.total_correct }}/{{ this.total_total }}</div>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="restart_list()">Terug naar lessenlijst</button>
+  <button mat-button (click)="close_summary()">Sluit af</button>
+</div>
