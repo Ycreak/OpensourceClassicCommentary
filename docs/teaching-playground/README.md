@@ -48,14 +48,24 @@ This matches only Ennius' Thyestes:
 
 `angular/src/app/playground/playground.component.ts` now owns lesson flow state:
 
-- `lesson_mode`
-- `current_lesson`
-- `current_step_index`
-- `step_scores`
-- `step_checked`
-- `lesson_documents`
+- `PlaygroundComponent` is kept as the adapter for the existing playground UI, Fabric canvas setup, and commentary navigation.
+- `angular/src/app/playground/teaching/teaching-playground.service.ts` owns lesson flow state and behaviour:
+  - `lesson_mode`
+  - `current_lesson`
+  - `current_step_index`
+  - `step_scores`
+  - `step_checked`
+  - cached sampled lesson documents
 
-It also coordinates commentary navigation from the canvas:
+The teaching module coordinates the lesson lifecycle behind a small interface:
+
+- `start_lesson`
+- `check_step`
+- `next_step`
+- `exit_lesson`
+- readonly getters for current prompt, total steps, and current score
+
+`PlaygroundComponent` still coordinates commentary navigation from the canvas:
 
 - selected lesson fragments are tracked after `Controleer`;
 - the small floating commentary button is positioned near the selected fragment;

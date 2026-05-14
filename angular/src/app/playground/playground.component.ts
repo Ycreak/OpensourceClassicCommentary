@@ -11,7 +11,7 @@ import { HostListener } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 import * as fabric from 'fabric';
-import { Subscription, forkJoin } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 // Service imports
 import { ApiService } from '@oscc/api.service';
@@ -21,7 +21,7 @@ import { CommentaryService } from '@oscc/commentary/commentary.service';
 import { UtilityService } from '@oscc/utility.service';
 import { FabricService } from './services/fabric.service';
 import { WindowSizeWatcherService } from '@oscc/services/window-watcher.service';
-import { LessonService } from './teaching/lesson.service';
+import { TeachingPlaygroundService } from './teaching/teaching-playground.service';
 
 import { FormatterService } from './services/formatter.service';
 
@@ -29,7 +29,6 @@ import { FormatterService } from './services/formatter.service';
 import { Fragment } from '@oscc/models/Fragment';
 import { DialogService } from '@oscc/services/dialog.service';
 import { Playground_communicator } from '@oscc/models/api/Playground_communicator';
-import { Lesson } from './teaching/lesson.model';
 
 // Component imports
 import { LoadPlaygroundComponent } from './load-playground/load-playground.component';
@@ -40,8 +39,6 @@ import { JoinPlaygroundComponent } from './join-playground/join-playground.compo
 import { DocumentFilterComponent } from '@oscc/filters/document-filter/document-filter.component';
 import { Playground_user } from '@oscc/models/api/Playground_user';
 import { LatinTragicFragmentFilterComponent } from '../filters/latin-tragic-fragment-filter/latin-tragic-fragment-filter.component';
-import { StartLessonComponent } from './teaching/start-lesson/start-lesson.component';
-import { LessonSummaryComponent } from './teaching/lesson-summary/lesson-summary.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { NgIf, NgStyle } from '@angular/common';
@@ -61,7 +58,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   // Listener for key events
   @HostListener('document:keyup', ['$event'])
   handleDeleteKeyboardEvent(event: KeyboardEvent) {
-    if (event.key === 'Delete' && !this.lesson_mode) {
+    if (event.key === 'Delete' && !this.teaching.lesson_mode) {
       this.fabric.delete_selected();
     } else if ((event.ctrlKey || event.metaKey) && event.key == 'Z') {
       this.fabric.redo();
@@ -93,14 +90,6 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   protected lesson_commentary_button_visible = false;
   protected lesson_commentary_button_style: { left: string; top: string } = { left: '0px', top: '0px' };
 
-  // Lesson-mode state
-  protected lesson_mode = false;
-  protected current_lesson: Lesson | null = null;
-  protected current_step_index = 0;
-  protected step_scores: { correct: number; total: number; misplaced: number }[] = [];
-  protected step_checked = false;
-  private lesson_documents: any[] = [];
-
   constructor(
     protected api: ApiService,
     protected auth_service: AuthService,
@@ -111,9 +100,9 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
     protected websockets: WebsocketsService,
     private commentary: CommentaryService,
     private formatter: FormatterService,
-    private lesson_service: LessonService,
     private mat_dialog: MatDialog,
     private ng_zone: NgZone,
+    protected teaching: TeachingPlaygroundService,
     protected window_watcher: WindowSizeWatcherService
   ) {}
 
@@ -491,7 +480,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   }
 
   private handle_lesson_double_click(event: any): void {
-    if (!this.lesson_mode || !this.step_checked) return;
+    if (!this.teaching.lesson_mode || !this.teaching.step_checked) return;
 
     const now = Date.now();
     if (now - this.last_lesson_double_click_time < 100) return;
@@ -509,7 +498,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
    */
   private update_selected_lesson_document(): void {
     this.ng_zone.run(() => {
-      if (!this.lesson_mode || !this.step_checked) return;
+      if (!this.teaching.lesson_mode || !this.teaching.step_checked) return;
       this.selected_lesson_document = this.resolve_document_canvas_object(this.fabric.canvas.getActiveObjects()[0]);
       this.update_lesson_commentary_button_position();
     });
@@ -519,7 +508,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
    * Positions the small commentary button near the selected lesson fragment.
    */
   private update_lesson_commentary_button_position(): void {
-    if (!this.lesson_mode || !this.step_checked || !this.selected_lesson_document) {
+    if (!this.teaching.lesson_mode || !this.teaching.step_checked || !this.selected_lesson_document) {
       this.lesson_commentary_button_visible = false;
       return;
     }
@@ -534,6 +523,12 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
       top: `${Math.max(top_right.y - 44, 8)}px`,
     };
     this.lesson_commentary_button_visible = true;
+  }
+
+  protected exit_lesson(): void {
+    this.teaching.exit_lesson();
+    this.selected_lesson_document = null;
+    this.lesson_commentary_button_visible = false;
   }
 
   /**
@@ -586,190 +581,6 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
     }
 
     return null;
-  }
-
-  /**
-   * Opens the lesson picker. On selection, loads the lesson JSON, requests its fragments,
-   * scatters them, captures the initial canvas state, and enters the first step.
-   */
-  protected start_lesson(): void {
-    const dialogRef = this.mat_dialog.open(StartLessonComponent, { data: {} });
-    dialogRef.afterClosed().subscribe({
-      next: (lesson_id: string | null) => {
-        if (!lesson_id) return;
-        this.lesson_service.load_lesson(lesson_id).subscribe({
-          next: (lesson: Lesson) => {
-            this.current_lesson = lesson;
-            this.lesson_mode = true;
-            this.current_step_index = 0;
-            this.step_scores = [];
-            this.step_checked = false;
-            this.fabric.clear_zones();
-            this.fabric.clear_feedback();
-            this.fabric.clear();
-            this.load_lesson_fragments(lesson);
-          },
-        });
-      },
-    });
-  }
-
-  /**
-   * For each fragment-pool in the lesson, fetches all matching fragments from the API and
-   * randomly samples the configured count. Caches the sampled documents and enters step 0,
-   * which rebuilds the canvas from scratch with the step's zone centered in the viewport.
-   */
-  private load_lesson_fragments(lesson: Lesson): void {
-    if (lesson.fragment_pools.length === 0) {
-      this.utility.open_snackbar('Lesson has no fragment pools.');
-      this.exit_lesson();
-      return;
-    }
-    const calls = lesson.fragment_pools.map((pool) =>
-      this.api.request_documents({ ...pool.criterion, document_type: 'fragment', visible: 1 })
-    );
-    forkJoin(calls).subscribe({
-      next: (results: any[]) => {
-        const all_docs: any[] = [];
-        results.forEach((docs: any[], i: number) => {
-          if (!docs || docs.length === 0) return;
-          const pool = lesson.fragment_pools[i];
-          const shuffled = [...docs].sort(() => Math.random() - 0.5);
-          const sampled = shuffled.slice(0, pool.count);
-          sampled.forEach((doc) => {
-            this.formatter.format(doc);
-            all_docs.push(doc);
-          });
-        });
-        if (all_docs.length === 0) {
-          this.utility.open_snackbar('No matching fragments returned by the server.');
-          this.exit_lesson();
-          return;
-        }
-        this.lesson_documents = all_docs;
-        this.enter_step(0);
-      },
-    });
-  }
-
-  /**
-   * Rebuilds the canvas from scratch for the given step: clears everything, re-adds the
-   * cached lesson documents, adds the step's zone (centered in viewport), then scatters
-   * the fragments around the zone within the visible viewport.
-   */
-  private enter_step(i: number): void {
-    if (!this.current_lesson) return;
-    this.step_checked = false;
-    this.fabric.clear_zones();
-    this.fabric.clear_feedback();
-    this.fabric.clear();
-    this.fabric.add(this.lesson_documents);
-    const zones = this.current_lesson.steps[i].zones;
-    this.fabric.add_zones(zones);
-    this.fabric.scatter_around_zones(zones);
-  }
-
-  /**
-   * Evaluates the current step, paints per-fragment feedback, and records the step score.
-   * The score counts only target fragments (those that belong in a zone): correct = number
-   * of target fragments placed in their expected zone; total = number of target fragments.
-   * Distractor fragments dropped into a zone are tracked separately as `misplaced`.
-   */
-  protected check_step(): void {
-    if (!this.current_lesson) return;
-    const step = this.current_lesson.steps[this.current_step_index];
-    const results = this.fabric.evaluate_step(step.zones);
-    this.fabric.apply_feedback(results);
-    const target_results = results.filter((r) => r.should_zone_label !== null);
-    const correct = target_results.filter((r) => r.is_correct).length;
-    const misplaced = results.filter(
-      (r) => r.should_zone_label === null && r.placed_zone_label !== null
-    ).length;
-    this.step_scores[this.current_step_index] = { correct, total: target_results.length, misplaced };
-    this.step_checked = true;
-  }
-
-  /**
-   * Advances to the next step (which rebuilds the canvas with the new zone),
-   * or ends the lesson if the last step is complete.
-   */
-  protected next_step(): void {
-    if (!this.current_lesson) return;
-    if (this.current_step_index + 1 < this.current_lesson.steps.length) {
-      this.current_step_index++;
-      this.enter_step(this.current_step_index);
-    } else {
-      this.end_lesson();
-    }
-  }
-
-  /**
-   * Opens the summary dialog at lesson completion. On close, either restarts the picker
-   * or exits lesson mode entirely.
-   */
-  private end_lesson(): void {
-    if (!this.current_lesson) return;
-    const dialogRef = this.mat_dialog.open(LessonSummaryComponent, {
-      data: {
-        lesson_title: this.current_lesson.title,
-        step_scores: this.step_scores,
-      },
-    });
-    dialogRef.afterClosed().subscribe({
-      next: (action: string) => {
-        this.exit_lesson();
-        if (action === 'restart_list') {
-          this.start_lesson();
-        }
-      },
-    });
-  }
-
-  /**
-   * Tears down lesson state and restores the playground to free-play mode.
-   */
-  protected exit_lesson(): void {
-    this.lesson_mode = false;
-    this.current_lesson = null;
-    this.current_step_index = 0;
-    this.step_scores = [];
-    this.step_checked = false;
-    this.lesson_documents = [];
-    this.selected_lesson_document = null;
-    this.lesson_commentary_button_visible = false;
-    this.fabric.clear_zones();
-    this.fabric.clear_feedback();
-    this.fabric.clear();
-  }
-
-  /**
-   * Returns the prompt text for the current step, or an empty string if no lesson is active.
-   */
-  protected get current_prompt(): string {
-    if (!this.current_lesson) return '';
-    return this.current_lesson.steps[this.current_step_index]?.prompt ?? '';
-  }
-
-  /**
-   * Returns the total number of steps in the current lesson, or 0 if none.
-   */
-  protected get total_steps(): number {
-    return this.current_lesson?.steps.length ?? 0;
-  }
-
-  /**
-   * Returns the explanation text for the current step (if authored), or an empty string.
-   */
-  protected get current_explanation(): string {
-    if (!this.current_lesson) return '';
-    return this.current_lesson.steps[this.current_step_index]?.explanation ?? '';
-  }
-
-  /**
-   * Returns the current step's score (correct/total/misplaced), or null if not yet checked.
-   */
-  protected get current_step_score(): { correct: number; total: number; misplaced: number } | null {
-    return this.step_scores[this.current_step_index] ?? null;
   }
 
   /**
