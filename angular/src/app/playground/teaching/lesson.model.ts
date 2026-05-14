@@ -1,3 +1,5 @@
+import * as fabric from 'fabric';
+
 export interface FragmentReference {
   document_type: 'fragment';
   author: string;
@@ -38,4 +40,12 @@ export interface LessonSummary {
   id: string;
   title: string;
   description: string;
+}
+
+export interface EvaluationResult {
+  fragment_obj: fabric.Object;
+  fragment_identifier: { author: string; title: string; editor: string; name: string };
+  placed_zone_label: string | null;
+  should_zone_label: string | null;
+  is_correct: boolean;
 }

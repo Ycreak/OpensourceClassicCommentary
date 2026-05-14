@@ -4,15 +4,7 @@ import { Observable, Subject } from 'rxjs';
 
 import { UtilityService } from '@oscc/utility.service';
 import { environment } from '@src/environments/environment';
-import { DropZone } from '../teaching/lesson.model';
-
-export interface EvaluationResult {
-  fragment_obj: fabric.Object;
-  fragment_identifier: { author: string; title: string; editor: string; name: string };
-  placed_zone_label: string | null;
-  should_zone_label: string | null;
-  is_correct: boolean;
-}
+import { DropZone, EvaluationResult } from '../teaching/lesson.model';
 
 /**
  * This service handles everything related to fabric and its canvas.
