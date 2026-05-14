@@ -1,0 +1,9 @@
+<button
+  *ngIf="this.teaching.lesson_mode && this.button_visible"
+  mat-mini-fab
+  class="lesson-fragment-commentary-button"
+  [ngStyle]="this.button_style"
+  title="Naar commentary"
+  (click)="this.request_selected_commentary()">
+  <mat-icon>notes</mat-icon>
+</button>

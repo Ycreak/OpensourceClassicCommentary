@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="650" viewBox="0 0 1180 650" role="img" aria-labelledby="title desc">
+  <title id="title">Teaching playground architecture</title>
+  <desc id="desc">Diagram showing the isolated teaching module, its adapters to the playground canvas, and its existing commentary and columns integrations.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#34495e" />
+    </marker>
+    <style>
+      .title { font: 700 28px Arial, sans-serif; fill: #17202a; }
+      .label { font: 700 17px Arial, sans-serif; fill: #17202a; }
+      .body { font: 14px Arial, sans-serif; fill: #2c3e50; }
+      .small { font: 12px Arial, sans-serif; fill: #566573; }
+      .box { fill: #ffffff; stroke: #34495e; stroke-width: 2; rx: 12; }
+      .teaching { fill: #eef7ff; stroke: #21618c; }
+      .normal { fill: #f8f9f9; stroke: #7f8c8d; }
+      .service { fill: #fef9e7; stroke: #b7950b; }
+      .line { stroke: #34495e; stroke-width: 2.2; fill: none; marker-end: url(#arrow); }
+      .softline { stroke: #7f8c8d; stroke-width: 1.8; fill: none; stroke-dasharray: 7 6; marker-end: url(#arrow); }
+      .boundary { fill: none; stroke: #21618c; stroke-width: 3; stroke-dasharray: 12 8; rx: 18; }
+    </style>
+  </defs>
+
+  <rect x="20" y="18" width="1140" height="612" fill="#ffffff" stroke="#d5dbdb" stroke-width="2" rx="18" />
+  <text x="50" y="62" class="title">Teaching playground isolation</text>
+  <text x="50" y="92" class="body">The normal playground remains the host. Lesson lifecycle and commentary navigation live behind teaching-owned adapters.</text>
+
+  <rect x="45" y="130" width="310" height="170" class="box normal" />
+  <text x="70" y="166" class="label">PlaygroundComponent</text>
+  <text x="70" y="196" class="body">Existing canvas host</text>
+  <text x="70" y="220" class="body">Normal toolbar and menu</text>
+  <text x="70" y="244" class="body">Only teaching seams:</text>
+  <text x="88" y="268" class="small">TeachingPlaygroundService</text>
+  <text x="88" y="288" class="small">TeachingCommentaryBridgeComponent</text>
+
+  <rect x="420" y="120" width="700" height="315" class="boundary" />
+  <text x="445" y="156" class="label">Teaching module</text>
+
+  <rect x="455" y="185" width="285" height="160" class="box teaching" />
+  <text x="480" y="220" class="label">TeachingPlaygroundService</text>
+  <text x="480" y="250" class="body">Owns lesson lifecycle</text>
+  <text x="480" y="274" class="body">start, check, next, exit</text>
+  <text x="480" y="298" class="body">Current step and scores</text>
+  <text x="480" y="322" class="body">Loads lesson fragments</text>
+
+  <rect x="790" y="185" width="285" height="160" class="box teaching" />
+  <text x="815" y="220" class="label">TeachingCommentaryBridge</text>
+  <text x="815" y="250" class="body">Owns lesson-only selection</text>
+  <text x="815" y="274" class="body">Floating notes button</text>
+  <text x="815" y="298" class="body">Double-click fallback</text>
+  <text x="815" y="322" class="body">Resolves Fabric child to document</text>
+
+  <rect x="455" y="475" width="285" height="110" class="box service" />
+  <text x="480" y="510" class="label">FabricService</text>
+  <text x="480" y="540" class="body">Canvas primitives, zones,</text>
+  <text x="480" y="564" class="body">scoring, feedback colours</text>
+
+  <rect x="790" y="475" width="285" height="110" class="box service" />
+  <text x="815" y="510" class="label">Existing commentary stack</text>
+  <text x="815" y="540" class="body">ColumnsService selects left item</text>
+  <text x="815" y="564" class="body">CommentaryService highlights text</text>
+
+  <path class="line" d="M355 215 C390 215 410 235 455 250" />
+  <text x="376" y="205" class="small">Start les / banner bindings</text>
+
+  <path class="line" d="M355 260 C500 405 665 450 790 520" />
+  <text x="386" y="402" class="small">commentary_requested output closes playground drawer</text>
+
+  <path class="line" d="M598 345 L598 475" />
+  <text x="613" y="414" class="small">adds zones, evaluates answers</text>
+
+  <path class="line" d="M790 265 L740 265" />
+  <text x="749" y="249" class="small">reads checked lesson state</text>
+
+  <path class="line" d="M932 345 L932 475" />
+  <text x="947" y="413" class="small">open matching commentary</text>
+
+  <path class="softline" d="M790 315 C740 390 690 430 635 475" />
+  <text x="667" y="456" class="small">listens to Fabric selection events</text>
+
+  <rect x="50" y="475" width="305" height="110" class="box normal" />
+  <text x="75" y="510" class="label">Normal playground code</text>
+  <text x="75" y="540" class="body">No lesson target resolution</text>
+  <text x="75" y="564" class="body">No ColumnsService lesson bridge</text>
+</svg>

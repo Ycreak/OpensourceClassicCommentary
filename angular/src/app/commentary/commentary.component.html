@@ -20,6 +20,14 @@
     {{ this.document.name }}
   </h5>
 
+  <div
+    *ngIf="this.highlight_selected_document && this.document.lines?.length"
+    class="commentary-selected-fragment-highlight">
+    <div *ngFor="let fragment_line of this.document.lines">
+      <span [innerHTML]="fragment_line.line_number + ': ' + fragment_line.text | safeHtml"></span>
+    </div>
+  </div>
+
   <!--Show banner if no commentary available -->
   <div *ngIf="!this.commentary.has_content()" class="alert alert-info" role="alert">
     No content is available yet for this specific fragment.

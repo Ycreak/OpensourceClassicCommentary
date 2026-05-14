@@ -109,7 +109,7 @@
     <!-- Bottom Drawer (Playground) -->
     <mat-drawer #bottomDrawer mode="over" position="bottom" [opened]="playground_enabled">
       <!--<app-playground (clicked_document)="this.clicked_document = $event"></app-playground>-->
-      <app-playground></app-playground>
+      <app-playground (commentary_requested)="this.show_commentary_from_playground(drawer)"></app-playground>
     </mat-drawer>
   </mat-drawer-container>
 </div>

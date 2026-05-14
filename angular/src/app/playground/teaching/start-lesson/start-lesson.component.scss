@@ -1,0 +1,22 @@
+.lesson-list {
+  padding: 0;
+}
+
+.lesson-item {
+  cursor: pointer;
+  height: auto;
+  padding: 8px 16px;
+}
+
+.lesson-item:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.lesson-title {
+  font-weight: bold;
+}
+
+.lesson-description {
+  font-size: 0.85em;
+  color: rgba(0, 0, 0, 0.6);
+}

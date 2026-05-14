@@ -10,8 +10,7 @@ import { WebsocketsService } from '@oscc/playground/websockets.service';
 import { HostListener } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
-//import * as fabric from 'fabric';
-import { fabric } from 'fabric';
+import * as fabric from 'fabric';
 import { Subscription } from 'rxjs';
 
 // Service imports
@@ -21,6 +20,7 @@ import { CommentaryService } from '@oscc/commentary/commentary.service';
 import { UtilityService } from '@oscc/utility.service';
 import { FabricService } from './services/fabric.service';
 import { WindowSizeWatcherService } from '@oscc/services/window-watcher.service';
+import { TeachingPlaygroundService } from './teaching/teaching-playground.service';
 
 import { FormatterService } from './services/formatter.service';
 
@@ -42,26 +42,35 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { NgIf } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { TeachingCommentaryBridgeComponent } from './teaching/commentary-bridge/teaching-commentary-bridge.component';
 
 @Component({
   selector: 'app-playground',
   templateUrl: './playground.component.html',
   styleUrls: ['./playground.component.scss'],
   standalone: true,
-  imports: [NgIf, MatProgressBarModule, MatIconModule, LatinTragicFragmentFilterComponent, MatMenuModule],
+  imports: [
+    NgIf,
+    MatProgressBarModule,
+    MatIconModule,
+    LatinTragicFragmentFilterComponent,
+    MatMenuModule,
+    MatButtonModule,
+    TeachingCommentaryBridgeComponent,
+  ],
 })
 export class PlaygroundComponent implements OnInit, OnDestroy {
   @Output() document_clicked = new EventEmitter<Fragment>();
+  @Output() commentary_requested = new EventEmitter<void>();
   // Listener for key events
   @HostListener('document:keyup', ['$event'])
   handleDeleteKeyboardEvent(event: KeyboardEvent) {
-    if (event.key === 'Delete') {
+    if (event.key === 'Delete' && !this.teaching.lesson_mode) {
       this.fabric.delete_selected();
     } else if ((event.ctrlKey || event.metaKey) && event.key == 'Z') {
-      // Redo the canvas on Ctrl+Shift+Z
       this.fabric.redo();
     } else if ((event.ctrlKey || event.metaKey) && event.key == 'z') {
-      // Undo the canvas on Ctrl+Z
       this.fabric.undo();
     }
   }
@@ -93,6 +102,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
     private commentary: CommentaryService,
     private formatter: FormatterService,
     private mat_dialog: MatDialog,
+    protected teaching: TeachingPlaygroundService,
     protected window_watcher: WindowSizeWatcherService
   ) {}
 
@@ -368,8 +378,13 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
    */
   protected request_commentary(): void {
     const clicked_document = this.fabric.canvas.getActiveObjects()[0];
+    if (!clicked_document) {
+      this.utility.open_snackbar('Commentary not found.');
+      return;
+    }
+
     if (!this.fabric.is_note(clicked_document)) {
-      const full_document = this.utility.filter_array(this.fabric.documents, clicked_document.identifier)[0];
+      const full_document = this.utility.filter_array(this.fabric.documents, (clicked_document as any).identifier)[0];
       if (full_document) {
         this.commentary.request(full_document);
         window.scroll(0, 0);

@@ -1,0 +1,55 @@
+{
+  "id": "ennius-thyestes-1",
+  "title": "Identificeer Ennius' Thyestes",
+  "description": "Drie stappen die toewerken naar Ennius/Thyestes herkennen. Fragmenten worden elke speelbeurt willekeurig gekozen.",
+  "fragment_pools": [
+    { "criterion": { "author": "Ennius", "title": "Thyestes" }, "count": 2 },
+    { "criterion": { "author": "Accius", "title": "Atreus" }, "count": 1 },
+    { "criterion": { "author": "Ennius", "title": "Eumenides" }, "count": 1 },
+    { "criterion": { "author": "Pacuvius" }, "count": 1 }
+  ],
+  "steps": [
+    {
+      "prompt": "Stap 1 - Sleep alle fragmenten van Ennius in de zone.",
+      "zones": [
+        {
+          "label": "Auteur: Ennius",
+          "left": 0,
+          "top": 0,
+          "width": 600,
+          "height": 220,
+          "expected": [{ "author": "Ennius" }]
+        }
+      ]
+    },
+    {
+      "prompt": "Stap 2 - Sleep alle fragmenten die over de Atreus-Thyestes-mythe gaan in de zone.",
+      "zones": [
+        {
+          "label": "Mythe: Atreus en Thyestes",
+          "left": 0,
+          "top": 0,
+          "width": 600,
+          "height": 220,
+          "expected": [
+            { "title": "Thyestes" },
+            { "title": "Atreus" }
+          ]
+        }
+      ]
+    },
+    {
+      "prompt": "Stap 3 - Sleep nu alleen de fragmenten die uit Thyestes van Ennius komen.",
+      "zones": [
+        {
+          "label": "Thyestes - Ennius",
+          "left": 0,
+          "top": 0,
+          "width": 600,
+          "height": 220,
+          "expected": [{ "author": "Ennius", "title": "Thyestes" }]
+        }
+      ]
+    }
+  ]
+}

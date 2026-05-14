@@ -10,7 +10,7 @@
 
     <!--Popup window with options for the documents-->
     <div class="menu" *ngIf="this.fabric.has_selection()">
-      <div class="br-icon" (click)="this.fabric.delete_selected()">
+      <div class="br-icon" *ngIf="!this.teaching.lesson_mode" (click)="this.fabric.delete_selected()">
         <mat-icon class="menu-icon">backspace</mat-icon> delete objects
       </div>
       <div class="br-icon" (click)="this.request_commentary()">
@@ -18,7 +18,43 @@
       </div>
     </div>
 
-    <div id="playground-main-toolbar" class="playground-toolbar">
+    <app-teaching-commentary-bridge
+      (commentary_requested)="this.commentary_requested.emit()">
+    </app-teaching-commentary-bridge>
+
+    <!-- Lesson-mode banner -->
+    <div class="lesson-banner" *ngIf="this.teaching.lesson_mode">
+      <div class="lesson-text">
+        <div class="lesson-prompt">{{ this.teaching.current_prompt }}</div>
+        <div class="lesson-feedback" *ngIf="this.teaching.step_checked && this.teaching.current_step_score">
+          <div class="lesson-score">
+            {{ this.teaching.current_step_score!.correct }}/{{ this.teaching.current_step_score!.total }} doel-fragmenten in de juiste zone.<span
+              *ngIf="this.teaching.current_step_score!.misplaced > 0">
+              {{ this.teaching.current_step_score!.misplaced }} afleider(s) verkeerd in de zone gesleept.</span>
+          </div>
+        </div>
+      </div>
+      <div class="lesson-step">Stap {{ this.teaching.current_step_index + 1 }} / {{ this.teaching.total_steps }}</div>
+      <button
+        *ngIf="!this.teaching.step_checked"
+        mat-stroked-button
+        class="lesson-action"
+        (click)="this.teaching.check_step()">
+        Controleer
+      </button>
+      <button
+        *ngIf="this.teaching.step_checked"
+        mat-stroked-button
+        class="lesson-action"
+        (click)="this.teaching.next_step()">
+        {{ this.teaching.current_step_index + 1 < this.teaching.total_steps ? 'Volgende stap' : 'Afronden' }}
+      </button>
+      <button mat-icon-button class="lesson-exit" (click)="this.teaching.exit_lesson()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <div id="playground-main-toolbar" class="playground-toolbar" *ngIf="!this.teaching.lesson_mode">
       <!-- Hamburger menu -->
       <div id="playground-hamburger-menu" class="playground-tool-group">
         <button id="playground-hamburger-menu-button" mat-stroked-button class="navbar" [matMenuTriggerFor]="menu">
@@ -175,6 +211,12 @@
   <button mat-menu-item>
     <div class="menu-item-icon-wrapper"></div>
     Settings
+  </button>
+  <button mat-menu-item (click)="this.teaching.start_lesson()">
+    <div class="menu-item-icon-wrapper">
+      <mat-icon>school</mat-icon>
+    </div>
+    Start les
   </button>
 </mat-menu>
 

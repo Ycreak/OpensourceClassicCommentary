@@ -1,0 +1,23 @@
+<div class="dialog-header">
+  <h2>Kies een les</h2>
+  <button mat-icon-button [mat-dialog-close]="null" [disableRipple]="true">
+    <mat-icon>clear</mat-icon>
+  </button>
+</div>
+<div mat-dialog-content>
+  <div *ngIf="this.lessons.length === 0" class="alert alert-info" role="alert">Geen lessen beschikbaar.</div>
+
+  <mat-list *ngIf="this.lessons.length > 0" class="lesson-list">
+    <mat-list-item
+      *ngFor="let lesson of this.lessons"
+      class="lesson-item"
+      (click)="select_lesson(lesson)"
+    >
+      <div class="lesson-title">{{ lesson.title }}</div>
+      <div class="lesson-description">{{ lesson.description }}</div>
+    </mat-list-item>
+  </mat-list>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Annuleer</button>
+</div>
