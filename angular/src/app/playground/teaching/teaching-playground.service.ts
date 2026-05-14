@@ -10,6 +10,7 @@ import { LessonService } from './lesson.service';
 import { Lesson } from './lesson.model';
 import { LessonSummaryComponent } from './lesson-summary/lesson-summary.component';
 import { StartLessonComponent } from './start-lesson/start-lesson.component';
+import { TeachingFabricService } from './teaching-fabric.service';
 
 @Injectable({
   providedIn: 'root',
@@ -28,6 +29,7 @@ export class TeachingPlaygroundService {
     private formatter: FormatterService,
     private lesson_service: LessonService,
     private mat_dialog: MatDialog,
+    private teaching_fabric: TeachingFabricService,
     private utility: UtilityService
   ) {}
 
@@ -43,8 +45,8 @@ export class TeachingPlaygroundService {
             this.current_step_index = 0;
             this.step_scores = [];
             this.step_checked = false;
-            this.fabric.clear_zones();
-            this.fabric.clear_feedback();
+            this.teaching_fabric.clear_zones();
+            this.teaching_fabric.clear_feedback();
             this.fabric.clear();
             this.load_lesson_fragments(lesson);
           },
@@ -56,8 +58,8 @@ export class TeachingPlaygroundService {
   public check_step(): void {
     if (!this.current_lesson) return;
     const step = this.current_lesson.steps[this.current_step_index];
-    const results = this.fabric.evaluate_step(step.zones);
-    this.fabric.apply_feedback(results);
+    const results = this.teaching_fabric.evaluate_step(step.zones);
+    this.teaching_fabric.apply_feedback(results);
     const target_results = results.filter((r) => r.should_zone_label !== null);
     const correct = target_results.filter((r) => r.is_correct).length;
     const misplaced = results.filter(
@@ -84,8 +86,8 @@ export class TeachingPlaygroundService {
     this.step_scores = [];
     this.step_checked = false;
     this.lesson_documents = [];
-    this.fabric.clear_zones();
-    this.fabric.clear_feedback();
+    this.teaching_fabric.clear_zones();
+    this.teaching_fabric.clear_feedback();
     this.fabric.clear();
   }
 
@@ -143,13 +145,13 @@ export class TeachingPlaygroundService {
   private enter_step(i: number): void {
     if (!this.current_lesson) return;
     this.step_checked = false;
-    this.fabric.clear_zones();
-    this.fabric.clear_feedback();
+    this.teaching_fabric.clear_zones();
+    this.teaching_fabric.clear_feedback();
     this.fabric.clear();
     this.fabric.add(this.lesson_documents);
     const zones = this.current_lesson.steps[i].zones;
-    this.fabric.add_zones(zones);
-    this.fabric.scatter_around_zones(zones);
+    this.teaching_fabric.add_zones(zones);
+    this.teaching_fabric.scatter_around_zones(zones);
   }
 
   private end_lesson(): void {
