@@ -14,10 +14,12 @@ import { MatIconModule } from '@angular/material/icon';
 
 type IconStrategy =
   | { kind: 'png'; value: string }
-  | { kind: 'mat'; value: string };
+  | { kind: 'mat'; value: string }
+  | { kind: 'tabler'; value: string };
 
 const png = (path: string): IconStrategy => ({ kind: 'png', value: path });
 const mat_icon = (name: string): IconStrategy => ({ kind: 'mat', value: name });
+const tabler = (name: string): IconStrategy => ({ kind: 'tabler', value: name });
 
 const byte_dance = (file: string): string =>
   `assets/icons/ByteDanceIconPark/${file}`;
@@ -38,23 +40,23 @@ export class PlaygroundIconComponent {
    * the icon set globally. Keep keys kebab-case so HTML stays readable.
    */
   private static readonly icon_strategies: Readonly<Record<string, IconStrategy>> = {
-    menu: mat_icon('menu'),
-    hamburger: png(byte_dance('9069135_hamburger_button_icon.png')),
-    'author-search': png(byte_dance('9069051_doc_search_icon.png')),
-    note: png(byte_dance('9068939_notes_icon.png')),
-    clear: png(byte_dance('9069117_clear_icon.png')),
-    draw: png(byte_dance('9069780_write_icon.png')),
-    undo: png(byte_dance('9069465_return_icon.png')),
-    redo: png(byte_dance('9069840_go_on_icon.png')),
-    save: png(byte_dance('9070374_hard_disk_one_icon.png')),
-    load: png(byte_dance('9068981_folder_open_icon.png')),
-    'delete-playground': png(byte_dance('9069053_folder_delete_icon.png')),
-    share: png(byte_dance('9071373_people_plus_one_icon.png')),
-    'create-session': png(byte_dance('9071373_people_plus_one_icon.png')),
-    'join-session': png(byte_dance('9071420_people_download_icon.png')),
-    help: mat_icon('question_mark'),
-    'delete-object': mat_icon('backspace'),
-    commentary: mat_icon('notes'),
+    menu: tabler('menu-2'),
+    hamburger: tabler('menu-2'),
+    'author-search': tabler('search'),
+    note: tabler('message-circle'),
+    clear: tabler('eraser'),
+    draw: tabler('brush'),
+    undo: tabler('arrow-back-up'),
+    redo: tabler('arrow-forward-up'),
+    save: tabler('device-floppy'),
+    load: tabler('folder'),
+    'delete-playground': tabler('folder-x'),
+    share: tabler('share'),
+    'create-session': tabler('user-plus'),
+    'join-session': tabler('door-enter'),
+    help: tabler('help'),
+    'delete-object': tabler('backspace'),
+    commentary: tabler('message-circle'),
   };
 
   protected get strategy(): IconStrategy | undefined {
