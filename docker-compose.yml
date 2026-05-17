@@ -16,8 +16,14 @@ services:
       - "5003:5000"
     volumes:
       - ./flask:/app
+    depends_on:
+      - couchdb
     environment:
       - PYTHONPATH=/app
+      - COUCH_HOST=couchdb
+      - COUCH_PORT=5984
+      - COUCH_USER=admin
+      - COUCH_PASSWORD=secret
 
   angular:
     build:
