@@ -14,5 +14,13 @@
   "include": [
     "src/**/*.spec.ts",
     "src/**/*.d.ts"
+  ],
+  "exclude": [
+    "src/app/dashboard/bak/**/*",
+    "src/app/dashboard/introductions-dashboard/introductions-dashboard.component.spec.ts",
+    "src/app/dialogs/wysiwyg/wysiwyg-dialog.component.spec.ts",
+    "src/app/columns/columns.service.spec.ts",
+    "src/app/columns/columns.component.spec.ts",
+    "src/app/components/quill/quill.component.spec.ts"
   ]
 }

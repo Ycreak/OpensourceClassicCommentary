@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LatinTragicFragmentFilterComponent } from './latin-tragic-fragment-filter.component';
+import { IntroductionsFilterComponent } from './introductions-filter.component';
 
-describe('LatinTragicFragmentFilterComponent', () => {
-  let component: LatinTragicFragmentFilterComponent;
-  let fixture: ComponentFixture<LatinTragicFragmentFilterComponent>;
+describe('IntroductionsFilterComponent', () => {
+  let component: IntroductionsFilterComponent;
+  let fixture: ComponentFixture<IntroductionsFilterComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LatinTragicFragmentFilterComponent],
+      imports: [IntroductionsFilterComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(LatinTragicFragmentFilterComponent);
+    fixture = TestBed.createComponent(IntroductionsFilterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
