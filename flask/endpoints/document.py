@@ -13,6 +13,7 @@ from flask_jsonpify import jsonify
 
 import common.utilities as util
 from common.couch import CouchConnection
+from common.validation import DocumentRequest, parse_document_request
 
 from models.introduction import Introduction
 from models.fragment import Fragment
@@ -30,6 +31,16 @@ introduction = Introduction(couch_server)
 fragment = Fragment(couch_server)
 playground = Playground(couch_server)
 testimonium = Testimonium(couch_server)
+
+
+def _model_for(parsed: DocumentRequest):
+    """Pick the model handler for the parsed request's document_type."""
+    return {
+        "introduction": introduction,
+        "fragment": fragment,
+        "playground": playground,
+        "testimonium": testimonium,
+    }[parsed.document_type]
 
 
 @document_blueprint.route("/index", methods=["POST"])
@@ -63,12 +74,11 @@ def get_index() -> Response:
         description: Internal server error while reading index cache.
     """
     try:
-        data = request.get_json()
-        target_sandbox = data.get("sandbox")
+        parsed = parse_document_request(request.get_json(), require=("sandbox",))
+    except ValueError as e:
+        return make_response(str(e), 422)
 
-        if not target_sandbox:
-            return make_response("No sandbox received.", 422)
-
+    try:
         if not os.path.exists(index_file):
             logging.info(f"get_index(): {index_file} missing — rebuilding")
             combined_index: list = []
@@ -80,7 +90,7 @@ def get_index() -> Response:
 
         full_index: list = util.read_json(index_file)
         filtered_index = [
-            obj for obj in full_index if obj.get("sandbox") == target_sandbox
+            obj for obj in full_index if obj.get("sandbox") == parsed.sandbox
         ]
         return jsonify(filtered_index)
 
@@ -145,24 +155,14 @@ def get_document():
         description: Invalid or missing document_type.
     """
     try:
-        document_type: str = request.get_json()["document_type"]
-    except KeyError as e:
+        parsed = parse_document_request(
+            request.get_json(), require=("document_type",)
+        )
+    except ValueError as e:
         logging.error(e)
-        return make_response("Unprocessable entity", 422)
+        return make_response(str(e), 422)
 
-    match document_type:
-        case "introduction":
-            list_with_documents: list = introduction.get(request.get_json())
-        case "fragment":
-            list_with_documents: list = fragment.get(request.get_json())
-        case "playground":
-            list_with_documents: list = playground.get(request.get_json())
-        case "testimonium":
-            list_with_documents: list = testimonium.get(request.get_json())
-        case _:
-            logging.error(f"Unknown document type provided: {document_type}")
-            return make_response("Unprocessable entity", 422)
-
+    list_with_documents = _model_for(parsed).get(parsed.payload)
     return jsonify(list_with_documents), 200
 
 
@@ -192,23 +192,14 @@ def create_document() -> Response:
         description: Missing document_type or creation failed.
     """
     try:
-        document_type: str = request.get_json()["document_type"]
-    except KeyError as e:
+        parsed = parse_document_request(
+            request.get_json(), require=("document_type",)
+        )
+    except ValueError as e:
         logging.error(e)
-        return make_response("Unprocessable entity", 422)
+        return make_response(str(e), 422)
 
-    match document_type:
-        case "introduction":
-            doc_id: str = introduction.create(request.get_json())
-        case "fragment":
-            doc_id: str = fragment.create(request.get_json())
-        case "playground":
-            doc_id: str = playground.create(request.get_json())
-        case "testimonium":
-            doc_id: str = testimonium.create(request.get_json())
-        case _:
-            logging.error(f"Unknown document type provided: {document_type}")
-            return make_response("Unprocessable entity", 422)
+    doc_id: str = _model_for(parsed).create(parsed.payload)
 
     update_index()
     return (
@@ -243,23 +234,14 @@ def delete_document() -> Response:
         description: Missing document_type or deletion failed.
     """
     try:
-        document_type: str = request.get_json()["document_type"]
-    except KeyError as e:
+        parsed = parse_document_request(
+            request.get_json(), require=("document_type",)
+        )
+    except ValueError as e:
         logging.error(e)
-        return make_response("Unprocessable entity", 422)
+        return make_response(str(e), 422)
 
-    match document_type:
-        case "introduction":
-            success: bool = introduction.delete(request.get_json())
-        case "fragment":
-            success: bool = fragment.delete(request.get_json())
-        case "playground":
-            success: bool = playground.delete(request.get_json())
-        case "testimonium":
-            success: bool = testimonium.delete(request.get_json())
-        case _:
-            logging.error(f"Unknown document type provided: {document_type}")
-            return make_response("Unprocessable entity", 422)
+    success: bool = _model_for(parsed).delete(parsed.payload)
 
     update_index()
     return (
@@ -294,23 +276,14 @@ def update_document() -> Response:
         description: Missing document_type or update failed.
     """
     try:
-        document_type: str = request.get_json()["document_type"]
-    except KeyError as e:
+        parsed = parse_document_request(
+            request.get_json(), require=("document_type",)
+        )
+    except ValueError as e:
         logging.error(e)
-        return make_response("Unprocessable entity", 422)
+        return make_response(str(e), 422)
 
-    match document_type:
-        case "introduction":
-            success: bool = introduction.update(request.get_json())
-        case "fragment":
-            success: bool = fragment.update(request.get_json())
-        case "playground":
-            success: bool = playground.update(request.get_json())
-        case "testimonium":
-            success: bool = testimonium.update(request.get_json())
-        case _:
-            logging.error(f"Unknown document type provided: {document_type}")
-            return make_response("Unprocessable entity", 422)
+    success: bool = _model_for(parsed).update(parsed.payload)
 
     update_index()
     return (
