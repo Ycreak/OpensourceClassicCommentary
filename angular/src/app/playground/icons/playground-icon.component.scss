@@ -1,0 +1,15 @@
+/* The wrapper itself is layout-transparent: classes the consumer puts on
+ * <app-playground-icon> (e.g. `.playground-icon`, `.menu-icon`) describe
+ * the box, and the inner <img>/<mat-icon> stretches to fill it. This keeps
+ * phase 1 byte-identical to the pre-refactor <img class="playground-icon">.
+ */
+:host {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+:host > img {
+  width: 100%;
+  height: 100%;
+}

@@ -1,0 +1,4 @@
+<ng-container [ngSwitch]="strategy?.kind">
+  <img *ngSwitchCase="'png'" [src]="strategy?.value" />
+  <mat-icon *ngSwitchCase="'mat'" [fontIcon]="strategy?.value"></mat-icon>
+</ng-container>
