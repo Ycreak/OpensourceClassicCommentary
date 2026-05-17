@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import * as fabric from 'fabric';
 
 import { FabricService } from '../services/fabric.service';
+import { DocumentIdentifier, DocumentObject } from '../services/document-object';
 import { DropZone, EvaluationResult, FragmentReference } from './lesson.model';
 
 /**
@@ -33,29 +34,15 @@ interface FeedbackLabelObject extends fabric.Group {
 }
 
 /**
- * Local placeholder for the identifier stamped on a document group by the
- * canvas layer. The DocumentObject seam in playground/services owns the real
- * type; this minimal shape covers everything evaluate_step reads.
- * TODO: replace with DocumentObject import after merge.
+ * A DocumentObject from the canvas seam plus access to the internal fabric
+ * children that apply_feedback / clear_feedback need to recolour. Those
+ * internals are not part of the public DocumentObject contract — keeping the
+ * extension local makes that boundary visible.
  */
-interface DocumentIdentifier {
-  author?: string;
-  title?: string;
-  editor?: string;
-  name?: string;
-  document_type?: string;
-}
-
-/**
- * Local narrowing for the fragment group structure that apply_feedback and
- * clear_feedback poke into. The DocumentObject seam will replace this.
- * TODO: replace with DocumentObject import after merge.
- */
-interface DocumentGroup extends fabric.Group {
+type FeedbackTargetGroup = DocumentObject & {
   _objects: (fabric.Object & { default_fill?: string; dirty?: boolean })[];
   dirty?: boolean;
-  identifier?: DocumentIdentifier;
-}
+};
 
 /**
  * Lesson-only canvas operations: drop-zones, evaluation, and feedback rendering.
@@ -319,7 +306,7 @@ export class TeachingFabricService {
     const documents = this.fabric_svc.canvas.getObjects().filter((obj) => this.fabric_svc.is_document(obj));
 
     return documents.map((obj) => {
-      const identifier: DocumentIdentifier = (obj as DocumentGroup).identifier ?? {};
+      const identifier: DocumentIdentifier = obj.identifier;
       const c = obj.getCenterPoint();
 
       const placed_zone = zones.find((zone) => {
@@ -359,7 +346,7 @@ export class TeachingFabricService {
     this.fabric_svc.canvas.discardActiveObject();
     this.clear_feedback_labels();
     results.forEach((result) => {
-      const group = result.fragment_obj as DocumentGroup;
+      const group = result.fragment_obj as FeedbackTargetGroup;
       const inner_rect = group._objects[0];
       inner_rect.set({
         fill: result.is_correct ? '#C8E6C9' : '#FFCDD2',
@@ -430,7 +417,7 @@ export class TeachingFabricService {
     this.clear_feedback_labels();
     const documents = this.fabric_svc.canvas.getObjects().filter((obj) => this.fabric_svc.is_document(obj));
     documents.forEach((obj) => {
-      const group = obj as DocumentGroup;
+      const group = obj as FeedbackTargetGroup;
       const inner_rect = group._objects[0];
       inner_rect.set({
         fill: inner_rect.default_fill ?? '#9BA8F2',
