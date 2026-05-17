@@ -16,6 +16,7 @@ from endpoints.document import document_blueprint
 from endpoints.zotero import zotero_blueprint
 
 import os
+import re
 from dotenv import load_dotenv
 
 load_dotenv(".env")
@@ -34,6 +35,12 @@ TRUSTED_ORIGINS = [
         os.getenv("STAGING_HOST"),
     ]
     if origin
+]
+# Permit any localhost / 127.0.0.1 origin during local dev so preview
+# builds on alternate ports (e.g. screenshot runs at 80xx) can reach the API.
+TRUSTED_ORIGINS += [
+    re.compile(r"^http://127\.0\.0\.1:\d+$"),
+    re.compile(r"^http://localhost:\d+$"),
 ]
 CORS(app, origins=TRUSTED_ORIGINS)
 
