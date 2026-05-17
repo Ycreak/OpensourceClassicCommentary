@@ -1,24 +1,19 @@
-/* OSCC colour tokens.
- *
- * Single source of truth for the brand / surface palette. Every visible
- * colour reified here was already hardcoded somewhere in the codebase;
- * this file does not introduce new shades, it just gives each one a
- * stable name so a future palette swap (e.g. the Leiden colours) is a
- * one-file edit instead of find-and-replace.
- *
- * Defaults below preserve the current Material Indigo / Pink theme so
- * the rendered output is byte-identical to the pre-token version.
+/* Natural palette — warm manuscript-paper tones with Leiden primary;
+ * antique gold replaces the green accent so the classical theme reads
+ * through.
  */
 :root {
-  --brand-primary: #3f51b5; /* Material Indigo 500 */
-  --brand-accent: #ff4081; /* Material Pink A200 */
-  --surface: #ffffff;
-  --surface-alt: #fff7e0; /* cream — dashed button backgrounds */
-  --surface-pink: #fff2f2; /* light pink — dashed button backgrounds */
-  --text-muted: #868686;
-  --border: #ccc;
-  --border-subtle: #eee;
-  --note-orange: #f0c086; /* sticky note on the playground canvas */
-  --fragment-selected: #9ba8f2; /* fabric canvas selection colour */
-  --accent-light-blue: #9fa1fe;
+  --brand-primary: #001158;
+  --brand-primary-tint: #3D4D8A;
+  --brand-accent: #9C7A3C; /* antique gold */
+  --surface: #F8F5EE; /* warm paper */
+  --surface-alt: #EEE8D6; /* aged card */
+  --surface-pink: #EEE8D6; /* deprecate pink */
+  --text: #2A2417; /* ink black with warmth */
+  --text-muted: #6B6253;
+  --border: #A89F84; /* sepia line */
+  --border-subtle: #C8BFA3;
+  --note-orange: #E8B574; /* deeper than the cream surface */
+  --fragment-selected: #9C7A3C;
+  --accent-light-blue: #6F8AB5; /* a less saturated blue that doesn't fight the warm tones */
 }
