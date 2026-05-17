@@ -1,4 +1,5 @@
 import logging
+import os
 from typing import List
 from pyzotero import zotero as pyzotero
 
@@ -26,7 +27,11 @@ class Zotero:
         """
         self.zotero_api = pyzotero.Zotero(self.library_id, self.library_type)
         self.zotero_api.add_parameters(content="bib", style=self.bibliography_style)
-        self.bibliography = util.read_json(self.cache_file)
+        if os.path.exists(self.cache_file):
+            self.bibliography = util.read_json(self.cache_file)
+        else:
+            logging.info(f"Zotero cache {self.cache_file} missing — starting empty")
+            self.bibliography = []
 
     def test(self) -> None:
         """
