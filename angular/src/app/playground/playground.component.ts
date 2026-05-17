@@ -66,7 +66,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   // Listener for key events
   @HostListener('document:keyup', ['$event'])
   handleDeleteKeyboardEvent(event: KeyboardEvent) {
-    if (event.key === 'Delete' && !this.teaching.lesson_mode) {
+    if (event.key === 'Delete' && this.teaching.can_delete()) {
       this.fabric.delete_selected();
     } else if ((event.ctrlKey || event.metaKey) && event.key == 'Z') {
       this.fabric.redo();

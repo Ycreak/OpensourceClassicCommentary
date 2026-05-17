@@ -79,6 +79,16 @@ export class TeachingPlaygroundService {
     }
   }
 
+  /**
+   * Input guard: returns false while a lesson is active so host-level
+   * keybindings (e.g. the Delete key on PlaygroundComponent) cannot mutate
+   * the canvas mid-lesson. Lives here so PlaygroundComponent does not need
+   * to know about teaching-specific invariants.
+   */
+  public can_delete(): boolean {
+    return !this.lesson_mode;
+  }
+
   public exit_lesson(): void {
     this.lesson_mode = false;
     this.current_lesson = null;
