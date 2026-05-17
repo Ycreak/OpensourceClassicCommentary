@@ -4,8 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import * as fabric from 'fabric';
 
-import { ColumnsService } from '@oscc/columns/columns.service';
-import { CommentaryService } from '@oscc/commentary/commentary.service';
+import { FragmentCommentaryService } from '@oscc/commentary/fragment-commentary.service';
 import { UtilityService } from '@oscc/utility.service';
 import { FabricService } from '../../services/fabric.service';
 import { FabricEventBinder } from '../../services/fabric-event-binder';
@@ -30,8 +29,7 @@ export class TeachingCommentaryBridgeComponent implements OnInit, OnDestroy {
   private destroyed = false;
 
   constructor(
-    private columns: ColumnsService,
-    private commentary: CommentaryService,
+    private fragment_commentary: FragmentCommentaryService,
     private fabric: FabricService,
     private ng_zone: NgZone,
     protected teaching: TeachingPlaygroundService,
@@ -136,8 +134,7 @@ export class TeachingCommentaryBridgeComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const selected_column_document = this.columns.select_document(full_document);
-    this.commentary.request(selected_column_document?.document ?? full_document, { highlight: true });
+    this.fragment_commentary.open(full_document, { highlight: true });
     this.commentary_requested.emit();
     window.scroll(0, 0);
   }

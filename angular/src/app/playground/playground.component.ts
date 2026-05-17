@@ -16,7 +16,7 @@ import { Subscription } from 'rxjs';
 // Service imports
 import { ApiService } from '@oscc/api.service';
 import { AuthService } from '@oscc/auth/auth.service';
-import { CommentaryService } from '@oscc/commentary/commentary.service';
+import { FragmentCommentaryService } from '@oscc/commentary/fragment-commentary.service';
 import { UtilityService } from '@oscc/utility.service';
 import { FabricService } from './services/fabric.service';
 import { WindowSizeWatcherService } from '@oscc/services/window-watcher.service';
@@ -99,7 +99,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
     protected fabric: FabricService,
     protected utility: UtilityService,
     protected websockets: WebsocketsService,
-    private commentary: CommentaryService,
+    private fragment_commentary: FragmentCommentaryService,
     private formatter: FormatterService,
     private mat_dialog: MatDialog,
     protected teaching: TeachingPlaygroundService,
@@ -386,7 +386,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
     if (!this.fabric.is_note(clicked_document)) {
       const full_document = this.utility.filter_array(this.fabric.documents, (clicked_document as any).identifier)[0];
       if (full_document) {
-        this.commentary.request(full_document);
+        this.fragment_commentary.open(full_document);
         window.scroll(0, 0);
       } else {
         this.utility.open_snackbar('Commentary not found.');
