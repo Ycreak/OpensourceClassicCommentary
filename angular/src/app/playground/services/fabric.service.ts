@@ -4,6 +4,23 @@ import { Observable, Subject } from 'rxjs';
 
 import { UtilityService } from '@oscc/utility.service';
 import { environment } from '@src/environments/environment';
+import { is_document, tag_as_document } from './document-object';
+
+/**
+ * Structural superset of the fields the canvas pipeline reads off a document
+ * (header text, line rendering, identifier tagging, color selection). Both
+ * Fragment and Testimonium satisfy this shape; using a structural type keeps
+ * FabricService independent of either model class.
+ */
+export interface CanvasDocument {
+  author: string;
+  title: string;
+  editor: string;
+  name: string;
+  document_type: string;
+  text?: string;
+  lines?: { text: string }[];
+}
 
 /**
  * This service handles everything related to fabric and its canvas.
@@ -25,7 +42,14 @@ export class FabricService {
   public canvas_changed$: Observable<object> = this.canvas_changed_subject.asObservable();
 
   readonly font_size: number = 16;
-  public documents: any[] = [];
+  /**
+   * Backing store for documents currently on the canvas. The shape is the
+   * structural superset of what `add(...)` / `add_document_to_canvas(...)` and
+   * the downstream filter-by-identifier lookup actually read; we keep it
+   * structural (rather than tying to Fragment/Testimonium) because both
+   * document types flow through here.
+   */
+  public documents: CanvasDocument[] = [];
 
   constructor(private utility: UtilityService) {}
 
@@ -115,7 +139,7 @@ export class FabricService {
    * @param color The background fill color for the document box.
    * @returns void
    */
-  private add_document_to_canvas(doc: any, top: number, left: number, color: string): void {
+  private add_document_to_canvas(doc: CanvasDocument, top: number, left: number, color: string): void {
     //const header = this.create_header(doc, this.font_size);
     const content = doc.lines ? this.create_lines(doc, this.font_size) : this.create_text(doc, this.font_size);
 
@@ -124,17 +148,16 @@ export class FabricService {
     const text_group = new fabric.Group([content], { padding: 10 });
     const box = this.create_box(text_group.getBoundingRect(), color);
 
-    const group = new fabric.Group([box, text_group], {
-      top,
-      left,
-      // Metadata stored on the fabric object for future reference
-      identifier: {
-        author: doc.author,
-        title: doc.title,
-        editor: doc.editor,
-        name: doc.name,
-      },
-    } as any);
+    const group = new fabric.Group([box, text_group], { top, left });
+    // Metadata stored on the fabric object for future reference. Goes through
+    // the typed DocumentObject seam so the `identifier` shape lives in one
+    // place instead of being mutated ad-hoc here.
+    tag_as_document(group, {
+      author: doc.author,
+      title: doc.title,
+      editor: doc.editor,
+      name: doc.name,
+    });
 
     this.canvas.add(group);
   }
@@ -145,7 +168,7 @@ export class FabricService {
    * @param fontSize The size of the font.
    * @returns A fabric.Text object.
    */
-  public create_header(doc: any, fontSize: number): fabric.Text {
+  public create_header(doc: CanvasDocument, fontSize: number): fabric.Text {
     const text = `${this.utility.capitalize_word(doc.document_type)} ${doc.name}`;
     return new fabric.Text(text, {
       fontSize,
@@ -160,8 +183,8 @@ export class FabricService {
    * @param fontSize The size of the font.
    * @returns A fabric.Textbox object.
    */
-  public create_text(doc: any, fontSize: number): fabric.Textbox {
-    return new fabric.Textbox(doc.text, {
+  public create_text(doc: CanvasDocument, fontSize: number): fabric.Textbox {
+    return new fabric.Textbox(doc.text as string, {
       fontSize,
       originX: 'left',
       width: 300,
@@ -175,8 +198,8 @@ export class FabricService {
    * @param fontSize The size of the font.
    * @returns A fabric.Textbox object with dynamic width.
    */
-  public create_lines(doc: any, fontSize: number): fabric.Textbox {
-    const rawText = doc.lines.map((l: any) => `${l.text}`).join('\n');
+  public create_lines(doc: CanvasDocument, fontSize: number): fabric.Textbox {
+    const rawText = (doc.lines as { text: string }[]).map((l) => `${l.text}`).join('\n');
     const positions = this.get_style_positions(rawText, '$');
     const cleanText = rawText.replace(/\$/g, '');
 
@@ -294,11 +317,12 @@ export class FabricService {
 
   /**
    * Determines if the given fabric object is a document based on the presence of an identifier.
+   * Delegates to the `DocumentObject` typeguard so the shape check has a single owner.
    * @param thing The fabric object to check.
    * @returns True if it is a document.
    */
-  public is_document(thing: any): boolean {
-    return !!thing.identifier;
+  public is_document(thing: unknown): boolean {
+    return is_document(thing);
   }
 
   /**
@@ -356,7 +380,7 @@ export class FabricService {
    * @param documents An array of document objects.
    * @returns void
    */
-  public add(documents: any[]): void {
+  public add(documents: CanvasDocument[]): void {
     const offset_top = 60;
     const offset_left = 150;
     const spacing = 25;

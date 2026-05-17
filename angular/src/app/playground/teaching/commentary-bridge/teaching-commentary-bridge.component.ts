@@ -3,11 +3,13 @@ import { Component, EventEmitter, NgZone, OnDestroy, OnInit, Output } from '@ang
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import * as fabric from 'fabric';
+import type { FabricObject, TPointerEvent, TPointerEventInfo } from 'fabric';
 
 import { FragmentCommentaryService } from '@oscc/commentary/fragment-commentary.service';
 import { UtilityService } from '@oscc/utility.service';
 import { FabricService } from '../../services/fabric.service';
 import { FabricEventBinder } from '../../services/fabric-event-binder';
+import { DocumentObject, get_identifier, resolve_document_ancestor } from '../../services/document-object';
 import { TeachingPlaygroundService } from '../teaching-playground.service';
 
 @Component({
@@ -25,7 +27,7 @@ export class TeachingCommentaryBridgeComponent implements OnInit, OnDestroy {
 
   private readonly binder = new FabricEventBinder();
   private last_double_click_time = 0;
-  private selected_document: any = null;
+  private selected_document: DocumentObject | null = null;
   private destroyed = false;
 
   constructor(
@@ -46,7 +48,8 @@ export class TeachingCommentaryBridgeComponent implements OnInit, OnDestroy {
   }
 
   protected request_selected_commentary(): void {
-    const selected_document = this.selected_document ?? this.fabric.canvas.getActiveObjects()[0];
+    const selected_document: FabricObject | DocumentObject | undefined =
+      this.selected_document ?? this.fabric.canvas.getActiveObjects()[0];
     this.request_commentary_for_canvas_object(selected_document);
   }
 
@@ -62,8 +65,10 @@ export class TeachingCommentaryBridgeComponent implements OnInit, OnDestroy {
 
   private set_event_handlers(): void {
     const canvas = this.fabric.canvas;
-    this.binder.bind_native(canvas.upperCanvasEl, 'dblclick', (event: MouseEvent) => this.handle_double_click({ e: event }));
-    this.binder.bind(canvas, 'mouse:dblclick', (event: any) => this.handle_double_click(event));
+    this.binder.bind_native(canvas.upperCanvasEl, 'dblclick', (event: MouseEvent) =>
+      this.handle_double_click({ e: event } as TPointerEventInfo<TPointerEvent>)
+    );
+    this.binder.bind(canvas, 'mouse:dblclick', (event: TPointerEventInfo<TPointerEvent>) => this.handle_double_click(event));
     this.binder.bind(canvas, 'selection:created', () => this.update_selected_document());
     this.binder.bind(canvas, 'selection:updated', () => this.update_selected_document());
     this.binder.bind(canvas, 'selection:cleared', () => {
@@ -77,7 +82,7 @@ export class TeachingCommentaryBridgeComponent implements OnInit, OnDestroy {
     this.binder.bind(canvas, 'after:render', () => this.update_button_position());
   }
 
-  private handle_double_click(event: any): void {
+  private handle_double_click(event: TPointerEventInfo<TPointerEvent>): void {
     if (!this.teaching.lesson_mode || !this.teaching.step_checked) return;
 
     const now = Date.now();
@@ -93,7 +98,7 @@ export class TeachingCommentaryBridgeComponent implements OnInit, OnDestroy {
   private update_selected_document(): void {
     this.ng_zone.run(() => {
       if (!this.teaching.lesson_mode || !this.teaching.step_checked) return;
-      this.selected_document = this.resolve_document_canvas_object(this.fabric.canvas.getActiveObjects()[0]);
+      this.selected_document = resolve_document_ancestor(this.fabric.canvas.getActiveObjects()[0]);
       this.update_button_position();
     });
   }
@@ -116,19 +121,19 @@ export class TeachingCommentaryBridgeComponent implements OnInit, OnDestroy {
     this.button_visible = true;
   }
 
-  private request_commentary_for_canvas_object(clicked_document: any): void {
-    clicked_document = this.resolve_document_canvas_object(clicked_document);
-    if (!clicked_document) {
+  private request_commentary_for_canvas_object(clicked_document: FabricObject | DocumentObject | undefined): void {
+    const document_object = resolve_document_ancestor(clicked_document);
+    if (!document_object) {
       this.utility.open_snackbar('Commentary not found.');
       return;
     }
 
-    if (this.fabric.is_note(clicked_document)) {
+    if (this.fabric.is_note(document_object)) {
       this.utility.open_snackbar('I am a note.');
       return;
     }
 
-    const full_document = this.utility.filter_array(this.fabric.documents, (clicked_document as any).identifier)[0];
+    const full_document = this.utility.filter_array(this.fabric.documents, get_identifier(document_object))[0];
     if (!full_document) {
       this.utility.open_snackbar('Commentary not found.');
       return;
@@ -139,45 +144,19 @@ export class TeachingCommentaryBridgeComponent implements OnInit, OnDestroy {
     window.scroll(0, 0);
   }
 
-  private get_double_click_target(event: any): any {
+  private get_double_click_target(event: TPointerEventInfo<TPointerEvent>): DocumentObject | null {
     const pointer_target = event?.e ? this.fabric.canvas.findTarget(event.e) : null;
-    const candidates = [
+    const candidates: (FabricObject | undefined | null)[] = [
       event?.target,
-      event?.currentTarget,
+      (event as { currentTarget?: FabricObject })?.currentTarget,
       pointer_target,
       ...(event?.subTargets ?? []),
       ...(this.fabric.canvas.getActiveObjects() ?? []),
     ];
 
     for (const candidate of candidates) {
-      const document_object = this.resolve_document_canvas_object(candidate);
+      const document_object = resolve_document_ancestor(candidate);
       if (document_object) return document_object;
-    }
-
-    return null;
-  }
-
-  private resolve_document_canvas_object(candidate: any): any {
-    if (!candidate) return null;
-
-    if (this.fabric.is_document(candidate)) {
-      return candidate;
-    }
-
-    const child_objects = candidate.getObjects ? candidate.getObjects() : candidate._objects;
-    if (child_objects?.length) {
-      for (const child of child_objects) {
-        const document_object = this.resolve_document_canvas_object(child);
-        if (document_object) return document_object;
-      }
-    }
-
-    if (candidate.group) {
-      return this.resolve_document_canvas_object(candidate.group);
-    }
-
-    if (candidate.parent) {
-      return this.resolve_document_canvas_object(candidate.parent);
     }
 
     return null;
