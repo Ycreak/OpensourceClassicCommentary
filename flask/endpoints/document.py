@@ -7,6 +7,7 @@ This endpoint handles all document types. At the moment, we support the followin
 """
 
 import logging
+import os
 from flask import Blueprint, request, make_response, Response
 from flask_jsonpify import jsonify
 
@@ -67,6 +68,15 @@ def get_index() -> Response:
 
         if not target_sandbox:
             return make_response("No sandbox received.", 422)
+
+        if not os.path.exists(index_file):
+            logging.info(f"get_index(): {index_file} missing — rebuilding")
+            combined_index: list = []
+            combined_index.extend(introduction.index())
+            combined_index.extend(fragment.index())
+            combined_index.extend(playground.index())
+            combined_index.extend(testimonium.index())
+            util.write_json(combined_index, index_file)
 
         full_index: list = util.read_json(index_file)
         filtered_index = [
