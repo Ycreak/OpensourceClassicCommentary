@@ -98,7 +98,7 @@ class Testimonium:
         Returns:
             list: List of dictionaries containing testimonium metadata.
         """
-        documents = self.database.filter({TestimoniumFields.DOC_TYPE: "testimonium"})
+        documents = self.database.filter_by_type("testimonium")
 
         return [
             {
@@ -125,11 +125,7 @@ class Testimonium:
         Returns:
             List[TestimoniumModel]: A list of matching TestimoniumModel instances.
         """
-        search_criteria = {k: v for k, v in query_filter.items() if v is not None}
-        search_criteria[TestimoniumFields.DOC_TYPE] = "testimonium"
-
-        logging.info(f"Retrieving testimonia for filter: {search_criteria}")
-        document_list = self.database.filter(search_criteria)
+        document_list = self.database.filter_by_type("testimonium", query_filter)
 
         return [TestimoniumModel.from_dict(doc) for doc in document_list]
 

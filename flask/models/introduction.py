@@ -73,7 +73,7 @@ class Introduction:
         Returns:
             list: A list of dictionaries containing basic metadata for each document.
         """
-        documents: list = self.database.filter({"document_type": "introduction"})
+        documents: list = self.database.filter_by_type("introduction")
 
         return [
             {
@@ -96,12 +96,7 @@ class Introduction:
         Returns:
             List[IntroductionModel]: A list of matching IntroductionModel instances.
         """
-        # Clean the filter to only include provided values
-        search_criteria = {k: v for k, v in query_filter.items() if v}
-        search_criteria[IntroductionFields.DOC_TYPE] = "introduction"
-
-        logging.info(f"Retrieving introductions for filter: {search_criteria}")
-        document_list = self.database.filter(search_criteria)
+        document_list = self.database.filter_by_type("introduction", query_filter)
 
         return [IntroductionModel.from_dict(doc) for doc in document_list]
 

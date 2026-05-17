@@ -114,7 +114,7 @@ class Fragment:
         Returns:
             list: List of dictionaries containing fragment metadata.
         """
-        documents = self.database.filter({FragmentFields.DOC_TYPE: "fragment"})
+        documents = self.database.filter_by_type("fragment")
 
         return [
             {
@@ -140,12 +140,7 @@ class Fragment:
         Returns:
             List[FragmentModel]: A list of matching FragmentModel instances.
         """
-        # Build search criteria, filtering out None values
-        search_criteria = {k: v for k, v in query_filter.items() if v is not None}
-        search_criteria[FragmentFields.DOC_TYPE] = "fragment"
-
-        logging.info(f"Retrieving fragments for filter: {search_criteria}")
-        document_list = self.database.filter(search_criteria)
+        document_list = self.database.filter_by_type("fragment", query_filter)
 
         return [FragmentModel.from_dict(doc) for doc in document_list]
 

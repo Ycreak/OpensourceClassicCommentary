@@ -85,6 +85,53 @@ class Couch:
         results = self.db.find({"selector": selector, "limit": self.LIMIT})
         return [doc for doc in results]
 
+    def filter_by_type(
+        self,
+        doc_type: str,
+        selector: Optional[dict] = None,
+        *,
+        remove_none: bool = True,
+    ) -> List[dict]:
+        """
+        Filters documents of a specific document_type.
+
+        Strips None-valued keys from ``selector`` (when ``remove_none`` is
+        True) and injects ``document_type`` as a required field before
+        querying. The effective selector is logged at INFO so query shape
+        can be debugged at the seam rather than in every model.
+
+        Args:
+            doc_type (str): Value to enforce for the ``document_type`` field.
+            selector (dict | None): Mongo-style query. Defaults to ``{}``.
+            remove_none (bool): When True, drop keys whose value is ``None``.
+
+        Returns:
+            List[dict]: Matching documents.
+        """
+        effective: dict = dict(selector) if selector else {}
+        if remove_none:
+            effective = {k: v for k, v in effective.items() if v is not None}
+        effective["document_type"] = doc_type
+
+        logging.info(f"filter_by_type({doc_type}) selector: {effective}")
+        return self.filter(effective)
+
+    def find_one(self, selector: dict) -> Optional[dict]:
+        """
+        Returns the first document matching the selector, or None.
+
+        Use sparingly — only where a single result is genuinely expected.
+
+        Args:
+            selector (dict): Mongo-style query.
+
+        Returns:
+            dict | None: The first matching document, or ``None`` when
+                nothing matches.
+        """
+        results = self.filter(selector)
+        return results[0] if results else None
+
     def all(self) -> List[dict]:
         """Returns all documents."""
         return self.filter({})

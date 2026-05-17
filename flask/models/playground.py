@@ -68,7 +68,7 @@ class Playground:
         Returns:
             list: List of dictionaries containing playground metadata.
         """
-        documents = self.database.filter({"document_type": "playground"})
+        documents = self.database.filter_by_type("playground")
 
         return [
             {
@@ -92,11 +92,7 @@ class Playground:
         Returns:
             List[dict]: A list of matching playground dictionaries.
         """
-        # Build search criteria, filtering out empty values
-        search_criteria = {k: v for k, v in query_filter.items() if v}
-        search_criteria[PlaygroundFields.DOC_TYPE] = "playground"
-
-        document_list = self.database.filter(search_criteria)
+        document_list = self.database.filter_by_type("playground", query_filter)
 
         # Convert to model first (to ensure data integrity) then back to dict as per your requirement
         return [PlaygroundModel.from_dict(doc).to_dict() for doc in document_list]
