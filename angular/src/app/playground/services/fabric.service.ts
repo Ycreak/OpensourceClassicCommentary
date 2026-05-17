@@ -302,15 +302,6 @@ export class FabricService {
   }
 
   /**
-   * Checks if the given fabric object is a lesson drop-zone.
-   * @param thing The fabric object to check.
-   * @returns True if it is a drop-zone.
-   */
-  public is_zone(thing: any): boolean {
-    return !!thing.is_zone;
-  }
-
-  /**
    * Toggles the canvas drawing mode.
    * @returns void
    */

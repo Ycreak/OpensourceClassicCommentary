@@ -13,7 +13,18 @@ import { DropZone, EvaluationResult } from './lesson.model';
   providedIn: 'root',
 })
 export class TeachingFabricService {
+  /** Tag attached to a fabric object to mark it as a lesson drop-zone. */
+  private static readonly ZONE_TAG = 'is_zone';
+
   constructor(private fabric_svc: FabricService) {}
+
+  /**
+   * Checks whether a fabric object has been tagged as a lesson drop-zone.
+   * Keeps zone identity an internal concern of the teaching layer.
+   */
+  private is_zone(obj: any): boolean {
+    return obj?.[TeachingFabricService.ZONE_TAG] === true;
+  }
 
   /**
    * Adds lesson drop-zones to the canvas as non-selectable, non-evented groups.
@@ -70,7 +81,7 @@ export class TeachingFabricService {
         evented: false,
       });
 
-      (group as any).is_zone = true;
+      (group as any)[TeachingFabricService.ZONE_TAG] = true;
       (group as any).zone_data = { label: zone.label, expected: zone.expected };
 
       this.fabric_svc.canvas.add(group);
@@ -132,7 +143,7 @@ export class TeachingFabricService {
    * @returns void
    */
   public clear_zones(): void {
-    const zone_objects = this.fabric_svc.canvas.getObjects().filter((obj) => (obj as any).is_zone === true);
+    const zone_objects = this.fabric_svc.canvas.getObjects().filter((obj) => this.is_zone(obj));
     zone_objects.forEach((obj) => this.fabric_svc.canvas.remove(obj));
     this.fabric_svc.canvas.requestRenderAll();
   }
