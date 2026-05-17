@@ -1,11 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { forkJoin } from 'rxjs';
 
-import { ApiService } from '@oscc/api.service';
-import { UtilityService } from '@oscc/utility.service';
-import { FabricService } from '../services/fabric.service';
-import { FormatterService } from '../services/formatter.service';
+import { LessonCanvasService } from './lesson-canvas.service';
 import { LessonService } from './lesson.service';
 import { Lesson } from './lesson.model';
 import { LessonSummaryComponent } from './lesson-summary/lesson-summary.component';
@@ -21,16 +17,12 @@ export class TeachingPlaygroundService {
   public current_step_index = 0;
   public step_scores: { correct: number; total: number; misplaced: number }[] = [];
   public step_checked = false;
-  private lesson_documents: any[] = [];
 
   constructor(
-    private api: ApiService,
-    private fabric: FabricService,
-    private formatter: FormatterService,
+    private lesson_canvas: LessonCanvasService,
     private lesson_service: LessonService,
     private mat_dialog: MatDialog,
-    private teaching_fabric: TeachingFabricService,
-    private utility: UtilityService
+    private teaching_fabric: TeachingFabricService
   ) {}
 
   public start_lesson(): void {
@@ -45,10 +37,15 @@ export class TeachingPlaygroundService {
             this.current_step_index = 0;
             this.step_scores = [];
             this.step_checked = false;
-            this.teaching_fabric.clear_zones();
-            this.teaching_fabric.clear_feedback();
-            this.fabric.clear();
-            this.load_lesson_fragments(lesson);
+            this.lesson_canvas.load_for_lesson(lesson).subscribe({
+              next: (result) => {
+                if (!result.ok) {
+                  this.exit_lesson();
+                  return;
+                }
+                this.enter_step(0);
+              },
+            });
           },
         });
       },
@@ -95,10 +92,7 @@ export class TeachingPlaygroundService {
     this.current_step_index = 0;
     this.step_scores = [];
     this.step_checked = false;
-    this.lesson_documents = [];
-    this.teaching_fabric.clear_zones();
-    this.teaching_fabric.clear_feedback();
-    this.fabric.clear();
+    this.lesson_canvas.clear();
   }
 
   public get current_prompt(): string {
@@ -119,49 +113,10 @@ export class TeachingPlaygroundService {
     return this.step_scores[this.current_step_index] ?? null;
   }
 
-  private load_lesson_fragments(lesson: Lesson): void {
-    if (lesson.fragment_pools.length === 0) {
-      this.utility.open_snackbar('Lesson has no fragment pools.');
-      this.exit_lesson();
-      return;
-    }
-    const calls = lesson.fragment_pools.map((pool) =>
-      this.api.request_documents({ ...pool.criterion, document_type: 'fragment', visible: 1 })
-    );
-    forkJoin(calls).subscribe({
-      next: (results: any[]) => {
-        const all_docs: any[] = [];
-        results.forEach((docs: any[], i: number) => {
-          if (!docs || docs.length === 0) return;
-          const pool = lesson.fragment_pools[i];
-          const shuffled = [...docs].sort(() => Math.random() - 0.5);
-          const sampled = shuffled.slice(0, pool.count);
-          sampled.forEach((doc) => {
-            this.formatter.format(doc);
-            all_docs.push(doc);
-          });
-        });
-        if (all_docs.length === 0) {
-          this.utility.open_snackbar('No matching fragments returned by the server.');
-          this.exit_lesson();
-          return;
-        }
-        this.lesson_documents = all_docs;
-        this.enter_step(0);
-      },
-    });
-  }
-
   private enter_step(i: number): void {
     if (!this.current_lesson) return;
     this.step_checked = false;
-    this.teaching_fabric.clear_zones();
-    this.teaching_fabric.clear_feedback();
-    this.fabric.clear();
-    this.fabric.add(this.lesson_documents);
-    const zones = this.current_lesson.steps[i].zones;
-    this.teaching_fabric.add_zones(zones);
-    this.teaching_fabric.scatter_around_zones(zones);
+    this.lesson_canvas.prepare_step(this.current_lesson.steps[i]);
   }
 
   private end_lesson(): void {
