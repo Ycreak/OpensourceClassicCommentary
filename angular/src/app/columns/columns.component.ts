@@ -174,8 +174,12 @@ export class ColumnsComponent implements OnInit {
     this.columns.list.forEach((column: Column) => {
       this.columns.blacken(column);
     });
-    // Second, colour the clicked document
-    document.colour = '#3F51B5';
+    // Second, colour the clicked document. Read from the --brand-primary
+    // token so a palette swap in _tokens.scss propagates here; the literal
+    // is a fallback in case the variable is missing at runtime. Note the
+    // `window.document` qualification — the local `document` parameter
+    // above shadows the global DOM `document`.
+    document.colour = getComputedStyle(window.document.documentElement).getPropertyValue('--brand-primary').trim() || '#3F51B5';
     // Lastly, colour the linked documents
     this.columns.colour_linked_fragments(document);
   }

@@ -92,12 +92,14 @@ mat-radio-group {
 }
 
 .btn {
-  background-color: #3f51b5;
+  background-color: var(--brand-primary);
+  // TODO: tokenize — #fffffc is a one-off near-white, not yet in _tokens.scss.
   color: #fffffc;
   font-family: "Arial";
   font-size: 13px;
 
   &:hover {
+    // TODO: tokenize — #5363bd is a one-off indigo hover, not yet in _tokens.scss.
     background-color: #5363bd;
 
     color: white;

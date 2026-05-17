@@ -9,6 +9,7 @@
   margin: -4px;
 }
 .introduction-link-hover:hover {
+  // TODO: tokenize — #86868626 is --text-muted (#868686) with 0x26 alpha; can't be expressed via var() until we introduce a colour-mix wrapper.
   background: #86868626;
   transition: 0.25s;
 }
@@ -45,7 +46,7 @@ ng-template {
 /* Box in which the fragment is shown. Created by the for-loop in Fragment Column. */
 .fragment-box {
   padding: 10px 5px 0px 5px;
-  border-bottom: solid 1px #ccc;
+  border-bottom: solid 1px var(--border);
   color: rgba(0, 0, 0, 0.87);
   /* display: block; */
   flex-direction: row;
@@ -122,8 +123,8 @@ ng-template {
 
 .fragments-toolbar {
   max-height: 30px;
-  background: #9fa1fe;
-  border-bottom: 0.1em solid #3f51b5;
+  background: var(--accent-light-blue);
+  border-bottom: 0.1em solid var(--brand-primary);
   color: white;
 }
 
@@ -131,7 +132,7 @@ ng-template {
   max-height: 30px;
   color: white;
   /* outline: 1px solid black; */
-  background: #9fa1fe;
+  background: var(--accent-light-blue);
 }
 
 .fragment-column-button {

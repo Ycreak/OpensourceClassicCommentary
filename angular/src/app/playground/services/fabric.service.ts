@@ -287,6 +287,7 @@ export class FabricService {
    * @return boolean
    */
   public is_note(thing: any): boolean {
+    // TODO: keep in sync with --note-orange in _tokens.scss
     return thing.backgroundColor == '#F0C086';
   }
 
@@ -364,6 +365,7 @@ export class FabricService {
 
     documents.forEach((doc) => {
       this.documents.push(doc);
+      // TODO: keep in sync with --fragment-selected in _tokens.scss
       const color = doc.document_type === environment.fragment ? '#9BA8F2' : 'orange';
       this.add_document_to_canvas(doc, top, left, color);
       top += spacing;
@@ -408,6 +410,7 @@ export class FabricService {
       left: center.x,
       width: 200,
       fontSize: this.font_size,
+      // TODO: keep in sync with --note-orange in _tokens.scss
       backgroundColor: '#F0C086',
       editable: true,
     });

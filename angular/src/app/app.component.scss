@@ -16,7 +16,7 @@ h6 {
 
 hr {
   border: 0;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--border-subtle);
   margin: 20px 0;
   box-sizing: content-box;
   height: 0;
@@ -70,7 +70,7 @@ div {
 
 /**
 // .checkbox{
-//     background-color: #3F51B5;
+//     background-color: var(--brand-primary);
 //     color: #FFFFFC;
 //     font-family: 'Arial';
 //     font-size: 13px;
@@ -107,6 +107,7 @@ span.mat-button-focus-overlay {
 
 /** MATERIAL **/
 .mat-mdc-list-item:hover {
+  // TODO: tokenize — #6495ed is a one-off cornflower hover not yet in _tokens.scss.
   background-color: #6495ed;
 }
 
@@ -128,7 +129,7 @@ span.mat-button-focus-overlay {
 /*
 .progress-toolbar{
     height: 1vh !important;
-    background: #3F51B5;
+    background: var(--brand-primary);
 }
 
 .mat-mdc-progress-bar {

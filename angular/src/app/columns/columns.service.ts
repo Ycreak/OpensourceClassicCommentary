@@ -248,6 +248,7 @@ export class ColumnsService {
           name: name,
         });
         if (corresponding_document?.length) {
+          // TODO: keep in sync with --brand-accent in _tokens.scss
           corresponding_document[0].colour = '#FF4081';
         }
       }

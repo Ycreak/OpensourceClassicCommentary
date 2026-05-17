@@ -1,7 +1,7 @@
 @import url("../dashboard.component.scss");
 
 .context-item {
-  border: 1px solid #ccc;
+  border: 1px solid var(--border);
   padding: 16px;
   margin-bottom: 16px;
   border-radius: 4px;

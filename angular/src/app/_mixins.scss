@@ -1,7 +1,10 @@
-$theme-primary: #3f51b5;
-$theme-secondary: #ff4081;
-$theme-tertiary: #9ba8f2;
-$theme-lightbrown-yellow: #f0c086;
+// The hex defaults live in angular/src/_tokens.scss as CSS custom
+// properties. SCSS aliases below resolve to var(--token) so existing
+// `@use` consumers (playground, etc.) keep working without changes.
+$theme-primary: var(--brand-primary);
+$theme-secondary: var(--brand-accent);
+$theme-tertiary: var(--fragment-selected);
+$theme-lightbrown-yellow: var(--note-orange);
 
 @mixin button-dashed-background-yellow {
   background-position:
@@ -10,7 +13,7 @@ $theme-lightbrown-yellow: #f0c086;
     0 0,
     0 0;
   background-repeat: repeat;
-  background: repeating-linear-gradient(-65deg, #fff7e0, #fff7e0 12px, #ffffff 5px, #ffffff 25px);
+  background: repeating-linear-gradient(-65deg, var(--surface-alt), var(--surface-alt) 12px, var(--surface) 5px, var(--surface) 25px);
   border-color: rgba(0, 0, 0, 0.12);
 }
 
@@ -21,7 +24,7 @@ $theme-lightbrown-yellow: #f0c086;
     0 0,
     0 0;
   background-repeat: repeat;
-  background: repeating-linear-gradient(-65deg, #fff2f2, #fff2f2 12px, #ffffff 5px, #ffffff 25px);
+  background: repeating-linear-gradient(-65deg, var(--surface-pink), var(--surface-pink) 12px, var(--surface) 5px, var(--surface) 25px);
   border-color: rgba(0, 0, 0, 0.12);
 }
 
@@ -32,6 +35,7 @@ $theme-lightbrown-yellow: #f0c086;
     0 0,
     0 0;
   background-repeat: repeat;
-  background: repeating-linear-gradient(-65deg, #f8f8f8, #f8f8f8 12px, #ffffff 5px, #ffffff 25px);
+  // TODO: tokenize — #f8f8f8 is a one-off, not yet in _tokens.scss.
+  background: repeating-linear-gradient(-65deg, #f8f8f8, #f8f8f8 12px, var(--surface) 5px, var(--surface) 25px);
   border-color: rgba(0, 0, 0, 0.12);
 }
