@@ -133,9 +133,13 @@ export class CommentaryComponent implements OnDestroy {
     if (this.document.linked_fragments.length == 0) {
       this.no_linked_commentary_found = true;
     }
-    this.document.linked_fragments.forEach((filter: any) => {
+    this.document.linked_fragments.forEach((linked: any) => {
       concurrent_calls += 1;
-      this.api.request_documents(filter).subscribe((documents) => {
+      // Linked_fragment carries identity metadata (linked_fragment_id) that the
+      // strict validator rejects, so build a clean lookup filter with only real
+      // Fragment query fields.
+      const { author, title, editor, name } = linked;
+      this.api.request_documents({ document_type: 'fragment', author, title, editor, name }).subscribe((documents) => {
         const found_document = documents[0];
         concurrent_calls -= 1;
         if (found_document.commentary.has_content()) {

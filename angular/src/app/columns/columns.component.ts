@@ -204,7 +204,11 @@ export class ColumnsComponent implements OnInit {
     if (given_document.linked_fragments.length > 0) {
       const column_id = this.columns.add();
       given_document.linked_fragments.forEach((linked_fragment: Linked_fragment) => {
-        this.columns.request(linked_fragment, column_id, true);
+        // Linked_fragment carries identity metadata (linked_fragment_id) that
+        // the strict validator rejects, so build a clean lookup filter with
+        // only real Fragment query fields.
+        const { author, title, editor, name } = linked_fragment;
+        this.columns.request({ document_type: 'fragment', author, title, editor, name }, column_id, true);
         this.columns.find(column_id).column_name = `Linked ${column_id}`;
       });
     } else {
