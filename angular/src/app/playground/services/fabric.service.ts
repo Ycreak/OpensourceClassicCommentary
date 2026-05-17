@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { fabric } from 'fabric';
+import * as fabric from 'fabric';
 import { Observable, Subject } from 'rxjs';
 
 import { UtilityService } from '@oscc/utility.service';
@@ -59,7 +59,7 @@ export class FabricService {
       zoom *= 0.999 ** delta;
       zoom = Math.min(Math.max(0.01, zoom), 20);
 
-      this.canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+      this.canvas.zoomToPoint(new fabric.Point(opt.e.offsetX, opt.e.offsetY), zoom);
       opt.e.preventDefault();
       opt.e.stopPropagation();
     });
@@ -87,9 +87,9 @@ export class FabricService {
     });
 
     this.canvas.on('mouse:up', () => {
-      if (this.canvas.isDragging) {
-        this.canvas.setViewportTransform(this.canvas.viewportTransform);
-        this.canvas.isDragging = false;
+      if ((this.canvas as any).isDragging) {
+        this.canvas.setViewportTransform(this.canvas.viewportTransform!);
+        (this.canvas as any).isDragging = false;
       }
 
       this.canvas.selection = true;
@@ -99,7 +99,7 @@ export class FabricService {
     // Save state for undo/redo on major changes
     const stateEvents = ['object:added', 'object:modified', 'object:removed'];
     stateEvents.forEach((event) => {
-      this.canvas.on(event, () => {
+      this.canvas.on(event as any, () => {
         if (!this.undo_status && !this.redo_status) {
           this.save_state();
         }

@@ -107,7 +107,7 @@ span.mat-button-focus-overlay {
 
 /** MATERIAL **/
 .mat-mdc-list-item:hover {
-  // TODO: tokenize — #6495ed is a one-off cornflower hover not yet in _tokens.scss.
+  /* TODO: tokenize — #6495ed is a one-off cornflower hover not yet in _tokens.scss. */
   background-color: #6495ed;
 }
 

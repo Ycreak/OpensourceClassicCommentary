@@ -9,7 +9,7 @@
   margin: -4px;
 }
 .introduction-link-hover:hover {
-  // TODO: tokenize — #86868626 is --text-muted (#868686) with 0x26 alpha; can't be expressed via var() until we introduce a colour-mix wrapper.
+  /* TODO: tokenize — #86868626 is --text-muted (#868686) with 0x26 alpha; can't be expressed via var() until we introduce a colour-mix wrapper. */
   background: #86868626;
   transition: 0.25s;
 }

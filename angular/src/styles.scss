@@ -3,9 +3,7 @@
 /* @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 /* @import "~bootstrap/dist/css/bootstrap.css"; */
 @use "@angular/material" as mat;
-
-@import url("./_tokens.scss");
-@import url("app/_mixins.scss");
+@use "./tokens";
 
 html,
 body {

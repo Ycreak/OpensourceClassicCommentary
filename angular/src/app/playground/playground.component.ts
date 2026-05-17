@@ -10,8 +10,7 @@ import { WebsocketsService } from '@oscc/playground/websockets.service';
 import { HostListener } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
-//import * as fabric from 'fabric';
-import { fabric } from 'fabric';
+import * as fabric from 'fabric';
 import { Subscription } from 'rxjs';
 
 // Service imports
@@ -377,7 +376,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   protected request_commentary(): void {
     const clicked_document = this.fabric.canvas.getActiveObjects()[0];
     if (!this.fabric.is_note(clicked_document)) {
-      const full_document = this.utility.filter_array(this.fabric.documents, clicked_document.identifier)[0];
+      const full_document = this.utility.filter_array(this.fabric.documents, (clicked_document as any).identifier)[0];
       if (full_document) {
         this.commentary.request(full_document);
         window.scroll(0, 0);
