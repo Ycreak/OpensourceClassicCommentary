@@ -6,6 +6,7 @@
  * otherwise live on the consuming component.
  */
 import type * as fabric from 'fabric';
+import type { CanvasEvents } from 'fabric';
 
 type FabricCanvas = fabric.Canvas;
 
@@ -35,22 +36,33 @@ export class FabricEventBinder {
   /**
    * Subscribe to a Fabric canvas event. Returns a disposable that removes just
    * this subscription, but most callers can rely on `destroy()` to clean up
-   * everything at once.
+   * everything at once. Generic over Fabric v6's `CanvasEvents` map so the
+   * handler argument is inferred from the event name.
    */
-  public bind(canvas: FabricCanvas, event: string, handler: (...args: any[]) => void): Disposable {
-    canvas.on(event as any, handler);
-    const subscription: FabricSubscription = { kind: 'fabric', canvas, event, handler };
+  public bind<E extends keyof CanvasEvents>(
+    canvas: FabricCanvas,
+    event: E,
+    handler: (e: CanvasEvents[E]) => void,
+  ): Disposable {
+    canvas.on(event, handler);
+    const subscription: FabricSubscription = { kind: 'fabric', canvas, event: event as string, handler: handler as (...args: any[]) => void };
     this.subscriptions.push(subscription);
     return { dispose: () => this.dispose_one(subscription) };
   }
 
   /**
    * Subscribe to a native DOM event (e.g. on `canvas.upperCanvasEl`). Mirrors
-   * `bind(...)` so consumers do not need to mix two cleanup styles.
+   * `bind(...)` so consumers do not need to mix two cleanup styles. Generic
+   * over `HTMLElementEventMap` so the handler argument is inferred from the
+   * event name.
    */
-  public bind_native(target: EventTarget, event: string, handler: (event: any) => void): Disposable {
-    target.addEventListener(event, handler);
-    const subscription: NativeSubscription = { kind: 'native', target, event, handler };
+  public bind_native<K extends keyof HTMLElementEventMap>(
+    target: EventTarget,
+    event: K,
+    handler: (e: HTMLElementEventMap[K]) => void,
+  ): Disposable {
+    target.addEventListener(event, handler as EventListener);
+    const subscription: NativeSubscription = { kind: 'native', target, event, handler: handler as (event: any) => void };
     this.subscriptions.push(subscription);
     return { dispose: () => this.dispose_one(subscription) };
   }
@@ -82,7 +94,7 @@ export class FabricEventBinder {
 
   private detach(subscription: Subscription): void {
     if (subscription.kind === 'fabric') {
-      subscription.canvas?.off(subscription.event as any, subscription.handler);
+      subscription.canvas?.off(subscription.event as keyof CanvasEvents, subscription.handler);
     } else {
       subscription.target?.removeEventListener(subscription.event, subscription.handler);
     }
