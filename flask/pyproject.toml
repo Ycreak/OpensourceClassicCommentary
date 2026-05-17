@@ -18,3 +18,14 @@ dependencies = [
     "pyzotero>=1.11.0",
     "ruff>=0.15.10",
 ]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# Make `import common.validation` resolve from flask/ when pytest runs
+# from this directory (the same root the server runs from).
+pythonpath = ["."]
