@@ -54,7 +54,7 @@ export class IntroductionsDashboardComponent {
 
   protected author_intro_form = new FormGroup({
     _id: new FormControl(''),
-    sandbox: new FormControl(this.sandbox.current_sandbox, { nonNullable: true }),
+    sandbox: new FormControl(this.sandbox.get_identity(), { nonNullable: true }),
     document_type: new FormControl('introduction', { nonNullable: true }),
     author: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
     title: new FormControl(''),
@@ -63,7 +63,7 @@ export class IntroductionsDashboardComponent {
   });
   protected title_intro_form = new FormGroup({
     _id: new FormControl(''),
-    sandbox: new FormControl(this.sandbox.current_sandbox, { nonNullable: true }),
+    sandbox: new FormControl(this.sandbox.get_identity(), { nonNullable: true }),
     document_type: new FormControl('introduction', { nonNullable: true }),
     author: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
     title: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]), // alpha characters allowed
@@ -72,7 +72,7 @@ export class IntroductionsDashboardComponent {
   });
   protected editor_intro_form = new FormGroup({
     _id: new FormControl(''),
-    sandbox: new FormControl(this.sandbox.current_sandbox, { nonNullable: true }),
+    sandbox: new FormControl(this.sandbox.get_identity(), { nonNullable: true }),
     document_type: new FormControl('introduction', { nonNullable: true }),
     author: new FormControl(''),
     title: new FormControl(''),

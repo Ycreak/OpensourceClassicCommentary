@@ -16,7 +16,7 @@
             author: $event.author,
             title: $event.title,
             editor: $event.editor,
-            sandbox: this.sandbox.current_sandbox
+            sandbox: this.sandbox.get_identity()
           },
           column_to_display.column_id
         );

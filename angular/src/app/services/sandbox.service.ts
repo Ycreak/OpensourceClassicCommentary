@@ -16,7 +16,9 @@ import { Injectable } from '@angular/core';
 export class SandboxService {
   // Name of the current sandbox. Always defaults to the admin
   // sandbox, as that is the one we publish to the outside world.
-  public current_sandbox = 'admin';
+  // Kept private so the 'admin' API identity and the 'main' UI label
+  // have a single owner — readers go through get_identity()/get_name().
+  private current_sandbox = 'admin';
 
   constructor() {}
 
@@ -38,6 +40,15 @@ export class SandboxService {
       default:
         console.debug('Sandbox cannot be set yet for this current user role');
     }
+  }
+
+  /**
+   * Returns the sandbox identity used for API calls and filters. This is the raw
+   * value (e.g. 'admin') and must NOT be used for display — use get_name() instead.
+   * @return string of sandbox identity for API calls
+   */
+  public get_identity(): string {
+    return this.current_sandbox;
   }
 
   /**

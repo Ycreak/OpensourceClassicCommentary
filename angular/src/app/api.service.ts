@@ -73,7 +73,7 @@ export class ApiService {
       this.spinner_on();
       this._index = [];
       // Only retrieve the index for the current sandbox
-      const filter = { sandbox: this.sandbox.current_sandbox };
+      const filter = { sandbox: this.sandbox.get_identity() };
       this.post(this.FlaskURL, this.endpoints.get('index'), filter, this.get_header).subscribe({
         next: (data) => {
           this._index = data;
@@ -93,7 +93,7 @@ export class ApiService {
    */
   public request_documents(filter: any): Observable<any> {
     // Add the sandbox parameter to the request
-    filter['sandbox'] = this.sandbox.current_sandbox;
+    filter['sandbox'] = this.sandbox.get_identity();
     return new Observable((observer) => {
       this.spinner_on();
       this.post(this.FlaskURL, this.endpoints.get('get'), filter, this.get_header).subscribe({
@@ -143,7 +143,7 @@ export class ApiService {
    */
   public post_document(doc: any, endpoint: string): Observable<any> {
     // Always make sure a document is posted in the correct sandbox
-    doc['sandbox'] = this.sandbox.current_sandbox;
+    doc['sandbox'] = this.sandbox.get_identity();
     return new Observable((observer) => {
       this.spinner_on();
       this.post(this.FlaskURL, this.endpoints.get(endpoint), doc, this.post_header).subscribe({
