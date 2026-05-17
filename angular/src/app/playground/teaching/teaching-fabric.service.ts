@@ -102,9 +102,14 @@ export class TeachingFabricService {
   }
 
   /**
-   * Scatters every document on the canvas inside the visible viewport while avoiding overlap
-   * with the supplied zone rectangles. Falls back to the last sampled position if no overlap-free
-   * position is found within the attempt budget.
+   * Scatters every document on the canvas inside the visible viewport. For each
+   * document, samples up to `max_attempts` candidate positions, rejects any that
+   * overlap a drop-zone, and otherwise scores by how much area they overlap with
+   * documents already placed in this pass. The lowest-overlap candidate wins;
+   * a zone-free, doc-free candidate is taken immediately. When no zone-free
+   * position is found within the budget, the document is snapped to a safe slot
+   * outside the zones (corner of the viewport or below the bottommost zone)
+   * instead of being abandoned inside one.
    * @param zones The zone rectangles to avoid.
    * @returns void
    */
@@ -112,7 +117,19 @@ export class TeachingFabricService {
     const view = this.get_viewport_bounds();
     const objects = this.fabric_svc.canvas.getObjects().filter((obj) => this.fabric_svc.is_document(obj));
     const padding = 30;
-    const max_attempts = 50;
+    const max_attempts = 80;
+
+    // Axis-aligned rectangle intersection area; 0 means no overlap.
+    const overlap_area = (
+      a: { left: number; top: number; width: number; height: number },
+      b: { left: number; top: number; width: number; height: number }
+    ): number => {
+      const dx = Math.min(a.left + a.width, b.left + b.width) - Math.max(a.left, b.left);
+      const dy = Math.min(a.top + a.height, b.top + b.height) - Math.max(a.top, b.top);
+      return dx > 0 && dy > 0 ? dx * dy : 0;
+    };
+
+    const placed: { left: number; top: number; width: number; height: number }[] = [];
 
     objects.forEach((obj) => {
       const bb = obj.getBoundingRect();
@@ -121,21 +138,82 @@ export class TeachingFabricService {
       const x_range = Math.max(0, view.width - w - padding * 2);
       const y_range = Math.max(0, view.height - h - padding * 2);
 
-      let x = view.min_x + padding;
-      let y = view.min_y + padding;
+      let best_x = view.min_x + padding;
+      let best_y = view.min_y + padding;
+      let best_doc_overlap = Number.POSITIVE_INFINITY;
+      let zone_free_found = false;
+
       for (let attempt = 0; attempt < max_attempts; attempt++) {
-        x = view.min_x + padding + Math.random() * x_range;
-        y = view.min_y + padding + Math.random() * y_range;
-        const overlaps = zones.some(
-          (z) => !(x + w < z.left || x > z.left + z.width || y + h < z.top || y > z.top + z.height)
+        const x = view.min_x + padding + Math.random() * x_range;
+        const y = view.min_y + padding + Math.random() * y_range;
+        const candidate = { left: x, top: y, width: w, height: h };
+
+        // Reject candidates that overlap any zone at all.
+        const zone_hit = zones.some(
+          (z) => overlap_area(candidate, { left: z.left, top: z.top, width: z.width, height: z.height }) > 0
         );
-        if (!overlaps) break;
+        if (zone_hit) continue;
+
+        // Score against already-placed documents; smaller overlap is better.
+        const doc_overlap = placed.reduce((sum, p) => sum + overlap_area(candidate, p), 0);
+        if (doc_overlap < best_doc_overlap) {
+          best_doc_overlap = doc_overlap;
+          best_x = x;
+          best_y = y;
+          zone_free_found = true;
+          if (doc_overlap === 0) break; // Perfect fit, stop sampling.
+        }
       }
-      obj.set({ left: x, top: y });
+
+      // Fallback: random sampling never found a zone-free spot. Snap to a safe
+      // location outside every zone instead of leaving the doc inside one.
+      if (!zone_free_found) {
+        const fallback = this.find_safe_fallback(view, zones, w, h, padding);
+        best_x = fallback.x;
+        best_y = fallback.y;
+      }
+
+      obj.set({ left: best_x, top: best_y });
       obj.setCoords();
+      placed.push({ left: best_x, top: best_y, width: w, height: h });
     });
 
     this.fabric_svc.canvas.renderAll();
+  }
+
+  /**
+   * Picks a position for a document that is guaranteed not to overlap any zone,
+   * used when random sampling exhausts its budget. Tries the four viewport
+   * corners and the strip directly below the bottommost zone; falls back to the
+   * top-left padding corner if every option still hits a zone (which can only
+   * happen on absurdly small viewports).
+   */
+  private find_safe_fallback(
+    view: { min_x: number; min_y: number; width: number; height: number },
+    zones: DropZone[],
+    w: number,
+    h: number,
+    padding: number
+  ): { x: number; y: number } {
+    const candidates: { x: number; y: number }[] = [
+      { x: view.min_x + padding, y: view.min_y + padding },
+      { x: view.min_x + view.width - w - padding, y: view.min_y + padding },
+      { x: view.min_x + padding, y: view.min_y + view.height - h - padding },
+      { x: view.min_x + view.width - w - padding, y: view.min_y + view.height - h - padding },
+    ];
+
+    if (zones.length > 0) {
+      const bottom_most = Math.max(...zones.map((z) => z.top + z.height));
+      candidates.push({ x: view.min_x + padding, y: bottom_most + padding });
+    }
+
+    const hits_zone = (x: number, y: number): boolean =>
+      zones.some((z) => !(x + w <= z.left || x >= z.left + z.width || y + h <= z.top || y >= z.top + z.height));
+
+    for (const c of candidates) {
+      if (!hits_zone(c.x, c.y)) return c;
+    }
+    return { x: view.min_x + padding, y: view.min_y + padding };
   }
 
   /**
