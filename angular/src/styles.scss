@@ -4,6 +4,8 @@
 /* @import "~bootstrap/dist/css/bootstrap.css"; */
 @use "@angular/material" as mat;
 
+@import '@phosphor-icons/web/src/regular/style.css';
+
 @import url("./_tokens.scss");
 @import url("app/_mixins.scss");
 
