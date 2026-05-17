@@ -51,6 +51,18 @@ export class FabricService {
    */
   public documents: CanvasDocument[] = [];
 
+  /**
+   * Transient pan-drag state shared between the mouse:down/move/up handlers.
+   * Lives on the service rather than being stamped onto the canvas as
+   * ad-hoc properties (isDragging/lastPosX/lastPosY) — this keeps the
+   * canvas object's surface clean and makes the seam explicit.
+   */
+  private pan_state: { is_dragging: boolean; last_x: number; last_y: number } = {
+    is_dragging: false,
+    last_x: 0,
+    last_y: 0,
+  };
+
   constructor(private utility: UtilityService) {}
 
   /**
@@ -77,7 +89,7 @@ export class FabricService {
    * @returns void
    */
   public set_event_handlers(): void {
-    this.canvas.on('mouse:wheel', (opt: any) => {
+    this.canvas.on('mouse:wheel', (opt: fabric.TPointerEventInfo<WheelEvent>) => {
       const delta = opt.e.deltaY;
       let zoom = this.canvas.getZoom();
       zoom *= 0.999 ** delta;
@@ -88,42 +100,46 @@ export class FabricService {
       opt.e.stopPropagation();
     });
 
-    this.canvas.on('mouse:down', function (this: any, opt: any) {
+    this.canvas.on('mouse:down', (opt: fabric.TPointerEventInfo<fabric.TPointerEvent>) => {
       const evt = opt.e;
-      if (evt.shiftKey) {
-        this.isDragging = true;
-        this.selection = false;
-        this.lastPosX = evt.clientX;
-        this.lastPosY = evt.clientY;
+      // Shift-drag pans the viewport. Only MouseEvent/PointerEvent carry
+      // clientX/clientY and shiftKey synchronously; TouchEvent is ignored
+      // here (matches prior behaviour, which assumed a desktop pointer).
+      if (evt instanceof MouseEvent && evt.shiftKey) {
+        this.pan_state.is_dragging = true;
+        this.canvas.selection = false;
+        this.pan_state.last_x = evt.clientX;
+        this.pan_state.last_y = evt.clientY;
       }
     });
 
-    this.canvas.on('mouse:move', function (this: any, opt: any) {
-      if (this.isDragging) {
+    this.canvas.on('mouse:move', (opt: fabric.TPointerEventInfo<fabric.TPointerEvent>) => {
+      if (this.pan_state.is_dragging) {
         const e = opt.e;
-        const vpt = this.viewportTransform;
-        vpt[4] += e.clientX - this.lastPosX;
-        vpt[5] += e.clientY - this.lastPosY;
-        this.requestRenderAll();
-        this.lastPosX = e.clientX;
-        this.lastPosY = e.clientY;
+        if (!(e instanceof MouseEvent)) return;
+        const vpt = this.canvas.viewportTransform;
+        vpt[4] += e.clientX - this.pan_state.last_x;
+        vpt[5] += e.clientY - this.pan_state.last_y;
+        this.canvas.requestRenderAll();
+        this.pan_state.last_x = e.clientX;
+        this.pan_state.last_y = e.clientY;
       }
     });
 
     this.canvas.on('mouse:up', () => {
-      if ((this.canvas as any).isDragging) {
+      if (this.pan_state.is_dragging) {
         this.canvas.setViewportTransform(this.canvas.viewportTransform);
-        (this.canvas as any).isDragging = false;
+        this.pan_state.is_dragging = false;
       }
 
       this.canvas.selection = true;
       this.canvas_changed_subject.next({});
     });
 
-    // Save state for undo/redo on major changes
-    const stateEvents = ['object:added', 'object:modified', 'object:removed'];
-    stateEvents.forEach((event) => {
-      this.canvas.on(event as any, () => {
+    // Save state for undo/redo on major changes.
+    const state_events = ['object:added', 'object:modified', 'object:removed'] as const satisfies readonly (keyof fabric.CanvasEvents)[];
+    state_events.forEach((event) => {
+      this.canvas.on(event, () => {
         if (!this.undo_status && !this.redo_status) {
           this.save_state();
         }
@@ -385,8 +401,9 @@ export class FabricService {
     const offset_left = 150;
     const spacing = 25;
 
-    let top = (this.canvas.vptCoords as any).tr.y + offset_top;
-    const left = (this.canvas.vptCoords as any).tr.x - offset_left;
+    const vpt_coords = this.canvas.vptCoords;
+    let top = vpt_coords.tr.y + offset_top;
+    const left = vpt_coords.tr.x - offset_left;
 
     documents.forEach((doc) => {
       this.documents.push(doc);
