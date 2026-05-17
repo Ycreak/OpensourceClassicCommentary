@@ -3,7 +3,7 @@ import { Component, EventEmitter, NgZone, OnDestroy, OnInit, Output } from '@ang
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import * as fabric from 'fabric';
-import type { FabricObject, TPointerEvent, TPointerEventInfo } from 'fabric';
+import type { CanvasEvents, FabricObject } from 'fabric';
 
 import { FragmentCommentaryService } from '@oscc/commentary/fragment-commentary.service';
 import { UtilityService } from '@oscc/utility.service';
@@ -65,10 +65,10 @@ export class TeachingCommentaryBridgeComponent implements OnInit, OnDestroy {
 
   private set_event_handlers(): void {
     const canvas = this.fabric.canvas;
-    this.binder.bind_native(canvas.upperCanvasEl, 'dblclick', (event: MouseEvent) =>
-      this.handle_double_click({ e: event } as TPointerEventInfo<TPointerEvent>)
+    this.binder.bind_native(canvas.upperCanvasEl, 'dblclick', (event) =>
+      this.handle_double_click({ e: event } as CanvasEvents['mouse:dblclick'])
     );
-    this.binder.bind(canvas, 'mouse:dblclick', (event: TPointerEventInfo<TPointerEvent>) => this.handle_double_click(event));
+    this.binder.bind(canvas, 'mouse:dblclick', (event) => this.handle_double_click(event));
     this.binder.bind(canvas, 'selection:created', () => this.update_selected_document());
     this.binder.bind(canvas, 'selection:updated', () => this.update_selected_document());
     this.binder.bind(canvas, 'selection:cleared', () => {
@@ -82,7 +82,7 @@ export class TeachingCommentaryBridgeComponent implements OnInit, OnDestroy {
     this.binder.bind(canvas, 'after:render', () => this.update_button_position());
   }
 
-  private handle_double_click(event: TPointerEventInfo<TPointerEvent>): void {
+  private handle_double_click(event: CanvasEvents['mouse:dblclick']): void {
     if (!this.teaching.lesson_mode || !this.teaching.step_checked) return;
 
     const now = Date.now();
@@ -144,7 +144,7 @@ export class TeachingCommentaryBridgeComponent implements OnInit, OnDestroy {
     window.scroll(0, 0);
   }
 
-  private get_double_click_target(event: TPointerEventInfo<TPointerEvent>): DocumentObject | null {
+  private get_double_click_target(event: CanvasEvents['mouse:dblclick']): DocumentObject | null {
     const pointer_target = event?.e ? this.fabric.canvas.findTarget(event.e) : null;
     const candidates: (FabricObject | undefined | null)[] = [
       event?.target,
