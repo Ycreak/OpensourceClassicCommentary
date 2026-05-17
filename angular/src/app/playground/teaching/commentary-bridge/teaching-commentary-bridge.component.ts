@@ -8,6 +8,7 @@ import { ColumnsService } from '@oscc/columns/columns.service';
 import { CommentaryService } from '@oscc/commentary/commentary.service';
 import { UtilityService } from '@oscc/utility.service';
 import { FabricService } from '../../services/fabric.service';
+import { FabricEventBinder } from '../../services/fabric-event-binder';
 import { TeachingPlaygroundService } from '../teaching-playground.service';
 
 @Component({
@@ -23,18 +24,10 @@ export class TeachingCommentaryBridgeComponent implements OnInit, OnDestroy {
   protected button_visible = false;
   protected button_style: { left: string; top: string } = { left: '0px', top: '0px' };
 
-  private double_click_handler: (event: any) => void;
-  private native_double_click_handler: (event: MouseEvent) => void;
-  private selection_created_handler: () => void;
-  private selection_updated_handler: () => void;
-  private selection_cleared_handler: () => void;
-  private object_moving_handler: () => void;
-  private object_modified_handler: () => void;
-  private after_render_handler: () => void;
+  private readonly binder = new FabricEventBinder();
   private last_double_click_time = 0;
   private selected_document: any = null;
   private destroyed = false;
-  private handlers_registered = false;
 
   constructor(
     private columns: ColumnsService,
@@ -51,32 +44,7 @@ export class TeachingCommentaryBridgeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.destroyed = true;
-    if (!this.handlers_registered) return;
-
-    if (this.double_click_handler && this.fabric.canvas) {
-      this.fabric.canvas.off('mouse:dblclick' as any, this.double_click_handler);
-    }
-    if (this.native_double_click_handler && this.fabric.canvas?.upperCanvasEl) {
-      this.fabric.canvas.upperCanvasEl.removeEventListener('dblclick', this.native_double_click_handler);
-    }
-    if (this.selection_created_handler) {
-      this.fabric.canvas?.off('selection:created' as any, this.selection_created_handler);
-    }
-    if (this.selection_updated_handler) {
-      this.fabric.canvas?.off('selection:updated' as any, this.selection_updated_handler);
-    }
-    if (this.selection_cleared_handler) {
-      this.fabric.canvas?.off('selection:cleared' as any, this.selection_cleared_handler);
-    }
-    if (this.object_moving_handler) {
-      this.fabric.canvas?.off('object:moving' as any, this.object_moving_handler);
-    }
-    if (this.object_modified_handler) {
-      this.fabric.canvas?.off('object:modified' as any, this.object_modified_handler);
-    }
-    if (this.after_render_handler) {
-      this.fabric.canvas?.off('after:render' as any, this.after_render_handler);
-    }
+    this.binder.destroy();
   }
 
   protected request_selected_commentary(): void {
@@ -95,33 +63,20 @@ export class TeachingCommentaryBridgeComponent implements OnInit, OnDestroy {
   }
 
   private set_event_handlers(): void {
-    this.handlers_registered = true;
-    this.double_click_handler = (event: any) => {
-      this.handle_double_click(event);
-    };
-    this.native_double_click_handler = (event: MouseEvent) => {
-      this.handle_double_click({ e: event });
-    };
-    this.selection_created_handler = () => this.update_selected_document();
-    this.selection_updated_handler = () => this.update_selected_document();
-    this.selection_cleared_handler = () => {
+    const canvas = this.fabric.canvas;
+    this.binder.bind_native(canvas.upperCanvasEl, 'dblclick', (event: MouseEvent) => this.handle_double_click({ e: event }));
+    this.binder.bind(canvas, 'mouse:dblclick', (event: any) => this.handle_double_click(event));
+    this.binder.bind(canvas, 'selection:created', () => this.update_selected_document());
+    this.binder.bind(canvas, 'selection:updated', () => this.update_selected_document());
+    this.binder.bind(canvas, 'selection:cleared', () => {
       this.ng_zone.run(() => {
         this.selected_document = null;
         this.button_visible = false;
       });
-    };
-    this.object_moving_handler = () => this.update_button_position();
-    this.object_modified_handler = () => this.update_button_position();
-    this.after_render_handler = () => this.update_button_position();
-
-    this.fabric.canvas.upperCanvasEl.addEventListener('dblclick', this.native_double_click_handler);
-    this.fabric.canvas.on('mouse:dblclick' as any, this.double_click_handler);
-    this.fabric.canvas.on('selection:created' as any, this.selection_created_handler);
-    this.fabric.canvas.on('selection:updated' as any, this.selection_updated_handler);
-    this.fabric.canvas.on('selection:cleared' as any, this.selection_cleared_handler);
-    this.fabric.canvas.on('object:moving' as any, this.object_moving_handler);
-    this.fabric.canvas.on('object:modified' as any, this.object_modified_handler);
-    this.fabric.canvas.on('after:render' as any, this.after_render_handler);
+    });
+    this.binder.bind(canvas, 'object:moving', () => this.update_button_position());
+    this.binder.bind(canvas, 'object:modified', () => this.update_button_position());
+    this.binder.bind(canvas, 'after:render', () => this.update_button_position());
   }
 
   private handle_double_click(event: any): void {
