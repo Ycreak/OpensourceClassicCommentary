@@ -67,8 +67,8 @@ class Couch:
         try:
             self.db = server[db_name]
         except couchdb.ResourceNotFound:
-            # Optionally create the database if it doesn't exist
-            logger.error(f"Database {db_name} not found")
+            logging.info(f"Database {db_name} not found, creating it")
+            self.db = server.create(db_name)
 
         self.LIMIT = 1000
 

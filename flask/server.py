@@ -26,10 +26,14 @@ swagger = Swagger(app)  # localhost:5003/apidocs/#/
 
 # Only allow requests from these specific origins
 TRUSTED_ORIGINS = [
-    "http://127.0.0.1:4200",
-    "http://localhost:4200",
-    os.getenv("REMOTE_HOST"),
-    os.getenv("STAGING_HOST"),
+    origin
+    for origin in [
+        "http://127.0.0.1:4200",
+        "http://localhost:4200",
+        os.getenv("REMOTE_HOST"),
+        os.getenv("STAGING_HOST"),
+    ]
+    if origin
 ]
 CORS(app, origins=TRUSTED_ORIGINS)
 
