@@ -5,8 +5,9 @@
  * Symbols, Phosphor, Tabler) becomes a one-file edit to the lookup table
  * below instead of editing ~15 template lines.
  *
- * Phase 1: every strategy returns the current PNG path or mat-icon name,
- * so rendered pixels are byte-identical with the pre-refactor template.
+ * Phase 2: rewired to Material Symbols Outlined (variable icon font loaded
+ * via Google Fonts in index.html). Each strategy now renders a
+ * <span class="material-symbols-outlined">name</span>.
  */
 import { Component, Input } from '@angular/core';
 import { NgSwitch, NgSwitchCase } from '@angular/common';
@@ -14,13 +15,10 @@ import { MatIconModule } from '@angular/material/icon';
 
 type IconStrategy =
   | { kind: 'png'; value: string }
-  | { kind: 'mat'; value: string };
+  | { kind: 'mat'; value: string }
+  | { kind: 'msym'; value: string };
 
-const png = (path: string): IconStrategy => ({ kind: 'png', value: path });
-const mat_icon = (name: string): IconStrategy => ({ kind: 'mat', value: name });
-
-const byte_dance = (file: string): string =>
-  `assets/icons/ByteDanceIconPark/${file}`;
+const material_symbol = (name: string): IconStrategy => ({ kind: 'msym', value: name });
 
 @Component({
   selector: 'app-playground-icon',
@@ -38,23 +36,23 @@ export class PlaygroundIconComponent {
    * the icon set globally. Keep keys kebab-case so HTML stays readable.
    */
   private static readonly icon_strategies: Readonly<Record<string, IconStrategy>> = {
-    menu: mat_icon('menu'),
-    hamburger: png(byte_dance('9069135_hamburger_button_icon.png')),
-    'author-search': png(byte_dance('9069051_doc_search_icon.png')),
-    note: png(byte_dance('9068939_notes_icon.png')),
-    clear: png(byte_dance('9069117_clear_icon.png')),
-    draw: png(byte_dance('9069780_write_icon.png')),
-    undo: png(byte_dance('9069465_return_icon.png')),
-    redo: png(byte_dance('9069840_go_on_icon.png')),
-    save: png(byte_dance('9070374_hard_disk_one_icon.png')),
-    load: png(byte_dance('9068981_folder_open_icon.png')),
-    'delete-playground': png(byte_dance('9069053_folder_delete_icon.png')),
-    share: png(byte_dance('9071373_people_plus_one_icon.png')),
-    'create-session': png(byte_dance('9071373_people_plus_one_icon.png')),
-    'join-session': png(byte_dance('9071420_people_download_icon.png')),
-    help: mat_icon('question_mark'),
-    'delete-object': mat_icon('backspace'),
-    commentary: mat_icon('notes'),
+    menu: material_symbol('menu'),
+    hamburger: material_symbol('menu'),
+    'author-search': material_symbol('manage_search'),
+    note: material_symbol('chat_bubble_outline'), /* Ycreak: replace note by comment icon */
+    clear: material_symbol('cleaning_services'),
+    draw: material_symbol('draw'),
+    undo: material_symbol('undo'), /* Ycreak: arrows should "really turn" — material's undo curls */
+    redo: material_symbol('redo'),
+    save: material_symbol('save'),
+    load: material_symbol('folder_open'),
+    'delete-playground': material_symbol('folder_delete'),
+    share: material_symbol('share'),
+    'create-session': material_symbol('group_add'), /* differentiated from share */
+    'join-session': material_symbol('login'),
+    help: material_symbol('help_outline'),
+    'delete-object': material_symbol('backspace'),
+    commentary: material_symbol('comment'), /* Ycreak: comment icon */
   };
 
   protected get strategy(): IconStrategy | undefined {
