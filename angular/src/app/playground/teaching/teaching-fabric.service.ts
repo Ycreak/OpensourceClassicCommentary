@@ -2,7 +2,60 @@ import { Injectable } from '@angular/core';
 import * as fabric from 'fabric';
 
 import { FabricService } from '../services/fabric.service';
-import { DropZone, EvaluationResult } from './lesson.model';
+import { DropZone, EvaluationResult, FragmentReference } from './lesson.model';
+
+/**
+ * The criteria a Zone expects an incoming Fragment to satisfy. Mirrors the
+ * shape stored on DropZone.expected, just lifted to a local alias so the
+ * helpers below can name it once.
+ */
+type ExpectedCriteria = Partial<FragmentReference>[];
+
+/**
+ * A fabric Group that has been tagged as a lesson drop-zone, carrying the
+ * Zone's label and the criteria it expects. The underlying property names
+ * (`is_zone`, `zone_data`) are stamped on the fabric object so other canvas
+ * code (and serialization) sees them as plain runtime fields; the branded
+ * type just lets TypeScript see them too.
+ */
+interface ZoneObject extends fabric.Group {
+  is_zone: true;
+  zone_data: { label: string; expected: ExpectedCriteria };
+}
+
+/**
+ * A fabric Group that renders the green/red "Juist:" / "Fout:" verdict shown
+ * under a fragment after the user clicks Controleer. Tagged so clear_feedback
+ * can wipe just these between steps without touching the documents.
+ */
+interface FeedbackLabelObject extends fabric.Group {
+  is_feedback_label: true;
+}
+
+/**
+ * Local placeholder for the identifier stamped on a document group by the
+ * canvas layer. The DocumentObject seam in playground/services owns the real
+ * type; this minimal shape covers everything evaluate_step reads.
+ * TODO: replace with DocumentObject import after merge.
+ */
+interface DocumentIdentifier {
+  author?: string;
+  title?: string;
+  editor?: string;
+  name?: string;
+  document_type?: string;
+}
+
+/**
+ * Local narrowing for the fragment group structure that apply_feedback and
+ * clear_feedback poke into. The DocumentObject seam will replace this.
+ * TODO: replace with DocumentObject import after merge.
+ */
+interface DocumentGroup extends fabric.Group {
+  _objects: (fabric.Object & { default_fill?: string; dirty?: boolean })[];
+  dirty?: boolean;
+  identifier?: DocumentIdentifier;
+}
 
 /**
  * Lesson-only canvas operations: drop-zones, evaluation, and feedback rendering.
@@ -19,11 +72,41 @@ export class TeachingFabricService {
   constructor(private fabric_svc: FabricService) {}
 
   /**
-   * Checks whether a fabric object has been tagged as a lesson drop-zone.
+   * Brands a fabric Group as a Zone by stamping the tag and zone_data on it.
+   * Keeps the mutation in one spot so the magic-string property names live
+   * exactly once in the module.
+   */
+  private tag_as_zone(group: fabric.Group, zone_data: ZoneObject['zone_data']): ZoneObject {
+    const zone = group as ZoneObject;
+    zone[TeachingFabricService.ZONE_TAG as 'is_zone'] = true;
+    zone.zone_data = zone_data;
+    return zone;
+  }
+
+  /**
+   * Brands a fabric Group as a FeedbackLabel so clear_feedback_labels can
+   * find and remove just these between steps.
+   */
+  private tag_as_feedback_label(group: fabric.Group): FeedbackLabelObject {
+    const label = group as FeedbackLabelObject;
+    label.is_feedback_label = true;
+    return label;
+  }
+
+  /**
+   * Typeguard: true when the fabric object has been branded by tag_as_zone.
    * Keeps zone identity an internal concern of the teaching layer.
    */
-  private is_zone(obj: any): boolean {
-    return obj?.[TeachingFabricService.ZONE_TAG] === true;
+  private is_zone(obj: fabric.Object): obj is ZoneObject {
+    return (obj as Partial<ZoneObject>)?.[TeachingFabricService.ZONE_TAG as 'is_zone'] === true;
+  }
+
+  /**
+   * Typeguard: true when the fabric object has been branded by
+   * tag_as_feedback_label.
+   */
+  private is_feedback_label(obj: fabric.Object): obj is FeedbackLabelObject {
+    return (obj as Partial<FeedbackLabelObject>)?.is_feedback_label === true;
   }
 
   /**
@@ -81,10 +164,9 @@ export class TeachingFabricService {
         evented: false,
       });
 
-      (group as any)[TeachingFabricService.ZONE_TAG] = true;
-      (group as any).zone_data = { label: zone.label, expected: zone.expected };
+      const zone_obj = this.tag_as_zone(group, { label: zone.label, expected: zone.expected });
 
-      this.fabric_svc.canvas.add(group);
+      this.fabric_svc.canvas.add(zone_obj);
     });
   }
 
@@ -237,7 +319,7 @@ export class TeachingFabricService {
     const documents = this.fabric_svc.canvas.getObjects().filter((obj) => this.fabric_svc.is_document(obj));
 
     return documents.map((obj) => {
-      const identifier = (obj as any).identifier;
+      const identifier: DocumentIdentifier = (obj as DocumentGroup).identifier ?? {};
       const c = obj.getCenterPoint();
 
       const placed_zone = zones.find((zone) => {
@@ -246,8 +328,8 @@ export class TeachingFabricService {
 
       const should_zone = zones.find((zone) => {
         return zone.expected.some((criterion) => {
-          return Object.keys(criterion).every((key) => {
-            return (criterion as any)[key] === (identifier as any)[key];
+          return (Object.keys(criterion) as (keyof DocumentIdentifier)[]).every((key) => {
+            return criterion[key] === identifier[key];
           });
         });
       }) || null;
@@ -277,7 +359,7 @@ export class TeachingFabricService {
     this.fabric_svc.canvas.discardActiveObject();
     this.clear_feedback_labels();
     results.forEach((result) => {
-      const group = result.fragment_obj as any;
+      const group = result.fragment_obj as DocumentGroup;
       const inner_rect = group._objects[0];
       inner_rect.set({
         fill: result.is_correct ? '#C8E6C9' : '#FFCDD2',
@@ -311,14 +393,15 @@ export class TeachingFabricService {
       fontSize: 15,
       fill: '#212121',
     });
-    const label = new fabric.Group([verdict, origin], {
-      left: rect.left,
-      top: rect.top + rect.height + 6,
-      selectable: false,
-      evented: false,
-    });
+    const label = this.tag_as_feedback_label(
+      new fabric.Group([verdict, origin], {
+        left: rect.left,
+        top: rect.top + rect.height + 6,
+        selectable: false,
+        evented: false,
+      })
+    );
 
-    (label as any).is_feedback_label = true;
     this.fabric_svc.canvas.add(label);
     this.fabric_svc.canvas.bringObjectToFront(label);
   }
@@ -335,7 +418,7 @@ export class TeachingFabricService {
    * Removes previous answer-origin labels from the canvas.
    */
   private clear_feedback_labels(): void {
-    const labels = this.fabric_svc.canvas.getObjects().filter((obj) => (obj as any).is_feedback_label === true);
+    const labels = this.fabric_svc.canvas.getObjects().filter((obj) => this.is_feedback_label(obj));
     labels.forEach((label) => this.fabric_svc.canvas.remove(label));
   }
 
@@ -347,7 +430,7 @@ export class TeachingFabricService {
     this.clear_feedback_labels();
     const documents = this.fabric_svc.canvas.getObjects().filter((obj) => this.fabric_svc.is_document(obj));
     documents.forEach((obj) => {
-      const group = obj as any;
+      const group = obj as DocumentGroup;
       const inner_rect = group._objects[0];
       inner_rect.set({
         fill: inner_rect.default_fill ?? '#9BA8F2',
