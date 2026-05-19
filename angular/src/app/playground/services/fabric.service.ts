@@ -356,10 +356,9 @@ export class FabricService {
    */
   public add(documents: any[]): void {
     const offset_top = 200;
-    const offset_left = 40; // A smaller, clean padding from the left edge
+    const offset_left = 40; 
     const spacing = 25;
 
-    // Use .tl (Top-Left) instead of .tr (Top-Right)
     let top = (this.canvas.vptCoords as any).tl.y + offset_top;
     const left = (this.canvas.vptCoords as any).tl.x + offset_left;
 
