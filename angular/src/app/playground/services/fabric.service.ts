@@ -350,17 +350,18 @@ export class FabricService {
   }
 
   /**
-   * Adds multiple documents to the playground with calculated offsets.
+   * Adds multiple documents to the playground neatly aligned to the left side.
    * @param documents An array of document objects.
    * @returns void
    */
   public add(documents: any[]): void {
-    const offset_top = 60;
-    const offset_left = 150;
+    const offset_top = 200;
+    const offset_left = 40; // A smaller, clean padding from the left edge
     const spacing = 25;
 
-    let top = (this.canvas.vptCoords as any).tr.y + offset_top;
-    const left = (this.canvas.vptCoords as any).tr.x - offset_left;
+    // Use .tl (Top-Left) instead of .tr (Top-Right)
+    let top = (this.canvas.vptCoords as any).tl.y + offset_top;
+    const left = (this.canvas.vptCoords as any).tl.x + offset_left;
 
     documents.forEach((doc) => {
       this.documents.push(doc);

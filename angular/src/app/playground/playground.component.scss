@@ -3,11 +3,57 @@
 
 #playground {
   background-color: white; // This is specifically needed in fullscreen mode.
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column; /* Stacks layout elements cleanly */
 }
 
-#playground-canvas {
-  height: 85vh !important; // Sets the height of the canvas in relation to the user's viewport.
-  //TODO make this more elegant for example by having the canvas inherit height from its container.
+/* Fixed selector to match HTML: changed hyphen to underscore */
+#playground_canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important; /* Elegant container height inheritance */
+}
+
+.canvas-container {
+  position: relative;
+  width: 100%;
+  flex: 1; /* Automatically consumes remaining screen space */
+  overflow: hidden; /* Suppresses canvas spillover scrollbars */
+
+  canvas {
+    background: #ffffff;
+    position: absolute;
+  }
+
+  .menu {
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    width: 200px;
+    height: 120px;
+    top: 7%;
+    left: 2%;
+    position: absolute;
+    border: 3px solid #3f51b5;
+    z-index: 10; /* Keeps choices menu floating above toolbar elements */
+
+    .br-icon {
+      padding: 0.5em;
+      display: flex;
+      align-items: center;
+    }
+    .br-icon:hover {
+      background-color: #ff4886;
+      cursor: pointer;
+    }
+    .menu-icon {
+      margin: 0.2em;
+    }
+  }
 }
 
 #playground-hamburger-menu {
@@ -48,7 +94,6 @@
 #playground-help-menu {
   display: inline-flex;
   position: absolute;
-  // right: 16px;
   right: 4px;
   top: -16px;
   flex-wrap: nowrap;
@@ -61,7 +106,6 @@
 }
 
 #playground-help-menu-button {
-  // border-radius: 4px;
   border-radius: 0px 0px 0px 50px;
   border-color: transparent;
   transition: --helpMenuColor 0.2s;
@@ -78,20 +122,16 @@
 }
 
 .note {
-  // width: auto;
-  // height: auto;
   border: solid 1px rgb(0, 0, 0);
   padding: 0.5em;
   color: rgba(0, 0, 0, 0.87);
   cursor: move;
   display: inline-block;
   justify-content: center;
-  // align-items: center;
   text-align: center;
   background: #fff;
   border-radius: 4px;
   position: absolute;
-  // z-index: 2;
   transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
   box-shadow:
     0 3px 1px -2px rgba(0, 0, 0, 0.2),
@@ -106,34 +146,13 @@
     0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 
-// .playground {
-//   // border: solid 1px #ccc;
-//   color: rgba(0, 0, 0, 0.87);
-//   cursor: move;
-//   display: inline-block;
-//   justify-content: center;
-//   // align-items: center;
-//   text-align: center;
-//   // background: #fff;
-//   border-radius: 4px;
-//   position: absolute; // Absolute causes all items to be on top of eachother
-//   // z-index: 1;
-//   // transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
-//   // box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
-//   //             0 2px 2px 0 rgba(0, 0, 0, 0.14),
-//   //             0 1px 5px 0 rgba(0, 0, 0, 0.12);
-// }
-
-// .playground:active {
-//   box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
-// }
-
 .zlayer {
   z-index: var(--layer);
 }
 
+/* Removed block causing giant scrollbar padding */
 .playground-height-padding {
-  min-height: 150ch;
+  min-height: auto;
 }
 
 button.button-dashed-background {
@@ -172,38 +191,6 @@ button.button-dashed-background {
   margin-right: 0px;
 }
 
-.canvas-container {
-  position: relative;
-  width: 100%;
-  height: auto;
-  canvas {
-    background: #ffffff;
-    position: absolute;
-  }
-  .menu {
-    background-color: white;
-    // border-radius: 25px;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-    width: 200px;
-    height: 120px;
-    top: 7%;
-    left: 2%;
-    position: absolute;
-    border: 3px solid #3f51b5;
-    .br-icon {
-      padding: 0.5em;
-      display: flex;
-      align-items: center;
-    }
-    .br-icon:hover {
-      background-color: #ff4886;
-      cursor: pointer;
-    }
-    .menu-icon {
-      margin: 0.2em;
-    }
-  }
-}
 .playground-toolbar {
   width: 100%;
   top: 1rem;
@@ -211,10 +198,13 @@ button.button-dashed-background {
   display: flex;
   flex-wrap: nowrap;
   place-content: center;
+  z-index: 5; /* Ensures toolbar elements don't slip behind canvas layers */
 }
+
 .playground-tool-group {
   display: inline-flex;
 }
+
 .playground-icon {
   width: 32px;
   height: 32px;
@@ -223,12 +213,15 @@ button.button-dashed-background {
   border-bottom-width: 20px;
   box-sizing: content-box;
 }
+
 .playground-icon:first-child {
   border-left-width: 10px;
 }
+
 .playground-icon:last-child {
   border-right-width: 10px;
 }
+
 .playground-icon:hover {
   transition: transform 0.2s ease-out;
   transform: scale(1.25);
