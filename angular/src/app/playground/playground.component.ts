@@ -10,8 +10,7 @@ import { WebsocketsService } from '@oscc/playground/websockets.service';
 import { HostListener } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
-//import * as fabric from 'fabric';
-import { fabric } from 'fabric';
+import { Canvas } from 'fabric';
 import { Subscription } from 'rxjs';
 
 // Service imports
@@ -367,8 +366,8 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
    * @author Ycreak
    */
   protected request_commentary(): void {
-    const clicked_document = this.fabric.canvas.getActiveObjects()[0];
-    if (!this.fabric.is_note(clicked_document)) {
+    const clicked_document = this.fabric.canvas.getActiveObjects()[0] as any;
+    if (clicked_document && !this.fabric.is_note(clicked_document)) {
       const full_document = this.utility.filter_array(this.fabric.documents, clicked_document.identifier)[0];
       if (full_document) {
         this.commentary.request(full_document);
@@ -405,7 +404,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
    * @author Ycreak
    */
   private init_playground(): void {
-    this.fabric.canvas = new fabric.Canvas('playground_canvas');
+    this.fabric.canvas = new Canvas('playground_canvas');
     this.fabric.set_event_handlers();
     this.fabric.init();
   }

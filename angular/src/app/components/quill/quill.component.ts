@@ -13,7 +13,7 @@ import { QuillEditorComponent } from 'ngx-quill';
 @Component({
   selector: 'app-quill',
   standalone: true,
-  imports: [MatDialogContent, QuillEditorComponent, FormsModule, MatButtonModule, MatDialogClose],
+  imports: [QuillEditorComponent, FormsModule, MatButtonModule],
   templateUrl: './quill.component.html',
   styleUrls: ['./quill.component.scss'],
 })
