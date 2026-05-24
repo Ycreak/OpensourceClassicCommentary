@@ -82,18 +82,15 @@
   <u><a href="https://oscc.lucdh.nl">the following URL</a></u> for the best results. Please contact the administrators
   if problems are still occuring.
 </div>
-
 <div>
-  <!--We have two drawers: one for the commentary which is shown along side the columns, and one for the playground,-->
-  <!--which moves over the columns and commentary.-->
   <mat-drawer-container class="drawer-container" autosize>
     <mat-drawer-content>
       <div class="overview-sidenav-content">
-        <app-columns></app-columns>
+        <app-columns [hidden]="playground_enabled"></app-columns>
+        <app-playground [hidden]="!playground_enabled"></app-playground>
       </div>
     </mat-drawer-content>
 
-    <!-- Side Drawer (Commentary) -->
     <mat-drawer
       #drawer
       class="overview-sidenav"
@@ -104,12 +101,6 @@
       <div style="padding: 0.5em">
         <app-commentary #commentary> </app-commentary>
       </div>
-    </mat-drawer>
-
-    <!-- Bottom Drawer (Playground) -->
-    <mat-drawer #bottomDrawer mode="over" position="bottom" [opened]="playground_enabled">
-      <!--<app-playground (clicked_document)="this.clicked_document = $event"></app-playground>-->
-      <app-playground></app-playground>
     </mat-drawer>
   </mat-drawer-container>
 </div>
