@@ -11,6 +11,15 @@
 
 #playground {
   background-color: white; // This is specifically needed in fullscreen mode.
+}
+
+#playground-canvas {
+  height: 85vh !important; // Sets the height of the canvas in relation to the user's viewport.
+  //TODO make this more elegant for example by having the canvas inherit height from its container.
+}
+
+#playground {
+  background-color: white; // This is specifically needed in fullscreen mode.
   height: 100%;
   width: 100%;
   margin: 0;
