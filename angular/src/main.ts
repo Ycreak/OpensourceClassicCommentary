@@ -10,6 +10,7 @@ import { provideRouter, Routes } from '@angular/router';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { HttpErrorInterceptor } from './app/api.service';
 import { HTTP_INTERCEPTORS, withInterceptorsFromDi, provideHttpClient } from '@angular/common/http';
+import { FullscreenOverlayContainer, OverlayContainer } from '@angular/cdk/overlay';
 
 const appRoutes: Routes = [
   { path: '', component: OverviewComponent },
@@ -34,5 +35,6 @@ bootstrapApplication(AppComponent, {
     provideHttpClient(withInterceptorsFromDi()),
     provideRouter(appRoutes),
     provideAnimations(),
+    { provide: OverlayContainer, useClass: FullscreenOverlayContainer },
   ],
 }).catch((err) => console.error(err));
