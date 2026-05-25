@@ -1,5 +1,6 @@
 /* Playground related CSS */
 @use "../_mixins.scss" as *;
+@use "src/styles.scss" as *;
 
 #playground {
   background-color: white; // This is specifically needed in fullscreen mode.
