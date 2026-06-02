@@ -1,11 +1,11 @@
 <!-- Button to select the text -->
 <ng-content></ng-content>
 
-<button *ngIf="this.button_type === 'stroked'" mat-stroked-button [matMenuTriggerFor]="menu_authors">
+<button *ngIf="this.button_type === 'stroked'" mat-stroked-button [matMenuTriggerFor]="menu_authors" class="filter_component_button_stroked" >
   {{ this.button_title }}
 </button>
 
-<button *ngIf="this.button_type === 'basic'" mat-button [matMenuTriggerFor]="menu_authors">
+<button *ngIf="this.button_type === 'basic'" mat-button [matMenuTriggerFor]="menu_authors" class="filter_component_button_basic">
   {{ this.button_title }}
 </button>
 
