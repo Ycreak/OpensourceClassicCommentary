@@ -1,16 +1,19 @@
 <!-- Button to select the text -->
-<button *ngIf="this.button_type === 'stroked'" mat-stroked-button [matMenuTriggerFor]="menu_authors">
-  {{ this.button_title }}
-</button>
+@if (this.button_type === 'stroked') {
+  <button mat-stroked-button [matMenuTriggerFor]="menu_authors">
+    {{ this.button_title }}
+  </button>
+}
 
-<button *ngIf="this.button_type === 'basic'" mat-button [matMenuTriggerFor]="menu_authors">
-  {{ this.button_title }}
-</button>
+@if (this.button_type === 'basic') {
+  <button mat-button [matMenuTriggerFor]="menu_authors">
+    {{ this.button_title }}
+  </button>
+}
 
 <!-- Nested menu to select author - title - editor. -->
 <mat-menu #menu_authors="matMenu">
-  <ng-container
-    *ngFor="let introduction_type of ['Author introductions', 'Title introductions', 'Editor introductions']">
+  @for (introduction_type of ['Author introductions', 'Title introductions', 'Editor introductions']; track introduction_type) {
     <button
       mat-menu-item
       (menuOpened)="this.set_introduction_type(introduction_type)"
@@ -18,19 +21,19 @@
       [matMenuTriggerFor]="menu_names">
       {{ introduction_type }}
     </button>
-  </ng-container>
+  }
 </mat-menu>
 
 <mat-menu #menu_names="matMenu">
-  <ng-container *ngIf="this.introduction_type === 'Author introductions'">
-    <ng-container *ngFor="let author of this.titles">
+  @if (this.introduction_type === 'Author introductions') {
+    @for (author of this.titles; track author) {
       <button mat-menu-item (click)="this.selected_author = author" (click)="this.filter(introduction_type)">
         {{ author }}
       </button>
-    </ng-container>
-  </ng-container>
-  <ng-container *ngIf="this.introduction_type === 'Title introductions'">
-    <ng-container *ngFor="let title of this.titles">
+    }
+  }
+  @if (this.introduction_type === 'Title introductions') {
+    @for (title of this.titles; track title) {
       <button
         mat-menu-item
         [hidden]="title.trim() === ''"
@@ -39,13 +42,13 @@
         (click)="this.filter(introduction_type)">
         {{ title }}
       </button>
-    </ng-container>
-  </ng-container>
-  <ng-container *ngIf="this.introduction_type === 'Editor introductions'">
-    <ng-container *ngFor="let editor of this.titles">
+    }
+  }
+  @if (this.introduction_type === 'Editor introductions') {
+    @for (editor of this.titles; track editor) {
       <button mat-menu-item (click)="this.selected_editor = editor" (click)="this.filter(introduction_type)">
         {{ editor }}
       </button>
-    </ng-container>
-  </ng-container>
+    }
+  }
 </mat-menu>

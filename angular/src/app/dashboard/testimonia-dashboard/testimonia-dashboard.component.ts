@@ -25,7 +25,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { TestimoniumFilterComponent } from '../../filters/testimonium-filter/testimonium-filter.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { NgIf } from '@angular/common';
+
 
 @Component({
   selector: 'app-testimonia-dashboard',
@@ -33,7 +33,6 @@ import { NgIf } from '@angular/common';
   styleUrls: ['./testimonia-dashboard.component.scss'],
   standalone: true,
   imports: [
-    NgIf,
     MatExpansionModule,
     MatIconModule,
     TestimoniumFilterComponent,
@@ -44,8 +43,8 @@ import { NgIf } from '@angular/common';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatOptionModule,
-  ],
+    MatOptionModule
+],
 })
 export class TestimoniaDashboardComponent {
   private allowed_user_roles = ['admin'];

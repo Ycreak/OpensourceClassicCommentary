@@ -5,9 +5,11 @@
         <mat-label>Author</mat-label>
         <mat-select [(ngModel)]="this._author" ngDefaultControl>
           <mat-option (click)="this.filter_index()" [value]="">-- None --</mat-option>
-          <mat-option (click)="this.filter_index()" *ngFor="let author of this._authors" [value]="author">
-            {{ author }}
-          </mat-option>
+          @for (author of this._authors; track author) {
+            <mat-option (click)="this.filter_index()" [value]="author">
+              {{ author }}
+            </mat-option>
+          }
         </mat-select>
       </mat-form-field>
     </div>
@@ -16,9 +18,11 @@
         <mat-label>Name</mat-label>
         <mat-select [(ngModel)]="this._name" ngDefaultControl>
           <mat-option (click)="this.filter_index()" [value]="">-- None --</mat-option>
-          <mat-option (click)="this.filter_index()" *ngFor="let name of this._names" [value]="name">
-            {{ name }}
-          </mat-option>
+          @for (name of this._names; track name) {
+            <mat-option (click)="this.filter_index()" [value]="name">
+              {{ name }}
+            </mat-option>
+          }
         </mat-select>
       </mat-form-field>
     </div>
@@ -66,7 +70,7 @@
     <tr
       mat-row
       *matRowDef="let row; columns: displayedColumns"
-      (click)="this.filter.data.testimonia.selection.toggle(row)"></tr>
+    (click)="this.filter.data.testimonia.selection.toggle(row)"></tr>
 
     <!-- Row shown when there is no matching data. -->
     <tr class="mat-row" *matNoDataRow>

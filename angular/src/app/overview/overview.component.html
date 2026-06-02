@@ -1,12 +1,13 @@
 <!-- Navigation bar -->
 <mat-toolbar color="primary">
   <span style="width: fit-content; transform: translateY(-1px)">
-    <h3 *ngIf="this.window_watcher.size > 725; else small_title" class="navbar">{{ this.get_title("long") }}</h3>
+    @if (this.window_watcher.size > 725) {
+      <h3 class="navbar">{{ this.get_title("long") }}</h3>
+    } @else {
+      <h3 class="navbar">{{ this.get_title("short") }}</h3>
+    }
   </span>
 
-  <ng-template #small_title>
-    <h3 class="navbar">{{ this.get_title("short") }}</h3>
-  </ng-template>
 
   <span class="spacer"></span>
 
@@ -15,16 +16,15 @@
     {{ this.sandbox.get_name().toUpperCase() }}
   </button>
 
-  <button
-    mat-stroked-button
-    *ngIf="!this.commentary_enabled; else commentary_disabled"
-    class="navbar button-margin"
-    (click)="this.toggle_commentary()"
-    (click)="drawer.toggle()">
-    COMMENTARY
-  </button>
-
-  <ng-template #commentary_disabled>
+  @if (!this.commentary_enabled) {
+    <button
+      mat-stroked-button
+      class="navbar button-margin"
+      (click)="this.toggle_commentary()"
+      (click)="drawer.toggle()">
+      COMMENTARY
+    </button>
+  } @else {
     <button
       mat-flat-button
       color="accent"
@@ -33,22 +33,25 @@
       (click)="drawer.toggle()">
       COMMENTARY
     </button>
-  </ng-template>
+  }
 
-  <button
-    mat-stroked-button
-    *ngIf="!this.playground_enabled; else playground_disabled"
-    class="navbar button-margin"
-    (click)="this.toggle_playground(); this.scroll_viewport_to('playground')">
-    PLAYGROUND
-  </button>
 
-  <ng-template #playground_disabled>
+  @if (!this.playground_enabled) {
+    <button
+      mat-stroked-button
+      class="navbar button-margin"
+      (click)="this.toggle_playground(); this.scroll_viewport_to('playground')">
+      PLAYGROUND
+    </button>
+  } @else {
     <button mat-flat-button class="button-margin" color="accent" (click)="this.toggle_playground()">PLAYGROUND</button>
-  </ng-template>
+  }
+
 
   <button mat-stroked-button class="navbar" [matMenuTriggerFor]="menu">
-    <mat-icon *ngIf="this.window_watcher.size > 850" fontIcon="menu"></mat-icon>
+    @if (this.window_watcher.size > 850) {
+      <mat-icon fontIcon="menu"></mat-icon>
+    }
     MENU
   </button>
 </mat-toolbar>
@@ -56,8 +59,12 @@
 <!-- Navigation bar menu -->
 <mat-menu #menu="matMenu">
   <button (click)="login()" mat-menu-item>Login</button>
-  <button mat-menu-item routerLink="/dashboard" *ngIf="this.auth_service.is_logged_in">Dashboard</button>
-  <button mat-menu-item routerLink="/scansion" *ngIf="this.auth_service.is_logged_in">Scansion</button>
+  @if (this.auth_service.is_logged_in) {
+    <button mat-menu-item routerLink="/dashboard">Dashboard</button>
+  }
+  @if (this.auth_service.is_logged_in) {
+    <button mat-menu-item routerLink="/scansion">Scansion</button>
+  }
   <a href="https://github.com/Ycreak/OpensourceClassicCommentary/" target="_blank" mat-menu-item>Documentation</a>
   <button (click)="this.dialog_service.open_settings_dialog()" mat-menu-item>Settings</button>
   <button (click)="this.dialog_service.open_about_dialog()" mat-menu-item>About</button>
@@ -76,12 +83,14 @@
 </mat-menu>
 
 <!-- Display for if server is down -->
-<div *ngIf="this.api.get_network_status() === false" class="alert alert-warning" role="alert">
-  Your client cannot connect to the server. Please check if you have the latest version of your browser installed.
-  Furthermore, secured networks like DUWO and Leiden University are known to cause problems. Also, please click
-  <u><a href="https://oscc.lucdh.nl">the following URL</a></u> for the best results. Please contact the administrators
-  if problems are still occuring.
-</div>
+@if (this.api.get_network_status() === false) {
+  <div class="alert alert-warning" role="alert">
+    Your client cannot connect to the server. Please check if you have the latest version of your browser installed.
+    Furthermore, secured networks like DUWO and Leiden University are known to cause problems. Also, please click
+    <u><a href="https://oscc.lucdh.nl">the following URL</a></u> for the best results. Please contact the administrators
+    if problems are still occuring.
+  </div>
+}
 <div>
   <mat-drawer-container class="drawer-container" autosize>
     <mat-drawer-content>

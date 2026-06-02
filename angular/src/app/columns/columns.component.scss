@@ -1,4 +1,5 @@
 @use "@angular/material" as mat;
+@use "src/styles.scss" as *;
 
 @import url("../app.component.scss");
 /* Fragments component specific CSS. For more generic CSS, see ../app.component.scss. */
@@ -7,6 +8,7 @@
 .column-name-author-title-editor {
   color: white;
   margin: -4px;
+  font-size: 14px;
 }
 .introduction-link-hover:hover {
   background: #86868626;
@@ -122,8 +124,8 @@ ng-template {
 
 .fragments-toolbar {
   max-height: 30px;
-  background: #9fa1fe;
-  border-bottom: 0.1em solid #3f51b5;
+  background: $theme-tertiary;
+  border-bottom: 0.1em solid $theme-primary;
   color: white;
 }
 
@@ -131,7 +133,7 @@ ng-template {
   max-height: 30px;
   color: white;
   /* outline: 1px solid black; */
-  background: #9fa1fe;
+  background: $theme-quaternary;
 }
 
 .fragment-column-button {

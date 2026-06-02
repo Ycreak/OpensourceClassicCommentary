@@ -1,7 +1,7 @@
-import { enableProdMode, importProvidersFrom } from '@angular/core';
+import { enableProdMode, importProvidersFrom, provideZonelessChangeDetection } from '@angular/core';
 import { environment } from './environments/environment';
 import { AppComponent } from './app/app.component';
-import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+//import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { DashboardComponent } from './app/dashboard/dashboard.component';
 import { AuthGuard } from './app/auth/auth.guard';
@@ -26,6 +26,7 @@ if (environment.production) {
 bootstrapApplication(AppComponent, {
   providers: [
     //importProvidersFrom(SocketIoModule.forRoot(config)),
+    provideZonelessChangeDetection(),
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpErrorInterceptor,

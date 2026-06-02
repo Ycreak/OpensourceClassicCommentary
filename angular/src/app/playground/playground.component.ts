@@ -9,9 +9,18 @@ import { Output, EventEmitter } from '@angular/core';
 import { WebsocketsService } from '@oscc/playground/websockets.service';
 import { HostListener } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import {
+  PLAYGROUND_SEARCH_FRAGMENT,
+  PLAYGROUND_ADD_NOTE,
+  PLAYGROUND_CLEAR,
+  PLAYGROUND_DRAW,
+  PLAYGROUND_LOAD,
+  PLAYGROUND_REDO,
+  PLAYGROUND_SAVE,
+  PLAYGROUND_UNDO,
+} from '@src/assets/img/image-constants';
 
-//import * as fabric from 'fabric';
-import { fabric } from 'fabric';
+import { Canvas } from 'fabric';
 import { Subscription } from 'rxjs';
 
 // Service imports
@@ -40,7 +49,7 @@ import { Playground_user } from '@oscc/models/api/Playground_user';
 import { LatinTragicFragmentFilterComponent } from '../filters/latin-tragic-fragment-filter/latin-tragic-fragment-filter.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { NgIf } from '@angular/common';
+
 import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
@@ -48,7 +57,7 @@ import { MatMenuModule } from '@angular/material/menu';
   templateUrl: './playground.component.html',
   styleUrls: ['./playground.component.scss'],
   standalone: true,
-  imports: [NgIf, MatProgressBarModule, MatIconModule, LatinTragicFragmentFilterComponent, MatMenuModule],
+  imports: [MatProgressBarModule, MatIconModule, LatinTragicFragmentFilterComponent, MatMenuModule],
 })
 export class PlaygroundComponent implements OnInit, OnDestroy {
   @Output() document_clicked = new EventEmitter<Fragment>();
@@ -82,6 +91,15 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
 
   private canvas_change_subscription: Subscription;
   private websockets_subscription: Subscription;
+
+  protected playgroundSearchFragmentButton = PLAYGROUND_SEARCH_FRAGMENT;
+  protected playgroundAddNoteButton = PLAYGROUND_ADD_NOTE;
+  protected playgroundClearButton = PLAYGROUND_CLEAR;
+  protected playgroundDrawButton = PLAYGROUND_DRAW;
+  protected playgroundUndoButton = PLAYGROUND_UNDO;
+  protected playgroundRedoButton = PLAYGROUND_REDO;
+  protected playgroundSaveButton = PLAYGROUND_SAVE;
+  protected playgroundLoadButton = PLAYGROUND_LOAD;
 
   constructor(
     protected api: ApiService,
@@ -367,8 +385,8 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
    * @author Ycreak
    */
   protected request_commentary(): void {
-    const clicked_document = this.fabric.canvas.getActiveObjects()[0];
-    if (!this.fabric.is_note(clicked_document)) {
+    const clicked_document = this.fabric.canvas.getActiveObjects()[0] as any;
+    if (clicked_document && !this.fabric.is_note(clicked_document)) {
       const full_document = this.utility.filter_array(this.fabric.documents, clicked_document.identifier)[0];
       if (full_document) {
         this.commentary.request(full_document);
@@ -405,7 +423,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
    * @author Ycreak
    */
   private init_playground(): void {
-    this.fabric.canvas = new fabric.Canvas('playground_canvas');
+    this.fabric.canvas = new Canvas('playground_canvas');
     this.fabric.set_event_handlers();
     this.fabric.init();
   }
@@ -418,7 +436,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
     let helptext;
     if (helpmenuoption == 'a') {
       helptext = `<div><b>This is the playground</b><br><br>
-      This is a place to take fragments and move them around in a freeform way, as to gain new insights. 
+      This is a place to take fragments and move them around in a freeform way, as to gain new insights.
       It is also possible to add notes where you can place your thoughts.
       <br><br>
       You can also add other users to your playground in order to collaborate together! This way you will
@@ -430,7 +448,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
       FIXME See how we can best add icons/images here for additional clarity.<br><br>
 
       <b>Loading fragments</b><br>
-      Lorem ipsum dolor sit amet 
+      Lorem ipsum dolor sit amet
       <br><br>
       <b>Drawing on the playground</b><br><br>
       <b>Undo/Redo</b><br><br>

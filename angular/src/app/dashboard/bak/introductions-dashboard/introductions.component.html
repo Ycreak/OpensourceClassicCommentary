@@ -15,34 +15,40 @@
 
 <!-- Introduction text with wysiwyg editor -->
 <!-- Author introduction text field -->
-<ng-container *ngIf="this.introduction.author">
+@if (this.introduction.author) {
   <mat-form-field class="input-form-full-width">
-    <mat-label *ngIf="this.introduction.author && !this.introduction.title"
-      ><b>Introduction text for '{{ this.introduction.author }}'</b></mat-label
-    >
-    <mat-label *ngIf="this.introduction.author && this.introduction.title"
-      ><b
-        >Introduction text for <i>{{ this.introduction.title }}</i> from '{{ this.introduction.author }}'</b
-      ></mat-label
-    >
-    <textarea matInput type="text" [(ngModel)]="this.introduction.text"></textarea>
-  </mat-form-field>
-  <div class="div-padding-lg"></div>
-</ng-container>
-<br />
+    @if (this.introduction.author && !this.introduction.title) {
+      <mat-label
+        ><b>Introduction text for '{{ this.introduction.author }}'</b></mat-label
+        >
+      }
+      @if (this.introduction.author && this.introduction.title) {
+        <mat-label
+          ><b
+          >Introduction text for <i>{{ this.introduction.title }}</i> from '{{ this.introduction.author }}'</b
+          ></mat-label
+          >
+        }
+        <textarea matInput type="text" [(ngModel)]="this.introduction.text"></textarea>
+      </mat-form-field>
+      <div class="div-padding-lg"></div>
+    }
+    <br />
 
-<!-- Save button -->
-<button
-  mat-button
-  class="button-margin-extra confirm-button"
-  (click)="this.introduction.author = ''"
-  (click)="this.introduction.title = ''"
-  (click)="this.introduction.text = ''">
-  Reset
-</button>
-<button mat-button class="button-margin-extra confirm-button" (click)="this.save_introduction(this.introduction)">
-  Save Changes
-</button>
-<mat-label class="mat-label-inline" *ngIf="this.show_changes_saved_hint">Changes saved</mat-label>
-<div class="div-padding-lg"></div>
-<div class="div-padding-sm"></div>
+    <!-- Save button -->
+    <button
+      mat-button
+      class="button-margin-extra confirm-button"
+      (click)="this.introduction.author = ''"
+      (click)="this.introduction.title = ''"
+      (click)="this.introduction.text = ''">
+      Reset
+    </button>
+    <button mat-button class="button-margin-extra confirm-button" (click)="this.save_introduction(this.introduction)">
+      Save Changes
+    </button>
+    @if (this.show_changes_saved_hint) {
+      <mat-label class="mat-label-inline">Changes saved</mat-label>
+    }
+    <div class="div-padding-lg"></div>
+    <div class="div-padding-sm"></div>

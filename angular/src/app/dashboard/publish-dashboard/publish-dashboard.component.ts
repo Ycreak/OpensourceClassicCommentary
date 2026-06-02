@@ -8,7 +8,6 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
-import { NgFor, NgIf } from '@angular/common';
 import { MatOptionModule } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
@@ -26,8 +25,6 @@ import { Fragment } from '@oscc/models/Fragment';
     MatSelectModule,
     FormsModule,
     MatOptionModule,
-    NgFor,
-    NgIf,
     MatInputModule,
     MatTableModule,
     MatSortModule,

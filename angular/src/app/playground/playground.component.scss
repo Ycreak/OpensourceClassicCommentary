@@ -1,5 +1,6 @@
 /* Playground related CSS */
 @use "../_mixins.scss" as *;
+@use "src/styles.scss" as *;
 
 #playground {
   background-color: white; // This is specifically needed in fullscreen mode.
@@ -225,4 +226,49 @@ button.button-dashed-background {
 .playground-icon:hover {
   transition: transform 0.2s ease-out;
   transform: scale(1.25);
+}
+
+/* Playground button tooltips */
+.playground_btn_tooltip::after {
+  display: flex;
+  position: relative;
+  bottom: 16px;
+  width: 0px;
+  text-align: center;
+  font-size: 12px;
+  color: #595959;
+  opacity: 0;
+}
+.playground_btn_tooltip:hover::after {
+  opacity: 1;
+  transition: 0.25s;
+}
+
+#playground_addfragment_btn_tooltip::after {
+  content: "Add fragment";
+  left: 2px;
+}
+#playground_searchfragment_btn_tooltip::after {
+  content: "Search fragment";
+  left: 2px;
+}
+#playground_addnote_btn_tooltip::after {
+  content: "Add note";
+  left: 14px;
+}
+#playground_clear_btn_tooltip::after {
+  content: "Clear playground";
+  left: -5px;
+}
+#playground_draw_btn_tooltip::after {
+  content: "Draw";
+  left: 11px;
+}
+#playground_undo_btn_tooltip::after {
+  content: "Undo";
+  left: 11px;
+}
+#playground_redo_btn_tooltip::after {
+  content: "Redo";
+  left: 11px;
 }

@@ -12,7 +12,7 @@ import { FragmentsDashboardComponent } from './fragments-dashboard/fragments-das
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { RouterLink } from '@angular/router';
-import { NgIf } from '@angular/common';
+
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
@@ -24,15 +24,14 @@ import { MatToolbarModule } from '@angular/material/toolbar';
   imports: [
     MatToolbarModule,
     MatButtonModule,
-    NgIf,
     RouterLink,
     MatProgressBarModule,
     MatExpansionModule,
     FragmentsDashboardComponent,
     TestimoniaDashboardComponent,
     IntroductionsDashboardComponent,
-    UsersComponent,
-  ],
+    UsersComponent
+],
 })
 export class DashboardComponent implements OnInit {
   constructor(

@@ -4,15 +4,19 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@oscc/*": ["./src/app/*"],
-      "@src/*": ["./src/*"]
+      "@oscc/*": [
+        "./src/app/*"
+      ],
+      "@src/*": [
+        "./src/*"
+      ]
     },
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
+    "esModuleInterop": true,
     "declaration": false,
-    "downlevelIteration": true,
     "experimentalDecorators": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
     "module": "es2020",
@@ -21,8 +25,7 @@
       "dom"
     ],
     "useDefineForClassFields": false,
-    "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true
   },
   "angularCompilerOptions": {
     "strictTemplates": false

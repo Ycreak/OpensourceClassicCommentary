@@ -14,7 +14,7 @@ import { UtilityService } from '@oscc/utility.service';
 import { FilterService } from '../filter.service';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
-import { NgFor } from '@angular/common';
+
 import { MatOptionModule } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
@@ -30,13 +30,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     MatSelectModule,
     FormsModule,
     MatOptionModule,
-    NgFor,
     MatInputModule,
     MatTableModule,
     MatSortModule,
     MatCheckboxModule,
-    MatPaginatorModule,
-  ],
+    MatPaginatorModule
+],
 })
 export class TestimoniaTableComponent implements AfterViewInit {
   @Output() collection = new EventEmitter<any>();

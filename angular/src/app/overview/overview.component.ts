@@ -5,7 +5,7 @@
 
 // Library imports
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ViewportScroller, NgIf, NgStyle } from '@angular/common';
+import { ViewportScroller, NgStyle } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { environment } from '@src/environments/environment';
 
@@ -37,7 +37,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
   standalone: true,
   imports: [
     MatToolbarModule,
-    NgIf,
     MatButtonModule,
     MatMenuModule,
     MatIconModule,
@@ -46,8 +45,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     ColumnsComponent,
     NgStyle,
     CommentaryComponent,
-    PlaygroundComponent,
-  ],
+    PlaygroundComponent
+],
 })
 export class OverviewComponent implements OnInit, OnDestroy {
   protected commentary_enabled = true;

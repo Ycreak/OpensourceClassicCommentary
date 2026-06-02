@@ -1,5 +1,12 @@
 import { Injectable } from '@angular/core';
-import { fabric } from 'fabric';
+import { 
+  Canvas, 
+  Group, 
+  Text, 
+  Textbox, 
+  IText, 
+  Rect, Point, util 
+} from 'fabric';
 import { Observable, Subject } from 'rxjs';
 
 import { UtilityService } from '@oscc/utility.service';
@@ -13,7 +20,7 @@ import { environment } from '@src/environments/environment';
   providedIn: 'root',
 })
 export class FabricService {
-  public canvas: fabric.Canvas;
+  public canvas: Canvas;
 
   // State Management for Undo/Redo
   private canvas_states: string[] = [];
@@ -35,8 +42,10 @@ export class FabricService {
    */
   public init(): void {
     this.resize();
-    this.canvas.freeDrawingBrush.color = 'black';
-    this.canvas.freeDrawingBrush.width = 10;
+    if (this.canvas.freeDrawingBrush) {
+      this.canvas.freeDrawingBrush.color = 'black';
+      this.canvas.freeDrawingBrush.width = 10;
+    }
   }
 
   /**
@@ -59,7 +68,7 @@ export class FabricService {
       zoom *= 0.999 ** delta;
       zoom = Math.min(Math.max(0.01, zoom), 20);
 
-      this.canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+      this.canvas.zoomToPoint(new Point(opt.e.offsetX, opt.e.offsetY), zoom);
       opt.e.preventDefault();
       opt.e.stopPropagation();
     });
@@ -87,9 +96,9 @@ export class FabricService {
     });
 
     this.canvas.on('mouse:up', () => {
-      if (this.canvas.isDragging) {
-        this.canvas.setViewportTransform(this.canvas.viewportTransform);
-        this.canvas.isDragging = false;
+      if ((this.canvas as any).isDragging) {
+        this.canvas.setViewportTransform((this.canvas as any).viewportTransform);
+        (this.canvas as any).isDragging = false;
       }
 
       this.canvas.selection = true;
@@ -97,7 +106,7 @@ export class FabricService {
     });
 
     // Save state for undo/redo on major changes
-    const stateEvents = ['object:added', 'object:modified', 'object:removed'];
+    const stateEvents = ['object:added', 'object:modified', 'object:removed'] as const;
     stateEvents.forEach((event) => {
       this.canvas.on(event, () => {
         if (!this.undo_status && !this.redo_status) {
@@ -116,15 +125,12 @@ export class FabricService {
    * @returns void
    */
   private add_document_to_canvas(doc: any, top: number, left: number, color: string): void {
-    //const header = this.create_header(doc, this.font_size);
     const content = doc.lines ? this.create_lines(doc, this.font_size) : this.create_text(doc, this.font_size);
 
-    //content.set({ top: header.height + 5 });
-
-    const text_group = new fabric.Group([content], { padding: 10 });
+    const text_group = new Group([content], { padding: 10 });
     const box = this.create_box(text_group.getBoundingRect(), color);
 
-    const group = new fabric.Group([box, text_group], {
+    const group = new Group([box, text_group], {
       top,
       left,
       // Metadata stored on the fabric object for future reference
@@ -143,11 +149,11 @@ export class FabricService {
    * Creates the header text for a document.
    * @param doc The document object.
    * @param fontSize The size of the font.
-   * @returns A fabric.Text object.
+   * @returns A Text object.
    */
-  public create_header(doc: any, fontSize: number): fabric.Text {
+  public create_header(doc: any, fontSize: number): Text {
     const text = `${this.utility.capitalize_word(doc.document_type)} ${doc.name}`;
-    return new fabric.Text(text, {
+    return new Text(text, {
       fontSize,
       fontWeight: 'bold',
       originX: 'left',
@@ -158,10 +164,10 @@ export class FabricService {
    * Creates a standard Textbox for document types that use a block of text (like Testimonia).
    * @param doc The document object.
    * @param fontSize The size of the font.
-   * @returns A fabric.Textbox object.
+   * @returns A Textbox object.
    */
-  public create_text(doc: any, fontSize: number): fabric.Textbox {
-    return new fabric.Textbox(doc.text, {
+  public create_text(doc: any, fontSize: number): Textbox {
+    return new Textbox(doc.text, {
       fontSize,
       originX: 'left',
       width: 300,
@@ -173,23 +179,22 @@ export class FabricService {
    * The box will shrink to fit short text, but wrap at a set maximum.
    * @param doc The document object containing a 'lines' array.
    * @param fontSize The size of the font.
-   * @returns A fabric.Textbox object with dynamic width.
+   * @returns A Textbox object with dynamic width.
    */
-  public create_lines(doc: any, fontSize: number): fabric.Textbox {
+  public create_lines(doc: any, fontSize: number): Textbox {
     const rawText = doc.lines.map((l: any) => `${l.text}`).join('\n');
     const positions = this.get_style_positions(rawText, '$');
     const cleanText = rawText.replace(/\$/g, '');
 
     // Create a dummy IText to measure the "natural" width of the longest line
-    const measurer = new fabric.IText(cleanText, { fontSize });
+    const measurer = new IText(cleanText, { fontSize });
     const naturalWidth = measurer.width || 0;
 
     // Determine the dynamic width (minimum of the text's width or our limit)
-    // We add a small buffer (e.g., 5-10px) to prevent accidental wrapping due to rounding
     const maxWidth = 450;
     const dynamicWidth = naturalWidth > maxWidth ? maxWidth : naturalWidth + 5;
 
-    const lines = new fabric.Textbox(cleanText, {
+    const lines = new Textbox(cleanText, {
       fontSize,
       originX: 'left',
       width: dynamicWidth,
@@ -212,21 +217,21 @@ export class FabricService {
 
     // Get the current visible boundaries of the canvas
     const vpt = this.canvas.viewportTransform;
-    const invVpt = fabric.util.invertTransform(vpt!);
+    const invVpt = util.invertTransform(vpt);
 
     // Determine the edges of the visible area
     const minX = invVpt[4];
     const minY = invVpt[5];
-    const maxX = minX + this.canvas.width! / this.canvas.getZoom();
-    const maxY = minY + this.canvas.height! / this.canvas.getZoom();
+    const maxX = minX + this.canvas.width / this.canvas.getZoom();
+    const maxY = minY + this.canvas.height / this.canvas.getZoom();
 
     // Padding to ensure documents don't get stuck exactly on the edge
     const padding = 50;
 
     objects.forEach((obj) => {
       // Generate random coordinates within the visible bounds
-      const randomX = Math.random() * (maxX - minX - (obj.width! + padding)) + minX;
-      const randomY = Math.random() * (maxY - minY - (obj.height! + padding)) + minY;
+      const randomX = Math.random() * (maxX - minX - (obj.width + padding)) + minX;
+      const randomY = Math.random() * (maxY - minY - (obj.height + padding)) + minY;
 
       obj.set({
         left: randomX,
@@ -265,10 +270,10 @@ export class FabricService {
    * Creates a background rectangle for a group of text.
    * @param rect The bounding dimensions for the box.
    * @param fill The background color.
-   * @returns A fabric.Rect object.
+   * @returns A Rect object.
    */
-  public create_box(rect: any, fill: string): fabric.Rect {
-    return new fabric.Rect({
+  public create_box(rect: any, fill: string): Rect {
+    return new Rect({
       top: rect.top,
       left: rect.left,
       width: rect.width,
@@ -287,7 +292,7 @@ export class FabricService {
    * @return boolean
    */
   public is_note(thing: any): boolean {
-    return thing.backgroundColor == '#F0C086';
+    return thing.backgroundColor === '#F0C086';
   }
 
   /**
@@ -327,7 +332,7 @@ export class FabricService {
     if (this.current_state_index > 0) {
       this.undo_status = true;
       this.current_state_index--;
-      this.canvas.loadFromJSON(this.canvas_states[this.current_state_index], () => {
+      this.canvas.loadFromJSON(this.canvas_states[this.current_state_index]).then(() => {
         this.canvas.renderAll();
         this.undo_status = false;
       });
@@ -342,7 +347,7 @@ export class FabricService {
     if (this.current_state_index < this.canvas_states.length - 1) {
       this.redo_status = true;
       this.current_state_index++;
-      this.canvas.loadFromJSON(this.canvas_states[this.current_state_index], () => {
+      this.canvas.loadFromJSON(this.canvas_states[this.current_state_index]).then(() => {
         this.canvas.renderAll();
         this.redo_status = false;
       });
@@ -359,8 +364,10 @@ export class FabricService {
     const offset_left = 40; 
     const spacing = 25;
 
-    let top = (this.canvas.vptCoords as any).tl.y + offset_top;
-    const left = (this.canvas.vptCoords as any).tl.x + offset_left;
+    // Type casting to handle dynamic internal structural access
+    const vptCoords = (this.canvas as any).vptCoords;
+    let top = vptCoords ? vptCoords.tl.y + offset_top : offset_top;
+    const left = vptCoords ? vptCoords.tl.x + offset_left : offset_left;
 
     documents.forEach((doc) => {
       this.documents.push(doc);
@@ -379,7 +386,7 @@ export class FabricService {
     if (!active) return;
 
     if (active.type === 'activeSelection') {
-      (active as fabric.ActiveSelection).forEachObject((obj) => this.canvas.remove(obj));
+      (active as any).forEachObject((obj: any) => this.canvas.remove(obj));
       this.canvas.discardActiveObject();
     } else {
       this.canvas.remove(active);
@@ -403,7 +410,7 @@ export class FabricService {
    */
   public add_note(note: string): void {
     const center = this.get_center();
-    const text = new fabric.Textbox(note, {
+    const text = new Textbox(note, {
       top: center.y,
       left: center.x,
       width: 200,
@@ -420,10 +427,10 @@ export class FabricService {
    */
   private get_center(): { x: number; y: number } {
     const vpt = this.canvas.viewportTransform;
-    const inv = fabric.util.invertTransform(vpt!);
+    const inv = util.invertTransform(vpt);
     return {
-      x: inv[4] + this.canvas.width! / this.canvas.getZoom() / 2,
-      y: inv[5] + this.canvas.height! / this.canvas.getZoom() / 2,
+      x: inv[4] + this.canvas.width / this.canvas.getZoom() / 2,
+      y: inv[5] + this.canvas.height / this.canvas.getZoom() / 2,
     };
   }
 

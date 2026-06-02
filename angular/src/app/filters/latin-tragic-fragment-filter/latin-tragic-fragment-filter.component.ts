@@ -1,18 +1,19 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { MatMenu, MatMenuModule } from '@angular/material/menu';
+import { PLAYGROUND_ICON } from '@src/assets/img/image-constants';
 
 // Service imports
 import { ApiService } from '@oscc/api.service';
 import { UtilityService } from '@oscc/utility.service';
 import { MatButtonModule } from '@angular/material/button';
-import { NgIf, NgFor } from '@angular/common';
+
 
 @Component({
   selector: 'app-latin-tragic-fragment-filter',
   templateUrl: './latin-tragic-fragment-filter.component.html',
   styleUrl: './latin-tragic-fragment-filter.component.scss',
   standalone: true,
-  imports: [NgIf, MatButtonModule, MatMenuModule, NgFor],
+  imports: [MatButtonModule, MatMenuModule],
 })
 export class LatinTragicFragmentFilterComponent {
   @Input() matMenu: MatMenu;
@@ -25,6 +26,8 @@ export class LatinTragicFragmentFilterComponent {
   protected _title: string;
   protected _editor: string;
   protected _name: string;
+
+  protected playgroundIcon = PLAYGROUND_ICON;
 
   constructor(
     protected api: ApiService,

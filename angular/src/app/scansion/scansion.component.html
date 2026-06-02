@@ -18,15 +18,19 @@
   <!-- <mat-checkbox class="btn" [(ngModel)]="syllabified" ngDefaultControl>SYLLABIFIED</mat-checkbox> -->
 
   <!-- <mat-radio-group [(ngModel)]="network_type" ngDefaultControl>
-    <mat-radio-button value="FLAIR">FLAIR</mat-radio-button>
-    <mat-radio-button value="LSTM">LSTM</mat-radio-button>
-    <mat-radio-button value="CRF">CRF</mat-radio-button>
-  </mat-radio-group> -->
+  <mat-radio-button value="FLAIR">FLAIR</mat-radio-button>
+  <mat-radio-button value="LSTM">LSTM</mat-radio-button>
+  <mat-radio-button value="CRF">CRF</mat-radio-button>
+</mat-radio-group> -->
 </mat-toolbar>
 
 <!-- Loading spinner to show data is being retrieved from the server -->
-<mat-toolbar *ngIf="this.api.spinner === false" class="progress-toolbar"></mat-toolbar>
-<mat-progress-bar *ngIf="this.api.spinner" mode="query"></mat-progress-bar>
+@if (this.api.spinner === false) {
+  <mat-toolbar class="progress-toolbar"></mat-toolbar>
+}
+@if (this.api.spinner) {
+  <mat-progress-bar mode="query"></mat-progress-bar>
+}
 
 <br />
 
@@ -51,39 +55,38 @@
   <p><b>After syllabifying your lines, the neural network scanned them as follows:</b></p>
 </div>
 
-<div class="div-padding-left-right" *ngFor="let sentence of this.neural_data">
-  <hr />
-  <i>{{ sentence.original_line }}</i>
-
-  <mat-grid-list cols="{{ sentence.length }}" rowHeight="1em">
+@for (sentence of this.neural_data; track sentence) {
+  <div class="div-padding-left-right">
+    <hr />
+    <i>{{ sentence.original_line }}</i>
+    <mat-grid-list cols="{{ sentence.length }}" rowHeight="1em">
+      @for (syllable of sentence.syllables; track syllable) {
+        <mat-grid-tile
+          [colspan]="1"
+          [rowspan]="2"
+          [style.background]="'#DDDDDD'">
+          <b>{{ syllable }}</b>
+        </mat-grid-tile>
+      }
+    </mat-grid-list>
+    <mat-grid-list cols="{{ sentence.length }}" rowHeight="1em">
+      @for (prediction of sentence.predicted; track prediction) {
+        <mat-grid-tile
+          [colspan]="1"
+          [rowspan]="2"
+          [style.background]="'lightgreen'">
+          <b>{{ prediction }}</b>
+        </mat-grid-tile>
+      }
+    </mat-grid-list>
+    <!-- <mat-grid-list cols="{{sentence.length}}" rowHeight="1em">
     <mat-grid-tile
-      *ngFor="let syllable of sentence.syllables"
+      *ngFor="let score of sentence.score"
       [colspan]="1"
       [rowspan]="2"
-      [style.background]="'#DDDDDD'">
-      <b>{{ syllable }}</b>
-    </mat-grid-tile>
-  </mat-grid-list>
-
-  <mat-grid-list cols="{{ sentence.length }}" rowHeight="1em">
-    <mat-grid-tile
-      *ngFor="let prediction of sentence.predicted"
-      [colspan]="1"
-      [rowspan]="2"
-      [style.background]="'lightgreen'">
-      <b>{{ prediction }}</b>
-    </mat-grid-tile>
-  </mat-grid-list>
-
-  <!-- <mat-grid-list cols="{{sentence.length}}" rowHeight="1em">
-    <mat-grid-tile
-        *ngFor="let score of sentence.score"
-        
-        [colspan]="1"
-        [rowspan]="2"
-        [style.background]="'orange'">
+      [style.background]="'orange'">
       <b>{{score}}</b>
-      
     </mat-grid-tile>
   </mat-grid-list>   -->
 </div>
+}

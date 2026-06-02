@@ -16,7 +16,7 @@ import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { NgIf, NgFor } from '@angular/common';
+
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 
@@ -30,15 +30,13 @@ import { MatButtonModule } from '@angular/material/button';
     MatDialogClose,
     MatIconModule,
     MatDialogContent,
-    NgIf,
     MatProgressBarModule,
     MatFormFieldModule,
     MatSelectModule,
     FormsModule,
-    NgFor,
     MatOptionModule,
-    MatDialogActions,
-  ],
+    MatDialogActions
+],
 })
 export class LoadPlaygroundComponent implements OnInit {
   protected name: string;

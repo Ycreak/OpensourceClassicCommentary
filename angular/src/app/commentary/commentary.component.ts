@@ -29,7 +29,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { GeneralCommentaryFieldComponent } from './general-commentary-field/general-commentary-field.component';
 import { TranslationComponent } from './translation/translation.component';
 import { MatButtonModule } from '@angular/material/button';
-import { NgIf, NgTemplateOutlet, NgFor } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
   selector: 'app-commentary',
@@ -37,15 +37,13 @@ import { NgIf, NgTemplateOutlet, NgFor } from '@angular/common';
   styleUrls: ['./commentary.component.scss'],
   standalone: true,
   imports: [
-    NgIf,
     NgTemplateOutlet,
     MatButtonModule,
-    NgFor,
     TranslationComponent,
     GeneralCommentaryFieldComponent,
     MatExpansionModule,
-    ExpandableTextComponent,
-  ],
+    ExpandableTextComponent
+],
 })
 export class CommentaryComponent {
   // The document given to the commentary to show its commentary

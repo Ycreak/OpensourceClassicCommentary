@@ -151,7 +151,7 @@ export class ApiService {
           this.show_server_response(data);
           this.request_index().subscribe({});
           this.spinner_off();
-          observer.next();
+          observer.next(data);
           observer.complete();
         },
         error: (err) => this.show_server_response(err),

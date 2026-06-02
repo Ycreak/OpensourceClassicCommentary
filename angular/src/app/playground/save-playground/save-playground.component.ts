@@ -7,7 +7,7 @@ import {
   MatDialogContent,
   MatDialogActions,
 } from '@angular/material/dialog';
-import { NgIf } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -27,9 +27,8 @@ import { MatButtonModule } from '@angular/material/button';
     MatFormFieldModule,
     MatInputModule,
     FormsModule,
-    MatDialogActions,
-    NgIf,
-  ],
+    MatDialogActions
+],
 })
 export class SavePlaygroundComponent {
   protected name: string;
