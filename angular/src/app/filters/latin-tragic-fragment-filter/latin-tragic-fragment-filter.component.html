@@ -9,12 +9,12 @@
   {{ this.button_title }}
 </button>
 
-<img
+<!-- <img
   *ngIf="this.button_type === 'playground'"
   id="playground_add_documents_btn"
   class="playground-icon"
-  src="assets\icons\ByteDanceIconPark\9069093_doc_add_icon.png"
-  [matMenuTriggerFor]="menu_authors" />
+  src="playgroundIcon"
+  [matMenuTriggerFor]="menu_authors" /> -->
 
 <!-- Nested menu to select author - title - editor. -->
 <mat-menu #menu_authors="matMenu">
@@ -61,7 +61,7 @@
           document_type: 'fragment',
           author: _author,
           title: _title,
-          editor: _editor
+          editor: _editor,
         })
         .sort(this.utility.sort_array_numerically)
     ">

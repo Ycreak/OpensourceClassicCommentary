@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { MatMenu, MatMenuModule } from '@angular/material/menu';
+import { PLAYGROUND_ICON } from '@src/assets/img/image-constants';
 
 // Service imports
 import { ApiService } from '@oscc/api.service';
@@ -25,6 +26,8 @@ export class LatinTragicFragmentFilterComponent {
   protected _title: string;
   protected _editor: string;
   protected _name: string;
+
+  protected playgroundIcon = PLAYGROUND_ICON;
 
   constructor(
     protected api: ApiService,
