@@ -49,7 +49,7 @@ import { Playground_user } from '@oscc/models/api/Playground_user';
 import { LatinTragicFragmentFilterComponent } from '../filters/latin-tragic-fragment-filter/latin-tragic-fragment-filter.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { NgIf } from '@angular/common';
+
 import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
@@ -57,7 +57,7 @@ import { MatMenuModule } from '@angular/material/menu';
   templateUrl: './playground.component.html',
   styleUrls: ['./playground.component.scss'],
   standalone: true,
-  imports: [NgIf, MatProgressBarModule, MatIconModule, LatinTragicFragmentFilterComponent, MatMenuModule],
+  imports: [MatProgressBarModule, MatIconModule, LatinTragicFragmentFilterComponent, MatMenuModule],
 })
 export class PlaygroundComponent implements OnInit, OnDestroy {
   @Output() document_clicked = new EventEmitter<Fragment>();

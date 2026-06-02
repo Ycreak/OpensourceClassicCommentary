@@ -11,41 +11,47 @@
     <div class="div-padding-lg"></div>
 
     <div class="container-fluid">
-      <div formArrayName="users" *ngFor="let user of form.get('users')['controls']; let i = index">
-        <div class="row">
-          <div class="playground-button-container col-6">
-            <div [formGroupName]="i">
-              <mat-form-field class="input-form-small">
-                <mat-label>User name</mat-label>
-                <input matInput type="text" formControlName="name" required />
-              </mat-form-field>
+      @for (user of form.get('users')['controls']; track user; let i = $index) {
+        <div formArrayName="users">
+          <div class="row">
+            <div class="playground-button-container col-6">
+              <div [formGroupName]="i">
+                <mat-form-field class="input-form-small">
+                  <mat-label>User name</mat-label>
+                  <input matInput type="text" formControlName="name" required />
+                </mat-form-field>
+              </div>
             </div>
-          </div>
-          <div class="playground-button-container col-2">
-            <div [formGroupName]="i">
-              <mat-form-field class="input-form-small">
-                <mat-label>User role</mat-label>
-                <!--<input matInput type="text" formControlName="role" />-->
-                <mat-select formControlName="role">
-                  <mat-option value="guest">Guest</mat-option>
-                  <mat-option value="collaborator">Collaborator</mat-option>
-                  <mat-option value="owner">Owner</mat-option>
-                </mat-select>
-              </mat-form-field>
+            <div class="playground-button-container col-2">
+              <div [formGroupName]="i">
+                <mat-form-field class="input-form-small">
+                  <mat-label>User role</mat-label>
+                  <!--<input matInput type="text" formControlName="role" />-->
+                  <mat-select formControlName="role">
+                    <mat-option value="guest">Guest</mat-option>
+                    <mat-option value="collaborator">Collaborator</mat-option>
+                    <mat-option value="owner">Owner</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
             </div>
-          </div>
-          <div class="playground-button-container col-2">
-            <div [formGroupName]="i">
-              <button mat-button (click)="delete_user(i)">Delete</button>
+            <div class="playground-button-container col-2">
+              <div [formGroupName]="i">
+                <button mat-button (click)="delete_user(i)">Delete</button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      }
     </div>
   </form>
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="onNoClick()">Cancel</button>
-  <button mat-button (click)="onYesClick()" cdkFocusInitial *ngIf="this.form.valid">Share</button>
-  <button mat-button (click)="onYesClick()" cdkFocusInitial *ngIf="!this.form.valid" disabled>Share</button>
+  @if (this.form.valid) {
+    <button mat-button (click)="onYesClick()" cdkFocusInitial>Share</button>
+  }
+  @if (!this.form.valid) {
+    <button mat-button (click)="onYesClick()" cdkFocusInitial disabled>Share</button>
+  }
 </div>

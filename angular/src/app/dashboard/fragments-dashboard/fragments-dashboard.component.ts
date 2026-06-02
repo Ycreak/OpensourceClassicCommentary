@@ -21,7 +21,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { LatinTragicFragmentFilterComponent } from '../../filters/latin-tragic-fragment-filter/latin-tragic-fragment-filter.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { NgIf, NgFor } from '@angular/common';
+
 import { QuillComponent } from '@oscc/components/quill/quill.component';
 
 // Simple interface for a mat select
@@ -36,7 +36,6 @@ interface mat_select_interface {
   styleUrls: ['./fragments-dashboard.component.scss'],
   standalone: true,
   imports: [
-    NgIf,
     MatExpansionModule,
     MatIconModule,
     LatinTragicFragmentFilterComponent,
@@ -48,9 +47,8 @@ interface mat_select_interface {
     MatInputModule,
     MatSelectModule,
     MatOptionModule,
-    NgFor,
-    QuillComponent,
-  ],
+    QuillComponent
+],
 })
 export class FragmentsDashboardComponent implements OnInit {
   private allowed_user_roles = ['admin', 'teacher', 'student'];

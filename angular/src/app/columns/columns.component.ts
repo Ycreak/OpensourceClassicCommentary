@@ -38,7 +38,7 @@ import { CdkScrollable } from '@angular/cdk/scrolling';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { FormControl, FormGroup, FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { LatinTragicFragmentFilterComponent } from '../filters/latin-tragic-fragment-filter/latin-tragic-fragment-filter.component';
@@ -61,10 +61,8 @@ import { OutsideClickDirective } from './column-name-editable/click-outside-elem
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
-    NgFor,
     MatCheckboxModule,
     FormsModule,
-    NgIf,
     MatProgressBarModule,
     CdkScrollable,
     NgTemplateOutlet,
@@ -79,8 +77,8 @@ import { OutsideClickDirective } from './column-name-editable/click-outside-elem
     ViewModeDirective,
     EditableOnKeypressDirective,
     OutsideClickDirective,
-    NgTemplateOutlet,
-  ],
+    NgTemplateOutlet
+],
 })
 export class ColumnsComponent implements OnInit {
   // Variable to store the clicked fragment and its data. Used for the context menu

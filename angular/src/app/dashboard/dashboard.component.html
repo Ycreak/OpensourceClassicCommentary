@@ -20,28 +20,33 @@
   <button mat-stroked-button class="navbar button-margin" (click)="this.request_bibliography_resync()">
     SYNC BIBLIOGRAPHY
   </button>
-  <button
-    mat-stroked-button
-    class="navbar button-margin"
-    *ngIf="this.auth_service.current_user_role === 'admin'"
-    (click)="test('Navbar')">
-    TEST
-  </button>
+  @if (this.auth_service.current_user_role === 'admin') {
+    <button
+      mat-stroked-button
+      class="navbar button-margin"
+      (click)="test('Navbar')">
+      TEST
+    </button>
+  }
   <button mat-stroked-button class="navbar button-margin" routerLink="/">FRONTEND</button>
 </mat-toolbar>
 
 <!-- Loading spinner to show data is being retrieved from the server -->
-<mat-progress-bar *ngIf="this.api.spinner" mode="query"></mat-progress-bar>
+@if (this.api.spinner) {
+  <mat-progress-bar mode="query"></mat-progress-bar>
+}
 
 <br />
 
 <!-- Display for if server is down -->
-<div *ngIf="this.api.get_network_status() === false" class="alert alert-warning" role="alert">
-  Your client cannot connect to the server. Please check if you have the latest version of your browser installed.
-  Furthermore, secured networks like DUWO and Leiden University are known to cause problems. Also, please click
-  <u><a href="https://oscc.lucdh.nl">the following URL</a></u> for the best results. Please contact the administrators
-  if problems are still occuring.
-</div>
+@if (this.api.get_network_status() === false) {
+  <div class="alert alert-warning" role="alert">
+    Your client cannot connect to the server. Please check if you have the latest version of your browser installed.
+    Furthermore, secured networks like DUWO and Leiden University are known to cause problems. Also, please click
+    <u><a href="https://oscc.lucdh.nl">the following URL</a></u> for the best results. Please contact the administrators
+    if problems are still occuring.
+  </div>
+}
 
 <!-- TAB GROUPS TO ENTER DATA -->
 

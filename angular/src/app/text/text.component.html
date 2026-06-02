@@ -28,18 +28,22 @@
   <mat-form-field>
     <mat-label>Select author</mat-label>
     <mat-select>
-      <mat-option *ngFor="let author of this.authorsJSON" [value]="author" (click)="this.RequestBooks(author.id)">
-        {{ author.name }}
-      </mat-option>
+      @for (author of this.authorsJSON; track author) {
+        <mat-option [value]="author" (click)="this.RequestBooks(author.id)">
+          {{ author.name }}
+        </mat-option>
+      }
     </mat-select>
   </mat-form-field>
 
   <mat-form-field>
     <mat-label>Select title</mat-label>
     <mat-select>
-      <mat-option *ngFor="let book of this.booksJSON" [value]="book" (click)="RequestText(book.id)">
-        {{ book.title }}
-      </mat-option>
+      @for (book of this.booksJSON; track book) {
+        <mat-option [value]="book" (click)="RequestText(book.id)">
+          {{ book.title }}
+        </mat-option>
+      }
     </mat-select>
   </mat-form-field>
 </ng-template>
@@ -51,48 +55,62 @@
       <mat-nav-list class="neat-lines">
         //FIXME: mat-nav-list is not a known element?
         <h3>{{ currentBookTitle }}</h3>
-        <mat-list-item *ngFor="let line of this.T_Text">
-          <a *ngIf="line.lineNumber === null"
-            ><h5>
-              <b>{{ line.lineContent }}</b>
-            </h5></a
-          >
-          <a *ngIf="line.lineNumber !== null" matLine (click)="RequestCommentary(line.lineNumber)"
-            ><b>{{ line.lineNumber }}:</b> {{ line.lineContent }}</a
-          >
-        </mat-list-item>
-      </mat-nav-list>
-    </div>
+        @for (line of this.T_Text; track line) {
+          <mat-list-item>
+            @if (line.lineNumber === null) {
+              <a
+                ><h5>
+                <b>{{ line.lineContent }}</b>
+              </h5></a
+              >
+            }
+            @if (line.lineNumber !== null) {
+              <a matLine (click)="RequestCommentary(line.lineNumber)"
+                ><b>{{ line.lineNumber }}:</b> {{ line.lineContent }}</a
+                >
+              }
+            </mat-list-item>
+          }
+        </mat-nav-list>
+      </div>
 
-    <div class="col-sm">
-      <div class="col-sm anyClass">
-        <br />
-        <!-- Empty Entry -->
-        <div *ngIf="utility.is_empty(this.T_TextCommentary)">No entry found.</div>
-        <!-- Valid Entry -->
-        <div *ngFor="let commentary of this.T_TextCommentary">
-          <mat-expansion-panel [expanded]="IsWithinScope(commentary.lineStart)">
-            <!-- Regelnummer -->
-            <mat-expansion-panel-header>
-              <mat-panel-title *ngIf="commentary.lineStart === commentary.lineEnd">
-                Line {{ commentary.lineStart }}
-              </mat-panel-title>
-              <mat-panel-title *ngIf="commentary.lineStart !== commentary.lineEnd">
-                Lines {{ commentary.lineStart }}-{{ commentary.lineEnd }}
-              </mat-panel-title>
-              <!-- Woorden in kwestie -->
-              <b>{{ commentary.relevantWords }}</b>
-              <div class="div-padding-sm"></div>
-            </mat-expansion-panel-header>
-            <!-- Commentaar zelf met opmaak -->
-            <div class="mat-expansion-panel-content">
-              <div class="mat-expansion-panel-body">
-                <div [innerHTML]="commentary.commentary"></div>
-              </div>
+      <div class="col-sm">
+        <div class="col-sm anyClass">
+          <br />
+          <!-- Empty Entry -->
+          @if (utility.is_empty(this.T_TextCommentary)) {
+            <div>No entry found.</div>
+          }
+          <!-- Valid Entry -->
+          @for (commentary of this.T_TextCommentary; track commentary) {
+            <div>
+              <mat-expansion-panel [expanded]="IsWithinScope(commentary.lineStart)">
+                <!-- Regelnummer -->
+                <mat-expansion-panel-header>
+                  @if (commentary.lineStart === commentary.lineEnd) {
+                    <mat-panel-title>
+                      Line {{ commentary.lineStart }}
+                    </mat-panel-title>
+                  }
+                  @if (commentary.lineStart !== commentary.lineEnd) {
+                    <mat-panel-title>
+                      Lines {{ commentary.lineStart }}-{{ commentary.lineEnd }}
+                    </mat-panel-title>
+                  }
+                  <!-- Woorden in kwestie -->
+                  <b>{{ commentary.relevantWords }}</b>
+                  <div class="div-padding-sm"></div>
+                </mat-expansion-panel-header>
+                <!-- Commentaar zelf met opmaak -->
+                <div class="mat-expansion-panel-content">
+                  <div class="mat-expansion-panel-body">
+                    <div [innerHTML]="commentary.commentary"></div>
+                  </div>
+                </div>
+              </mat-expansion-panel>
             </div>
-          </mat-expansion-panel>
+          }
         </div>
       </div>
     </div>
   </div>
-</div>

@@ -23,7 +23,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-users',
@@ -39,14 +39,12 @@ import { NgIf, NgFor, AsyncPipe } from '@angular/common';
   ],
   standalone: true,
   imports: [
-    NgIf,
     MatExpansionModule,
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,
     MatTableModule,
     MatSortModule,
-    NgFor,
     MatButtonModule,
     FormsModule,
     ReactiveFormsModule,
@@ -54,8 +52,8 @@ import { NgIf, NgFor, AsyncPipe } from '@angular/common';
     MatOptionModule,
     ɵEmptyOutletComponent,
     MatPaginatorModule,
-    AsyncPipe,
-  ],
+    AsyncPipe
+],
 })
 export class UsersComponent implements OnInit, AfterViewInit {
   // For the user table

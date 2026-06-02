@@ -23,7 +23,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { NgIf } from '@angular/common';
+
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 
@@ -40,14 +40,13 @@ import { MatButtonModule } from '@angular/material/button';
     MatDialogClose,
     MatIconModule,
     MatDialogContent,
-    NgIf,
     MatProgressBarModule,
     MatExpansionModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatInputModule,
-  ],
+    MatInputModule
+],
 })
 export class LoginComponent {
   hide_password = true; // password hiding in dialog

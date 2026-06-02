@@ -1,7 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 /* @import "./app/app.component.scss"; */
-/* @import "~@angular/material/prebuilt-themes/indigo-pink.css";
-/* @import "~bootstrap/dist/css/bootstrap.css"; */
+/* @import "@angular/material/prebuilt-themes/indigo-pink.css";
+/* @import "bootstrap/dist/css/bootstrap.css"; */
 @use "@angular/material" as mat;
 
 @use "app/_mixins.scss" as *;

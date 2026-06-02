@@ -24,7 +24,7 @@ import { IntroductionsFilterComponent } from '../../filters/introductions-filter
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { NgIf } from '@angular/common';
+
 
 @Component({
   selector: 'app-introductions-dashboard',
@@ -32,7 +32,6 @@ import { NgIf } from '@angular/common';
   styleUrls: ['./introductions-dashboard.component.scss'],
   standalone: true,
   imports: [
-    NgIf,
     MatExpansionModule,
     MatIconModule,
     MatTabsModule,
@@ -41,8 +40,8 @@ import { NgIf } from '@angular/common';
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatInputModule,
-  ],
+    MatInputModule
+],
 })
 export class IntroductionsDashboardComponent {
   private allowed_user_roles = ['admin'];
