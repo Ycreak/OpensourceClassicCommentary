@@ -5,7 +5,7 @@ import { AppComponent } from './app/app.component';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { DashboardComponent } from './app/features/dashboard/dashboard.component';
 import { AuthGuard } from './app/features/auth/services/auth.guard';
-import { OverviewComponent } from './app/overview/overview.component';
+import { OverviewComponent } from './app/features/overview/overview.component';
 import { provideRouter, Routes } from '@angular/router';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { HttpErrorInterceptor } from './app/lib/api.service';

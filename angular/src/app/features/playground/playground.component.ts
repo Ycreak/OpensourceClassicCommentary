@@ -6,7 +6,7 @@
  */
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Output, EventEmitter } from '@angular/core';
-import { WebsocketsService } from '@oscc/playground/websockets.service';
+import { WebsocketsService } from '@oscc/features/playground/websockets.service';
 import { HostListener } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import {
@@ -46,7 +46,7 @@ import { SharePlaygroundComponent } from './share-playground/share-playground.co
 import { JoinPlaygroundComponent } from './join-playground/join-playground.component';
 import { DocumentFilterComponent } from '@oscc/filters/document-filter/document-filter.component';
 import { Playground_user } from '@oscc/models/api/Playground_user';
-import { LatinTragicFragmentFilterComponent } from '../filters/latin-tragic-fragment-filter/latin-tragic-fragment-filter.component';
+import { LatinTragicFragmentFilterComponent } from '@oscc/filters/latin-tragic-fragment-filter/latin-tragic-fragment-filter.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 
