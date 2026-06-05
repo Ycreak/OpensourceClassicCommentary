@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { StringFormatterService } from '../services/string-formatter.service';
+import { StringFormatterService } from './string-formatter.service';
 
 describe('StringFormatterService', () => {
   let service: StringFormatterService;

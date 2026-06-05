@@ -11,7 +11,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 // Service imports
 import { ApiService } from '@oscc/services/api.service';
 import { FilterService } from '../../../services/filter.service';
-import { UtilityService } from '@oscc/utils/utility.service';
+import { UtilityService } from '@oscc/services/utility.service';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
 

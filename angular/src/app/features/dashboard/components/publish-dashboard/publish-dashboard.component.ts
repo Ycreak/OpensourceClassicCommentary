@@ -14,7 +14,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
 import { ApiService } from '@oscc/services/api.service';
-import { UtilityService } from '@oscc/utils/utility.service';
+import { UtilityService } from '@oscc/services/utility.service';
 import { Fragment } from '@oscc/types/Fragment';
 
 @Component({

@@ -27,7 +27,7 @@ import { Subscription } from 'rxjs';
 import { ApiService } from '@oscc/services/api.service';
 import { AuthService } from '@oscc/features/auth/services/auth.service';
 import { CommentaryService } from '@oscc/features/commentary/services/commentary.service';
-import { UtilityService } from '@oscc/utils/utility.service';
+import { UtilityService } from '@oscc/services/utility.service';
 import { FabricService } from './services/fabric.service';
 import { WindowSizeWatcherService } from '@oscc/services/window-watcher.service';
 

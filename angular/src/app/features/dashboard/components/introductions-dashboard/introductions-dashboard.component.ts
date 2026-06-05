@@ -12,7 +12,7 @@ import { AuthService } from '@oscc/features/auth/services/auth.service';
 import { DialogService } from '@oscc/services/dialog.service';
 import { HelperService } from '@oscc/features/dashboard/services/helper.service';
 import { ApiService } from '@oscc/services/api.service';
-import { UtilityService } from '@oscc/utils/utility.service';
+import { UtilityService } from '@oscc/services/utility.service';
 
 // Model imports
 import { Introduction } from '@oscc/types/Introduction';

@@ -11,7 +11,7 @@ import { Fragment } from '@oscc/types/Fragment';
 // Service imports
 import { ApiService } from '@oscc/services/api.service';
 import { BibliographyService } from '@oscc/services/bibliography.service';
-import { UtilityService } from '@oscc/utils/utility.service';
+import { UtilityService } from '@oscc/services/utility.service';
 
 @Injectable({
   providedIn: 'root',

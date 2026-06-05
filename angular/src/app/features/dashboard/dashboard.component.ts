@@ -4,7 +4,7 @@ import { Component, OnInit } from '@angular/core';
 // Component imports
 import { ApiService } from '@oscc/services/api.service';
 import { AuthService } from '@oscc/features/auth/services/auth.service';
-import { UtilityService } from '@oscc/utils/utility.service';
+import { UtilityService } from '@oscc/services/utility.service';
 import { UsersComponent } from './components/users/users.component';
 import { IntroductionsDashboardComponent } from './components/introductions-dashboard/introductions-dashboard.component';
 import { TestimoniaDashboardComponent } from './components/testimonia-dashboard/testimonia-dashboard.component';

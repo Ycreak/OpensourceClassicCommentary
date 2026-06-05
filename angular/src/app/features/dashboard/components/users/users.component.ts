@@ -11,7 +11,7 @@ import { Observable } from 'rxjs';
 
 // Component imports
 import { ApiService } from '@oscc/services/api.service';
-import { UtilityService } from '@oscc/utils/utility.service';
+import { UtilityService } from '@oscc/services/utility.service';
 import { AuthService } from '@oscc/features/auth/services/auth.service';
 import { DialogService } from '@oscc/services/dialog.service';
 import { User } from '@oscc/types/User';

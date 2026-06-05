@@ -8,7 +8,7 @@ import { tap } from 'rxjs/operators';
 import { environment } from '@src/environments/environment';
 
 // Service imports
-import { UtilityService } from '@oscc/utils/utility.service';
+import { UtilityService } from '@oscc/services/utility.service';
 import { BibliographyService } from '@oscc/services/bibliography.service';
 import { SandboxService } from '@oscc/services/sandbox.service';
 
