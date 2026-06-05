@@ -14,7 +14,7 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 import { AuthService } from '@oscc/features/auth/services/auth.service';
 import { BibliographyService } from '@oscc/services/bibliography.service';
 import { ColumnsService } from '@oscc/columns/columns.service';
-import { CommentaryService } from '@oscc/commentary/commentary.service';
+import { CommentaryService } from '@oscc/features/commentary/commentary.service';
 import { DialogService } from '@oscc/services/dialog.service';
 import { ApiService } from '@oscc/lib/api.service';
 import { SettingsService } from '@oscc/services/settings.service';
@@ -27,7 +27,7 @@ import { DocumentFilterComponent } from '@oscc/filters/document-filter/document-
 import { Column } from '@oscc/types/Column';
 import { Fragment } from '@oscc/types/Fragment';
 import { Linked_fragment } from '@oscc/types/Linked_fragment';
-import { IntroductionsComponent } from '@oscc/commentary/introductions/introductions.component';
+import { IntroductionsComponent } from '@oscc/features/commentary/introductions/introductions.component';
 import { SandboxService } from '@oscc/services/sandbox.service';
 import { ContextComponent } from './context/context.component';
 import { TestimoniaComponent } from './testimonia/testimonia.component';

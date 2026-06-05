@@ -24,7 +24,7 @@ import { ColumnsService } from '@oscc/columns/columns.service';
 import { DialogService } from '@oscc/services/dialog.service';
 import { StringFormatterService } from '@oscc/utils/string-formatter.service';
 import { UtilityService } from '@oscc/utils/utility.service';
-import { ExpandableTextComponent } from '../components/expandable-text/expandable-text.component';
+import { ExpandableTextComponent } from '@oscc/components/expandable-text/expandable-text.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { GeneralCommentaryFieldComponent } from './general-commentary-field/general-commentary-field.component';
 import { TranslationComponent } from './translation/translation.component';

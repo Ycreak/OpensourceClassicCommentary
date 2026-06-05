@@ -22,7 +22,7 @@ import { LoginComponent } from '@oscc/login/login.component';
 import { MatIconRegistry, MatIconModule } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { PlaygroundComponent } from '../playground/playground.component';
-import { CommentaryComponent } from '../../commentary/commentary.component';
+import { CommentaryComponent } from '@oscc/features/commentary/commentary.component';
 import { ColumnsComponent } from '../../columns/columns.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { RouterLink } from '@angular/router';
