@@ -5,7 +5,7 @@
 import { Inject, Component } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogContent, MatDialogClose } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
-import { BibliographyComponent } from '@oscc/features/dashboard/bibliography/bibliography.component';
+import { BibliographyComponent } from '@oscc/features/dashboard/components/bibliography/bibliography.component';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { QuillEditorComponent } from 'ngx-quill';

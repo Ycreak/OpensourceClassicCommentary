@@ -21,7 +21,7 @@ import { SettingsService } from '@oscc/services/settings.service';
 import { UtilityService } from '@oscc/utils/utility.service';
 
 // Component imports
-import { DocumentFilterComponent } from '@oscc/features/explorer/components/document-filter/document-filter.component';
+import { DocumentFilterComponent } from '@oscc/features/filters/components/document-filter/document-filter.component';
 
 // Model imports
 import { Column } from '@oscc/types/Column';
@@ -41,7 +41,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { NgTemplateOutlet } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { LatinTragicFragmentFilterComponent } from '../explorer/components/latin-tragic-fragment-filter/latin-tragic-fragment-filter.component';
+import { LatinTragicFragmentFilterComponent } from '../filters/components/latin-tragic-fragment-filter/latin-tragic-fragment-filter.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { EditableColumnNameComponent } from './components/column-name-editable/column-name-editable.component';
 import { EditModeDirective } from '@oscc/features/columns/components/column-name-editable/directives/edit-mode.directive';

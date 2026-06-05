@@ -44,9 +44,9 @@ import { SavePlaygroundComponent } from './components/save-playground/save-playg
 import { DeletePlaygroundComponent } from './components/delete-playground/delete-playground.component';
 import { SharePlaygroundComponent } from './components/share-playground/share-playground.component';
 import { JoinPlaygroundComponent } from './components/join-playground/join-playground.component';
-import { DocumentFilterComponent } from '@oscc/features/explorer/components/document-filter/document-filter.component';
+import { DocumentFilterComponent } from '@oscc/features/filters/components/document-filter/document-filter.component';
 import { Playground_user } from '@oscc/features/playground/types/Playground_user';
-import { LatinTragicFragmentFilterComponent } from '@oscc/features/explorer/components/latin-tragic-fragment-filter/latin-tragic-fragment-filter.component';
+import { LatinTragicFragmentFilterComponent } from '@oscc/features/filters/components/latin-tragic-fragment-filter/latin-tragic-fragment-filter.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 
