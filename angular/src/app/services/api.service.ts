@@ -1,5 +1,5 @@
 // Library imports
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
@@ -27,7 +27,7 @@ export class ApiService {
 
   network_status: boolean; // Indicates if server is reachable or not
   concurrent_api_calls = 0;
-  public spinner: boolean;
+  private _spinner = signal<boolean>(false);
 
   // We define headers for our post() functions. For receiving data we expect a different response
   // than for post data.
@@ -35,7 +35,7 @@ export class ApiService {
   public get_header: object = { observe: 'body', responseType: 'json' };
 
   // The index contains all document meta data received from the api
-  private _index: any[] = [];
+  private _index = signal<any[]>([]);
 
   public endpoints = new Map<string, string>([
     ['index', 'document/index'],
@@ -60,24 +60,30 @@ export class ApiService {
 
   get index() {
     // Return only documents from the current sandbox. Default sandbox is called 'admin'
-    return this._index;
+    return this._index();
+  }
+
+  public get spinner(): boolean {
+    return this._spinner();
   }
 
   /**
    * Requests the API for the document index
    * @return Observable
    */
-  public request_index(): Observable<any> {
+   public request_index(): Observable<any> {
     return new Observable((observer) => {
       this.spinner_on();
-      this._index = [];
+      // clear the signal using .set()
+      this._index.set([]); 
       // Only retrieve the index for the current sandbox
       const filter = { sandbox: this.sandbox.current_sandbox };
       this.post(this.FlaskURL, this.endpoints.get('index'), filter, this.get_header).subscribe({
         next: (data) => {
-          this._index = data;
+          // Update the signal with fresh HTTP data
+          this._index.set(data); 
           this.spinner_off();
-          observer.next(this.index);
+          observer.next(data);
           observer.complete();
         },
         error: (err) => this.show_server_response(err),
@@ -176,7 +182,7 @@ export class ApiService {
    */
   public get_from_index(key: string, filter: object): string[] {
     return this.utility
-      .get_set_of_key_values_from_object_list(this.utility.filter_array(this.index, filter), key)
+      .get_set_of_key_values_from_object_list(this.utility.filter_array(this._index(), filter), key)
       .sort();
   }
 
@@ -188,7 +194,7 @@ export class ApiService {
    */
   public get_from_index_non_unique(key: string, filter: object): string[] {
     return this.utility
-      .get_list_of_key_values_from_object_list(this.utility.filter_array(this.index, filter), key)
+      .get_list_of_key_values_from_object_list(this.utility.filter_array(this._index(), filter), key)
       .sort();
   }
 
@@ -364,15 +370,24 @@ export class ApiService {
    */
   public spinner_on(): void {
     this.concurrent_api_calls += 1;
-    this.spinner = this.concurrent_api_calls > 0;
+    // Defer the signal update to the next microtask to prevent NG0100 errors
+    queueMicrotask(() => {
+      this._spinner.set(this.concurrent_api_calls > 0);
+    });
   }
 
   /**
    * Simple function to toggle the spinner
    */
   public spinner_off(): void {
-    this.concurrent_api_calls -= 1;
-    this.spinner = this.concurrent_api_calls > 0;
+    // ensure concurrent calls never drop below 0 due to mismatched component 
+    // lifecycles or cancelled HTTP requests
+    this.concurrent_api_calls = Math.max(0, this.concurrent_api_calls - 1);
+
+    // Defer the signal update here as well
+    queueMicrotask(() => {
+      this._spinner.set(this.concurrent_api_calls > 0);
+    });
   }
 }
 

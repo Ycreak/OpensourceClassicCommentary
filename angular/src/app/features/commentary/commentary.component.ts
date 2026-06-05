@@ -172,7 +172,7 @@ export class CommentaryComponent {
           obj.text = this.bib.convert_bib_keys_in_string(obj.text);
         });
       } else {
-        console.error('Unsupported type.');
+        console.error(`Unsupported type: ${key}`);
       }
     });
   }

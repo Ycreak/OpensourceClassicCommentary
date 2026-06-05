@@ -82,7 +82,7 @@ export class Commentary {
           obj.text = given_function(obj.text);
         });
       } else {
-        console.error('Unsupported type.');
+        console.error(`Unsupported type for: ${key}`);
       }
     });
   }
