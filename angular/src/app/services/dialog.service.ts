@@ -91,7 +91,6 @@ export class DialogService {
   /**
    * Opens a dialog that shows the bibliography for a column
    * @param content that is to be shown
-   * @author Ycreak
    */
   public open_column_bibliography(content: any): void {
     this.dialog.open(ColumnBibliographyComponent, {
@@ -105,7 +104,6 @@ export class DialogService {
   /**
    * Opens a dialog that shows the provided content
    * @param content that is to be shown
-   * @author Ycreak
    */
   public open_custom_dialog(content: any): void {
     this.dialog.open(CustomDialogComponent, {

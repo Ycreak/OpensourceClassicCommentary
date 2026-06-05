@@ -127,7 +127,6 @@ export class FragmentsDashboardComponent implements OnInit {
   /**
    * Applies the filter retrieved from the fragment selection.
    * @param filter (object)
-   * @author Ycreak
    */
   protected apply_filter(filter: any): void {
     this.request_documents(filter);
@@ -142,7 +141,6 @@ export class FragmentsDashboardComponent implements OnInit {
   /**
    * Adds the given fragment to the linked_fragments candidate list
    * @param filter (object)
-   * @author Ycreak
    */
   protected add_linked_fragment(filter: any): void {
     this.push_linked_fragments_to_fragment_form(filter.author, filter.title, filter.editor, filter.name);
@@ -158,7 +156,6 @@ export class FragmentsDashboardComponent implements OnInit {
    * The dialog is called provided the config of the editor and the string to be edited. An edited string
    * is returned by the dialog service
    * @param field from fragment_form which is to be send and updated
-   * @author Ycreak
    */
   protected request_wysiwyg_dialog(field: string, index = 0): void {
     if (field == 'context') {
@@ -187,7 +184,6 @@ export class FragmentsDashboardComponent implements OnInit {
    * Converts the fragment_form (formgroup) to the Fragment object
    * @param fragment_form to be converted
    * @returns object representing a json blob for the server
-   * @author Ycreak
    */
   private convert_fragment_form_to_Fragment(fragment_form: FormGroup): Fragment {
     return fragment_form.value;
@@ -197,7 +193,6 @@ export class FragmentsDashboardComponent implements OnInit {
    * This function takes the Typescript Fragment object retrieved from the server and uses
    * its data fields to fill in the fragment_form.
    * @param fragment Fragment object that is to be parsed into the fragment_form
-   * @author Ycreak
    */
   private convert_Fragment_to_fragment_form(fragment: Fragment): void {
     // This functions updates the fragment_form with the provided fragment
@@ -258,7 +253,6 @@ export class FragmentsDashboardComponent implements OnInit {
    * it to the fragment_form, specifically to the lines FormArray.
    * @param line_number given number of the fragment
    * @param text with string containing the lines content
-   * @author Ycreak
    */
   protected push_fragment_line_to_fragment_form(line_number: string, text: string): void {
     // First, create a form group to represent a line
@@ -275,7 +269,6 @@ export class FragmentsDashboardComponent implements OnInit {
    * This function creates a form group containing a single linked fragment and pushes
    * it to the fragment_form, specifically to the linked_fragment FormArray.
    * @param linked_fragment_id given id of the linked fragment
-   * @author Ycreak
    */
   private push_linked_fragments_to_fragment_form(
     author: string,
@@ -303,7 +296,6 @@ export class FragmentsDashboardComponent implements OnInit {
    * @param author author of the given context
    * @param location location in which the context appears
    * @param text text of the actual context in which the fragment appears
-   * @author Ycreak
    */
   protected push_fragment_context_to_fragment_form(
     _author: string,
@@ -325,7 +317,6 @@ export class FragmentsDashboardComponent implements OnInit {
 
   /**
    * Function to reset the fragment form
-   * @author Ycreak
    */
   protected reset_fragment_form(): void {
     // First, remove all data from the form
@@ -341,7 +332,6 @@ export class FragmentsDashboardComponent implements OnInit {
    * @param form_name encapsulating form
    * @param target FormArray from which to delete an item
    * @param index number of the item we want to delete
-   * @author Ycreak
    */
   protected remove_form_item_from_form_array(form_name: string, target: string, index: number): void {
     const form_array_in_question = this[form_name].get(target) as FormArray;
@@ -373,7 +363,6 @@ export class FragmentsDashboardComponent implements OnInit {
   /**
    * This function requests the api to revise the fragment given the fragment_form.
    * @param fragment_form which represents a Fragment, edited by the user in the dashboard
-   * @author Ycreak
    */
   protected request_revise_fragment(fragment_form: FormGroup): void {
     // If the fragment is locked, we will not allow this operation.
@@ -416,7 +405,6 @@ export class FragmentsDashboardComponent implements OnInit {
    * Given the fragment_form which represents a Fragment, this function requests the api to create a
    * new fragment.
    * @param fragment_form which represents a Fragment, edited by the user in the dashboard
-   * @author Ycreak
    */
   protected request_create_fragment(fragment_form: FormGroup): void {
     const item_string =
@@ -454,7 +442,6 @@ export class FragmentsDashboardComponent implements OnInit {
    * Given the fragment_form which represents a Fragment, this function requests the api to delete the
    * selected fragment. This is done via its id.
    * @param fragment_form which represents a Fragment, edited by the user in the dashboard
-   * @author Ycreak
    */
   protected request_delete_fragment(fragment_form: FormGroup): void {
     if (fragment_form.value.lock != 0) {

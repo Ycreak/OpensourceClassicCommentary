@@ -93,7 +93,6 @@ export class IntroductionsDashboardComponent {
    * Request the API for documents
    * @param form (FormGroup) at which to add to the provided introduction text data
    * @param filter (any) Object containing information with which to search for matching introduction texts.
-   * @author Ycreak sajvanwijk
    */
   protected request(filter: any, form = this.current_form): void {
     form.reset();
@@ -121,7 +120,6 @@ export class IntroductionsDashboardComponent {
    * its data fields to fill in the form.
    * @param form (FormGroup) Form field in which to add the retrieved introduction data
    * @param introduction (Introduction) object that is to be parsed into the form
-   * @author Ycreak sajvanwijk
    */
   private model_to_form(form: FormGroup, introduction: Introduction): void {
     // This functions updates the form with the provided introduction
@@ -134,7 +132,6 @@ export class IntroductionsDashboardComponent {
    * Given the form which represents a Introduction, this function requests the api to create a
    * new introduction.
    * @param form (FormGroup) form containing the data of the to-be-created introduction
-   * @author Ycreak sajvanwijk
    */
   protected create(form: FormGroup): void {
     let item_string = '';
@@ -162,7 +159,6 @@ export class IntroductionsDashboardComponent {
   /**
    * This function requests the api to revise/update the introduction given in the form.
    * @param form (FormGroup) form containing the data of the to-be-created introduction
-   * @author Ycreak sajvanwijk
    */
   protected revise(form: FormGroup): void {
     let item_string = '';
@@ -191,7 +187,6 @@ export class IntroductionsDashboardComponent {
    * Given the form which represents a introduction, this function requests the api to delete the
    * selected introduction.
    * @param form (FormGroup) form containing the data of the to-be-created introduction
-   * @author Ycreak sajvanwijk
    */
   protected delete(form: FormGroup): void {
     let item_string = '';

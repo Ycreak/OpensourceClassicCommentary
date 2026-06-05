@@ -69,7 +69,6 @@ export class SharePlaygroundComponent implements OnInit {
 
   /**
    * Retrieves all user names from the form and sends them back
-   * @author Ycreak
    */
   protected onYesClick(): void {
     const users = this.form.get('users') as FormArray;
@@ -83,7 +82,6 @@ export class SharePlaygroundComponent implements OnInit {
 
   /**
    * Function to reset the fragment form
-   * @author Ycreak
    */
   protected reset_form(): void {
     // First, remove all data from the form
@@ -95,7 +93,6 @@ export class SharePlaygroundComponent implements OnInit {
   /**
    * Adds a user to the form
    * @param user (string)
-   * @author Ycreak
    */
   protected add_user(name: string, role: string): void {
     const new_user = new FormGroup({
@@ -114,7 +111,6 @@ export class SharePlaygroundComponent implements OnInit {
   /**
    * Remove a user from the form
    * @param index number of the item we want to delete
-   * @author Ycreak
    */
   protected delete_user(index: number): void {
     const user_array = this.form.get('users') as FormArray;

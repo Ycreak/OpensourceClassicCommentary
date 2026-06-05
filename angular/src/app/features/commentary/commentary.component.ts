@@ -97,7 +97,6 @@ export class CommentaryComponent {
 
   /**
    * Retrieve linked commentary given the current document
-   * @author Ycreak
    */
   protected retrieve_linked_commentary(): void {
     let concurrent_calls = 0;
@@ -129,7 +128,6 @@ export class CommentaryComponent {
    * Converts bib references to proper html and builds the bibliography
    * @param string that needs bib entries handled
    * @returns Commentary with bib entries handled
-   * @author Ycreak
    */
   private create_bibliography(doc: any): string {
     return this.bib.convert_keys_into_bibliography(doc.commentary.bib_keys);
@@ -138,7 +136,6 @@ export class CommentaryComponent {
   /**
    * Requests the columns component for a column to visualise linked fragments
    * @param linked_fragment (Fragment)
-   * @author Ycreak
    */
   protected request_linked_fragments(fragment: Fragment): void {
     const column_id = this.columns.add();
@@ -156,7 +153,6 @@ export class CommentaryComponent {
 
   /**
    * Opens the introduction dialog. An introduction can be about either an author or a text.
-   * @author Ycreak
    */
   protected show_introduction(filter: any): void {
     this.mat_dialog.open(IntroductionsComponent, {
@@ -165,7 +161,6 @@ export class CommentaryComponent {
   }
   /**
    * Converts all bib keys in the commentary to plain text
-   * @author Ycreak
    */
   private convert_bib_keys_in_commentary(): void {
     const commentary_fields_keys = Object.keys(this.commentary.fields);

@@ -23,7 +23,6 @@ export class Bib {
   /**
    * Converts the JSON received from the server to a Typescript object
    * @param bib with JSON data received from the server
-   * @author Ycreak
    */
   public set(bib: any) {
     this.citation = 'citation' in bib ? bib.citation : '';

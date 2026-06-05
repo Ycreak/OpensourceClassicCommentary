@@ -73,7 +73,6 @@ export class Column {
 
   /**
    * Creates a column name from the current class values
-   * @author Ycreak
    */
   create_column_name(): void {
     this.column_name = `${this.author}-${this.title}-${this.editor}`;

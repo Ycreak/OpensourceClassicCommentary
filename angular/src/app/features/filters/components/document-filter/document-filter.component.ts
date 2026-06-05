@@ -42,7 +42,6 @@ export class DocumentFilterComponent {
   /**
    * Keeps track on the currently opened tab
    * @param event
-   * @author Ycreak
    */
   protected on_tab_change(event: MatTabChangeEvent): void {
     this.current_tab = event.tab.textLabel.toLowerCase();
@@ -54,7 +53,6 @@ export class DocumentFilterComponent {
 
   /**
    * Closes the dialog with a list of filters from the entire current table view
-   * @author Ycreak
    */
   protected add_table(): void {
     this.dialogRef.close({
@@ -65,7 +63,6 @@ export class DocumentFilterComponent {
 
   /**
    * Closes the dialog with a list of filters from the current table selection
-   * @author Ycreak
    */
   protected add_selection(): void {
     this.dialogRef.close({

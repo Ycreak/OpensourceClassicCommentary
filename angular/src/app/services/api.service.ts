@@ -66,7 +66,6 @@ export class ApiService {
   /**
    * Requests the API for the document index
    * @return Observable
-   * @author Ycreak
    */
   public request_index(): Observable<any> {
     return new Observable((observer) => {
@@ -174,7 +173,6 @@ export class ApiService {
    * on the index file
    * @param key (string)
    * @param filter (object)
-   * @author Ycreak
    */
   public get_from_index(key: string, filter: object): string[] {
     return this.utility
@@ -187,7 +185,6 @@ export class ApiService {
    * on the index file
    * @param key (string)
    * @param filter (object)
-   * @author sajvanwijk
    */
   public get_from_index_non_unique(key: string, filter: object): string[] {
     return this.utility
@@ -198,7 +195,6 @@ export class ApiService {
   /**
    * Asks Flask to test the Zotero bibliography.
    * @param key (object)
-   * @author Ycreak
    */
   public test_bibliography(): Observable<any> {
     this.spinner_on();
@@ -219,7 +215,6 @@ export class ApiService {
    * Asks Flask to resync the Zotero bibliography. Receives synced bibliography
    * @param key (object)
    * @return document_names (list)
-   * @author Ycreak
    */
   public sync_bibliography(): Observable<any> {
     this.spinner_on();
@@ -248,7 +243,6 @@ export class ApiService {
    * Retrieves the Zotero bibliography from the Flask server
    * @param key (object)
    * @return document_names (list)
-   * @author Ycreak
    */
   public get_bibliography(): Observable<any> {
     return new Observable((observer) => {
@@ -275,7 +269,6 @@ export class ApiService {
    * Retrieves playground names from the given key
    * @param key (object)
    * @return playground_names (list)
-   * @author Ycreak
    */
   public get_playground_names(filter: object): Observable<any> {
     this.spinner_on();
@@ -292,7 +285,6 @@ export class ApiService {
    * Getter function for public property network_status
    * @return boolean network_status - Status indicating whether or not the server is
    *                                    successfully returning requests
-   * @author CptVickers
    */
   public get_network_status(): boolean {
     return this.network_status;
@@ -354,7 +346,6 @@ export class ApiService {
   /**
    * Function to show the server response. Calls Snackbar to show it on screen
    * @param the generated error
-   * @author Ycreak
    */
   public show_server_response(message: any): void {
     this.spinner_off();
@@ -370,7 +361,6 @@ export class ApiService {
 
   /**
    * Simple function to toggle the spinner
-   * @author Ycreak
    */
   public spinner_on(): void {
     this.concurrent_api_calls += 1;
@@ -379,7 +369,6 @@ export class ApiService {
 
   /**
    * Simple function to toggle the spinner
-   * @author Ycreak
    */
   public spinner_off(): void {
     this.concurrent_api_calls -= 1;

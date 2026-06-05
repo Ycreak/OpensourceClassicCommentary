@@ -35,7 +35,6 @@ export class EditableColumnNameComponent {
   /**
    * Sets the column back to default view mode and emits the particular column
    * that has been edited.
-   * @author sajvanwijk
    */
   public toViewMode(confirmEdit: boolean) {
     if (confirmEdit) {

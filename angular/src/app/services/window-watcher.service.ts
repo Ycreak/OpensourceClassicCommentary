@@ -20,7 +20,6 @@ export class WindowSizeWatcherService {
 
   /**
    * Initialises the window watcher. Cannot be done in the constructor, as the page is not fully loaded then.
-   * @author Ycreak
    */
   public init(initial_size): void {
     // Create an observable to check for the changing of window size
@@ -35,7 +34,6 @@ export class WindowSizeWatcherService {
   /**
    * Simple function that retrieves the viewport size
    * @returns viewport size as integer
-   * @author Ycreak
    */
   private retrieve_viewport_size(): number {
     try {

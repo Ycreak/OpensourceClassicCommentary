@@ -123,7 +123,6 @@ export class UsersComponent implements OnInit, AfterViewInit {
   /**
    * Function to allow the User table to be filtered indifferently of field
    * @param event that triggered the filtering process
-   * @author Ycreak
    */
   protected apply_user_table_filter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -137,7 +136,6 @@ export class UsersComponent implements OnInit, AfterViewInit {
   /**
    * Function to allow sorting of the User table
    * @param sort object that carries the sorting instructions provided by the Sort event
-   * @author CptVickers
    */
   protected sort_user_table(sort: Sort): void {
     const data = this.user_table_users.data.slice();
@@ -164,7 +162,6 @@ export class UsersComponent implements OnInit, AfterViewInit {
 
   /**
    * Function to allow automatic expansion of the current user in the users table
-   * @author CptVickers
    */
   @ViewChild('userTableElement') elements: ElementRef;
   protected expand_user_table_row(): void {
@@ -176,7 +173,6 @@ export class UsersComponent implements OnInit, AfterViewInit {
    * This function requests users from the server based on the role of the logged in user.
    * If a user is student, only the student will be retrieved. For teachers, all students will
    * be retrieved in addition to themselves. Administrators will receive all users.
-   * @author Ycreak
    */
   private request_users() {
     this.api.spinner_on();
@@ -204,7 +200,6 @@ export class UsersComponent implements OnInit, AfterViewInit {
    * This function requests the API to create a new user given the form. With a username and
    * provided password a new user is requested from the server.
    * @param form_results containing data of the form
-   * @author Ycreak
    */
   protected request_create_user(form_results: any) {
     this.api.spinner_on();
@@ -230,7 +225,6 @@ export class UsersComponent implements OnInit, AfterViewInit {
    * This function requests the changing of the role of a user.
    * @param user object of the user who's role is to change
    * @param role new role to be given to the user
-   * @author Ycreak
    */
   protected request_change_role(user: any) {
     const item_string = user.username + ', ' + user.role;
@@ -255,7 +249,6 @@ export class UsersComponent implements OnInit, AfterViewInit {
    * communication with the server is started. If the passwords do not match, the snackbar is invoked.
    * @param form change_password form with new passwords
    * @param username of the currently selected user in the table
-   * @author Ycreak
    */
   protected request_change_password(form: FormGroup, username: string): void {
     if (form.value.password1 == form.value.password2) {
@@ -278,7 +271,6 @@ export class UsersComponent implements OnInit, AfterViewInit {
   /**
    * This function requests the api to delete a user given their username
    * @param username name of the user who's account is to be deleted
-   * @author Ycreak
    */
   protected request_delete_user(user: any): void {
     this.dialog

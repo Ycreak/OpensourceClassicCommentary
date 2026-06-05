@@ -135,7 +135,6 @@ export class ColumnsComponent implements OnInit {
   /**
    * Opens a dialog to set a custom filter. If filter set, requests documents from server
    * @param number of column_id to load documents into
-   * @author Ycreak
    */
   protected set_custom_filter(column_id: number): void {
     const dialogRef = this.matdialog.open(DocumentFilterComponent, {});
@@ -158,7 +157,6 @@ export class ColumnsComponent implements OnInit {
    * Function to handle what happens when a document is selected in HTML.
    * @param document selected by the user
    * @param Column
-   * @author Ycreak
    */
   protected handle_document_click(document: any, column: Column): void {
     // Request the commentary to show the clicked document
@@ -204,7 +202,6 @@ export class ColumnsComponent implements OnInit {
 
   /**
    * Retrieves linked fragments from server and shows them in a new column
-   * @author Ycreak
    */
   protected show_linked_documents(given_document: any): void {
     if (given_document.linked_fragments.length > 0) {
@@ -220,7 +217,6 @@ export class ColumnsComponent implements OnInit {
 
   /**
    * Helper function to find and return the textual content of a given document object
-   * @author CptVickers
    */
   protected copy_document_content(given_document: any): void {
     if (!window.getSelection().toString()) {
@@ -254,7 +250,6 @@ export class ColumnsComponent implements OnInit {
    * @param n_documents The total number of documents in the column
    * @param fragment_index The index of the current fragment
    * @returns: Color as HSL value (presented as string)
-   * @author CptVickers
    */
   protected generate_document_gradient_background_color(n_documents: number, fragment_index: number) {
     if (this.settings.fragments.fragment_order_gradient == true) {
@@ -277,7 +272,6 @@ export class ColumnsComponent implements OnInit {
   /**
    * Opens a bibliography dialog with all entries from the documents in the column.
    * @param documents (list)
-   * @author Ycreak
    */
   protected show_column_bibliography(column: Column): void {
     const column_bib_keys: string[] = [];
@@ -303,7 +297,6 @@ export class ColumnsComponent implements OnInit {
    * This function allows the user to display the translations of the fragments instead of the original text.
    * The Fragment Translation tab in the commentary section then becomes the 'original text' tab instead.
    * @param column (Column)
-   * @author CptVickers
    */
   protected toggle_translation(column: Column): void {
     // The document components will listen for this change
@@ -314,7 +307,6 @@ export class ColumnsComponent implements OnInit {
 
   /**
    * Function to get an appropriate label for the toggle translation button
-   * @author CptVickers
    */
   protected translation_toggle_button_label(column: Column): string {
     if (column.translated) {
@@ -330,7 +322,6 @@ export class ColumnsComponent implements OnInit {
    * Currently used for the rename column action.#3F51B5
    * @param event MouseEvent, used for preventing default right click action from browser
    * @param column The selected column
-   * @author sajvanwijk
    */
   // we create an object that contains coordinates of this context menu
   columnNameContextMenuTopLeftPosition = { x: '0', y: '0' };
@@ -361,7 +352,6 @@ export class ColumnsComponent implements OnInit {
    * @param event MouseEvent, it contains the coordinates
    * @param document The selected fragment/document
    * @param column The column where the selected fragment/document is from
-   * @author sajvanwijk
    */
   // we create an object that contains coordinates of this context menu
   fragmentContextMenuTopLeftPosition = { x: '0', y: '0' };
@@ -388,7 +378,6 @@ export class ColumnsComponent implements OnInit {
 
   /**
    * Opens the introduction dialog. An introduction can be about either an author or a text.
-   * @author Ycreak
    */
   protected show_introduction(filter: any): void {
     console.log('Fetching introduction for: ' + filter);
@@ -404,7 +393,6 @@ export class ColumnsComponent implements OnInit {
    * to complete the edit. In this case this can be done by pressing enter
    * (saves the change) or clicking anywhere outside the edit field/pressing escape
    * (cancels the change).
-   * @author sajvanwijk
    */
   @ViewChildren('ColumnNameField') columnNameFields: QueryList<EditableColumnNameComponent>;
   protected trigger_column_name_edit_mode(column: Column): void {
@@ -420,7 +408,6 @@ export class ColumnsComponent implements OnInit {
 
   /**
    * Method for updating a column name in the system after it has been edited. (See trigger_column_name_edit_mode)
-   * @author sajvanwijk
    */
   protected updateColumnName(column: Column, newColumnName: string) {
     console.log(`New column name set for column ${column.column_id}: ${newColumnName}`);
@@ -435,7 +422,6 @@ export class ColumnsComponent implements OnInit {
    * Given the fragment, this function checks whether its linked fragments appear in the
    * other opened columns. If so, the columns are scrolled to put the linked fragment in view
    * @param fragment object with the linked_fragments field to be examined
-   * @author Ycreak
    */
   //private scroll_to_linked_fragments(document: Fragment) {
   //for (const i in document.linked_fragments) {

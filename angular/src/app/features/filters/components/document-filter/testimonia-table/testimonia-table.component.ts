@@ -85,7 +85,6 @@ export class TestimoniaTableComponent implements AfterViewInit {
 
   /**
    * Filters the testimonium index on its meta data fields
-   * @author Ycreak
    */
   protected filter_index() {
     const filter = {};

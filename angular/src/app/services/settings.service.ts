@@ -27,7 +27,6 @@ export class SettingsService {
 
   /**
    * Function used to load the user's previously used settings from local storage using the LocalStorageService service
-   * @author Sajvanwijk
    */
   public load_settings(): void {
     // Load all the fragments settings
@@ -62,7 +61,6 @@ export class SettingsService {
 
   /**
    * Function used to load the user's previously used settings from local storage using the LocalStorageService service
-   * @author Sajvanwijk
    */
   public save_settings(): void {
     // Save all the fragments settings

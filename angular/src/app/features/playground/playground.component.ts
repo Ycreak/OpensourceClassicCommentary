@@ -137,7 +137,6 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   /**
    * Opens a dialog to set an advanced filter. If filter set, requests documents from server
    * @param number of column_id to load documents into
-   * @author Ycreak
    */
   protected open_advanced_filter(): void {
     const dialogRef = this.mat_dialog.open(DocumentFilterComponent, {});
@@ -173,7 +172,6 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * @author CptVickers
    */
   protected open_clear_playground(): void {
     this.dialog.open_confirmation_dialog('Are you sure you want to clear the playground?', '').subscribe({
@@ -188,7 +186,6 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   /**
    * Opens the load playground dialog. If it returns with a name, we retrieve that playground from
    * the server.
-   * @author Ycreak
    */
   protected load_playground(): void {
     const dialogRef = this.mat_dialog.open(LoadPlaygroundComponent, {
@@ -215,7 +212,6 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   /**
    * Opens the save playground dialog. It returns with a create or save request and a name to save/create to.
    * Accordingly, a playground with given name is created/saved. Error handling is done on the server
-   * @author Ycreak
    */
   protected save_playground(): void {
     const dialogRef = this.mat_dialog.open(SavePlaygroundComponent, {
@@ -301,7 +297,6 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
 
   /**
    * Creates a live room by generating a room identifier and joining said room.
-   * @author Ycreak
    */
   protected create_live_room(): void {
     this.disconnect_from_websocket();
@@ -313,7 +308,6 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
 
   /**
    * Disconnects fully and gracefully from the currently connected websocket
-   * @author Ycreak
    */
   private disconnect_from_websocket(): void {
     if (this.websockets_subscription) {
@@ -325,7 +319,6 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
 
   /**
    * Opens the share playground dialog. If accepted, we share the current playground with the given users.
-   * @author Ycreak
    */
   protected share_playground(): void {
     if (this.name) {
@@ -351,7 +344,6 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
 
   /**
    * Opens the delete playground dialog. If accepted, we delete the current playground.
-   * @author Ycreak
    */
   protected delete_playground(): void {
     if (this.name) {
@@ -382,7 +374,6 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   /**
    * Requests the commentary for the clicked document. Will check which document has been clicked,
    * find said document in the this.documents array and then request the commentary component for a commentary.
-   * @author Ycreak
    */
   protected request_commentary(): void {
     const clicked_document = this.fabric.canvas.getActiveObjects()[0] as any;
@@ -402,7 +393,6 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   /**
    * Sets up everything correctly for an incoming playground
    * @param playground (Playground) from the API
-   * @author Ycreak
    */
   private process_incoming_playground(playground: any): void {
     this.name = playground.name;
@@ -420,7 +410,6 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
 
   /**
    * Inits the playground object
-   * @author Ycreak
    */
   private init_playground(): void {
     this.fabric.canvas = new Canvas('playground_canvas');
@@ -430,7 +419,6 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
 
   /**
    * Shows the help menu for the playground
-   * @author sajvanwijk
    */
   protected show_helpmenu(helpmenuoption: string): void {
     let helptext;

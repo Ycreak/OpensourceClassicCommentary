@@ -64,7 +64,6 @@ export class ExpandableTextComponent implements AfterViewInit {
 
   /**
    * Function used by the toggle button to change between collapsed and expanded view.
-   * @author CptVickers
    */
   protected toggle_collapsed() {
     // If the content contains a hidden section, unhide TODO:
@@ -82,7 +81,6 @@ export class ExpandableTextComponent implements AfterViewInit {
 
   /**
    * Function used by the toggle button to get a relevant label based on the element being expanded or collapsed
-   * @author CptVickers
    */
   protected get get_toggle_button_text() {
     if (this.isCollapsed === true) {

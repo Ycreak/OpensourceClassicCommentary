@@ -22,7 +22,6 @@ export class FormatterService {
    * by FabricJS, their locations turned into delimiters for cursive text
    * @param doc (Fragment)
    * @return Fragment
-   * @author Ycreak
    */
   private convert_italics_encoding(doc: Fragment): Fragment {
     doc.lines.forEach((line: any) => {
@@ -36,7 +35,6 @@ export class FormatterService {
    * Converts the whitespace encoding to FabricJS compatible whitespaces
    * @param doc (document)
    * @return object
-   * @author Ycreak
    */
   private convert_whitespace_encoding(doc: any): any {
     doc.lines.forEach((line: any) => {

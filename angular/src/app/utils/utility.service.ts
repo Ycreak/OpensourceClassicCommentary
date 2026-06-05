@@ -23,7 +23,6 @@ export class UtilityService {
    * @param boolean called from array
    * @param field on which to perform the comparison
    * @returns sorted array.
-   * @author Ycreak
    */
   public sort_fragment_array_numerically(a: any, b: any) {
     // Sort array via the number element given.
@@ -44,7 +43,6 @@ export class UtilityService {
    * @param boolean called from array
    * @param field on which to perform the comparison
    * @returns sorted array.
-   * @author Ycreak
    */
   public sort_array_numerically(a, b) {
     // Sort array via the number element given.
@@ -67,7 +65,6 @@ export class UtilityService {
    * @param key within the array to be filtered
    * @param value which should equal to the field to enable filtering
    * @returns the filtered array
-   * @author Ycreak
    */
   public filter_object_on_key(array, key, value): Array<any> {
     const filtered_array = array.filter((obj) => {
@@ -81,7 +78,6 @@ export class UtilityService {
    * @param array (list) with objects
    * @param filter (object)
    * @return list
-   * @author Ycreak
    */
   public filter_array(array: Array<any>, filters: any) {
     const filter_keys = Object.keys(filters);
@@ -101,7 +97,6 @@ export class UtilityService {
    * @param list (array) with objects
    * @param key (string) of which values to create a Set
    * @return list of unique values
-   * @author Ycreak
    */
   public get_set_of_key_values_from_object_list(list: any, key: string): string[] {
     return Array.from(
@@ -118,7 +113,6 @@ export class UtilityService {
    * @param list (array) with objects
    * @param key (string) of which property to get from the objects
    * @return list of retrieved values
-   * @author sajvanwijk
    */
   public get_list_of_key_values_from_object_list(list: any, key: string): string[] {
     return Array.from(
@@ -131,7 +125,6 @@ export class UtilityService {
   /**
    * Opens Material popup window with the given message
    * @param message information that is showed in the popup
-   * @author Ycreak
    */
   public open_snackbar(message): void {
     this.snackBar.open(message, 'Close', {
@@ -141,7 +134,6 @@ export class UtilityService {
 
   /**
    * Function that adds a subscribable loading hint to the dashboard component
-   * @author CptVickers
    */
   public get_loading_hint(): Observable<string> {
     const loading_hint = new Observable<string>((subscriber) => {
@@ -170,7 +162,6 @@ export class UtilityService {
   /**
    * Allows a fragment to be moved and dropped to create a custom ordering
    * @param event what happens to the column
-   * @author Ycreak
    */
   public drop(event: CdkDragDrop<string[]>) {
     // console.log(event)
@@ -186,7 +177,6 @@ export class UtilityService {
    * Capitalizes the first letter of each given word
    * @param word the word to be capitalized
    * @returns string that is capitalized
-   * @author CptVickers
    */
   public capitalize_word(word: string): string {
     if (!word) return word;
@@ -198,7 +188,6 @@ export class UtilityService {
    * @param item to be pushed
    * @param array to be extended
    * @returns new array with item pushed
-   * @author Ycreak
    */
   public push_to_array(item: any, array: Array<any>): Array<any> {
     array.push(item);
@@ -209,7 +198,6 @@ export class UtilityService {
    * Function to pop an item from an array
    * @param array to be popped
    * @returns new array with item popped
-   * @author Ycreak
    */
   public pop_array(array: any) {
     array.pop();
@@ -244,7 +232,6 @@ export class UtilityService {
    * @param from_index element's index that is to be moved
    * @param to_index index to where the element is to be moved
    * @returns updated array
-   * @author Ycreak
    */
   public move_element_in_array(arr, from_index, to_index): Array<any> {
     const element = arr[from_index];
@@ -265,7 +252,6 @@ export class UtilityService {
   // }
   /**
    * Test function
-   * @author Ycreak
    */
   private test(thing): void {
     console.log('############ TESTING ############');
@@ -279,7 +265,6 @@ export class UtilityService {
    * @param array of objects that needs filtering
    * @param search_object that functions as filter
    * @return array with objects based on filter
-   * @author Ycreak
    */
   public filter_array_on_object(array: any, search_object: any) {
     return array.filter((el: any) => {

@@ -34,7 +34,6 @@ export class ColumnsService {
   /**
    * This function adds a new column to the columns array
    * @returns column_id (number)
-   * @author Ycreak
    */
   public add(): number {
     // First, increment the column_identifier to create a new and unique id
@@ -50,7 +49,6 @@ export class ColumnsService {
   /**
    * This function deletes a column from this.list given its name
    * @param column_id of column that is to be closed
-   * @author Ycreak
    */
   public close(column_id: number): void {
     const object_index = this.list.findIndex((object) => {
@@ -66,7 +64,6 @@ export class ColumnsService {
    * around on the frontend.
    * @param column_id of column that is to be moved
    * @param direction of movement
-   * @author Ycreak
    */
   public move(column_id: number, direction: string): void {
     // First get the current index of the column we want to move
@@ -88,7 +85,6 @@ export class ColumnsService {
 
   /**
    * This function creates a list of connected columns to allow dragging and dropping
-   * @author Ycreak
    */
   private connect(columns: Column[]): string[] {
     const connected: string[] = [];
@@ -101,7 +97,6 @@ export class ColumnsService {
   /**
    * Colours all document titles black
    * @param column: columns with documents to be painted black
-   * @author Ycreak
    */
   public blacken(column: Column): void {
     column.documents.forEach((doc: any) => {
@@ -113,7 +108,6 @@ export class ColumnsService {
    * Returns the column given its id
    * @param id (number)
    * @returns Column
-   * @author Ycreak
    */
   public find(id: number): Column {
     return this.list.find((x) => x.column_id == id);
@@ -125,7 +119,6 @@ export class ColumnsService {
    * @param filter (object) on which to filter the database
    * @param column_id (number) in which to add the documents
    * @param append (boolean) whether we append documents or replace
-   * @author Ycreak
    */
   public request(filter: any, column_id: number, append?: boolean): void {
     // Only retrieve visible fragments
@@ -160,7 +153,6 @@ export class ColumnsService {
    * @param column_id (number) in which to add the documents
    * @param documents (object[]) which to add to the provided column
    * @returns documents (object[]) nicely formatted
-   * @author Ycreak
    */
   private format(documents: any[]): any[] {
     documents.forEach((doc: any) => {
@@ -180,7 +172,6 @@ export class ColumnsService {
    * by Incerta and Adespota.
    * @param documents
    * @returns documents in the order we want
-   * @author Ycreak
    */
   public sort(documents: any[]): any[] {
     documents = documents.sort(this.utility.sort_fragment_array_numerically);
@@ -200,7 +191,6 @@ export class ColumnsService {
    * we set the corresponding document_column boolean 'edited' to true.
    * @param column1 the first edited column
    * @param column2 the second edited column
-   * @author Ycreak
    */
   public set_edited_flag_true(column1: number, column2: number): void {
     // First, find the corresponding columns in this.list using the column_id that is used
@@ -216,7 +206,6 @@ export class ColumnsService {
    * Related to the method above; when loading a column's data freshly from memory, the 'edited' flag will be set to false.
    * (After all the loaded data has not been edited yet by the user.)
    * @param column_id identifier of the column that has been refreshed.
-   * @author sajvanwijk
    */
   public set_edited_flag_false(column_id: number): void {
     // First, find the corresponding columns in this.list using the column_id that is used
@@ -229,7 +218,6 @@ export class ColumnsService {
   /**
    * Given the current document, colour the linked documents in the other columns
    * @param document of which the linked documents should be coloured
-   * @author Ycreak
    */
   public colour_linked_fragments(document: Fragment): void {
     // Loop through all documents the linked documents

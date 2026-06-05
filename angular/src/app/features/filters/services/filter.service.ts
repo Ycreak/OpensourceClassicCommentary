@@ -21,7 +21,6 @@ export class FilterService {
 
   /**
    * Empties the data object
-   * @author Ycreak
    */
   public init(): void {
     this.data = {

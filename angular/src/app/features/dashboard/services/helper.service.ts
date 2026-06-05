@@ -17,7 +17,6 @@ export class HelperService {
    * @param field representing the field of form which is to be send and updated
    * @param type either formArray or formControl
    * @param index (optional) when providing an formArray, to know which entry we are editing
-   * @author Ycreak
    */
   public request_wysiwyg_dialog(form: FormGroup, field: string, type: string, index = 0): FormGroup {
     if (type == 'formArray') {

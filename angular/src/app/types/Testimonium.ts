@@ -27,7 +27,6 @@ export class Testimonium {
   /**
    * Converts the JSON received from the server to a Typescript object
    * @param testimonium with JSON data received from the server
-   * @author Ycreak
    */
   public set(testimonium: any) {
     this._id = '_id' in testimonium ? testimonium['_id'] : '';

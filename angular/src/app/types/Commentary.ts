@@ -30,7 +30,6 @@ export class Commentary {
   /**
    * Converts the JSON received from the server to a Typescript object
    * @param doc (object) with JSON data received from the server
-   * @author Ycreak
    */
   public set(doc: any) {
     this.bibliography = '';
@@ -62,7 +61,6 @@ export class Commentary {
    * Returns true if the given fragment has one of its content fields filled
    * @param fragment to be investigated for content
    * @returns boolean whether content is present
-   * @author Ycreak
    */
   public has_content() {
     return (

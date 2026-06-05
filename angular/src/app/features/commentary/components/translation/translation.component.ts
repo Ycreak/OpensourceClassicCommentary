@@ -32,7 +32,6 @@ export class TranslationComponent implements OnChanges {
 
   /**
    * Sets the correct title and translation given the translated flag.
-   * @author Ycreak
    */
   private process_translation(): void {
     if (this.translated) {

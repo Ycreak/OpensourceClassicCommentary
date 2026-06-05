@@ -80,7 +80,6 @@ export class FragmentTableComponent implements AfterViewInit {
 
   /**
    * Filters the fragment index on its meta data fields
-   * @author Ycreak
    */
   protected filter_index() {
     const filter = {};

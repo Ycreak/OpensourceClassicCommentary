@@ -73,7 +73,6 @@ export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param date (string)
    * @param pages (string)
    * @return bib_key (string)
-   * @author Ycreak
    */
   protected get_bib_key(key: string, author: string, date: string, pages: string): string {
     if (pages) {
@@ -86,7 +85,6 @@ export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
   /**
    * Function to fill the zotero table with data
    * @param data received from the API
-   * @author Ycreak
    */
   private fill_table(bib: any) {
     this.table_data.paginator = this.paginator;
@@ -123,7 +121,6 @@ export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
    * Applies the sorting and filtering of the given table. Handles pagination if necessary.
    * @param event handles the filtering if provided
    * @param table that needs to be sorted/filtered
-   * @author Ycreak
    */
   public apply_sort_filter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value;

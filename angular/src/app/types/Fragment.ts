@@ -33,7 +33,6 @@ export class Fragment {
   /**
    * Converts the JSON received from the server to a Typescript object
    * @param fragment with JSON data received from the server
-   * @author Ycreak
    */
   public set(fragment: any) {
     this._id = '_id' in fragment ? fragment['_id'] : '';
@@ -59,7 +58,6 @@ export class Fragment {
    * @param key (string)
    * @param fragment (json)
    * @return boolean
-   * @author Ycreak
    */
   private check_json_entry(key: string, fragment: object): boolean {
     return key in fragment && fragment[key] != null;
@@ -70,7 +68,6 @@ export class Fragment {
    * all elements in a fragment list.
    * @param array with fragments as retrieved from the server
    * @returns updated array with nice HTML formatting included
-   * @author Ycreak
    */
   public add_html_to_lines(): void {
     for (const item in this.lines) {
@@ -90,7 +87,6 @@ export class Fragment {
    * Takes a string and looks for whitespace decoding. Converts it to html spans
    * @param string that needs whitespaces converted to html spans
    * @returns string with whitespaces converted to html spans
-   * @author Ycreak
    */
   private convert_whitespace_encoding(string: string): string {
     // Find fish hooks with number in between.

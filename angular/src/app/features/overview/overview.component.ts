@@ -95,7 +95,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
   /**
    * Returns the size of the commentary window in (css style) percentage.
    * @returns number%
-   * @author Ycreak
    */
   protected get_drawer_size(): string {
     return `${this.settings.fragments.commentary_size}%`;
@@ -103,7 +102,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   /**
    * Simple function to toggle the commentary column
-   * @author Ycreak
    */
   protected toggle_commentary(): void {
     this.commentary_enabled = !this.commentary_enabled;
@@ -111,7 +109,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   /**
    * Simple function to toggle the playground column
-   * @author Ycreak
    */
   protected toggle_playground(): void {
     this.playground_enabled = !this.playground_enabled;
@@ -119,7 +116,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   /**
    * Function to handle the login dialog
-   * @author Ycreak
    */
   protected login(): void {
     this.mat_dialog.open(LoginComponent, {});
@@ -128,7 +124,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
   /**
    * Returns the title from the environment for the frontend to print
    * @param kind to print: either long or short
-   * @author Ycreak
    */
   protected get_title(kind: string) {
     return kind == 'long' ? environment.title : environment.short_title;
@@ -137,7 +132,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
   /**
    * Used to scroll the viewport to a certain part of the page.
    * @param anchor The id of the element to scroll to. ('#' can be omitted)
-   * @author sajvanwijk
    */
   protected scroll_viewport_to(anchor: string): void {
     setTimeout(() => {

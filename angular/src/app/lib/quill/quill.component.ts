@@ -69,7 +69,6 @@ export class QuillComponent {
    * If the cursor has selected a word, the word will be pre- and succeeded by the symbol.
    * If the cursor is placed somewhere in the text, the symbol will be inserted at that location.
    * @param symbol that is to be placed in the text
-   * @author Ycreak
    */
   public add_symbol(symbol: string): void {
     const range = this.editor_instance.getSelection();

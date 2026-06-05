@@ -15,7 +15,6 @@ export class Introduction {
   /**
    * Converts the JSON received from the server to a Typescript object
    * @param introduction with JSON data received from the server
-   * @author Ycreak
    */
   public set(introduction: any) {
     this._id = '_id' in introduction ? introduction['_id'] : '';

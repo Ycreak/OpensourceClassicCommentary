@@ -90,7 +90,6 @@ export class TestimoniaDashboardComponent {
    * This function takes the Typescript object retrieved from the server and uses
    * its data fields to fill in the form.
    * @param testimonium (Testimonium) object that is to be parsed into the form
-   * @author Ycreak
    */
   private model_to_form(testimonium: Testimonium): void {
     // This functions updates the form with the provided testimonium
@@ -118,7 +117,6 @@ export class TestimoniaDashboardComponent {
    * Given the form which represents a Testimonium, this function requests the api to create a
    * new testimonium.
    * @param object which represents a testimonium, edited by the user in the dashboard
-   * @author Ycreak
    */
   protected create(form: any): void {
     const item_string = form.author + ', ' + form.witness + ', ' + form.title + ': ' + form.name;
@@ -138,7 +136,6 @@ export class TestimoniaDashboardComponent {
   /**
    * This function requests the api to revise the fragment given the fragment_form.
    * @param fragment_form which represents a Fragment, edited by the user in the dashboard
-   * @author Ycreak
    */
   protected revise(form: any): void {
     if (form.lock != 0) {
@@ -168,7 +165,6 @@ export class TestimoniaDashboardComponent {
    * Given the form which represents a testimonium, this function requests the api to delete the
    * selected testimonium.
    * @param form which represents a testimonium, edited by the user in the dashboard
-   * @author Ycreak
    */
   protected delete(form: any): void {
     if (form.lock != 0) {
@@ -191,7 +187,6 @@ export class TestimoniaDashboardComponent {
 
   /**
    * Function to reset the fragment form
-   * @author Ycreak
    */
   protected reset_form(): void {
     this.form.reset();
