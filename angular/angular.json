@@ -27,7 +27,7 @@
             "tsConfig": "tsconfig.app.json",
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": [
-              "src/app/assets/styles/custom-theme-leidenuniv.scss",
+              "src/app/styles/custom-theme-leidenuniv.scss",
               "node_modules/quill/dist/quill.snow.css",
               "node_modules/@fortawesome/fontawesome-free/css/all.css",
               "node_modules/bootstrap/scss/bootstrap.scss",
@@ -101,7 +101,7 @@
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["src/app/assets/styles/custom-theme-leidenuniv.scss", "src/styles.scss"],
+            "styles": ["src/app/styles/custom-theme-leidenuniv.scss", "src/styles.scss"],
             "scripts": []
           }
         },
