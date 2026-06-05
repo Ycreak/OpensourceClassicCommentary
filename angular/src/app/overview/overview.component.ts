@@ -10,9 +10,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { environment } from '@src/environments/environment';
 
 // Service imports
-import { ApiService } from '@oscc/core/services/api.service';
+import { ApiService } from '@oscc/lib/api.service';
 import { SettingsService } from '@oscc/services/settings.service';
-import { WindowSizeWatcherService } from '@oscc/core/services/window-watcher.service';
+import { WindowSizeWatcherService } from '@oscc/services/window-watcher.service';
 import { AuthService } from '@oscc/core/auth/auth.service';
 import { SandboxService } from '@oscc/services/sandbox.service';
 import { DialogService } from '@oscc/services/dialog.service';

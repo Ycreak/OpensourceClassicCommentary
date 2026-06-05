@@ -17,14 +17,14 @@ import { Fragment } from '@oscc/models/Fragment';
 import { IntroductionsComponent } from './introductions/introductions.component';
 
 // Service imports
-import { ApiService } from '@oscc/core/services/api.service';
+import { ApiService } from '@oscc/lib/api.service';
 import { BibliographyService } from '@oscc/services/bibliography.service';
 import { CommentaryService } from './commentary.service';
 import { ColumnsService } from '@oscc/columns/columns.service';
 import { DialogService } from '@oscc/services/dialog.service';
 import { StringFormatterService } from '@oscc/services/string-formatter.service';
 import { UtilityService } from '@oscc/utility.service';
-import { ExpandableTextComponent } from '../other_components/expandable-text/expandable-text.component';
+import { ExpandableTextComponent } from '../components/expandable-text/expandable-text.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { GeneralCommentaryFieldComponent } from './general-commentary-field/general-commentary-field.component';
 import { TranslationComponent } from './translation/translation.component';

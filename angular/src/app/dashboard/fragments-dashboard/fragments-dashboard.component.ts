@@ -6,7 +6,7 @@ import { Validators } from '@angular/forms';
 // Service imports
 import { AuthService } from '@oscc/core/auth/auth.service';
 import { DialogService } from '@oscc/services/dialog.service';
-import { ApiService } from '@oscc/core/services/api.service';
+import { ApiService } from '@oscc/lib/api.service';
 import { UtilityService } from '@oscc/utility.service';
 
 // Model imports
@@ -22,7 +22,7 @@ import { LatinTragicFragmentFilterComponent } from '../../filters/latin-tragic-f
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
 
-import { QuillComponent } from '@oscc/components/quill/quill.component';
+import { QuillComponent } from '@oscc/lib/quill/quill.component';
 
 // Simple interface for a mat select
 interface mat_select_interface {

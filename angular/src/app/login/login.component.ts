@@ -14,7 +14,7 @@ import { MatDialogRef, MatDialogClose, MatDialogContent } from '@angular/materia
 
 // Service imports
 import { DialogService } from '@oscc/services/dialog.service';
-import { ApiService } from '@oscc/core/services/api.service';
+import { ApiService } from '@oscc/lib/api.service';
 import { UtilityService } from '@oscc/utility.service';
 
 // Model imports

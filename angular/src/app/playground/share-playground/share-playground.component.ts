@@ -10,7 +10,7 @@ import {
 import { FormControl, FormGroup, FormArray, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Service imports
-import { ApiService } from '@oscc/core/services/api.service';
+import { ApiService } from '@oscc/lib/api.service';
 
 // Model imports
 import { Playground_user } from '@oscc/models/api/Playground_user';

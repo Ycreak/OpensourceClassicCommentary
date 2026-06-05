@@ -6,7 +6,7 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { Commentary } from '@oscc/models/Commentary';
 import { Line } from '@oscc/models/Line';
-import { ExpandableTextComponent } from '../../other_components/expandable-text/expandable-text.component';
+import { ExpandableTextComponent } from '../../components/expandable-text/expandable-text.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 
 @Component({

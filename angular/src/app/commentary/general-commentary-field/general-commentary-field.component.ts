@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { ExpandableTextComponent } from '../../other_components/expandable-text/expandable-text.component';
+import { ExpandableTextComponent } from '../../components/expandable-text/expandable-text.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 
 @Component({
