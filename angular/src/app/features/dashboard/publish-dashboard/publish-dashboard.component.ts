@@ -13,7 +13,7 @@ import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
-import { ApiService } from '@oscc/lib/api.service';
+import { ApiService } from '@oscc/services/api.service';
 import { UtilityService } from '@oscc/utils/utility.service';
 import { Fragment } from '@oscc/types/Fragment';
 

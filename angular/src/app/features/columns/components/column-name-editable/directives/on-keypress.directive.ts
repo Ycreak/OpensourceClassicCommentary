@@ -1,5 +1,5 @@
 import { Directive, HostListener } from '@angular/core';
-import { EditableColumnNameComponent } from './column-name-editable.component';
+import { EditableColumnNameComponent } from '@oscc/features/columns/components/column-name-editable/column-name-editable.component';
 
 @Directive({
   selector: '[appEditableKeypressHandler]',

@@ -8,7 +8,7 @@ import { AuthGuard } from './app/features/auth/services/auth.guard';
 import { OverviewComponent } from './app/features/overview/overview.component';
 import { provideRouter, Routes } from '@angular/router';
 import { bootstrapApplication } from '@angular/platform-browser';
-import { HttpErrorInterceptor } from './app/lib/api.service';
+import { HttpErrorInterceptor } from './app/services/api.service';
 import { HTTP_INTERCEPTORS, withInterceptorsFromDi, provideHttpClient } from '@angular/common/http';
 
 const appRoutes: Routes = [

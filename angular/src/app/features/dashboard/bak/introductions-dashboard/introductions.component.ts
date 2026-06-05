@@ -4,7 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '@oscc/features/auth/services/auth.service';
 import { DialogService } from '@oscc/services/dialog.service';
 import { Introduction } from '@oscc/types/Introduction';
-import { ApiService } from '@oscc/lib/api.service';
+import { ApiService } from '@oscc/services/api.service';
 
 @Component({
   selector: 'app-introductions-dashboard',

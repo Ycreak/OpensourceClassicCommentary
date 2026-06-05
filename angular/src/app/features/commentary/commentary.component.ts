@@ -14,20 +14,20 @@ import { Commentary } from '@oscc/types/Commentary';
 import { Fragment } from '@oscc/types/Fragment';
 
 // Components imports
-import { IntroductionsComponent } from './introductions/introductions.component';
+import { IntroductionsComponent } from './components/introductions/introductions.component';
 
 // Service imports
-import { ApiService } from '@oscc/lib/api.service';
+import { ApiService } from '@oscc/services/api.service';
 import { BibliographyService } from '@oscc/services/bibliography.service';
-import { CommentaryService } from './commentary.service';
+import { CommentaryService } from './services/commentary.service';
 import { ColumnsService } from '@oscc/features/columns/services/columns.service';
 import { DialogService } from '@oscc/services/dialog.service';
 import { StringFormatterService } from '@oscc/utils/string-formatter.service';
 import { UtilityService } from '@oscc/utils/utility.service';
 import { ExpandableTextComponent } from '@oscc/components/expandable-text/expandable-text.component';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { GeneralCommentaryFieldComponent } from './general-commentary-field/general-commentary-field.component';
-import { TranslationComponent } from './translation/translation.component';
+import { GeneralCommentaryFieldComponent } from './components/general-commentary-field/general-commentary-field.component';
+import { TranslationComponent } from './components/translation/translation.component';
 import { MatButtonModule } from '@angular/material/button';
 import { NgTemplateOutlet } from '@angular/common';
 

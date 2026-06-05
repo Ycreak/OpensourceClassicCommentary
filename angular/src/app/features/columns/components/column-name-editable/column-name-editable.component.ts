@@ -1,6 +1,6 @@
 import { Component, ContentChild, ElementRef, EventEmitter, Input, Output } from '@angular/core';
-import { ViewModeDirective } from './view-mode.directive';
-import { EditModeDirective } from './edit-mode.directive';
+import { ViewModeDirective } from '@oscc/features/columns/components/column-name-editable/directives/view-mode.directive';
+import { EditModeDirective } from '@oscc/features/columns/components/column-name-editable/directives/edit-mode.directive';
 import { Subject } from 'rxjs';
 import { Column } from '@oscc/types/Column';
 import { NgTemplateOutlet } from '@angular/common';

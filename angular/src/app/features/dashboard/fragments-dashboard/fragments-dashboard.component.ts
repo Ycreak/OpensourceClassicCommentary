@@ -6,7 +6,7 @@ import { Validators } from '@angular/forms';
 // Service imports
 import { AuthService } from '@oscc/features/auth/services/auth.service';
 import { DialogService } from '@oscc/services/dialog.service';
-import { ApiService } from '@oscc/lib/api.service';
+import { ApiService } from '@oscc/services/api.service';
 import { UtilityService } from '@oscc/utils/utility.service';
 
 // Model imports

@@ -6,7 +6,7 @@
  */
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Output, EventEmitter } from '@angular/core';
-import { WebsocketsService } from '@oscc/features/playground/websockets.service';
+import { WebsocketsService } from '@oscc/features/playground/services/websockets.service';
 import { HostListener } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import {
@@ -24,9 +24,9 @@ import { Canvas } from 'fabric';
 import { Subscription } from 'rxjs';
 
 // Service imports
-import { ApiService } from '@oscc/lib/api.service';
+import { ApiService } from '@oscc/services/api.service';
 import { AuthService } from '@oscc/features/auth/services/auth.service';
-import { CommentaryService } from '@oscc/features/commentary/commentary.service';
+import { CommentaryService } from '@oscc/features/commentary/services/commentary.service';
 import { UtilityService } from '@oscc/utils/utility.service';
 import { FabricService } from './services/fabric.service';
 import { WindowSizeWatcherService } from '@oscc/services/window-watcher.service';
@@ -39,11 +39,11 @@ import { DialogService } from '@oscc/services/dialog.service';
 import { Playground_communicator } from '@oscc/features/playground/types/Playground_communicator';
 
 // Component imports
-import { LoadPlaygroundComponent } from './load-playground/load-playground.component';
-import { SavePlaygroundComponent } from './save-playground/save-playground.component';
-import { DeletePlaygroundComponent } from './delete-playground/delete-playground.component';
-import { SharePlaygroundComponent } from './share-playground/share-playground.component';
-import { JoinPlaygroundComponent } from './join-playground/join-playground.component';
+import { LoadPlaygroundComponent } from './components/load-playground/load-playground.component';
+import { SavePlaygroundComponent } from './components/save-playground/save-playground.component';
+import { DeletePlaygroundComponent } from './components/delete-playground/delete-playground.component';
+import { SharePlaygroundComponent } from './components/share-playground/share-playground.component';
+import { JoinPlaygroundComponent } from './components/join-playground/join-playground.component';
 import { DocumentFilterComponent } from '@oscc/features/explorer/components/document-filter/document-filter.component';
 import { Playground_user } from '@oscc/features/playground/types/Playground_user';
 import { LatinTragicFragmentFilterComponent } from '@oscc/features/explorer/components/latin-tragic-fragment-filter/latin-tragic-fragment-filter.component';
