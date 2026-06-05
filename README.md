@@ -40,6 +40,8 @@ The project consists of three parts. A frontend written with Angular (client-sid
 ## Angular Frontend
 The frontend is written with Angular and allows the user to interact with the fragments. 
 
+We use the [bulletproof-react](https://github.com/alan2207/bulletproof-react/tree/master) standards for this project.
+
 ### Installation
 To install and run the Angular component on your PC, make sure to have [NodeJS](https://nodejs.org/en/) and [NPM](https://www.npmjs.com/) installed on your machine. Next, navigate to the Angular folder and run the following commands in your terminal:
 
