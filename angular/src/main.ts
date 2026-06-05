@@ -13,7 +13,6 @@ import { HTTP_INTERCEPTORS, withInterceptorsFromDi, provideHttpClient } from '@a
 
 const appRoutes: Routes = [
   { path: '', component: OverviewComponent },
-  //{ path: 'scansion', component: ScansionComponent, canActivate: [AuthGuard] },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '' },
 ];

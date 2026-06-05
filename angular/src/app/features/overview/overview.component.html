@@ -62,9 +62,6 @@
   @if (this.auth_service.is_logged_in) {
     <button mat-menu-item routerLink="/dashboard">Dashboard</button>
   }
-  @if (this.auth_service.is_logged_in) {
-    <button mat-menu-item routerLink="/scansion">Scansion</button>
-  }
   <a href="https://github.com/Ycreak/OpensourceClassicCommentary/" target="_blank" mat-menu-item>Documentation</a>
   <button (click)="this.dialog_service.open_settings_dialog()" mat-menu-item>Settings</button>
   <button (click)="this.dialog_service.open_about_dialog()" mat-menu-item>About</button>
