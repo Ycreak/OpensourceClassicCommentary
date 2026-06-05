@@ -1,0 +1,19 @@
+.bib-select:hover {
+  background-color: yellow;
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+}
+
+.mat-mdc-form-field {
+  font-size: 14px;
+  width: 100%;
+}
+
+.mat-cell,
+.mat-header-cell {
+  overflow: hidden;
+  word-wrap: break-word;
+}
