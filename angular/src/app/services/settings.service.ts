@@ -4,7 +4,7 @@
  * the dashboard.
  */
 import { Injectable } from '@angular/core';
-import { LocalStorageService } from '@oscc/services/local-storage.service';
+import { LocalStorageService } from '@oscc/core/services/local-storage.service';
 import { MatDialog } from '@angular/material/dialog';
 
 @Injectable({
