@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { WindowSizeWatcherService } from './window-watcher.service';
+import { WindowSizeWatcherService } from '../../services/window-watcher.service';
 
 describe('WindowSizeWatcherService', () => {
   let service: WindowSizeWatcherService;

@@ -29,7 +29,7 @@ import { AuthService } from '@oscc/core/auth/auth.service';
 import { CommentaryService } from '@oscc/commentary/commentary.service';
 import { UtilityService } from '@oscc/utility.service';
 import { FabricService } from './services/fabric.service';
-import { WindowSizeWatcherService } from '@oscc/services/window-watcher.service';
+import { WindowSizeWatcherService } from '@oscc/core/services/window-watcher.service';
 
 import { FormatterService } from './services/formatter.service';
 
