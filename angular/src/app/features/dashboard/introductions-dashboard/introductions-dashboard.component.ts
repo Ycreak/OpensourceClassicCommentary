@@ -8,9 +8,9 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 import { Validators } from '@angular/forms';
 
 // Service imports
-import { AuthService } from '@oscc/core/auth/auth.service';
+import { AuthService } from '@oscc/features/auth/services/auth.service';
 import { DialogService } from '@oscc/services/dialog.service';
-import { HelperService } from '@oscc/dashboard/helper.service';
+import { HelperService } from '@oscc/features/dashboard/helper.service';
 import { ApiService } from '@oscc/lib/api.service';
 import { UtilityService } from '@oscc/utils/utility.service';
 
@@ -20,7 +20,7 @@ import { SandboxService } from '@oscc/services/sandbox.service';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
-import { IntroductionsFilterComponent } from '../../filters/introductions-filter/introductions-filter.component';
+import { IntroductionsFilterComponent } from '../../../filters/introductions-filter/introductions-filter.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';

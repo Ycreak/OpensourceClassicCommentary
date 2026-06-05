@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 
 // Component imports
 import { ApiService } from '@oscc/lib/api.service';
-import { AuthService } from '@oscc/core/auth/auth.service';
+import { AuthService } from '@oscc/features/auth/services/auth.service';
 import { UtilityService } from '@oscc/utils/utility.service';
 import { UsersComponent } from './users/users.component';
 import { IntroductionsDashboardComponent } from './introductions-dashboard/introductions-dashboard.component';

@@ -25,7 +25,7 @@ import { Subscription } from 'rxjs';
 
 // Service imports
 import { ApiService } from '@oscc/lib/api.service';
-import { AuthService } from '@oscc/core/auth/auth.service';
+import { AuthService } from '@oscc/features/auth/services/auth.service';
 import { CommentaryService } from '@oscc/commentary/commentary.service';
 import { UtilityService } from '@oscc/utils/utility.service';
 import { FabricService } from './services/fabric.service';

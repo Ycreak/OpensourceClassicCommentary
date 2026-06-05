@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 // Service imports
-import { AuthService } from '@oscc/core/auth/auth.service';
+import { AuthService } from '@oscc/features/auth/services/auth.service';
 import { DialogService } from '@oscc/services/dialog.service';
 import { Introduction } from '@oscc/types/Introduction';
 import { ApiService } from '@oscc/lib/api.service';

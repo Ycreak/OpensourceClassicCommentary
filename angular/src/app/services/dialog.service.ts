@@ -11,7 +11,7 @@ import { SettingsService } from './settings.service';
 import { ColumnBibliographyComponent } from '@oscc/components/dialogs/column-bibliography/column-bibliography.component';
 import { CustomDialogComponent } from '@oscc/components/dialogs/custom-dialog/custom-dialog.component';
 import { WYSIWYGDialogComponent } from '@oscc/components/dialogs/wysiwyg/wysiwyg-dialog.component';
-import { PublishDashboardComponent } from '@oscc/dashboard/publish-dashboard/publish-dashboard.component';
+import { PublishDashboardComponent } from '@oscc/features/dashboard/publish-dashboard/publish-dashboard.component';
 
 @Injectable({
   providedIn: 'root',

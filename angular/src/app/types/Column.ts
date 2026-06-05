@@ -1,4 +1,4 @@
-import { Fragment } from '../models/Fragment';
+import { Fragment } from '@oscc/types/Fragment';
 /**
  * This class represents a Fragment column, which contains meta data about a column. Most
  * important within a column is the Fragments object, which is a list containing fragments.

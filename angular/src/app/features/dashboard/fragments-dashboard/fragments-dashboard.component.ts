@@ -4,7 +4,7 @@ import { FormControl, FormGroup, FormArray, FormsModule, ReactiveFormsModule } f
 import { Validators } from '@angular/forms';
 
 // Service imports
-import { AuthService } from '@oscc/core/auth/auth.service';
+import { AuthService } from '@oscc/features/auth/services/auth.service';
 import { DialogService } from '@oscc/services/dialog.service';
 import { ApiService } from '@oscc/lib/api.service';
 import { UtilityService } from '@oscc/utils/utility.service';
@@ -18,7 +18,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatButtonModule } from '@angular/material/button';
-import { LatinTragicFragmentFilterComponent } from '../../filters/latin-tragic-fragment-filter/latin-tragic-fragment-filter.component';
+import { LatinTragicFragmentFilterComponent } from '../../../filters/latin-tragic-fragment-filter/latin-tragic-fragment-filter.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
 

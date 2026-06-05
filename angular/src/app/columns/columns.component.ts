@@ -11,7 +11,7 @@ import { MatMenuTrigger, MatMenuModule } from '@angular/material/menu';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 
 // Service imports
-import { AuthService } from '@oscc/core/auth/auth.service';
+import { AuthService } from '@oscc/features/auth/services/auth.service';
 import { BibliographyService } from '@oscc/services/bibliography.service';
 import { ColumnsService } from '@oscc/columns/columns.service';
 import { CommentaryService } from '@oscc/commentary/commentary.service';
