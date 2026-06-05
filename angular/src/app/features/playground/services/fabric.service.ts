@@ -116,7 +116,7 @@ export class FabricService {
     });
   }
 
-  /**
+/**
    * Universal internal method to construct and add a document (Fragment or Testimonium) to the canvas.
    * @param doc The document data object.
    * @param top The vertical coordinate for placement.
@@ -125,12 +125,37 @@ export class FabricService {
    * @returns void
    */
   private add_document_to_canvas(doc: any, top: number, left: number, color: string): void {
+    // Generates the Textbox object (either via create_lines or create_text)
     const content = doc.lines ? this.create_lines(doc, this.font_size) : this.create_text(doc, this.font_size);
 
-    const text_group = new Group([content], { padding: 10 });
-    const box = this.create_box(text_group.getBoundingRect(), color);
+    // Specify inner padding around the text block
+    const padding = 10;
 
-    const group = new Group([box, text_group], {
+    // Grab the calculated dimensions of the text content
+    const textWidth = content.width || 0;
+    const textHeight = content.height || 0;
+
+    // Construct the background box and expand it by the padding value
+    const box = new Rect({
+      width: textWidth + (padding * 2),
+      height: textHeight + (padding * 2),
+      fill: color,
+      rx: 10,
+      ry: 10,
+      stroke: 'black',
+      strokeWidth: 1,
+      originX: 'center',
+      originY: 'center'
+    });
+
+    // Update the content's anchor point to center so it co-aligns with the background box
+    content.set({
+      originX: 'center',
+      originY: 'center'
+    });
+
+    // Combine them directly into a single parent Group. 
+    const group = new Group([box, content], {
       top,
       left,
       // Metadata stored on the fabric object for future reference
