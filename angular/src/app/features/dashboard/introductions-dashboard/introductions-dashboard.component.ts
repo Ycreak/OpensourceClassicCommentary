@@ -20,7 +20,7 @@ import { SandboxService } from '@oscc/services/sandbox.service';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
-import { IntroductionsFilterComponent } from '../../../filters/introductions-filter/introductions-filter.component';
+import { IntroductionsFilterComponent } from '../../explorer/components/introductions-filter/introductions-filter.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';

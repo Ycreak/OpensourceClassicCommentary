@@ -22,7 +22,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatButtonModule } from '@angular/material/button';
-import { TestimoniumFilterComponent } from '../../../filters/testimonium-filter/testimonium-filter.component';
+import { TestimoniumFilterComponent } from '../../explorer/components/testimonium-filter/testimonium-filter.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
 

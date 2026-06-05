@@ -7,7 +7,7 @@ import { Component } from '@angular/core';
 import { MatDialogRef, MatDialogClose, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
 import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
 // Services imports
-import { FilterService } from './filter.service';
+import { FilterService } from '../../services/filter.service';
 import { TestimoniaTableComponent } from './testimonia-table/testimonia-table.component';
 import { FragmentTableComponent } from './fragment-table/fragment-table.component';
 import { MatIconModule } from '@angular/material/icon';
