@@ -36,7 +36,7 @@ import { FormatterService } from './services/formatter.service';
 // Model imports
 import { Fragment } from '@oscc/types/Fragment';
 import { DialogService } from '@oscc/services/dialog.service';
-import { Playground_communicator } from '@oscc/models/api/Playground_communicator';
+import { Playground_communicator } from '@oscc/features/playground/types/Playground_communicator';
 
 // Component imports
 import { LoadPlaygroundComponent } from './load-playground/load-playground.component';
@@ -45,7 +45,7 @@ import { DeletePlaygroundComponent } from './delete-playground/delete-playground
 import { SharePlaygroundComponent } from './share-playground/share-playground.component';
 import { JoinPlaygroundComponent } from './join-playground/join-playground.component';
 import { DocumentFilterComponent } from '@oscc/filters/document-filter/document-filter.component';
-import { Playground_user } from '@oscc/models/api/Playground_user';
+import { Playground_user } from '@oscc/features/playground/types/Playground_user';
 import { LatinTragicFragmentFilterComponent } from '@oscc/filters/latin-tragic-fragment-filter/latin-tragic-fragment-filter.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';

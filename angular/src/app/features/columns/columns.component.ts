@@ -13,7 +13,7 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 // Service imports
 import { AuthService } from '@oscc/features/auth/services/auth.service';
 import { BibliographyService } from '@oscc/services/bibliography.service';
-import { ColumnsService } from '@oscc/columns/columns.service';
+import { ColumnsService } from '@oscc/features/columns/services/columns.service';
 import { CommentaryService } from '@oscc/features/commentary/commentary.service';
 import { DialogService } from '@oscc/services/dialog.service';
 import { ApiService } from '@oscc/lib/api.service';
@@ -29,10 +29,10 @@ import { Fragment } from '@oscc/types/Fragment';
 import { Linked_fragment } from '@oscc/types/Linked_fragment';
 import { IntroductionsComponent } from '@oscc/features/commentary/introductions/introductions.component';
 import { SandboxService } from '@oscc/services/sandbox.service';
-import { ContextComponent } from './context/context.component';
-import { TestimoniaComponent } from './testimonia/testimonia.component';
-import { FragmentComponent } from './fragment/fragment.component';
-import { OnCopyDirective } from '../utils/directives/on-copy.directive';
+import { ContextComponent } from './components/context/context.component';
+import { TestimoniaComponent } from './components/testimonia/testimonia.component';
+import { FragmentComponent } from './components/fragment/fragment.component';
+import { OnCopyDirective } from '../../utils/directives/on-copy.directive';
 import { CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -41,13 +41,13 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { NgTemplateOutlet } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { LatinTragicFragmentFilterComponent } from '../filters/latin-tragic-fragment-filter/latin-tragic-fragment-filter.component';
+import { LatinTragicFragmentFilterComponent } from '../../filters/latin-tragic-fragment-filter/latin-tragic-fragment-filter.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { EditableColumnNameComponent } from './column-name-editable/column-name-editable.component';
-import { EditModeDirective } from './column-name-editable/edit-mode.directive';
-import { ViewModeDirective } from './column-name-editable/view-mode.directive';
-import { EditableOnKeypressDirective } from './column-name-editable/on-keypress.directive';
-import { OutsideClickDirective } from './column-name-editable/click-outside-element.directive';
+import { EditableColumnNameComponent } from './components/column-name-editable/column-name-editable.component';
+import { EditModeDirective } from './components/column-name-editable/edit-mode.directive';
+import { ViewModeDirective } from './components/column-name-editable/view-mode.directive';
+import { EditableOnKeypressDirective } from './components/column-name-editable/on-keypress.directive';
+import { OutsideClickDirective } from './components/column-name-editable/click-outside-element.directive';
 
 @Component({
   selector: 'app-columns',

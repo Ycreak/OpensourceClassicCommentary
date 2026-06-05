@@ -1,7 +1,7 @@
 @use "@angular/material" as mat;
 @use "src/styles.scss" as *;
 
-@import url("../app.component.scss");
+@import url("@oscc/app.component.scss");
 /* Fragments component specific CSS. For more generic CSS, see ../app.component.scss. */
 
 /* Column title/name */

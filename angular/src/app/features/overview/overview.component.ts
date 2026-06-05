@@ -18,12 +18,12 @@ import { SandboxService } from '@oscc/services/sandbox.service';
 import { DialogService } from '@oscc/services/dialog.service';
 
 // Component imports
-import { LoginComponent } from '@oscc/login/login.component';
+import { LoginComponent } from '@oscc/features/auth/components/login/login.component';
 import { MatIconRegistry, MatIconModule } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { PlaygroundComponent } from '../playground/playground.component';
 import { CommentaryComponent } from '@oscc/features/commentary/commentary.component';
-import { ColumnsComponent } from '../../columns/columns.component';
+import { ColumnsComponent } from '../columns/columns.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { RouterLink } from '@angular/router';
 import { MatMenuModule } from '@angular/material/menu';

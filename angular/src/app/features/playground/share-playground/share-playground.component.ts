@@ -13,7 +13,7 @@ import { FormControl, FormGroup, FormArray, Validators, FormsModule, ReactiveFor
 import { ApiService } from '@oscc/lib/api.service';
 
 // Model imports
-import { Playground_user } from '@oscc/models/api/Playground_user';
+import { Playground_user } from '@oscc/features/playground/types/Playground_user';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';

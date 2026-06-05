@@ -20,7 +20,7 @@ import { IntroductionsComponent } from './introductions/introductions.component'
 import { ApiService } from '@oscc/lib/api.service';
 import { BibliographyService } from '@oscc/services/bibliography.service';
 import { CommentaryService } from './commentary.service';
-import { ColumnsService } from '@oscc/columns/columns.service';
+import { ColumnsService } from '@oscc/features/columns/services/columns.service';
 import { DialogService } from '@oscc/services/dialog.service';
 import { StringFormatterService } from '@oscc/utils/string-formatter.service';
 import { UtilityService } from '@oscc/utils/utility.service';
