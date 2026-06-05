@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AuthService } from '@oscc/auth/auth.service';
+import { AuthService } from '@oscc/core/auth/auth.service';
 //import { Socket } from 'ngx-socket-io';
 import { map } from 'rxjs/operators';
 

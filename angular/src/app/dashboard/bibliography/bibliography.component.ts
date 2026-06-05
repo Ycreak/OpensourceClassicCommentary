@@ -6,7 +6,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 
 // Services imports
-import { AuthService } from '@oscc/auth/auth.service';
+import { AuthService } from '@oscc/core/auth/auth.service';
 import { BibliographyService } from '@oscc/services/bibliography.service';
 import { DialogService } from '@oscc/services/dialog.service';
 import { MatDialogClose } from '@angular/material/dialog';

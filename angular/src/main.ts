@@ -4,7 +4,7 @@ import { AppComponent } from './app/app.component';
 //import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { DashboardComponent } from './app/dashboard/dashboard.component';
-import { AuthGuard } from './app/auth/auth.guard';
+import { AuthGuard } from './app/core/auth/auth.guard';
 import { OverviewComponent } from './app/overview/overview.component';
 import { provideRouter, Routes } from '@angular/router';
 import { bootstrapApplication } from '@angular/platform-browser';

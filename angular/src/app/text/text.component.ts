@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api.service';
 import { UtilityService } from '../utility.service';
-import { AuthService } from '../auth/auth.service';
+import { AuthService } from '../core/auth/auth.service';
 import { MatDialog } from '@angular/material/dialog';
 import { TemplateRef, ViewChild } from '@angular/core';
 

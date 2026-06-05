@@ -10,7 +10,7 @@ import {
 
 // Service imports
 import { ApiService } from '@oscc/api.service';
-import { AuthService } from '@oscc/auth/auth.service';
+import { AuthService } from '@oscc/core/auth/auth.service';
 import { MatOptionModule } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';

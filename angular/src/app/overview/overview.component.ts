@@ -13,7 +13,7 @@ import { environment } from '@src/environments/environment';
 import { ApiService } from '@oscc/api.service';
 import { SettingsService } from '@oscc/services/settings.service';
 import { WindowSizeWatcherService } from '@oscc/services/window-watcher.service';
-import { AuthService } from '@oscc/auth/auth.service';
+import { AuthService } from '@oscc/core/auth/auth.service';
 import { SandboxService } from '@oscc/services/sandbox.service';
 import { DialogService } from '@oscc/services/dialog.service';
 

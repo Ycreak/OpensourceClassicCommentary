@@ -4,7 +4,7 @@ import { FormControl, FormGroup, FormArray, FormsModule, ReactiveFormsModule } f
 import { Validators } from '@angular/forms';
 
 // Service imports
-import { AuthService } from '@oscc/auth/auth.service';
+import { AuthService } from '@oscc/core/auth/auth.service';
 import { DialogService } from '@oscc/services/dialog.service';
 import { ApiService } from '@oscc/api.service';
 import { UtilityService } from '@oscc/utility.service';
