@@ -7,7 +7,7 @@ import { Validators } from '@angular/forms';
 import { AuthService } from '@oscc/core/auth/auth.service';
 import { DialogService } from '@oscc/services/dialog.service';
 import { ApiService } from '@oscc/lib/api.service';
-import { UtilityService } from '@oscc/utility.service';
+import { UtilityService } from '@oscc/utils/utility.service';
 
 // Model imports
 import { Fragment } from '@oscc/models/Fragment';

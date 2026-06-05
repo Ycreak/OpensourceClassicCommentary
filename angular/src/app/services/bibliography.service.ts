@@ -5,7 +5,7 @@ import { Commentary } from '@oscc/models/Commentary';
 import { Bib } from '@oscc/models/Bib';
 
 // Service imports
-import { UtilityService } from '@oscc/utility.service';
+import { UtilityService } from '@oscc/utils/utility.service';
 
 @Injectable({
   providedIn: 'root',

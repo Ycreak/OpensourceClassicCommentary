@@ -9,7 +9,7 @@ import {
 } from 'fabric';
 import { Observable, Subject } from 'rxjs';
 
-import { UtilityService } from '@oscc/utility.service';
+import { UtilityService } from '@oscc/utils/utility.service';
 import { environment } from '@src/environments/environment';
 
 /**

@@ -5,7 +5,7 @@ import { SettingsService } from '@oscc/services/settings.service';
 
 import { Fragment } from '@oscc/models/Fragment';
 
-import { SafeHtmlPipe } from '@oscc/pipes/safeHtml.pipe';
+import { SafeHtmlPipe } from '@oscc/utils/pipes/safeHtml.pipe';
 
 @Component({
   standalone: true,

@@ -4,7 +4,7 @@ import { PLAYGROUND_ICON } from '@src/assets/img/image-constants';
 
 // Service imports
 import { ApiService } from '@oscc/lib/api.service';
-import { UtilityService } from '@oscc/utility.service';
+import { UtilityService } from '@oscc/utils/utility.service';
 import { MatButtonModule } from '@angular/material/button';
 
 

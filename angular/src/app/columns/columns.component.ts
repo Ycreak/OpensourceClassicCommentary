@@ -18,7 +18,7 @@ import { CommentaryService } from '@oscc/commentary/commentary.service';
 import { DialogService } from '@oscc/services/dialog.service';
 import { ApiService } from '@oscc/lib/api.service';
 import { SettingsService } from '@oscc/services/settings.service';
-import { UtilityService } from '@oscc/utility.service';
+import { UtilityService } from '@oscc/utils/utility.service';
 
 // Component imports
 import { DocumentFilterComponent } from '@oscc/filters/document-filter/document-filter.component';
@@ -32,7 +32,7 @@ import { SandboxService } from '@oscc/services/sandbox.service';
 import { ContextComponent } from './context/context.component';
 import { TestimoniaComponent } from './testimonia/testimonia.component';
 import { FragmentComponent } from './fragment/fragment.component';
-import { OnCopyDirective } from '../directives/on-copy.directive';
+import { OnCopyDirective } from '../utils/directives/on-copy.directive';
 import { CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
