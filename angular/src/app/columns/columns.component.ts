@@ -24,9 +24,9 @@ import { UtilityService } from '@oscc/utils/utility.service';
 import { DocumentFilterComponent } from '@oscc/filters/document-filter/document-filter.component';
 
 // Model imports
-import { Column } from '@oscc/models/Column';
-import { Fragment } from '@oscc/models/Fragment';
-import { Linked_fragment } from '@oscc/models/Linked_fragment';
+import { Column } from '@oscc/types/Column';
+import { Fragment } from '@oscc/types/Fragment';
+import { Linked_fragment } from '@oscc/types/Linked_fragment';
 import { IntroductionsComponent } from '@oscc/commentary/introductions/introductions.component';
 import { SandboxService } from '@oscc/services/sandbox.service';
 import { ContextComponent } from './context/context.component';

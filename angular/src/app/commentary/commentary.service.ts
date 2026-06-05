@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
-import { Commentary } from '@oscc/models/Commentary';
+import { Commentary } from '@oscc/types/Commentary';
 
 @Injectable({
   providedIn: 'root',

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '@src/environments/environment';
 
-import { Fragment } from '@oscc/models/Fragment';
+import { Fragment } from '@oscc/types/Fragment';
 
 @Injectable({
   providedIn: 'root',

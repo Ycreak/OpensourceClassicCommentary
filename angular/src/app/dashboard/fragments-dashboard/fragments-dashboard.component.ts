@@ -10,8 +10,8 @@ import { ApiService } from '@oscc/lib/api.service';
 import { UtilityService } from '@oscc/utils/utility.service';
 
 // Model imports
-import { Fragment } from '@oscc/models/Fragment';
-import { Column } from '@oscc/models/Column';
+import { Fragment } from '@oscc/types/Fragment';
+import { Column } from '@oscc/types/Column';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';

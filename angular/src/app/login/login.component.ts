@@ -18,7 +18,7 @@ import { ApiService } from '@oscc/lib/api.service';
 import { UtilityService } from '@oscc/utils/utility.service';
 
 // Model imports
-import { User } from '@oscc/models/User';
+import { User } from '@oscc/types/User';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatExpansionModule } from '@angular/material/expansion';

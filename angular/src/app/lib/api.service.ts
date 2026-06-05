@@ -13,11 +13,11 @@ import { BibliographyService } from '@oscc/services/bibliography.service';
 import { SandboxService } from '@oscc/services/sandbox.service';
 
 // Model imports
-import { Bib } from '@oscc/models/Bib';
-import { Fragment } from '@oscc/models/Fragment';
-import { Introduction } from '@oscc/models/Introduction';
-import { Testimonium } from '@oscc/models/Testimonium';
-import { User } from '@oscc/models/User';
+import { Bib } from '@oscc/types/Bib';
+import { Fragment } from '@oscc/types/Fragment';
+import { Introduction } from '@oscc/types/Introduction';
+import { Testimonium } from '@oscc/types/Testimonium';
+import { User } from '@oscc/types/User';
 
 @Injectable({
   providedIn: 'root',

@@ -3,7 +3,7 @@ import { Input } from '@angular/core';
 
 import { SettingsService } from '@oscc/services/settings.service';
 
-import { Fragment } from '@oscc/models/Fragment';
+import { Fragment } from '@oscc/types/Fragment';
 
 import { SafeHtmlPipe } from '@oscc/utils/pipes/safeHtml.pipe';
 

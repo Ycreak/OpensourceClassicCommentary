@@ -1,6 +1,6 @@
-import { Commentary } from '@oscc/models/Commentary';
-import { Line } from '@oscc/models/Line';
-import { Linked_fragment } from '@oscc/models/Linked_fragment';
+import { Commentary } from '@oscc/types/Commentary';
+import { Line } from '@oscc/types/Line';
+import { Linked_fragment } from '@oscc/types/Linked_fragment';
 
 /** This class represents a fragment and all its data fields */
 export class Fragment {

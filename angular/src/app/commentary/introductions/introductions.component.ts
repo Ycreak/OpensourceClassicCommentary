@@ -14,7 +14,7 @@ import { MAT_DIALOG_DATA, MatDialogRef, MatDialogClose, MatDialogContent } from 
 import { ApiService } from '@oscc/lib/api.service';
 
 // Model imports
-import { Introduction } from '@oscc/models/Introduction';
+import { Introduction } from '@oscc/types/Introduction';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 

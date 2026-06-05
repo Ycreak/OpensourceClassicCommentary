@@ -15,7 +15,7 @@ import { ApiService } from '@oscc/lib/api.service';
 import { UtilityService } from '@oscc/utils/utility.service';
 
 // Model imports
-import { Introduction } from '@oscc/models/Introduction';
+import { Introduction } from '@oscc/types/Introduction';
 import { SandboxService } from '@oscc/services/sandbox.service';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';

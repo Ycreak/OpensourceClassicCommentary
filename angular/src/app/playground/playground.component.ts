@@ -34,7 +34,7 @@ import { WindowSizeWatcherService } from '@oscc/services/window-watcher.service'
 import { FormatterService } from './services/formatter.service';
 
 // Model imports
-import { Fragment } from '@oscc/models/Fragment';
+import { Fragment } from '@oscc/types/Fragment';
 import { DialogService } from '@oscc/services/dialog.service';
 import { Playground_communicator } from '@oscc/models/api/Playground_communicator';
 

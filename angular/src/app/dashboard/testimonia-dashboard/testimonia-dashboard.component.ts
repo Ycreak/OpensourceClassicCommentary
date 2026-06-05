@@ -15,7 +15,7 @@ import { ApiService } from '@oscc/lib/api.service';
 import { UtilityService } from '@oscc/utils/utility.service';
 
 // Model imports
-import { Testimonium } from '@oscc/models/Testimonium';
+import { Testimonium } from '@oscc/types/Testimonium';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';

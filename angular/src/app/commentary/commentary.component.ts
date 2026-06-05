@@ -10,8 +10,8 @@ import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 // Model imports
-import { Commentary } from '@oscc/models/Commentary';
-import { Fragment } from '@oscc/models/Fragment';
+import { Commentary } from '@oscc/types/Commentary';
+import { Fragment } from '@oscc/types/Fragment';
 
 // Components imports
 import { IntroductionsComponent } from './introductions/introductions.component';

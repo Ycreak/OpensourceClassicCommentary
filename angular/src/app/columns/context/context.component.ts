@@ -3,7 +3,7 @@ import { Input } from '@angular/core';
 
 import { SettingsService } from '@oscc/services/settings.service';
 
-import { Context } from '@oscc/models/Context';
+import { Context } from '@oscc/types/Context';
 
 
 @Component({

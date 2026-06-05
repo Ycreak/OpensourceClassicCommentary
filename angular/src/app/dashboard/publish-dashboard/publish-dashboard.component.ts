@@ -15,7 +15,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 
 import { ApiService } from '@oscc/lib/api.service';
 import { UtilityService } from '@oscc/utils/utility.service';
-import { Fragment } from '@oscc/models/Fragment';
+import { Fragment } from '@oscc/types/Fragment';
 
 @Component({
   selector: 'app-publish-dashboard',

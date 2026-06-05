@@ -1,4 +1,4 @@
-import { Context } from '@oscc/models/Context';
+import { Context } from '@oscc/types/Context';
 
 export interface Fields {
   apparatus: string;

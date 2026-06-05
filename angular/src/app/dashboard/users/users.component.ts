@@ -14,7 +14,7 @@ import { ApiService } from '@oscc/lib/api.service';
 import { UtilityService } from '@oscc/utils/utility.service';
 import { AuthService } from '@oscc/core/auth/auth.service';
 import { DialogService } from '@oscc/services/dialog.service';
-import { User } from '@oscc/models/User';
+import { User } from '@oscc/types/User';
 import { ɵEmptyOutletComponent } from '@angular/router';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';

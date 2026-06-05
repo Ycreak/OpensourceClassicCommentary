@@ -2,7 +2,7 @@ import { Component, ContentChild, ElementRef, EventEmitter, Input, Output } from
 import { ViewModeDirective } from './view-mode.directive';
 import { EditModeDirective } from './edit-mode.directive';
 import { Subject } from 'rxjs';
-import { Column } from '@oscc/models/Column';
+import { Column } from '@oscc/types/Column';
 import { NgTemplateOutlet } from '@angular/common';
 
 /**

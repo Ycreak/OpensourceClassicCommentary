@@ -5,8 +5,8 @@
 import { Injectable } from '@angular/core';
 
 // Model imports
-import { Column } from '@oscc/models/Column';
-import { Fragment } from '@oscc/models/Fragment';
+import { Column } from '@oscc/types/Column';
+import { Fragment } from '@oscc/types/Fragment';
 
 // Service imports
 import { ApiService } from '@oscc/lib/api.service';

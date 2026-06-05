@@ -1,4 +1,4 @@
-import { Commentary } from '@oscc/models/Commentary';
+import { Commentary } from '@oscc/types/Commentary';
 
 /** This class represents a testimonium and all its data fields */
 export class Testimonium {

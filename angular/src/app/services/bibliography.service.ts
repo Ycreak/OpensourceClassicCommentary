@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 
 // Model imports
-import { Commentary } from '@oscc/models/Commentary';
-import { Bib } from '@oscc/models/Bib';
+import { Commentary } from '@oscc/types/Commentary';
+import { Bib } from '@oscc/types/Bib';
 
 // Service imports
 import { UtilityService } from '@oscc/utils/utility.service';
