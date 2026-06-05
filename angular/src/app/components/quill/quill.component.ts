@@ -5,7 +5,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { MatDialog, MatDialogContent, MatDialogClose } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
-import { BibliographyComponent } from '@oscc/dashboard/bibliography/bibliography.component';
+import { BibliographyComponent } from '@oscc/features/dashboard/components/bibliography/bibliography.component';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { QuillEditorComponent } from 'ngx-quill';
@@ -69,7 +69,6 @@ export class QuillComponent {
    * If the cursor has selected a word, the word will be pre- and succeeded by the symbol.
    * If the cursor is placed somewhere in the text, the symbol will be inserted at that location.
    * @param symbol that is to be placed in the text
-   * @author Ycreak
    */
   public add_symbol(symbol: string): void {
     const range = this.editor_instance.getSelection();

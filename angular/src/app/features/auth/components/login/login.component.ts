@@ -1,0 +1,161 @@
+/**
+ * The login component handles to login of users. When a user logs in,
+ * multiple services are called to set the control for later components
+ * authService: set current_user and current_role
+ */
+
+// Library imports
+import { Component } from '@angular/core';
+import { AuthService } from '@oscc/features/auth/services/auth.service';
+import { Router } from '@angular/router';
+import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Injectable } from '@angular/core';
+import { MatDialogRef, MatDialogClose, MatDialogContent } from '@angular/material/dialog';
+
+// Service imports
+import { DialogService } from '@oscc/services/dialog.service';
+import { ApiService } from '@oscc/services/api.service';
+import { UtilityService } from '@oscc/services/utility.service';
+
+// Model imports
+import { User } from '@oscc/types/User';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+
+@Injectable({
+  providedIn: 'root',
+})
+@Component({
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss'],
+  standalone: true,
+  imports: [
+    MatButtonModule,
+    MatDialogClose,
+    MatIconModule,
+    MatDialogContent,
+    MatProgressBarModule,
+    MatExpansionModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule
+],
+})
+export class LoginComponent {
+  hide_password = true; // password hiding in dialog
+  login_form_expanded = true; // to toggle user login form field
+  create_form_expanded = false; // to toggle the user create form field
+
+  // Form used to login existing user
+  login_form = new FormGroup({
+    username: new FormControl(''),
+    password: new FormControl(''),
+  });
+
+  // Form used to create new user
+  create_form = new FormGroup({
+    username: new FormControl('', [
+      Validators.maxLength(20),
+      Validators.required,
+      Validators.pattern("[a-zA-z0-9 .'_-]*"),
+    ]),
+    password1: new FormControl('', [
+      Validators.minLength(5),
+      Validators.maxLength(30),
+      Validators.required,
+      Validators.pattern("[a-zA-z0-9$&+,:;=?@#|'<>.^*()%!-]*"),
+    ]),
+    password2: new FormControl('', [
+      Validators.minLength(5),
+      Validators.maxLength(30),
+      Validators.required,
+      Validators.pattern("[a-zA-z0-9$&+,:;=?@#|'<>.^*()%!-]*"),
+    ]),
+    magic_word: new FormControl('', [Validators.required]),
+  });
+
+  constructor(
+    public auth_service: AuthService,
+    public router: Router,
+    protected api: ApiService,
+    protected utility: UtilityService,
+    private dialog: DialogService,
+    public dialogRef: MatDialogRef<LoginComponent>
+  ) {}
+
+  /**
+   * Requests the api to login the user. If the user is approved,
+   * their role and name will be set in the auth_service. Furthermore,
+   * the corresponding sandbox will be activated.
+   * @param login_form (form)
+   */
+  public submit_login(login_form: any): void {
+    // Create a user session for the auth_service to fill in
+    this.api.spinner_on();
+    const user = new User({
+      username: login_form.value.username,
+      password: encodeURIComponent(login_form.value.password),
+    });
+
+    this.api.login_user(user).subscribe({
+      next: (approved_user) => {
+        this.auth_service.login_user(approved_user);
+        this.api.request_index().subscribe({});
+        this.utility.open_snackbar('Login successful');
+        this.dialogRef.close(); // Close the login screen overlay
+        this.api.spinner_off();
+      },
+      error: (err) => this.api.show_server_response(err),
+    });
+  }
+
+  /**
+   * Handle the creation of a user
+   * @param form provided by the user
+   * @returns void, but does request api for creation of a user
+   */
+  public submit_create(form: any): void {
+    // Check if the magic word is correct
+    if (form.magic_word != this.auth_service.magic_phrase) {
+      this.utility.open_snackbar('That is not the magic word');
+      return;
+    }
+    // Check if the two given passwords are identical. If so, show confirmation dialog.
+    // If succesful, request the creation of the user from the api
+    if (form.password1 == form.password2) {
+      this.dialog
+        .open_confirmation_dialog('Are you sure you want to CREATE this user?', form.username)
+        .subscribe((result) => {
+          if (result) {
+            this.api.spinner_on();
+            const user = new User({
+              username: form.username,
+              password: encodeURIComponent(form.password1),
+            });
+            this.api.create_user(user).subscribe({
+              next: () => {
+                this.login_form_expanded = false;
+                this.create_form_expanded = false;
+                this.api.spinner_off();
+                // Also log in the new user after user creation
+                this.api.spinner_on();
+                this.submit_login({
+                  value: { username: this.create_form.value.username, password: this.create_form.value.password1 },
+                });
+              },
+              error: (err) => this.api.show_server_response(err),
+            });
+          }
+        });
+    } else {
+      this.utility.open_snackbar('Passwords do not match.'); // TODO: Let FormControl handle this
+    }
+  }
+}

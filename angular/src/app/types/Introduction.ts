@@ -1,0 +1,26 @@
+/** This class represents an introduction and all its data fields */
+export class Introduction {
+  _id = '';
+  document_type = 'introduction';
+  author: string;
+  title: string;
+  editor: string;
+  text: string;
+
+  constructor(introduction?: Partial<Introduction>) {
+    // Allow the partial initialisation of an introduction
+    Object.assign(this, introduction);
+  }
+
+  /**
+   * Converts the JSON received from the server to a Typescript object
+   * @param introduction with JSON data received from the server
+   */
+  public set(introduction: any) {
+    this._id = '_id' in introduction ? introduction['_id'] : '';
+    this.author = 'author' in introduction ? introduction['author'] : '';
+    this.title = 'title' in introduction ? introduction['title'] : '';
+    this.editor = 'editor' in introduction ? introduction['editor'] : '';
+    this.text = 'text' in introduction ? introduction['text'] : '';
+  }
+}

@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 
 // Model imports
-import { Commentary } from '@oscc/models/Commentary';
-import { Bib } from '@oscc/models/Bib';
+import { Commentary } from '@oscc/types/Commentary';
+import { Bib } from '@oscc/types/Bib';
 
 // Service imports
-import { UtilityService } from '@oscc/utility.service';
+import { UtilityService } from '@oscc/services/utility.service';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +19,6 @@ export class BibliographyService {
    * Retrieves a list of bibliography keys from the given document
    * @param doc (Fragment | Testimonium)
    * @return list with bib key strings
-   * @author Ycreak
    */
   public get_keys_from_document(doc: any): string[] {
     return this.get_keys_from_commentary(doc.commentary);
@@ -29,7 +28,6 @@ export class BibliographyService {
    * Retrieves all bib keys from the given commentary object
    * @param commentary (Commentary)
    * @return bib_keys (string[])
-   * @author Ycreak
    */
   public get_keys_from_commentary(commentary: Commentary): string[] {
     let bib_keys: string[] = [];
@@ -52,7 +50,6 @@ export class BibliographyService {
    * Retrieves all bib_keys in the given string in a list
    * @param given_string (string)
    * @return string[] with bib keys
-   * @author Ycreak
    */
   public get_bib_keys(given_string: string): string[] {
     const bib_keys: string[] = [];
@@ -72,7 +69,6 @@ export class BibliographyService {
    * Converts a list of bibliography keys into a string of citations
    * @param bib_keys (list)
    * @return string
-   * @author Ycreak
    */
   public convert_keys_into_bibliography(bib_keys: string[]): string {
     const citations: string[] = [];
@@ -107,7 +103,6 @@ export class BibliographyService {
    * Checks whether the given document has a bibliography
    * @param doc (document)
    * @return boolean
-   * @author Ycreak
    */
   public check_document_bibliography(doc: any): boolean {
     return doc.commentary.bib_keys.length > 0;
@@ -117,7 +112,6 @@ export class BibliographyService {
    * Checks whether the given documents have a bibliography
    * @param documents (list)
    * @return boolean
-   * @author Ycreak
    */
   public check_documents_bibliography(documents: any): boolean {
     let has_bib = false;
@@ -133,7 +127,6 @@ export class BibliographyService {
    * Converts all Zotero cite entries in a string to proper citations
    * @param string of text blob with (possibly) Zotero entries
    * @returns string with its Zotero entries converted to (author, year: from-to)
-   * @author Ycreak
    */
   public convert_bib_keys_in_string(given_string: string): string {
     let from_page = '';

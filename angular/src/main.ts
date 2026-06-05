@@ -3,17 +3,16 @@ import { environment } from './environments/environment';
 import { AppComponent } from './app/app.component';
 //import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { DashboardComponent } from './app/dashboard/dashboard.component';
-import { AuthGuard } from './app/auth/auth.guard';
-import { OverviewComponent } from './app/overview/overview.component';
+import { DashboardComponent } from './app/features/dashboard/dashboard.component';
+import { AuthGuard } from './app/features/auth/services/auth.guard';
+import { OverviewComponent } from './app/features/overview/overview.component';
 import { provideRouter, Routes } from '@angular/router';
 import { bootstrapApplication } from '@angular/platform-browser';
-import { HttpErrorInterceptor } from './app/api.service';
+import { HttpErrorInterceptor } from './app/services/api.service';
 import { HTTP_INTERCEPTORS, withInterceptorsFromDi, provideHttpClient } from '@angular/common/http';
 
 const appRoutes: Routes = [
   { path: '', component: OverviewComponent },
-  //{ path: 'scansion', component: ScansionComponent, canActivate: [AuthGuard] },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '' },
 ];

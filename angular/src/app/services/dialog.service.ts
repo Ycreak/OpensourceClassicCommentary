@@ -4,14 +4,14 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
-import { ConfirmationDialogComponent } from '@oscc/dialogs/confirmation/confirmation-dialog.component';
-import { AboutDialogComponent } from '@oscc/dialogs/about/about-dialog.component';
-import { SettingsDialogComponent } from '@oscc/dialogs/settings/settings-dialog.component';
+import { ConfirmationDialogComponent } from '@oscc/components/dialogs/confirmation/confirmation-dialog.component';
+import { AboutDialogComponent } from '@oscc/components/dialogs/about/about-dialog.component';
+import { SettingsDialogComponent } from '@oscc/components/dialogs/settings/settings-dialog.component';
 import { SettingsService } from './settings.service';
-import { ColumnBibliographyComponent } from '@oscc/dialogs/column-bibliography/column-bibliography.component';
-import { CustomDialogComponent } from '@oscc/dialogs/custom-dialog/custom-dialog.component';
-import { WYSIWYGDialogComponent } from '@oscc/dialogs/wysiwyg/wysiwyg-dialog.component';
-import { PublishDashboardComponent } from '@oscc/dashboard/publish-dashboard/publish-dashboard.component';
+import { ColumnBibliographyComponent } from '@oscc/components/dialogs/column-bibliography/column-bibliography.component';
+import { CustomDialogComponent } from '@oscc/components/dialogs/custom-dialog/custom-dialog.component';
+import { WYSIWYGDialogComponent } from '@oscc/components/dialogs/wysiwyg/wysiwyg-dialog.component';
+import { PublishDashboardComponent } from '@oscc/features/dashboard/components/publish-dashboard/publish-dashboard.component';
 
 @Injectable({
   providedIn: 'root',
@@ -91,7 +91,6 @@ export class DialogService {
   /**
    * Opens a dialog that shows the bibliography for a column
    * @param content that is to be shown
-   * @author Ycreak
    */
   public open_column_bibliography(content: any): void {
     this.dialog.open(ColumnBibliographyComponent, {
@@ -105,7 +104,6 @@ export class DialogService {
   /**
    * Opens a dialog that shows the provided content
    * @param content that is to be shown
-   * @author Ycreak
    */
   public open_custom_dialog(content: any): void {
     this.dialog.open(CustomDialogComponent, {

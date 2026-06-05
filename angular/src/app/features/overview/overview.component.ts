@@ -1,0 +1,141 @@
+/**
+ * This component holds all the components of the OSCC: the columns, the commentary and the playground.
+ * @author Ycreak
+ */
+
+// Library imports
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ViewportScroller, NgStyle } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
+import { environment } from '@src/environments/environment';
+
+// Service imports
+import { ApiService } from '@oscc/services/api.service';
+import { SettingsService } from '@oscc/services/settings.service';
+import { WindowSizeWatcherService } from '@oscc/services/window-watcher.service';
+import { AuthService } from '@oscc/features/auth/services/auth.service';
+import { SandboxService } from '@oscc/services/sandbox.service';
+import { DialogService } from '@oscc/services/dialog.service';
+
+// Component imports
+import { LoginComponent } from '@oscc/features/auth/components/login/login.component';
+import { MatIconRegistry, MatIconModule } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
+import { PlaygroundComponent } from '../playground/playground.component';
+import { CommentaryComponent } from '@oscc/features/commentary/commentary.component';
+import { ColumnsComponent } from '../columns/columns.component';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { RouterLink } from '@angular/router';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { MatToolbarModule } from '@angular/material/toolbar';
+
+@Component({
+  selector: 'app-overview',
+  templateUrl: './overview.component.html',
+  styleUrls: ['./overview.component.scss'],
+  standalone: true,
+  imports: [
+    MatToolbarModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatIconModule,
+    RouterLink,
+    MatSidenavModule,
+    ColumnsComponent,
+    NgStyle,
+    CommentaryComponent,
+    PlaygroundComponent
+],
+})
+export class OverviewComponent implements OnInit, OnDestroy {
+  protected commentary_enabled = true;
+  protected playground_enabled = false;
+
+  constructor(
+    protected api: ApiService,
+    protected auth_service: AuthService,
+    protected dialog_service: DialogService,
+    protected sandbox: SandboxService,
+    protected settings: SettingsService,
+    protected window_watcher: WindowSizeWatcherService,
+    private mat_dialog: MatDialog,
+    private viewportscroller: ViewportScroller,
+    private matIconRegistry: MatIconRegistry,
+    private domSanitizer: DomSanitizer
+  ) {
+    // Adding icons to matIconRegistry
+    this.matIconRegistry.addSvgIcon(
+      'bluesky',
+      this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/icons/Bluesky_Logo.svg')
+    );
+    this.matIconRegistry.addSvgIcon(
+      'mastodon',
+      this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/icons/Mastodon_Logo.svg')
+    );
+    this.matIconRegistry.addSvgIcon(
+      'tumblr',
+      this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/icons/Tumblr_Logo.svg')
+    );
+  }
+
+  ngOnInit(): void {
+    // Create the window watcher for mobile devices
+    this.window_watcher.init(window.innerWidth);
+    // Load the user's previously used setting from local storage using the LocalStorageService service
+    this.settings.load_settings();
+  }
+
+  ngOnDestroy() {
+    if (this.window_watcher.subscription$) {
+      this.window_watcher.subscription$.unsubscribe();
+    }
+  }
+
+  /**
+   * Returns the size of the commentary window in (css style) percentage.
+   * @returns number%
+   */
+  protected get_drawer_size(): string {
+    return `${this.settings.fragments.commentary_size}%`;
+  }
+
+  /**
+   * Simple function to toggle the commentary column
+   */
+  protected toggle_commentary(): void {
+    this.commentary_enabled = !this.commentary_enabled;
+  }
+
+  /**
+   * Simple function to toggle the playground column
+   */
+  protected toggle_playground(): void {
+    this.playground_enabled = !this.playground_enabled;
+  }
+
+  /**
+   * Function to handle the login dialog
+   */
+  protected login(): void {
+    this.mat_dialog.open(LoginComponent, {});
+  }
+
+  /**
+   * Returns the title from the environment for the frontend to print
+   * @param kind to print: either long or short
+   */
+  protected get_title(kind: string) {
+    return kind == 'long' ? environment.title : environment.short_title;
+  }
+
+  /**
+   * Used to scroll the viewport to a certain part of the page.
+   * @param anchor The id of the element to scroll to. ('#' can be omitted)
+   */
+  protected scroll_viewport_to(anchor: string): void {
+    setTimeout(() => {
+      this.viewportscroller.scrollToAnchor(anchor);
+    }, 200); //FIXME: An async/await on the playground renderer would be nicer, but this works for now.
+  }
+}

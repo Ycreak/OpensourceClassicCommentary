@@ -1,0 +1,12 @@
+@import url("src/app/components/dialogs/dialogs.scss");
+
+.dialog-header {
+  height: 3rem;
+}
+
+.introduction-body {
+  padding: 1em;
+  flex-grow: 1;
+  max-height: 90vh;
+  overflow-y: auto;
+}

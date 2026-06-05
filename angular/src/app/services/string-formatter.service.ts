@@ -10,7 +10,6 @@ export class StringFormatterService {
    * Converts the custom tags in the given blob of text to html
    * @param string with text blob possibly containing custom tags
    * @returns string with the custom tags replaced with corresponding html
-   * @author Ycreak
    */
   public convert_custom_tag_to_html(given_string: string): string {
     if (given_string != '' && given_string != null) {
@@ -24,7 +23,6 @@ export class StringFormatterService {
    * Takes a string and looks for whitespace decoding. Converts it to html spans
    * @param string that needs whitespaces converted to html spans
    * @returns string with whitespaces converted to html spans
-   * @author Ycreak
    */
   public convert_whitespace_encoding(string: string): string {
     // Find fish hooks with number in between.
