@@ -22,7 +22,7 @@ import { LatinTragicFragmentFilterComponent } from '../../../filters/components/
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
 
-import { QuillComponent } from '@oscc/lib/quill/quill.component';
+import { QuillComponent } from '@oscc/components/quill/quill.component';
 
 // Simple interface for a mat select
 interface mat_select_interface {
