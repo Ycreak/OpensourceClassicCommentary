@@ -24,7 +24,7 @@ import { Canvas } from 'fabric';
 import { Subscription } from 'rxjs';
 
 // Service imports
-import { ApiService } from '@oscc/api.service';
+import { ApiService } from '@oscc/core/services/api.service';
 import { AuthService } from '@oscc/core/auth/auth.service';
 import { CommentaryService } from '@oscc/commentary/commentary.service';
 import { UtilityService } from '@oscc/utility.service';

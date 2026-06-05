@@ -9,7 +9,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 
 // Service imports
-import { ApiService } from '@oscc/api.service';
+import { ApiService } from '@oscc/core/services/api.service';
 import { UtilityService } from '@oscc/utility.service';
 import { FilterService } from '../filter.service';
 import { MatCheckboxModule } from '@angular/material/checkbox';

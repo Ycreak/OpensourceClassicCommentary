@@ -11,7 +11,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogClose, MatDialogContent } from '@angular/material/dialog';
 
 // Service imports
-import { ApiService } from '@oscc/api.service';
+import { ApiService } from '@oscc/core/services/api.service';
 
 // Model imports
 import { Introduction } from '@oscc/models/Introduction';

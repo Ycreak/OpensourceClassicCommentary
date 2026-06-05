@@ -9,7 +9,7 @@ import {
 } from '@angular/material/dialog';
 
 // Service imports
-import { ApiService } from '@oscc/api.service';
+import { ApiService } from '@oscc/core/services/api.service';
 import { AuthService } from '@oscc/core/auth/auth.service';
 import { MatOptionModule } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';

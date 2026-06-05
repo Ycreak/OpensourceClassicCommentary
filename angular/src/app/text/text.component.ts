@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../api.service';
+import { ApiService } from '../core/services/api.service';
 import { UtilityService } from '../utility.service';
 import { AuthService } from '../core/auth/auth.service';
 import { MatDialog } from '@angular/material/dialog';

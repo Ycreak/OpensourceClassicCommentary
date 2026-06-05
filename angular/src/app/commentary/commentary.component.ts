@@ -17,7 +17,7 @@ import { Fragment } from '@oscc/models/Fragment';
 import { IntroductionsComponent } from './introductions/introductions.component';
 
 // Service imports
-import { ApiService } from '@oscc/api.service';
+import { ApiService } from '@oscc/core/services/api.service';
 import { BibliographyService } from '@oscc/services/bibliography.service';
 import { CommentaryService } from './commentary.service';
 import { ColumnsService } from '@oscc/columns/columns.service';

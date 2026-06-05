@@ -16,7 +16,7 @@ import { BibliographyService } from '@oscc/services/bibliography.service';
 import { ColumnsService } from '@oscc/columns/columns.service';
 import { CommentaryService } from '@oscc/commentary/commentary.service';
 import { DialogService } from '@oscc/services/dialog.service';
-import { ApiService } from '@oscc/api.service';
+import { ApiService } from '@oscc/core/services/api.service';
 import { SettingsService } from '@oscc/services/settings.service';
 import { UtilityService } from '@oscc/utility.service';
 
