@@ -466,9 +466,10 @@ export class FabricService {
    * Adds a multiple choice question card to the center of the current view.
    * The choices are clickable: clicking one reveals the correct answer.
    * @param question The question data.
+   * @param offset Optional diagonal offset in pixels, to keep multiple cards visible.
    * @returns void
    */
-  public add_question(question: Playground_question): void {
+  public add_question(question: Playground_question, offset = 0): void {
     if (!Playground_question.is_valid(question)) {
       this.utility.open_snackbar('Invalid question');
       return;
@@ -530,8 +531,8 @@ export class FabricService {
 
     const center = this.get_center();
     const group = new Group([box, ...children], {
-      top: center.y,
-      left: center.x,
+      top: center.y + offset,
+      left: center.x + offset,
       subTargetCheck: true,
       quiz: { ...question },
     } as any);

@@ -39,6 +39,7 @@ import { DialogService } from '@oscc/services/dialog.service';
 import { Playground_communicator } from '@oscc/features/playground/types/Playground_communicator';
 
 import { Playground_question } from '@oscc/features/playground/types/Playground_question';
+import { BASIL_QUIZ } from '@oscc/features/playground/types/basil_quiz';
 
 // Component imports
 import { AddQuestionComponent } from './components/add-question/add-question.component';
@@ -185,6 +186,16 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
           this.fabric.add_question(question);
         }
       },
+    });
+  }
+
+  /**
+   * Places the predefined Basil quiz questions on the canvas, diagonally offset
+   * so every card stays visible.
+   */
+  protected load_basil_quiz(): void {
+    BASIL_QUIZ.forEach((question, index) => {
+      this.fabric.add_question(new Playground_question(question), index * 40);
     });
   }
 
