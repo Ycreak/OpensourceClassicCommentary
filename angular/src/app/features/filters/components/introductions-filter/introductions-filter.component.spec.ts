@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LatinTragicFragmentFilterComponent } from './latin-tragic-fragment-filter.component';
+import { LatinTragicFragmentFilterComponent } from '../latin-tragic-fragment-filter/latin-tragic-fragment-filter.component';
 
 describe('LatinTragicFragmentFilterComponent', () => {
   let component: LatinTragicFragmentFilterComponent;

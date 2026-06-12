@@ -54,6 +54,13 @@
           [src]="playgroundAddNoteButton"
           (click)="this.fabric.add_note('edit me')" />
       </span>
+      <span id="playground_addquestion_btn_tooltip" class="playground_btn_tooltip">
+        <mat-icon
+          id="playground_question_btn"
+          class="playground-icon playground-question-icon"
+          fontIcon="quiz"
+          (click)="this.open_add_question()"></mat-icon>
+      </span>
       <span id="playground_clear_btn_tooltip" class="playground_btn_tooltip">
         <img
           id="playground_clear_btn"
@@ -185,6 +192,10 @@
 </div>
 Join Shared Session
 </button> -->
+<button mat-menu-item (click)="this.open_add_question()">
+  <div class="menu-item-icon-wrapper"></div>
+  Add Question
+</button>
 <button mat-menu-item (click)="fabric.randomize_positions()">
   <div class="menu-item-icon-wrapper"></div>
   Scatter documents

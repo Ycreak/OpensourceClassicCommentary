@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { WysiwygComponent } from './wysiwyg.component';
+import { WYSIWYGDialogComponent } from './wysiwyg-dialog.component';
 
-describe('WysiwygComponent', () => {
-  let component: WysiwygComponent;
-  let fixture: ComponentFixture<WysiwygComponent>;
+describe('WYSIWYGDialogComponent', () => {
+  let component: WYSIWYGDialogComponent;
+  let fixture: ComponentFixture<WYSIWYGDialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [WysiwygComponent],
+      imports: [WYSIWYGDialogComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(WysiwygComponent);
+    fixture = TestBed.createComponent(WYSIWYGDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

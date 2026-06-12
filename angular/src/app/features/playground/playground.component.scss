@@ -216,6 +216,10 @@ button.button-dashed-background {
   box-sizing: content-box;
 }
 
+.playground-question-icon {
+  font-size: 32px;
+}
+
 .playground-icon:first-child {
   border-left-width: 10px;
 }
@@ -256,6 +260,10 @@ button.button-dashed-background {
 #playground_addnote_btn_tooltip::after {
   content: "Add note";
   left: 14px;
+}
+#playground_addquestion_btn_tooltip::after {
+  content: "Add question";
+  left: 8px;
 }
 #playground_clear_btn_tooltip::after {
   content: "Clear playground";

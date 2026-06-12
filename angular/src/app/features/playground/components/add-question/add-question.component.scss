@@ -1,0 +1,30 @@
+.dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0.5em 0 1.5em;
+}
+
+.question-field {
+  width: 100%;
+}
+
+.choices-list {
+  display: block;
+}
+
+.choice-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+}
+
+.choice-field {
+  flex: 1;
+}
+
+.correct-answer-error {
+  color: var(--mat-form-field-error-text-color, #f44336);
+  font-size: 0.75em;
+  margin: 0 0 0.5em;
+}

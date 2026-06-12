@@ -38,7 +38,10 @@ import { Fragment } from '@oscc/types/Fragment';
 import { DialogService } from '@oscc/services/dialog.service';
 import { Playground_communicator } from '@oscc/features/playground/types/Playground_communicator';
 
+import { Playground_question } from '@oscc/features/playground/types/Playground_question';
+
 // Component imports
+import { AddQuestionComponent } from './components/add-question/add-question.component';
 import { LoadPlaygroundComponent } from './components/load-playground/load-playground.component';
 import { SavePlaygroundComponent } from './components/save-playground/save-playground.component';
 import { DeletePlaygroundComponent } from './components/delete-playground/delete-playground.component';
@@ -172,6 +175,20 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Opens the add question dialog. If it returns with a question, we place it on the canvas.
+   */
+  protected open_add_question(): void {
+    const dialogRef = this.mat_dialog.open(AddQuestionComponent, {});
+    dialogRef.afterClosed().subscribe({
+      next: (question: Playground_question) => {
+        if (question) {
+          this.fabric.add_question(question);
+        }
+      },
+    });
+  }
+
+  /**
    */
   protected open_clear_playground(): void {
     this.dialog.open_confirmation_dialog('Are you sure you want to clear the playground?', '').subscribe({
@@ -224,7 +241,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
             this.api.post_document(
               new Playground_communicator({
                 name: data.name,
-                canvas: this.fabric.canvas.toJSON(),
+                canvas: this.fabric.export_canvas(),
                 _id: this._id,
               }),
               'update'
@@ -237,7 +254,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
             .post_document(
               new Playground_communicator({
                 name: data.name,
-                canvas: this.fabric.canvas.toJSON(),
+                canvas: this.fabric.export_canvas(),
                 created_by: this.auth_service.current_user_name,
                 users: [
                   new Playground_user({
@@ -291,7 +308,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
     //});
     // Take a subscription to canvas changes. These we will send to the websocket
     this.canvas_change_subscription = this.fabric.canvas_changed_subject.subscribe(() => {
-      this.websockets.send_json(this.fabric.canvas.toJSON());
+      this.websockets.send_json(this.fabric.export_canvas());
     });
   }
 

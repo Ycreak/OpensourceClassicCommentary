@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { WebsocketsService } from '../websockets.service';
+import { WebsocketsService } from './websockets.service';
 
 describe('WebsocketsService', () => {
   let service: WebsocketsService;

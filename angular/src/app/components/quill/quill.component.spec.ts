@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { WysiwygComponent } from './wysiwyg.component';
+import { QuillComponent } from './quill.component';
 
-describe('WysiwygComponent', () => {
-  let component: WysiwygComponent;
-  let fixture: ComponentFixture<WysiwygComponent>;
+describe('QuillComponent', () => {
+  let component: QuillComponent;
+  let fixture: ComponentFixture<QuillComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [WysiwygComponent],
+      imports: [QuillComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(WysiwygComponent);
+    fixture = TestBed.createComponent(QuillComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

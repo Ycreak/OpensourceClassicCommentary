@@ -1,0 +1,54 @@
+<div class="dialog-header">
+  <h2>Add multiple choice question</h2>
+  <button mat-icon-button [mat-dialog-close]="null" [disableRipple]="true">
+    <mat-icon>clear</mat-icon>
+  </button>
+</div>
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <div mat-dialog-content>
+    <mat-form-field class="question-field">
+      <mat-label>Question</mat-label>
+      <textarea matInput formControlName="question" rows="3"></textarea>
+      @if (form.get('question').hasError('required') || form.get('question').hasError('whitespace')) {
+        <mat-error>A question is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-radio-group formControlName="correct_index" class="choices-list">
+      <div formArrayName="choices">
+        @for (choice of choices.controls; track choice; let i = $index) {
+          <div class="choice-row">
+            <mat-radio-button [value]="i" title="Mark as correct answer"></mat-radio-button>
+            <mat-form-field class="choice-field">
+              <mat-label>Choice {{ choice_label(i) }}</mat-label>
+              <input matInput [formControlName]="i" />
+              @if (choice.hasError('required') || choice.hasError('whitespace')) {
+                <mat-error>Choice may not be empty</mat-error>
+              }
+            </mat-form-field>
+            @if (choices.length > min_choices) {
+              <button mat-icon-button type="button" title="Remove choice" (click)="remove_choice(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            }
+          </div>
+        }
+      </div>
+    </mat-radio-group>
+    @if (form.get('correct_index').touched && form.get('correct_index').hasError('required')) {
+      <p class="correct-answer-error">Select the correct answer with the radio buttons</p>
+    }
+    @if (choices.length < max_choices) {
+      <button mat-button type="button" (click)="add_choice()"><mat-icon>add</mat-icon> Add choice</button>
+    }
+
+    <mat-form-field class="question-field">
+      <mat-label>Explanation (optional, shown after answering)</mat-label>
+      <textarea matInput formControlName="explanation" rows="2"></textarea>
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button type="button" (click)="onNoClick()">Cancel</button>
+    <button mat-button type="submit" cdkFocusInitial>Add question</button>
+  </div>
+</form>

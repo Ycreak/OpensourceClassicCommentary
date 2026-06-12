@@ -12,6 +12,11 @@ import { Observable, Subject } from 'rxjs';
 import { UtilityService } from '@oscc/services/utility.service';
 import { environment } from '@src/environments/environment';
 
+import { Playground_question } from '@oscc/features/playground/types/Playground_question';
+
+// Custom properties that must survive canvas (de)serialization for save/load and websockets
+const CUSTOM_CANVAS_PROPERTIES = ['identifier', 'quiz', 'quiz_choice', 'quiz_feedback', 'subTargetCheck'];
+
 /**
  * This service handles everything related to fabric and its canvas.
  * The playground component uses this service to visualize and manipulate documents on a fabricjs canvas.
@@ -103,6 +108,17 @@ export class FabricService {
 
       this.canvas.selection = true;
       this.canvas_changed_subject.next({});
+    });
+
+    // Answer a multiple choice question when one of its choices is clicked
+    this.canvas.on('mouse:down', (opt: any) => {
+      const target: any = opt.target;
+      if (target && target.quiz && !target.quiz.answered && opt.subTargets?.length) {
+        const choice = opt.subTargets.find((sub: any) => sub.quiz_choice !== undefined);
+        if (choice) {
+          this.answer_question(target, choice.quiz_choice);
+        }
+      }
     });
 
     // Save state for undo/redo on major changes
@@ -345,7 +361,7 @@ export class FabricService {
     if (this.current_state_index < this.canvas_states.length - 1) {
       this.canvas_states.splice(this.current_state_index + 1);
     }
-    this.canvas_states.push(JSON.stringify(this.canvas));
+    this.canvas_states.push(JSON.stringify(this.export_canvas()));
     this.current_state_index = this.canvas_states.length - 1;
   }
 
@@ -444,6 +460,142 @@ export class FabricService {
       editable: true,
     });
     this.canvas.add(text);
+  }
+
+  /**
+   * Adds a multiple choice question card to the center of the current view.
+   * The choices are clickable: clicking one reveals the correct answer.
+   * @param question The question data.
+   * @returns void
+   */
+  public add_question(question: Playground_question): void {
+    if (!Playground_question.is_valid(question)) {
+      this.utility.open_snackbar('Invalid question');
+      return;
+    }
+    const width = 360;
+    const padding = 15;
+    const spacing = 8;
+
+    const children: any[] = [];
+    const header = new Textbox(question.question, {
+      fontSize: this.font_size,
+      fontWeight: 'bold',
+      width,
+      top: 0,
+      left: 0,
+    });
+    children.push(header);
+    let top = (header.height || 0) + spacing * 2;
+
+    question.choices.forEach((choice, index) => {
+      const choice_text = new Textbox(`${this.choice_label(index)} ${choice}`, {
+        fontSize: this.font_size,
+        width,
+        top,
+        left: 0,
+        quiz_choice: index,
+      } as any);
+      children.push(choice_text);
+      top += (choice_text.height || 0) + spacing;
+    });
+
+    top += spacing;
+    const feedback_lines = [`Answer: ${this.choice_label(question.correct_index)}`];
+    if (question.explanation) {
+      feedback_lines.push(question.explanation);
+    }
+    const feedback = new Textbox(feedback_lines.join('\n'), {
+      fontSize: this.font_size,
+      fontStyle: 'italic',
+      width,
+      top,
+      left: 0,
+      visible: false,
+      quiz_feedback: true,
+    } as any);
+    children.push(feedback);
+
+    const box = new Rect({
+      top: -padding,
+      left: -padding,
+      width: width + padding * 2,
+      height: top + (feedback.height || 0) + padding * 2,
+      fill: '#A8D5BA',
+      rx: 10,
+      ry: 10,
+      stroke: 'black',
+      strokeWidth: 1,
+    });
+
+    const center = this.get_center();
+    const group = new Group([box, ...children], {
+      top: center.y,
+      left: center.x,
+      subTargetCheck: true,
+      quiz: { ...question },
+    } as any);
+    this.canvas.add(group);
+    this.canvas.requestRenderAll();
+  }
+
+  /**
+   * Marks the given question group as answered: colors the chosen and correct
+   * choices and reveals the answer text. A question can only be answered once.
+   * @param group The fabric group carrying the quiz metadata.
+   * @param choice_index The index of the clicked choice.
+   * @returns void
+   */
+  public answer_question(group: any, choice_index: number): void {
+    const quiz = group.quiz;
+    if (!quiz || quiz.answered || !Number.isInteger(choice_index)) {
+      return;
+    }
+    quiz.answered = true;
+    quiz.chosen_index = choice_index;
+
+    group.getObjects().forEach((child: any) => {
+      if (child.quiz_choice === quiz.correct_index) {
+        child.set({ fill: '#1B5E20', fontWeight: 'bold' });
+      } else if (child.quiz_choice === choice_index) {
+        child.set({ fill: '#B71C1C' });
+      }
+      if (child.quiz_feedback) {
+        child.set({ visible: true });
+      }
+    });
+    group.dirty = true;
+    this.canvas.requestRenderAll();
+    // Register the answer in the undo/redo history and notify listeners
+    this.canvas.fire('object:modified', { target: group });
+  }
+
+  /**
+   * Checks if the given object is a multiple choice question
+   * @param thing (object)
+   * @return boolean
+   */
+  public is_question(thing: any): boolean {
+    return !!thing.quiz;
+  }
+
+  /**
+   * Returns the label for the choice at the given index, e.g. 'a)'
+   * @param index (number) of the choice
+   * @return string
+   */
+  private choice_label(index: number): string {
+    return `${String.fromCharCode(97 + index)})`;
+  }
+
+  /**
+   * Serializes the canvas including the custom properties (document identifiers and
+   * quiz metadata) that fabric does not export by default. Use this instead of
+   * canvas.toJSON() whenever the canvas is persisted or sent over the wire.
+   * @returns A plain object representation of the canvas.
+   */
+  public export_canvas(): object {
+    return this.canvas.toObject(CUSTOM_CANVAS_PROPERTIES);
   }
 
   /**
