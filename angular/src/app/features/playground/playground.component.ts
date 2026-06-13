@@ -40,6 +40,7 @@ import { Playground_communicator } from '@oscc/features/playground/types/Playgro
 
 import { Playground_question } from '@oscc/features/playground/types/Playground_question';
 import { BASIL_QUIZ } from '@oscc/features/playground/types/basil_quiz';
+import { environment } from '@src/environments/environment';
 
 // Component imports
 import { AddQuestionComponent } from './components/add-question/add-question.component';
@@ -95,6 +96,9 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
 
   private canvas_change_subscription: Subscription;
   private websockets_subscription: Subscription;
+
+  // Feature flag for the teaching-package question UI (issue #436)
+  protected questions_enabled = environment.questions_enabled;
 
   protected playgroundSearchFragmentButton = PLAYGROUND_SEARCH_FRAGMENT;
   protected playgroundAddNoteButton = PLAYGROUND_ADD_NOTE;
