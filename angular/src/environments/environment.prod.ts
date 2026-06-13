@@ -7,7 +7,9 @@ export const environment = {
   current_user_role: 'guest',
   production: true,
   debug: false,
-  
+  // Toggle off to remove the playground teaching package (lessons feature)
+  teaching_enabled: true,
+
   fragments: 'fragments',
   fragment: 'fragment',
   testimonia: 'testimonia',

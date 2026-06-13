@@ -51,6 +51,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 import { MatMenuModule } from '@angular/material/menu';
+import { environment } from '@src/environments/environment';
+import { TeachingService } from '@oscc/features/teaching/teaching.service';
+import { SelectLessonDialogComponent } from '@oscc/features/teaching/components/select-lesson-dialog/select-lesson-dialog.component';
+import { LessonPlayerComponent } from '@oscc/features/teaching/components/lesson-player/lesson-player.component';
 
 @Component({
   selector: 'app-playground',
@@ -100,6 +104,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   protected playgroundRedoButton = PLAYGROUND_REDO;
   protected playgroundSaveButton = PLAYGROUND_SAVE;
   protected playgroundLoadButton = PLAYGROUND_LOAD;
+  protected teaching_enabled = environment.teaching_enabled;
 
   constructor(
     protected api: ApiService,
@@ -111,6 +116,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
     private commentary: CommentaryService,
     private formatter: FormatterService,
     private mat_dialog: MatDialog,
+    private teaching: TeachingService,
     protected window_watcher: WindowSizeWatcherService
   ) {}
 
@@ -178,6 +184,24 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
       next: (res) => {
         if (res) {
           this.fabric.clear();
+        }
+      },
+    });
+  }
+
+  /**
+   * Opens the lesson picker. If a lesson is chosen, loads it and starts the lesson player.
+   */
+  protected open_lesson_selector(): void {
+    const dialogRef = this.mat_dialog.open(SelectLessonDialogComponent, {});
+    dialogRef.afterClosed().subscribe({
+      next: (lesson_id?: string) => {
+        if (lesson_id) {
+          this.teaching.get_lesson(lesson_id).subscribe({
+            next: (lesson) => {
+              this.mat_dialog.open(LessonPlayerComponent, { data: lesson });
+            },
+          });
         }
       },
     });

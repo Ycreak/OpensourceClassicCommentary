@@ -1,0 +1,43 @@
+.dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px 0 16px;
+}
+
+.dialog-content {
+  min-width: 320px;
+}
+
+.lesson-status {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+}
+
+.lesson-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 8px;
+}
+
+.lesson-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  height: auto;
+  padding: 12px 16px;
+  line-height: 1.4;
+  white-space: normal;
+}
+
+.lesson-card-title {
+  font-weight: 600;
+}
+
+.lesson-card-description {
+  font-size: 0.85em;
+  opacity: 0.75;
+}

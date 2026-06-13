@@ -189,6 +189,12 @@ Join Shared Session
   <div class="menu-item-icon-wrapper"></div>
   Scatter documents
 </button>
+@if (teaching_enabled) {
+  <button mat-menu-item (click)="this.open_lesson_selector()">
+    <div class="menu-item-icon-wrapper"></div>
+    Start lesson
+  </button>
+}
 <button mat-menu-item>
   <div class="menu-item-icon-wrapper"></div>
   Settings

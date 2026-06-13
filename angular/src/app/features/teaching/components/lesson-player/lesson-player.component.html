@@ -1,0 +1,58 @@
+<div class="dialog-header">
+  <h2>{{ lesson.title }}</h2>
+  <button mat-icon-button [mat-dialog-close]="undefined" [disableRipple]="true">
+    <mat-icon>clear</mat-icon>
+  </button>
+</div>
+
+<div class="dialog-content" mat-dialog-content>
+  @if (!finished) {
+    <p class="progress">Question {{ index + 1 }} / {{ total }}</p>
+    <p class="prompt">{{ question.prompt }}</p>
+
+    <mat-radio-group class="choices">
+      @for (choice of question.choices; track $index) {
+        <mat-radio-button
+          class="choice"
+          [class.correct]="state.checked && $index === question.correct_index"
+          [class.incorrect]="state.checked && $index === state.selected && $index !== question.correct_index"
+          [value]="$index"
+          [checked]="state.selected === $index"
+          [disabled]="locked"
+          (change)="select($index)">
+          {{ choice }}
+        </mat-radio-button>
+      }
+    </mat-radio-group>
+
+    @if (show_explanation) {
+      <div class="feedback correct-feedback">
+        <mat-icon>check_circle</mat-icon>
+        <span>Correct!@if (question.explanation) { {{ ' ' + question.explanation }} }</span>
+      </div>
+    }
+    @if (show_hint) {
+      <div class="feedback hint-feedback">
+        <mat-icon>lightbulb</mat-icon>
+        <span>{{ question.hint || 'Not quite. Have another look and try again.' }}</span>
+      </div>
+    }
+  } @else {
+    <div class="result">
+      <mat-icon class="result-icon">school</mat-icon>
+      <p class="result-score">You scored {{ score }} / {{ total }}</p>
+      <p class="result-subtitle">on first attempt.</p>
+    </div>
+  }
+</div>
+
+<div mat-dialog-actions class="actions">
+  @if (!finished) {
+    <button mat-button (click)="check()" [disabled]="state.selected === null || locked">Check</button>
+    <button mat-button (click)="next()" [disabled]="!state.checked">
+      {{ index < total - 1 ? 'Next' : 'Finish' }}
+    </button>
+  } @else {
+    <button mat-button [mat-dialog-close]="undefined">Close</button>
+  }
+</div>

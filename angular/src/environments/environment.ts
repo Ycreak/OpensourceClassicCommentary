@@ -12,6 +12,8 @@ export const environment = {
   current_user_role: 'admin',
   production: false,
   debug: true,
+  // Toggle off to remove the playground teaching package (lessons feature)
+  teaching_enabled: true,
 
   fragments: 'fragments',
   fragment: 'fragment',
