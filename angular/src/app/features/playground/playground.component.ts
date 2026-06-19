@@ -54,7 +54,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { environment } from '@src/environments/environment';
 import { TeachingService } from '@oscc/features/teaching/teaching.service';
 import { SelectLessonDialogComponent } from '@oscc/features/teaching/components/select-lesson-dialog/select-lesson-dialog.component';
-import { LessonPlayerComponent } from '@oscc/features/teaching/components/lesson-player/lesson-player.component';
+import { LessonRunnerService } from '@oscc/features/teaching/lesson-runner.service';
 
 @Component({
   selector: 'app-playground',
@@ -117,6 +117,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
     private formatter: FormatterService,
     private mat_dialog: MatDialog,
     private teaching: TeachingService,
+    private lesson_runner: LessonRunnerService,
     protected window_watcher: WindowSizeWatcherService
   ) {}
 
@@ -190,7 +191,8 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Opens the lesson picker. If a lesson is chosen, loads it and starts the lesson player.
+   * Opens the lesson picker. If a lesson is chosen, loads it and starts the lesson
+   * as a draggable, non-blocking card on the canvas.
    */
   protected open_lesson_selector(): void {
     const dialogRef = this.mat_dialog.open(SelectLessonDialogComponent, {});
@@ -199,7 +201,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
         if (lesson_id) {
           this.teaching.get_lesson(lesson_id).subscribe({
             next: (lesson) => {
-              this.mat_dialog.open(LessonPlayerComponent, { data: lesson });
+              this.lesson_runner.start(lesson);
             },
           });
         }
