@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
-import { FabricService, LessonCardSpec } from '@oscc/features/playground/services/fabric.service';
-import { Lesson } from '@oscc/features/teaching/models/lesson.model';
+import { LessonCardRenderer } from '@oscc/features/teaching/lesson-card.renderer';
+import { Lesson, LessonCardSpec } from '@oscc/features/teaching/models/lesson.model';
 
 /**
  * Drives a multiple-choice lesson rendered on the playground canvas.
- * Owns all lesson state; the fabric service only draws the current card and
- * reports clicks. The card is a normal fabric object, so it never blocks the
- * canvas and the student can drag fragments around it.
+ * Owns all lesson state; the renderer only draws the current card and reports
+ * clicks. The card is a normal fabric object, so it never blocks the canvas and
+ * the student can drag fragments around it.
  */
 @Injectable({ providedIn: 'root' })
 export class LessonRunnerService {
@@ -20,16 +21,21 @@ export class LessonRunnerService {
   /** The choice most recently clicked for the current question (null = unanswered). */
   private chosen: number | null = null;
 
-  constructor(private fabric: FabricService) {}
+  constructor(
+    private http: HttpClient,
+    private renderer: LessonCardRenderer
+  ) {}
 
-  /** Starts the lesson by placing the first question card on the canvas. */
-  public start(lesson: Lesson): void {
-    this.lesson = lesson;
-    this.index = 0;
-    this.first_results = lesson.questions.map(() => null);
-    this.locked = lesson.questions.map(() => false);
-    this.chosen = null;
-    this.render();
+  /** Loads the lesson JSON by id and places the first question card on the canvas. */
+  public start(lesson_id: string): void {
+    this.http.get<Lesson>(`assets/teaching/${lesson_id}.json`).subscribe((lesson) => {
+      this.lesson = lesson;
+      this.index = 0;
+      this.first_results = lesson.questions.map(() => null);
+      this.locked = lesson.questions.map(() => false);
+      this.chosen = null;
+      this.render();
+    });
   }
 
   private get question() {
@@ -41,7 +47,7 @@ export class LessonRunnerService {
   }
 
   private render(): void {
-    this.fabric.render_lesson_card(this.build_spec(), {
+    this.renderer.render(this.build_spec(), {
       onChoice: (i) => this.on_choice(i),
       onAction: (kind) => this.on_action(kind),
     });
@@ -91,7 +97,7 @@ export class LessonRunnerService {
 
   private on_action(kind: 'next' | 'finish' | 'close'): void {
     if (kind === 'close') {
-      this.fabric.remove_lesson_card();
+      this.renderer.remove();
       return;
     }
     if (!this.last_question) {
@@ -106,7 +112,7 @@ export class LessonRunnerService {
   private show_score(): void {
     const score = this.first_results.filter((r) => r).length;
     const total = this.lesson.questions.length;
-    this.fabric.render_lesson_card(
+    this.renderer.render(
       {
         progress: this.lesson.title,
         prompt: `Lesson complete — you scored ${score} / ${total} on first attempt.`,

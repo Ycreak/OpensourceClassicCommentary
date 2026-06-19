@@ -1,10 +1,10 @@
 import { Component, OnInit, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
-import { TeachingService } from '@oscc/features/teaching/teaching.service';
 import { LessonSummary } from '@oscc/features/teaching/models/lesson.model';
 
 /** Lets the student pick a lesson. Closes with the chosen lesson id (or undefined).
@@ -23,11 +23,11 @@ export class SelectLessonDialogComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<SelectLessonDialogComponent, string>,
-    private teaching: TeachingService
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
-    this.teaching.get_lessons().subscribe({
+    this.http.get<LessonSummary[]>('assets/teaching/index.json').subscribe({
       next: (lessons) => {
         this.lessons.set(lessons);
         this.loading.set(false);

@@ -12,22 +12,6 @@ import { Observable, Subject } from 'rxjs';
 import { UtilityService } from '@oscc/services/utility.service';
 import { environment } from '@src/environments/environment';
 
-/** A single rendering of the on-canvas lesson card. The lesson runner owns the
- * state and hands a fresh spec to the fabric service on every interaction. */
-export interface LessonCardSpec {
-  progress: string;
-  prompt: string;
-  choices: { text: string; state: 'normal' | 'correct' | 'wrong' }[];
-  message: { kind: 'hint' | 'explanation'; text: string } | null;
-  action: { kind: 'next' | 'finish' | 'close'; label: string } | null;
-}
-
-/** Callbacks the fabric service invokes when the student clicks the lesson card. */
-export interface LessonCardHandlers {
-  onChoice: (index: number) => void;
-  onAction: (kind: 'next' | 'finish' | 'close') => void;
-}
-
 /**
  * This service handles everything related to fabric and its canvas.
  * The playground component uses this service to visualize and manipulate documents on a fabricjs canvas.
@@ -49,10 +33,6 @@ export class FabricService {
 
   readonly font_size: number = 16;
   public documents: any[] = [];
-
-  // Active on-canvas lesson card (teaching package). Null when no lesson is running.
-  private lesson_card: any = null;
-  private lesson_handlers: LessonCardHandlers | null = null;
 
   constructor(private utility: UtilityService) {}
 
@@ -123,23 +103,6 @@ export class FabricService {
 
       this.canvas.selection = true;
       this.canvas_changed_subject.next({});
-    });
-
-    // Dispatch clicks on the on-canvas lesson card to the lesson runner.
-    this.canvas.on('mouse:down', (opt: any) => {
-      if (!this.lesson_card || opt.target !== this.lesson_card || !this.lesson_handlers) {
-        return;
-      }
-      const subs = opt.subTargets || [];
-      const choice = subs.find((s: any) => s.lesson_choice !== undefined);
-      if (choice) {
-        this.lesson_handlers.onChoice(choice.lesson_choice);
-        return;
-      }
-      const action = subs.find((s: any) => s.lesson_action !== undefined);
-      if (action) {
-        this.lesson_handlers.onAction(action.lesson_action);
-      }
     });
 
     // Save state for undo/redo on major changes
@@ -487,7 +450,7 @@ export class FabricService {
    * Calculates the visual center of the canvas taking zoom and pan into account.
    * @returns An object with x and y coordinates.
    */
-  private get_center(): { x: number; y: number } {
+  public get_center(): { x: number; y: number } {
     const vpt = this.canvas.viewportTransform;
     const inv = util.invertTransform(vpt);
     return {
@@ -504,148 +467,4 @@ export class FabricService {
     return !!this.canvas.getActiveObject();
   }
 
-  /**
-   * Renders the on-canvas lesson card from the given spec. The card is a normal
-   * (draggable, non-blocking) fabric group so fragments stay interactive around it.
-   * Called again on every interaction; the previous card is replaced in place so
-   * its position survives re-renders.
-   * @param spec What to draw for the current lesson state.
-   * @param handlers Callbacks invoked when a choice or action is clicked.
-   * @returns void
-   */
-  public render_lesson_card(spec: LessonCardSpec, handlers: LessonCardHandlers): void {
-    let left: number | undefined;
-    let top: number | undefined;
-    if (this.lesson_card) {
-      left = this.lesson_card.left;
-      top = this.lesson_card.top;
-      this.canvas.remove(this.lesson_card);
-    }
-
-    const width = 360;
-    const padding = 15;
-    const spacing = 8;
-    const children: any[] = [];
-    let y = 0;
-
-    const progress = new Textbox(spec.progress, {
-      fontSize: this.font_size - 3,
-      fill: '#666',
-      width,
-      top: y,
-      left: 0,
-      selectable: false,
-      evented: false,
-    } as any);
-    children.push(progress);
-    y += (progress.height || 0) + spacing;
-
-    const prompt = new Textbox(spec.prompt, {
-      fontSize: this.font_size,
-      fontWeight: 'bold',
-      width,
-      top: y,
-      left: 0,
-      selectable: false,
-      evented: false,
-    } as any);
-    children.push(prompt);
-    y += (prompt.height || 0) + spacing * 2;
-
-    spec.choices.forEach((choice, index) => {
-      const fill = choice.state === 'correct' ? '#1B5E20' : choice.state === 'wrong' ? '#B71C1C' : '#000000';
-      const choice_text = new Textbox(`${this.choice_label(index)} ${choice.text}`, {
-        fontSize: this.font_size,
-        fill,
-        fontWeight: choice.state === 'correct' ? 'bold' : 'normal',
-        width,
-        top: y,
-        left: 0,
-        lesson_choice: index,
-      } as any);
-      children.push(choice_text);
-      y += (choice_text.height || 0) + spacing;
-    });
-
-    if (spec.message) {
-      y += spacing;
-      const fill = spec.message.kind === 'explanation' ? '#1B5E20' : '#8D6E00';
-      const message = new Textbox(spec.message.text, {
-        fontSize: this.font_size,
-        fontStyle: 'italic',
-        fill,
-        width,
-        top: y,
-        left: 0,
-        selectable: false,
-        evented: false,
-      } as any);
-      children.push(message);
-      y += (message.height || 0) + spacing;
-    }
-
-    if (spec.action) {
-      y += spacing;
-      const action = new Textbox(spec.action.label, {
-        fontSize: this.font_size,
-        fontWeight: 'bold',
-        fill: '#0D47A1',
-        width,
-        top: y,
-        left: 0,
-        lesson_action: spec.action.kind,
-      } as any);
-      children.push(action);
-      y += (action.height || 0) + spacing;
-    }
-
-    const box = new Rect({
-      top: -padding,
-      left: -padding,
-      width: width + padding * 2,
-      height: y + padding * 2,
-      fill: '#FFFDF5',
-      rx: 10,
-      ry: 10,
-      stroke: '#333333',
-      strokeWidth: 1,
-    });
-
-    const center = this.get_center();
-    const group = new Group([box, ...children], {
-      // Shift left of centre so the card sits in the visible playground area and
-      // does not slip under the commentary panel on the right.
-      left: left ?? center.x - width,
-      top: top ?? center.y - y / 2,
-      subTargetCheck: true,
-      hasControls: false,
-    } as any);
-
-    this.lesson_card = group;
-    this.lesson_handlers = handlers;
-    this.canvas.add(group);
-    this.canvas.requestRenderAll();
-  }
-
-  /**
-   * Removes the active lesson card from the canvas, ending the on-canvas lesson.
-   * @returns void
-   */
-  public remove_lesson_card(): void {
-    if (this.lesson_card) {
-      this.canvas.remove(this.lesson_card);
-      this.lesson_card = null;
-      this.lesson_handlers = null;
-      this.canvas.requestRenderAll();
-    }
-  }
-
-  /**
-   * Returns the label for the choice at the given index, e.g. 'a)'.
-   * @param index (number) of the choice
-   * @return string
-   */
-  private choice_label(index: number): string {
-    return `${String.fromCharCode(97 + index)})`;
-  }
 }
