@@ -21,10 +21,10 @@ import { SettingsService } from '@oscc/services/settings.service';
     MatDialogModule,
   ],
   templateUrl: './settings-dialog.component.html',
-  styleUrl: '../dialogs.scss',
+  styleUrls: ['./settings-dialog.component.scss', '../dialogs.scss'],
 })
 export class SettingsDialogComponent {
-  @ViewChild('dragtooltip_icon') dragtooltip_icon: MatTooltip;
+  @ViewChild('dragtooltip_icon') dragtooltip_icon: MatTooltip | undefined;
 
   protected tooltips = {
     dragging_disabled: 'Disallows moving fragments by dragging them',
