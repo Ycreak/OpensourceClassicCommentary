@@ -12,7 +12,7 @@
 
   <p>
     <mat-slide-toggle [(ngModel)]="settings.fragments.dragging_disabled">
-      <span class="text-tooltip" [matTooltip]="this.tooltips.dragging_disabled" matTooltipShowDelay="1000"
+      <span [matTooltip]="this.tooltips.dragging_disabled" matTooltipShowDelay="1000"
         >Disable fragment dragging</span
       >
     </mat-slide-toggle>
@@ -33,7 +33,7 @@
 
   <p>
     <mat-slide-toggle [(ngModel)]="settings.fragments.fragment_order_gradient">
-      <span class="text-tooltip" [matTooltip]="this.tooltips.fragment_order_gradient" matTooltipShowDelay="1000"
+      <span [matTooltip]="this.tooltips.fragment_order_gradient" matTooltipShowDelay="1000"
         >Show fragment order gradient</span
       >
     </mat-slide-toggle>
@@ -54,7 +54,7 @@
 
   <p>
     <mat-slide-toggle [(ngModel)]="settings.fragments.show_headers">
-      <span class="text-tooltip" [matTooltip]="this.tooltips.show_headers" matTooltipShowDelay="1000"
+      <span [matTooltip]="this.tooltips.show_headers" matTooltipShowDelay="1000"
         >Show fragments headers</span
       >
     </mat-slide-toggle>
@@ -75,7 +75,7 @@
 
   <p>
     <mat-slide-toggle [(ngModel)]="settings.fragments.show_line_names">
-      <span class="text-tooltip" [matTooltip]="this.tooltips.show_line_names" matTooltipShowDelay="1000"
+      <span [matTooltip]="this.tooltips.show_line_names" matTooltipShowDelay="1000"
         >Show fragment line names</span
       >
     </mat-slide-toggle>
@@ -96,7 +96,7 @@
 
   <p>
     <mat-slide-toggle [(ngModel)]="settings.fragments.auto_scroll_linked_fragments">
-      <span class="text-tooltip" [matTooltip]="this.tooltips.auto_scroll_linked_fragments" matTooltipShowDelay="1000"
+      <span [matTooltip]="this.tooltips.auto_scroll_linked_fragments" matTooltipShowDelay="1000"
         >Auto scroll to linked fragments</span
       >
     </mat-slide-toggle>
