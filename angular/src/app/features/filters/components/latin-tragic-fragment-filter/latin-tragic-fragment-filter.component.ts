@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, signal, computed } from '@angul
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { PLAYGROUND_ICON } from '@src/assets/img/image-constants';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { ApiService } from '@oscc/services/api.service';
 import { UtilityService } from '@oscc/services/utility.service';
@@ -11,7 +12,7 @@ import { UtilityService } from '@oscc/services/utility.service';
   templateUrl: './latin-tragic-fragment-filter.component.html',
   styleUrl: './latin-tragic-fragment-filter.component.scss',
   standalone: true,
-  imports: [MatButtonModule, MatMenuModule],
+  imports: [MatButtonModule, MatMenuModule, MatTooltipModule],
 })
 export class LatinTragicFragmentFilterComponent {
   @Input() button_title: string;

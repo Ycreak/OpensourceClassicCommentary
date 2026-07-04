@@ -22,6 +22,7 @@ import {
 
 import { Canvas } from 'fabric';
 import { Subscription } from 'rxjs';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 // Service imports
 import { ApiService } from '@oscc/services/api.service';
@@ -57,7 +58,7 @@ import { MatMenuModule } from '@angular/material/menu';
   templateUrl: './playground.component.html',
   styleUrls: ['./playground.component.scss'],
   standalone: true,
-  imports: [MatProgressBarModule, MatIconModule, LatinTragicFragmentFilterComponent, MatMenuModule],
+  imports: [MatProgressBarModule, MatIconModule, LatinTragicFragmentFilterComponent, MatMenuModule, MatTooltipModule],
 })
 export class PlaygroundComponent implements OnInit, OnDestroy {
   @Output() document_clicked = new EventEmitter<Fragment>();

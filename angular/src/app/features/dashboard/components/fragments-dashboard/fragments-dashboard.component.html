@@ -23,7 +23,7 @@
         color="primary"
         [disabled]="!fragment_form.valid"
         (click)="request_create_fragment(this.fragment_form)"
-        >
+        matTooltip="(Locally) create a new Fragment based on the entered information">
         Create Fragment
       </button>
     }
@@ -55,6 +55,7 @@
         class="button-margin"
         color="primary"
         (click)="this.dialog.open_fragment_publish_dialog()"
+        matTooltip="Publish this fragment to the server"
         >
         Publish Fragments
       </button>

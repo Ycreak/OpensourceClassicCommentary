@@ -1,13 +1,13 @@
 <ng-content></ng-content>
 
 @if (button_type === 'stroked') {
-  <button mat-stroked-button [matMenuTriggerFor]="menu_authors" class="filter_component_button_stroked" >
+  <button matTooltip="Load a set of fragments to this column" mat-stroked-button [matMenuTriggerFor]="menu_authors" class="filter_component_button_stroked" >
     {{ button_title }}
   </button>
 }
 
 @if (button_type === 'basic') {
-  <button mat-button [matMenuTriggerFor]="menu_authors" class="filter_component_button_basic">
+  <button matTooltip="Load a set of fragments to this column" mat-button [matMenuTriggerFor]="menu_authors" class="filter_component_button_basic">
     {{ button_title }}
   </button>
 }

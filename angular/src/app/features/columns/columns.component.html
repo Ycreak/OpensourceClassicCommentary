@@ -30,19 +30,19 @@
     </app-latin-tragic-fragment-filter>
 
     <!-- Buttons to modify columns -->
-    <button mat-icon-button (click)="this.columns.move(column_to_display.column_id, 'left')">
+    <button  mat-icon-button (click)="this.columns.move(column_to_display.column_id, 'left')" matTooltip="Move column left">
       <mat-icon>keyboard_arrow_left</mat-icon>
     </button>
 
-    <button mat-icon-button (click)="this.columns.move(column_to_display.column_id, 'right')">
+    <button mat-icon-button (click)="this.columns.move(column_to_display.column_id, 'right')" matTooltip="Move column right">
       <mat-icon>keyboard_arrow_right</mat-icon>
     </button>
 
-    <button mat-icon-button (click)="this.columns.close(column_to_display.column_id)">
+    <button mat-icon-button (click)="this.columns.close(column_to_display.column_id)" matTooltip="Close column">
       <mat-icon>clear</mat-icon>
     </button>
 
-    <button mat-icon-button (click)="this.columns.current = column_to_display" [matMenuTriggerFor]="columnMenu">
+    <button mat-icon-button (click)="this.columns.current = column_to_display" [matMenuTriggerFor]="columnMenu" matTooltip="Column options">
       <mat-icon fontIcon="menu"></mat-icon>
     </button>
   </mat-toolbar>
@@ -110,7 +110,7 @@
   }
   <div id="fragments-toolbar-2">
     |
-    <button class="navbar" mat-button (click)="this.columns.add()">Add column</button>
+    <button class="navbar" matTooltip="Add another column of fragments" mat-button (click)="this.columns.add()">Add column</button>
   </div>
 </mat-toolbar>
 @if (this.api.spinner) {

@@ -9,6 +9,7 @@ import { Component, OnInit, ViewEncapsulation, ViewChild, ViewChildren, QueryLis
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger, MatMenuModule } from '@angular/material/menu';
 import { ActivatedRoute, ParamMap } from '@angular/router';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 // Service imports
 import { AuthService } from '@oscc/features/auth/services/auth.service';
@@ -77,7 +78,8 @@ import { OutsideClickDirective } from '@oscc/features/columns/components/column-
     ViewModeDirective,
     EditableOnKeypressDirective,
     OutsideClickDirective,
-    NgTemplateOutlet
+    NgTemplateOutlet,
+    MatTooltipModule,
 ],
 })
 export class ColumnsComponent implements OnInit {

@@ -29,6 +29,7 @@ import { RouterLink } from '@angular/router';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-overview',
@@ -40,6 +41,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     MatButtonModule,
     MatMenuModule,
     MatIconModule,
+    MatTooltipModule,
     RouterLink,
     MatSidenavModule,
     ColumnsComponent,

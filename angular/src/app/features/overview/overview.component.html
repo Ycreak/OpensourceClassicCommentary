@@ -20,6 +20,7 @@
     <button
       mat-stroked-button
       class="navbar button-margin"
+      matTooltip="Opens a panel that shows information for the selected fragment"
       (click)="this.toggle_commentary()"
       (click)="drawer.toggle()">
       COMMENTARY
@@ -29,6 +30,7 @@
       mat-flat-button
       color="accent"
       class="button-margin"
+      matTooltip="Closes the commentary panel"
       (click)="this.toggle_commentary()"
       (click)="drawer.toggle()">
       COMMENTARY
@@ -40,11 +42,16 @@
     <button
       mat-stroked-button
       class="navbar button-margin"
+      matTooltip="Opens a screen where you can freely move around fragments and add your own notes"
       (click)="this.toggle_playground(); this.scroll_viewport_to('playground')">
       PLAYGROUND
     </button>
   } @else {
-    <button mat-flat-button class="button-margin" color="accent" (click)="this.toggle_playground()">PLAYGROUND</button>
+    <button mat-flat-button 
+      class="button-margin" 
+      matTooltip="Closes the playground screen and returns to the main screen"
+      color="accent" 
+      (click)="this.toggle_playground()">PLAYGROUND</button>
   }
 
 
@@ -58,9 +65,9 @@
 
 <!-- Navigation bar menu -->
 <mat-menu #menu="matMenu">
-  <button (click)="login()" mat-menu-item>Login</button>
+  <button (click)="login()" matTooltip="Log in as a user to unlock additional features" mat-menu-item>Login</button>
   @if (this.auth_service.is_logged_in) {
-    <button mat-menu-item routerLink="/dashboard">Dashboard</button>
+    <button mat-menu-item matTooltip="Go here to edit data including fragment and user data" routerLink="/dashboard">Dashboard</button>
   }
   <a href="https://github.com/Ycreak/OpensourceClassicCommentary/" target="_blank" mat-menu-item>Documentation</a>
   <button (click)="this.dialog_service.open_settings_dialog()" mat-menu-item>Settings</button>

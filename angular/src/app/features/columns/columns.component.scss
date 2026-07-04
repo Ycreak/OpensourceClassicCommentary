@@ -11,7 +11,7 @@
   font-size: 14px;
 }
 .introduction-link-hover:hover {
-  background: #86868626;
+  text-decoration: underline;
   transition: 0.25s;
 }
 
@@ -22,9 +22,10 @@
 }
 .fragments-toolbar-1 {
   width: 100%;
-  /* Hide the overflow of this element so that the 'Add column' button stays in view. */
+  /* Hide the overflow of this element so that the 'Add column' button stays in view. FIXME this is currently broken */
   overflow: hidden;
 }
+
 #fragments-toolbar-2 {
   margin-left: 0.5rem;
 }

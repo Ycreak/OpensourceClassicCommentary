@@ -2,6 +2,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Validators } from '@angular/forms';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 // Service imports
 import { AuthService } from '@oscc/features/auth/services/auth.service';
@@ -47,7 +48,8 @@ interface mat_select_interface {
     MatInputModule,
     MatSelectModule,
     MatOptionModule,
-    QuillComponent
+    QuillComponent,
+    MatTooltipModule
 ],
 })
 export class FragmentsDashboardComponent implements OnInit {

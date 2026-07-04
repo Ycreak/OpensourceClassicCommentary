@@ -27,7 +27,7 @@
     <div id="playground-main-toolbar" class="playground-toolbar">
       <!-- Hamburger menu -->
       <div id="playground-hamburger-menu" class="playground-tool-group">
-        <button id="playground-hamburger-menu-button" mat-stroked-button class="navbar" [matMenuTriggerFor]="menu">
+        <button id="playground-hamburger-menu-button" mat-stroked-button class="navbar" matTooltip="More options" [matMenuTriggerFor]="menu">
           <mat-icon fontIcon="menu"></mat-icon>
         </button>
       </div>
@@ -144,7 +144,7 @@
           (click)="this.join_playground()" /> -->
   <!-- </div> -->
   <div id="playground-help-menu" class="playground-tool-group">
-    <button id="playground-help-menu-button" mat-stroked-button class="navbar" [matMenuTriggerFor]="helpmenu">
+    <button id="playground-help-menu-button" mat-stroked-button class="navbar" matTooltip="Help" [matMenuTriggerFor]="helpmenu">
       <mat-icon fontIcon="question_mark"></mat-icon>
     </button>
   </div>
