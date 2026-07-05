@@ -33,6 +33,11 @@ $toolbar-height: 64px;
   transition: width 0.75s ease-in-out;
 }
 
+
+button.navbar.mat-unthemed:hover { //Navbar button hover effect
+  background-color: #162561;
+}
+
 /* MENU */
 /* Social media icons */
 $social-media-icon-color: lightgray;
