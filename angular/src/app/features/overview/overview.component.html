@@ -1,7 +1,7 @@
 <!-- Navigation bar -->
 <mat-toolbar color="primary">
   <span style="width: fit-content; transform: translateY(-1px)">
-    @if (this.window_watcher.size > 725) {
+    @if (this.window_watcher.size > 1000) {
       <h3 class="navbar">{{ this.get_title("long") }}</h3>
     } @else {
       <h3 class="navbar">{{ this.get_title("short") }}</h3>
@@ -28,7 +28,7 @@
     <button
       mat-flat-button
       color="accent"
-      class="button-margin"
+      class="navbar button-margin"
       (click)="this.toggle_commentary()"
       (click)="drawer.toggle()">
       COMMENTARY
@@ -44,15 +44,20 @@
       PLAYGROUND
     </button>
   } @else {
-    <button mat-flat-button class="button-margin" color="accent" (click)="this.toggle_playground()">PLAYGROUND</button>
+    <button mat-flat-button 
+      class="navbar button-margin" 
+      color="accent" 
+      (click)="this.toggle_playground()">
+      PLAYGROUND
+    </button>
   }
 
 
   <button mat-stroked-button class="navbar" [matMenuTriggerFor]="menu">
-    @if (this.window_watcher.size > 850) {
-      <mat-icon fontIcon="menu"></mat-icon>
+    @if (this.window_watcher.size > 1050) {
+      <span style="margin-left: 5px;">MENU</span>
     }
-    MENU
+    <mat-icon class="menu-icon" fontIcon="menu"></mat-icon>
   </button>
 </mat-toolbar>
 
