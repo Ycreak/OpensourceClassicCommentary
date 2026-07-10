@@ -345,7 +345,10 @@ export class FabricService {
     if (this.current_state_index < this.canvas_states.length - 1) {
       this.canvas_states.splice(this.current_state_index + 1);
     }
-    this.canvas_states.push(JSON.stringify(this.canvas));
+    // Include our custom metadata, so documents keep their identifier and
+    // teaching objects keep their tags across undo/redo reloads.
+    const custom_props = ['identifier', 'lesson_tag', 'lesson_item', 'lesson_choice', 'lesson_action', 'selectable', 'evented', 'hasControls', 'subTargetCheck'];
+    this.canvas_states.push(JSON.stringify(this.canvas.toObject(custom_props)));
     this.current_state_index = this.canvas_states.length - 1;
   }
 

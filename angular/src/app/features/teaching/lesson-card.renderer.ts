@@ -50,13 +50,9 @@ export class LessonCardRenderer {
     this.ensure_listener();
     const canvas = this.fabric.canvas;
 
-    let left: number | undefined;
-    let top: number | undefined;
-    if (this.card) {
-      left = this.card.left;
-      top = this.card.top;
-      canvas.remove(this.card);
-    }
+    const left: number | undefined = this.card?.left;
+    const top: number | undefined = this.card?.top;
+    this.purge('card');
 
     const children: any[] = [];
     let y = 0;
@@ -124,6 +120,7 @@ export class LessonCardRenderer {
       top: top ?? center.y - y / 2,
       subTargetCheck: true,
       hasControls: false,
+      lesson_tag: 'card',
     } as any);
 
     this.card = group;
@@ -136,11 +133,9 @@ export class LessonCardRenderer {
 
   /** Removes the active lesson card, ending the on-canvas lesson. */
   public remove(): void {
-    if (this.card) {
-      this.fabric.canvas.remove(this.card);
-      this.card = null;
-      this.handlers = null;
-    }
+    this.purge('card');
+    this.card = null;
+    this.handlers = null;
     this.remove_zone();
     this.remove_categorize();
     this.fabric.canvas.requestRenderAll();
@@ -167,9 +162,23 @@ export class LessonCardRenderer {
     return { clean, styles };
   }
 
+  /**
+   * Removes every canvas object carrying the given lesson tag. Removal goes by
+   * a canvas scan rather than stored references: if the canvas was reloaded
+   * (undo/redo restores serialized clones), stored references are dead and
+   * reference-based removal would leave duplicates behind.
+   */
+  private purge(tag: string): void {
+    const canvas = this.fabric.canvas;
+    canvas
+      .getObjects()
+      .filter((obj: any) => obj.lesson_tag === tag)
+      .forEach((obj: any) => canvas.remove(obj));
+  }
+
   /** Builds a dashed zone box with a label; not evented, so it never steals
    * clicks or selections from the objects dragged onto it. */
-  private build_zone(label: string, color: string, width: number, height: number, left: number, top: number): Group {
+  private build_zone(label: string, color: string, width: number, height: number, left: number, top: number, tag: string): Group {
     const box = new Rect({
       left: 0,
       top: 0,
@@ -190,7 +199,7 @@ export class LessonCardRenderer {
       fill: color,
       textAlign: 'center',
     } as any);
-    return new Group([box, text], { left, top, selectable: false, evented: false } as any);
+    return new Group([box, text], { left, top, selectable: false, evented: false, lesson_tag: tag } as any);
   }
 
   /**
@@ -212,16 +221,15 @@ export class LessonCardRenderer {
       ZONE_WIDTH,
       ZONE_HEIGHT,
       left ?? (this.card.left || 0) + WIDTH + PADDING * 2 + 40,
-      top ?? this.card.top
+      top ?? this.card.top,
+      'drop_zone'
     );
     canvas.add(this.zone);
   }
 
   private remove_zone(): void {
-    if (this.zone) {
-      this.fabric.canvas.remove(this.zone);
-      this.zone = null;
-    }
+    this.purge('drop_zone');
+    this.zone = null;
   }
 
   /**
@@ -250,7 +258,8 @@ export class LessonCardRenderer {
         same_question && zone_positions[i]
           ? zone_positions[i].left
           : (this.card.left || 0) + WIDTH + PADDING * 2 + 40 + i * (CAT_ZONE_WIDTH + 30),
-        same_question && zone_positions[i] ? zone_positions[i].top : this.card.top
+        same_question && zone_positions[i] ? zone_positions[i].top : this.card.top,
+        'cat_zone'
       );
       this.cat_zones.push(group);
       canvas.add(group);
@@ -281,6 +290,7 @@ export class LessonCardRenderer {
         top: same_question && chip_positions[i] ? chip_positions[i].top : this.card.top + (this.card.height || 0) + 25 + i * 45,
         hasControls: false,
         lesson_item: i,
+        lesson_tag: 'chip',
       } as any);
       this.chips.push(chip);
       canvas.add(chip);
@@ -288,9 +298,8 @@ export class LessonCardRenderer {
   }
 
   private remove_categorize(): void {
-    const canvas = this.fabric.canvas;
-    this.cat_zones.forEach((zone) => canvas.remove(zone));
-    this.chips.forEach((chip) => canvas.remove(chip));
+    this.purge('cat_zone');
+    this.purge('chip');
     this.cat_zones = [];
     this.chips = [];
   }
@@ -339,6 +348,9 @@ export class LessonCardRenderer {
       if (target.lesson_item !== undefined) {
         const zone = this.cat_zones.findIndex((z) => this.contains(z, center));
         this.handlers.onPlace(target.lesson_item, zone === -1 ? null : zone);
+        // The dragged chip has been replaced by the re-render: make sure the
+        // canvas does not keep drawing the removed object as its selection.
+        canvas.discardActiveObject();
         return;
       }
       if (this.zone && target.identifier && this.contains(this.zone, center)) {
