@@ -1,5 +1,10 @@
 [
   {
+    "id": "demo",
+    "title": "Demo: alle vraagtypes",
+    "description": "Eén voorbeeld van elk vraagtype: meerkeuze, waar/niet waar, meerdere antwoorden, categoriseren en fragment slepen."
+  },
+  {
     "id": "basil",
     "title": "Basil: Roman Republican Tragedy",
     "description": "Multiple-choice exercises on fragments of Roman Republican tragedy."
