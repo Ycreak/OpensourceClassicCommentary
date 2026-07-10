@@ -15,30 +15,68 @@
     },
     {
       "prompt": "Consider the following fragment: video sepulcra dua duorum corpurum, \"I see two tombs of (or for?) two corpses\" (Accius, incertum, F 406 TRF). Read the fragment reconstruction section. To which play has this fragment NOT been attributed?",
-      "choices": ["Atreus", "Aegisthus", "Stasiastae", "Clytemnestra"],
+      "choices": [
+        "Atreus",
+        "Aegisthus",
+        "Stasiastae",
+        "Clytemnestra"
+      ],
       "correct_index": 2
     },
     {
       "prompt": "Consider Accius Atreus F 104.1 TRF (ipsus hortatur me frater, ut meos malis miser | manderem natos). Look at the form ipsus, which is sometimes found in Early Latin. What form of this word would we expect to find in Classical Latin (e.g. the Latin of Cicero)?",
-      "choices": ["ipsi", "ipso", "ipsa", "ipse"],
+      "choices": [
+        "ipsi",
+        "ipso",
+        "ipsa",
+        "ipse"
+      ],
       "correct_index": 3
     },
     {
       "prompt": "Consider Accius Atreus F 108 TRF (concoquit | partem uapore flammae; tribuit in focos | ueribus lacerta). What word makes it clear that human body parts are being cooked and not animal ones?",
-      "choices": ["veribus", "lacerta", "partem", "concoquit"],
+      "choices": [
+        "veribus",
+        "lacerta",
+        "partem",
+        "concoquit"
+      ],
       "correct_index": 1,
       "explanation": "lacertus, -i, m. (here in the neuter form, lacertum, -i, n.), which is only ever used to denote a human arm."
     },
     {
       "prompt": "Consider Accius Aegisthus F 7 TRF (cui manus materno sordet sparso sanguine, \"whose hand is soiled by his/her mother's spattered blood\"). Based on your knowledge of Greek mythology, which character could this fragment not describe?",
-      "choices": ["Orestes", "Electra", "Pentheus", "Alcmaeon"],
+      "choices": [
+        "Orestes",
+        "Electra",
+        "Pentheus",
+        "Alcmaeon"
+      ],
       "correct_index": 2,
       "explanation": "Pentheus does not kill his mother Agave but is killed by her."
     },
     {
       "prompt": "In Accius Atreus 103.4, a character says oderint, dum metuant (\"let them hate me, so long as they fear me\"). With which type of character would you most readily associate this statement?",
-      "choices": ["A king.", "An actor.", "A soldier.", "A slave."],
+      "choices": [
+        "A king.",
+        "An actor.",
+        "A soldier.",
+        "A slave."
+      ],
       "correct_index": 0
+    },
+    {
+      "type": "drag_drop",
+      "prompt": "Load some fragments onto the playground and drag a fragment of Accius' Atreus into the dashed box.",
+      "zone_label": "Drop an Atreus fragment here",
+      "accepts": [
+        {
+          "author": "Accius",
+          "title": "Atreus"
+        }
+      ],
+      "hint": "Check the fragment header: it names the play the fragment belongs to.",
+      "explanation": "This fragment indeed comes from Accius' Atreus."
     }
   ]
 }

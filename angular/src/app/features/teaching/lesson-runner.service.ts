@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { LessonCardRenderer } from '@oscc/features/teaching/lesson-card.renderer';
-import { Lesson, LessonCardSpec } from '@oscc/features/teaching/models/lesson.model';
+import { FragmentMatch, Lesson, LessonCardSpec } from '@oscc/features/teaching/models/lesson.model';
 
 /**
  * Drives a multiple-choice lesson rendered on the playground canvas.
@@ -50,6 +50,7 @@ export class LessonRunnerService {
     this.renderer.render(this.build_spec(), {
       onChoice: (i) => this.on_choice(i),
       onAction: (kind) => this.on_action(kind),
+      onDrop: (identifier) => this.on_drop(identifier),
     });
   }
 
@@ -57,6 +58,22 @@ export class LessonRunnerService {
     const q = this.question;
     const answered = this.chosen !== null;
     const solved = this.locked[this.index];
+    if (q.type === 'drag_drop') {
+      return {
+        progress: `Question ${this.index + 1} / ${this.lesson.questions.length}`,
+        prompt: q.prompt,
+        choices: [],
+        message: !answered
+          ? null
+          : solved
+            ? { kind: 'explanation', text: q.explanation ? `Correct! ${q.explanation}` : 'Correct!' }
+            : { kind: 'hint', text: q.hint || 'Not quite. Have another look and try again.' },
+        action: !answered
+          ? null
+          : { kind: this.last_question ? 'finish' : 'next', label: this.last_question ? 'Finish ▶' : 'Next ▶' },
+        drop_zone: { label: q.zone_label, state: !answered ? 'normal' : solved ? 'correct' : 'wrong' },
+      };
+    }
     return {
       progress: `Question ${this.index + 1} / ${this.lesson.questions.length}`,
       prompt: q.prompt,
@@ -81,14 +98,30 @@ export class LessonRunnerService {
   }
 
   private on_choice(i: number): void {
-    if (this.locked[this.index]) {
+    const q = this.question;
+    if (this.locked[this.index] || q.type === 'drag_drop') {
       return;
     }
-    const correct = i === this.question.correct_index;
+    this.answer(i, i === q.correct_index);
+  }
+
+  private on_drop(identifier: FragmentMatch): void {
+    const q = this.question;
+    if (this.locked[this.index] || q.type !== 'drag_drop') {
+      return;
+    }
+    const correct = q.accepts.some((accept) =>
+      Object.entries(accept).every(([field, value]) => (identifier as any)[field] === value)
+    );
+    this.answer(-1, correct);
+  }
+
+  /** Records an answer (chosen index, or -1 for a drop) and re-renders. */
+  private answer(chosen: number, correct: boolean): void {
     if (this.first_results[this.index] === null) {
       this.first_results[this.index] = correct;
     }
-    this.chosen = i;
+    this.chosen = chosen;
     if (correct) {
       this.locked[this.index] = true;
     }
@@ -123,6 +156,7 @@ export class LessonRunnerService {
       {
         onChoice: () => undefined,
         onAction: (kind) => this.on_action(kind),
+        onDrop: () => undefined,
       }
     );
   }

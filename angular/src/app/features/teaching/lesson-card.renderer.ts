@@ -7,6 +7,8 @@ import { LessonCardSpec, LessonCardHandlers } from '@oscc/features/teaching/mode
 const WIDTH = 360;
 const PADDING = 15;
 const SPACING = 8;
+const ZONE_WIDTH = 340;
+const ZONE_HEIGHT = 260;
 
 /**
  * Draws the teaching lesson as a draggable, non-blocking card on the playground
@@ -17,6 +19,7 @@ const SPACING = 8;
 @Injectable({ providedIn: 'root' })
 export class LessonCardRenderer {
   private card: any = null;
+  private zone: any = null;
   private handlers: LessonCardHandlers | null = null;
   private listening_canvas: any = null;
 
@@ -97,6 +100,7 @@ export class LessonCardRenderer {
     this.card = group;
     this.handlers = handlers;
     canvas.add(group);
+    this.render_zone(spec);
     canvas.requestRenderAll();
   }
 
@@ -106,7 +110,67 @@ export class LessonCardRenderer {
       this.fabric.canvas.remove(this.card);
       this.card = null;
       this.handlers = null;
-      this.fabric.canvas.requestRenderAll();
+    }
+    this.remove_zone();
+    this.fabric.canvas.requestRenderAll();
+  }
+
+  /**
+   * Keeps the drop zone in sync with the spec: draws it next to the card for
+   * drag-drop questions (replacing in place so its position survives
+   * re-renders) and removes it for other question types.
+   */
+  private render_zone(spec: LessonCardSpec): void {
+    const canvas = this.fabric.canvas;
+    let left: number | undefined;
+    let top: number | undefined;
+    if (this.zone) {
+      left = this.zone.left;
+      top = this.zone.top;
+      canvas.remove(this.zone);
+      this.zone = null;
+    }
+    if (!spec.drop_zone) {
+      return;
+    }
+
+    const stroke = spec.drop_zone.state === 'correct' ? '#1B5E20' : spec.drop_zone.state === 'wrong' ? '#B71C1C' : '#666666';
+    const box = new Rect({
+      left: 0,
+      top: 0,
+      width: ZONE_WIDTH,
+      height: ZONE_HEIGHT,
+      fill: 'rgba(0, 0, 0, 0.03)',
+      rx: 10,
+      ry: 10,
+      stroke,
+      strokeWidth: 2,
+      strokeDashArray: [8, 6],
+    });
+    const label = new Textbox(spec.drop_zone.label, {
+      left: 0,
+      top: ZONE_HEIGHT - this.fabric.font_size - PADDING,
+      width: ZONE_WIDTH,
+      fontSize: this.fabric.font_size,
+      fill: stroke,
+      textAlign: 'center',
+    } as any);
+
+    // Not evented: the zone is a passive target, so it never steals clicks or
+    // selections from the fragments dragged onto it.
+    this.zone = new Group([box, label], {
+      left: left ?? (this.card.left || 0) + WIDTH + PADDING * 2 + 40,
+      top: top ?? this.card.top,
+      selectable: false,
+      evented: false,
+    } as any);
+    canvas.add(this.zone);
+  }
+
+  private remove_zone(): void {
+    if (this.zone) {
+      this.fabric.canvas.remove(this.zone);
+      this.zone = null;
     }
   }
 
@@ -130,6 +194,24 @@ export class LessonCardRenderer {
       const action = subs.find((s: any) => s.lesson_action !== undefined);
       if (action) {
         this.handlers.onAction(action.lesson_action);
+      }
+    });
+    // Drop detection: after a drag ends, a fragment whose centre lies inside
+    // the zone counts as dropped into it.
+    canvas.on('object:modified', (opt: any) => {
+      const target = opt.target;
+      if (!this.zone || !this.handlers || !target?.identifier) {
+        return;
+      }
+      const center = target.getCenterPoint();
+      const bounds = this.zone.getBoundingRect();
+      if (
+        center.x >= bounds.left &&
+        center.x <= bounds.left + bounds.width &&
+        center.y >= bounds.top &&
+        center.y <= bounds.top + bounds.height
+      ) {
+        this.handlers.onDrop(target.identifier);
       }
     });
   }
