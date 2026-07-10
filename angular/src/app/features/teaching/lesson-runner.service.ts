@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
+import { FabricService } from '@oscc/features/playground/services/fabric.service';
 import { LessonCardRenderer } from '@oscc/features/teaching/lesson-card.renderer';
 import { FragmentMatch, Lesson, LessonCardSpec } from '@oscc/features/teaching/models/lesson.model';
 
@@ -29,7 +30,8 @@ export class LessonRunnerService {
 
   constructor(
     private http: HttpClient,
-    private renderer: LessonCardRenderer
+    private renderer: LessonCardRenderer,
+    private fabric: FabricService
   ) {}
 
   /** Loads the lesson JSON by id and places the first question card on the canvas. */
@@ -59,6 +61,11 @@ export class LessonRunnerService {
     this.selected.clear();
     const q = this.question;
     this.placements = q.type === 'categorize' ? q.items.map(() => null) : [];
+    if (q.type === 'drag_drop') {
+      // Scatter the loaded fragments so they are not stacked on top of each
+      // other when the student has to pick one out and drag it.
+      this.fabric.randomize_positions();
+    }
   }
 
   private render(): void {
