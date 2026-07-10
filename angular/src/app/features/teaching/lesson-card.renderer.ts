@@ -241,7 +241,11 @@ export class LessonCardRenderer {
    */
   private render_categorize(spec: LessonCardSpec): void {
     const canvas = this.fabric.canvas;
-    const full_key = spec.categorize ? JSON.stringify(spec.categorize) : '';
+    if (!spec.categorize) {
+      this.remove_categorize();
+      return;
+    }
+    const full_key = JSON.stringify(spec.categorize);
     if (full_key === this.chips_full_key) {
       // Nothing visual changed (e.g. a chip was merely dragged): leave the live
       // chips and zones alone. Rebuilding the chip under the student's cursor
@@ -250,14 +254,13 @@ export class LessonCardRenderer {
     }
     const zone_positions = this.cat_zones.map((zone) => ({ left: zone.left, top: zone.top }));
     const chip_positions = this.chips.map((chip) => ({ left: chip.left, top: chip.top }));
-    const key = spec.categorize ? JSON.stringify(spec.categorize.items.map((item) => item.text)) : '';
-    const same_question = key === this.chips_key;
+    // Chips keep their dragged positions across re-renders of the same question
+    // (check-state recolours) but are laid out fresh on a new question.
+    const question_key = JSON.stringify(spec.categorize.items.map((item) => item.text));
+    const same_question = question_key === this.chips_key;
     this.remove_categorize();
-    this.chips_key = key;
+    this.chips_key = question_key;
     this.chips_full_key = full_key;
-    if (!spec.categorize) {
-      return;
-    }
 
     spec.categorize.zones.forEach((zone, i) => {
       const group = this.build_zone(
@@ -312,6 +315,7 @@ export class LessonCardRenderer {
     this.purge('chip');
     this.cat_zones = [];
     this.chips = [];
+    this.chips_key = '';
     this.chips_full_key = '';
   }
 

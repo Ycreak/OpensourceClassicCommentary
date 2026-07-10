@@ -174,7 +174,9 @@ export class LessonRunnerService {
     }
     if (q.correct_indices) {
       // Multi-answer: toggle the checkbox; correctness is judged on Check.
-      this.selected.has(i) ? this.selected.delete(i) : this.selected.add(i);
+      if (!this.selected.delete(i)) {
+        this.selected.add(i);
+      }
       this.checked = false;
       this.render();
       return;
