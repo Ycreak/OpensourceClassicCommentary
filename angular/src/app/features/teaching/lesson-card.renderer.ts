@@ -35,6 +35,8 @@ export class LessonCardRenderer {
   private chips: any[] = [];
   /** Identifies the current chip set, so chips are re-positioned only on question change. */
   private chips_key = '';
+  /** Identifies the full categorize spec, so chips/zones are rebuilt only when they visually change. */
+  private chips_full_key = '';
   private handlers: LessonCardHandlers | null = null;
   private listening_canvas: any = null;
 
@@ -239,12 +241,20 @@ export class LessonCardRenderer {
    */
   private render_categorize(spec: LessonCardSpec): void {
     const canvas = this.fabric.canvas;
+    const full_key = spec.categorize ? JSON.stringify(spec.categorize) : '';
+    if (full_key === this.chips_full_key) {
+      // Nothing visual changed (e.g. a chip was merely dragged): leave the live
+      // chips and zones alone. Rebuilding the chip under the student's cursor
+      // leaves fabric's drag transform pointing at a removed object.
+      return;
+    }
     const zone_positions = this.cat_zones.map((zone) => ({ left: zone.left, top: zone.top }));
     const chip_positions = this.chips.map((chip) => ({ left: chip.left, top: chip.top }));
     const key = spec.categorize ? JSON.stringify(spec.categorize.items.map((item) => item.text)) : '';
     const same_question = key === this.chips_key;
     this.remove_categorize();
     this.chips_key = key;
+    this.chips_full_key = full_key;
     if (!spec.categorize) {
       return;
     }
@@ -302,6 +312,7 @@ export class LessonCardRenderer {
     this.purge('chip');
     this.cat_zones = [];
     this.chips = [];
+    this.chips_full_key = '';
   }
 
   /** True when the point lies inside the object's bounding box (scene coordinates). */
@@ -348,9 +359,6 @@ export class LessonCardRenderer {
       if (target.lesson_item !== undefined) {
         const zone = this.cat_zones.findIndex((z) => this.contains(z, center));
         this.handlers.onPlace(target.lesson_item, zone === -1 ? null : zone);
-        // The dragged chip has been replaced by the re-render: make sure the
-        // canvas does not keep drawing the removed object as its selection.
-        canvas.discardActiveObject();
         return;
       }
       if (this.zone && target.identifier && this.contains(this.zone, center)) {
