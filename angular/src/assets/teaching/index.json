@@ -3,5 +3,10 @@
     "id": "basil",
     "title": "Basil: Roman Republican Tragedy",
     "description": "Multiple-choice exercises on fragments of Roman Republican tragedy."
+  },
+  {
+    "id": "tpmk",
+    "title": "TPMK: Fragmenten van de Romeinse tragedie",
+    "description": "Oefeningen over overlevering, tekstkritiek, metriek en reconstructie van fragmentarisch overgeleverde Romeinse tragedies (draft 29-06-2026)."
   }
 ]

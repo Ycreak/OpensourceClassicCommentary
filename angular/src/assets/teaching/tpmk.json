@@ -1,0 +1,151 @@
+{
+  "id": "tpmk",
+  "title": "TPMK: Fragmenten van de Romeinse tragedie",
+  "description": "Oefeningen over overlevering, tekstkritiek, metriek en reconstructie van fragmentarisch overgeleverde Romeinse tragedies (draft 29-06-2026).",
+  "questions": [
+    {
+      "prompt": "Vraag 1a: Bekijk het volgende fragment: Pacuvius $Dulorestes$ frg. 94 ed. Schierl (Pac. $Dul.$ frg. 84 TrRF). Zoals bijna alle fragmenten uit deze tragedie wordt dit fragment door de laatantieke grammaticus Nonius Marcellus overgeleverd. Welk woord heeft de interesse van Nonius gewekt en er daarmee voor gezorgd dat hij een citaat uit deze tragedie in het vierde boek van zijn lexicon bespreekt?",
+      "choices": ["torto", "tormento", "Duloreste", "nam"],
+      "correct_index": 0,
+      "explanation": "Het feit dat de Republikeinse dichter Pacuvius het archaïsche woord $tortum$ (pijnbank) gebruikt i.p.v. de veelvoorkomende vorm $tormentum$ heeft ertoe geleid dat Nonius het vers citeert. Nonius' persoonlijke interesse in deze ongebruikelijke woorden is de drijfveer achter zijn werk als lexicograaf."
+    },
+    {
+      "prompt": "Vraag 1b: Als we naar de status van de tekst kijken in het kritisch apparaat (apparatus criticus), zien we dat er binnen deze verzen twee tekstuele emendaties zijn voorgesteld. Welke van de volgende woorden uit het fragment zijn conjecturen?",
+      "choices": ["saepe", "fame", "tenebrica", "clausam"],
+      "correct_indices": [2, 3],
+      "explanation": "$tenebricas$ vs. $tenebrica$: de vorm tenebricas past syntactisch niet in de zin; het is een diplografie van de kopiist (het volgende woord begint met een s: saepe). Scaliger (1573, 267) stelde daarom $tenebrica$ voor. — $clausum$ vs. $clausam$: clausum staat in alle manuscripten; Jahn stelt de conjectuur $clausam$ voor, zonder bewijs in de manuscripten, om een parallel te creëren met de scene waarin Electra door Aegisthus wordt bedreigd (Sophocles, Euripides, Seneca). Jahns emendatie komt dus voort uit de Hellenocentrische aanname dat Pacuvius de Attische tragici nauwlettend volgde."
+    },
+    {
+      "prompt": "Vraag 1c: Wat kunnen we met zekerheid concluderen o.b.v. 1) Nonius' verwijzing naar de titel van de tragedie én 2) de tekst van het fragment (Pac. $Dul.$ fr. 84 TrRF) zoals deze in alle manuscripten is overgeleverd? Let op: meerdere antwoorden zijn mogelijk!",
+      "choices": [
+        "Dit vers is onderdeel van een canticum.",
+        "Dit vers is onderdeel van een dialoog.",
+        "Aegisthus is de spreker in dit vers.",
+        "Clytaemnestra is de spreker in dit vers.",
+        "Een vrouw (misschien Electra) wordt hier bedreigd met fysiek geweld.",
+        "Een man (misschien Orestes) wordt hier bedreigd met fysiek geweld."
+      ],
+      "correct_indices": [1, 5],
+      "explanation": "Titel: Orestes is verkleed óf verschijnt op het toneel als slaaf. Inhoud: de spreker bedreigt een man met fysiek geweld; het vers is onderdeel van een dialoog (zie het persoonlijk voornaamwoord $te$ en het metrum, iambische senarius)."
+    },
+    {
+      "prompt": "Vraag 2a: Analyseer Enn. $Thy.$ fr. 133 TrRF en de bijbehorende 'citation context'. Wat kun je zeggen over de volgende stelling? — $Op basis van Cicero's introductie van het fragment moeten we concluderen dat we te maken hebben met een certum.$",
+      "choices": ["Waar", "Niet waar"],
+      "correct_index": 1,
+      "explanation": "We kunnen o.b.v. Cicero's woorden (Cic. $Orat.$ 183–184: illa in Thyeste) alleen concluderen dat hij uit een tragedie met de titel Thyestes citeert. Toch wordt het fragment toegekend aan de fragmenta certa! Deze toeschrijving berust op de (valide) aanname dat Cicero bekend moet zijn geweest met Ennius' Thyestes (zie Cic. $Brut.$ 79 = Enn. T 20 TrRF en de introductie van Enn. $Thy.$ fr. 132; alsmede Festus' citaat van Enn. $Thy.$ fr. 134 TrRF)."
+    },
+    {
+      "prompt": "Vraag 2b: De metrische reconstructie van dit fragment staat ter discussie. Hoe zouden we het fragment moeten scanderen als we Bothe's conjectuur $senecta$ volgen? En belangrijker nog, waarom?",
+      "choices": ["Cretische dimeter", "Bacchische tetrameter", "Hypermetrische bacchische tetrameter", "Trochaïsche octonarius"],
+      "correct_index": 1,
+      "explanation": "In de codices is de vorm $senectute$ overgeleverd, hetgeen resulteert in een hypermetrische bacchische quaternarius. Bothe kiest de vorm $senecta$, wat een bacchische tetrameter oplevert — een 'gebruikelijker' metrum dat we ook kennen uit andere fragmenten die veelal aan Ennius' Thyestes worden toegeschreven (Adesp. fr. 22, 56). Bothes emendatie spreekt echter het punt dat Cicero wil maken tegen: het vers zou voor toehoorders als proza klinken indien het niet werd begeleid door muzikale ondersteuning."
+    },
+    {
+      "prompt": "Vraag 3a: Welke elementen uit deze drie fragmenten zouden kunnen worden aangehaald om het argument dat dezelfde dramatische handeling in deze drie tragedies centraal stond, kracht bij te zetten? Meerdere antwoorden zijn mogelijk.",
+      "sources": [
+        "Ennius $Eumenides$ fr. 52 TrRF — 'exanclare', effundere. Ennius Eumenidibus: $nisi *patrem materno sanguine* exanclando *ulciscerem*$",
+        "Pacuvius $Dulorestes$ fr. 81 TrRF — 'matrescam', matris similis fiam. Pacuvius Duloreste: $utinam nunc matrescam ingenio, ut meum *patrem ulcisci* queam!$",
+        "Accius $Aegisthus$ fr. 9 TrRF — 'sordet', sordidata est. Accius Aegistho: $cui manus *materno* sordet sparso *sanguine*$"
+      ],
+      "choices": ["Verbale echo's", "Vergelijkbare thematiek", "Metrum", "Identiteit van de spreker"],
+      "correct_indices": [0, 1],
+      "explanation": "De drie fragmenten gaan allemaal over het wreken van vadermoord d.m.v. moedermoord. De verbale echo's (vetgedrukt) worden soms gebruikt als bewijs dat in de tragedies van Ennius, Pacuvius en Accius dezelfde dramatische handeling centraal stond (de moord op Aegisthus en Clytemnestra door Orestes en Electra); Accius' vers lijkt bovendien een directe adaptatie van Ennius' vers. Het metrum vertelt iets over de plaats van het vers binnen een tragedie, niet over de dramatische handeling zelf. De identiteit van de spreker is bij Pacuvius (Orestes of Electra) en Accius (waarschijnlijk Orestes, maar Aegisthus kan ook) onzeker."
+    },
+    {
+      "prompt": "Vraag 3b: Speel nu eens advocaat van de duivel. Als we er nu eens vanuit gaan dat de drie fragmenten tot één en dezelfde Orestes-tragedie behoren: welk van de drie fragmenten moet dan als eerste geplaatst worden?",
+      "choices": ["Ennius", "Pacuvius", "Accius"],
+      "correct_index": 1,
+      "explanation": "Mocht de aanname dat alle drie tragedies (vrijwel) hetzelfde plot hadden kloppen, dan verwijst het fragment van Pacuvius overduidelijk naar een scene waarin de moord op Clytemnestra nog niet is voltrokken. De fragmenten van Ennius en Accius beschrijven de nasleep van de moord."
+    },
+    {
+      "prompt": "Vraag 4a: Ga naar het platform en zoek Adesp. fr. 48 TrRF op. Sinds de 19e eeuw ordenen uitgevers van kritische edities de fragmenten hiërarchisch en maken zij een onderscheid tussen certa, incerta en adespota. Wat betekent de term $adespoton$? En wat zegt het over de status van het fragment?",
+      "choices": [
+        "De naam van de auteur is onbekend",
+        "De titel van het werk is onbekend",
+        "De naam van de auteur én de naam van het werk zijn niet overgeleverd",
+        "De titel van het werk is bekend, maar wordt nooit toegeschreven aan deze specifieke auteur."
+      ],
+      "correct_index": 2,
+      "explanation": "Letterlijk betekent het 'zonder eigenaar'. Zowel de auteur als de naam van het werk waaraan het vers moet worden toegeschreven is onbekend. Als gevolg hiervan zorgt de toeschrijving van het vers voor veel speculatie; elke uitgever doet eigen aannames over deze kwestie."
+    },
+    {
+      "type": "categorize",
+      "prompt": "Vraag 4b: Zoals je kunt zien in de 'citation context' lijkt Cicero op meerdere plekken in verschillende werken deze specifieke scene in gedachte te hebben. In welke passages spreken we van een $fragmentum$, en in welke van een $testimonium$? Sleep de passages naar de juiste categorie.",
+      "categories": ["Testimonium", "Fragmentum"],
+      "items": [
+        { "text": "Cic. Fin. 2.73", "category": 0 },
+        { "text": "Cic. Fin. 5.63", "category": 1 },
+        { "text": "Cic. Lael. 24", "category": 0 }
+      ],
+      "explanation": "Cicero's woordelijke citaat van de tekst van Pacuvius — het 'fragment' — is Cic. $Fin.$ 5.63. Cicero's parafrases van dit fragment — testimonia — zijn Cic. $Fin.$ 2.73 en Cic. $Lael.$ 24.",
+      "hint": "Een fragmentum is een woordelijk citaat; een testimonium een parafrase of verwijzing."
+    },
+    {
+      "prompt": "Vraag 4c: Näke (1822) en zijn student Stieglitz (1826) schreven dit fragment toe aan de $Dulorestes$, o.b.v. intertekstuele parallellen met Euripides' $Iphigenia Taurica$. Otto Jahn (1867, 233) beargumenteerde daarentegen o.b.v. drie bewijsstukken (zie hieronder) dat dit adespoton aan Pacuvius' $Chryses$ moet worden toegeschreven. Hoewel Jahns reconstructie door de meeste moderne geleerden wordt aanvaard, is er ruimte voor twijfel. Welke van de door Jahn aangedragen 'bewijsstukken' zijn ambigu en lenen zich voor alternatieve interpretaties?",
+      "sources": [
+        "a) De spreker in een fragment dat door Nonius expliciet aan de Chryses wordt toegeschreven (Pac. $Chry.$ fr. 67 TrRF: $inveni, opino, Orestes uter esset tamen$) beweert dat hij/zij nu weet wie van beiden Orestes is.",
+        "b) De terugkerende verwijzing naar 'de verdwaasde en onwetende heerser' (Cic. $Fin.$ 5.63: errans rex; Cic. $Lael.$ 24: ignorans rex) die Orestes en Pylades niet van elkaar kan onderscheiden.",
+        "c) De mythograaf Hyginus beschrijft hoe Chryses de Jongere Orestes, Pylades en Iphigenia wil uitleveren aan de Taurische koning Thoas (Hyg. $Fab.$ 121)."
+      ],
+      "choices": ["Bewijsstuk a", "Bewijsstuk b", "Bewijsstuk c"],
+      "correct_indices": [1, 2],
+      "explanation": "b) De toeschrijving berust op de identificatie van de door Cicero genoemde $rex$: dit kan Thoas zijn, maar ook Aegisthus moet in overweging worden genomen. c) Het is onduidelijk waarom Thoas Orestes en Pylades niet van elkaar zou kunnen onderscheiden; in Euripides' $Iphigenia Taurica$ is hij in ieder geval bekend met de naam Orestes (Eur. $IT$ 1317–1324), al is onduidelijk of hij hen ook 'ziet' op het toneel."
+    },
+    {
+      "prompt": "Vraag 5a: Soms is het onduidelijk of Cicero daadwerkelijk 'citeert'. In de passage hieronder bespreekt Cicero hoe machthebbers soms ongelukkiger zijn dan mensen die zulke functies afwijzen. Uit welke woorden blijkt dat Cicero bij het formuleren van zijn argument aan een dramatische opvoering denkt?",
+      "sources": [
+        "Cic. $Tusc.$ 3.57: $nec siletur illud potentissimi regis anapaestum, qui laudat senem et fortunatum esse dicit, quod inglorius sit atque ignobilis ad supremum diem perventurus.$"
+      ],
+      "choices": ["nec siletur", "illud potentissimi regis anapaestum", "qui laudat senem", "quod inglorius sit atque ignobilis"],
+      "correct_index": 1,
+      "explanation": "Het woord $anapaestum$ (een metrische term) verraadt dat Cicero aan een (gezongen) passage uit een dramatische opvoering denkt."
+    },
+    {
+      "prompt": "Vraag 5b: Cicero denkt dus aan een dramatische opvoering, maar welke? Ribbeck (1875) twijfelt tussen Euripides' $Iphigenia Aulidensis$ en de Latijnse bewerking door Ennius. Jocelyn (1969, 322) merkt op dat Cicero bij citaten uit Attische tragedies de dichter veelal bij naam noemt; het lijkt daarmee logisch dat hij hier aan een Latijnse auteur zoals Ennius denkt. Welke toeschrijving vind jij het meest waarschijnlijk? Meerdere antwoorden mogelijk.",
+      "choices": [
+        "Euripides' Iphigenia in Aulis",
+        "Ennius' Iphigenia",
+        "Beide tragedies moeten overwogen worden",
+        "Geen van deze tragedies moet overwogen worden"
+      ],
+      "correct_indices": [2, 3],
+      "explanation": "Verschillende opties zijn mogelijk. Het centrale punt is dat we niet met zekerheid kunnen vaststellen aan welke specifieke dramatische opvoering Cicero hier refereert. Anders geformuleerd: Agamemnon is niet de enige 'machtige koning' ($potentissimus rex$) uit de Griekse én Latijnse tragedie! Naast de toeschrijving aan Euripides of Ennius moeten we dus ook andere opties in ogenschouw nemen."
+    },
+    {
+      "prompt": "Vraag 6: Ga naar Liv. Andron. $Aegisthus$ fr. 3–4 TrRF. Wat kunnen we o.b.v. de tekst overgeleverd in de manuscripten met zekerheid concluderen over deze twee fragmenten?",
+      "choices": [
+        "Livius Andronicus' Aegisthus is een adaptatie van Aeschylus' Agamemnon en heeft overwegend hetzelfde plot.",
+        "De ipsus in fragment 3 verwijst naar Agamemnon.",
+        "Het subject van conlocat se in fragment 4 verwijst naar Aegisthus.",
+        "Geen van de bovenstaande observaties is met zekerheid vast te stellen."
+      ],
+      "correct_index": 3,
+      "explanation": "We hebben hier te maken met speculatie. Volgens de $lex Lindsay$ (Nonius werkte systematisch van het begin naar het einde van een tekst) kan fragment 3 niet over Agamemnon gaan: in fr. 3 valt een mannelijk personage op de grond ($ipsus$), en pas daarna nemen Clytaemnestra en haar dochters plaats op de koningszetel ($sedes regiae$). Dat het in fr. 3 om de moord op Agamemnon gaat en hij kort daarop met zijn familie aan tafel zit, lijkt uitgesloten. De mogelijkheid dat in deze tragedie geen van de bekende verhalen werd gedramatiseerd moet in overweging worden genomen — waarbij de vraag rijst waarom het stuk de titel Aegisthus draagt."
+    },
+    {
+      "prompt": "Vraag 7a: Ga naar Liv. Andron. $Hermiona$ fr. 15 TrRF. Wat kunnen we o.b.v. de tekst overgeleverd in de manuscripten $niet$ met zekerheid concluderen over dit vers?",
+      "choices": [
+        "Ancialus staat ook op het toneel",
+        "De moeder van Ancialus is de spreker",
+        "Het vers is onderdeel van een dialoog, onder begeleiding van muziek (metrum: trocheïsche septenarius).",
+        "De spreker heeft het beste voor met Ancialus"
+      ],
+      "correct_index": 1,
+      "explanation": "Het personage Ancialus wordt aangesproken door de spreker, die hem aanspoort zijn moeder op geen enkele manier tegen te werken of vijandig richting haar te zijn. Een mogelijkheid is dat de moeder zelf de spreker is, maar dit hoeft niet het geval te zijn."
+    },
+    {
+      "prompt": "Vraag 7b: Naast dit enige overgeleverde vers weten we weinig over het personage Ancialus. Hyginus vermeldt dat ene Amphialus een zoon was van Andromache en Neoptolemus (Hyg. $Fab.$ 123). Een scholion op Euripides' $Andromache$ presenteert een cruciaal onderdeel van de puzzel: de scholiast voert alternatieve versies van tragische dichters en genealogische historiografen op. Welke conclusie kunnen we trekken o.b.v. onderstaand scholion over Livius Andronicus' intertekstuele omgang met Euripides en andere tragische dichters?",
+      "sources": [
+        "Σ Eur. Andr. 32: Φιλοκλῆς δὲ ὁ τραγῳδοποιὸς καὶ Θέογνις προεκδοϑῆναί φασιν ὑπὸ Τυνδάρεω τὴν Ἡρμιόνην τῷ Ὀρέστῃ καὶ ἤδη ἐγκυμονοῦσαν ὑπὸ Μενελάου δοϑῆναι Νεοπτολέμῳ καὶ γεννῆσαι Ἀμφικτύονα· ὕστερον δὲ Διομήδει συνοικῆσαι. Σωσιφάνης δὲ καὶ Ἀσκληπιάδης φασὶν ἐξ αὐτῆς Νεοπτολέμῳ Ἀγχίαλον γενέσθαι."
+      ],
+      "choices": [
+        "Euripides' Andromache was het belangrijkste intertekstuele model voor Livius Andronicus' Hermiona.",
+        "De Hellenistische tragische dichter Sosiphanes van Syracuse schreef ook een Hermiona.",
+        "Het ten tonele brengen van het personage Ancialus is een dramatische innovatie die moet worden toegeschreven aan Livius Andronicus.",
+        "Livius Andronicus' Hermiona is geen letterlijke vertaling van de werken van Attische tragediedichters."
+      ],
+      "correct_index": 3,
+      "explanation": "De onbekende tragedie van de Hellenistische dichter Sosiphanes van Syracuse en de 5e-eeuwse tragodumena van de mythograaf Asclepiades van Tragilus bewijzen dat Ancialus wél voorkwam in Attische en Hellenistische dramatische opvoeringen. Bovenal staat buiten kijf dat Livius Andronicus Euripides' Andromache niet slaafs heeft gevolgd bij het schrijven van zijn Hermiona."
+    }
+  ]
+}
