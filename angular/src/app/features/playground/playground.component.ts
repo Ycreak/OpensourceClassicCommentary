@@ -51,7 +51,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 import { MatMenuModule } from '@angular/material/menu';
-import { environment } from '@src/environments/environment';
 import { SelectLessonDialogComponent } from '@oscc/features/teaching/components/select-lesson-dialog/select-lesson-dialog.component';
 import { LessonRunnerService } from '@oscc/features/teaching/lesson-runner.service';
 

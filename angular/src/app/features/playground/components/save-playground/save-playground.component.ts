@@ -27,8 +27,8 @@ import { MatButtonModule } from '@angular/material/button';
     MatFormFieldModule,
     MatInputModule,
     FormsModule,
-    MatDialogActions
-],
+    MatDialogActions,
+  ],
 })
 export class SavePlaygroundComponent {
   protected name: string;

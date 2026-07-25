@@ -39,6 +39,7 @@ export class WindowSizeWatcherService {
     try {
       return window.innerWidth;
     } catch (e) {
+      console.log(`Falling back to default window size: ${e}`);
       return 1100; // default-ish size
     }
   }

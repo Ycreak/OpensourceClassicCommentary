@@ -20,13 +20,8 @@
   <button mat-stroked-button class="navbar button-margin" (click)="this.request_bibliography_resync()">
     SYNC BIBLIOGRAPHY
   </button>
-  @if (this.auth_service.current_user_role === 'admin') {
-    <button
-      mat-stroked-button
-      class="navbar button-margin"
-      (click)="test('Navbar')">
-      TEST
-    </button>
+  @if (this.auth_service.current_user_role === "admin") {
+    <button mat-stroked-button class="navbar button-margin" (click)="test('Navbar')">TEST</button>
   }
   <button mat-stroked-button class="navbar button-margin" routerLink="/">FRONTEND</button>
 </mat-toolbar>

@@ -26,7 +26,6 @@ import { TestimoniumFilterComponent } from '../../../filters/components/testimon
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
 
-
 @Component({
   selector: 'app-testimonia-dashboard',
   templateUrl: './testimonia-dashboard.component.html',
@@ -43,8 +42,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatOptionModule
-],
+    MatOptionModule,
+  ],
 })
 export class TestimoniaDashboardComponent {
   private allowed_user_roles = ['admin'];

@@ -34,8 +34,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     MatTableModule,
     MatSortModule,
     MatCheckboxModule,
-    MatPaginatorModule
-],
+    MatPaginatorModule,
+  ],
 })
 export class TestimoniaTableComponent implements AfterViewInit {
   @Output() collection = new EventEmitter<any>();

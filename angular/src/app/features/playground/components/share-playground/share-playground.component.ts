@@ -38,8 +38,8 @@ import { MatButtonModule } from '@angular/material/button';
     MatInputModule,
     MatSelectModule,
     MatOptionModule,
-    MatDialogActions
-],
+    MatDialogActions,
+  ],
 })
 export class SharePlaygroundComponent implements OnInit {
   protected users: Playground_user[] = [];

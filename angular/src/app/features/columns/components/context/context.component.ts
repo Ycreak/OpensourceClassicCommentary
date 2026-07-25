@@ -5,7 +5,6 @@ import { SettingsService } from '@oscc/services/settings.service';
 
 import { Context } from '@oscc/types/Context';
 
-
 @Component({
   selector: 'app-context',
   templateUrl: './context.component.html',

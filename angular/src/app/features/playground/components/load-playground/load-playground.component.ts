@@ -35,8 +35,8 @@ import { MatButtonModule } from '@angular/material/button';
     MatSelectModule,
     FormsModule,
     MatOptionModule,
-    MatDialogActions
-],
+    MatDialogActions,
+  ],
 })
 export class LoadPlaygroundComponent implements OnInit {
   protected name: string;

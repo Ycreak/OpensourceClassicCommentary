@@ -99,7 +99,7 @@ export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
         name = `${bib[i].creators[0].lastname}, ${bib[i].creators[0].firstname}`;
         lastname = `${bib[i].creators[0].lastname}`;
       } catch (e) {
-        console.error('Faulty bib entry:', bib[i]);
+        console.error('Faulty bib entry:', bib[i], e);
       }
 
       // Create an object for the table with the specific fields we need

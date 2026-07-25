@@ -42,8 +42,8 @@ import { NgTemplateOutlet } from '@angular/common';
     TranslationComponent,
     GeneralCommentaryFieldComponent,
     MatExpansionModule,
-    ExpandableTextComponent
-],
+    ExpandableTextComponent,
+  ],
 })
 export class CommentaryComponent {
   // The document given to the commentary to show its commentary

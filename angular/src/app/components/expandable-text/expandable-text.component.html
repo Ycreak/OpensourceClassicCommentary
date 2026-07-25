@@ -5,7 +5,7 @@
     [innerHTML]="content"
     [class.collapsed-text]="this.isCollapsed && !this.maskDisabled"
     [class.collapsed-text-no-gradient-mask]="this.maskDisabled"
-  [class.uncollapsed-text]="!this.isCollapsed"></div>
+    [class.uncollapsed-text]="!this.isCollapsed"></div>
   <!-- Hideable content div -->
   <div [hidden]="isCollapsed" [innerHTML]="content_hideable"></div>
   @if (this.enabled) {

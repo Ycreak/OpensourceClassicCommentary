@@ -1,12 +1,12 @@
 <ng-content></ng-content>
 
-@if (button_type === 'stroked') {
-  <button mat-stroked-button [matMenuTriggerFor]="menu_authors" class="filter_component_button_stroked" >
+@if (button_type === "stroked") {
+  <button mat-stroked-button [matMenuTriggerFor]="menu_authors" class="filter_component_button_stroked">
     {{ button_title }}
   </button>
 }
 
-@if (button_type === 'basic') {
+@if (button_type === "basic") {
   <button mat-button [matMenuTriggerFor]="menu_authors" class="filter_component_button_basic">
     {{ button_title }}
   </button>
@@ -30,16 +30,13 @@
 
 <mat-menu #menu_editors="matMenu">
   @for (editor of editors(); track editor) {
-    @if (endpoint === 'editor') {
+    @if (endpoint === "editor") {
       <button mat-menu-item (click)="_editor.set(editor); filter()">
         {{ editor }}
       </button>
     }
-    @if (endpoint === 'name') {
-      <button
-        mat-menu-item
-        (menuOpened)="selectEditor(editor)"
-        [matMenuTriggerFor]="menu_names">
+    @if (endpoint === "name") {
+      <button mat-menu-item (menuOpened)="selectEditor(editor)" [matMenuTriggerFor]="menu_names">
         {{ editor }}
       </button>
     }

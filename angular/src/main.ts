@@ -1,4 +1,4 @@
-import { enableProdMode, importProvidersFrom, provideZonelessChangeDetection } from '@angular/core';
+import { enableProdMode, provideZonelessChangeDetection } from '@angular/core';
 import { environment } from './environments/environment';
 import { AppComponent } from './app/app.component';
 //import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';

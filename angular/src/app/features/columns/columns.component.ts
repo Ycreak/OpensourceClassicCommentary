@@ -77,8 +77,8 @@ import { OutsideClickDirective } from '@oscc/features/columns/components/column-
     ViewModeDirective,
     EditableOnKeypressDirective,
     OutsideClickDirective,
-    NgTemplateOutlet
-],
+    NgTemplateOutlet,
+  ],
 })
 export class ColumnsComponent implements OnInit {
   // Variable to store the clicked fragment and its data. Used for the context menu
