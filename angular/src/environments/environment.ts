@@ -5,15 +5,13 @@
 export const environment = {
   title: 'Open Source Classics Commentary (Development)',
   short_title: 'OSCC (Dev)',
-   flask_api: 'http://localhost:5003/',
-  //flask_api: 'https://oscc.nolden.biz/',
+   //flask_api: 'http://localhost:5003/',
+  flask_api: 'https://oscc.nolden.biz/',
   is_logged_in: true,
   current_user_name: 'Lucus',
   current_user_role: 'admin',
   production: false,
   debug: true,
-  // Toggle off to remove the playground teaching package (lessons feature)
-  teaching_enabled: true,
 
   fragments: 'fragments',
   fragment: 'fragment',

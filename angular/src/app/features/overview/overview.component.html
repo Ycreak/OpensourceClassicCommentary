@@ -8,7 +8,6 @@
     }
   </span>
 
-
   <span class="spacer"></span>
 
   <!--Name of the current sandbox-->
@@ -35,7 +34,6 @@
     </button>
   }
 
-
   @if (!this.playground_enabled) {
     <button
       mat-stroked-button
@@ -46,7 +44,6 @@
   } @else {
     <button mat-flat-button class="button-margin" color="accent" (click)="this.toggle_playground()">PLAYGROUND</button>
   }
-
 
   <button mat-stroked-button class="navbar" [matMenuTriggerFor]="menu">
     @if (this.window_watcher.size > 850) {

@@ -84,7 +84,8 @@ export class LessonCardRenderer {
     y += SPACING; // extra breathing room between the prompt and the choices
 
     spec.choices.forEach((choice, index) => {
-      const fill = choice.state === 'correct' ? STATE_COLORS.correct : choice.state === 'wrong' ? STATE_COLORS.wrong : '#000000';
+      const fill =
+        choice.state === 'correct' ? STATE_COLORS.correct : choice.state === 'wrong' ? STATE_COLORS.wrong : '#000000';
       const checkbox = spec.multi ? (choice.selected ? '☑ ' : '☐ ') : '';
       row(`${checkbox}${this.choice_label(index)} ${choice.text}`, {
         fill,
@@ -180,7 +181,15 @@ export class LessonCardRenderer {
 
   /** Builds a dashed zone box with a label; not evented, so it never steals
    * clicks or selections from the objects dragged onto it. */
-  private build_zone(label: string, color: string, width: number, height: number, left: number, top: number, tag: string): Group {
+  private build_zone(
+    label: string,
+    color: string,
+    width: number,
+    height: number,
+    left: number,
+    top: number,
+    tag: string
+  ): Group {
     const box = new Rect({
       left: 0,
       top: 0,
@@ -300,7 +309,10 @@ export class LessonCardRenderer {
       });
       const chip = new Group([box, text], {
         left: same_question && chip_positions[i] ? chip_positions[i].left : this.card.left,
-        top: same_question && chip_positions[i] ? chip_positions[i].top : this.card.top + (this.card.height || 0) + 25 + i * 45,
+        top:
+          same_question && chip_positions[i]
+            ? chip_positions[i].top
+            : this.card.top + (this.card.height || 0) + 25 + i * 45,
         hasControls: false,
         lesson_item: i,
         lesson_tag: 'chip',

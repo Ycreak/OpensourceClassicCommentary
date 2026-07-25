@@ -19,7 +19,9 @@
       @for (lesson of lessons(); track lesson.id) {
         <button class="lesson-card" mat-stroked-button (click)="select(lesson.id)">
           <span class="lesson-card-title">{{ lesson.title }}</span>
-          <span class="lesson-card-description">{{ lesson.description }}</span>
+          <p>
+            <span class="lesson-card-description">{{ lesson.description }}</span>
+          </p>
         </button>
       }
     </div>

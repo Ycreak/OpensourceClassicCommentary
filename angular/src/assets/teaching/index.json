@@ -1,17 +1,17 @@
 [
   {
-    "id": "demo",
-    "title": "Demo: alle vraagtypes",
-    "description": "Eén voorbeeld van elk vraagtype: meerkeuze, waar/niet waar, meerdere antwoorden, categoriseren en fragment slepen."
-  },
-  {
     "id": "basil",
     "title": "Basil: Roman Republican Tragedy",
     "description": "Multiple-choice exercises on fragments of Roman Republican tragedy."
   },
   {
-    "id": "tpmk",
-    "title": "TPMK: Fragmenten van de Romeinse tragedie",
-    "description": "Oefeningen over overlevering, tekstkritiek, metriek en reconstructie van fragmentarisch overgeleverde Romeinse tragedies (draft 29-06-2026)."
+    "id": "thomas",
+    "title": "Thomas: Fragmenten van de Romeinse tragedie",
+    "description": "Oefeningen over overlevering, tekstkritiek, metriek en reconstructie van fragmentarisch overgeleverde Romeinse tragedies."
+  },
+  {
+    "id": "demo",
+    "title": "Demo: alle vraagtypes",
+    "description": "Eén voorbeeld van elk vraagtype: meerkeuze, waar/niet waar, meerdere antwoorden, categoriseren en fragment slepen."
   }
 ]

@@ -103,7 +103,6 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   protected playgroundRedoButton = PLAYGROUND_REDO;
   protected playgroundSaveButton = PLAYGROUND_SAVE;
   protected playgroundLoadButton = PLAYGROUND_LOAD;
-  protected teaching_enabled = environment.teaching_enabled;
 
   constructor(
     protected api: ApiService,

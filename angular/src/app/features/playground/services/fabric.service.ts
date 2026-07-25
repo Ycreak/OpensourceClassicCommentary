@@ -1,12 +1,5 @@
 import { Injectable } from '@angular/core';
-import { 
-  Canvas, 
-  Group, 
-  Text, 
-  Textbox, 
-  IText, 
-  Rect, Point, util 
-} from 'fabric';
+import { Canvas, Group, Text, Textbox, IText, Rect, Point, util } from 'fabric';
 import { Observable, Subject } from 'rxjs';
 
 import { UtilityService } from '@oscc/services/utility.service';
@@ -116,7 +109,7 @@ export class FabricService {
     });
   }
 
-/**
+  /**
    * Universal internal method to construct and add a document (Fragment or Testimonium) to the canvas.
    * @param doc The document data object.
    * @param top The vertical coordinate for placement.
@@ -137,24 +130,24 @@ export class FabricService {
 
     // Construct the background box and expand it by the padding value
     const box = new Rect({
-      width: textWidth + (padding * 2),
-      height: textHeight + (padding * 2),
+      width: textWidth + padding * 2,
+      height: textHeight + padding * 2,
       fill: color,
       rx: 10,
       ry: 10,
       stroke: 'black',
       strokeWidth: 1,
       originX: 'center',
-      originY: 'center'
+      originY: 'center',
     });
 
     // Update the content's anchor point to center so it co-aligns with the background box
     content.set({
       originX: 'center',
-      originY: 'center'
+      originY: 'center',
     });
 
-    // Combine them directly into a single parent Group. 
+    // Combine them directly into a single parent Group.
     const group = new Group([box, content], {
       top,
       left,
@@ -347,7 +340,17 @@ export class FabricService {
     }
     // Include our custom metadata, so documents keep their identifier and
     // teaching objects keep their tags across undo/redo reloads.
-    const custom_props = ['identifier', 'lesson_tag', 'lesson_item', 'lesson_choice', 'lesson_action', 'selectable', 'evented', 'hasControls', 'subTargetCheck'];
+    const custom_props = [
+      'identifier',
+      'lesson_tag',
+      'lesson_item',
+      'lesson_choice',
+      'lesson_action',
+      'selectable',
+      'evented',
+      'hasControls',
+      'subTargetCheck',
+    ];
     this.canvas_states.push(JSON.stringify(this.canvas.toObject(custom_props)));
     this.current_state_index = this.canvas_states.length - 1;
   }
@@ -389,7 +392,7 @@ export class FabricService {
    */
   public add(documents: any[]): void {
     const offset_top = 200;
-    const offset_left = 40; 
+    const offset_left = 40;
     const spacing = 25;
 
     // Type casting to handle dynamic internal structural access
@@ -469,5 +472,4 @@ export class FabricService {
   public has_selection(): boolean {
     return !!this.canvas.getActiveObject();
   }
-
 }
