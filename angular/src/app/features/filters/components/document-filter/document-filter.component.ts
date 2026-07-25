@@ -12,6 +12,7 @@ import { TestimoniaTableComponent } from './testimonia-table/testimonia-table.co
 import { FragmentTableComponent } from './fragment-table/fragment-table.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-document-filter',
@@ -19,6 +20,8 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrls: ['./document-filter.component.scss'],
   standalone: true,
   imports: [
+    CdkDrag,
+    CdkDragHandle,
     MatButtonModule,
     MatDialogClose,
     MatIconModule,
