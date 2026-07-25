@@ -8,7 +8,11 @@
   </div>
 
   <div mat-dialog-content>
-    <mat-tab-group #tab_group (selectedTabChange)="on_tab_change($event)" mat-stretch-tabs="false" mat-align-tabs="start">
+    <mat-tab-group
+      #tab_group
+      (selectedTabChange)="on_tab_change($event)"
+      mat-stretch-tabs="false"
+      mat-align-tabs="start">
       <mat-tab label="Fragments">
         <div style="padding-top: 1em">
           <app-fragment-table></app-fragment-table>
@@ -27,5 +31,4 @@
     <button mat-button (click)="this.add_selection()" cdkFocusInitial>Add selection</button>
     <button mat-button (click)="this.add_table()" cdkFocusInitial>Add table</button>
   </div>
-
 </div>
