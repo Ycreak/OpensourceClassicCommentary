@@ -1,27 +1,34 @@
-<div class="dialog-header">
-  <h2>Advanced text select</h2>
-  <button mat-icon-button [mat-dialog-close]="null" [disableRipple]="true">
-    <mat-icon>clear</mat-icon>
-  </button>
-</div>
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane">
+  <!-- cdkDragHandle ensures only clicking and dragging the header moves the dialog -->
+  <div class="dialog-header" cdkDragHandle>
+    <h2>Advanced text select</h2>
+    <button mat-icon-button [mat-dialog-close]="null" [disableRipple]="true">
+      <mat-icon>clear</mat-icon>
+    </button>
+  </div>
 
-<div mat-dialog-content>
-  <mat-tab-group #tab_group (selectedTabChange)="on_tab_change($event)" mat-stretch-tabs="false" mat-align-tabs="start">
-    <mat-tab label="Fragments">
-      <div style="padding-top: 1em">
-        <app-fragment-table></app-fragment-table>
-      </div>
-    </mat-tab>
-    <mat-tab label="Testimonia">
-      <div style="padding-top: 1em">
-        <app-testimonia-table></app-testimonia-table>
-      </div>
-    </mat-tab>
-    <!--<mat-tab label="Text"> Content 2 </mat-tab>-->
-  </mat-tab-group>
-</div>
-<div mat-dialog-actions>
-  <button mat-button (click)="this.exit()">Close</button>
-  <button mat-button (click)="this.add_selection()" cdkFocusInitial>Add selection</button>
-  <button mat-button (click)="this.add_table()" cdkFocusInitial>Add table</button>
+  <div mat-dialog-content>
+    <mat-tab-group
+      #tab_group
+      (selectedTabChange)="on_tab_change($event)"
+      mat-stretch-tabs="false"
+      mat-align-tabs="start">
+      <mat-tab label="Fragments">
+        <div style="padding-top: 1em">
+          <app-fragment-table></app-fragment-table>
+        </div>
+      </mat-tab>
+      <mat-tab label="Testimonia">
+        <div style="padding-top: 1em">
+          <app-testimonia-table></app-testimonia-table>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+
+  <div mat-dialog-actions>
+    <button mat-button (click)="this.exit()">Close</button>
+    <button mat-button (click)="this.add_selection()" cdkFocusInitial>Add selection</button>
+    <button mat-button (click)="this.add_table()" cdkFocusInitial>Add table</button>
+  </div>
 </div>

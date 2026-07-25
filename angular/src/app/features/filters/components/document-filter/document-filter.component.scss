@@ -1,0 +1,8 @@
+.dialog-header {
+  cursor: grab;
+  user-select: none; /* Prevents highlighting the <h2> text while dragging */
+
+  &:active {
+    cursor: grabbing;
+  }
+}
