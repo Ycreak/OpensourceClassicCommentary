@@ -1,7 +1,5 @@
-<!-- Wrap the dialog in a drag container and point it to the Material dialog overlay pane -->
 <div cdkDrag cdkDragRootElement=".cdk-overlay-pane">
-  
-  <!-- Add cdkDragHandle so ONLY clicking and dragging the header moves the dialog -->
+  <!-- cdkDragHandle ensures only clicking and dragging the header moves the dialog -->
   <div class="dialog-header" cdkDragHandle>
     <h2>Advanced text select</h2>
     <button mat-icon-button [mat-dialog-close]="null" [disableRipple]="true">
