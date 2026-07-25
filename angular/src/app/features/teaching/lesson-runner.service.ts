@@ -3,7 +3,8 @@ import { HttpClient } from '@angular/common/http';
 
 import { FabricService } from '@oscc/features/playground/services/fabric.service';
 import { LessonCardRenderer } from '@oscc/features/teaching/lesson-card.renderer';
-import { FragmentMatch, Lesson, LessonCardSpec } from '@oscc/features/teaching/models/lesson.model';
+import { FragmentMatch, FragmentReference, Lesson, LessonCardSpec } from '@oscc/features/teaching/models/lesson.model';
+import { ApiService } from '@oscc/services/api.service';
 
 /**
  * Drives a lesson rendered on the playground canvas. Owns all lesson state;
@@ -28,13 +29,27 @@ export class LessonRunnerService {
   /** Multi-answer/categorize: whether the current arrangement has been checked. */
   private checked = false;
 
+  /**
+   * Initializes the lesson runner service with required dependencies.
+   *
+   * @param http - Angular HttpClient for fetching lesson JSON files.
+   * @param api - Service for interacting with the backend API (retrieving fragments).
+   * @param renderer - Service responsible for rendering the lesson card on the canvas.
+   * @param fabric - Service managing the playground Fabric.js canvas and its objects.
+   */
   constructor(
     private http: HttpClient,
+    private api: ApiService,
     private renderer: LessonCardRenderer,
     private fabric: FabricService
   ) {}
 
-  /** Loads the lesson JSON by id and places the first question card on the canvas. */
+  /**
+   * Loads the lesson JSON by id and places the first question card on the canvas.
+   *
+   * @param lesson_id - The unique identifier of the lesson to load from assets.
+   * @returns void
+   */
   public start(lesson_id: string): void {
     this.http.get<Lesson>(`assets/teaching/${lesson_id}.json`).subscribe((lesson) => {
       this.lesson = lesson;
@@ -46,28 +61,77 @@ export class LessonRunnerService {
     });
   }
 
+  /**
+   * Retrieves the current question object based on the active lesson index.
+   *
+   * @returns The current question from the lesson.
+   */
   private get question() {
     return this.lesson.questions[this.index];
   }
 
+  /**
+   * Evaluates whether the currently active question is the final one in the lesson.
+   *
+   * @returns True if the current index is at the last question; otherwise, false.
+   */
   private get last_question(): boolean {
     return this.index === this.lesson.questions.length - 1;
   }
 
-  /** Clears the per-question interaction state when (re)entering a question. */
+  /**
+   * Clears the per-question interaction state when (re)entering a question.
+   * Also triggers the asynchronous loading of any associated fragments and scatters them if applicable.
+   *
+   * @returns void
+   */
   private reset_question_state(): void {
     this.chosen = null;
     this.checked = false;
     this.selected.clear();
     const q = this.question;
     this.placements = q.type === 'categorize' ? q.items.map(() => null) : [];
-    if (q.type === 'drag_drop') {
+
+    // Dynamically retrieve and load any fragments associated with this question
+    this.load_question_fragments();
+
+    if (q.type === 'drag_drop' && (!q.fragments || q.fragments.length === 0)) {
       // Scatter the loaded fragments so they are not stacked on top of each
       // other when the student has to pick one out and drag it.
       this.fabric.randomize_positions();
     }
   }
 
+  /**
+   * Iterates through fragment references on the current question, fetches data from the API,
+   * and places them onto the playground canvas.
+   *
+   * @returns void
+   */
+  private load_question_fragments(): void {
+    const q = this.question;
+    if (!q.fragments || q.fragments.length === 0) {
+      return;
+    }
+
+    q.fragments.forEach((ref: FragmentReference) => {
+      this.api.request_documents(ref).subscribe({
+        next: (retrieved_data) => {
+          this.fabric.add(retrieved_data);
+        },
+        error: (err) => {
+          console.error(`Failed to load fragment ${ref.author} - ${ref.name}`, err);
+        },
+      });
+    });
+  }
+
+  /**
+   * Instructs the renderer to draw the current lesson card using the generated UI specification
+   * and binds callback handlers for student interactions.
+   *
+   * @returns void
+   */
   private render(): void {
     this.renderer.render(this.build_spec(), {
       onChoice: (i) => this.on_choice(i),
@@ -77,6 +141,12 @@ export class LessonRunnerService {
     });
   }
 
+  /**
+   * Constructs the declarative UI specification (`LessonCardSpec`) for the current question,
+   * determining the visual state of choices, drop zones, categories, and feedback messages.
+   *
+   * @returns The fully constructed UI specification object for the renderer.
+   */
   private build_spec(): LessonCardSpec {
     const q = this.question;
     const solved = this.locked[this.index];
@@ -167,6 +237,13 @@ export class LessonRunnerService {
     };
   }
 
+  /**
+   * Handles a student clicking on a specific choice option.
+   * For multi-answer questions, toggles selection; for single-choice, judges correctness immediately.
+   *
+   * @param i - The index of the selected choice option.
+   * @returns void
+   */
   private on_choice(i: number): void {
     const q = this.question;
     if (this.locked[this.index] || q.type === 'drag_drop' || q.type === 'categorize') {
@@ -185,6 +262,13 @@ export class LessonRunnerService {
     this.answer(i === q.correct_index);
   }
 
+  /**
+   * Handles a student dropping a fragment onto a drop zone in a drag-and-drop question.
+   * Validates if the dropped fragment matches any of the accepted criteria.
+   *
+   * @param identifier - The matching properties of the dropped fragment.
+   * @returns void
+   */
   private on_drop(identifier: FragmentMatch): void {
     const q = this.question;
     if (this.locked[this.index] || q.type !== 'drag_drop') {
@@ -196,6 +280,13 @@ export class LessonRunnerService {
     );
   }
 
+  /**
+   * Handles a student placing an item into a specific category zone.
+   *
+   * @param item - The index of the categorize item being moved.
+   * @param zone - The index of the destination category zone, or null if removed from a zone.
+   * @returns void
+   */
   private on_place(item: number, zone: number | null): void {
     if (this.locked[this.index] || this.question.type !== 'categorize') {
       return;
@@ -205,7 +296,12 @@ export class LessonRunnerService {
     this.render();
   }
 
-  /** Judges the current multi-answer selection or categorize arrangement. */
+  /**
+   * Judges the current multi-answer selection or categorize arrangement.
+   * Evaluates if all items are in their correct zones or if all correct indices are selected.
+   *
+   * @returns void
+   */
   private on_check(): void {
     const q = this.question;
     let correct = false;
@@ -218,7 +314,13 @@ export class LessonRunnerService {
     this.answer(correct);
   }
 
-  /** Records an answer's correctness for scoring/locking and re-renders. */
+  /**
+   * Records an answer's correctness for scoring/locking and re-renders.
+   * Locks the question if the answer is judged correct and records the initial attempt result.
+   *
+   * @param correct - Whether the submitted answer or arrangement is correct.
+   * @returns void
+   */
   private answer(correct: boolean): void {
     if (this.first_results[this.index] === null) {
       this.first_results[this.index] = correct;
@@ -229,6 +331,12 @@ export class LessonRunnerService {
     this.render();
   }
 
+  /**
+   * Handles navigation and control actions triggered from the lesson card UI.
+   *
+   * @param kind - The action identifier: 'next' to advance, 'finish' to end, 'close' to exit, or 'check' to verify.
+   * @returns void
+   */
   private on_action(kind: 'next' | 'finish' | 'close' | 'check'): void {
     if (kind === 'check') {
       this.on_check();
@@ -247,6 +355,11 @@ export class LessonRunnerService {
     }
   }
 
+  /**
+   * Calculates the final first-attempt score across all questions and renders the completion card.
+   *
+   * @returns void
+   */
   private show_score(): void {
     const score = this.first_results.filter((r) => r).length;
     const total = this.lesson.questions.length;

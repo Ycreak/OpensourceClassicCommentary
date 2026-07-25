@@ -5,6 +5,9 @@
   "questions": [
     {
       "prompt": "Vraag 1a: Bekijk het volgende fragment: Pacuvius $Dulorestes$ frg. 94 ed. Schierl (Pac. $Dul.$ frg. 84 TrRF). Zoals bijna alle fragmenten uit deze tragedie wordt dit fragment door de laatantieke grammaticus Nonius Marcellus overgeleverd. Welk woord heeft de interesse van Nonius gewekt en er daarmee voor gezorgd dat hij een citaat uit deze tragedie in het vierde boek van zijn lexicon bespreekt?",
+      "fragments": [
+        {"document_type":"fragment","author": "Pacuvius", "title": "Dulorestes", "editor": "Schierl", "name": "94"}
+      ],
       "choices": ["torto", "tormento", "Duloreste", "nam"],
       "correct_index": 0,
       "explanation": "Het feit dat de Republikeinse dichter Pacuvius het archaïsche woord $tortum$ (pijnbank) gebruikt i.p.v. de veelvoorkomende vorm $tormentum$ heeft ertoe geleid dat Nonius het vers citeert. Nonius' persoonlijke interesse in deze ongebruikelijke woorden is de drijfveer achter zijn werk als lexicograaf."
