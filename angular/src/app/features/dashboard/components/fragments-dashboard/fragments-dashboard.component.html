@@ -210,20 +210,24 @@
               <div class="context-item" [formGroupName]="i">
                 <mat-form-field class="input-form-small">
                   <mat-label>Context author name</mat-label>
+                  <mat-hint>Name of the author using the fragment</mat-hint>
                   <input matInput type="text" formControlName="author" />
                   <!--required> -->
                 </mat-form-field>
                 <mat-form-field class="input-form-small">
                   <mat-label>Context location</mat-label>
+                  <mat-hint>The title of the work in which the fragment appears</mat-hint>
                   <input matInput type="text" formControlName="location" />
                   <!--required> -->
                 </mat-form-field>
                 <mat-form-field class="input-form-half">
-                  <mat-label>Context text</mat-label>
+                  <mat-label>Broader context of fragment</mat-label>
+                  <mat-hint>Add here the broader text in which the fragment appears</mat-hint>
                   <textarea matInput type="text" formControlName="text"></textarea>
                 </mat-form-field>
                 <mat-form-field class="input-form-half">
                   <mat-label>Context commentary</mat-label>
+                  <mat-hint>Your commentary on the context of this fragment</mat-hint>
                   <textarea matInput type="text" formControlName="commentary"></textarea>
                 </mat-form-field>
                 <button mat-button (click)="request_wysiwyg_dialog('context', i)">Edit context commentary</button>
