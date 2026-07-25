@@ -11,13 +11,13 @@ import { MatButtonModule } from '@angular/material/button';
   imports: [MatButtonModule],
 })
 export class ExpandableTextComponent implements AfterViewInit {
-  @Input() content: string; // HTML content
+  @Input() content!: string; // HTML content
   @Input() isCollapsed?: boolean;
-  @Input() collapsedHeightPx?: number; // Height when collapsed in em;
+  @Input() collapsedHeightPx!: number; // Height when collapsed in em;
 
   protected enabled: boolean;
   protected maskDisabled = false;
-  protected content_hideable: string;
+  protected content_hideable!: string;
 
   constructor(
     private elRef: ElementRef,
@@ -27,7 +27,10 @@ export class ExpandableTextComponent implements AfterViewInit {
     this.isCollapsed = this.isCollapsed || true; // Set isCollapsed to true by default
     this.collapsedHeightPx = this.collapsedHeightPx || 200; // Element height is 200px by default when collapsed FIXME: Em would be nicer, but would also make the comparison in the ngAfterViewInit below a bit more difficult.
     // Send this variable to the css
-    document.querySelector('body').style.setProperty('--collapsed-height', String(this.collapsedHeightPx + 'px'));
+    const body = document.querySelector('body');
+    if (body) {
+      body.style.setProperty('--collapsed-height', String(this.collapsedHeightPx + 'px'));
+    }
   }
 
   ngAfterViewInit() {
