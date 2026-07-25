@@ -38,15 +38,15 @@
             <button
               mat-icon-button
               aria-label="expand row"
-            (click)="
-              user_table_expanded_element =
-                user_table_expanded_element === element['username'] ? null : element['username'];
-              $event.stopPropagation()
-            ">
-              @if (user_table_expanded_element !== element['username']) {
+              (click)="
+                user_table_expanded_element =
+                  user_table_expanded_element === element['username'] ? null : element['username'];
+                $event.stopPropagation()
+              ">
+              @if (user_table_expanded_element !== element["username"]) {
                 <mat-icon>keyboard_arrow_down</mat-icon>
               }
-              @if (user_table_expanded_element === element['username']) {
+              @if (user_table_expanded_element === element["username"]) {
                 <mat-icon>keyboard_arrow_up</mat-icon>
               }
             </button>
@@ -99,10 +99,8 @@
                 </form>
               </div>
               <!-- Area to change the user data -->
-              @if (this.auth_service.current_user_role === 'admin') {
-                <div
-                  class="table-element-description table-expansion-panel-subcontainer"
-                  >
+              @if (this.auth_service.current_user_role === "admin") {
+                <div class="table-element-description table-expansion-panel-subcontainer">
                   <hr />
                   <p>Change the role of the selected user here.</p>
                   <mat-form-field appearance="fill">
@@ -118,7 +116,11 @@
                   <button class="button-margin" mat-stroked-button color="warn" (click)="request_delete_user(element)">
                     Delete user
                   </button>
-                  <button class="button-margin" mat-stroked-button color="primary" (click)="request_change_role(element)">
+                  <button
+                    class="button-margin"
+                    mat-stroked-button
+                    color="primary"
+                    (click)="request_change_role(element)">
                     Change role
                   </button>
                 </div>
@@ -132,9 +134,10 @@
           *matRowDef="let element; columns: user_table_columns_to_displayWithExpand"
           class="table-element-row"
           [class.table-expanded-row]="user_table_expanded_element === element['username']"
-        (click)="
-          user_table_expanded_element = user_table_expanded_element === element['username'] ? null : element['username']
-        "></tr>
+          (click)="
+            user_table_expanded_element =
+              user_table_expanded_element === element['username'] ? null : element['username']
+          "></tr>
         <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="table-detail-row"></tr>
         <!-- Row shown when there is no matching data. -->
         @if (table_data_loaded) {
@@ -158,7 +161,7 @@
     </div>
     <hr />
     <!-- form to allow admins to create new users -->
-    @if (this.auth_service.current_user_role === 'admin') {
+    @if (this.auth_service.current_user_role === "admin") {
       <div>
         <form [formGroup]="create_new_user_form" (ngSubmit)="request_create_user(create_new_user_form.value)">
           <mat-form-field class="input-form-half" appearance="fill">

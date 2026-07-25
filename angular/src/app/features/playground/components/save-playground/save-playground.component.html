@@ -13,13 +13,7 @@
 <div mat-dialog-actions>
   <button mat-button (click)="onNoClick()">Cancel</button>
   @if (!this.new_playground) {
-    <button
-      mat-button
-      [mat-dialog-close]="{ name: this.name, button: 'save' }"
-      cdkFocusInitial
-      >
-      Save
-    </button>
+    <button mat-button [mat-dialog-close]="{ name: this.name, button: 'save' }" cdkFocusInitial>Save</button>
   }
   <button mat-button [mat-dialog-close]="{ name: this.name, button: 'create' }" cdkFocusInitial>Save as</button>
 </div>

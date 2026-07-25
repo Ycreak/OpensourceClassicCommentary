@@ -71,17 +71,17 @@ export class ApiService {
    * Requests the API for the document index
    * @return Observable
    */
-   public request_index(): Observable<any> {
+  public request_index(): Observable<any> {
     return new Observable((observer) => {
       this.spinner_on();
       // clear the signal using .set()
-      this._index.set([]); 
+      this._index.set([]);
       // Only retrieve the index for the current sandbox
       const filter = { sandbox: this.sandbox.current_sandbox };
       this.post(this.FlaskURL, this.endpoints.get('index'), filter, this.get_header).subscribe({
         next: (data) => {
           // Update the signal with fresh HTTP data
-          this._index.set(data); 
+          this._index.set(data);
           this.spinner_off();
           observer.next(data);
           observer.complete();
@@ -380,7 +380,7 @@ export class ApiService {
    * Simple function to toggle the spinner
    */
   public spinner_off(): void {
-    // ensure concurrent calls never drop below 0 due to mismatched component 
+    // ensure concurrent calls never drop below 0 due to mismatched component
     // lifecycles or cancelled HTTP requests
     this.concurrent_api_calls = Math.max(0, this.concurrent_api_calls - 1);
 

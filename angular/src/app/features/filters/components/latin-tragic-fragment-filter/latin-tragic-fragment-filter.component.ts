@@ -32,7 +32,7 @@ export class LatinTragicFragmentFilterComponent {
     protected utility: UtilityService
   ) {}
 
-  // The computed blocks automatically watch BOTH your local selection signals 
+  // The computed blocks automatically watch BOTH your local selection signals
   // AND the ApiService's internal _index signal.
   protected authors = computed(() => {
     return this.api.get_from_index('author', { document_type: 'fragment' });
@@ -56,7 +56,7 @@ export class LatinTragicFragmentFilterComponent {
     const title = this._title();
     const editor = this._editor();
     if (!author || !title || !editor) return [];
-    
+
     const rawNames = this.api.get_from_index('name', {
       document_type: 'fragment',
       author,
@@ -69,7 +69,7 @@ export class LatinTragicFragmentFilterComponent {
   // Action handlers triggered when user interacts with cascading menus
   protected selectAuthor(author: string) {
     this._author.set(author);
-    this._title.set(''); 
+    this._title.set('');
     this._editor.set('');
     this._name.set('');
   }

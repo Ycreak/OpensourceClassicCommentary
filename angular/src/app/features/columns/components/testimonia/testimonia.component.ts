@@ -5,7 +5,6 @@ import { SettingsService } from '@oscc/services/settings.service';
 
 import { Testimonium } from '@oscc/types/Testimonium';
 
-
 @Component({
   selector: 'app-testimonia',
   templateUrl: './testimonia.component.html',

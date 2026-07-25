@@ -47,8 +47,8 @@ interface mat_select_interface {
     MatInputModule,
     MatSelectModule,
     MatOptionModule,
-    QuillComponent
-],
+    QuillComponent,
+  ],
 })
 export class FragmentsDashboardComponent implements OnInit {
   private allowed_user_roles = ['admin', 'teacher', 'student'];

@@ -30,8 +30,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     FragmentsDashboardComponent,
     TestimoniaDashboardComponent,
     IntroductionsDashboardComponent,
-    UsersComponent
-],
+    UsersComponent,
+  ],
 })
 export class DashboardComponent implements OnInit {
   constructor(

@@ -3,7 +3,7 @@
  * the onContentChanged flag.
  */
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { MatDialog, MatDialogContent, MatDialogClose } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { BibliographyComponent } from '@oscc/features/dashboard/components/bibliography/bibliography.component';
 import { MatButtonModule } from '@angular/material/button';

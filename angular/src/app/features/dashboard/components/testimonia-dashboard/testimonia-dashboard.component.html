@@ -8,43 +8,40 @@
       </mat-panel-description>
     </mat-expansion-panel-header>
     <!--Buttons to submit testimonium data -->
-    @if (this.auth_service.has_permission('read', this.auth_service.current_user_role)) {
+    @if (this.auth_service.has_permission("read", this.auth_service.current_user_role)) {
       <app-testimonium-filter
         [button_title]="'Select testimonium'"
         [button_type]="'stroked'"
         (new_filter)="this.request($event)">
       </app-testimonium-filter>
     }
-    @if (this.auth_service.has_permission('create', this.auth_service.current_user_role)) {
+    @if (this.auth_service.has_permission("create", this.auth_service.current_user_role)) {
       <button
         mat-stroked-button
         class="button-margin"
         color="primary"
         [disabled]="!form.valid"
-        (click)="create(this.form.value)"
-        >
+        (click)="create(this.form.value)">
         Create testimonium
       </button>
     }
-    @if (this.auth_service.has_permission('update', this.auth_service.current_user_role)) {
+    @if (this.auth_service.has_permission("update", this.auth_service.current_user_role)) {
       <button
         mat-stroked-button
         class="button-margin"
         color="primary"
         [disabled]="!form.valid"
-        (click)="revise(this.form.value)"
-        >
+        (click)="revise(this.form.value)">
         Save Changes
       </button>
     }
-    @if (this.auth_service.has_permission('delete', this.auth_service.current_user_role)) {
+    @if (this.auth_service.has_permission("delete", this.auth_service.current_user_role)) {
       <button
         mat-stroked-button
         class="button-margin"
         color="warn"
         [disabled]="!selected"
-        (click)="delete(this.form.value)"
-        >
+        (click)="delete(this.form.value)">
         Delete testimonium
       </button>
     }
@@ -62,10 +59,10 @@
             <mat-label>Testimonium name</mat-label>
             <input required matInput type="text" formControlName="name" />
             <mat-hint><b>Only</b> provide the number of the testimonium</mat-hint>
-            @if (form.get('name').errors?.['required']) {
+            @if (form.get("name").errors?.["required"]) {
               <mat-error>You must enter a value.</mat-error>
             }
-            @if (form.get('name').errors?.['pattern']) {
+            @if (form.get("name").errors?.["pattern"]) {
               <mat-error>You entered disallowed characters.</mat-error>
             }
           </mat-form-field>
@@ -74,10 +71,10 @@
             <mat-label>Author name</mat-label>
             <input required matInput type="text" formControlName="author" />
             <mat-hint>Provide the author mentioned in the testimonium</mat-hint>
-            @if (form.get('author').errors?.['required']) {
+            @if (form.get("author").errors?.["required"]) {
               <mat-error>You must enter a value.</mat-error>
             }
-            @if (form.get('author').errors?.['pattern']) {
+            @if (form.get("author").errors?.["pattern"]) {
               <mat-error>You entered disallowed characters.</mat-error>
             }
           </mat-form-field>
@@ -86,10 +83,10 @@
             <mat-label>Witness name</mat-label>
             <input required matInput type="text" formControlName="witness" />
             <mat-hint>Provide the name of the witness</mat-hint>
-            @if (form.get('witness').errors?.['required']) {
+            @if (form.get("witness").errors?.["required"]) {
               <mat-error>You must enter a value.</mat-error>
             }
-            @if (form.get('witness').errors?.['pattern']) {
+            @if (form.get("witness").errors?.["pattern"]) {
               <mat-error>You entered disallowed characters.</mat-error>
             }
           </mat-form-field>
@@ -98,10 +95,10 @@
             <mat-label>Title name</mat-label>
             <input required matInput type="text" formControlName="title" />
             <mat-hint>Provide the name of the witness' text</mat-hint>
-            @if (form.get('title').errors?.['required']) {
+            @if (form.get("title").errors?.["required"]) {
               <mat-error>You must enter a value.</mat-error>
             }
-            @if (form.get('title').errors?.['pattern']) {
+            @if (form.get("title").errors?.["pattern"]) {
               <mat-error>You entered disallowed characters.</mat-error>
             }
           </mat-form-field>
@@ -110,10 +107,10 @@
             <mat-label>Editor name</mat-label>
             <input matInput type="text" formControlName="editor" />
             <mat-hint>Provide the name of the testimonia's editor (if applicable)</mat-hint>
-            @if (form.get('title').errors?.['required']) {
+            @if (form.get("title").errors?.["required"]) {
               <mat-error>You must enter a value.</mat-error>
             }
-            @if (form.get('title').errors?.['pattern']) {
+            @if (form.get("title").errors?.["pattern"]) {
               <mat-error>You entered disallowed characters.</mat-error>
             }
           </mat-form-field>
@@ -155,9 +152,8 @@
         <div class="div-padding-lg"></div>
       </mat-tab>
       <!-- end of the content tab -->
-      @if (this.auth_service.current_user_role === 'admin' || this.auth_service.current_user_role === 'teacher') {
-        <mat-tab
-          label="Testimonium Access"
+      @if (this.auth_service.current_user_role === "admin" || this.auth_service.current_user_role === "teacher") {
+        <mat-tab label="Testimonium Access"
           ><br />
           <!-- This tab changes the testimonium access. It has two parts. A lock function which disallows change and publish function
           which allows the testimonium to show up on the frontend -->

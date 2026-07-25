@@ -25,7 +25,6 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
 
-
 @Component({
   selector: 'app-introductions-dashboard',
   templateUrl: './introductions-dashboard.component.html',
@@ -40,8 +39,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatInputModule
-],
+    MatInputModule,
+  ],
 })
 export class IntroductionsDashboardComponent {
   private allowed_user_roles = ['admin'];

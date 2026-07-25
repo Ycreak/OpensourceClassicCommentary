@@ -45,8 +45,8 @@ import { MatButtonModule } from '@angular/material/button';
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatInputModule
-],
+    MatInputModule,
+  ],
 })
 export class LoginComponent {
   hide_password = true; // password hiding in dialog

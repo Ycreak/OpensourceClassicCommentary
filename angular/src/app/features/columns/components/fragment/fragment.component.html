@@ -16,8 +16,7 @@
   @for (fragment_line of fragment.lines; track fragment_line) {
     <div>
       @if (this.settings.fragments.show_line_names) {
-        <p
-        [innerHTML]="fragment_line.line_number + ': ' + fragment_line.text | safeHtml"></p>
+        <p [innerHTML]="fragment_line.line_number + ': ' + fragment_line.text | safeHtml"></p>
       } @else {
         <!--safeHtml to allow whitespaces made by spans-->
         <p [innerHTML]="fragment_line.text | safeHtml"></p>
@@ -25,4 +24,3 @@
     </div>
   }
 }
-

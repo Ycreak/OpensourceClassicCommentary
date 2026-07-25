@@ -61,107 +61,85 @@
           <mat-label>Enter username</mat-label>
           <input matInput required formControlName="username" />
           <!-- Check for errors sequentially and display only one at a time-->
-          @if (create_form.get('username').errors) {
-            @if (create_form.get('username').errors?.['maxlength']) {
-              <mat-error
-                >The provided username cannot be longer than 20 characters.</mat-error
-                >
+          @if (create_form.get("username").errors) {
+            @if (create_form.get("username").errors?.["maxlength"]) {
+              <mat-error>The provided username cannot be longer than 20 characters.</mat-error>
+            } @else {
+              @if (create_form.get("username").errors?.["required"]) {
+                <mat-error>You must enter a value.</mat-error>
               } @else {
-                @if (create_form.get('username').errors?.['required']) {
-                  <mat-error
-                    >You must enter a value.</mat-error
-                    >
-                  } @else {
-                    @if (create_form.get('username').errors?.['pattern']) {
-                      <mat-error
-                        >You entered disallowed characters.</mat-error
-                        >
-                      }
-                    }
+                @if (create_form.get("username").errors?.["pattern"]) {
+                  <mat-error>You entered disallowed characters.</mat-error>
+                }
+              }
+            }
+          }
+        </mat-form-field>
+
+        <div class="div-padding-sm"></div>
+
+        <mat-form-field appearance="fill" class="input-form-full-width">
+          <mat-label>Enter password</mat-label>
+          <input matInput required [type]="hide_password ? 'password' : 'text'" formControlName="password1" />
+          <!-- Check for errors sequentially and display only one at a time-->
+          @if (create_form.get("password1").errors) {
+            @if (create_form.get("password1").errors?.["minlength"]) {
+              <mat-error>The provided password must be longer than 5 characters.</mat-error>
+            } @else {
+              @if (create_form.get("password1").errors?.["maxlength"]) {
+                <mat-error>The provided password cannot be longer than 30 characters.</mat-error>
+              } @else {
+                @if (create_form.get("password1").errors?.["required"]) {
+                  <mat-error>You must enter a value.</mat-error>
+                } @else {
+                  @if (create_form.get("password1").errors?.["pattern"]) {
+                    <mat-error>You entered disallowed characters.</mat-error>
                   }
                 }
-              </mat-form-field>
+              }
+            }
+          }
+        </mat-form-field>
 
-              <div class="div-padding-sm"></div>
+        <div class="div-padding-sm"></div>
 
-              <mat-form-field appearance="fill" class="input-form-full-width">
-                <mat-label>Enter password</mat-label>
-                <input matInput required [type]="hide_password ? 'password' : 'text'" formControlName="password1" />
-                <!-- Check for errors sequentially and display only one at a time-->
-                @if (create_form.get('password1').errors) {
-                  @if (create_form.get('password1').errors?.['minlength']) {
-                    <mat-error
-                      >The provided password must be longer than 5 characters.</mat-error
-                      >
-                    } @else {
-                      @if (create_form.get('password1').errors?.['maxlength']) {
-                        <mat-error
-                          >The provided password cannot be longer than 30 characters.</mat-error
-                          >
-                        } @else {
-                          @if (create_form.get('password1').errors?.['required']) {
-                            <mat-error
-                              >You must enter a value.</mat-error
-                              >
-                            } @else {
-                              @if (create_form.get('password1').errors?.['pattern']) {
-                                <mat-error
-                                  >You entered disallowed characters.</mat-error
-                                  >
-                                }
-                              }
-                            }
-                          }
-                        }
-                      </mat-form-field>
+        <mat-form-field appearance="fill" class="input-form-full-width">
+          <mat-label>Enter password again</mat-label>
+          <input matInput required [type]="hide_password ? 'password' : 'text'" formControlName="password2" />
+          <!-- Check for errors sequentially and display only one at a time-->
+          @if (create_form.get("password2").errors) {
+            @if (create_form.get("password2").errors?.["minlength"]) {
+              <mat-error>The provided password must be longer than 5 characters.</mat-error>
+            } @else {
+              @if (create_form.get("password2").errors?.["maxlength"]) {
+                <mat-error>The provided password cannot be longer than 30 characters.</mat-error>
+              } @else {
+                @if (create_form.get("password2").errors?.["required"]) {
+                  <mat-error>You must enter a value.</mat-error>
+                } @else {
+                  @if (create_form.get("password2").errors?.["pattern"]) {
+                    <mat-error>You entered disallowed characters.</mat-error>
+                  }
+                }
+              }
+            }
+          }
+        </mat-form-field>
 
-                      <div class="div-padding-sm"></div>
+        <div class="div-padding-sm"></div>
 
-                      <mat-form-field appearance="fill" class="input-form-full-width">
-                        <mat-label>Enter password again</mat-label>
-                        <input matInput required [type]="hide_password ? 'password' : 'text'" formControlName="password2" />
-                        <!-- Check for errors sequentially and display only one at a time-->
-                        @if (create_form.get('password2').errors) {
-                          @if (create_form.get('password2').errors?.['minlength']) {
-                            <mat-error
-                              >The provided password must be longer than 5 characters.</mat-error
-                              >
-                            } @else {
-                              @if (create_form.get('password2').errors?.['maxlength']) {
-                                <mat-error
-                                  >The provided password cannot be longer than 30 characters.</mat-error
-                                  >
-                                } @else {
-                                  @if (create_form.get('password2').errors?.['required']) {
-                                    <mat-error
-                                      >You must enter a value.</mat-error
-                                      >
-                                    } @else {
-                                      @if (create_form.get('password2').errors?.['pattern']) {
-                                        <mat-error
-                                          >You entered disallowed characters.</mat-error
-                                          >
-                                        }
-                                      }
-                                    }
-                                  }
-                                }
-                              </mat-form-field>
+        <mat-form-field appearance="fill" class="input-form-full-width">
+          <mat-label>Enter the magic word</mat-label>
+          <input matInput required formControlName="magic_word" />
+          @if (create_form.get("magic_word").errors?.["required"]) {
+            <mat-error>You must enter a value.</mat-error>
+          }
+        </mat-form-field>
 
-                              <div class="div-padding-sm"></div>
+        <div class="div-padding-sm"></div>
 
-                              <mat-form-field appearance="fill" class="input-form-full-width">
-                                <mat-label>Enter the magic word</mat-label>
-                                <input matInput required formControlName="magic_word" />
-                                @if (create_form.get('magic_word').errors?.['required']) {
-                                  <mat-error>You must enter a value.</mat-error>
-                                }
-                              </mat-form-field>
-
-                              <div class="div-padding-sm"></div>
-
-                              <button mat-button type="submit" [disabled]="!create_form.valid">Create</button>
-                            </form>
-                          </mat-expansion-panel>
-                        </mat-accordion>
-                      </div>
+        <button mat-button type="submit" [disabled]="!create_form.valid">Create</button>
+      </form>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

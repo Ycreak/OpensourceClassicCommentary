@@ -5,7 +5,6 @@ import { ApiService } from '@oscc/services/api.service';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 
-
 @Component({
   selector: 'app-testimonium-filter',
   templateUrl: './testimonium-filter.component.html',
