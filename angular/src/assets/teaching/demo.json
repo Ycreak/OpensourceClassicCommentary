@@ -1,0 +1,51 @@
+{
+  "id": "demo",
+  "title": "Demo: alle vraagtypes",
+  "description": "Eén voorbeeld van elk vraagtype: meerkeuze, waar/niet waar, meerdere antwoorden, categoriseren en fragment slepen.",
+  "questions": [
+    {
+      "prompt": "Type 1 — Meerkeuze (één antwoord): klik het juiste antwoord aan. Welke kleur heeft een fragment-kaart op het playground?",
+      "choices": ["Oranje", "Blauw", "Groen", "Rood"],
+      "correct_index": 1,
+      "explanation": "Fragmenten zijn blauw; testimonia zijn oranje.",
+      "hint": "Laad een fragment op het playground en kijk zelf."
+    },
+    {
+      "prompt": "Type 2 — Waar/niet waar (gewoon een meerkeuze met twee opties): $een testimonium is een woordelijk citaat.$",
+      "choices": ["Waar", "Niet waar"],
+      "correct_index": 1,
+      "explanation": "Een testimonium is een parafrase of verwijzing; het woordelijke citaat heet een fragmentum."
+    },
+    {
+      "prompt": "Type 3 — Meerdere antwoorden: vink alle juiste antwoorden aan en klik *Check*. Deze bron toont de opmaakmogelijkheden. Welke stijlen zie je hieronder?",
+      "sources": [
+        "Voorbeeldbron met $cursief$, *vet* en _onderstreept_ — bronblokken staan ingesprongen onder de vraag."
+      ],
+      "choices": ["Cursief", "Vet", "Onderstreept", "Doorgestreept"],
+      "correct_indices": [0, 1, 2],
+      "explanation": "Lessen kunnen $cursief$, *vet* en _onderstreept_ markeren in prompt, bronnen en uitleg. Doorstrepen bestaat niet.",
+      "hint": "Kijk goed naar de voorbeeldbron: er staan drie stijlen in."
+    },
+    {
+      "type": "categorize",
+      "prompt": "Type 4 — Categoriseren: sleep elk kaartje naar het juiste vak en klik *Check*.",
+      "categories": ["Griekse auteur", "Latijnse auteur"],
+      "items": [
+        { "text": "Euripides", "category": 0 },
+        { "text": "Accius", "category": 1 },
+        { "text": "Sophocles", "category": 0 },
+        { "text": "Pacuvius", "category": 1 }
+      ],
+      "explanation": "Euripides en Sophocles zijn Griekse tragici; Accius en Pacuvius schreven Latijnse tragedies.",
+      "hint": "Twee kaartjes horen in elk vak."
+    },
+    {
+      "type": "drag_drop",
+      "prompt": "Type 5 — Fragment slepen: laad fragmenten op het playground (ze worden automatisch verspreid) en sleep een fragment van Accius' $Atreus$ in het gestippelde vak.",
+      "zone_label": "Sleep hier een Atreus-fragment",
+      "accepts": [{ "author": "Accius", "title": "Atreus" }],
+      "explanation": "Dit fragment komt inderdaad uit Accius' Atreus.",
+      "hint": "Kijk in de kop van elk fragment: daar staat het stuk waartoe het behoort."
+    }
+  ]
+}

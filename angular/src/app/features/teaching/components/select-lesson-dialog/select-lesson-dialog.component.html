@@ -1,0 +1,29 @@
+<div class="dialog-header">
+  <h2>Select a lesson</h2>
+  <button mat-icon-button [mat-dialog-close]="undefined" [disableRipple]="true">
+    <mat-icon>clear</mat-icon>
+  </button>
+</div>
+
+<div class="dialog-content" mat-dialog-content>
+  @if (loading()) {
+    <div class="lesson-status">
+      <mat-spinner [diameter]="32"></mat-spinner>
+    </div>
+  } @else if (failed()) {
+    <p class="lesson-status">Could not load the lessons. Please try again later.</p>
+  } @else if (lessons().length === 0) {
+    <p class="lesson-status">No lessons are available yet.</p>
+  } @else {
+    <div class="lesson-list">
+      @for (lesson of lessons(); track lesson.id) {
+        <button class="lesson-card" mat-stroked-button (click)="select(lesson.id)">
+          <span class="lesson-card-title">{{ lesson.title }}</span>
+          <p>
+            <span class="lesson-card-description">{{ lesson.description }}</span>
+          </p>
+        </button>
+      }
+    </div>
+  }
+</div>

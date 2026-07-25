@@ -51,6 +51,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 import { MatMenuModule } from '@angular/material/menu';
+import { environment } from '@src/environments/environment';
+import { SelectLessonDialogComponent } from '@oscc/features/teaching/components/select-lesson-dialog/select-lesson-dialog.component';
+import { LessonRunnerService } from '@oscc/features/teaching/lesson-runner.service';
 
 @Component({
   selector: 'app-playground',
@@ -111,6 +114,7 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
     private commentary: CommentaryService,
     private formatter: FormatterService,
     private mat_dialog: MatDialog,
+    private lesson_runner: LessonRunnerService,
     protected window_watcher: WindowSizeWatcherService
   ) {}
 
@@ -178,6 +182,21 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
       next: (res) => {
         if (res) {
           this.fabric.clear();
+        }
+      },
+    });
+  }
+
+  /**
+   * Opens the lesson picker. If a lesson is chosen, loads it and starts the lesson
+   * as a draggable, non-blocking card on the canvas.
+   */
+  protected open_lesson_selector(): void {
+    const dialogRef = this.mat_dialog.open(SelectLessonDialogComponent, {});
+    dialogRef.afterClosed().subscribe({
+      next: (lesson_id?: string) => {
+        if (lesson_id) {
+          this.lesson_runner.start(lesson_id);
         }
       },
     });

@@ -7,7 +7,7 @@ export const environment = {
   current_user_role: 'guest',
   production: true,
   debug: false,
-  
+
   fragments: 'fragments',
   fragment: 'fragment',
   testimonia: 'testimonia',
