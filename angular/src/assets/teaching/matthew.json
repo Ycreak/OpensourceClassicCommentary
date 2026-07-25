@@ -1,0 +1,182 @@
+{
+  "id": "matthew",
+  "title": "Reconstructing Fragmentary Plays: Pacuvius’ Medus & Ennius' Thyestes",
+  "author": "Matthew",
+  "description": "An interactive lesson interpreting surviving Latin fragments to reconstruct lost tragic plots.",
+  "questions": [
+    {
+      "id": 1,
+      "section": "Pacuvius’ Medus",
+      "prompt": "In this lesson we are going to look at an ancient play, Medus, written by the Roman playwright Pacuvius. Medus is about a hero who gets himself into all sorts of trouble while searching for his powerful mother. At least, that’s what we think that is what the play is about. You see, we have about twenty lines surviving. That’s from a play that would probably have had at least a thousand. So we don’t have very much left of it! And the lines that we have are not all from the same place but are scattered around as quotations in lots of other works. For this reason, we call it a ‘fragmentary’ play. For the questions in the quiz, you’ll probably want to have a good Latin dictionary to hand, as the early Latin drama often features words that are rare or do not appear at all in later Latin. Through the questions you will interpret the fragments that we have and through that reconstruct the plot of the play. To answer the questions, you need to drop the correct fragments into the answer box.\n\nThe play is all about how Medus is trying to find his mother, Medea. In which of the following fragments is Medus talking about his search?",
+      "choices": [
+        "F161 Schierl",
+        "F162 Schierl",
+        "F163 Schierl"
+      ],
+      "correct_index": 1,
+      "hint": "Have you tried looking for a word that means ‘investigating’ or ‘searching for’?",
+      "explanation": "Yes, that’s right! In this fragment the speaker is praying to the Sun God, Sol, for his help in seeking a parent. Sol is Medea’s grandfather and Medus’ great-grandfather."
+    },
+    {
+      "id": 2,
+      "section": "Pacuvius’ Medus",
+      "prompt": "With many fragmentary plays, we don’t know for sure what the plot was, but with Medus, we think we have a good idea. That’s because a mythographer (that’s someone who writes about myths), Hyginus, tells us the story of the hero Medus, son of Medea. Sometimes, there were several different versions of a myth about a god or goddess, or a hero or heroine, and an ancient play can use a version of the myth that we don’t know, but there’s only one play about Medus, and there’s no good reason to think that Pacuvius didn’t use the same version of the myth of Medus that we find in Hyginus (although that’s still an assumption). From Hyginus, we learn that Medus’ story begins with his arrival in Colchis, which is the birthplace of his (in)famous mother, Medea. There are many stories about Medea, but the most important one for us is why she left Colchis in the first place. Many years before, Medea fled Colchis aboard a ship, the Argo, with the Greek hero Jason and his fellow-heroes, the Argonauts, because Medea had fallen in love with Jason and wanted to follow him to Greece. Medea was so in love with Jason that she had defied her father, King Aeetes, and helped Jason to take the Golden Fleece. In order to escape from her father and his powerful navy, who were chasing after the Argo, Medea took her own brother, Absyrtus, who was just a boy, and killed him, before throwing the body-parts overboard one by one, so that her father would slow down his fleet’s pursuit in order to retrieve each part of Absyrtus’ body for burial. Aeetes had received an oracle foretelling that if the Golden Fleece was ever taken from Colchis, there would be dire consequences. Indeed, in the myth that Pacuvius was following, Aeetes must have lost the throne to his brother, Perses. (In other versions Aeetes was violently killed). But Perses received an oracle himself, that he would die at the hands of one of the descendants of Aeetes.\n\nYears later, Medea’s son Medus ends up in Colchis in his search for his mother. From which of the following fragments can we learn that he arrived in a boat?",
+      "choices": [
+        "F161 Schierl",
+        "F162 Schierl",
+        "F163 Schierl",
+        "F164 Schierl"
+      ],
+      "correct_index": 0,
+      "hint": "If someone was arriving by ship, in what kinds of places could they land?",
+      "explanation": "Yes, that’s right! This must come from a later moment in the play when Medus is describing how he moored his boat on the shore. Aeaea (or Aea) is another name for Colchis (the name is connected to the name Aeetes). tonsilla means a mooring post, to stop a boat from drifting off."
+    },
+    {
+      "id": 3,
+      "section": "Pacuvius’ Medus",
+      "prompt": "After Medus arrives in Colchis, Hyginus tells us that he is arrested by guards who bring him before king Perses for questioning. The king does not know who Medus is. So (probably because he knows about the oracle given to Perses that one of Aeetes’ descendants would one day kill him) Medus thinks it is best not to say who he really is, and instead he pretends to be someone else, Hippotes. Hyginus just tells us that Perses interrogated Medus, but doesn’t say what he asked him or how Medus responded. In Pacuvius’ play, this interrogation must have been an important dialogue. To judge from our fragments, Medus may well have told Perses the truth that he was looking for Medea, but, because he was pretending to be Hippotes, he may have lied about the reason. The real Hippotes was the son of Creon, the king of Corinth, who had died as he was trying to help his daughter take off a poisoned robe sent to her by Medea. Medus, pretending to be Hippotes, probably claimed that he wanted to find Medea so that he could take revenge for the murder of his father and sister. Perses may well have wanted to know from Hippotes about Medea’s whereabouts: after all, as the daughter of Aeetes, she could be one way that the oracle might come true.\n\nWhich two fragments reveal that Perses is interested in learning from ‘Hippotes’ about Medea’s current whereabouts?",
+      "choices": [
+        "F163 Schierl",
+        "F164 Schierl",
+        "F165 Schierl",
+        "F166 Schierl"
+      ],
+      "correct_indices": [1, 2],
+      "hint": "Try to identify some question words which relate to movement.",
+      "explanation": "Well done! In these lines Perses is asking what the rumours are about where where Medea is going. Medus (pretending to be Hippotes) describes how Medea is wandering around, banished from Greece."
+    },
+    {
+      "id": 4,
+      "section": "Pacuvius’ Medus",
+      "prompt": "Although Perses seems to conduct an extensive interrogation of ‘Hippotes’ (who is really Medus), he does not seem to entirely trust him. Therefore, Perses commands that ‘Hippotes’ (really Medus) be kept under guard.\n\nWhich fragment probably contains Perses’ command to guard Hippotes?",
+      "choices": [
+        "F164 Schierl",
+        "F165 Schierl",
+        "F166 Schierl"
+      ],
+      "correct_index": 2,
+      "hint": "Look for an imperative.",
+      "explanation": "Yes, this contains an imperative to guard someone. Perses also tells the guards that no harm is to come to Medus."
+    },
+    {
+      "id": 5,
+      "section": "Pacuvius’ Medus",
+      "prompt": "While Medus is languishing in prison, you’ll never guess who shows up in Perses’ palace – Medea herself! Medea travels in an amazing chariot given to her by her grandfather, the sun god Sol. The chariot is drawn by flying snakelike dragons.\n\nWhich of these fragments describe Medea’s chariot?",
+      "choices": [
+        "F170 Schierl",
+        "F171 Schierl",
+        "F172 Schierl",
+        "F173 Schierl"
+      ],
+      "correct_indices": [1, 2],
+      "hint": "What words could describe snakes or flight?",
+      "explanation": "The flying serpentine dragons pulling Medea’s chariot must have made a strong impression. Medea’s chariot seems to be described as part of a messenger speech."
+    },
+    {
+      "id": 6,
+      "section": "Pacuvius’ Medus",
+      "prompt": "Just like Medus pretends to be someone he isn’t, Medea lies about who she is. Since there is a famine going on in Colchis, Medea pretends to be a priestess of Diana, who can call upon the goddess to end the famine.\n\nIn which fragment is Medea being greeted as the priestess of Diana?",
+      "choices": [
+        "F168 Schierl",
+        "F173 Schierl",
+        "F174 Schierl"
+      ],
+      "correct_index": 2,
+      "hint": "What Latin word is usually used in greetings?",
+      "explanation": "Good job. This fragment has survived because Varro quotes the line to explain what the word camilla means – he says that it means ‘handmaid’. Thus caelitum camilla translates as ‘handmaid of the gods’: a poetic way to greet a priestess!"
+    },
+    {
+      "id": 7,
+      "section": "Pacuvius’ Medus",
+      "prompt": "While keeping her true identity secret from King Perses, Medea finds out from him that he has arrested someone who says he is Hippotes, son of Creon, the King of Corinth Medea murdered. Medea, not knowing that this man is actually her son, Medus, assumes that this Hippotes has come to kill her in revenge for his father’s death. Medea, knowing that Perses fears any descendant of Aeetes, figures out a way to have Perses get rid of this Hippotes – she says that he is not actually Hippotes at all, but in fact Medus, Medea’s son, merely pretending to be Hippotes. In order to prove this, she claims that Hippotes is dead.\n\nWhich fragment shows that Medea claims at some point during the play that Hippotes is dead?",
+      "choices": [
+        "F177 Schierl",
+        "F176 Schierl",
+        "F177 Schierl"
+      ],
+      "correct_index": 2,
+      "hint": "Which of the fragments contains an indirect statement?",
+      "explanation": "Well done. In this fragment, either the speaker is asking what the reason was for the killing of Hippotes, an event which their addressee has claimed has occurred, or the speaker is asking why the person they are addressing said that Hippotes is dead. It could be that the speaker is Perses, asking Medea why Hippotes was killed, or perhaps it is Medus later on in the play, asking his mother why she put him in danger by making the king doubt his lie."
+    },
+    {
+      "id": 8,
+      "section": "Pacuvius’ Medus",
+      "prompt": "Perses, now believing that Medus was lying (which he in fact was), orders him to be brought out for execution. Medea recognises that the man who Perses has under arrest is not Hippotes at all but is in fact her son, Medus! Medea asks to speak with Medus before his execution, and slips him a sword, with which Medus kills Perses and claims his throne. We don’t seem to have any fragments from this part of the play, but we do seem to have quite a few fragments from the play’s final act, which is not part of Hyginus’ retelling of the myth. In this final act, Aeetes, the king who Perses deposed and Medea’s father, arrives on the scene, but does not immediately recognise his daughter, perhaps because she is much older than when he last saw her.\n\nWhich fragment explains the reason why Aeetes has come to the palace?",
+      "choices": [
+        "F178 Schierl",
+        "F179 Schierl",
+        "F180 Schierl"
+      ],
+      "correct_index": 1,
+      "hint": "What events in the past might weigh on Aeetes’ mind? You probably will want to use good dictionary that includes names to look up some of the words in these lines.",
+      "explanation": "Aegialeus is another name for Absyrtus, Aeetes’ son and Medea’s brother, whom Medea killed in order to make her escape. parentare is a rare verb which describes the giving of offerings in honour of dead relatives. There is a sad irony to the use of this verb here: it is derived from parens, and more commonly describes the sacrifices made by children in honour of their parents, but because Absyrtus was murdered so young, his father must make offerings for him."
+    },
+    {
+      "id": 9,
+      "section": "Pacuvius’ Medus",
+      "prompt": "Aeetes is a shadow of his former self. Having come to make offerings for Absyrtus, Aeetes meets Medus and Medea. When Medus speaks, it seems that Aeetes is confused and mistakes him for the ghost of Absyrtus. Medea intervenes to explain, addressing Aeetes as her father, and Aeetes is shocked by this. After the conversation unfolds, Aeetes is reconciled with his daughter.\n\nIn which fragment is Aeetes surprised to be addressed as ‘father’ by Medea?",
+      "choices": [
+        "F181 Schierl",
+        "F182 Schierl",
+        "F183 Schierl"
+      ],
+      "correct_index": 2,
+      "hint": "Aeetes must find it unusual to be called ‘father’.",
+      "explanation": "Well done. The mulier must be Medea, who has addressed Aeetes by the unexpected title of ‘father’. Some scholars have suggested that the speaker of this line is not actually Aeetes. Rather, they think that Medus might be the speaker and the line might belong to the scene in which he is brought out for execution, when Medea addresses him as ‘son’, but he might still be pretending to be Hippotes. However, since Medea is pretending to Perses not to be Medea, this would require Perses not to be able to hear them, in which case Medus wouldn’t need to pretend to still be Hippotes! (Unless Medus does not know what his mother looks like, but there is no indication of this in his myth.)",
+      "conclusion": "These questions have taken you through the process of reconstructing Medus from the few fragments we have. However, there are fragments that we have not covered in the myth, and we have not considered how every fragment might fit into the plot. For some fragments, there are several possibilities for where it might fit, even if we have explored the likeliest scenario. But here is a challenge for your creativity and imagination. If you would like to go further, you can follow this link to go to the ‘Playground’ area of the OSCC, where you will find all the fragments of the Medus. You can have a go yourself at arranging them."
+    },
+    {
+      "id": 10,
+      "section": "Ennius' Thyestes",
+      "prompt": "Ennius’ Thyestes tells the story of two brothers, Atreus and Thyestes, warring over the throne of Mycenae. The myth of Atreus and Thyestes was a popular one for dramas in ancient Rome: Seneca’s version of the myth survives to us in full, while we have quite a few fragments from Accius’ Atreus, and a couple from Varius Rufus’ Thyestes. The exact plot of Ennius’ Thyestes is a point of contention. This quiz will take you through the extant fragments and ask you to probe their contents. At the end you can have a go at arranging the fragments in the order that you think they might have occurred in the course of the play. Like Seneca’s Thyestes, the ancestry of Atreus and Thyestes might have played a significant role in E. However, there are no actual references to their family among the fragments securely attested as belonging to the Thyestes. Instead, there are fragments among the adespota – the fragments which have no play or author attributed to them – which scholars have thought should belong to Ennius’ Thyestes because they seem to reflect Ennian linguistic features.\n\nFrom which of the following fragments can we learn about Thyestes’ and Atreus’ parentage?",
+      "choices": [
+        "Fr. 22 adesp.",
+        "Fr. 55 adesp.",
+        "Fr. 56 adesp."
+      ],
+      "correct_index": 1,
+      "hint": "Look for words which indicate familial relationships.",
+      "explanation": "Well done! Atreus and Thyestes are the grandsons of Tantalus and the sons of Pelops. If this fragment does belong to Ennius’ Thyestes, it may have served to provide background to the history of the Pelopid brothers. The fragment is quoted together with Fr. 56 adesp. by Cicero, and for that reason scholars have thought that the son of Pelops in question is Thyestes, not Atreus."
+    },
+    {
+      "id": 11,
+      "section": "Ennius' Thyestes",
+      "prompt": "The fragments we can be sure of belonging to Ennius’ Thyestes are a mixed bag in terms of determining where the lines might originate from in the play or who might have spoken them. A number of lines clearly come from dialogue, given their use of 2nd person forms.\n\nWhich of the following lines may be spoken to an old man?",
+      "choices": [
+        "Fr. 133",
+        "Fr. 134",
+        "Fr. 137"
+      ],
+      "correct_index": 0,
+      "hint": "Think about what the noun for an “old man” is in Latin. Are there any words that might be related to this word in the fragments?",
+      "explanation": "The person the speaker is talking with is in their old age (in senectute). The speaker themselves does not seem to know who they are (quemnam). Unfortunately, the identity of the addressee is as mysterious to us as it is to the speaker, and so too the speaker’s identity. Some scholars have suggested that the old man is a messenger, since messengers often are strangers when they first appear on stage. But older people are (usually) more physically infirm, which makes them an odd choice for the physically taxing task of travelling long distances at speed! Two likelier suggestions are that it is the chorus leader speaking to Thyestes, or it is Atreus who is speaking with an old servant of Thyestes who has defected."
+    },
+    {
+      "id": 12,
+      "section": "Ennius' Thyestes",
+      "prompt": "A strong theme in Ennius’ Thyestes seems to have been the blows of Fortune. Fortuna is explicitly mentioned by one of the fragments that is securely attributed to Ennius’ Thyestes, and in an Ennian incerta that is often thought to belong to this play. The reversal of fortune is obviously a key theme in Attic tragedy – we can think of the closing lines of Sophocles’ Oedipus Tyrannus, “no one should call any man blessed before his final day” (1528–9) – but lament over misfortune also seems to have played a significant part of Ennius’ Thyestes.\n\nWhich of the following fragments on the theme of ill-fortune includes an apostrophe of Fortune?",
+      "choices": [
+        "Fr. 135",
+        "Fr. 140",
+        "Fr. 157 incert."
+      ],
+      "correct_index": 0,
+      "hint": "An apostrophe is an address to an abstract idea or an absent person. So look for 2nd person forms and think how they function.",
+      "explanation": "Well done. The speaker is addressing their own fortune with 2nd person endings (conglomeras). In Fr. 157, there is a 2nd person addressee, but Fortune is discussed with third person forms, so this is not an apostrophe but part of a dialogue with another character. Most scholars have thought that these fragments (unless Fr. 157 belongs to another Ennian play) are spoken by Thyestes, since he in the myth suffers the most."
+    },
+    {
+      "id": 13,
+      "section": "Ennius' Thyestes",
+      "prompt": "A key element of both Seneca’s Thyestes and Accius’ Atreus is the idea of the ideal revenge as carefully plotted and thought out. The ideal revenge requires deception and betrayal; the evil plans made must be kept hidden. Ennius’ Thyestes may well also share this element.\n\nWhich of the following fragments likely concerns the making of a plan?",
+      "choices": [
+        "Fr. 136",
+        "Fr. 141",
+        "Fr. 150 incert."
+      ],
+      "correct_index": 1,
+      "hint": "look for verbs which indicate thinking or preparing.",
+      "explanation": "Well done. Fr. 141 seems to be a description of someone intensely planning. It is perhaps spoken by the chorus to a servant, or vice versa, but at any rate about some third party that is probably off-stage. If the plot of Ennius’ Thyestes was like the other plays, we could expect that person to be Atreus, but we cannot totally dismiss the idea it is about Thyestes, as some scholars have suggested.",
+      "conclusion": "Hopefully this has shown you how tricky the fragments of Ennius’ Thyestes are to interpret. You may want to familiarise yourself with the plots of Seneca’s Thyestes and (what we know of) Accius’ Atreus, and read the accounts of the myth of Atreus and Thyestes in Hyginus. You can use our platform to try to arrange these fragments into your own order."
+    }
+  ]
+}
