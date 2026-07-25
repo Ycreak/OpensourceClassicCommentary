@@ -10,11 +10,22 @@ export interface LessonSummary {
   description: string;
 }
 
+// Metadata used to retrieve fragments from the api
+export interface FragmentReference {
+  document_type: string;
+  author: string;
+  title: string;
+  editor: string;
+  name: string;
+}
+
 export interface MultipleChoiceQuestion {
   type?: 'multiple_choice';
   prompt: string;
   /** Quoted source passages shown between the prompt and the choices. */
   sources?: string[];
+  // Used if fragments need to be retrieved for the question
+  fragments?: FragmentReference[];
   choices: string[];
   /** Single-answer questions. */
   correct_index?: number;
@@ -41,6 +52,8 @@ export interface DragDropQuestion {
   accepts: FragmentMatch[];
   explanation?: string;
   hint?: string;
+  // Used if fragments need to be retrieved for the question
+  fragments?: FragmentReference[];
 }
 
 /** The student drags lesson-provided text chips into category zones. */
@@ -54,6 +67,8 @@ export interface CategorizeQuestion {
   items: { text: string; category: number }[];
   explanation?: string;
   hint?: string;
+  // Used if fragments need to be retrieved for the question
+  fragments?: FragmentReference[];
 }
 
 export type Question = MultipleChoiceQuestion | DragDropQuestion | CategorizeQuestion;

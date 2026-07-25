@@ -46,7 +46,6 @@ import { SharePlaygroundComponent } from './components/share-playground/share-pl
 import { JoinPlaygroundComponent } from './components/join-playground/join-playground.component';
 import { DocumentFilterComponent } from '@oscc/features/filters/components/document-filter/document-filter.component';
 import { Playground_user } from '@oscc/features/playground/types/Playground_user';
-import { LatinTragicFragmentFilterComponent } from '@oscc/features/filters/components/latin-tragic-fragment-filter/latin-tragic-fragment-filter.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 
@@ -59,7 +58,7 @@ import { LessonRunnerService } from '@oscc/features/teaching/lesson-runner.servi
   templateUrl: './playground.component.html',
   styleUrls: ['./playground.component.scss'],
   standalone: true,
-  imports: [MatProgressBarModule, MatIconModule, LatinTragicFragmentFilterComponent, MatMenuModule],
+  imports: [MatProgressBarModule, MatIconModule, MatMenuModule],
 })
 export class PlaygroundComponent implements OnInit, OnDestroy {
   @Output() document_clicked = new EventEmitter<Fragment>();
