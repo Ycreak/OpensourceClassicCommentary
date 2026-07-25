@@ -1,5 +1,15 @@
 [
   {
+    "id": "matthew",
+    "title": "Matthew: Reconstructing Fragmentary Plays",
+    "description": "Pacuvius’ Medus & Ennius' Thyestes"
+  },
+  {
+    "id": "antje",
+    "title": "Antje: De Overlevering van Naevius’ Lycurgus",
+    "description": "De Rol van Grammatici"
+  },
+  {
     "id": "basil",
     "title": "Basil: Roman Republican Tragedy",
     "description": "Multiple-choice exercises on fragments of Roman Republican tragedy."

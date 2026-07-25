@@ -1,0 +1,89 @@
+{
+  "id": "antje",
+  "title": "Overlevering door Nonius en Naevius’ Lycurgus",
+  "author": "Antje",
+  "description": "Een interactieve les over de overlevering, reconstructie en context van fragmenten uit Naevius’ Lycurgus.",
+  "questions": [
+    {
+      "id": 1,
+      "section": "Overlevering door Nonius",
+      "prompt": "Bijna de meeste fragmenten van de Romeinse Republikeinse tragedie hebben we te danken aan de laatantieke grammaticus Nonius. Zonder hem was bijna alles verloren gegaan wat er nu nog rest van deze theaterstukken.\n\nWelke fragmenten uit Naevius’ Lycurgus hebben ook zónder (of naast) de exclusieve overlevering van Nonius de weg naar ons gevonden?",
+      "choices": [
+        "frg. 17 TRF",
+        "frg. 25 TRF",
+        "frg. 26 TRF",
+        "frg. 43 TRF"
+      ],
+      "correct_indices": [0, 2, 3],
+      "hint": "Ga naar de OSCC: kies \"Select text\" > Naevius > Lycurgus > TRF (= Tragicorum Romanorum Fragmenta). Bekijk aan de rechterkant bij \"Citation context\" door welke auteurs en in welke tekst elk fragment wordt geciteerd.",
+      "explanation": "Helemaal goed! Frg. 17 en 26 zijn behalve door Nonius ook door Priscianus overgeleverd, en frg. 43 heeft ons langs een geheel andere weg bereikt zonder Nonius."
+    },
+    {
+      "id": 2,
+      "section": "Aantal Fragmenten",
+      "prompt": "Zonder Nonius hadden we van Naevius’ Lycurgus slechts een heel klein handjevol fragmenten over. Dit is bijna niets in vergelijking met het aantal fragmenten dat er nu nog wél is.\n\nHoeveel fragmenten van Naevius' Lycurgus zijn er nu in totaal nog overgeleverd en opgenomen in de TRF-editie?",
+      "choices": [
+        "15 fragmenten",
+        "24 fragmenten",
+        "25 fragmenten",
+        "30 fragmenten"
+      ],
+      "correct_index": 2,
+      "hint": "Tel het aantal fragmenten dat in de linkerkolom van de TRF-editie is opgenomen.",
+      "explanation": "Dat klopt! De TRF-editie heeft in totaal 25 fragmenten toegeschreven aan Naevius’ Lycurgus. We weten echter maar van 24 fragmenten zéker dat ze er echt uit afkomstig zijn; bij één fragment is dit onzeker."
+    },
+    {
+      "id": 3,
+      "section": "Kritische Edities & Incerta",
+      "prompt": "Zoals gebruikelijk in een kritische editie, hebben de uitgevers van de TRF oprecht vermeld wat ze wél zeker weten en waar ze vooral aan het 'gokken' zijn. 'Kritisch' betekent niet 'negatief', maar een kritische editie wil vooral duidelijk maken waar informatie vandaan komt en hoe betrouwbaar deze is. De OSCC sluit hierbij aan en neemt die informatie zo goed mogelijk mee.\n\nBij welk fragment van Naevius’ Lycurgus is het onzeker (een incertum) of het überhaupt aan dit stuk kan worden toegeschreven?",
+      "choices": [
+        "frg. 17 TRF",
+        "frg. 26 TRF",
+        "frg. 43 TRF"
+      ],
+      "correct_index": 2,
+      "hint": "Kijk nog eens naar de Latijnse fragmenten in de kolom. Staat er ergens een Latijnse term bij die wijst op onzekerheid? Denk aan het Latijnse woord voor 'onzeker'.",
+      "explanation": "Juist! Boven rechts staat in de OSCC bij frg. 43 vermeld dat er sprake is van een 'incertum'."
+    },
+    {
+      "id": 4,
+      "section": "Citaatcontext Analyse",
+      "prompt": "Bekijk Naevius Lycurgus frg. 25 TRF. Dit fragment wordt in drie antieke teksten geciteerd: twee keer door Nonius en één keer door Priscianus. Antieke citaten zijn onze primaire bron voor betrouwbare toeschrijvingen.\n\nMet welke woorden introduceren Nonius en Priscianus dit citaat telkens, en welke informatie en zekerheid wordt hierdoor aan ons verstrekt?",
+      "choices": [
+        "Zekere toeschrijving (Certum)",
+        "Anoniem citaat",
+        "Twijfelachtige bron (Incertum)"
+      ],
+      "correct_index": 0,
+      "hint": "Op de rechterkant vind je het veld \"Citation Context\". Lees de Latijnse tekst die telkens aan het eigenlijke citaat voorafgaat.",
+      "explanation": "Correct! Nonius introduceert het fragment telkens met de woorden: \"Naevius Lycurgo\"; Priscianus met \"Naevius in Lycurgo\". In alle drie de gevallen leren we dus dat het fragment afkomstig is uit Naevius' Lycurgus. Hoewel antieke auteurs zich wel eens vergissen, mogen we concluderen dat dit fragment een 'certum' is en met zekerheid aan Naevius en deze tragedie kan worden toegeschreven."
+    },
+    {
+      "id": 5,
+      "section": "Motieven van Antieke Citaten",
+      "prompt": "Antieke auteurs hebben andere antieke auteurs natuurlijk nooit zomaar, niets voor niets, geciteerd. Meestal zit er een specifieke interesse achter, zoals het onderbouwen van een eigen gedachte of het aanhalen van een voorbeeld voor een specifiek woordgebruik.\n\nWat wilden Nonius en Priscianus precies onderbouwen door juist Naevius Lycurgus frg. 25 TRF te citeren?",
+      "choices": [
+        "Dramatische spanning",
+        "Woordbetekenis & Zeldzame grammatica",
+        "Metrische perfectie"
+      ],
+      "correct_index": 1,
+      "hint": "Lees de tekstpassages die voorafgaan aan het citaat en let op welke specifieke woorden of vormen de grammatici proberen te verklaren.",
+      "explanation": "Helemaal goed! Nonius wil in de eerste passage de inhoudelijke betekenis van een woord uitleggen (ignotae = insciae); in de tweede passage gaat het Nonius om het gebruik van een minder bekende grammaticale vorm (iteris = itineris). Dat laatste geldt ook voor Priscianus. Ze kozen dus niet voor de inhoudelijk beste of meest centrale scènes, maar juist voor het rare en bijzondere!"
+    },
+    {
+      "id": 6,
+      "section": "Inhoudelijke Reconstructie",
+      "prompt": "Naevius Lycurgus frg. 25 TRF is erg kort (\"tute scis ignotae ut iteris sumus\"). Toch gaat er in deze paar woorden informatie schuil die ons helpt om een uitspraak te doen over de scènedynamiek en de personages die op het toneel staan.\n\nWelke grammaticale details in dit fragment geven ons een hint om verdere conclusies te trekken over de personages op het toneel?",
+      "choices": [
+        "Een eenzame mannelijke spreker",
+        "Meerdere vrouwelijke personages in gesprek",
+        "Een verteller buiten het toneel"
+      ],
+      "correct_index": 1,
+      "hint": "Let op het numerus (enkelvoud/meervoud) en genus (geslacht) van het adjectief/subject, en kijk hoeveel personages er bij dit gesprek betrokken zijn.",
+      "explanation": "Precies! In het fragment gaat het om vrouwelijke personages (ignotae = nom. pl. fem.). Er staan blijkbaar meerdere personages op het toneel: de sprekers (of een spreker die de groep vertegenwoordigt) en nog een personage (tute = tu) tegen wie ze zeggen: \"Wij zijn de weg kwijt, dat weet jij wel\". Het feit dat er sprake is van een directe dialoog staat de conclusie toe dat er meerdere personen tegelijkertijd op het toneel staan.",
+      "conclusion": "Gefeliciteerd! Je hebt gezien hoe we door nauwkeurig te kijken naar de overlevering, de citaatcontext en de grammaticale details bij laatantieke grammatici zoals Nonius en Priscianus, toch een levendig beeld kunnen reconstrueren van verdwenen Romeinse tragedies zoals Naevius' Lycurgus. Verken gerust verdere fragmenten in de OSCC!"
+    }
+  ]
+}
