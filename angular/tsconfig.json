@@ -9,6 +9,9 @@
       ],
       "@src/*": [
         "./src/*"
+      ],
+      "@ludev/*": [
+        "./src/app/features/ludev/*"
       ]
     },
     "outDir": "./dist/out-tsc",

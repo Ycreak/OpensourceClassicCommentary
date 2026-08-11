@@ -1,0 +1,117 @@
+.result-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.meter {
+  flex: 0 0 auto;
+  margin-left: 1rem;
+  margin-right: 2rem;
+  justify-content: flex-end;
+}
+
+h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1rem;
+}
+
+p {
+  margin: 0;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+.candidate-title {
+  display: inline-flex;
+  line-height: 1.6;
+  gap: 0.35em;
+  flex-wrap: wrap;
+}
+
+.word {
+  display: inline-flex;
+}
+
+.word-syllable {
+  display: inline;
+  transition: background-color 0.15s ease;
+}
+.word-syllable--low-confidence {
+  background-color: rgba(220, 38, 38, 0.28)
+}
+
+.word-syllable--mid-confidence {
+  background-color: rgba(245, 158, 11, 0.28);
+}
+
+
+.word-syllable--long:hover {
+  background-color: rgba(62, 59, 80, 0.158);
+}
+
+.word-syllable--short:hover {
+  background-color: rgba(62, 59, 80, 0.158);
+}
+.word-syllable--elision:hover {
+  background-color: rgba(62, 59, 80, 0.158);
+}
+
+.word-syllable--long {
+  text-decoration: underline;
+  text-decoration-color: #4d83ff;
+  text-decoration-style: solid;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.word-syllable--short {
+  text-decoration: underline;
+  text-decoration-color: #fd846d;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.word-syllable--elision {
+  text-decoration: underline;
+  text-decoration-color: #1da33a;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.discarded-badge {
+  margin-left: 8px;
+  margin-right: 30px;
+  padding: 2px 8px;
+  border-radius: 30px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background-color: #fce4e4;
+  color: #ad1414;
+  border: 1px solid #8f0b0b;
+}
+
+.meter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.35rem;
+  margin-left: 1rem;
+  white-space: nowrap;
+}
+
+.meter-label {
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+.distance-inline {
+  color: #9ca3af;
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1;
+  transform: translateY(-0.02rem);
+}

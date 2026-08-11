@@ -1,0 +1,121 @@
+<mat-card>
+  <mat-card-header class="results-header">
+  <mat-card-title class="rp-title">
+    <span>Results</span>
+
+    @if (viewState === 'results') {
+      <span class="candidate-count">{{ results.length }}</span>
+    }
+  </mat-card-title>
+
+  @if (viewState === 'results') {
+    <div class="results-actions">
+            <div class="controls-row">
+        <mat-form-field appearance="outline" class="sort-select">
+          <mat-label>Sort by</mat-label>
+          <mat-select [value]="sortOption" (valueChange)="onSortChange($event)">
+            <mat-option value="position">Text position</mat-option>
+            <mat-option value="distance">Distance</mat-option>
+            <mat-option value="confidence">Confidence</mat-option>
+            <mat-option value="syllables">Syllable count</mat-option>
+            <mat-option value="meter">Meter</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button
+          mat-stroked-button
+          type="button"
+          class="sort-direction-button"
+          (click)="toggleSortDirection()"
+          [attr.aria-label]="sortDirection === 'asc' ? 'Sort ascending' : 'Sort descending'">
+          {{ sortDirection === 'asc' ? '↑' : '↓' }}
+        </button>
+
+        <button
+          mat-stroked-button
+          type="button"
+          class="export-menu-button"
+          [matMenuTriggerFor]="exportMenu">
+          Export <span class="button-caret">▾</span>
+        </button>
+
+        <mat-menu #exportMenu="matMenu" panelClass="export-menu-panel">
+          <button mat-menu-item type="button" (click)="exportTxt()">Export as TXT</button>
+          <button mat-menu-item type="button" (click)="exportJson()">Export as JSON</button>
+        </mat-menu>
+      </div>
+      
+      <div class="active-filters">
+        <span class="active-filters__label">Filters</span>
+
+        @if (activeFilterLabels.length > 0) {
+          @for (filter of activeFilterLabels; track filter) {
+            <span class="active-filter-chip">{{ filter }}</span>
+          }
+        } @else {
+          <span class="active-filters__empty">Default</span>
+        }
+      </div>
+
+      <div class="visual-lines">
+        <div class="line"><span class="visual-line solid"></span> = long</div>
+        <div class="line"><span class="visual-line dashed"></span> = short</div>
+        <div class="line"><span class="visual-line dotted"></span> = elision</div>
+        <div class="line"><span class="conf-box low"></span> = &lt;50%</div>
+        <div class="line"><span class="conf-box mid"></span> = &lt;90%</div>
+      </div>
+    </div>
+  }
+</mat-card-header>
+  <mat-card-content>
+
+    @if (viewState === 'loading') {
+      <div class="state-box">
+        <mat-progress-spinner mode="indeterminate" diameter="40"></mat-progress-spinner>
+        <p>Loading results...</p>
+      </div>
+    }
+
+    @if (viewState === 'empty') {
+      <div class="state-box">
+        <p>No results yet. Submit a text or upload a file to begin.</p>
+      </div>
+    }
+
+    @if (viewState === 'strict_filters') {
+      <div class="state-box">
+        <p>No results for these filters. Reset or adjust the filters.</p>
+      </div>
+    }
+
+    @if (viewState === 'no_results') {
+      <div class="state-box">
+        <p>No results for this text. Submit another text or upload another file.</p>
+      </div>
+    }
+
+    @if (viewState === 'error') {
+      <div class="state-box error">
+        <p>Something went wrong while fetching results.</p>
+      </div>
+    }
+
+    @if (viewState === 'results') {
+      <cdk-virtual-scroll-viewport itemSize="50" class="results-list">
+        <div *cdkVirtualFor="let result of results" trackBy="result.candidate_id">
+          <app-result-card
+            [id]="result.candidate_id"
+            [candidate]="result.words.join(' ')"
+            [meter]="result.meter"
+            [distance]="result.distance"
+            [scansion]="result.labels"
+            [labels]="result.labels"
+            [confidence]="result.confidence"
+            [syllables]="result.syllables"
+            [confidences]="result.confidence">
+          </app-result-card>
+        </div>
+      </cdk-virtual-scroll-viewport>
+    }
+  </mat-card-content>
+</mat-card>

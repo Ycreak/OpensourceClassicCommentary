@@ -2,6 +2,7 @@ export const environment = {
   title: 'Open Source Classics Commentary',
   short_title: 'OSCC',
   flask_api: 'https://oscc.nolden.biz/',
+  ludev_flask_api: 'https://nolden.biz/api/analyze',
   is_logged_in: false,
   current_user_name: '',
   current_user_role: 'guest',

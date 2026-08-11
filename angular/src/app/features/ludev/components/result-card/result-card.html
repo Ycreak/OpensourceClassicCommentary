@@ -1,0 +1,39 @@
+<mat-expansion-panel (opened)="isclicked = true" (closed)="isclicked = false; onClose()">
+  <mat-expansion-panel-header (click)="onClick()">
+  <mat-panel-title>
+  <span class="candidate-title">
+  @for (word of syllableWords; track $index) {
+    <span class="word">
+      @for (syl of word.syllables; track $index) {
+        <span
+          class="word-syllable"
+          [class.word-syllable--long]="syl.label === 'long'"
+          [class.word-syllable--short]="syl.label === 'short'"
+          [class.word-syllable--elision]="syl.label === 'elision'"
+
+          [class.word-syllable--low-confidence]="getConfVal(syl.confidence) < 50"
+          [class.word-syllable--mid-confidence]="getConfVal(syl.confidence) >= 50 && getConfVal(syl.confidence) < 90"
+
+          [matTooltip]="syl.label + ' = ' + syl.confidence"
+          [matTooltipDisabled]="!isclicked"
+          matTooltipPosition="above">{{ syl.text }}</span>
+      }
+    </span>
+  }
+</span>
+  </mat-panel-title>
+    <mat-panel-description class="meter">
+  @if (isDiscarded) {
+    <span class="discarded-badge">Discarded / Unlikely</span>
+  }
+
+  <span class="meter-label">{{ meterLabel }}</span>
+  <span class="distance-inline" title="Distance">
+    {{ distance }}
+  </span>
+</mat-panel-description>
+  </mat-expansion-panel-header>
+
+  <p>Distance: {{ distance }}</p>
+  <p>Average Confidence of Scansions: {{ confidence }}</p>
+</mat-expansion-panel>

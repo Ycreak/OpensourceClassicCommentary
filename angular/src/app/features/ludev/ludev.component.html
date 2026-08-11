@@ -1,0 +1,20 @@
+<app-header></app-header>
+
+<main #layout class="page-layout" [style.gridTemplateColumns]="gridTemplateColumns">
+  <section class="left-column">
+    <app-text-input-panel></app-text-input-panel>
+    <app-filters-panel></app-filters-panel>
+  </section>
+
+  <div
+    class="resize-handle"
+    (mousedown)="startResize($event)"
+    role="separator"
+    aria-orientation="vertical"
+    aria-label="Resize columns"
+  ></div>
+
+  <section class="right-column">
+    <app-results-panel></app-results-panel>
+  </section>
+</main>
