@@ -1,0 +1,131 @@
+// Global styles for the LUDEV (Latin Poetry Finder) feature.
+// Ported from the "Searching for Poetry in Latin Prose" frontend global styles,
+// scoped under the app-ludev host so the rest of OSCC is unaffected.
+
+app-ludev {
+  --app-ivory: #fbf7ec;
+  --app-surface: #fffaf0;
+  --app-navy: #001c44;
+  --app-burgundy: #460c1d;
+  --app-gold: #fef0cd;
+  --app-border: #ded2bd;
+  --app-border-strong: #c9b99b;
+  --app-text: #221a15;
+  --app-muted: #6f6253;
+
+  --mat-sys-primary: var(--app-burgundy);
+  --mat-sys-on-primary: #ffffff;
+  --mat-sys-primary-container: var(--app-gold);
+  --mat-sys-on-primary-container: var(--app-burgundy);
+
+  --mat-sys-tertiary: #8a6400;
+  --mat-sys-tertiary-container: var(--app-gold);
+  --mat-sys-on-tertiary-container: #2c2000;
+
+  --mat-sys-surface: var(--app-ivory);
+  --mat-sys-surface-container-lowest: #ffffff;
+  --mat-sys-surface-container-low: var(--app-surface);
+  --mat-sys-surface-container: var(--app-surface);
+  --mat-sys-surface-container-high: #f7efdf;
+  --mat-sys-on-surface: var(--app-text);
+  --mat-sys-on-surface-variant: var(--app-muted);
+
+  --mat-sys-outline: var(--app-border-strong);
+  --mat-sys-outline-variant: var(--app-border);
+}
+
+app-ludev {
+  .mat-mdc-card {
+    background-color: var(--app-surface) !important;
+    border: 1px solid var(--app-border);
+    border-radius: 18px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.035) !important;
+  }
+
+  .mat-mdc-card-header {
+    padding: 1.1rem 1.1rem 0.35rem !important;
+  }
+
+  .mat-mdc-card-title {
+    font-size: 1.3rem !important;
+    font-weight: 600 !important;
+    line-height: 1.2 !important;
+    letter-spacing: -0.01em;
+    color: var(--app-text);
+  }
+
+  .mat-mdc-card-subtitle {
+    margin-top: 0.25rem;
+    font-size: 0.9rem !important;
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--app-muted) !important;
+  }
+
+  .mat-mdc-card-content {
+    padding: 0.85rem 1.1rem 1rem !important;
+    color: var(--app-muted);
+  }
+
+  .mat-mdc-card-actions {
+    padding: 0 1.1rem 1.1rem !important;
+  }
+
+  .mat-mdc-form-field {
+    --mdc-outlined-text-field-outline-color: var(--app-border);
+    --mdc-outlined-text-field-hover-outline-color: var(--app-border-strong);
+    --mdc-outlined-text-field-focus-outline-color: var(--app-burgundy);
+    --mdc-outlined-text-field-label-text-color: var(--app-muted);
+    --mdc-outlined-text-field-focus-label-text-color: var(--app-burgundy);
+  }
+
+  .mat-mdc-unelevated-button.mat-primary,
+  .mat-mdc-raised-button.mat-primary {
+    --mdc-filled-button-container-color: var(--app-burgundy);
+    --mdc-filled-button-label-text-color: #ffffff;
+    --mdc-protected-button-container-color: var(--app-burgundy);
+    --mdc-protected-button-label-text-color: #ffffff;
+  }
+
+  .mat-mdc-raised-button {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+  }
+
+  .mat-mdc-button-base {
+    border-radius: 999px !important;
+    font-family: "Lora", Georgia, "Times New Roman", serif !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.01em;
+  }
+
+  .mat-mdc-outlined-button {
+    --mdc-outlined-button-outline-color: var(--app-border-strong);
+    --mdc-outlined-button-label-text-color: var(--app-burgundy);
+    --mat-outlined-button-state-layer-color: var(--app-burgundy);
+  }
+
+  .mat-mdc-outlined-button:not(:disabled):hover {
+    --mdc-outlined-button-outline-color: var(--app-burgundy);
+    background-color: rgba(254, 240, 205, 0.35);
+  }
+
+  .mat-mdc-menu-item {
+    font-family: "Lora", Georgia, "Times New Roman", serif !important;
+  }
+
+  .mat-expansion-panel {
+    background: var(--app-surface) !important;
+    border: 1px solid var(--app-border);
+    border-radius: 14px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+    margin: 0.75rem 0rem !important;
+  }
+
+  .mat-expansion-panel-header {
+    font-family: "Lora", Georgia, "Times New Roman", serif;
+  }
+
+  .mat-mdc-input-element {
+    font-family: "Lora", Georgia, "Times New Roman", serif !important;
+  }
+}

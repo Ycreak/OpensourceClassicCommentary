@@ -1,0 +1,83 @@
+<mat-card>
+  <div class="source-header">
+    <div class="source-heading">
+      <mat-card-title>Source Text</mat-card-title>
+      <mat-card-subtitle>Paste Latin prose or upload a plain text file for analysis</mat-card-subtitle>
+    </div>
+
+    <mat-button-toggle-group
+      class="source-mode-toggle"
+      name="sourceMode"
+      aria-label="Choose source text input method"
+      [(ngModel)]="sourceMode">
+      <mat-button-toggle value="paste">Paste text</mat-button-toggle>
+      <mat-button-toggle value="upload">Upload .txt</mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+
+  <mat-card-content class="prose-input">
+    @if (sourceMode === 'upload') {
+    <div
+      class="file-dropzone"
+      [class.error]="isInvalidFile"
+      (dragover)="onDragOver($event)"
+      (drop)="onDropSuccess($event)">
+      <mat-icon>{{ selectedFileName ? 'done' : 'file_upload' }}</mat-icon>
+      <p [class.error]="isInvalidFile">
+        @if (isInvalidFile) { Select a valid .txt file. } @else if (selectedFileName) { {{ selectedFileName }} } @else {
+        Drag and drop a .txt file here }
+      </p>
+      <button mat-flat-button color="primary" type="button" (click)="uploader.click()">Browse files</button>
+      <input hidden type="file" #uploader accept=".txt,text/plain" (change)="onBrowseFiles($event)" />
+    </div>
+    }
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Latin prose passage</mat-label>
+      <textarea
+        matInput
+        class="input-text"
+        rows="8"
+        placeholder="Enter or paste text here"
+        [(ngModel)]="inputText"
+        (ngModelChange)="onTextChange()">
+      </textarea>
+    </mat-form-field>
+
+    <div class="input-meta">
+      <span>{{ characterCount }} characters</span>
+      @if (selectedFileName) {
+      <span>Loaded from {{ selectedFileName }}</span>
+      }
+    </div>
+
+    @if (validationError) {
+    <p class="validation-message error">{{ validationError }}</p>
+    } @if (showHighlight) {
+    <div class="highlight-panel">
+      <span class="highlight-panel__label">Selected candidate</span>
+      <div #highlightPanelText class="highlight-panel__text" [innerHTML]="highlightedHtml"></div>
+    </div>
+    }
+  </mat-card-content>
+
+  <mat-card-actions align="end">
+    <button
+      mat-stroked-button
+      color="primary"
+      type="button"
+      [disabled]="isSubmitting || !inputText"
+      (click)="onClearText()">
+      Clear Text
+    </button>
+    <button
+      class="analyze-text-button"
+      mat-flat-button
+      color="primary"
+      type="button"
+      [disabled]="isSubmitting"
+      (click)="onAnalyze()">
+      Analyze Text
+    </button>
+  </mat-card-actions>
+</mat-card>

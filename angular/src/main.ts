@@ -6,6 +6,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { DashboardComponent } from './app/features/dashboard/dashboard.component';
 import { AuthGuard } from './app/features/auth/services/auth.guard';
 import { OverviewComponent } from './app/features/overview/overview.component';
+import { LudevComponent } from './app/features/ludev/ludev.component';
 import { provideRouter, Routes } from '@angular/router';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { HttpErrorInterceptor } from './app/services/api.service';
@@ -14,6 +15,7 @@ import { HTTP_INTERCEPTORS, withInterceptorsFromDi, provideHttpClient } from '@a
 const appRoutes: Routes = [
   { path: '', component: OverviewComponent },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
+  { path: 'ludev', component: LudevComponent },
   { path: '**', redirectTo: '' },
 ];
 //const config: SocketIoConfig = { url: 'http://localhost:5000', options: {} };

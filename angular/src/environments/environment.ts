@@ -7,6 +7,7 @@ export const environment = {
   short_title: 'OSCC (Dev)',
   flask_api: 'http://localhost:5003/',
   //flask_api: 'https://oscc.nolden.biz/',
+  ludev_flask_api: 'http://localhost:5050/api/analyze',
   is_logged_in: true,
   current_user_name: 'Lucus',
   current_user_role: 'admin',

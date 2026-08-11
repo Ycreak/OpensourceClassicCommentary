@@ -1,0 +1,164 @@
+.full-width {
+  width: 100%;
+}
+
+.input-text {
+  min-height: 240px;
+  line-height: 1.55;
+  font-family: "Lora", Georgia, "Times New Roman", serif;
+  color: var(--app-text);
+}
+
+h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+}
+
+p {
+  margin: 0;
+  color: var(--app-muted);
+}
+
+.validation-message {
+  margin-top: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.error {
+  color: #b42318;
+}
+
+.prose-input {
+  display: grid;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.source-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 1.1rem 0.35rem;
+}
+
+.source-heading {
+  min-width: 0;
+}
+
+.source-mode-toggle {
+  flex: 0 0 auto;
+  margin-top: 0.15rem;
+  width: fit-content;
+  border: 1px solid var(--app-border);
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(254, 240, 205, 0.35);
+
+  ::ng-deep .mat-button-toggle {
+    color: var(--app-burgundy);
+    font-family: "Lora", Georgia, "Times New Roman", serif;
+  }
+
+  ::ng-deep .mat-button-toggle-checked {
+    background: var(--app-burgundy);
+    color: var(--app-ivory, #fbf7ec);
+  }
+
+  ::ng-deep .mat-button-toggle-checked .mat-pseudo-checkbox {
+    color: var(--app-ivory);
+  }
+
+  ::ng-deep .mat-button-toggle-checked .mat-pseudo-checkbox::after {
+    border-color: var(--app-gold);
+    color: var(--app-ivory);
+  }
+}
+
+.analyze-text-button {
+  color: var(--app-ivory);
+}
+
+@media (max-width: 760px) {
+  .source-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .source-mode-toggle {
+    margin-top: 0.5rem;
+  }
+}
+
+.file-dropzone {
+  display: grid;
+  gap: 0.65rem;
+  min-height: 112px;
+  padding: 1.25rem;
+  place-items: center;
+  border: 1px dashed var(--app-border-strong);
+  border-radius: 14px;
+  text-align: center;
+  background: rgba(254, 240, 205, 0.35);
+  color: var(--app-muted);
+
+  mat-icon {
+    color: var(--app-burgundy);
+  }
+
+  &.error {
+    border-color: #b42318;
+    background: rgba(180, 35, 24, 0.06);
+  }
+}
+
+.input-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin-top: -0.75rem;
+  color: var(--app-muted);
+  font-size: 0.85rem;
+}
+
+.highlight-panel {
+  margin-bottom: 4px;
+  border: 1px solid var(--app-border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  background: rgba(254, 240, 205, 0.35);
+
+  &__label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 550;
+    letter-spacing: 0.04em;
+    color: rgba(0, 0, 0, 0.55);
+    margin-bottom: 8px;
+  }
+
+  &__text {
+    font-family: inherit;
+    font-size: 0.95rem;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    word-break: break-word;
+    color: rgba(0, 0, 0, 0.87);
+
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+::ng-deep .candidate-highlight {
+  background-color: #ffe7aa;
+  padding: 1px 3px;
+  border: 1px solid #dfbd67;
+  border-radius: 3px;
+}
+
+.full-width {
+  display: grid;
+}
