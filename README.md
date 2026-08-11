@@ -123,7 +123,7 @@ To build Angular, run the following command when inside the Angular folder:
 
 ```console 
 ng build --configuration=production
-rsync -avu dist/OpenSourceClassicCommentary/browser/ <server>:<location>
+rsync -avu --delete dist/OpenSourceClassicCommentary/browser/ <server>:<location>
 ```
 
 If the program is ran from a subdomain, do not forget to specify said domain. For example: --base-href=/OSCC/
