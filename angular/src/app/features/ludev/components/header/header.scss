@@ -8,7 +8,7 @@
   padding: 0;
   background: var(--app-navy);
   color: #ffffff;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.10);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
 .toolbar-inner {
@@ -71,7 +71,7 @@
     width: 25px;
     height: 25px;
     margin-right: 4px;
-    color:#ffffff
+    color: #ffffff;
   }
 
   &:hover {
@@ -79,7 +79,6 @@
     background: rgba(255, 255, 255, 0.08);
   }
 }
-
 
 // make background darker when dialog is open
 .dialog-backdrop {
@@ -95,8 +94,12 @@
 }
 
 @keyframes fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 // dialog pop up
@@ -114,8 +117,14 @@
 }
 
 @keyframes fade-in {
-  from { transform: translateY(12px); opacity: 0; }
-  to   { transform: translateY(0);    opacity: 1; }
+  from {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .dialog-header {
@@ -133,8 +142,12 @@
   align-items: center;
   justify-content: center;
 
-  mat-icon { font-size: 40px; width: 40px;
-    height: 40px;color: #fff; }
+  mat-icon {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+    color: #fff;
+  }
 }
 
 .header-text {
@@ -163,7 +176,9 @@
   border-radius: 4px;
   transition: opacity 0.15s;
 
-  &:hover { opacity: 1; }
+  &:hover {
+    opacity: 1;
+  }
 }
 
 // ── Dialog body ──
@@ -173,7 +188,7 @@
   border-color: #c9b99b;
   border-left: 4px solid #c9b99b;
   border-right: 4px solid #c9b99b;
-  border-bottom:4px solid #c9b99b;;
+  border-bottom: 4px solid #c9b99b;
   border-radius: 10px;
   border-top-left-radius: 0%;
   border-top-right-radius: 0%;
@@ -186,7 +201,9 @@
   padding: 18px 24px;
   border-bottom: 2px solid #c9b99b;
 
-  &:last-of-type { border-bottom: none; }
+  &:last-of-type {
+    border-bottom: none;
+  }
 }
 
 .section-icon {
@@ -207,8 +224,6 @@
     line-height: 1.65;
   }
 }
-
-
 
 // num list
 .steps-list {
@@ -325,15 +340,24 @@
   font-size: 0.82rem;
   margin-left: 20px;
 
-  &.high { background: rgba(239, 68, 68, 0.2); color: #2c2c2c; }
-  &.mid  { background: rgba(251, 191, 36, 0.25); color: #2c2c2c; }
-  &.none { background: transparent; color: #2c2c2c; }
+  &.high {
+    background: rgba(239, 68, 68, 0.2);
+    color: #2c2c2c;
+  }
+  &.mid {
+    background: rgba(251, 191, 36, 0.25);
+    color: #2c2c2c;
+  }
+  &.none {
+    background: transparent;
+    color: #2c2c2c;
+  }
 }
 
 .meter-label {
   color: #6b7280;
   font-size: 0.85rem;
-  margin-left:25px;
+  margin-left: 25px;
 }
 .dist-example {
   gap: 6px;
@@ -348,7 +372,7 @@
 }
 
 .dist-desc {
-  font-size: 0.90rem;
+  font-size: 0.9rem;
   color: var(--app-text);
   // background-color: #1d5e2b2a;
   padding: 2px;
@@ -371,7 +395,6 @@
   }
 }
 
-
 // footer
 .dialog-footer {
   padding: 16px 24px;
@@ -387,7 +410,6 @@
     color: rgba(255, 255, 255, 0.6);
   }
 }
-
 
 .footer-credits {
   display: flex;
@@ -479,4 +501,3 @@
   align-items: center;
   justify-items: center;
 }
-

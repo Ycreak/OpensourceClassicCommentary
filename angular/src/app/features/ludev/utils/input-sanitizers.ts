@@ -55,8 +55,7 @@ export function sanitizeUpload(file: File | null): UploadValidationResult {
     };
   }
 
-  const isTextFile =
-    file.type === 'text/plain' || file.name.toLowerCase().endsWith('.txt');
+  const isTextFile = file.type === 'text/plain' || file.name.toLowerCase().endsWith('.txt');
 
   if (!isTextFile) {
     return {

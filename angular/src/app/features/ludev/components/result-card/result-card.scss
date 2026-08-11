@@ -39,13 +39,12 @@ p {
   transition: background-color 0.15s ease;
 }
 .word-syllable--low-confidence {
-  background-color: rgba(220, 38, 38, 0.28)
+  background-color: rgba(220, 38, 38, 0.28);
 }
 
 .word-syllable--mid-confidence {
   background-color: rgba(245, 158, 11, 0.28);
 }
-
 
 .word-syllable--long:hover {
   background-color: rgba(62, 59, 80, 0.158);

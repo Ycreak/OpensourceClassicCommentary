@@ -9,9 +9,15 @@ import { MatSelectModule } from '@angular/material/select';
 import { SharedData } from '@ludev/services/shared-data';
 
 const ALL_METER_VALUES = [
-  'hexameter', 'pentameter', 'hendecasyllable',
-  'iambic_trimeter', 'iambic_senarius', 'iambic_septenarius', 'iambic_octonarius',
-  'trochaic_septenarius', 'trochaic_octonarius',
+  'hexameter',
+  'pentameter',
+  'hendecasyllable',
+  'iambic_trimeter',
+  'iambic_senarius',
+  'iambic_septenarius',
+  'iambic_octonarius',
+  'trochaic_septenarius',
+  'trochaic_octonarius',
 ];
 
 const DEFAULT_MAX_DISTANCE = 2;
@@ -158,9 +164,8 @@ export class FiltersPanelComponent {
     const input = event.target as HTMLInputElement;
     const rawValue = input.value.trim();
 
-
-    this.rawNumericInputErrors[field] = input.validity.badInput ||
-      (rawValue !== '' && !this.integerPattern.test(rawValue));
+    this.rawNumericInputErrors[field] =
+      input.validity.badInput || (rawValue !== '' && !this.integerPattern.test(rawValue));
   }
 
   private clearRawNumericInputError(field: NumericFilterField): void {
@@ -199,8 +204,7 @@ export class FiltersPanelComponent {
     const numericValue = Number(value);
     const limits = this.numericLimits[field];
 
-    return numericValue < limits.min ||
-      (limits.max !== undefined && numericValue > limits.max);
+    return numericValue < limits.min || (limits.max !== undefined && numericValue > limits.max);
   }
 
   private parseNumericValue(field: NumericFilterField): number | null {
@@ -232,38 +236,31 @@ export class FiltersPanelComponent {
   }
 
   get hasInvalidSyllableValue(): boolean {
-    return this.hasInvalidNumericValue('minSyllables') ||
-      this.hasInvalidNumericValue('maxSyllables');
+    return this.hasInvalidNumericValue('minSyllables') || this.hasInvalidNumericValue('maxSyllables');
   }
 
   get hasInvalidShortSyllableValue(): boolean {
-    return this.hasInvalidNumericValue('minShortSyllables') ||
-      this.hasInvalidNumericValue('maxShortSyllables');
+    return this.hasInvalidNumericValue('minShortSyllables') || this.hasInvalidNumericValue('maxShortSyllables');
   }
 
   get hasInvalidLongSyllableValue(): boolean {
-    return this.hasInvalidNumericValue('minLongSyllables') ||
-      this.hasInvalidNumericValue('maxLongSyllables');
+    return this.hasInvalidNumericValue('minLongSyllables') || this.hasInvalidNumericValue('maxLongSyllables');
   }
 
   get hasInvalidElisionSyllableValue(): boolean {
-    return this.hasInvalidNumericValue('minElisionSyllables') ||
-      this.hasInvalidNumericValue('maxElisionSyllables');
+    return this.hasInvalidNumericValue('minElisionSyllables') || this.hasInvalidNumericValue('maxElisionSyllables');
   }
 
   get hasInvalidConfidenceValue(): boolean {
-    return this.hasInvalidNumericValue('minConfidencePct') ||
-      this.hasInvalidNumericValue('maxConfidencePct');
+    return this.hasInvalidNumericValue('minConfidencePct') || this.hasInvalidNumericValue('maxConfidencePct');
   }
 
   get hasInvalidRepeatedVowelValue(): boolean {
-    return this.hasInvalidNumericValue('minRepeatedVowelTypes') ||
-      this.hasInvalidNumericValue('maxRepeatedVowelTypes');
+    return this.hasInvalidNumericValue('minRepeatedVowelTypes') || this.hasInvalidNumericValue('maxRepeatedVowelTypes');
   }
 
   get hasInvalidNumFeetValue(): boolean {
-    return this.hasInvalidNumericValue('minNumFeet') ||
-      this.hasInvalidNumericValue('maxNumFeet');
+    return this.hasInvalidNumericValue('minNumFeet') || this.hasInvalidNumericValue('maxNumFeet');
   }
 
   get hasInvalidSyllableRange(): boolean {
@@ -295,7 +292,8 @@ export class FiltersPanelComponent {
   }
 
   get hasAnyInvalidFilter(): boolean {
-    return this.hasNoSelectedMeters ||
+    return (
+      this.hasNoSelectedMeters ||
       this.hasInvalidMaxDistanceValue ||
       this.hasInvalidSyllableValue ||
       this.hasInvalidShortSyllableValue ||
@@ -310,7 +308,8 @@ export class FiltersPanelComponent {
       this.hasInvalidElisionSyllableRange ||
       this.hasInvalidConfidenceRange ||
       this.hasInvalidRepeatedVowelRange ||
-      this.hasInvalidNumFeetRange;
+      this.hasInvalidNumFeetRange
+    );
   }
 
   private formatList(items: string[]): string {
@@ -365,8 +364,7 @@ export class FiltersPanelComponent {
 
   private hasUnloadedHalfMeterResults(current: HalfMeterFilter, last: HalfMeterFilter): boolean {
     const lastResultTypes = this.getHalfMeterResultTypes(last);
-    return this.getHalfMeterResultTypes(current)
-      .some(resultType => !lastResultTypes.includes(resultType));
+    return this.getHalfMeterResultTypes(current).some((resultType) => !lastResultTypes.includes(resultType));
   }
 
   private getPreApiChangesRequiringReanalysis(filters: AppliedFilters): string[] {
@@ -380,19 +378,13 @@ export class FiltersPanelComponent {
     const lastMeters = last.meters ?? [];
 
     // Re-analyze only when the current filters ask for results not loaded by the last API call.
-    if (filters.meters.some(meter => !lastMeters.includes(meter))) {
+    if (filters.meters.some((meter) => !lastMeters.includes(meter))) {
       changed.push('Meters');
     }
 
-    const loadedMaxDistance = Math.max(
-      DEFAULT_MAX_DISTANCE,
-      last.maxDistance ?? DEFAULT_MAX_DISTANCE,
-    );
+    const loadedMaxDistance = Math.max(DEFAULT_MAX_DISTANCE, last.maxDistance ?? DEFAULT_MAX_DISTANCE);
 
-    if (
-      filters.maxDistance !== null &&
-      filters.maxDistance > loadedMaxDistance
-    ) {
+    if (filters.maxDistance !== null && filters.maxDistance > loadedMaxDistance) {
       changed.push('Maximum distance');
     }
 
@@ -441,7 +433,7 @@ export class FiltersPanelComponent {
         this.selectedMeters = [...this.selectedMeters, value];
       }
     } else {
-      this.selectedMeters = this.selectedMeters.filter(m => m !== value);
+      this.selectedMeters = this.selectedMeters.filter((m) => m !== value);
     }
   }
 
@@ -451,24 +443,60 @@ export class FiltersPanelComponent {
     }
 
     switch (field) {
-      case 'selectedMeters': this.selectedMeters = [...ALL_METER_VALUES]; break;
-      case 'maxDistance': this.maxDistance = String(DEFAULT_MAX_DISTANCE); break;
-      case 'minSyllables': this.minSyllables = String(DEFAULT_MIN_SYLLABLES); break;
-      case 'maxSyllables': this.maxSyllables = String(DEFAULT_MAX_SYLLABLES); break;
-      case 'minShortSyllables': this.minShortSyllables = ''; break;
-      case 'maxShortSyllables': this.maxShortSyllables = ''; break;
-      case 'minLongSyllables': this.minLongSyllables = ''; break;
-      case 'maxLongSyllables': this.maxLongSyllables = ''; break;
-      case 'minElisionSyllables': this.minElisionSyllables = ''; break;
-      case 'maxElisionSyllables': this.maxElisionSyllables = ''; break;
-      case 'minConfidencePct': this.minConfidencePct = '85'; break;
-      case 'maxConfidencePct': this.maxConfidencePct = '100'; break;
-      case 'minRepeatedVowelTypes': this.minRepeatedVowelTypes = ''; break;
-      case 'maxRepeatedVowelTypes': this.maxRepeatedVowelTypes = ''; break;
-      case 'halfMeters': this.halfMeters = 'none'; break;
-      case 'minNumFeet': this.minNumFeet = ''; break;
-      case 'maxNumFeet': this.maxNumFeet = ''; break;
-      case 'endsInMonosyllableRestriction': this.endsInMonosyllableRestriction = 'either'; break;
+      case 'selectedMeters':
+        this.selectedMeters = [...ALL_METER_VALUES];
+        break;
+      case 'maxDistance':
+        this.maxDistance = String(DEFAULT_MAX_DISTANCE);
+        break;
+      case 'minSyllables':
+        this.minSyllables = String(DEFAULT_MIN_SYLLABLES);
+        break;
+      case 'maxSyllables':
+        this.maxSyllables = String(DEFAULT_MAX_SYLLABLES);
+        break;
+      case 'minShortSyllables':
+        this.minShortSyllables = '';
+        break;
+      case 'maxShortSyllables':
+        this.maxShortSyllables = '';
+        break;
+      case 'minLongSyllables':
+        this.minLongSyllables = '';
+        break;
+      case 'maxLongSyllables':
+        this.maxLongSyllables = '';
+        break;
+      case 'minElisionSyllables':
+        this.minElisionSyllables = '';
+        break;
+      case 'maxElisionSyllables':
+        this.maxElisionSyllables = '';
+        break;
+      case 'minConfidencePct':
+        this.minConfidencePct = '85';
+        break;
+      case 'maxConfidencePct':
+        this.maxConfidencePct = '100';
+        break;
+      case 'minRepeatedVowelTypes':
+        this.minRepeatedVowelTypes = '';
+        break;
+      case 'maxRepeatedVowelTypes':
+        this.maxRepeatedVowelTypes = '';
+        break;
+      case 'halfMeters':
+        this.halfMeters = 'none';
+        break;
+      case 'minNumFeet':
+        this.minNumFeet = '';
+        break;
+      case 'maxNumFeet':
+        this.maxNumFeet = '';
+        break;
+      case 'endsInMonosyllableRestriction':
+        this.endsInMonosyllableRestriction = 'either';
+        break;
     }
   }
 

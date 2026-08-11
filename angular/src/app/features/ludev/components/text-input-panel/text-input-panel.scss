@@ -5,7 +5,7 @@
 .input-text {
   min-height: 240px;
   line-height: 1.55;
-  font-family: 'Lora', Georgia, 'Times New Roman', serif;
+  font-family: "Lora", Georgia, "Times New Roman", serif;
   color: var(--app-text);
 }
 
@@ -58,7 +58,7 @@ p {
 
   ::ng-deep .mat-button-toggle {
     color: var(--app-burgundy);
-    font-family: 'Lora', Georgia, 'Times New Roman', serif;
+    font-family: "Lora", Georgia, "Times New Roman", serif;
   }
 
   ::ng-deep .mat-button-toggle-checked {
@@ -140,18 +140,17 @@ p {
   }
 
   &__text {
-  font-family: inherit;
-  font-size: 0.95rem;
-  line-height: 1.8;
-  white-space: pre-wrap;
-  word-break: break-word;
-  color: rgba(0, 0, 0, 0.87);
+    font-family: inherit;
+    font-size: 0.95rem;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    word-break: break-word;
+    color: rgba(0, 0, 0, 0.87);
 
-  max-height: 250px;
-  overflow-y: auto;
+    max-height: 250px;
+    overflow-y: auto;
+  }
 }
-}
-
 
 ::ng-deep .candidate-highlight {
   background-color: #ffe7aa;

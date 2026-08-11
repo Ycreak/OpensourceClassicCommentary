@@ -10,11 +10,7 @@
     </div>
 
     <div class="toolbar-actions">
-      <button
-        mat-stroked-button
-        type="button"
-        class="toolbar-action-button"
-        (click)="showHelp = true">
+      <button mat-stroked-button type="button" class="toolbar-action-button" (click)="showHelp = true">
         <mat-icon>info</mat-icon>
         Help
       </button>
@@ -23,96 +19,116 @@
 </mat-toolbar>
 
 @if (showHelp) {
-  <div class="dialog-backdrop" (click)="showHelp = false">
-    <div class="dialog-container" role="dialog" aria-label="Help" (click)="$event.stopPropagation()">
-
-      <div class="dialog-header">
-        <div class="header-icon"><mat-icon>info</mat-icon></div>
-        <div class="header-text">
-          <h2>Help</h2>
-          <p>How to use this site</p>
-        </div>
-        <button class="close-btn" type="button" (click)="showHelp = false" aria-label="Close">✕</button>
+<div class="dialog-backdrop" (click)="showHelp = false">
+  <div class="dialog-container" role="dialog" aria-label="Help" (click)="$event.stopPropagation()">
+    <div class="dialog-header">
+      <div class="header-icon"><mat-icon>info</mat-icon></div>
+      <div class="header-text">
+        <h2>Help</h2>
+        <p>How to use this site</p>
       </div>
+      <button class="close-btn" type="button" (click)="showHelp = false" aria-label="Close">✕</button>
+    </div>
 
-      <div class="dialog-body">
-
-        <section class="dialog-section">
-          <div class="section-content">
-            <mat-card-title>Steps</mat-card-title>
-            <ol class="steps-list">
-              <li>
-                <span class="step-num">1</span>
-                <div>
-                  <strong>Paste or upload text</strong>
-                  <p>Select between <span class="mini-toggle">
-                  <span class="mini-toggle-option">Paste text</span>
-                  <span class="mini-toggle-option active">
-                    <mat-icon class="mini-check">check</mat-icon> Upload .txt
+    <div class="dialog-body">
+      <section class="dialog-section">
+        <div class="section-content">
+          <mat-card-title>Steps</mat-card-title>
+          <ol class="steps-list">
+            <li>
+              <span class="step-num">1</span>
+              <div>
+                <strong>Paste or upload text</strong>
+                <p>
+                  Select between
+                  <span class="mini-toggle">
+                    <span class="mini-toggle-option">Paste text</span>
+                    <span class="mini-toggle-option active">
+                      <mat-icon class="mini-check">check</mat-icon> Upload .txt
+                    </span> </span
+                  >. To upload a .txt file, use <span class="mini-button">Browse files</span> or drag and drop the file.
+                </p>
+              </div>
+            </li>
+            <li>
+              <span class="step-num">2</span>
+              <div>
+                <strong>Analyse text</strong>
+                <p>
+                  Click <span class="mini-button">Analyse Text</span> to identify possible hidden poetry in prose. This
+                  may take a few minutes so please be patient.
+                </p>
+              </div>
+            </li>
+            <li>
+              <span class="step-num">3</span>
+              <div>
+                <strong>Filter and sort results</strong>
+                <p>
+                  Use the filter panel on the bottom left after selecting wanted filters click
+                  <span class="mini-button"> Apply </span>.
+                </p>
+              </div>
+            </li>
+            <li>
+              <span class="step-num">4</span>
+              <div>
+                <strong>Inspect & Sort Results</strong>
+                <p>
+                  Click on a result to expand it. Sort by
+                  <span class="mini-select-wrapper">
+                    <mat-select [value]="minimalSortOption" disableRipple>
+                      <mat-option value="meter">Meter</mat-option>
+                      <mat-option value="position">Text position</mat-option>
+                      <mat-option value="distance">Distance</mat-option>
+                      <mat-option value="confidence">Confidence</mat-option>
+                      <mat-option value="syllables">Syllable count</mat-option>
+                    </mat-select>
                   </span>
-                </span>. To upload a .txt file, use <span class = "mini-button">Browse files</span> or drag and drop the file.</p>
-                </div>
-              </li>
-              <li>
-                <span class="step-num">2</span>
-                <div>
-                  <strong>Analyse text</strong>
-                  <p>Click <span class = "mini-button">Analyse Text</span> to identify possible hidden poetry in prose. This may take a few minutes so please be patient.</p>
-                </div>
-              </li>
-              <li>
-                <span class="step-num">3</span>
-                <div>
-                  <strong>Filter and sort results</strong>
-                  <p>Use the filter panel on the bottom left after selecting wanted filters click <span class = "mini-button">
-                     Apply
-                  </span>.</p>
-                </div>
-              </li>
-              <li>
-                <span class="step-num">4</span>
-                <div>
-                  <strong>Inspect & Sort Results</strong>
-                  <p>Click on a result to expand it. Sort by <span class="mini-select-wrapper">
-                  <mat-select [value]="minimalSortOption" disableRipple>
-                  <mat-option value="meter">Meter</mat-option>
-                  <mat-option value="position">Text position</mat-option>
-                  <mat-option value="distance">Distance</mat-option>
-                  <mat-option value="confidence">Confidence</mat-option>
-                  <mat-option value="syllables">Syllable count</mat-option>
-                  </mat-select>
-                </span> in either ascending ↑ or descending ↓ order. </p>
-                </div>
-              </li>
-            </ol>
+                  in either ascending ↑ or descending ↓ order.
+                </p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="dialog-section">
+        <div class="section-content">
+          <mat-card-title>Understanding the results</mat-card-title>
+          <p>
+            <b>Confidence</b> refers to the model's certainty about a syllable type, confidence of 'iam' is highlighted
+            in the following way:
+          </p>
+          <div class="confidence-examples">
+            <span class="conf-example high">iam</span> high uncertainty (&lt;50%)
+            <span class="conf-example mid">iam</span> low confidence (&lt;90%)
+            <span class="conf-example none">iam</span> confident
           </div>
-        </section>
+          <p>
+            Syllable types are indicated by: <span class="visual-line solid"></span> for long,
+            <span class="visual-line dashed"></span> for short, and <span class="visual-line dotted"></span> for
+            elisions.
+          </p>
+          <span class="dist-example">
+            <p>
+              <b>Distance</b> refers to the number of syllables that differ from a known metrical pattern. A meter
+              expects a series of syllable types, and each mismatch increases the distance by 1.
+            </p>
 
-        <section class="dialog-section">
-          <div class="section-content">
-            <mat-card-title>Understanding the results</mat-card-title>
-            <p><b>Confidence</b> refers to the model's certainty about a syllable type, confidence of 'iam' is highlighted in the following way: 
-            <div class="confidence-examples">
-              <span class="conf-example high">iam</span> high uncertainty (&lt;50%)
-              <span class="conf-example mid">iam</span> low confidence (&lt;90%)
-              <span class="conf-example none">iam</span> confident
-            </div>
-            <p>Syllable types are indicated by:   <span class="visual-line solid"></span> for long, <span class="visual-line dashed"></span> for short, and <span class="visual-line dotted"></span> for elisions.</p>
-            <span class="dist-example">
-            <p><b>Distance</b> refers to the number of syllables that differ from a known metrical pattern. A meter expects a series of syllable types, and each mismatch increases the distance by 1.</p>
-            
-              <span class="meter-label"> hexameter</span>
-              <span class="distance-inline" title="Distance">
-                <b>  0  </b>
-              </span> <span class="dist-desc">perfect match</span>
-              <span class="meter-label">hexameter</span>
-              <span class="distance-inline" title="Distance"> <b>  5  </b>  </span>
-              <span class="dist-desc">loose match</span>
+            <span class="meter-label"> hexameter</span>
+            <span class="distance-inline" title="Distance">
+              <b> 0 </b>
             </span>
+            <span class="dist-desc">perfect match</span>
+            <span class="meter-label">hexameter</span>
+            <span class="distance-inline" title="Distance"> <b> 5 </b> </span>
+            <span class="dist-desc">loose match</span>
+          </span>
 
-            <div class = "filters">
-              <p> The short hand of filters on results panel:</p>
-              <div class="filter-chip-grid">
+          <div class="filters">
+            <p>The short hand of filters on results panel:</p>
+            <div class="filter-chip-grid">
               <span class="active-filter-chip">Dist</span><span class="chip-def">Distance</span>
               <span class="active-filter-chip">Conf</span><span class="chip-def">Confidence</span>
               <span class="active-filter-chip">Syl</span><span class="chip-def">Syllables</span>
@@ -121,39 +137,51 @@
               <span class="active-filter-chip">MonoSyl</span><span class="chip-def">Monosyllabic ending</span>
             </div>
           </div>
-          </div>
-        </section>
-
-        <section class="dialog-section">
-          <div class="section-content">
-            <mat-card-title>Filters Explained</mat-card-title>
-            <ul class="filter-list">
-              <li><strong>Maximum distance</strong> - chosen edit distance between candidate and known metric patterns.</li>
-              <li><strong>Syllables</strong> - min and max syllable count in the candidate.</li>
-              <li><strong>Short / Long syllables</strong> - number of syllables in a candidate assigned as either short or long.</li>
-              <li><strong>Elisions</strong> - number of syllables in a candidate assigned as elision.</li>
-              <li><strong>Confidence</strong> - model certainty over syllable quantity assignments (0–100%).</li>
-              <li><strong>Repeated vowel types</strong> - number of distinct vowels appearing more than once in candidate.</li>
-              <li><strong>Incomplete meters</strong> - include, exclude, or show only half-line matches.</li>
-              <li><strong>Feet</strong> - number of metrical feet in the candidate.</li>
-              <li><strong>Monosyllable as ending</strong> - whether the line ends on a monosyllabic word.</li>
-            </ul>
-          </div>
-        </section>
-
-        <div class="dialog-footer">
-          <div class="footer-credits">
-            <div class="footer-credit-row">
-              <span class="footer-credit-label">Special thanks</span>
-              <span class="footer-credit-names">Luuk Nolden, Thomas Kluitenburg, Dr. Matthew Payne, Prof. Dr. Antje Wessels, Dr. Basil Nelis</span>
-            </div>
-            <div class="footer-credit-row">
-              <span class="footer-credit-label">Development team</span>
-              <span class="footer-credit-names">Yaell Brouwer, Anna Marini, Nicolas Ramos Fernandez, Anna Michelle, Adrien Joon-Ha Im, Sharon Huang, Tom van Kooperen</span>
-            </div>
-          </div>
-        </div>         
         </div>
+      </section>
+
+      <section class="dialog-section">
+        <div class="section-content">
+          <mat-card-title>Filters Explained</mat-card-title>
+          <ul class="filter-list">
+            <li>
+              <strong>Maximum distance</strong> - chosen edit distance between candidate and known metric patterns.
+            </li>
+            <li><strong>Syllables</strong> - min and max syllable count in the candidate.</li>
+            <li>
+              <strong>Short / Long syllables</strong> - number of syllables in a candidate assigned as either short or
+              long.
+            </li>
+            <li><strong>Elisions</strong> - number of syllables in a candidate assigned as elision.</li>
+            <li><strong>Confidence</strong> - model certainty over syllable quantity assignments (0–100%).</li>
+            <li>
+              <strong>Repeated vowel types</strong> - number of distinct vowels appearing more than once in candidate.
+            </li>
+            <li><strong>Incomplete meters</strong> - include, exclude, or show only half-line matches.</li>
+            <li><strong>Feet</strong> - number of metrical feet in the candidate.</li>
+            <li><strong>Monosyllable as ending</strong> - whether the line ends on a monosyllabic word.</li>
+          </ul>
+        </div>
+      </section>
+
+      <div class="dialog-footer">
+        <div class="footer-credits">
+          <div class="footer-credit-row">
+            <span class="footer-credit-label">Special thanks</span>
+            <span class="footer-credit-names"
+              >Luuk Nolden, Thomas Kluitenburg, Dr. Matthew Payne, Prof. Dr. Antje Wessels, Dr. Basil Nelis</span
+            >
+          </div>
+          <div class="footer-credit-row">
+            <span class="footer-credit-label">Development team</span>
+            <span class="footer-credit-names"
+              >Yaell Brouwer, Anna Marini, Nicolas Ramos Fernandez, Anna Michelle, Adrien Joon-Ha Im, Sharon Huang, Tom
+              van Kooperen</span
+            >
+          </div>
+        </div>
+      </div>
     </div>
   </div>
+</div>
 }

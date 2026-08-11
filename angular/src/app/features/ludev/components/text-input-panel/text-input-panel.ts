@@ -53,31 +53,33 @@ export class TextInputPanelComponent implements OnInit, OnDestroy {
   ) {
     this.subscriptions.add(
       this.sharedData.analyze$.subscribe({
-        next: data => {
+        next: (data) => {
           const analyze = data as boolean;
           if (analyze) {
             this.onAnalyze();
           }
         },
-        error: err => {
+        error: (err) => {
           console.error(err.status, err.statusText);
-        }
+        },
       })
     );
   }
 
   // get clicked candidate from rc and build highlighted html
   ngOnInit(): void {
-    this.subscriptions.add(this.api.selectedCandidate$.subscribe(candidate => {
-    if (candidate && this.inputText) {
-      this.highlightedHtml = this.highlight(this.inputText, candidate);
-      this.showHighlight = true;
-      this.scrollToHighlightedCandidate();
-    } else {
-      this.showHighlight = false;
-      this.highlightedHtml = ''; 
-    }
-    }));
+    this.subscriptions.add(
+      this.api.selectedCandidate$.subscribe((candidate) => {
+        if (candidate && this.inputText) {
+          this.highlightedHtml = this.highlight(this.inputText, candidate);
+          this.showHighlight = true;
+          this.scrollToHighlightedCandidate();
+        } else {
+          this.showHighlight = false;
+          this.highlightedHtml = '';
+        }
+      })
+    );
   }
 
   ngOnDestroy(): void {
@@ -103,7 +105,7 @@ export class TextInputPanelComponent implements OnInit, OnDestroy {
 
   onTextChange() {
     if (this.selectedFileName) {
-      this.selectedFileName = "";
+      this.selectedFileName = '';
     }
   }
 
@@ -136,13 +138,12 @@ export class TextInputPanelComponent implements OnInit, OnDestroy {
         this.isSubmitting = false;
         this.api.update(data);
       },
-      error: error => {
+      error: (error) => {
         this.isSubmitting = false;
-        this.validationError =
-          'The analysis request failed. Please try again with a different input.';
+        this.validationError = 'The analysis request failed. Please try again with a different input.';
         this.api.updateState('error');
         console.error(error.status, error.statusText);
-      }
+      },
     });
   }
 
@@ -173,36 +174,31 @@ export class TextInputPanelComponent implements OnInit, OnDestroy {
   }
 
   private highlight(fullText: string, candidate: string): SafeHtml {
-    const words = candidate.split(' ').map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    const words = candidate.split(' ').map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
     // allow punctuation and account for changes from the text preprocessor
     // ie being unable to match
     const pattern = words.join('[\\s\\S]{0,20}?');
     const regex = new RegExp(`(${pattern})`, 'gi');
 
-    const html = fullText.replace(
-      regex,
-      '<mark class="candidate-highlight">$1</mark>'
-    );
+    const html = fullText.replace(regex, '<mark class="candidate-highlight">$1</mark>');
 
     // keep whitespace
-    return this.sanitizer.bypassSecurityTrustHtml(
-      `<span class="text-preview">${html}</span>`
-    );
+    return this.sanitizer.bypassSecurityTrustHtml(`<span class="text-preview">${html}</span>`);
   }
 
   private scrollToHighlightedCandidate(): void {
-  setTimeout(() => {
-    const container = this.highlightPanelText?.nativeElement;
+    setTimeout(() => {
+      const container = this.highlightPanelText?.nativeElement;
 
-    if (!container) return;
+      if (!container) return;
 
-    const highlightedCandidate = container.querySelector('.candidate-highlight');
+      const highlightedCandidate = container.querySelector('.candidate-highlight');
 
-    highlightedCandidate?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'center',
-      inline: 'nearest',
+      highlightedCandidate?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+        inline: 'nearest',
+      });
     });
-  });
   }
 }

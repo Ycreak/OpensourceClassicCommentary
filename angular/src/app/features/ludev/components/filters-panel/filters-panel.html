@@ -7,7 +7,6 @@
   </mat-card-header>
 
   <mat-card-content class="filters-content">
-
     <!-- Meters -->
     <div class="filter-group">
       <div class="filter-section-header">
@@ -16,14 +15,15 @@
       </div>
       <div class="meter-list">
         @for (meter of allMeters; track meter.value) {
-          <mat-checkbox
-            [checked]="selectedMeters.includes(meter.value)"
-            (change)="toggleMeter(meter.value, $event.checked)"
-          >{{ meter.label }}</mat-checkbox>
+        <mat-checkbox
+          [checked]="selectedMeters.includes(meter.value)"
+          (change)="toggleMeter(meter.value, $event.checked)"
+          >{{ meter.label }}</mat-checkbox
+        >
         }
       </div>
       @if (hasNoSelectedMeters) {
-        <p class="validation-error">At least one meter must be selected.</p>
+      <p class="validation-error">At least one meter must be selected.</p>
       }
     </div>
 
@@ -31,12 +31,18 @@
     <div class="filter-row">
       <mat-form-field appearance="outline">
         <mat-label>Maximum distance</mat-label>
-        <input matInput type="number" min="0" step="1" [(ngModel)]="maxDistance" (input)="onNumericInput('maxDistance', $event)" />
+        <input
+          matInput
+          type="number"
+          min="0"
+          step="1"
+          [(ngModel)]="maxDistance"
+          (input)="onNumericInput('maxDistance', $event)" />
       </mat-form-field>
       <button class="reset-btn" type="button" (click)="resetFilter('maxDistance')">⟳</button>
     </div>
     @if (hasInvalidMaxDistanceValue) {
-      <p class="validation-error">Maximum distance must be a whole number of 0 or greater.</p>
+    <p class="validation-error">Maximum distance must be a whole number of 0 or greater.</p>
     }
 
     <!-- Syllables -->
@@ -45,22 +51,34 @@
         <div class="inline-field">
           <mat-form-field appearance="outline">
             <mat-label>Min syllables</mat-label>
-            <input matInput type="number" min="1" step="1" [(ngModel)]="minSyllables" (input)="onNumericInput('minSyllables', $event)" />
+            <input
+              matInput
+              type="number"
+              min="1"
+              step="1"
+              [(ngModel)]="minSyllables"
+              (input)="onNumericInput('minSyllables', $event)" />
           </mat-form-field>
           <button class="reset-btn" type="button" (click)="resetFilter('minSyllables')">⟳</button>
         </div>
         <div class="inline-field">
           <mat-form-field appearance="outline">
             <mat-label>Max syllables</mat-label>
-            <input matInput type="number" min="1" step="1" [(ngModel)]="maxSyllables" (input)="onNumericInput('maxSyllables', $event)" />
+            <input
+              matInput
+              type="number"
+              min="1"
+              step="1"
+              [(ngModel)]="maxSyllables"
+              (input)="onNumericInput('maxSyllables', $event)" />
           </mat-form-field>
           <button class="reset-btn" type="button" (click)="resetFilter('maxSyllables')">⟳</button>
         </div>
       </div>
       @if (hasInvalidSyllableValue) {
-        <p class="validation-error">Syllables must be whole numbers of at least 1.</p>
+      <p class="validation-error">Syllables must be whole numbers of at least 1.</p>
       } @else if (hasInvalidSyllableRange) {
-        <p class="validation-error">Min syllables cannot be greater than max syllables.</p>
+      <p class="validation-error">Min syllables cannot be greater than max syllables.</p>
       }
     </div>
 
@@ -70,22 +88,34 @@
         <div class="inline-field">
           <mat-form-field appearance="outline">
             <mat-label>Min short syllables</mat-label>
-            <input matInput type="number" min="0" step="1" [(ngModel)]="minShortSyllables" (input)="onNumericInput('minShortSyllables', $event)" />
+            <input
+              matInput
+              type="number"
+              min="0"
+              step="1"
+              [(ngModel)]="minShortSyllables"
+              (input)="onNumericInput('minShortSyllables', $event)" />
           </mat-form-field>
           <button class="reset-btn" type="button" (click)="resetFilter('minShortSyllables')">⟳</button>
         </div>
         <div class="inline-field">
           <mat-form-field appearance="outline">
             <mat-label>Max short syllables</mat-label>
-            <input matInput type="number" min="0" step="1" [(ngModel)]="maxShortSyllables" (input)="onNumericInput('maxShortSyllables', $event)" />
+            <input
+              matInput
+              type="number"
+              min="0"
+              step="1"
+              [(ngModel)]="maxShortSyllables"
+              (input)="onNumericInput('maxShortSyllables', $event)" />
           </mat-form-field>
           <button class="reset-btn" type="button" (click)="resetFilter('maxShortSyllables')">⟳</button>
         </div>
       </div>
       @if (hasInvalidShortSyllableValue) {
-        <p class="validation-error">Short syllables must be whole numbers of 0 or greater.</p>
+      <p class="validation-error">Short syllables must be whole numbers of 0 or greater.</p>
       } @else if (hasInvalidShortSyllableRange) {
-        <p class="validation-error">Min short syllables cannot be greater than max short syllables.</p>
+      <p class="validation-error">Min short syllables cannot be greater than max short syllables.</p>
       }
     </div>
 
@@ -95,22 +125,34 @@
         <div class="inline-field">
           <mat-form-field appearance="outline">
             <mat-label>Min long syllables</mat-label>
-            <input matInput type="number" min="0" step="1" [(ngModel)]="minLongSyllables" (input)="onNumericInput('minLongSyllables', $event)" />
+            <input
+              matInput
+              type="number"
+              min="0"
+              step="1"
+              [(ngModel)]="minLongSyllables"
+              (input)="onNumericInput('minLongSyllables', $event)" />
           </mat-form-field>
           <button class="reset-btn" type="button" (click)="resetFilter('minLongSyllables')">⟳</button>
         </div>
         <div class="inline-field">
           <mat-form-field appearance="outline">
             <mat-label>Max long syllables</mat-label>
-            <input matInput type="number" min="0" step="1" [(ngModel)]="maxLongSyllables" (input)="onNumericInput('maxLongSyllables', $event)" />
+            <input
+              matInput
+              type="number"
+              min="0"
+              step="1"
+              [(ngModel)]="maxLongSyllables"
+              (input)="onNumericInput('maxLongSyllables', $event)" />
           </mat-form-field>
           <button class="reset-btn" type="button" (click)="resetFilter('maxLongSyllables')">⟳</button>
         </div>
       </div>
       @if (hasInvalidLongSyllableValue) {
-        <p class="validation-error">Long syllables must be whole numbers of 0 or greater.</p>
+      <p class="validation-error">Long syllables must be whole numbers of 0 or greater.</p>
       } @else if (hasInvalidLongSyllableRange) {
-        <p class="validation-error">Min long syllables cannot be greater than max long syllables.</p>
+      <p class="validation-error">Min long syllables cannot be greater than max long syllables.</p>
       }
     </div>
 
@@ -120,22 +162,34 @@
         <div class="inline-field">
           <mat-form-field appearance="outline">
             <mat-label>Min elisions</mat-label>
-            <input matInput type="number" min="0" step="1" [(ngModel)]="minElisionSyllables" (input)="onNumericInput('minElisionSyllables', $event)" />
+            <input
+              matInput
+              type="number"
+              min="0"
+              step="1"
+              [(ngModel)]="minElisionSyllables"
+              (input)="onNumericInput('minElisionSyllables', $event)" />
           </mat-form-field>
           <button class="reset-btn" type="button" (click)="resetFilter('minElisionSyllables')">⟳</button>
         </div>
         <div class="inline-field">
           <mat-form-field appearance="outline">
             <mat-label>Max elisions</mat-label>
-            <input matInput type="number" min="0" step="1" [(ngModel)]="maxElisionSyllables" (input)="onNumericInput('maxElisionSyllables', $event)" />
+            <input
+              matInput
+              type="number"
+              min="0"
+              step="1"
+              [(ngModel)]="maxElisionSyllables"
+              (input)="onNumericInput('maxElisionSyllables', $event)" />
           </mat-form-field>
           <button class="reset-btn" type="button" (click)="resetFilter('maxElisionSyllables')">⟳</button>
         </div>
       </div>
       @if (hasInvalidElisionSyllableValue) {
-        <p class="validation-error">Elisions must be whole numbers of 0 or greater.</p>
+      <p class="validation-error">Elisions must be whole numbers of 0 or greater.</p>
       } @else if (hasInvalidElisionSyllableRange) {
-        <p class="validation-error">Min elisions cannot be greater than max elisions.</p>
+      <p class="validation-error">Min elisions cannot be greater than max elisions.</p>
       }
     </div>
 
@@ -145,7 +199,14 @@
         <div class="inline-field">
           <mat-form-field appearance="outline">
             <mat-label>Min confidence</mat-label>
-            <input matInput type="number" min="0" max="100" step="1" [(ngModel)]="minConfidencePct" (input)="onNumericInput('minConfidencePct', $event)" />
+            <input
+              matInput
+              type="number"
+              min="0"
+              max="100"
+              step="1"
+              [(ngModel)]="minConfidencePct"
+              (input)="onNumericInput('minConfidencePct', $event)" />
             <span matSuffix style="padding-left: 0; margin-left: -240px">%</span>
           </mat-form-field>
           <button class="reset-btn" type="button" (click)="resetFilter('minConfidencePct')">⟳</button>
@@ -153,16 +214,23 @@
         <div class="inline-field">
           <mat-form-field appearance="outline">
             <mat-label>Max confidence</mat-label>
-            <input matInput type="number" min="0" max="100" step="1" [(ngModel)]="maxConfidencePct" (input)="onNumericInput('maxConfidencePct', $event)" />
+            <input
+              matInput
+              type="number"
+              min="0"
+              max="100"
+              step="1"
+              [(ngModel)]="maxConfidencePct"
+              (input)="onNumericInput('maxConfidencePct', $event)" />
             <span matSuffix style="padding-left: 0; margin-left: -240px">%</span>
           </mat-form-field>
           <button class="reset-btn" type="button" (click)="resetFilter('maxConfidencePct')">⟳</button>
         </div>
       </div>
       @if (hasInvalidConfidenceValue) {
-        <p class="validation-error">Confidence must be a whole percentage from 0 to 100.</p>
+      <p class="validation-error">Confidence must be a whole percentage from 0 to 100.</p>
       } @else if (hasInvalidConfidenceRange) {
-        <p class="validation-error">Min confidence cannot be greater than max confidence.</p>
+      <p class="validation-error">Min confidence cannot be greater than max confidence.</p>
       }
     </div>
 
@@ -172,22 +240,34 @@
         <div class="inline-field">
           <mat-form-field appearance="outline">
             <mat-label>Min repeated vowel types</mat-label>
-            <input matInput type="number" min="0" step="1" [(ngModel)]="minRepeatedVowelTypes" (input)="onNumericInput('minRepeatedVowelTypes', $event)" />
+            <input
+              matInput
+              type="number"
+              min="0"
+              step="1"
+              [(ngModel)]="minRepeatedVowelTypes"
+              (input)="onNumericInput('minRepeatedVowelTypes', $event)" />
           </mat-form-field>
           <button class="reset-btn" type="button" (click)="resetFilter('minRepeatedVowelTypes')">⟳</button>
         </div>
         <div class="inline-field">
           <mat-form-field appearance="outline">
             <mat-label>Max repeated vowel types</mat-label>
-            <input matInput type="number" min="0" step="1" [(ngModel)]="maxRepeatedVowelTypes" (input)="onNumericInput('maxRepeatedVowelTypes', $event)" />
+            <input
+              matInput
+              type="number"
+              min="0"
+              step="1"
+              [(ngModel)]="maxRepeatedVowelTypes"
+              (input)="onNumericInput('maxRepeatedVowelTypes', $event)" />
           </mat-form-field>
           <button class="reset-btn" type="button" (click)="resetFilter('maxRepeatedVowelTypes')">⟳</button>
         </div>
       </div>
       @if (hasInvalidRepeatedVowelValue) {
-        <p class="validation-error">Repeated vowel types must be whole numbers of 0 or greater.</p>
+      <p class="validation-error">Repeated vowel types must be whole numbers of 0 or greater.</p>
       } @else if (hasInvalidRepeatedVowelRange) {
-        <p class="validation-error">Min repeated vowel types cannot be greater than max.</p>
+      <p class="validation-error">Min repeated vowel types cannot be greater than max.</p>
       }
     </div>
 
@@ -197,7 +277,7 @@
         <mat-label>Incomplete lines</mat-label>
         <mat-select [(ngModel)]="halfMeters">
           @for (option of halfMetersOptions; track option.value) {
-            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+          <mat-option [value]="option.value">{{ option.label }}</mat-option>
           }
         </mat-select>
       </mat-form-field>
@@ -206,29 +286,41 @@
 
     <!-- Num feet -->
     @if (halfMeters !== 'none') {
-      <div class="filter-group">
-        <div class="row">
-          <div class="inline-field">
-            <mat-form-field appearance="outline">
-              <mat-label>Min feet</mat-label>
-              <input matInput type="number" min="1" step="1" [(ngModel)]="minNumFeet" (input)="onNumericInput('minNumFeet', $event)" />
-            </mat-form-field>
-            <button class="reset-btn" type="button" (click)="resetFilter('minNumFeet')">⟳</button>
-          </div>
-          <div class="inline-field">
-            <mat-form-field appearance="outline">
-              <mat-label>Max feet</mat-label>
-              <input matInput type="number" min="1" step="1" [(ngModel)]="maxNumFeet" (input)="onNumericInput('maxNumFeet', $event)" />
-            </mat-form-field>
-            <button class="reset-btn" type="button" (click)="resetFilter('maxNumFeet')">⟳</button>
-          </div>
+    <div class="filter-group">
+      <div class="row">
+        <div class="inline-field">
+          <mat-form-field appearance="outline">
+            <mat-label>Min feet</mat-label>
+            <input
+              matInput
+              type="number"
+              min="1"
+              step="1"
+              [(ngModel)]="minNumFeet"
+              (input)="onNumericInput('minNumFeet', $event)" />
+          </mat-form-field>
+          <button class="reset-btn" type="button" (click)="resetFilter('minNumFeet')">⟳</button>
         </div>
-        @if (hasInvalidNumFeetValue) {
-          <p class="validation-error">Feet must be whole numbers of at least 1.</p>
-        } @else if (hasInvalidNumFeetRange) {
-          <p class="validation-error">Min feet cannot be greater than max feet.</p>
-        }
+        <div class="inline-field">
+          <mat-form-field appearance="outline">
+            <mat-label>Max feet</mat-label>
+            <input
+              matInput
+              type="number"
+              min="1"
+              step="1"
+              [(ngModel)]="maxNumFeet"
+              (input)="onNumericInput('maxNumFeet', $event)" />
+          </mat-form-field>
+          <button class="reset-btn" type="button" (click)="resetFilter('maxNumFeet')">⟳</button>
+        </div>
       </div>
+      @if (hasInvalidNumFeetValue) {
+      <p class="validation-error">Feet must be whole numbers of at least 1.</p>
+      } @else if (hasInvalidNumFeetRange) {
+      <p class="validation-error">Min feet cannot be greater than max feet.</p>
+      }
+    </div>
     }
 
     <!-- Monosyllable as ending -->
@@ -237,7 +329,7 @@
         <mat-label>Monosyllable as ending</mat-label>
         <mat-select [(ngModel)]="endsInMonosyllableRestriction">
           @for (option of monosyllableOptions; track option.value) {
-            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+          <mat-option [value]="option.value">{{ option.label }}</mat-option>
           }
         </mat-select>
       </mat-form-field>
@@ -245,14 +337,13 @@
     </div>
 
     @if (reanalyzeWarning) {
-      <p class="reanalyze-warning">{{ reanalyzeWarning }}</p>
+    <p class="reanalyze-warning">{{ reanalyzeWarning }}</p>
     }
-
   </mat-card-content>
 
   <mat-card-actions align="end" class="filters-actions">
     @if (filtersApplied) {
-      <p class="filters-applied">Filters Applied</p>
+    <p class="filters-applied">Filters Applied</p>
     }
     <button mat-button type="button" (click)="onReset()">Reset</button>
     <button
@@ -261,8 +352,7 @@
       color="primary"
       type="button"
       [disabled]="hasAnyInvalidFilter"
-      (click)="onApply()"
-    >
+      (click)="onApply()">
       Apply
     </button>
   </mat-card-actions>

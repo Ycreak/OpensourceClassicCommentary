@@ -25,7 +25,17 @@ export interface Filters {
 
 // init filter vals
 const filters: Filters = {
-  meters: ['hexameter', 'pentameter', 'hendecasyllable', 'iambic_trimeter', 'iambic_senarius', 'iambic_septenarius', 'iambic_octonarius', 'trochaic_septenarius', 'trochaic_octonarius'],
+  meters: [
+    'hexameter',
+    'pentameter',
+    'hendecasyllable',
+    'iambic_trimeter',
+    'iambic_senarius',
+    'iambic_septenarius',
+    'iambic_octonarius',
+    'trochaic_septenarius',
+    'trochaic_octonarius',
+  ],
   maxDistance: 2,
   minSyllables: 11,
   maxSyllables: 18,

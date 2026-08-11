@@ -16,4 +16,3 @@ export class HeaderComponent {
   showDocs = false;
   minimalSortOption = 'meter';
 }
-

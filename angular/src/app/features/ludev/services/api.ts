@@ -6,7 +6,7 @@ import { SharedData } from '@ludev/services/shared-data';
 import { environment } from '@src/environments/environment';
 
 const httpOptions = {
-  headers: new HttpHeaders({'Content-Type': 'application/json'})
+  headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
 };
 
 @Injectable({
@@ -14,11 +14,18 @@ const httpOptions = {
 })
 export class Api {
   response = {};
-  
-  constructor(private http: HttpClient, private sharedData: SharedData) { }
+
+  constructor(
+    private http: HttpClient,
+    private sharedData: SharedData
+  ) {}
 
   analyze(text: string): Observable<any> {
-    return this.http.post(environment.ludev_flask_api, {"text": text, "options": this.sharedData.currentFilters}, httpOptions);
+    return this.http.post(
+      environment.ludev_flask_api,
+      { text: text, options: this.sharedData.currentFilters },
+      httpOptions
+    );
   }
 
   update(response: Result[]) {
