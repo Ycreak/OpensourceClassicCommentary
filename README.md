@@ -13,6 +13,7 @@ This database will provide a clear and accessible overview of the scholarly trad
 + [Angular Frontend API](#angular)  
 + [Flask API](#flask)  
 + [CouchDB Database](#couchdb)  
++ [Authentication (JWT)](#auth)  
 + [Project Deployment](#deployment)  
 
 <a name="get_started"/>
@@ -115,6 +116,59 @@ The database is powered by Apache CouchDB and is therefore a NoSQL database. The
 
 ### Installation
 The installation of the database is done with Docker. Having started Docker, go to `http://localhost:5984/_utils/#/replication` and create a replication for each table. The source will be a remote database, with the url being http://nolden.biz:5984/<table_name>. Retrieve the username and password from the administrator. The table names can be found in the Flask API.
+
+<a name="auth"/>
+
+## Authentication (JWT)
+The Flask API uses [JSON Web Tokens](https://jwt.io) (JWT) to authenticate requests. When a user logs in, the server signs a token that contains their username and role. The Angular frontend sends this token with every request in the `Authorization` header, and the server only allows requests that carry a valid, non-expired token.
+
+Read-only endpoints stay public so visitors can browse the content without logging in. Every endpoint that changes data requires a token:
+
+| Endpoint | Access |
+| --- | --- |
+| `user/login` | Public |
+| `document/index`, `document/get`, `bibliography/get` | Public (read-only) |
+| `document/create`, `document/update`, `document/delete`, `document/update_index` | Any authenticated user |
+| `bibliography/sync`, `bibliography/test` | Any authenticated user |
+| `user/get` | Any authenticated user (admins see all users) |
+| `user/create`, `user/delete`, `user/update` | Admin only |
+
+### Configuration
+All JWT and rate-limiting settings live in `flask/.env`
+
+```console
+JWT_SECRET_KEY="<long-random-string>"
+JWT_ALGORITHM="HS256"
+JWT_EXPIRY_HOURS=12
+
+RATE_LIMIT_LOGIN="10 per minute"
+RATE_LIMIT_STORAGE="memory://"
+```
+
+Generate a fresh secret with:
+```console
+openssl rand -hex 48
+```
+
+Keep `JWT_SECRET_KEY` private. Anyone who knows it can forge tokens for any user. Rotate it if it ever leaks; rotating it invalidates all existing sessions (users will need to log in again).
+
+### Creating the first users
+Creating users through the API now requires an admin token, so the very first admin account has to be seeded directly into CouchDB. From the `flask/` folder:
+
+```console
+uv run python scripts/create_user.py --username <name>
+```
+
+The script prompts for the password (or accepts `--password`). By default it assigns the `admin` role. Add `--update` to change the password or role of an existing user, or `--role teacher` to create other roles.
+
+> Running this script on the host (rather than inside a container) requires `COUCH_HOST` to point at a reachable CouchDB, e.g. `COUCH_HOST=127.0.0.1 uv run python scripts/create_user.py ...`
+
+### Rate limiting
+The `/user/login` endpoint is rate-limited per client IP (`10 per minute` by default) to slow down brute-force attacks. Tune it via `RATE_LIMIT_LOGIN`, or set `RATE_LIMIT_STORAGE="redis://..."` when running multiple gunicorn workers — the default `memory://` stores limits in a single process.
+
+### Deployment notes
+- The deployment (see `ansible/deploy_flask.yml`) syncs the code but **excludes `.env`**, so the server-side `.env` is managed separately. Make sure the deployed copy of `flask/.env` contains the JWT and rate-limit variables above, with a fresh `JWT_SECRET_KEY`.
+- In `docker-compose.yml`, CouchDB credentials come from a gitignored root `.env` (`COUCHDB_USER` / `COUCHDB_PASSWORD`). Keep them in sync with `COUCH_USER` / `COUCH_PASSWORD` in `flask/.env`.
 
 <a name="deployment"/>
 
