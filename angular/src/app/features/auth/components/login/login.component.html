@@ -47,8 +47,10 @@
       </form>
     </mat-expansion-panel>
 
-    <!-- Expansion panel for the creation of a new user -->
-    <mat-expansion-panel [expanded]="create_form_expanded">
+    <!-- Expansion panel for the creation of a new user. Only available to admins,
+         since user creation requires an admin token. -->
+    @if (this.auth_service.current_user_role == 'admin') {
+      <mat-expansion-panel [expanded]="create_form_expanded">
       <mat-expansion-panel-header>
         <mat-panel-title> Create </mat-panel-title>
         <mat-panel-description>
@@ -140,6 +142,10 @@
 
         <button mat-button type="submit" [disabled]="!create_form.valid">Create</button>
       </form>
-    </mat-expansion-panel>
+      </mat-expansion-panel>
+    } @else {
+      <div class="div-padding-sm"></div>
+      <p>Account creation is managed by an administrator.</p>
+    }
   </mat-accordion>
 </div>

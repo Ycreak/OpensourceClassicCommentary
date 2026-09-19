@@ -2,8 +2,9 @@
 Endpoint handlers for user-related communication and authentication.
 """
 
-from flask import Blueprint, request, make_response, Response
+from flask import Blueprint, request, make_response, Response, g
 from flask_jsonpify import jsonify
+import common.auth as auth
 import common.hashing as hashing
 from common.couch import CouchConnection
 
@@ -18,12 +19,14 @@ user_handler = User(couch_server)
 
 
 @user_blueprint.route("/get", methods=["POST"])
+@auth.token_required
 def get_user() -> Response:
     """
     Retrieve user information.
     ---
     tags:
       - Users
+    description: Authorization is derived from the JWT. Admins see all users, guests see only themselves.
     parameters:
       - in: body
         name: body
@@ -42,24 +45,14 @@ def get_user() -> Response:
           type: array
           items:
             $ref: '#/definitions/UserModel'
+      401:
+        description: Missing, invalid or expired token.
       404:
         description: User not found.
-      422:
-        description: Unprocessable entity.
     """
-    try:
-        data = request.get_json()
-        username = data.get(UserField.USERNAME)
-    except Exception:
-        return make_response("Unprocessable entity", 422)
+    requester = g.user
 
-    user_list = user_handler.get({UserField.USERNAME: username})
-    if not user_list:
-        return make_response("User not found", 404)
-
-    requesting_user = user_list[0]
-
-    if requesting_user.role == Role.ADMIN:
+    if requester.get("role") == Role.ADMIN:
         all_users = user_handler.all(sorted=True)
         results = []
         for u in all_users:
@@ -67,6 +60,11 @@ def get_user() -> Response:
             results.append(u.to_dict(exclude_none=True))
         return jsonify(results), 200
 
+    user_list = user_handler.get({UserField.USERNAME: requester.get("sub")})
+    if not user_list:
+        return make_response("User not found", 404)
+
+    requesting_user = user_list[0]
     requesting_user.password = None
     return jsonify([requesting_user.to_dict(exclude_none=True)]), 200
 
@@ -122,12 +120,14 @@ def login_user() -> Response:
     user = user_list[0]
 
     if hashing.verify_password(stored_pwd=user.password, provided_pwd=password):
-        return jsonify({"username": user.username, "role": user.role}), 200
+        token = auth.encode_token(username=user.username, role=user.role)
+        return jsonify({"username": user.username, "role": user.role, "token": token}), 200
 
     return make_response("Unauthorized", 403)
 
 
 @user_blueprint.route("/create", methods=["POST"])
+@auth.admin_required
 def create_user() -> Response:
     """
     Register a new user.
@@ -173,6 +173,7 @@ def create_user() -> Response:
 
 
 @user_blueprint.route("/delete", methods=["POST"])
+@auth.admin_required
 def delete_user() -> Response:
     """
     Delete a user.
@@ -210,6 +211,7 @@ def delete_user() -> Response:
 
 
 @user_blueprint.route("/update", methods=["POST"])
+@auth.admin_required
 def update_user() -> Response:
     """
     Update user attributes.

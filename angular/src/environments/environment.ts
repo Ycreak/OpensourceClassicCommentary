@@ -8,9 +8,9 @@ export const environment = {
   flask_api: 'http://localhost:5003/',
   //flask_api: 'https://oscc.nolden.biz/',
   ludev_flask_api: 'http://localhost:5050/api/analyze',
-  is_logged_in: true,
-  current_user_name: 'Lucus',
-  current_user_role: 'admin',
+  is_logged_in: false,
+  current_user_name: '',
+  current_user_role: 'guest',
   production: false,
   debug: true,
 
