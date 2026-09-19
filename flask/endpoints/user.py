@@ -53,6 +53,8 @@ def get_user() -> Response:
       404:
         description: User not found.
     """
+    # g is Flask's request-scoped global object. it lives only for the duration of handling that one request
+    # g.user is the decoded JWT payload, stored by the token_required decorator
     requester = g.user
 
     if requester.get("role") == Role.ADMIN:
