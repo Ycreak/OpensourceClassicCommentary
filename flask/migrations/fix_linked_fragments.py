@@ -27,8 +27,7 @@ class Migration:
         for id in self.db:
             doc = self.db[id]
 
-            if doc['document_type'] == 'fragment':
-
+            if doc["document_type"] == "fragment":
                 try:
                     for linked_fragment in doc["linked_fragments"]:
                         linked_fragment["sandbox"] = "admin"
@@ -43,7 +42,7 @@ class Migration:
                 print("#####################")
 
             else:
-                print('Not a fragment')
+                print("Not a fragment")
                 continue
 
 

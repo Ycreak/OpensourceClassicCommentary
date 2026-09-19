@@ -125,7 +125,9 @@ def login_user() -> Response:
 
     if hashing.verify_password(stored_pwd=user.password, provided_pwd=password):
         token = auth.encode_token(username=user.username, role=user.role)
-        return jsonify({"username": user.username, "role": user.role, "token": token}), 200
+        return jsonify(
+            {"username": user.username, "role": user.role, "token": token}
+        ), 200
 
     return make_response("Unauthorized", 403)
 

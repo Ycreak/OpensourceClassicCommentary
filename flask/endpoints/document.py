@@ -104,7 +104,9 @@ def update_index() -> Response:
 
         util.write_json(combined_index, index_file)
 
-        logging.info(f"Index updated successfully with {len(combined_index)} documents.")
+        logging.info(
+            f"Index updated successfully with {len(combined_index)} documents."
+        )
         return make_response("Index Updated", 200)
 
     except Exception as e:

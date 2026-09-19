@@ -2,7 +2,6 @@ import hashlib
 import binascii
 import os
 
-import os
 from dotenv import load_dotenv
 
 load_dotenv(".env")
