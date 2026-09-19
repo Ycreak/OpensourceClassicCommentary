@@ -2,11 +2,14 @@
 Endpoint handlers for user-related communication and authentication.
 """
 
+import os
+
 from flask import Blueprint, request, make_response, Response, g
 from flask_jsonpify import jsonify
 import common.auth as auth
 import common.hashing as hashing
 from common.couch import CouchConnection
+from common.ratelimit import limiter
 
 from models.user import User, UserField, UserModel, Role
 
@@ -70,6 +73,7 @@ def get_user() -> Response:
 
 
 @user_blueprint.route("/login", methods=["POST"])
+@limiter.limit(os.getenv("RATE_LIMIT_LOGIN", "10 per minute"))
 def login_user() -> Response:
     """
     Authenticate a user.

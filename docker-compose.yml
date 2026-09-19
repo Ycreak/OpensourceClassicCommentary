@@ -3,8 +3,14 @@ services:
     build:
       context: ./couchdb
       dockerfile: Dockerfile
+    # CouchDB is only reachable by the flask container over the compose
+    # network and by localhost (for admin maintenance). 
+    # Do not expose database port publicly: it would bypass the Flask API auth entirely.
     ports:
-      - "5984:5984"
+      - "127.0.0.1:5984:5984"
+    environment:
+      COUCHDB_USER: ${COUCHDB_USER:-admin}
+      COUCHDB_PASSWORD: ${COUCHDB_PASSWORD:-secret}
     volumes:
       - ./couchdb/data:/opt/couchdb/data
 
