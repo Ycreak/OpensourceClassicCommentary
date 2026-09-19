@@ -6,7 +6,7 @@ import os
 import time
 import logging
 import couchdb
-from typing import Any, Optional, List
+from typing import Optional, List
 from dotenv import load_dotenv
 
 load_dotenv(".env")
@@ -68,7 +68,7 @@ class Couch:
             self.db = server[db_name]
         except couchdb.ResourceNotFound:
             # Optionally create the database if it doesn't exist
-            logger.error(f"Database {db_name} not found")
+            logging.error(f"Database {db_name} not found")
 
         self.LIMIT = 1000
 

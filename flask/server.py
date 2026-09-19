@@ -10,6 +10,7 @@ from flask_restful import Api
 from flasgger import Swagger
 import logging
 from common.couch import CouchConnection
+from common.ratelimit import limiter
 
 from endpoints.user import user_blueprint
 from endpoints.document import document_blueprint
@@ -32,6 +33,9 @@ TRUSTED_ORIGINS = [
     os.getenv("STAGING_HOST"),
 ]
 CORS(app, origins=TRUSTED_ORIGINS)
+
+# Enable the rate limiter (see common/ratelimit.py for configuration)
+limiter.init_app(app)
 
 # Initialize logging
 LOG_FILE = "server.log"

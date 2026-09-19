@@ -10,6 +10,7 @@ import { LudevComponent } from './app/features/ludev/ludev.component';
 import { provideRouter, Routes } from '@angular/router';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { HttpErrorInterceptor } from './app/services/api.service';
+import { AuthInterceptor } from './app/features/auth/services/auth.interceptor';
 import { HTTP_INTERCEPTORS, withInterceptorsFromDi, provideHttpClient } from '@angular/common/http';
 
 const appRoutes: Routes = [
@@ -28,6 +29,11 @@ bootstrapApplication(AppComponent, {
   providers: [
     //importProvidersFrom(SocketIoModule.forRoot(config)),
     provideZonelessChangeDetection(),
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpErrorInterceptor,

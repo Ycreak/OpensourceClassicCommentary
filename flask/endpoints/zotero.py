@@ -6,6 +6,7 @@ Uses the pyzotero library to communicate with the Zotero API.
 from flask import Blueprint, make_response, Response
 from flask_jsonpify import jsonify
 import logging
+import common.auth as auth
 from models.zotero import Zotero
 
 # Initialize the Blueprint
@@ -31,6 +32,7 @@ def get_bibliography() -> Response:
 
 
 @zotero_blueprint.route("/sync", methods=["POST"])
+@auth.token_required
 def sync_bibliography() -> Response:
     """
     Trigger a synchronization with Zotero.
@@ -56,6 +58,7 @@ def sync_bibliography() -> Response:
 
 
 @zotero_blueprint.route("/test", methods=["GET"])
+@auth.token_required
 def test_bibliography() -> Response:
     """
     Manually trigger citation test logic.

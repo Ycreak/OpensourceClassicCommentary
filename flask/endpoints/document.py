@@ -12,6 +12,7 @@ from flask_jsonpify import jsonify
 
 import common.utilities as util
 from common.couch import CouchConnection
+import common.auth as auth
 
 from models.introduction import Introduction
 from models.fragment import Fragment
@@ -80,6 +81,7 @@ def get_index() -> Response:
 
 
 @document_blueprint.route("/update_index", methods=["POST"])
+@auth.token_required
 def update_index() -> Response:
     """
     Rebuild the document index cache.
@@ -102,7 +104,9 @@ def update_index() -> Response:
 
         util.write_json(combined_index, index_file)
 
-        logging.info(f"Index updated successfully with {len(combined_index)} documents.")
+        logging.info(
+            f"Index updated successfully with {len(combined_index)} documents."
+        )
         return make_response("Index Updated", 200)
 
     except Exception as e:
@@ -157,6 +161,7 @@ def get_document():
 
 
 @document_blueprint.route("/create", methods=["POST"])
+@auth.token_required
 def create_document() -> Response:
     """
     Create a new document.
@@ -209,6 +214,7 @@ def create_document() -> Response:
 
 
 @document_blueprint.route("/delete", methods=["POST"])
+@auth.token_required
 def delete_document() -> Response:
     """
     Delete a document.
@@ -260,6 +266,7 @@ def delete_document() -> Response:
 
 
 @document_blueprint.route("/update", methods=["POST"])
+@auth.token_required
 def update_document() -> Response:
     """
     Update an existing document.

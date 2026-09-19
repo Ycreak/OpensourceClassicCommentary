@@ -7,4 +7,5 @@ export class User {
   username = '';
   role = '';
   password = '';
+  token = '';
 }
