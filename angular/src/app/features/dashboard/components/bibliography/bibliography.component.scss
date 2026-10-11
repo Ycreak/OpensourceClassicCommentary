@@ -1,5 +1,7 @@
+@use "src/app/styles/_variables.scss" as *;
+
 .bib-select:hover {
-  background-color: yellow;
+  background-color: $theme-quaternary;
   cursor: pointer;
 }
 

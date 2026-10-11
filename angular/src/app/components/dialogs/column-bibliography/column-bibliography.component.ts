@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { SafeHtmlPipe } from '@oscc/pipes/safeHtml.pipe';
 
 /**
@@ -9,7 +11,7 @@ import { SafeHtmlPipe } from '@oscc/pipes/safeHtml.pipe';
 @Component({
   selector: 'app-column-bibliography',
   standalone: true,
-  imports: [SafeHtmlPipe],
+  imports: [MatButtonModule, MatDialogModule, MatIconModule, SafeHtmlPipe],
   templateUrl: './column-bibliography.component.html',
   styleUrls: ['../dialogs.scss'],
 })
