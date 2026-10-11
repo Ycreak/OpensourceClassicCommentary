@@ -12,24 +12,20 @@ app-ludev {
   --app-border-strong: #c9b99b;
   --app-text: #221a15;
   --app-muted: #6f6253;
-
   --mat-sys-primary: var(--app-burgundy);
-  --mat-sys-on-primary: #ffffff;
+  --mat-sys-on-primary: #fff;
   --mat-sys-primary-container: var(--app-gold);
   --mat-sys-on-primary-container: var(--app-burgundy);
-
   --mat-sys-tertiary: #8a6400;
   --mat-sys-tertiary-container: var(--app-gold);
   --mat-sys-on-tertiary-container: #2c2000;
-
   --mat-sys-surface: var(--app-ivory);
-  --mat-sys-surface-container-lowest: #ffffff;
+  --mat-sys-surface-container-lowest: #fff;
   --mat-sys-surface-container-low: var(--app-surface);
   --mat-sys-surface-container: var(--app-surface);
   --mat-sys-surface-container-high: #f7efdf;
   --mat-sys-on-surface: var(--app-text);
   --mat-sys-on-surface-variant: var(--app-muted);
-
   --mat-sys-outline: var(--app-border-strong);
   --mat-sys-outline-variant: var(--app-border);
 }
@@ -39,7 +35,7 @@ app-ludev {
     background-color: var(--app-surface) !important;
     border: 1px solid var(--app-border);
     border-radius: 18px !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.035) !important;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 3.5%) !important;
   }
 
   .mat-mdc-card-header {
@@ -82,18 +78,18 @@ app-ludev {
   .mat-mdc-unelevated-button.mat-primary,
   .mat-mdc-raised-button.mat-primary {
     --mdc-filled-button-container-color: var(--app-burgundy);
-    --mdc-filled-button-label-text-color: #ffffff;
+    --mdc-filled-button-label-text-color: #fff;
     --mdc-protected-button-container-color: var(--app-burgundy);
-    --mdc-protected-button-label-text-color: #ffffff;
+    --mdc-protected-button-label-text-color: #fff;
   }
 
   .mat-mdc-raised-button {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 8%) !important;
   }
 
   .mat-mdc-button-base {
     border-radius: 999px !important;
-    font-family: "Lora", Georgia, "Times New Roman", serif !important;
+    font-family: Lora, Georgia, "Times New Roman", serif !important;
     font-weight: 600 !important;
     letter-spacing: 0.01em;
   }
@@ -106,26 +102,27 @@ app-ludev {
 
   .mat-mdc-outlined-button:not(:disabled):hover {
     --mdc-outlined-button-outline-color: var(--app-burgundy);
-    background-color: rgba(254, 240, 205, 0.35);
+
+    background-color: rgb(254 240 205 / 35%);
   }
 
   .mat-mdc-menu-item {
-    font-family: "Lora", Georgia, "Times New Roman", serif !important;
+    font-family: Lora, Georgia, "Times New Roman", serif !important;
   }
 
   .mat-expansion-panel {
     background: var(--app-surface) !important;
     border: 1px solid var(--app-border);
     border-radius: 14px !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
-    margin: 0.75rem 0rem !important;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 4%) !important;
+    margin: 0.75rem 0 !important;
   }
 
   .mat-expansion-panel-header {
-    font-family: "Lora", Georgia, "Times New Roman", serif;
+    font-family: Lora, Georgia, "Times New Roman", serif;
   }
 
   .mat-mdc-input-element {
-    font-family: "Lora", Georgia, "Times New Roman", serif !important;
+    font-family: Lora, Georgia, "Times New Roman", serif !important;
   }
 }

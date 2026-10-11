@@ -1,6 +1,5 @@
 /* Playground related CSS */
 @use "src/app/styles/_mixins.scss" as *;
-
 @use "src/app/styles/_variables.scss" as *;
 
 #playground {
@@ -28,13 +27,13 @@
   overflow: hidden; /* Suppresses canvas spillover scrollbars */
 
   canvas {
-    background: #ffffff;
+    background: #fff;
     position: absolute;
   }
 
   .menu {
     background-color: white;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    box-shadow: rgb(0 0 0 / 24%) 0 3px 8px;
     width: 200px;
     height: 120px;
     top: 7%;
@@ -48,10 +47,12 @@
       display: flex;
       align-items: center;
     }
+
     .br-icon:hover {
       background-color: #ff4886;
       cursor: pointer;
     }
+
     .menu-icon {
       margin: 0.2em;
     }
@@ -67,22 +68,22 @@
 
 @property --hamburgerMenuColor {
   syntax: "<color>";
-  initial-value: rgba(159, 161, 254, 0.31);
+  initial-value: rgb(159 161 254 / 31%);
   inherits: false;
 }
 
 #playground-hamburger-menu-button {
   border-radius: 4px;
   border-color: transparent;
-  transition: --hamburgerMenuColor 0.2s;
+  transition: --hamburgermenucolor 0.2s;
   transition-timing-function: cubic-bezier(0.65, 0.05, 0.18, 1.09);
-  background: radial-gradient(circle at center, rgba(159, 161, 254, 0.7) 0%, var(--hamburgerMenuColor) 100%);
+  background: radial-gradient(circle at center, rgb(159 161 254 / 70%) 0%, var(--hamburgerMenuColor) 100%);
   width: 32px;
   justify-content: center;
 }
 
 #playground-hamburger-menu-button:hover {
-  --hamburgerMenuColor: rgba(159, 161, 254, 0.7);
+  --hamburgerMenuColor: rgb(159 161 254 / 70%);
 }
 
 .menu-item-icon-wrapper {
@@ -103,16 +104,16 @@
 
 @property --helpMenuColor {
   syntax: "<color>";
-  initial-value: rgba(160, 162, 168, 0.116);
+  initial-value: rgb(160 162 168 / 11.6%);
   inherits: false;
 }
 
 #playground-help-menu-button {
-  border-radius: 0px 0px 0px 50px;
+  border-radius: 0 0 0 50px;
   border-color: transparent;
-  transition: --helpMenuColor 0.2s;
+  transition: --helpmenucolor 0.2s;
   transition-timing-function: cubic-bezier(0.65, 0.05, 0.18, 1.09);
-  background: radial-gradient(circle at center, rgba(150, 150, 189, 0.288) 0%, var(--helpMenuColor) 70%);
+  background: radial-gradient(circle at center, rgb(150 150 189 / 28.8%) 0%, var(--helpMenuColor) 70%);
   width: 32px;
   justify-content: center;
   padding-left: 5px;
@@ -120,13 +121,13 @@
 }
 
 #playground-help-menu-button:hover {
-  --helpMenuColor: rgba(159, 161, 254, 0.7);
+  --helpMenuColor: rgb(159 161 254 / 70%);
 }
 
 .note {
-  border: solid 1px rgb(0, 0, 0);
+  border: solid 1px rgb(0 0 0);
   padding: 0.5em;
-  color: rgba(0, 0, 0, 0.87);
+  color: rgb(0 0 0 / 87%);
   cursor: move;
   display: inline-block;
   justify-content: center;
@@ -136,16 +137,16 @@
   position: absolute;
   transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
   box-shadow:
-    0 3px 1px -2px rgba(0, 0, 0, 0.2),
-    0 2px 2px 0 rgba(0, 0, 0, 0.14),
-    0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    0 3px 1px -2px rgb(0 0 0 / 20%),
+    0 2px 2px 0 rgb(0 0 0 / 14%),
+    0 1px 5px 0 rgb(0 0 0 / 12%);
 }
 
 .note:active {
   box-shadow:
-    0 5px 5px -3px rgba(0, 0, 0, 0.2),
-    0 8px 10px 1px rgba(0, 0, 0, 0.14),
-    0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    0 5px 5px -3px rgb(0 0 0 / 20%),
+    0 8px 10px 1px rgb(0 0 0 / 14%),
+    0 3px 14px 2px rgb(0 0 0 / 12%);
 }
 
 .zlayer {
@@ -162,18 +163,18 @@ button.button-dashed-background {
 }
 
 .button-margin {
-  margin-left: 0px;
-  margin-right: 0px;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .playground-button-container {
-  padding-right: 0px;
+  padding-right: 0;
   width: fit-content;
 }
 
 .playground-button {
   white-space: nowrap;
-  min-width: 0px;
+  min-width: 0;
 }
 
 .playground-select-text-button {
@@ -185,12 +186,12 @@ button.button-dashed-background {
 }
 
 .playground-mat-form-field {
-  padding-left: 0px;
+  padding-left: 0;
 }
 
 .mat-icon-realigned {
-  margin-left: 0px;
-  margin-right: 0px;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .playground-toolbar {
@@ -212,12 +213,13 @@ button.button-dashed-background {
   display: flex;
   position: relative;
   bottom: 16px;
-  width: 0px;
+  width: 0;
   text-align: center;
   font-size: 12px;
   color: #595959;
   opacity: 0;
 }
+
 .playground_btn_tooltip:hover::after {
   opacity: 1;
   transition: 0.25s;
@@ -227,27 +229,56 @@ button.button-dashed-background {
   content: "Add fragment";
   left: 2px;
 }
+
 #playground_searchfragment_btn_tooltip::after {
   content: "Search fragment";
   left: 2px;
 }
+
 #playground_addnote_btn_tooltip::after {
   content: "Add note";
   left: 14px;
 }
+
 #playground_clear_btn_tooltip::after {
   content: "Clear playground";
   left: -5px;
 }
+
 #playground_draw_btn_tooltip::after {
   content: "Draw";
   left: 11px;
 }
+
 #playground_undo_btn_tooltip::after {
   content: "Undo";
   left: 11px;
 }
+
 #playground_redo_btn_tooltip::after {
   content: "Redo";
   left: 11px;
+}
+
+/* Playground toolbar icons */
+.playground-icon {
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  border: solid transparent;
+  border-bottom-width: 20px;
+  box-sizing: content-box;
+}
+
+.playground-icon:first-child {
+  border-left-width: 10px;
+}
+
+.playground-icon:last-child {
+  border-right-width: 10px;
+}
+
+.playground-icon:hover {
+  transition: transform 0.2s ease-out;
+  transform: scale(1.25);
 }

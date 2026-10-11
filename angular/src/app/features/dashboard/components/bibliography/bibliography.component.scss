@@ -12,3 +12,8 @@
   overflow: hidden;
   overflow-wrap: break-word;
 }
+
+/* Padding for this dialog, which does not use mat-dialog-content */
+div.force-dialog-padding {
+  padding: 20px 24px !important;
+}

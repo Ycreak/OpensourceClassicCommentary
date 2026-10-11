@@ -2,13 +2,12 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-
   height: auto;
   min-height: 72px;
   padding: 0;
   background: var(--app-navy);
-  color: #ffffff;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  color: #fff;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 10%);
 }
 
 .toolbar-inner {
@@ -16,7 +15,6 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: 14px 24px;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -62,8 +60,8 @@
 }
 
 .toolbar-action-button {
-  color: #ffffff !important;
-  border-color: rgba(255, 255, 255, 0.35);
+  color: #fff !important;
+  border-color: rgb(255 255 255 / 35%);
   font-size: 0.95rem;
 
   mat-icon {
@@ -71,12 +69,12 @@
     width: 25px;
     height: 25px;
     margin-right: 4px;
-    color: #ffffff;
+    color: #fff;
   }
 
   &:hover {
-    border-color: rgba(255, 255, 255, 0.7);
-    background: rgba(255, 255, 255, 0.08);
+    border-color: rgb(255 255 255 / 70%);
+    background: rgb(255 255 255 / 8%);
   }
 }
 
@@ -84,7 +82,7 @@
 .dialog-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(10, 15, 30, 0.55);
+  background: rgb(10 15 30 / 55%);
   z-index: 1100;
   display: flex;
   align-items: center;
@@ -97,6 +95,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -111,7 +110,7 @@
   max-height: 85vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 20px 60px rgb(0 0 0 / 35%);
   animation: fade-in 0.18s ease;
   overflow: hidden;
 }
@@ -121,6 +120,7 @@
     transform: translateY(12px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -264,17 +264,17 @@
 
   .mat-mdc-option {
     font-size: 0.78rem !important;
-    min-height: 28px !important;
     padding: 0 4px !important;
     min-height: unset !important;
     line-height: 1.35 !important;
   }
+
   .mat-mdc-select {
     font-size: 0.78rem;
     background: #f5f0e8;
     border: 1px solid #c8bfb0;
     border-radius: 4px;
-    padding: 1px 1px;
+    padding: 1px;
     width: auto;
     min-height: 6px !important;
     min-width: 68px;
@@ -341,13 +341,15 @@
   margin-left: 20px;
 
   &.high {
-    background: rgba(239, 68, 68, 0.2);
+    background: rgb(239 68 68 / 20%);
     color: #2c2c2c;
   }
+
   &.mid {
-    background: rgba(251, 191, 36, 0.25);
+    background: rgb(251 191 36 / 25%);
     color: #2c2c2c;
   }
+
   &.none {
     background: transparent;
     color: #2c2c2c;
@@ -359,11 +361,14 @@
   font-size: 0.85rem;
   margin-left: 25px;
 }
+
 .dist-example {
   gap: 6px;
   margin-top: 15px;
+
   // margin-left: 35px;
 }
+
 .distance-inline {
   color: #9ca3af;
   font-size: 0.72rem;
@@ -374,6 +379,7 @@
 .dist-desc {
   font-size: 0.9rem;
   color: var(--app-text);
+
   // background-color: #1d5e2b2a;
   padding: 2px;
   margin-left: 10px;
@@ -403,11 +409,11 @@
   border-radius: 0 0 10px 10px;
 
   .footer-credit-label {
-    color: #ffffff;
+    color: #fff;
   }
 
   .footer-credit-names {
-    color: rgba(255, 255, 255, 0.6);
+    color: rgb(255 255 255 / 60%);
   }
 }
 
@@ -483,7 +489,7 @@
   border-radius: 999px;
   color: var(--app-ivory, #fbf7ec);
   background: #460c1d;
-  border: 1px solid rgba(0, 0, 0, 0.07);
+  border: 1px solid rgb(0 0 0 / 7%);
   white-space: nowrap;
   width: fit-content;
 }
@@ -498,6 +504,5 @@
   display: grid;
   grid-template-columns: auto auto auto auto auto auto;
   gap: 6px 12px;
-  align-items: center;
-  justify-items: center;
+  place-items: center center;
 }

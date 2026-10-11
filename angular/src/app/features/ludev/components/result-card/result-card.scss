@@ -1,5 +1,5 @@
 .result-card {
-  background: #ffffff;
+  background: #fff;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   padding: 1rem;
@@ -38,23 +38,25 @@ p {
   display: inline;
   transition: background-color 0.15s ease;
 }
+
 .word-syllable--low-confidence {
-  background-color: rgba(220, 38, 38, 0.28);
+  background-color: rgb(220 38 38 / 28%);
 }
 
 .word-syllable--mid-confidence {
-  background-color: rgba(245, 158, 11, 0.28);
+  background-color: rgb(245 158 11 / 28%);
 }
 
 .word-syllable--long:hover {
-  background-color: rgba(62, 59, 80, 0.158);
+  background-color: rgb(62 59 80 / 15.8%);
 }
 
 .word-syllable--short:hover {
-  background-color: rgba(62, 59, 80, 0.158);
+  background-color: rgb(62 59 80 / 15.8%);
 }
+
 .word-syllable--elision:hover {
-  background-color: rgba(62, 59, 80, 0.158);
+  background-color: rgb(62 59 80 / 15.8%);
 }
 
 .word-syllable--long {
