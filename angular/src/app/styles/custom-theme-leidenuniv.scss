@@ -831,13 +831,24 @@ html {
   --mat-slide-toggle-disabled-selected-icon-opacity: 0.38;
   --mat-slide-toggle-disabled-track-opacity: 0.12;
   --mat-slide-toggle-disabled-unselected-icon-opacity: 0.38;
-  --mat-slide-toggle-handle-height: 20px;
-  --mat-slide-toggle-handle-shape: 10px;
-  --mat-slide-toggle-handle-width: 20px;
+  --mat-slide-toggle-handle-height: 24px;
+  --mat-slide-toggle-handle-shape: 12px;
+  --mat-slide-toggle-handle-width: 24px;
+  /* The handle contains an icon, which makes Material size and position it with the
+     "with icon" rules below. Those win over the per state ones, so they are set here
+     as well. The handle width has to match the handle size, otherwise the handle
+     overflows the track it slides in. */
+  --mat-slide-toggle-with-icon-handle-size: 24px;
+  --mat-slide-toggle-unselected-handle-size: 24px;
+  --mat-slide-toggle-selected-handle-size: 24px;
+  --mat-slide-toggle-unselected-handle-horizontal-margin: 0;
+  --mat-slide-toggle-selected-handle-horizontal-margin: 0;
+  --mat-slide-toggle-unselected-with-icon-handle-horizontal-margin: 0;
+  --mat-slide-toggle-selected-with-icon-handle-horizontal-margin: 0;
   --mat-slide-toggle-selected-icon-size: 18px;
-  --mat-slide-toggle-track-height: 14px;
-  --mat-slide-toggle-track-shape: 7px;
-  --mat-slide-toggle-track-width: 36px;
+  --mat-slide-toggle-track-height: 32px;
+  --mat-slide-toggle-track-shape: 16px;
+  --mat-slide-toggle-track-width: 52px;
   --mat-slide-toggle-unselected-icon-size: 18px;
   --mat-slide-toggle-state-layer-size: 40px;
   --mat-slide-toggle-selected-focus-state-layer-opacity: 0.12;
