@@ -1,4 +1,3 @@
-@use "@angular/material" as mat;
 @use "src/styles.scss" as *;
 
 /** Dialogs **/
@@ -15,7 +14,6 @@ div.dialog-header {
   padding-left: 1em;
   color: white;
   /*TODO: duplicate with styles.scss*/
-  /*background-color: mat.m2-get_color_from_palette(mat.$m2-pink-palette, "A200"); */
   background-color: $theme-secondary;
 }
 div.dialog-header h2 {
