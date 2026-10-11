@@ -1,7 +1,7 @@
 /* Playground related CSS */
 @use "src/app/styles/_mixins.scss" as *;
 
-@use "src/styles.scss" as *;
+@use "src/app/styles/_variables.scss" as *;
 
 #playground {
   background-color: white; // This is specifically needed in fullscreen mode.
@@ -205,28 +205,6 @@ button.button-dashed-background {
 
 .playground-tool-group {
   display: inline-flex;
-}
-
-.playground-icon {
-  width: 32px;
-  height: 32px;
-  cursor: pointer;
-  border: solid transparent;
-  border-bottom-width: 20px;
-  box-sizing: content-box;
-}
-
-.playground-icon:first-child {
-  border-left-width: 10px;
-}
-
-.playground-icon:last-child {
-  border-right-width: 10px;
-}
-
-.playground-icon:hover {
-  transition: transform 0.2s ease-out;
-  transform: scale(1.25);
 }
 
 /* Playground button tooltips */

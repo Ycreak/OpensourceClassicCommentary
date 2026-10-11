@@ -1,43 +1,5 @@
-@use "src/styles.scss" as *;
-
 /** Dialogs **/
 mat-dialog-container {
   width: fit-content !important;
   height: fit-content !important;
-}
-
-/* Dialog header */
-div.dialog-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  padding-left: 1em;
-  color: white;
-  /*TODO: duplicate with styles.scss*/
-  background-color: $theme-secondary;
-}
-div.dialog-header h2 {
-  font-size: 1.5em;
-}
-
-div.dialog-header button {
-  display: inline-flex;
-}
-
-/* Disable ripple effect on autofocus */
-div.dialog-header button:focus {
-  --mat-mdc-button-persistent-ripple-color: none;
-}
-/* Reenables the effect on focus */
-div.dialog-header button:hover {
-  --mat-mdc-button-persistent-ripple-color: black !important;
-}
-
-div.dialog-content {
-  margin-bottom: 0.5em;
-}
-
-.center {
-  margin: auto;
-  width: 50%;
 }
