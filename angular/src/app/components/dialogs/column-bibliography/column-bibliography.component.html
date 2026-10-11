@@ -1,5 +1,11 @@
 <!-- This dialog simply shows whatever input has been provided -->
-<div mat-dialog-content>
-  <h3 style="padding-bottom: 0.2em">Column Bibliography</h3>
+<div class="dialog-header">
+  <h2>Column Bibliography</h2>
+  <button mat-icon-button [mat-dialog-close]="null" [disableRipple]="true">
+    <mat-icon>clear</mat-icon>
+  </button>
+</div>
+
+<div class="dialog-content" mat-dialog-content>
   <div [innerHTML]="data.content | safeHtml"></div>
 </div>

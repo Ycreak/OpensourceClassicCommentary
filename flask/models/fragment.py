@@ -40,7 +40,7 @@ class FragmentQueries:
 
     A query filter is used verbatim as a CouchDB Mango selector, so any extra key
     sent by a client silently narrows the selector to a field that no fragment has
-    at the top level, making the query return no results. 
+    at the top level, making the query return no results.
     """
 
     FIELDS = frozenset(

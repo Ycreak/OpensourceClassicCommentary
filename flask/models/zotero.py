@@ -25,8 +25,22 @@ class Zotero:
         Initializes the Zotero API client and loads the local bibliography cache.
         """
         self.zotero_api = pyzotero.Zotero(self.library_id, self.library_type)
-        self.zotero_api.add_parameters(content="bib", style=self.bibliography_style)
         self.bibliography = util.read_json(self.cache_file)
+
+    def _fetch_citation(self, key: str) -> str:
+        """
+        Fetches the formatted citation of a single item.
+
+        Args:
+            key (str): the Zotero item key.
+
+        Returns:
+            str: the citation formatted in the configured style, empty when unavailable.
+        """
+        citations = self.zotero_api.item(
+            key, content="bib", style=self.bibliography_style
+        )
+        return citations[0] if citations else ""
 
     def test(self) -> None:
         """
@@ -41,6 +55,9 @@ class Zotero:
         """
         logging.info("Renewing entire Zotero bibliography...")
         bibliography = self.zotero_api.everything(self.zotero_api.items())
+        for bib_item in bibliography:
+            # items() returns the raw json, the citation is a separate request
+            bib_item["citation"] = self._fetch_citation(bib_item["key"])
         util.write_json(bibliography, self.cache_file)
         self.bibliography = bibliography
 
@@ -77,18 +94,13 @@ class Zotero:
         for key in keys:
             try:
                 logging.info(f"Syncing updated key: {key}")
-                # Set parameters to get the bib content
-                self.zotero_api.add_parameters(
-                    content="bib", style=self.bibliography_style
-                )
 
-                # Fetch the item (returns a list where [0] is the bib HTML/string)
-                full_item_data = self.zotero_api.item(key)
+                # Fetch the item as json, this holds the key, version and data
+                full_item_data = dict(self.zotero_api.item(key))
 
                 # Create a record that includes both data and the formatted citation
-                # Note: Depending on pyzotero settings, you might need to fetch data and bib separately
-                # if you want the full JSON data blob AND the citation string.
                 bib_item = full_item_data
+                bib_item["citation"] = self._fetch_citation(key)
 
                 # Update local list: remove old version, add new version
                 self.bibliography = [
@@ -126,10 +138,7 @@ class Zotero:
             if not bib_item.get("citation"):
                 key = bib_item.get("key")
                 try:
-                    self.zotero_api.add_parameters(
-                        content="bib", style=self.bibliography_style
-                    )
-                    citation = self.zotero_api.item(key)[0]
+                    citation = self._fetch_citation(key)
 
                     bib_item["citation"] = citation
 
