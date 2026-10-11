@@ -21,7 +21,7 @@ import { SettingsService } from '@oscc/services/settings.service';
     MatDialogModule,
   ],
   templateUrl: './settings-dialog.component.html',
-  styleUrl: '../dialogs.scss',
+  styleUrls: ['../dialogs.scss', './settings-dialog.component.scss'],
 })
 export class SettingsDialogComponent {
   @ViewChild('dragtooltip_icon') dragtooltip_icon: MatTooltip;

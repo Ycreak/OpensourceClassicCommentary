@@ -1,116 +1,140 @@
 /* You can add global styles to this file, and also import other style files */
-/* @import "./app/app.component.scss"; */
-/* @import "@angular/material/prebuilt-themes/indigo-pink.css";
-/* @import "bootstrap/dist/css/bootstrap.css"; */
-@use "@angular/material" as mat;
-
 @use "app/styles/_mixins.scss" as *;
+@use "app/styles/_variables.scss" as *;
 
-// // Theme colors leidenuniv style - blue brown
-// $theme-primary: #001158;
-// $theme-primary-light: #68769c;
-// $theme-secondary: #aa6600;
-// $theme-secondary-light: #ca9b65;
-// $theme-secondary-dark: #8b5400;
-// $theme-tertiary: #a2a194;
-// $theme-quaternary: #adac95;
-// $theme-lightbrown-yellow: #f0c086;
-// $theme-lightgreen: #d0dac9;
-// $theme-gray: #e3e3e3;
-
-// // Theme colors leidenuniv style - blue lightblue
-// $theme-primary: #001158;
-// $theme-primary-light: #68769c;
-// $theme-secondary: #68769c;
-// $theme-secondary-light: #96a3c5;
-// $theme-secondary-dark: #3d4764;
-// $theme-tertiary: #c5c5c5;
-// $theme-quaternary: #c5c5c5;
-// $theme-lightbrown-yellow: #f0c086;
-// $theme-lightgreen: #d0dac9;
-// $theme-gray: #e3e3e3;
-
-// Theme colors leidenuniv style - blue lightblue v2
-$theme-primary: #091958;
-$theme-primary-light: #68769c;
-$theme-secondary: #68769c;
-$theme-secondary-light: #96a3c5;
-$theme-secondary-dark: #3d4764;
-$theme-tertiary: #8692b5;
-$theme-quaternary: #a8b5da;
-$theme-lightbrown-yellow: #f0c086;
-$theme-lightgreen: #d0dac9;
-$theme-gray: #e3e3e3;
-
-// // Theme colors natural - mossy green
-// $theme-primary: #383a27;
-// $theme-primary-light: #383a27;
-// $theme-secondary: #53613a;
-// $theme-secondary-light: #a28644;
-// $theme-secondary-dark: #a28644;
-// $theme-tertiary: #a29d7b;
-// $theme-quaternary: #76ada5;
-// $theme-lightbrown-yellow: #f0c086;
-// $theme-lightgreen: #d0dac9;
-// $theme-gray: #e3e3e3;
-
-// // Theme colors natural - ochre brown
-// $theme-primary: #554021;
-// $theme-primary-light: #614e3a;
-// $theme-secondary: #614e3a;
-// $theme-secondary-light: #96a3c5;
-// $theme-secondary-dark: #3d4764;
-// $theme-tertiary: #c5c5c5;
-// $theme-quaternary: #c5c5c5;
-// $theme-lightbrown-yellow: #f0c086;
-// $theme-lightgreen: #d0dac9;
-// $theme-gray: #e3e3e3;
-
-// // Theme colors original style - indigo pink
-// $theme-primary: #3f51b5;
-// $theme-primary-light: #9fa1fe;
-// $theme-secondary: #ff4081;
-// $theme-secondary-light: #ffc0cb;
-// $theme-secondary-dark: #d81b60;
-// $theme-tertiary: #9fa1fe;
-// $theme-quaternary: #9fa1fe;
-// $theme-lightbrown-yellow: #f0c086;
-// $theme-lightgreen: #d0dac9;
-// $theme-gray: #d3d3d3;
-
+/* Base elements */
 html,
 body {
   height: 100%;
 }
+
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
-.overflow_column {
-  height: 100vh;
-  overflow: scroll;
+
+h1,
+h2,
+h3 {
+  font-family: Raleway, sans-serif;
 }
 
-div.force-dialog-padding {
-  padding: 20px 24px 20px 24px !important;
+h4,
+h5,
+h6 {
+  font-family: Roboto, sans-serif;
+  padding: 0.5em;
 }
 
-// Tooltips
-.text-tooltip:hover {
-  cursor: help;
+hr {
+  border: 0;
+  border-top: 1px solid #eee;
+  margin: 20px 0;
+  box-sizing: content-box;
+  height: 0;
+  overflow: visible;
 }
 
-.icon-tooltip {
-  color: lightgray;
-  text-align: center;
-  vertical-align: middle;
+/* Layout helpers */
+.spacer {
+  display: inline-flex;
+  flex: 1 1 auto;
+  width: 1em;
 }
 
-.icon-tooltip:hover {
-  opacity: 80%;
+.div-padding {
+  padding: 1em;
 }
 
-// Zotero bibliography entry
+.div-padding-sm {
+  padding: 0.2em;
+}
+
+.div-padding-lg {
+  padding: 0.5em;
+}
+
+.navbar {
+  color: white !important;
+}
+
+.button-margin {
+  margin: 0.2em;
+}
+
+.button-margin-extra {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+/* Material */
+.mat-mdc-form-field {
+  padding-left: 1em;
+  width: auto;
+  font-size: 14px;
+}
+
+.mat-expansion-panel-header {
+  flex: 1 1 auto;
+}
+
+.mat-expansion-panel-header-title,
+.mat-expansion-panel-header-description {
+  flex-basis: 0;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 8px;
+}
+
+/* Input form related CSS */
+.input-form-full-width {
+  width: 90%;
+}
+
+.input-form-small {
+  min-width: 20%;
+  max-width: 20%;
+}
+
+.input-form-half {
+  min-width: 40%;
+  max-width: 100%;
+}
+
+/* Tables */
+table {
+  width: 100%;
+}
+
+.meta-data-selects {
+  width: 20%;
+}
+
+/* Creates an outline, with a padding based on a summary block */
+.summary {
+  outline: 1px solid black;
+  padding: 5px;
+}
+
+/* CDK Drag 'n Drop CSS */
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow:
+    0 5px 5px -3px rgb(0 0 0 / 20%),
+    0 8px 10px 1px rgb(0 0 0 / 14%),
+    0 3px 14px 2px rgb(0 0 0 / 12%);
+}
+
+.cdk-overlay-connected-position-bounding-box {
+  z-index: 99999 !important;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* Zotero bibliography entry */
 .csl-entry {
   padding-bottom: 0.6em;
 }
@@ -122,10 +146,9 @@ div.dialog-header {
   align-items: flex-end;
   padding-left: 1em;
   color: white;
-  /*TODO: duplicate with dialogs.scss */
-  /*background-color: mat.m2-get_color_from_palette(mat.$m2-pink-palette, "A200"); */
-  background-color: pink;
+  background-color: $theme-secondary;
 }
+
 div.dialog-header h2 {
   font-size: 1.5em;
 }
@@ -138,37 +161,27 @@ div.dialog-header button {
 div.dialog-header button:focus {
   --mat-mdc-button-persistent-ripple-color: none;
 }
+
 /* Reenables the effect on focus */
 div.dialog-header button:hover {
   --mat-mdc-button-persistent-ripple-color: black !important;
 }
 
-/* TODO: put this somewhere correct. Problem with reusable mat-menu */
-.playground-icon {
-  width: 32px;
-  height: 32px;
-  cursor: pointer;
-  border: solid transparent;
-  border-bottom-width: 20px;
-  box-sizing: content-box;
-}
-.playground-icon:first-child {
-  border-left-width: 10px;
-}
-.playground-icon:last-child {
-  border-right-width: 10px;
-}
-.playground-icon:hover {
-  transition: transform 0.2s ease-out;
-  transform: scale(1.25);
+div.dialog-content {
+  margin-bottom: 0.5em;
 }
 
-/*Make the font size for the Quill editor bigger*/
+.center {
+  margin: auto;
+  width: 50%;
+}
+
+/* Make the font size for the Quill editor bigger */
 .ql-editor {
   font-size: 18px;
 }
 
-// Default Angular Alert style overrides
+/* Default Angular Alert style overrides */
 .alert-info {
   --bs-alert-border-color: #333 !important;
   --bs-alert-bg: #{$theme-lightgreen} !important;

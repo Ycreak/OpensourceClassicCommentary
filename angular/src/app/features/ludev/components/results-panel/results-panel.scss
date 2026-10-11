@@ -1,9 +1,9 @@
 .panel {
-  background: #ffffff;
+  background: #fff;
   border: 1px solid #e5e7eb;
   border-radius: 16px;
   padding: 1rem;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 16px rgb(0 0 0 / 4%);
   min-height: 420px;
 }
 
@@ -53,7 +53,7 @@ h2 {
   place-items: center;
   text-align: center;
   color: var(--app-muted);
-  background: rgba(255, 250, 240, 0.55);
+  background: rgb(255 250 240 / 55%);
   border: 1px solid var(--app-border);
   border-radius: 14px;
   padding: 1.5rem;
@@ -118,7 +118,7 @@ h2 {
   box-shadow: none;
 
   &:hover {
-    background: rgba(70, 12, 29, 0.06);
+    background: rgb(70 12 29 / 6%);
   }
 }
 
@@ -140,7 +140,7 @@ h2 {
   }
 
   .mat-mdc-text-field-wrapper {
-    background: rgba(255, 250, 240, 0.55);
+    background: rgb(255 250 240 / 55%);
     border-radius: 8px;
   }
 
@@ -209,11 +209,11 @@ h2 {
   border: 1px solid #6b7280;
 
   &.low {
-    background-color: rgba(220, 38, 38, 0.24);
+    background-color: rgb(220 38 38 / 24%);
   }
 
   &.mid {
-    background-color: rgba(245, 158, 11, 0.28);
+    background-color: rgb(245 158 11 / 28%);
   }
 }
 
@@ -256,11 +256,11 @@ h2 {
   padding: 0.1rem 0.4rem;
   border-radius: 999px;
   background: #460c1d;
-  border: 1px solid rgba(0, 0, 0, 0.07);
+  border: 1px solid rgb(0 0 0 / 7%);
   white-space: nowrap;
 }
 
 .active-filters__empty {
-  color: rgba(0, 0, 0, 0.4);
+  color: rgb(0 0 0 / 40%);
   font-style: italic;
 }

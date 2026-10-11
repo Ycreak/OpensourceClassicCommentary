@@ -5,7 +5,7 @@
 .input-text {
   min-height: 240px;
   line-height: 1.55;
-  font-family: "Lora", Georgia, "Times New Roman", serif;
+  font-family: Lora, Georgia, "Times New Roman", serif;
   color: var(--app-text);
 }
 
@@ -54,11 +54,11 @@ p {
   border: 1px solid var(--app-border);
   border-radius: 999px;
   overflow: hidden;
-  background: rgba(254, 240, 205, 0.35);
+  background: rgb(254 240 205 / 35%);
 
   ::ng-deep .mat-button-toggle {
     color: var(--app-burgundy);
-    font-family: "Lora", Georgia, "Times New Roman", serif;
+    font-family: Lora, Georgia, "Times New Roman", serif;
   }
 
   ::ng-deep .mat-button-toggle-checked {
@@ -80,7 +80,7 @@ p {
   color: var(--app-ivory);
 }
 
-@media (max-width: 760px) {
+@media (width <= 760px) {
   .source-header {
     flex-direction: column;
     align-items: stretch;
@@ -100,7 +100,7 @@ p {
   border: 1px dashed var(--app-border-strong);
   border-radius: 14px;
   text-align: center;
-  background: rgba(254, 240, 205, 0.35);
+  background: rgb(254 240 205 / 35%);
   color: var(--app-muted);
 
   mat-icon {
@@ -109,7 +109,7 @@ p {
 
   &.error {
     border-color: #b42318;
-    background: rgba(180, 35, 24, 0.06);
+    background: rgb(180 35 24 / 6%);
   }
 }
 
@@ -128,14 +128,14 @@ p {
   border: 1px solid var(--app-border);
   border-radius: 8px;
   padding: 12px 16px;
-  background: rgba(254, 240, 205, 0.35);
+  background: rgb(254 240 205 / 35%);
 
   &__label {
     display: block;
     font-size: 0.75rem;
     font-weight: 550;
     letter-spacing: 0.04em;
-    color: rgba(0, 0, 0, 0.55);
+    color: rgb(0 0 0 / 55%);
     margin-bottom: 8px;
   }
 
@@ -144,9 +144,8 @@ p {
     font-size: 0.95rem;
     line-height: 1.8;
     white-space: pre-wrap;
-    word-break: break-word;
-    color: rgba(0, 0, 0, 0.87);
-
+    overflow-wrap: anywhere;
+    color: rgb(0 0 0 / 87%);
     max-height: 250px;
     overflow-y: auto;
   }

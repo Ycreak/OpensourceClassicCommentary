@@ -1,7 +1,11 @@
-<div mat-dialog-component class="force-dialog-padding">
-  <!-- FIXME: mat-dialog-component directive seems to not be recognised here, so the neede styling is done manually through the provided class-->
-  <h3>About the OpenSourceClassicsCommentary</h3>
+<div class="dialog-header">
+  <h2>About</h2>
+  <button mat-icon-button [mat-dialog-close]="null" [disableRipple]="true">
+    <mat-icon>clear</mat-icon>
+  </button>
+</div>
 
+<div class="dialog-content" mat-dialog-content>
   <p class="pi">
     The Open Source Classics Commentary on the Fragments of Roman Republican Tragedy is an interdisciplinary project
     between researchers in Classics and Computer Science.

@@ -3,17 +3,17 @@
   cursor: pointer;
 }
 
-table {
-  width: 100%;
-}
-
 .mat-mdc-form-field {
-  font-size: 14px;
   width: 100%;
 }
 
 .mat-cell,
 .mat-header-cell {
   overflow: hidden;
-  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Padding for this dialog, which does not use mat-dialog-content */
+div.force-dialog-padding {
+  padding: 20px 24px !important;
 }

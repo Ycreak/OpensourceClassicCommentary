@@ -1,8 +1,4 @@
 /* Table specific CSS */
-table {
-  width: 100%;
-}
-
 td,
 th {
   width: 25%;
@@ -35,40 +31,4 @@ tr.table-element-row:not(.table-expanded-row):active {
 
 .table-element-description-attribution {
   opacity: 0.5;
-}
-
-/* Beautify the space between expansion panel header, description and icon */
-.mat-expansion-panel-header-title,
-.mat-expansion-panel-header-description {
-  flex-basis: 0;
-  justify-content: space-between;
-  align-items: center;
-  margin-left: 8px;
-}
-
-/* Input form CSS */
-.input-form {
-  min-width: 50%;
-  max-width: 90%;
-  /* width: 100%; */
-}
-
-.input-form-custom {
-  max-width: var(--max-width);
-}
-
-.input-form-small {
-  min-width: 20%;
-  max-width: 20%;
-  /* width: 100%; */
-}
-
-.input-form-half {
-  min-width: 40%;
-  max-width: 100%;
-  /* width: auto; */
-}
-
-.input-form-full-width {
-  width: 90%; /* I like the irony */
 }

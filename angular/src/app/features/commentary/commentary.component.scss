@@ -16,3 +16,9 @@
   font-weight: 400;
   font-style: oblique;
 }
+
+/* Little hand on <a> elements without href but with click events */
+.a-void {
+  cursor: pointer;
+  color: black;
+}
