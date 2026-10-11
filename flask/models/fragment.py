@@ -35,6 +35,30 @@ class FragmentFields:
     DOC_TYPE = "document_type"
 
 
+class FragmentQueries:
+    """Container for the fields that are allowed in a fragment query filter.
+
+    A query filter is used verbatim as a CouchDB Mango selector, so any extra key
+    sent by a client silently narrows the selector to a field that no fragment has
+    at the top level, making the query return no results. 
+    """
+
+    FIELDS = frozenset(
+        {
+            FragmentFields.ID,
+            FragmentFields.NAME,
+            FragmentFields.AUTHOR,
+            FragmentFields.TITLE,
+            FragmentFields.EDITOR,
+            FragmentFields.STATUS,
+            FragmentFields.LOCK,
+            FragmentFields.VISIBLE,
+            FragmentFields.SANDBOX,
+            FragmentFields.DOC_TYPE,
+        }
+    )
+
+
 @dataclass
 class FragmentModel:
     """
@@ -133,6 +157,9 @@ class Fragment:
         """
         Retrieves fragments matching the provided filter criteria.
 
+        Keys that are not queryable fragment fields are ignored, as are keys with
+        a None value, so callers may safely pass a whole document as the filter.
+
         Args:
             query_filter (dict): Dictionary containing filter criteria like
                 author, name, or visibility.
@@ -140,9 +167,16 @@ class Fragment:
         Returns:
             List[FragmentModel]: A list of matching FragmentModel instances.
         """
-        # Build search criteria, filtering out None values
-        search_criteria = {k: v for k, v in query_filter.items() if v is not None}
+        search_criteria = {
+            k: v
+            for k, v in query_filter.items()
+            if k in FragmentQueries.FIELDS and v is not None
+        }
         search_criteria[FragmentFields.DOC_TYPE] = "fragment"
+
+        ignored = set(query_filter) - FragmentQueries.FIELDS
+        if ignored:
+            logging.info(f"Ignoring non-queryable filter fields: {sorted(ignored)}")
 
         logging.info(f"Retrieving fragments for filter: {search_criteria}")
         document_list = self.database.filter(search_criteria)

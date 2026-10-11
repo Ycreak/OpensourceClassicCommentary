@@ -207,12 +207,24 @@ export class ColumnsComponent implements OnInit {
     if (given_document.linked_fragments.length > 0) {
       const column_id = this.columns.add();
       given_document.linked_fragments.forEach((linked_fragment: Linked_fragment) => {
-        this.columns.request(linked_fragment, column_id, true);
+        this.columns.request(this.build_linked_fragment_filter(linked_fragment), column_id, true);
         this.columns.find(column_id).column_name = `Linked ${column_id}`;
       });
     } else {
       this.utility.open_snackbar('No linked documents found');
     }
+  }
+
+  /**
+   * Builds the filter used to look up a linked fragment on the server.
+   * A Linked_fragment carries reference metadata next to its lookup keys, so we
+   * only send the fields the server can actually filter a fragment on.
+   * @param linked_fragment for which to build the filter
+   * @returns object to filter the database on
+   */
+  protected build_linked_fragment_filter(linked_fragment: Linked_fragment): object {
+    const { author, title, editor, name } = linked_fragment;
+    return { document_type: 'fragment', author, title, editor, name };
   }
 
   /**
@@ -418,27 +430,4 @@ export class ColumnsComponent implements OnInit {
     //TODO this is still lacking an implementation that saves the new column somewhere
     //so that it persists between sessions.
   }
-  /**
-   * Given the fragment, this function checks whether its linked fragments appear in the
-   * other opened columns. If so, the columns are scrolled to put the linked fragment in view
-   * @param fragment object with the linked_fragments field to be examined
-   */
-  //private scroll_to_linked_fragments(document: Fragment) {
-  //for (const i in document.linked_fragments) {
-  //const linked_document_id = document.linked_fragments[i].linked_fragment_id;
-  //// Now, for each document that is linked, try to find it in the other columns
-  //for (const j in this.columns) {
-  //// in each column, take a look in the documents array to find the linked document
-  //const corresponding_document = this.columns[j].documents.find(
-  //(i) => i._id === linked_document_id
-  //);
-  //// move to this document if found
-  //if (corresponding_document) {
-  //// Scroll to the corresponding element in the found column
-  //const element = document.getElementById(corresponding_document._id);
-  //element.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-  //}
-  //}
-  //}
-  //}
 }
