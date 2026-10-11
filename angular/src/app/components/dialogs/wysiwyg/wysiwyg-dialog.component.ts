@@ -31,11 +31,7 @@ export class WYSIWYGDialogComponent {
    * Function to open the about dialog
    */
   public open_bib_dialog(): Observable<string> {
-    const dialogRef = this.dialog.open(BibliographyComponent, {
-      autoFocus: false, // To allow scrolling in the dialog
-      maxHeight: '90vh', //you can adjust the value as per your view
-      minWidth: '500px',
-    });
+    const dialogRef = this.dialog.open(BibliographyComponent, BibliographyComponent.dialog_config);
     return dialogRef.afterClosed(); // Returns observable.
   }
 

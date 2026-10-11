@@ -9,7 +9,9 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { AuthService } from '@oscc/features/auth/services/auth.service';
 import { BibliographyService } from '@oscc/services/bibliography.service';
 import { DialogService } from '@oscc/services/dialog.service';
-import { MatDialogClose } from '@angular/material/dialog';
+import { MatDialogClose, MatDialogConfig } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -26,10 +28,23 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     MatTableModule,
     MatSortModule,
     MatDialogClose,
+    MatButtonModule,
+    MatIconModule,
     MatPaginatorModule,
   ],
 })
 export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
+  /**
+   * The size this dialog is opened with. Shared by everything that opens it, so the
+   * inline editor and the standalone editor show the same, wide, table.
+   */
+  public static readonly dialog_config: MatDialogConfig = {
+    autoFocus: false, // To allow scrolling in the dialog
+    width: '90vw',
+    maxWidth: '95vw',
+    maxHeight: '90vh',
+  };
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   table_columns: string[] = ['name', 'title', 'date'];
