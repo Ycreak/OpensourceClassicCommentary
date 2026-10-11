@@ -243,7 +243,6 @@ export class FragmentsDashboardComponent implements OnInit {
         fragment.linked_fragments[i].title,
         fragment.linked_fragments[i].editor,
         fragment.linked_fragments[i].name
-        //fragment.linked_fragments[i].linked_fragment_id
       );
     }
   }
@@ -268,22 +267,15 @@ export class FragmentsDashboardComponent implements OnInit {
   /**
    * This function creates a form group containing a single linked fragment and pushes
    * it to the fragment_form, specifically to the linked_fragment FormArray.
-   * @param linked_fragment_id given id of the linked fragment
+   * @param name of the linked fragment
    */
-  private push_linked_fragments_to_fragment_form(
-    author: string,
-    title: string,
-    editor: string,
-    name: string
-    //linked_fragment_id?: string
-  ): void {
+  private push_linked_fragments_to_fragment_form(author: string, title: string, editor: string, name: string): void {
     // First, create a form group to represent a line
     const new_linked_fragment = new FormGroup({
       author: new FormControl(author),
       title: new FormControl(title),
       editor: new FormControl(editor),
       name: new FormControl(name),
-      //linked_fragment_id: new FormControl(linked_fragment_id),
     });
     // Next, push the created form group to the lines FormArray
     const linked_fragments_array = this.fragment_form.get('linked_fragments') as FormArray;
