@@ -1,24 +1,22 @@
-# Use the official Node.js image as the base image
+# Angular 21 needs Node ^20.19 || ^22.12 || >=24
 FROM node:22
 
-# Set the working directory
+# pnpm is pinned by the "packageManager" field in package.json; corepack installs
+# that exact version so the container always matches the lockfile.
+RUN corepack enable
+
 WORKDIR /app
 
-# Copy package.json and package-lock.json (if available)
-COPY package*.json ./
+# Install dependencies first, from the manifests and the lockfile only, so this
+# layer is cached and the install is reproducible. pnpm-workspace.yaml carries the
+# approved build scripts (cypress, esbuild, ...) that pnpm would otherwise block.
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN pnpm install --frozen-lockfile
 
-# Install Angular CLI globally
-RUN npm install -g @angular/cli
-
-# Install dependencies
-RUN npm install
-
-# Copy the rest of the Angular application code
+# Copy the application source. node_modules/dist are excluded via .dockerignore.
 COPY . .
 
-# Expose the port that Angular will serve on
 EXPOSE 4200
 
-# Run the Angular development server (ng serve)
-CMD ["ng", "serve", "--host", "0.0.0.0", "--port", "4200"]
-
+# ng comes from the local devDependency, so no global install is needed.
+CMD ["pnpm", "exec", "ng", "serve", "--host", "0.0.0.0", "--port", "4200"]

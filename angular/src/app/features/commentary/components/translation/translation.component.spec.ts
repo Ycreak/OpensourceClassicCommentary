@@ -13,6 +13,10 @@ describe('TranslationComponent', () => {
 
     fixture = TestBed.createComponent(TranslationComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('document', {
+      commentary: { fields: { translation: '' } },
+      lines: [],
+    });
     fixture.detectChanges();
   });
 

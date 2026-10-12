@@ -6,7 +6,7 @@
  * @author Ycreak
  */
 
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 // Model imports
@@ -46,6 +46,15 @@ import { NgTemplateOutlet } from '@angular/common';
   ],
 })
 export class CommentaryComponent {
+  private bib = inject(BibliographyService);
+  private mat_dialog = inject(MatDialog);
+  private string_formatter = inject(StringFormatterService);
+  protected api = inject(ApiService);
+  protected columns = inject(ColumnsService);
+  protected commentary_service = inject(CommentaryService);
+  protected dialog = inject(DialogService);
+  protected utility = inject(UtilityService);
+
   // The document given to the commentary to show its commentary
   protected document: any;
   // Commentary from the given document
@@ -61,16 +70,7 @@ export class CommentaryComponent {
   // List to hold multiple retrieved linked commentaries
   protected linked_commentaries: Commentary[] = [];
 
-  constructor(
-    private bib: BibliographyService,
-    private mat_dialog: MatDialog,
-    private string_formatter: StringFormatterService,
-    protected api: ApiService,
-    protected columns: ColumnsService,
-    protected commentary_service: CommentaryService,
-    protected dialog: DialogService,
-    protected utility: UtilityService
-  ) {
+  constructor() {
     // Subscribe to the commentary service to listen for a translation toggle
     this.commentary_service.translated.subscribe(() => {
       this.translated = !this.translated;

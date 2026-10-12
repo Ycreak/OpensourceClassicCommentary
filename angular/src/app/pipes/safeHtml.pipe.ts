@@ -1,4 +1,4 @@
-import { Pipe, PipeTransform, SecurityContext } from '@angular/core';
+import { Pipe, PipeTransform, SecurityContext, inject } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
 // Pipe to allow whitespaces in HTML which is labeled as safe.
@@ -7,7 +7,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 @Pipe({ name: 'safeHtml', standalone: true })
 export class SafeHtmlPipe implements PipeTransform {
-  constructor(private sanitized: DomSanitizer) {}
+  private sanitized = inject(DomSanitizer);
 
   transform(value: any) {
     return this.sanitized.sanitize(SecurityContext.HTML, value);

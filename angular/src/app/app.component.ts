@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 
 import { ApiService } from '@oscc/services/api.service';
 import { RouterOutlet } from '@angular/router';
@@ -11,9 +11,9 @@ import { RouterOutlet } from '@angular/router';
   imports: [RouterOutlet],
 })
 export class AppComponent implements OnInit {
-  title = 'OpenSourceClassicCommentary';
+  protected api = inject(ApiService);
 
-  constructor(protected api: ApiService) {}
+  title = 'OpenSourceClassicCommentary';
 
   ngOnInit() {
     // All things needed at startup by the OSCC are listed here

@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ColumnHandlerService } from './column-handler.service';
+import { ColumnsService } from './columns.service';
 
-describe('ColumnHandlerService', () => {
-  let service: ColumnHandlerService;
+describe('ColumnsService', () => {
+  let service: ColumnsService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(ColumnHandlerService);
+    service = TestBed.inject(ColumnsService);
   });
 
   it('should be created', () => {

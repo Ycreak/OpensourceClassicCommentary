@@ -5,7 +5,7 @@
  */
 
 // Library imports
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { AuthService } from '@oscc/features/auth/services/auth.service';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -49,6 +49,13 @@ import { MatButtonModule } from '@angular/material/button';
   ],
 })
 export class LoginComponent {
+  auth_service = inject(AuthService);
+  router = inject(Router);
+  protected api = inject(ApiService);
+  protected utility = inject(UtilityService);
+  private dialog = inject(DialogService);
+  dialogRef = inject<MatDialogRef<LoginComponent>>(MatDialogRef);
+
   hide_password = true; // password hiding in dialog
   login_form_expanded = true; // to toggle user login form field
   create_form_expanded = false; // to toggle the user create form field
@@ -80,15 +87,6 @@ export class LoginComponent {
     ]),
     magic_word: new FormControl('', [Validators.required]),
   });
-
-  constructor(
-    public auth_service: AuthService,
-    public router: Router,
-    protected api: ApiService,
-    protected utility: UtilityService,
-    private dialog: DialogService,
-    public dialogRef: MatDialogRef<LoginComponent>
-  ) {}
 
   /**
    * Requests the api to login the user. If the user is approved,

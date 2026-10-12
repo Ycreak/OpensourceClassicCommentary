@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Result, ResultsViewState } from '@ludev/components/results-panel/results-panel';
 import { SharedData } from '@ludev/services/shared-data';
@@ -13,12 +13,10 @@ const httpOptions = {
   providedIn: 'root',
 })
 export class Api {
-  response = {};
+  private http = inject(HttpClient);
+  private sharedData = inject(SharedData);
 
-  constructor(
-    private http: HttpClient,
-    private sharedData: SharedData
-  ) {}
+  response = {};
 
   analyze(text: string): Observable<any> {
     return this.http.post(

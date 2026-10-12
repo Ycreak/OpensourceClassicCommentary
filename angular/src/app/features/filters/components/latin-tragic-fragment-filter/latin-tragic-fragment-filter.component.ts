@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, signal, computed } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal, computed, inject } from '@angular/core';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { PLAYGROUND_ICON } from '@src/assets/img/image-constants';
@@ -14,6 +14,9 @@ import { UtilityService } from '@oscc/services/utility.service';
   imports: [MatButtonModule, MatMenuModule],
 })
 export class LatinTragicFragmentFilterComponent {
+  protected api = inject(ApiService);
+  protected utility = inject(UtilityService);
+
   @Input() button_title: string;
   @Input() button_type: string;
   @Input() endpoint: string;
@@ -26,11 +29,6 @@ export class LatinTragicFragmentFilterComponent {
   protected _name = signal<string>('');
 
   protected playgroundIcon = PLAYGROUND_ICON;
-
-  constructor(
-    protected api: ApiService,
-    protected utility: UtilityService
-  ) {}
 
   // The computed blocks automatically watch BOTH your local selection signals
   // AND the ApiService's internal _index signal.

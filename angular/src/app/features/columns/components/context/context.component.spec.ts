@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Context } from '@oscc/types/Context';
 
 import { ContextComponent } from './context.component';
 
@@ -13,6 +14,7 @@ describe('ContextComponent', () => {
 
     fixture = TestBed.createComponent(ContextComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('context', new Context('', '', '', ''));
     fixture.detectChanges();
   });
 

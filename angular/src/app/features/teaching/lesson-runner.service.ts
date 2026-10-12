@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { FabricService } from '@oscc/features/playground/services/fabric.service';
@@ -14,6 +14,11 @@ import { ApiService } from '@oscc/services/api.service';
  */
 @Injectable({ providedIn: 'root' })
 export class LessonRunnerService {
+  private http = inject(HttpClient);
+  private api = inject(ApiService);
+  private renderer = inject(LessonCardRenderer);
+  private fabric = inject(FabricService);
+
   private lesson!: Lesson;
   private index = 0;
   /** Correctness of the first answer per question (null until first answered), used for scoring. */
@@ -28,21 +33,6 @@ export class LessonRunnerService {
   private placements: (number | null)[] = [];
   /** Multi-answer/categorize: whether the current arrangement has been checked. */
   private checked = false;
-
-  /**
-   * Initializes the lesson runner service with required dependencies.
-   *
-   * @param http - Angular HttpClient for fetching lesson JSON files.
-   * @param api - Service for interacting with the backend API (retrieving fragments).
-   * @param renderer - Service responsible for rendering the lesson card on the canvas.
-   * @param fabric - Service managing the playground Fabric.js canvas and its objects.
-   */
-  constructor(
-    private http: HttpClient,
-    private api: ApiService,
-    private renderer: LessonCardRenderer,
-    private fabric: FabricService
-  ) {}
 
   /**
    * Loads the lesson JSON by id and places the first question card on the canvas.

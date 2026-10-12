@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, inject } from '@angular/core';
 import { ViewChild } from '@angular/core';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, Sort, MatSortModule } from '@angular/material/sort';
@@ -56,6 +56,11 @@ import { AsyncPipe } from '@angular/common';
   ],
 })
 export class UsersComponent implements OnInit, AfterViewInit {
+  protected api = inject(ApiService);
+  protected utility = inject(UtilityService);
+  protected dialog = inject(DialogService);
+  protected auth_service = inject(AuthService);
+
   // For the user table
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) matSort: MatSort;
@@ -99,12 +104,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
   table_data_loaded = false; // Returns true if the table has loaded its data
   loading_hint: Observable<unknown>; // Loading hint animation
 
-  constructor(
-    protected api: ApiService,
-    protected utility: UtilityService,
-    protected dialog: DialogService,
-    protected auth_service: AuthService
-  ) {
+  constructor() {
     // Assign the data to the data source for the table to render
     this.user_table_users = new MatTableDataSource(this.retrieved_users);
   }

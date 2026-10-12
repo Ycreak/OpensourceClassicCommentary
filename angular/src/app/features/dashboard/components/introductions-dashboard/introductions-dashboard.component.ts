@@ -3,7 +3,7 @@
  * @author Ycreak
  */
 
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Validators } from '@angular/forms';
 
@@ -43,6 +43,13 @@ import { MatExpansionModule } from '@angular/material/expansion';
   ],
 })
 export class IntroductionsDashboardComponent {
+  protected api = inject(ApiService);
+  protected utility = inject(UtilityService);
+  protected dialog = inject(DialogService);
+  protected auth_service = inject(AuthService);
+  protected helper = inject(HelperService);
+  protected sandbox = inject(SandboxService);
+
   private allowed_user_roles = ['admin'];
 
   // Whether a introduction has been selected
@@ -78,15 +85,6 @@ export class IntroductionsDashboardComponent {
     text: new FormControl(''),
   });
   protected current_form = this.author_intro_form;
-
-  constructor(
-    protected api: ApiService,
-    protected utility: UtilityService,
-    protected dialog: DialogService,
-    protected auth_service: AuthService,
-    protected helper: HelperService,
-    protected sandbox: SandboxService
-  ) {}
 
   /**
    * Request the API for documents

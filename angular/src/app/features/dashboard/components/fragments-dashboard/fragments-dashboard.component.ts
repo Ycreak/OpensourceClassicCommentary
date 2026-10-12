@@ -1,5 +1,5 @@
 // Library imports
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Validators } from '@angular/forms';
 
@@ -51,6 +51,11 @@ interface mat_select_interface {
   ],
 })
 export class FragmentsDashboardComponent implements OnInit {
+  protected api = inject(ApiService);
+  protected utility = inject(UtilityService);
+  protected dialog = inject(DialogService);
+  protected auth_service = inject(AuthService);
+
   private allowed_user_roles = ['admin', 'teacher', 'student'];
   // Fragment referencer variables
   protected referenced_author = '';
@@ -110,13 +115,6 @@ export class FragmentsDashboardComponent implements OnInit {
   // In this object all meta data is stored regarding the currently selected fragment
   selected_fragment_data: Column;
   fragment_referencer: Column;
-
-  constructor(
-    protected api: ApiService,
-    protected utility: UtilityService,
-    protected dialog: DialogService,
-    protected auth_service: AuthService
-  ) {}
 
   ngOnInit(): void {
     // We will store all dashboard data in the following data object

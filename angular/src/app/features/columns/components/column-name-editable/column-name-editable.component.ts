@@ -1,4 +1,4 @@
-import { Component, ContentChild, ElementRef, EventEmitter, Input, Output } from '@angular/core';
+import { Component, ContentChild, ElementRef, EventEmitter, Input, Output, inject } from '@angular/core';
 import { ViewModeDirective } from '@oscc/features/columns/components/column-name-editable/directives/view-mode.directive';
 import { EditModeDirective } from '@oscc/features/columns/components/column-name-editable/directives/edit-mode.directive';
 import { Subject } from 'rxjs';
@@ -19,6 +19,8 @@ import { NgTemplateOutlet } from '@angular/common';
   template: ` <ng-container [column]="column" *ngTemplateOutlet="currentView"></ng-container> `,
 })
 export class EditableColumnNameComponent {
+  private el = inject(ElementRef);
+
   @ContentChild(ViewModeDirective) viewModeTpl: ViewModeDirective;
   @ContentChild(EditModeDirective) editModeTpl: EditModeDirective;
   @Input() column: Column;
@@ -29,8 +31,6 @@ export class EditableColumnNameComponent {
   editMode$ = this.editMode.asObservable();
 
   mode: 'view' | 'edit' = 'view';
-
-  constructor(private el: ElementRef) {}
 
   /**
    * Sets the column back to default view mode and emits the particular column

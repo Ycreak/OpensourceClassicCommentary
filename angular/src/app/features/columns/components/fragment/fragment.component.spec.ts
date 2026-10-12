@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Fragment } from '@oscc/types/Fragment';
 
 import { FragmentComponent } from './fragment.component';
 
@@ -13,6 +14,8 @@ describe('FragmentComponent', () => {
 
     fixture = TestBed.createComponent(FragmentComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('fragment', new Fragment());
+    fixture.componentRef.setInput('translated', false);
     fixture.detectChanges();
   });
 

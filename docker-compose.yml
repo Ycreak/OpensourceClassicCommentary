@@ -33,7 +33,7 @@ services:
       - "4200:4200"
     volumes:
       - ./angular:/app
-    command: ["ng", "serve", "--host", "0.0.0.0", "--port", "4200"]
+    command: ["pnpm", "exec", "ng", "serve", "--host", "0.0.0.0", "--port", "4200"]
 
   #websockets:
     #build:

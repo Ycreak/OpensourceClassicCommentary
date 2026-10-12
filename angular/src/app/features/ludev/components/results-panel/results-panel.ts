@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -81,13 +81,15 @@ export class Result {
   styleUrl: './results-panel.scss',
 })
 export class ResultsPanelComponent {
+  private sharedData = inject(SharedData);
+
   viewState: ResultsViewState = 'empty';
   allResults: Array<Result> = [];
   results: Array<Result> = [];
   sortOption: SortOption = 'position';
   sortDirection: SortDirection = 'asc';
 
-  constructor(private sharedData: SharedData) {
+  constructor() {
     this.sharedData.state$.subscribe({
       next: (state) => {
         this.viewState = state;

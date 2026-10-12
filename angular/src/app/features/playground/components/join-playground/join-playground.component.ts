@@ -3,7 +3,7 @@
  */
 
 // Library imports
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatDialogRef, MatDialogClose, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -28,9 +28,9 @@ import { MatButtonModule } from '@angular/material/button';
   ],
 })
 export class JoinPlaygroundComponent {
-  protected name: string;
+  dialogRef = inject<MatDialogRef<JoinPlaygroundComponent>>(MatDialogRef);
 
-  constructor(public dialogRef: MatDialogRef<JoinPlaygroundComponent>) {}
+  protected name: string;
 
   protected onNoClick(): void {
     this.dialogRef.close();

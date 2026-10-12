@@ -1,0 +1,18 @@
+# pnpm settings for this project (pnpm >= 10 reads build approvals from here).
+#
+# Only dependencies that need to compile or download something during install are
+# listed; pnpm blocks every other install script by default.
+#
+# 'canvas' is intentionally not approved: jsdom pulls it in as an optional
+# dependency, it has no prebuilt binary for this platform, and the unit tests mock
+# FabricJS instead of needing a real 2d canvas context.
+allowBuilds:
+  '@parcel/watcher': true
+  cypress: true
+  esbuild: true
+  lmdb: true
+  msgpackr-extract: true
+  # Denied: jsdom pulls canvas in as an optional dependency, it has no prebuilt
+  # binary for this platform, and the unit tests mock FabricJS instead of needing
+  # a real 2d canvas context.
+  canvas: false

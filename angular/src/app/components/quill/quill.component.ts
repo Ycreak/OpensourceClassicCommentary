@@ -2,7 +2,7 @@
  * This component shows the Quill Editor to process the given string. Provides it back immediately
  * the onContentChanged flag.
  */
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { BibliographyComponent } from '@oscc/features/dashboard/components/bibliography/bibliography.component';
@@ -18,12 +18,12 @@ import { QuillEditorComponent } from 'ngx-quill';
   styleUrls: ['./quill.component.scss'],
 })
 export class QuillComponent {
+  private dialog = inject(MatDialog);
+
   // We retrieve a value to edit from the parent component
   @Input() value: string = '';
   // Whenever the given value is changed, we immediately communicate the change back
   @Output() valueChange = new EventEmitter<string>();
-
-  constructor(private dialog: MatDialog) {}
 
   editor_instance: any; // allows communication with the editor
 

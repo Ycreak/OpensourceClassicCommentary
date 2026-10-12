@@ -5,7 +5,7 @@
  */
 
 // Library imports
-import { Component, OnInit, ViewEncapsulation, ViewChild, ViewChildren, QueryList } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ViewChild, ViewChildren, QueryList, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger, MatMenuModule } from '@angular/material/menu';
 import { ActivatedRoute, ParamMap } from '@angular/router';
@@ -81,6 +81,18 @@ import { OutsideClickDirective } from '@oscc/features/columns/components/column-
   ],
 })
 export class ColumnsComponent implements OnInit {
+  protected api = inject(ApiService);
+  protected auth_service = inject(AuthService);
+  protected columns = inject(ColumnsService);
+  protected commentary = inject(CommentaryService);
+  protected dialog = inject(DialogService);
+  protected settings = inject(SettingsService);
+  protected utility = inject(UtilityService);
+  private bib = inject(BibliographyService);
+  private matdialog = inject(MatDialog);
+  private route = inject(ActivatedRoute);
+  protected sandbox = inject(SandboxService);
+
   // Variable to store the clicked fragment and its data. Used for the context menu
   public current_document: any;
 
@@ -88,21 +100,7 @@ export class ColumnsComponent implements OnInit {
     columnName: new FormControl(''),
   });
 
-  newColumnName = ''; //used for renaming columns
-
-  constructor(
-    protected api: ApiService,
-    protected auth_service: AuthService,
-    protected columns: ColumnsService,
-    protected commentary: CommentaryService,
-    protected dialog: DialogService,
-    protected settings: SettingsService,
-    protected utility: UtilityService,
-    private bib: BibliographyService,
-    private matdialog: MatDialog,
-    private route: ActivatedRoute,
-    protected sandbox: SandboxService
-  ) {}
+  newColumnName = '';
 
   ngOnInit(): void {
     this.api.request_index().subscribe({});

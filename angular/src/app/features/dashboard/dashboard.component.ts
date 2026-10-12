@@ -1,5 +1,5 @@
 // Library imports
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 
 // Component imports
 import { ApiService } from '@oscc/services/api.service';
@@ -34,11 +34,9 @@ import { MatToolbarModule } from '@angular/material/toolbar';
   ],
 })
 export class DashboardComponent implements OnInit {
-  constructor(
-    protected api: ApiService,
-    protected auth_service: AuthService,
-    private utility: UtilityService
-  ) {}
+  protected api = inject(ApiService);
+  protected auth_service = inject(AuthService);
+  private utility = inject(UtilityService);
 
   ngOnInit(): void {
     // Always make sure we use the correct index for the dashboard

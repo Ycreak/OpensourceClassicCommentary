@@ -4,7 +4,7 @@
  * on the role the user has.
  */
 
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { environment } from '@src/environments/environment';
 
 //Service imports
@@ -14,7 +14,7 @@ import { SandboxService } from '@oscc/services/sandbox.service';
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private sandbox: SandboxService) {}
+  private sandbox = inject(SandboxService);
 
   private permissions = {
     admin: ['create', 'read', 'update', 'delete', 'publish'],
