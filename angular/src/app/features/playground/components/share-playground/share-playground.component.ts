@@ -1,5 +1,5 @@
 // Library imports
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialogRef,
@@ -42,17 +42,19 @@ import { MatButtonModule } from '@angular/material/button';
   ],
 })
 export class SharePlaygroundComponent implements OnInit {
+  dialog_data = inject(MAT_DIALOG_DATA);
+  dialogRef = inject<MatDialogRef<SharePlaygroundComponent>>(MatDialogRef);
+  protected api = inject(ApiService);
+
   protected users: Playground_user[] = [];
 
   protected form = new FormGroup({
     users: new FormArray([]),
   });
 
-  constructor(
-    @Inject(MAT_DIALOG_DATA) public dialog_data: any,
-    public dialogRef: MatDialogRef<SharePlaygroundComponent>,
-    protected api: ApiService
-  ) {
+  constructor() {
+    const dialog_data = this.dialog_data;
+
     this.users = dialog_data.users;
   }
 

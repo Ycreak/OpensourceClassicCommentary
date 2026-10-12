@@ -1,5 +1,5 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+# This workflow does a clean installation of node dependencies, builds the source
+# code and runs the checks.
 
 name: Angular Checks
 
@@ -7,28 +7,33 @@ on: []
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
+
     defaults:
       run:
-        working-directory: ./Angular/
-
+        # The runner filesystem is case sensitive; the directory is 'angular'.
+        working-directory: ./angular/
 
     strategy:
       matrix:
-        node-version: [20.x]
+        # Angular 21 requires Node ^20.19 || ^22.12 || >=24
+        node-version: ['24']
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-        cache-dependency-path: './Angular/package-lock.json'
+      - uses: actions/checkout@v4
 
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npx prettier --check src/app
-    - run: npm run lint
+      # Installs the pnpm version pinned by the 'packageManager' field in package.json.
+      - uses: pnpm/action-setup@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+          cache-dependency-path: './angular/pnpm-lock.yaml'
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run build --if-present
+      - run: pnpm exec prettier --check src/app
+      - run: pnpm run lint

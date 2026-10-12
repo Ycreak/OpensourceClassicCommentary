@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Testimonium } from '@oscc/types/Testimonium';
 
 import { TestimoniaComponent } from './testimonia.component';
 
@@ -13,6 +14,7 @@ describe('TestimoniaComponent', () => {
 
     fixture = TestBed.createComponent(TestimoniaComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('testimonium', new Testimonium());
     fixture.detectChanges();
   });
 

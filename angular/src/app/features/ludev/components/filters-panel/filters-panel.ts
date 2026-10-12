@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -88,6 +88,8 @@ interface AppliedFilters {
   styleUrl: './filters-panel.scss',
 })
 export class FiltersPanelComponent {
+  private sharedData = inject(SharedData);
+
   selectedMeters: string[] = [...ALL_METER_VALUES];
 
   // Keep this default value aligned with the threshold in backend/pipeline_service.py.
@@ -157,8 +159,6 @@ export class FiltersPanelComponent {
   };
 
   private rawNumericInputErrors: Partial<Record<NumericFilterField, boolean>> = {};
-
-  constructor(private sharedData: SharedData) {}
 
   onNumericInput(field: NumericFilterField, event: Event): void {
     const input = event.target as HTMLInputElement;

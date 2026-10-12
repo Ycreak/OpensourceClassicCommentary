@@ -1,9 +1,9 @@
-import { Directive, TemplateRef } from '@angular/core';
+import { Directive, TemplateRef, inject } from '@angular/core';
 
 @Directive({
   selector: '[appEditMode]',
   standalone: true,
 })
 export class EditModeDirective {
-  constructor(public tpl: TemplateRef<any>) {}
+  tpl = inject<TemplateRef<any>>(TemplateRef);
 }

@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
+
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,8 +16,6 @@ import { SafeHtmlPipe } from '@oscc/pipes/safeHtml.pipe';
   styleUrls: ['../dialogs.scss'],
 })
 export class ColumnBibliographyComponent {
-  constructor(
-    public dialogRef: MatDialogRef<ColumnBibliographyComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
-  ) {}
+  dialogRef = inject<MatDialogRef<ColumnBibliographyComponent>>(MatDialogRef);
+  data = inject(MAT_DIALOG_DATA);
 }

@@ -1,4 +1,4 @@
-import { Component, Input, ElementRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, ElementRef, AfterViewInit, ChangeDetectorRef, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 
 //import { CommentaryComponent } from '../../commentary/commentary.component';
@@ -11,6 +11,9 @@ import { MatButtonModule } from '@angular/material/button';
   imports: [MatButtonModule],
 })
 export class ExpandableTextComponent implements AfterViewInit {
+  private elRef = inject(ElementRef);
+  private cdRef = inject(ChangeDetectorRef);
+
   @Input() content!: string; // HTML content
   @Input() isCollapsed?: boolean;
   @Input() collapsedHeightPx!: number; // Height when collapsed in em;
@@ -19,10 +22,7 @@ export class ExpandableTextComponent implements AfterViewInit {
   protected maskDisabled = false;
   protected content_hideable!: string;
 
-  constructor(
-    private elRef: ElementRef,
-    private cdRef: ChangeDetectorRef
-  ) {
+  constructor() {
     this.enabled = true;
     this.isCollapsed = this.isCollapsed || true; // Set isCollapsed to true by default
     this.collapsedHeightPx = this.collapsedHeightPx || 200; // Element height is 200px by default when collapsed FIXME: Em would be nicer, but would also make the comparison in the ngAfterViewInit below a bit more difficult.

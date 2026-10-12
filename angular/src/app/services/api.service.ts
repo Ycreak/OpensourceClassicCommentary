@@ -1,5 +1,5 @@
 // Library imports
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
@@ -23,6 +23,10 @@ import { User } from '@oscc/types/User';
   providedIn: 'root',
 })
 export class ApiService {
+  protected utility = inject(UtilityService);
+  private bib = inject(BibliographyService);
+  private sandbox = inject(SandboxService);
+
   protected http: HttpClient;
 
   network_status: boolean; // Indicates if server is reachable or not
@@ -45,12 +49,9 @@ export class ApiService {
     ['update', 'document/update'],
   ]);
 
-  constructor(
-    protected utility: UtilityService,
-    private bib: BibliographyService,
-    private sandbox: SandboxService,
-    http: HttpClient
-  ) {
+  constructor() {
+    const http = inject(HttpClient);
+
     this.http = http;
     this.network_status = true; // Assumed online until HttpErrorResponse is received.
   }
@@ -394,7 +395,8 @@ export class ApiService {
 // Interceptor for HTTP errors
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor {
-  constructor(private api: ApiService) {}
+  private api = inject(ApiService);
+
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
       tap({

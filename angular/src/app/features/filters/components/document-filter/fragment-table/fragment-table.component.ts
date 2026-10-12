@@ -3,7 +3,7 @@
  * @author Ycreak
  */
 
-import { AfterViewInit, Component, ViewChild, Output, EventEmitter } from '@angular/core';
+import { AfterViewInit, Component, ViewChild, Output, EventEmitter, inject } from '@angular/core';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -38,6 +38,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
   ],
 })
 export class FragmentTableComponent implements AfterViewInit {
+  protected api = inject(ApiService);
+  protected filter = inject(FilterService);
+  protected utility = inject(UtilityService);
+
   @Output() collection = new EventEmitter<any>();
 
   displayedColumns: string[] = ['select', 'author', 'title', 'editor', 'name'];
@@ -56,11 +60,7 @@ export class FragmentTableComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(
-    protected api: ApiService,
-    protected filter: FilterService,
-    protected utility: UtilityService
-  ) {
+  constructor() {
     // Create a master index we use as a read only truth, and a local index which we will use to save the filtering of
     // the master index to.
     this.master_index = this.api.index.filter((item) => item.document_type === 'fragment' && item.visible == 1);

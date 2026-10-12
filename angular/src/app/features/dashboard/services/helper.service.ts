@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { DialogService } from '@oscc/services/dialog.service';
 import { FormGroup, FormArray } from '@angular/forms';
 
@@ -6,7 +6,7 @@ import { FormGroup, FormArray } from '@angular/forms';
   providedIn: 'root',
 })
 export class HelperService {
-  constructor(protected dialog: DialogService) {}
+  protected dialog = inject(DialogService);
 
   /**
    * This function requests a wysiwyg dialog to handle data updating to the fragment_form.

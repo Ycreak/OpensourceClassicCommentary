@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Input } from '@angular/core';
 
 import { SettingsService } from '@oscc/services/settings.service';
@@ -13,7 +13,7 @@ import { Testimonium } from '@oscc/types/Testimonium';
   imports: [],
 })
 export class TestimoniaComponent {
-  @Input() testimonium: Testimonium;
+  protected settings = inject(SettingsService);
 
-  constructor(protected settings: SettingsService) {}
+  @Input() testimonium: Testimonium;
 }

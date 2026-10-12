@@ -3,7 +3,7 @@
  * @author Ycreak
  */
 
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Validators } from '@angular/forms';
 
@@ -46,6 +46,12 @@ import { MatExpansionModule } from '@angular/material/expansion';
   ],
 })
 export class TestimoniaDashboardComponent {
+  protected api = inject(ApiService);
+  protected utility = inject(UtilityService);
+  protected dialog = inject(DialogService);
+  protected auth_service = inject(AuthService);
+  protected helper = inject(HelperService);
+
   private allowed_user_roles = ['admin'];
 
   // Whether a testimonium has been selected
@@ -64,14 +70,6 @@ export class TestimoniaDashboardComponent {
     visible: new FormControl(0),
     lock: new FormControl(0),
   });
-
-  constructor(
-    protected api: ApiService,
-    protected utility: UtilityService,
-    protected dialog: DialogService,
-    protected auth_service: AuthService,
-    protected helper: HelperService
-  ) {}
 
   /**
    * Request the API for documents

@@ -3,7 +3,7 @@
  * For example, settings saved in the fragments component will be saved when entering
  * the dashboard.
  */
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { LocalStorageService } from '@oscc/services/local-storage.service';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -11,6 +11,9 @@ import { MatDialog } from '@angular/material/dialog';
   providedIn: 'root',
 })
 export class SettingsService {
+  private localstorage = inject(LocalStorageService);
+  protected dialog = inject(MatDialog);
+
   fragments = {
     dragging_disabled: false,
     fragment_order_gradient: false,
@@ -19,11 +22,6 @@ export class SettingsService {
     show_line_names: true,
     commentary_size: 40,
   };
-
-  constructor(
-    private localstorage: LocalStorageService,
-    protected dialog: MatDialog
-  ) {}
 
   /**
    * Function used to load the user's previously used settings from local storage using the LocalStorageService service

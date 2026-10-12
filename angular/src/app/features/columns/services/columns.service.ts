@@ -2,7 +2,7 @@
  * This service allows for column manipulation within the document component
  * @author Ycreak
  */
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
 // Model imports
 import { Column } from '@oscc/types/Column';
@@ -17,6 +17,10 @@ import { UtilityService } from '@oscc/services/utility.service';
   providedIn: 'root',
 })
 export class ColumnsService {
+  private api = inject(ApiService);
+  private bib = inject(BibliographyService);
+  private utility = inject(UtilityService);
+
   // We keep track of the number of columns to identify them
   column_identifier = 1;
   // List of connected columns to allow dragging and dropping between columns
@@ -24,12 +28,6 @@ export class ColumnsService {
   // Object to store all column data: just an array with column data in the form of document columns
   list: Column[] = [];
   public current: Column = new Column({});
-
-  constructor(
-    private api: ApiService,
-    private bib: BibliographyService,
-    private utility: UtilityService
-  ) {}
 
   /**
    * This function adds a new column to the columns array

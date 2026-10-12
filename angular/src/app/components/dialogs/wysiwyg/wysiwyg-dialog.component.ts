@@ -2,7 +2,7 @@
  * This component handles the wysiwyg component, which uses the Quill Editor to help users
  * better edit their texts.
  */
-import { Inject, Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogContent, MatDialogClose } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { BibliographyComponent } from '@oscc/features/dashboard/components/bibliography/bibliography.component';
@@ -18,12 +18,9 @@ import { QuillEditorComponent } from 'ngx-quill';
   styleUrl: '../dialogs.scss',
 })
 export class WYSIWYGDialogComponent {
-  constructor(
-    private dialog: MatDialog,
-    public dialogRef: MatDialogRef<WYSIWYGDialogComponent>,
-    @Inject(MAT_DIALOG_DATA)
-    public data: any
-  ) {}
+  private dialog = inject(MatDialog);
+  dialogRef = inject<MatDialogRef<WYSIWYGDialogComponent>>(MatDialogRef);
+  data = inject(MAT_DIALOG_DATA);
 
   editor_instance: any; // allows communication with the editor
 

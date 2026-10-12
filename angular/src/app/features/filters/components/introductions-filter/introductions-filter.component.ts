@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 
 // Service imports
 import { ApiService } from '@oscc/services/api.service';
@@ -13,6 +13,8 @@ import { MatButtonModule } from '@angular/material/button';
   imports: [MatButtonModule, MatMenuModule],
 })
 export class IntroductionsFilterComponent {
+  protected api = inject(ApiService);
+
   @Input() button_title: string;
   @Input() button_type: string;
   @Input() endpoint: string;
@@ -26,8 +28,6 @@ export class IntroductionsFilterComponent {
   protected titles: string[]; //TODO rename this
 
   protected introduction_type: string;
-
-  constructor(protected api: ApiService) {}
 
   /** Emits a filter whenever one is selected */
   protected filter(introduction_type: string) {

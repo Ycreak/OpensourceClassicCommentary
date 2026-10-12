@@ -1,7 +1,7 @@
 /**
  * This service allows components to easily open a dialog and interact with them.
  */
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { ConfirmationDialogComponent } from '@oscc/components/dialogs/confirmation/confirmation-dialog.component';
@@ -17,10 +17,8 @@ import { PublishDashboardComponent } from '@oscc/features/dashboard/components/p
   providedIn: 'root',
 })
 export class DialogService {
-  constructor(
-    private settings: SettingsService,
-    private dialog: MatDialog
-  ) {}
+  private settings = inject(SettingsService);
+  private dialog = inject(MatDialog);
 
   /**
    * Function to handle the about dialog

@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -17,14 +17,12 @@ import { LessonSummary } from '@oscc/features/teaching/models/lesson.model';
   styleUrls: ['./select-lesson-dialog.component.scss'],
 })
 export class SelectLessonDialogComponent implements OnInit {
+  dialogRef = inject<MatDialogRef<SelectLessonDialogComponent, string>>(MatDialogRef);
+  private http = inject(HttpClient);
+
   protected lessons = signal<LessonSummary[]>([]);
   protected loading = signal(true);
   protected failed = signal(false);
-
-  constructor(
-    public dialogRef: MatDialogRef<SelectLessonDialogComponent, string>,
-    private http: HttpClient
-  ) {}
 
   ngOnInit(): void {
     this.http.get<LessonSummary[]>('assets/teaching/index.json').subscribe({

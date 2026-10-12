@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Group, Rect, Textbox } from 'fabric';
 
 import { FabricService } from '@oscc/features/playground/services/fabric.service';
@@ -29,6 +29,8 @@ const STYLE_MARKERS: Record<string, object> = {
  */
 @Injectable({ providedIn: 'root' })
 export class LessonCardRenderer {
+  private fabric = inject(FabricService);
+
   private card: any = null;
   private zone: any = null;
   private cat_zones: any[] = [];
@@ -39,8 +41,6 @@ export class LessonCardRenderer {
   private chips_full_key = '';
   private handlers: LessonCardHandlers | null = null;
   private listening_canvas: any = null;
-
-  constructor(private fabric: FabricService) {}
 
   /**
    * Renders the card for the given spec, replacing the previous one in place so

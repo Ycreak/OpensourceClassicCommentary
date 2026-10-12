@@ -1,0 +1,25 @@
+# Keep the build context small and avoid baking host state into the image.
+# node_modules and dist are installed inside the image instead, and copying the
+# host's root-owned dist/ is what previously caused permission errors locally.
+node_modules
+dist
+.angular
+out-tsc
+coverage
+cypress/screenshots
+cypress/videos
+cypress/downloads
+
+# Local overrides and secrets
+.env
+.env.*
+!.env.example
+
+# Editors / OS
+.git
+.gitignore
+.vscode
+.idea
+*.swp
+.DS_Store
+Thumbs.db

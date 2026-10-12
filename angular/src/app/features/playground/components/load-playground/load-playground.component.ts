@@ -1,5 +1,5 @@
 // Library imports
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialogRef,
@@ -39,6 +39,11 @@ import { MatButtonModule } from '@angular/material/button';
   ],
 })
 export class LoadPlaygroundComponent implements OnInit {
+  dialog_data = inject(MAT_DIALOG_DATA);
+  dialogRef = inject<MatDialogRef<LoadPlaygroundComponent>>(MatDialogRef);
+  protected api = inject(ApiService);
+  private auth_service = inject(AuthService);
+
   protected name: string;
   protected playgrounds_created_by_me: any[] = [];
   protected playgrounds_shared_with_me: any[] = [];
@@ -46,12 +51,9 @@ export class LoadPlaygroundComponent implements OnInit {
   protected selected_playground: string;
   protected no_playgrounds = false;
 
-  constructor(
-    @Inject(MAT_DIALOG_DATA) public dialog_data: any,
-    public dialogRef: MatDialogRef<LoadPlaygroundComponent>,
-    protected api: ApiService,
-    private auth_service: AuthService
-  ) {
+  constructor() {
+    const dialog_data = this.dialog_data;
+
     this.name = dialog_data.user;
   }
 

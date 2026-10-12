@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Input } from '@angular/core';
 
 import { SettingsService } from '@oscc/services/settings.service';
@@ -13,7 +13,7 @@ import { Context } from '@oscc/types/Context';
   imports: [],
 })
 export class ContextComponent {
-  @Input() context: Context;
+  protected settings = inject(SettingsService);
 
-  constructor(protected settings: SettingsService) {}
+  @Input() context: Context;
 }

@@ -3,7 +3,7 @@
  * dialog sends a list of filters back to the server.
  * @author Ycreak
  */
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatDialogRef, MatDialogClose, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
 import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
 // Services imports
@@ -33,12 +33,12 @@ import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
   ],
 })
 export class DocumentFilterComponent {
+  private dialogRef = inject<MatDialogRef<DocumentFilterComponent>>(MatDialogRef);
+  private filter = inject(FilterService);
+
   private current_tab: string = 'fragments';
 
-  constructor(
-    private dialogRef: MatDialogRef<DocumentFilterComponent>,
-    private filter: FilterService
-  ) {
+  constructor() {
     this.filter.init();
   }
 

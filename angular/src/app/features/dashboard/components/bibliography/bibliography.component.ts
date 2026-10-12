@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, inject } from '@angular/core';
 
 import { ViewChild } from '@angular/core';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -34,6 +34,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
   ],
 })
 export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
+  private bib = inject(BibliographyService);
+  protected auth_service = inject(AuthService);
+  protected dialog = inject(DialogService);
+
   /**
    * The size this dialog is opened with. Shared by everything that opens it, so the
    * inline editor and the standalone editor show the same, wide, table.
@@ -54,11 +58,7 @@ export class BibliographyComponent implements OnInit, OnDestroy, AfterViewInit {
   private bib_subscription: any;
   protected pages: string;
 
-  constructor(
-    private bib: BibliographyService,
-    protected auth_service: AuthService,
-    protected dialog: DialogService
-  ) {
+  constructor() {
     this.table_data = new MatTableDataSource(this.table_source_data);
   }
 

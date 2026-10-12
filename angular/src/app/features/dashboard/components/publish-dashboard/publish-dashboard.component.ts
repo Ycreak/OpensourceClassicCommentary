@@ -1,7 +1,7 @@
 /**
  * This component shows which fragments are published and which are not. Allows to easily toggle and update in bulk.
  */
-import { AfterViewInit, Component, ViewChild, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ViewChild, OnInit, inject } from '@angular/core';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -36,6 +36,9 @@ import { Fragment } from '@oscc/types/Fragment';
   styleUrl: './publish-dashboard.component.scss',
 })
 export class PublishDashboardComponent implements OnInit, AfterViewInit {
+  protected api = inject(ApiService);
+  protected utility = inject(UtilityService);
+
   protected fragments: Fragment[] = [];
   protected displayedColumns: string[] = ['visible', 'author', 'title', 'editor', 'name'];
   protected dataSource: MatTableDataSource<Fragment> = new MatTableDataSource<Fragment>([]);
@@ -43,11 +46,6 @@ export class PublishDashboardComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-
-  constructor(
-    protected api: ApiService,
-    protected utility: UtilityService
-  ) {}
 
   ngOnInit(): void {
     // Request all fragments within our sandbox.

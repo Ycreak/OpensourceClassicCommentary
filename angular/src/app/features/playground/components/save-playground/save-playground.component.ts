@@ -1,5 +1,5 @@
 // Library imports
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialogRef,
@@ -31,6 +31,9 @@ import { MatButtonModule } from '@angular/material/button';
   ],
 })
 export class SavePlaygroundComponent {
+  dialog_data = inject(MAT_DIALOG_DATA);
+  dialogRef = inject<MatDialogRef<SavePlaygroundComponent>>(MatDialogRef);
+
   protected name: string;
   protected playgrounds: string[];
 
@@ -38,10 +41,9 @@ export class SavePlaygroundComponent {
   protected new_playground = false;
   protected selected_playground: string;
 
-  constructor(
-    @Inject(MAT_DIALOG_DATA) public dialog_data: any,
-    public dialogRef: MatDialogRef<SavePlaygroundComponent>
-  ) {
+  constructor() {
+    const dialog_data = this.dialog_data;
+
     this.name = dialog_data.name;
     if (this.name == undefined) {
       this.new_playground = true;

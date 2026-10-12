@@ -13,6 +13,8 @@ describe('ExpandableTextComponent', () => {
 
     fixture = TestBed.createComponent(ExpandableTextComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('content', '<p>test</p>');
+    fixture.componentRef.setInput('collapsedHeightPx', 40);
     fixture.detectChanges();
   });
 

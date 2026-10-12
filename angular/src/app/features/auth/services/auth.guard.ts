@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
 
 import { AuthService } from './auth.service';
@@ -7,10 +7,8 @@ import { AuthService } from './auth.service';
   providedIn: 'root',
 })
 export class AuthGuard {
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     return this.checkLogin(state.url);

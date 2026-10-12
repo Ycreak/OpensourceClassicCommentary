@@ -4,7 +4,7 @@
  * these individual components. Additionally, it holds information about the currently loaded playground,
  * like its name and its users. The canvas is fully handled by the fabric service.
  */
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { Output, EventEmitter } from '@angular/core';
 import { WebsocketsService } from '@oscc/features/playground/services/websockets.service';
 import { HostListener } from '@angular/core';
@@ -61,6 +61,18 @@ import { LessonRunnerService } from '@oscc/features/teaching/lesson-runner.servi
   imports: [MatProgressBarModule, MatIconModule, MatMenuModule],
 })
 export class PlaygroundComponent implements OnInit, OnDestroy {
+  protected api = inject(ApiService);
+  protected auth_service = inject(AuthService);
+  protected dialog = inject(DialogService);
+  protected fabric = inject(FabricService);
+  protected utility = inject(UtilityService);
+  protected websockets = inject(WebsocketsService);
+  private commentary = inject(CommentaryService);
+  private formatter = inject(FormatterService);
+  private mat_dialog = inject(MatDialog);
+  private lesson_runner = inject(LessonRunnerService);
+  protected window_watcher = inject(WindowSizeWatcherService);
+
   @Output() document_clicked = new EventEmitter<Fragment>();
   // Listener for key events
   @HostListener('document:keyup', ['$event'])
@@ -101,20 +113,6 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   protected playgroundRedoButton = PLAYGROUND_REDO;
   protected playgroundSaveButton = PLAYGROUND_SAVE;
   protected playgroundLoadButton = PLAYGROUND_LOAD;
-
-  constructor(
-    protected api: ApiService,
-    protected auth_service: AuthService,
-    protected dialog: DialogService,
-    protected fabric: FabricService,
-    protected utility: UtilityService,
-    protected websockets: WebsocketsService,
-    private commentary: CommentaryService,
-    private formatter: FormatterService,
-    private mat_dialog: MatDialog,
-    private lesson_runner: LessonRunnerService,
-    protected window_watcher: WindowSizeWatcherService
-  ) {}
 
   ngOnInit(): void {
     this.init_playground();

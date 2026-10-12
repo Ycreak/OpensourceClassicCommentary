@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialogRef,
@@ -17,12 +17,14 @@ import { MatButtonModule } from '@angular/material/button';
   imports: [MatButtonModule, MatDialogClose, MatIconModule, MatDialogContent, MatDialogActions],
 })
 export class DeletePlaygroundComponent {
+  dialog_data = inject(MAT_DIALOG_DATA);
+  dialogRef = inject<MatDialogRef<DeletePlaygroundComponent>>(MatDialogRef);
+
   protected name: string;
 
-  constructor(
-    @Inject(MAT_DIALOG_DATA) public dialog_data: any,
-    public dialogRef: MatDialogRef<DeletePlaygroundComponent>
-  ) {
+  constructor() {
+    const dialog_data = this.dialog_data;
+
     this.name = dialog_data.name;
   }
 

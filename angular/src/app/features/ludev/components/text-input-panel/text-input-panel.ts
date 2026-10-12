@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -30,6 +30,10 @@ type SourceMode = 'paste' | 'upload';
   styleUrl: './text-input-panel.scss',
 })
 export class TextInputPanelComponent implements OnInit, OnDestroy {
+  private api = inject(Api);
+  private sanitizer = inject(DomSanitizer);
+  private sharedData = inject(SharedData);
+
   sourceMode: SourceMode = 'paste';
   inputText = '';
   validationError = '';
@@ -46,11 +50,7 @@ export class TextInputPanelComponent implements OnInit, OnDestroy {
     return this.inputText.length;
   }
 
-  constructor(
-    private api: Api,
-    private sanitizer: DomSanitizer,
-    private sharedData: SharedData
-  ) {
+  constructor() {
     this.subscriptions.add(
       this.sharedData.analyze$.subscribe({
         next: (data) => {

@@ -4,7 +4,7 @@
  */
 
 // Library imports
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { ViewportScroller, NgStyle } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { environment } from '@src/environments/environment';
@@ -49,21 +49,21 @@ import { MatToolbarModule } from '@angular/material/toolbar';
   ],
 })
 export class OverviewComponent implements OnInit, OnDestroy {
+  protected api = inject(ApiService);
+  protected auth_service = inject(AuthService);
+  protected dialog_service = inject(DialogService);
+  protected sandbox = inject(SandboxService);
+  protected settings = inject(SettingsService);
+  protected window_watcher = inject(WindowSizeWatcherService);
+  private mat_dialog = inject(MatDialog);
+  private viewportscroller = inject(ViewportScroller);
+  private matIconRegistry = inject(MatIconRegistry);
+  private domSanitizer = inject(DomSanitizer);
+
   protected commentary_enabled = true;
   protected playground_enabled = false;
 
-  constructor(
-    protected api: ApiService,
-    protected auth_service: AuthService,
-    protected dialog_service: DialogService,
-    protected sandbox: SandboxService,
-    protected settings: SettingsService,
-    protected window_watcher: WindowSizeWatcherService,
-    private mat_dialog: MatDialog,
-    private viewportscroller: ViewportScroller,
-    private matIconRegistry: MatIconRegistry,
-    private domSanitizer: DomSanitizer
-  ) {
+  constructor() {
     // Adding icons to matIconRegistry
     this.matIconRegistry.addSvgIcon(
       'bluesky',

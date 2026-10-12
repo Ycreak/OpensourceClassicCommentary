@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Api } from '@ludev/services/api';
@@ -10,6 +10,8 @@ import { Api } from '@ludev/services/api';
   styleUrl: './result-card.scss',
 })
 export class ResultCardComponent {
+  private api = inject(Api);
+
   @Input() candidate: string = 'Candidate passage';
   @Input() meter: string = 'Metrical pattern';
   @Input() distance: number = 0;
@@ -21,8 +23,6 @@ export class ResultCardComponent {
   @Input() labels: string[] = [];
 
   @Output() candidateClicked = new EventEmitter<string>();
-
-  constructor(private api: Api) {}
 
   // highlight candidate in text when rc is clicked
   isclicked = false;

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
 // Model imports
 import { Commentary } from '@oscc/types/Commentary';
@@ -11,9 +11,9 @@ import { UtilityService } from '@oscc/services/utility.service';
   providedIn: 'root',
 })
 export class BibliographyService {
-  public bibliography: Bib[] = [];
+  private utility = inject(UtilityService);
 
-  constructor(private utility: UtilityService) {}
+  public bibliography: Bib[] = [];
 
   /**
    * Retrieves a list of bibliography keys from the given document

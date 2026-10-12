@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Input } from '@angular/core';
 
 import { SettingsService } from '@oscc/services/settings.service';
@@ -15,10 +15,8 @@ import { SafeHtmlPipe } from '@oscc/pipes/safeHtml.pipe';
   styleUrls: ['./fragment.component.scss'],
 })
 export class FragmentComponent {
+  protected settings = inject(SettingsService);
+
   @Input() fragment: Fragment;
   @Input() translated: boolean;
-
-  constructor(protected settings: SettingsService) {
-    //console.log(this.fragment);
-  }
 }

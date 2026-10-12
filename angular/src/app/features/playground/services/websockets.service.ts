@@ -2,7 +2,7 @@
  * This service allow components to connect to the websocket server and send/receive messages
  */
 
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { AuthService } from '@oscc/features/auth/services/auth.service';
 //import { Socket } from 'ngx-socket-io';
 import { map } from 'rxjs/operators';
@@ -11,13 +11,12 @@ import { map } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class WebsocketsService {
+  private auth_service = inject(AuthService);
+
   public active: boolean;
   public room_identifier: string;
 
-  constructor(
-    //private socket: Socket,
-    private auth_service: AuthService
-  ) {
+  constructor() {
     this.active = false;
   }
 

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Canvas, Group, Text, Textbox, IText, Rect, Point, util } from 'fabric';
 import { Observable, Subject } from 'rxjs';
 
@@ -13,6 +13,8 @@ import { environment } from '@src/environments/environment';
   providedIn: 'root',
 })
 export class FabricService {
+  private utility = inject(UtilityService);
+
   public canvas: Canvas;
 
   // State Management for Undo/Redo
@@ -26,8 +28,6 @@ export class FabricService {
 
   readonly font_size: number = 16;
   public documents: any[] = [];
-
-  constructor(private utility: UtilityService) {}
 
   /**
    * Initializes various canvas settings such as drawing brush properties.

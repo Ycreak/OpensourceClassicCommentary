@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, inject } from '@angular/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTooltip, MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
@@ -24,6 +24,8 @@ import { SettingsService } from '@oscc/services/settings.service';
   styleUrls: ['../dialogs.scss', './settings-dialog.component.scss'],
 })
 export class SettingsDialogComponent {
+  protected settings = inject(SettingsService);
+
   @ViewChild('dragtooltip_icon') dragtooltip_icon: MatTooltip;
 
   protected tooltips = {
@@ -34,11 +36,6 @@ export class SettingsDialogComponent {
     show_line_names: 'Show the name or number of each line of each fragment',
     auto_scroll_linked_fragments: 'Automatically scrolls linked fragments into view if possible',
   };
-
-  constructor(
-    protected settings: SettingsService
-    //public dialogRef: MatDialogRef<SettingsDialogComponent>,
-  ) {}
 
   protected toggle_tooltip(tooltip: any) {
     if (tooltip.disabled) {

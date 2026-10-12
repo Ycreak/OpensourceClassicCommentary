@@ -7,7 +7,7 @@
  */
 
 // Library imports
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogClose, MatDialogContent } from '@angular/material/dialog';
 
 // Service imports
@@ -26,17 +26,15 @@ import { MatButtonModule } from '@angular/material/button';
   imports: [MatButtonModule, MatDialogClose, MatIconModule, MatDialogContent],
 })
 export class IntroductionsComponent implements OnInit {
+  filter = inject(MAT_DIALOG_DATA);
+  dialogRef = inject<MatDialogRef<IntroductionsComponent>>(MatDialogRef);
+  protected api = inject(ApiService);
+
   protected author: string;
   protected title: string;
   protected content: string;
   // Keep track of whether the introduction is about the author or the title
   protected introduction_on: string;
-
-  constructor(
-    @Inject(MAT_DIALOG_DATA) public filter: any,
-    public dialogRef: MatDialogRef<IntroductionsComponent>,
-    protected api: ApiService
-  ) {}
 
   ngOnInit(): void {
     const filter = this.filter;

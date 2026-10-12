@@ -13,6 +13,8 @@ describe('GeneralCommentaryFieldComponent', () => {
 
     fixture = TestBed.createComponent(GeneralCommentaryFieldComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('content', '');
+    fixture.componentRef.setInput('title', 'Title');
     fixture.detectChanges();
   });
 

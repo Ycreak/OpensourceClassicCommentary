@@ -1,4 +1,4 @@
-import { Directive, HostListener } from '@angular/core';
+import { Directive, HostListener, inject } from '@angular/core';
 import { EditableColumnNameComponent } from '@oscc/features/columns/components/column-name-editable/column-name-editable.component';
 
 @Directive({
@@ -6,7 +6,7 @@ import { EditableColumnNameComponent } from '@oscc/features/columns/components/c
   standalone: true,
 })
 export class EditableOnKeypressDirective {
-  constructor(private editable: EditableColumnNameComponent) {}
+  private editable = inject(EditableColumnNameComponent);
 
   @HostListener('keyup.enter')
   onEnter() {

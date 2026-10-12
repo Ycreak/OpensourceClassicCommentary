@@ -3,7 +3,7 @@
  * @author Ycreak
  */
 
-import { AfterViewInit, Component, ViewChild, Output, EventEmitter } from '@angular/core';
+import { AfterViewInit, Component, ViewChild, Output, EventEmitter, inject } from '@angular/core';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -38,6 +38,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
   ],
 })
 export class TestimoniaTableComponent implements AfterViewInit {
+  protected api = inject(ApiService);
+  protected filter = inject(FilterService);
+  protected utility = inject(UtilityService);
+
   @Output() collection = new EventEmitter<any>();
 
   displayedColumns: string[] = ['select', 'author', 'name'];
@@ -57,11 +61,7 @@ export class TestimoniaTableComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(
-    protected api: ApiService,
-    protected filter: FilterService,
-    protected utility: UtilityService
-  ) {
+  constructor() {
     // Initialise the dataSource
     this.filter.data.testimonia.dataSource = new MatTableDataSource([]);
     // Then request the source from the api

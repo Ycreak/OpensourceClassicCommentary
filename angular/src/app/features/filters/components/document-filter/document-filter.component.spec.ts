@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 import { DocumentFilterComponent } from './document-filter.component';
 
@@ -9,6 +10,10 @@ describe('DocumentFilterComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [DocumentFilterComponent],
+      providers: [
+        { provide: MatDialogRef, useValue: {} },
+        { provide: MAT_DIALOG_DATA, useValue: {} },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DocumentFilterComponent);
