@@ -33,6 +33,8 @@ services:
       - "4200:4200"
     volumes:
       - ./angular:/app
+      # Keep the pnpm-installed dependencies from the image
+      - /app/node_modules
     command: ["pnpm", "exec", "ng", "serve", "--host", "0.0.0.0", "--port", "4200"]
 
   #websockets:
