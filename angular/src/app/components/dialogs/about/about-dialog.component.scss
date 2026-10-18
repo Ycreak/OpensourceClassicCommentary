@@ -1,0 +1,7 @@
+/* Logo and text of the funding attribution row */
+.funding-row {
+  display: grid;
+  grid-template-columns: 1fr 5fr;
+  gap: 1rem;
+  align-items: center;
+}

@@ -17,7 +17,7 @@ describe('OSCC columns tests', () => {
   it('can delete and create columns', () => {
     // Close the first column via the clear button in its toolbar. The helper then
     // adds a fresh column itself.
-    cy.get('.col > .mat-toolbar > :nth-child(4)').click();
+    cy.get('.column-slot > .mat-toolbar > :nth-child(4)').click();
 
     cy.open_new_frag_column('Ennius', 'Eumenides', 'TRF');
     cy.contains('nisi patrem').should('be.visible');

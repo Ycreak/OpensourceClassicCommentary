@@ -1,5 +1,6 @@
 // Library imports
 import { Component, OnInit, inject } from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
 import {
   MAT_DIALOG_DATA,
   MatDialogRef,
@@ -26,6 +27,7 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrls: ['./load-playground.component.scss'],
   standalone: true,
   imports: [
+    MatCardModule,
     MatButtonModule,
     MatDialogClose,
     MatIconModule,

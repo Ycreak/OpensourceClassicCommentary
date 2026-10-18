@@ -8,6 +8,7 @@
 
 import { Component, inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatCardModule } from '@angular/material/card';
 
 // Model imports
 import { Commentary } from '@oscc/types/Commentary';
@@ -37,6 +38,7 @@ import { NgTemplateOutlet } from '@angular/common';
   styleUrls: ['./commentary.component.scss'],
   standalone: true,
   imports: [
+    MatCardModule,
     NgTemplateOutlet,
     MatButtonModule,
     TranslationComponent,

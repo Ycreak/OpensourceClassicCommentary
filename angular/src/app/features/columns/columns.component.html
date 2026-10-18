@@ -121,11 +121,11 @@
   <mat-progress-bar mode="query"></mat-progress-bar>
 }
 
-<div class="container-fluid">
-  <div class="row">
+<div class="columns-container">
+  <div class="columns-row">
     <!-- Row that contains the columns and commentary -->
     @for (column_to_display of this.columns.list(); track column_to_display) {
-      <div class="col overflow_column" [hidden]="!column_to_display.visible" cdkScrollable>
+      <div class="column-slot overflow_column" [hidden]="!column_to_display.visible" cdkScrollable>
         <ng-container
           [ngTemplateOutlet]="fragment_column_template"
           [ngTemplateOutletContext]="{ given_column: column_to_display }">

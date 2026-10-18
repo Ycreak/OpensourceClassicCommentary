@@ -1,32 +1,26 @@
-<div class="container">
-  <div class="row">
-    <div class="col-sm">
-      <mat-form-field class="meta-data-selects">
-        <mat-label>Author</mat-label>
-        <mat-select [(ngModel)]="this._author" ngDefaultControl>
-          <mat-option (click)="this.filter_index()" [value]="">-- None --</mat-option>
-          @for (author of this._authors; track author) {
-            <mat-option (click)="this.filter_index()" [value]="author">
-              {{ author }}
-            </mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-    </div>
-    <div class="col-sm">
-      <mat-form-field class="meta-data-selects">
-        <mat-label>Name</mat-label>
-        <mat-select [(ngModel)]="this._name" ngDefaultControl>
-          <mat-option (click)="this.filter_index()" [value]="">-- None --</mat-option>
-          @for (name of this._names; track name) {
-            <mat-option (click)="this.filter_index()" [value]="name">
-              {{ name }}
-            </mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-    </div>
-  </div>
+<div class="filter-fields">
+  <mat-form-field class="meta-data-selects">
+    <mat-label>Author</mat-label>
+    <mat-select [(ngModel)]="this._author" ngDefaultControl>
+      <mat-option (click)="this.filter_index()" [value]="">-- None --</mat-option>
+      @for (author of this._authors; track author) {
+        <mat-option (click)="this.filter_index()" [value]="author">
+          {{ author }}
+        </mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field class="meta-data-selects">
+    <mat-label>Name</mat-label>
+    <mat-select [(ngModel)]="this._name" ngDefaultControl>
+      <mat-option (click)="this.filter_index()" [value]="">-- None --</mat-option>
+      @for (name of this._names; track name) {
+        <mat-option (click)="this.filter_index()" [value]="name">
+          {{ name }}
+        </mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
 </div>
 
 <mat-form-field>
