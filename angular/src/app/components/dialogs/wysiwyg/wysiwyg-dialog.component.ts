@@ -4,6 +4,7 @@
  */
 import { Component, inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogContent, MatDialogClose } from '@angular/material/dialog';
+import { MatCardModule } from '@angular/material/card';
 import { Observable } from 'rxjs';
 import { BibliographyComponent } from '@oscc/features/dashboard/components/bibliography/bibliography.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,7 +14,8 @@ import { QuillEditorComponent } from 'ngx-quill';
 @Component({
   selector: 'app-wysiwyg-dialog',
   standalone: true,
-  imports: [MatDialogContent, QuillEditorComponent, FormsModule, MatButtonModule, MatDialogClose],
+  imports: [
+    MatCardModule,MatDialogContent, QuillEditorComponent, FormsModule, MatButtonModule, MatDialogClose],
   templateUrl: './wysiwyg-dialog.component.html',
   styleUrl: '../dialogs.scss',
 })

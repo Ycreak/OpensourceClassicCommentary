@@ -18,6 +18,7 @@ import { UtilityService } from '@oscc/services/utility.service';
 import { Introduction } from '@oscc/types/Introduction';
 import { SandboxService } from '@oscc/services/sandbox.service';
 import { MatInputModule } from '@angular/material/input';
+import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { IntroductionsFilterComponent } from '../../../filters/components/introductions-filter/introductions-filter.component';
@@ -31,6 +32,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
   styleUrls: ['./introductions-dashboard.component.scss'],
   standalone: true,
   imports: [
+    MatCardModule,
     MatExpansionModule,
     MatIconModule,
     MatTabsModule,

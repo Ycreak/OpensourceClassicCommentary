@@ -79,12 +79,14 @@
 
 <!-- Display for if server is down -->
 @if (this.api.get_network_status() === false) {
-  <div class="alert alert-warning" role="alert">
-    Your client cannot connect to the server. Please check if you have the latest version of your browser installed.
-    Furthermore, secured networks like DUWO and Leiden University are known to cause problems. Also, please click
-    <u><a href="https://oscc.lucdh.nl">the following URL</a></u> for the best results. Please contact the administrators
-    if problems are still occuring.
-  </div>
+  <mat-card appearance="outlined" class="note-card"
+    ><mat-card-content
+      >Your client cannot connect to the server. Please check if you have the latest version of your browser installed.
+      Furthermore, secured networks like DUWO and Leiden University are known to cause problems. Also, please click
+      <u><a href="https://oscc.lucdh.nl">the following URL</a></u> for the best results. Please contact the
+      administrators if problems are still occuring.
+    </mat-card-content>
+  </mat-card>
 }
 <div>
   <mat-drawer-container class="drawer-container" autosize>

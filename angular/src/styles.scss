@@ -2,7 +2,13 @@
 @use "app/styles/_mixins.scss" as *;
 @use "app/styles/_variables.scss" as *;
 
-/* Base elements */
+/* Base element styles */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html,
 body {
   height: 100%;
@@ -11,6 +17,22 @@ body {
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  background-color: #fff;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0 0 0.5rem;
+  font-weight: 500;
+  line-height: 1.2;
 }
 
 h1,
@@ -24,6 +46,14 @@ h5,
 h6 {
   font-family: Roboto, sans-serif;
   padding: 0.5em;
+}
+
+button,
+input,
+select,
+optgroup,
+textarea {
+  font: inherit;
 }
 
 hr {
@@ -40,6 +70,18 @@ hr {
   display: inline-flex;
   flex: 1 1 auto;
   width: 1em;
+}
+
+/* Inline informational note (replaces the old Bootstrap alert banners) */
+.note-card.mat-mdc-card {
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+/* mat-card-content ships with 16px paddings of its own; the compact
+   padding set on .note-card is all the padding these banners need. */
+.note-card.mat-mdc-card .mat-mdc-card-content {
+  padding: 0;
 }
 
 .div-padding {
@@ -179,10 +221,4 @@ div.dialog-content {
 /* Make the font size for the Quill editor bigger */
 .ql-editor {
   font-size: 18px;
-}
-
-/* Default Angular Alert style overrides */
-.alert-info {
-  --bs-alert-border-color: #333 !important;
-  --bs-alert-bg: #{$theme-lightgreen} !important;
 }

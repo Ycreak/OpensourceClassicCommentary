@@ -10,6 +10,7 @@ import { IntroductionsDashboardComponent } from './components/introductions-dash
 import { TestimoniaDashboardComponent } from './components/testimonia-dashboard/testimonia-dashboard.component';
 import { FragmentsDashboardComponent } from './components/fragments-dashboard/fragments-dashboard.component';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { RouterLink } from '@angular/router';
 
@@ -22,6 +23,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
   styleUrls: ['./dashboard.component.scss'],
   standalone: true,
   imports: [
+    MatCardModule,
     MatToolbarModule,
     MatButtonModule,
     RouterLink,

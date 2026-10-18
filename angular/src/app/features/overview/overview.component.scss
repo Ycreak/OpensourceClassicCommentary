@@ -5,20 +5,15 @@ $toolbar-height: 64px;
 $social-media-icon-color: lightgray;
 
 /* HTML Elements */
-.alert {
-  margin-bottom: 0;
-  border: 3px var(--bs-alert-border-color) solid;
-  border-radius: 0;
-}
-
 .mat-toolbar {
   height: $toolbar-height;
 }
 
+/* Exactly fills the viewport together with the toolbar above it, so the
+   columns view only ever scrolls inside its column slots. */
 .drawer-container {
   width: 100%;
-  max-height: calc(100vh - $toolbar-height);
-  height: 100vh;
+  height: calc(100vh - $toolbar-height);
 }
 
 .overview-sidenav-content {

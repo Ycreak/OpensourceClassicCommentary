@@ -7,6 +7,7 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { ViewportScroller, NgStyle } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
+import { MatCardModule } from '@angular/material/card';
 import { environment } from '@src/environments/environment';
 
 // Service imports
@@ -36,6 +37,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
   styleUrls: ['./overview.component.scss'],
   standalone: true,
   imports: [
+    MatCardModule,
     MatToolbarModule,
     MatButtonModule,
     MatMenuModule,

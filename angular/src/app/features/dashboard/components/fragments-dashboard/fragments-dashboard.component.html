@@ -65,10 +65,12 @@
     <mat-tab-group>
       <mat-tab label="Fragment Meta Data"
         ><br />
-        <div class="alert alert-info" role="alert">
-          To create a new fragment, please provide all meta data and press the <b>Create Fragment</b> button. The button
-          won't activate before all meta data fields are filled in correctly.
-        </div>
+        <mat-card appearance="outlined" class="note-card"
+          ><mat-card-content
+            >To create a new fragment, please provide all meta data and press the <b>Create Fragment</b> button. The
+            button won't activate before all meta data fields are filled in correctly.
+          </mat-card-content>
+        </mat-card>
         <!-- Every mat tab has its own fragment_form call to keep each entity easily separated and organised -->
         <form [formGroup]="fragment_form">
           <mat-form-field class="input-form-full-width">
@@ -138,11 +140,13 @@
         <!-- This piece of code allows users to create fragment lines by providing a line number and line text for each lines.
                 Lines can be dynamically created using the Add New Fragment Line button. This will create a new form group per line, which will
                 be pushed to the Lines FormArray within fragment_form. -->
-        <div class="alert alert-info" role="alert">
-          Press the <b>Add New Fragment Line</b> button for every single line of the fragment. For example, if your
-          fragment has three lines, press the button thrice and add your lines in plain text to the three fields that
-          have appeared. Do not add HTML for a paragraph here!
-        </div>
+        <mat-card appearance="outlined" class="note-card"
+          ><mat-card-content
+            >Press the <b>Add New Fragment Line</b> button for every single line of the fragment. For example, if your
+            fragment has three lines, press the button thrice and add your lines in plain text to the three fields that
+            have appeared. Do not add HTML for a paragraph here!
+          </mat-card-content>
+        </mat-card>
         <form [formGroup]="fragment_form">
           <button mat-stroked-button color="primary" (click)="push_fragment_line_to_fragment_form('', '')">
             Add New Fragment Line
@@ -182,10 +186,12 @@
           </mat-form-field>
         </div>
         <div class="quill-wrapper">
-          <div class="alert alert-info" role="alert">
-            Please do not use the angle brackets (<b>&lt;</b> and <b>&gt;</b>): these will be filtered by the system as
-            HTML notation. Do use the provided brackets: <b>⟨</b> and <b>⟩</b>.
-          </div>
+          <mat-card appearance="outlined" class="note-card"
+            ><mat-card-content
+              >Please do not use the angle brackets (<b>&lt;</b> and <b>&gt;</b>): these will be filtered by the system
+              as HTML notation. Do use the provided brackets: <b>⟨</b> and <b>⟩</b>.
+            </mat-card-content>
+          </mat-card>
           <app-quill
             [value]="fragment_form.value[selected_field_for_quill]"
             (valueChange)="on_quill_value_change($event, selected_field_for_quill)"></app-quill>
@@ -196,10 +202,12 @@
         ><br />
         <!-- This piece of code allows users to create fragment contexts by providing a location, author and text.
                 Contexts can be dynamically created using the Add New Context button. This will create a new form group per context, which will be pushed to the Context FormArray within fragment_form. -->
-        <div class="alert alert-info" role="alert">
-          Press the <b>Add Fragment Context</b> for each context author. Entries from the same work may be separated or
-          added to the same field.
-        </div>
+        <mat-card appearance="outlined" class="note-card"
+          ><mat-card-content
+            >Press the <b>Add Fragment Context</b> for each context author. Entries from the same work may be separated
+            or added to the same field.
+          </mat-card-content>
+        </mat-card>
         <form [formGroup]="fragment_form">
           <button mat-stroked-button color="primary" (click)="this.push_fragment_context_to_fragment_form('', '', '')">
             Add Fragment Context
@@ -243,13 +251,15 @@
       @if (this.auth_service.current_user_role === "admin") {
         <mat-tab label="Fragment References"
           ><br />
-          <div class="alert alert-info" role="alert">
-            This functionality allows you to link fragments. The selected fragment can point towards other fragments.
-            Select author, text, edition and fragment below to point your fragment to this newly selected fragment. This
-            will allow commentaries from the referenced fragment to be retrieved, as well as highlight the referenced
-            fragment when multiple columns are selected in the frontend. <i>Nota bene:</i> this creates a one-way
-            reference: you will need to link the fragments vice versa too for a true link.
-          </div>
+          <mat-card appearance="outlined" class="note-card"
+            ><mat-card-content
+              >This functionality allows you to link fragments. The selected fragment can point towards other fragments.
+              Select author, text, edition and fragment below to point your fragment to this newly selected fragment.
+              This will allow commentaries from the referenced fragment to be retrieved, as well as highlight the
+              referenced fragment when multiple columns are selected in the frontend. <i>Nota bene:</i> this creates a
+              one-way reference: you will need to link the fragments vice versa too for a true link.
+            </mat-card-content>
+          </mat-card>
           <hr />
           <app-latin-tragic-fragment-filter
             [button_title]="'Link fragment'"
@@ -295,9 +305,11 @@
           <!-- This tab changes the fragment access. It has two parts. A lock function which disallows change and publish function
                   which allows the fragment to show up on the frontend -->
           <form [formGroup]="fragment_form">
-            <div class="alert alert-info" role="alert">
-              To lock the selected fragment to disallow further change by users, select the lock checkbox.
-            </div>
+            <mat-card appearance="outlined" class="note-card"
+              ><mat-card-content
+                >To lock the selected fragment to disallow further change by users, select the lock checkbox.
+              </mat-card-content>
+            </mat-card>
             <!-- <mat-checkbox class="padding-left" formControlName="lock">Lock fragment</mat-checkbox> -->
             <mat-form-field appearance="fill">
               <mat-select formControlName="lock" ngDefaultControl>
@@ -324,9 +336,11 @@
           ><br />
           <!-- This tab allows changing fields related to social media. For now, we can add a popular translation. -->
           <form [formGroup]="fragment_form">
-            <div class="alert alert-info" role="alert">
-              Provide a popular translation to the fragment, which will be shown on our social media accounts
-            </div>
+            <mat-card appearance="outlined" class="note-card"
+              ><mat-card-content
+                >Provide a popular translation to the fragment, which will be shown on our social media accounts
+              </mat-card-content>
+            </mat-card>
             <mat-form-field class="input-form-full-width">
               <mat-label><b>Popular translation</b></mat-label>
               <textarea matInput type="text" formControlName="popular_translation"></textarea>

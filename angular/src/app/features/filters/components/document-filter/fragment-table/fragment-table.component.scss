@@ -1,3 +1,14 @@
 .mat-mdc-form-field {
   width: 100%;
 }
+
+.filter-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.filter-fields > * {
+  flex: 1 1 0;
+  min-width: 0;
+}

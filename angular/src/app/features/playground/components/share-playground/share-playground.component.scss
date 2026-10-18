@@ -1,0 +1,19 @@
+/* List of user entries and their name/role/delete cells */
+.user-entry {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.user-entry-name {
+  flex: 3 1 0;
+}
+
+.user-entry-role {
+  flex: 1 1 0;
+}
+
+.user-entry-delete {
+  flex: 1 1 0;
+}

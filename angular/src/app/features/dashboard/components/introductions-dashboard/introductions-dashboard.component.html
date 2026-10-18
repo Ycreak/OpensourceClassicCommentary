@@ -48,12 +48,13 @@
             Delete introduction
           </button>
         }
-        <div class="alert alert-info" role="alert">
-          To create a new author introduction, please provide the name of the author and an introduction text. Then
-          press the
-          <b>Create introduction</b> button next. The button won't activate before all meta data fields are filled in
-          correctly. <i>Nota bene:</i> you can select an existing author introduction in the drop down menu.
-        </div>
+        <mat-card appearance="outlined" class="note-card"
+          ><mat-card-content
+            >To create a new author introduction, please provide the name of the author and an introduction text. Then
+            press the <b>Create introduction</b> button next. The button won't activate before all meta data fields are
+            filled in correctly. <i>Nota bene:</i> you can select an existing author introduction in the drop down menu.
+          </mat-card-content>
+        </mat-card>
         <form [formGroup]="author_intro_form">
           <mat-form-field class="input-form-full-width">
             <mat-label>Author name</mat-label>
@@ -121,12 +122,14 @@
             Delete introduction
           </button>
         }
-        <div class="alert alert-info" role="alert">
-          To create a new title introduction, please provide an author + title combination and the introduction text.
-          Then press the
-          <b>Create introduction</b> button next. The button won't activate before all meta data fields are filled in
-          correctly. <i>Nota bene:</i> you can select an existing title introduction in the drop down menu.
-        </div>
+        <mat-card appearance="outlined" class="note-card"
+          ><mat-card-content
+            >To create a new title introduction, please provide an author + title combination and the introduction text.
+            Then press the <b>Create introduction</b> button next. The button won't activate before all meta data fields
+            are filled in correctly. <i>Nota bene:</i> you can select an existing title introduction in the drop down
+            menu.
+          </mat-card-content>
+        </mat-card>
         <form [formGroup]="title_intro_form">
           <mat-form-field class="input-form-full-width">
             <mat-label>Author</mat-label>
@@ -206,11 +209,13 @@
             Delete introduction
           </button>
         }
-        <div class="alert alert-info" role="alert">
-          To create a new editor introduction, please provide the editor's name and an introduction text. Then press the
-          <b>Create introduction</b> button next. The button won't activate before all meta data fields are filled in
-          correctly. <i>Nota bene:</i> you can select an existing editor introduction in the drop down menu.
-        </div>
+        <mat-card appearance="outlined" class="note-card"
+          ><mat-card-content
+            >To create a new editor introduction, please provide the editor's name and an introduction text. Then press
+            the <b>Create introduction</b> button next. The button won't activate before all meta data fields are filled
+            in correctly. <i>Nota bene:</i> you can select an existing editor introduction in the drop down menu.
+          </mat-card-content>
+        </mat-card>
         <form [formGroup]="editor_intro_form">
           <mat-form-field class="input-form-full-width">
             <mat-label>Editor name</mat-label>

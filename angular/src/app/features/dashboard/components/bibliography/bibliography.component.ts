@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, AfterViewInit, inject } from '@angular/co
 
 import { ViewChild } from '@angular/core';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatCardModule } from '@angular/material/card';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 
@@ -22,6 +23,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
   styleUrls: ['./bibliography.component.scss'],
   standalone: true,
   imports: [
+    MatCardModule,
     MatFormFieldModule,
     MatInputModule,
     FormsModule,

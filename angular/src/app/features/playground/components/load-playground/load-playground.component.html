@@ -10,7 +10,9 @@
   }
 
   @if (this.no_playgrounds) {
-    <div class="alert alert-info" role="alert">No playgrounds found for this user</div>
+    <mat-card appearance="outlined" class="note-card"
+      ><mat-card-content>No playgrounds found for this user </mat-card-content>
+    </mat-card>
   }
 
   <mat-form-field>

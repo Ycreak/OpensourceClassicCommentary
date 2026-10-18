@@ -10,11 +10,11 @@
 
     <div class="div-padding-lg"></div>
 
-    <div class="container-fluid">
+    <div class="user-entries">
       @for (user of form.get("users")["controls"]; track user; let i = $index) {
         <div formArrayName="users">
-          <div class="row">
-            <div class="playground-button-container col-6">
+          <div class="user-entry">
+            <div class="user-entry-cell user-entry-name">
               <div [formGroupName]="i">
                 <mat-form-field class="input-form-small">
                   <mat-label>User name</mat-label>
@@ -22,7 +22,7 @@
                 </mat-form-field>
               </div>
             </div>
-            <div class="playground-button-container col-2">
+            <div class="user-entry-cell user-entry-role">
               <div [formGroupName]="i">
                 <mat-form-field class="input-form-small">
                   <mat-label>User role</mat-label>
@@ -35,7 +35,7 @@
                 </mat-form-field>
               </div>
             </div>
-            <div class="playground-button-container col-2">
+            <div class="user-entry-cell user-entry-delete">
               <div [formGroupName]="i">
                 <button mat-button (click)="delete_user(i)">Delete</button>
               </div>

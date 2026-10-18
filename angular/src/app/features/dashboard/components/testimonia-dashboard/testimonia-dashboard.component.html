@@ -49,10 +49,12 @@
     <mat-tab-group>
       <mat-tab label="Testimonia Meta Data"
         ><br />
-        <div class="alert alert-info" role="alert">
-          To create a new testimonium, please provide all meta data and press the <b>Create testimonium</b> button. The
-          button won't activate before all meta data fields are filled in correctly.
-        </div>
+        <mat-card appearance="outlined" class="note-card"
+          ><mat-card-content
+            >To create a new testimonium, please provide all meta data and press the <b>Create testimonium</b> button.
+            The button won't activate before all meta data fields are filled in correctly.
+          </mat-card-content>
+        </mat-card>
         <!-- Every mat tab has its own form call to keep each entity easily separated and organised -->
         <form [formGroup]="form">
           <mat-form-field class="input-form-full-width">
@@ -158,9 +160,11 @@
           <!-- This tab changes the testimonium access. It has two parts. A lock function which disallows change and publish function
           which allows the testimonium to show up on the frontend -->
           <form [formGroup]="form">
-            <div class="alert alert-info" role="alert">
-              To lock the selected testimonium to disallow further change by users, select the lock option.
-            </div>
+            <mat-card appearance="outlined" class="note-card"
+              ><mat-card-content
+                >To lock the selected testimonium to disallow further change by users, select the lock option.
+              </mat-card-content>
+            </mat-card>
             <mat-form-field appearance="fill">
               <mat-select formControlName="lock" ngDefaultControl>
                 <mat-option [value]="1">Locked</mat-option>

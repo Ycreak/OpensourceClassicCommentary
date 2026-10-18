@@ -70,9 +70,50 @@
   color: white;
 }
 
+/* Layout of the document columns: a flexbox row of equally sized,
+   scrollable column slots that exactly fills the remaining viewport
+   height, so only the columns themselves scroll
+   (replaces the old Bootstrap grid classes). */
+app-columns {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Element-level display rules would otherwise override the user agent's
+   [hidden] rule and the playground could never hide the columns.
+   (This component is ViewEncapsulation.None, so these rules are global.) */
+app-columns[hidden] {
+  display: none;
+}
+
+.columns-container {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding-right: 0.75rem;
+  padding-left: 0.75rem;
+}
+
+.columns-row {
+  display: flex;
+  height: 100%;
+}
+
+.columns-row > * {
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 100%;
+  padding-right: 0.75rem;
+  padding-left: 0.75rem;
+}
+
+.column-slot {
+  flex: 1 0 0;
+}
+
 /* Column that holds a scrollable fragment list */
 .overflow_column {
-  height: 100vh;
+  height: 100%;
   overflow: scroll;
 }
 

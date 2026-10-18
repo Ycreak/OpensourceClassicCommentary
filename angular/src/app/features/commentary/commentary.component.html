@@ -21,7 +21,9 @@
   </h5>
   <!--Show banner if no commentary available -->
   @if (!this.commentary.has_content()) {
-    <div class="alert alert-info" role="alert">No content is available yet for this specific fragment.</div>
+    <mat-card appearance="outlined" class="note-card"
+      ><mat-card-content>No content is available yet for this specific fragment. </mat-card-content>
+    </mat-card>
   }
   <!--Document commentary section-->
   <div>
@@ -40,7 +42,9 @@
     </div>
   }
   @if (this.no_linked_commentary_found()) {
-    <div class="alert alert-info" style="padding-top: 1em" role="alert">No linked commentary found.</div>
+    <mat-card appearance="outlined" class="note-card"
+      ><mat-card-content>No linked commentary found. </mat-card-content>
+    </mat-card>
   }
   @for (linked_fragment of this.linked_commentaries(); track linked_fragment) {
     <div>
