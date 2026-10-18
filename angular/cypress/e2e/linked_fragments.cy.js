@@ -36,7 +36,7 @@ describe('OSCC linked fragments', () => {
     cy.open_new_frag_column('Ennius', 'Thyestes', 'TRF');
     cy.choose_fragment_action(TRF, '133', 'Linked documents');
 
-    cy.expect_last_column_fragments(TRF, '133', [
+    cy.expect_last_column_fragments([
       'Ennius, Thyestes, Vahlen 7',
       'Ennius, Thyestes, Jocelyn 151',
       'Ennius, Thyestes, Warmington 355',
@@ -49,7 +49,7 @@ describe('OSCC linked fragments', () => {
     cy.open_new_frag_column('Ennius', 'Thyestes', 'TRF');
     cy.choose_fragment_action(TRF, '132', 'Linked documents');
 
-    cy.expect_last_column_fragments(TRF, '132', [
+    cy.expect_last_column_fragments([
       'Ennius, Thyestes, Warmington 366-370',
       'Ennius, Thyestes, Vahlen 14',
       'Ennius, Thyestes, Ribbeck 11',
@@ -61,7 +61,7 @@ describe('OSCC linked fragments', () => {
     cy.open_new_frag_column('Ennius', 'Thyestes', 'TRF');
     cy.choose_fragment_action(TRF, '134', 'Linked documents');
 
-    cy.expect_last_column_fragments(TRF, '134', [
+    cy.expect_last_column_fragments([
       'Ennius, Thyestes, Vahlen 5',
       'Ennius, Thyestes, Jocelyn 153',
       'Ennius, Thyestes, Ribbeck 7',
@@ -83,11 +83,12 @@ describe('OSCC linked fragments', () => {
     });
   });
 
-  it('looks up the commentary of every linked fragment without failing', () => {
+  it('renders the commentary status of linked fragments without failing', () => {
     // Before the fix these lookups resolved to nothing, which made the component
-    // dereference an undefined document and throw. Note that the panel itself does
-    // not repaint afterwards (a separate, pre-existing zoneless change detection
-    // issue), so this guards the data lookup rather than what ends up on screen.
+    // dereference an undefined document and throw. The panel also stayed stale:
+    // since the app runs without zone.js, the api responses have to signal their
+    // updates themselves, which the component did not do. None of TRF 133's links
+    // carries commentary, so its banner must appear on its own.
     const errors = [];
     cy.visit('http://localhost:4200', {
       onBeforeLoad(win) {
@@ -102,9 +103,11 @@ describe('OSCC linked fragments', () => {
     cy.select_fragment(TRF, '133');
     cy.contains('button', 'Retrieve commentary from linked fragments').click();
 
-    // The button is replaced as soon as the lookups have been started.
-    cy.contains('button', 'Retrieve commentary from linked fragments').should('not.exist');
-    cy.wait(2000).then(() => {
+    // The banner is only set after the last of the four lookups has come back,
+    // so it guards that the api responses repaint the panel.
+    cy.contains('No linked commentary found.').should('be.visible');
+
+    cy.wait(1000).then(() => {
       // NG0100 is a development mode artefact of the zoneless setup and unrelated.
       const relevant = errors.filter((error) => !error.includes('NG0100'));
       expect(relevant, 'the linked commentary lookups must not raise an error').to.deep.equal([]);
@@ -114,16 +117,18 @@ describe('OSCC linked fragments', () => {
 
 describe('OSCC linked fragment api', () => {
   it('resolves a stored link when it is sent as the query filter', () => {
-    // This is exactly what the frontend used to do: hand the stored link object to
-    // the api without stripping anything. It must keep working, whatever the record
-    // happens to carry.
+    // A stored link carries the reference meta data of the linked fragment. Older
+    // records only carry the author, title, editor and name (no document_type or
+    // sandbox), and some carry a legacy 'linked_fragment_id'. The lookup keys must
+    // resolve the linked fragment whatever the record happens to carry, as long as
+    // the client adds the document_type it is looking for.
     ['132', '133', '134'].forEach((name) => {
       get_fragment('TRF', name)
         .its('body')
         .then((body) => {
           expect(body, `fragment TRF ${name} should exist`).to.have.length(1);
           body[0].linked_fragments.forEach((link) => {
-            cy.request('POST', `${FLASK_URL}/document/get`, { ...link, visible: 1 })
+            cy.request('POST', `${FLASK_URL}/document/get`, { document_type: 'fragment', ...link, visible: 1 })
               .its('body')
               .should('have.length', 1, `link ${link.editor} ${link.name} of TRF ${name} should resolve`);
           });
@@ -180,14 +185,15 @@ describe('OSCC linked fragment api', () => {
     check({ document_type: 'fragment', author: 'Ennius', title: 'Thyestes', editor: 'TRF', name: '133' }, 1);
     check({ document_type: 'fragment', author: 'Ennius', title: 'Thyestes', editor: 'TRF', visible: 0 }, 0);
     check({ document_type: 'fragment', author: 'Ennius', title: 'Thyestes', editor: 'Vahlen', status: 'Certum' }, 14);
+    // Lucretius, De Rerum Natura, Lucus lives in the 'John' sandbox.
+    // The sandbox is only part of the selector when it is supplied.
+    check({ document_type: 'fragment', author: 'Lucretius', title: 'De Rerum Natura', editor: 'Lucus' }, 1);
     check(
-      { document_type: 'fragment', author: 'Ennius', title: 'Thyestes', editor: 'Goldschmidt', sandbox: 'Nora' },
+      { document_type: 'fragment', author: 'Lucretius', title: 'De Rerum Natura', editor: 'Lucus', sandbox: 'John' },
       1
     );
-    // The sandbox is only part of the selector when it is supplied.
-    check({ document_type: 'fragment', author: 'Ennius', title: 'Thyestes', editor: 'Goldschmidt' }, 1);
     check(
-      { document_type: 'fragment', author: 'Ennius', title: 'Thyestes', editor: 'Goldschmidt', sandbox: 'admin' },
+      { document_type: 'fragment', author: 'Lucretius', title: 'De Rerum Natura', editor: 'Lucus', sandbox: 'admin' },
       0
     );
   });

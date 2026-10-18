@@ -1,46 +1,47 @@
 describe('OSCC commentary tests', () => {
-
   beforeEach(() => {
     cy.visit('http://localhost:4200');
   });
-  
+
   //it('', () => {})
   it('can show context', () => {
-    /* ==== Generated with Cypress Studio ==== */
-    cy.get(':nth-child(4) > .cdk-drag > :nth-child(1) > app-fragment').click();
-    cy.get('#mat-expansion-panel-header-4 > .mat-content > .mat-expansion-panel-header-title > b').click();
-    cy.get('.mat-expansion-panel-body.ng-tns-c1859850774-24 > .mat-expansion-panel-content > .mat-expansion-panel-body').click();
-    /* ==== End Cypress Studio ==== */
+    // The first citation context of TRF 132 quotes another fragment.
+    cy.open_new_frag_column('Ennius', 'Thyestes', 'TRF');
+    cy.wait_for_fragment('Ennius, Thyestes, TRF', '132');
+    cy.select_fragment('Ennius, Thyestes, TRF', '132');
+
+    cy.contains('mat-expansion-panel-header', 'Citation Context').click();
     cy.contains('The fragment is quoted').should('be.visible');
-  })
+  });
 
   it('can show translation', () => {
-    /* ==== Generated with Cypress Studio ==== */
-    cy.get(':nth-child(4) > .cdk-drag > :nth-child(1) > app-fragment').click();
-    cy.get('#mat-expansion-panel-header-0 > .mat-content > .mat-expansion-panel-header-title').click();
-    /* ==== End Cypress Studio ==== */
+    // TRF 132 carries a fragment translation, shown in its own expansion panel.
+    cy.open_new_frag_column('Ennius', 'Thyestes', 'TRF');
+    cy.wait_for_fragment('Ennius, Thyestes, TRF', '132');
+    cy.select_fragment('Ennius, Thyestes, TRF', '132');
+
+    cy.contains('mat-expansion-panel-header', 'Fragment translation').click();
     cy.contains('Let him be').should('be.visible');
-  })
+  });
 
   it('can show no linked commentary', () => {
-    cy.open_new_frag_column('Ennius', 'Thyestes', 'Warmington');
-    /* ==== Generated with Cypress Studio ==== */
-    cy.get('#\\33  > :nth-child(1) > .cdk-drag > :nth-child(1) > app-fragment > :nth-child(2) > .ng-star-inserted').click();
-    cy.get('.commentary-extra-feature-button > .mdc-button__label').click();
-    cy.get('[style="padding-top: 1em;"]').click();
-    /* ==== End Cypress Studio ==== */
+    // TRF 132 links to four fragments that carry no commentary: the banner is
+    // only set once all of their responses have come back, so the panel must
+    // repaint on its own for this test to pass.
+    cy.open_new_frag_column('Ennius', 'Thyestes', 'TRF');
+    cy.wait_for_fragment('Ennius, Thyestes, TRF', '132');
+    cy.select_fragment('Ennius, Thyestes, TRF', '132');
+    cy.contains('button', 'Retrieve commentary from linked fragments').click();
     cy.contains('No linked commentary found.').should('be.visible');
-  })
+  });
 
   it('can show linked commentary', () => {
+    // The first Vahlen fragment links to TRF 141, which carries commentary. The
+    // response must paint the linked commentary without any further interaction.
     cy.open_new_frag_column('Ennius', 'Thyestes', 'Vahlen');
-    /* ==== Generated with Cypress Studio ==== */
-    cy.get('#\\33  > :nth-child(1) > .cdk-drag > :nth-child(1) > app-fragment > :nth-child(2) > .ng-star-inserted').click();
-    cy.get('.commentary-extra-feature-button > .mdc-button__label').click();
-    /* ==== End Cypress Studio ==== */
+    cy.wait_for_fragment('Ennius, Thyestes, Vahlen', '1');
+    cy.select_fragment('Ennius, Thyestes, Vahlen', '1');
+    cy.contains('button', 'Retrieve commentary from linked fragments').click();
     cy.contains('Commentary from Ennius, Thyestes, TRF, 141').should('be.visible');
-  })
-
-})
-
-
+  });
+});

@@ -120,7 +120,7 @@ export class ColumnsComponent implements OnInit {
     }
     filter.document_type = 'fragment';
     // Create the first column and push it to the columns list
-    if (this.columns.list.length < 1) {
+    if (this.columns.list().length < 1) {
       const column_id = this.columns.add();
       this.columns.request(filter, column_id);
       this.columns.find(column_id).column_name = `${filter.author}-${filter.title}-${filter.editor}`;
@@ -165,7 +165,7 @@ export class ColumnsComponent implements OnInit {
 
     // The next part handles the colouring of clicked and referenced documents.
     // First, restore all documents to their original black colour when a new document is clicked
-    this.columns.list.forEach((column: Column) => {
+    this.columns.list().forEach((column: Column) => {
       this.columns.blacken(column);
     });
     // Second, colour the clicked document

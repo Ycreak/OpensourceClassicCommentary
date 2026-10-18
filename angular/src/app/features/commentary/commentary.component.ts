@@ -6,7 +6,7 @@
  * @author Ycreak
  */
 
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 // Model imports
@@ -60,31 +60,32 @@ export class CommentaryComponent {
   // Commentary from the given document
   protected commentary: Commentary;
   // If no document has been clicked, we show a custom message
-  protected document_clicked = false;
+  protected document_clicked = signal(false);
   // Documents are not translated by default
-  protected translated = false;
+  protected translated = signal(false);
   // If no linked commentary has been found, we show a banner
-  protected no_linked_commentary_found: boolean;
+  protected no_linked_commentary_found = signal(false);
   // If no  linked commentary has been retrieved, we show a button with the option to
-  protected linked_commentary_retrieved = false;
-  // List to hold multiple retrieved linked commentaries
-  protected linked_commentaries: Commentary[] = [];
+  protected linked_commentary_retrieved = signal(false);
+  // List to hold multiple retrieved linked commentaries. A signal so the view
+  // repaints when the api responses arrive (the app runs without zone.js).
+  protected linked_commentaries = signal<Commentary[]>([]);
 
   constructor() {
     // Subscribe to the commentary service to listen for a translation toggle
     this.commentary_service.translated.subscribe(() => {
-      this.translated = !this.translated;
+      this.translated.update((translated) => !translated);
     });
     // Subscribe to the commentary service to listen for new incoming documents
     this.commentary_service.doc.subscribe((doc) => {
       // The commentary service has received a new document. We process the incoming document here.
       this.document = doc;
       this.commentary = this.document.commentary;
-      this.document_clicked = true;
+      this.document_clicked.set(true);
       // Reset linked commentary status and lists
-      this.no_linked_commentary_found = false;
-      this.linked_commentary_retrieved = false;
-      this.linked_commentaries = [];
+      this.no_linked_commentary_found.set(false);
+      this.linked_commentary_retrieved.set(false);
+      this.linked_commentaries.set([]);
       // Add additional formatting to the commentary
       this.commentary.do_on_fields(this.string_formatter.convert_custom_tag_to_html);
       // Construct the bibliography if we did not do that already for the click document.
@@ -100,10 +101,10 @@ export class CommentaryComponent {
    */
   protected retrieve_linked_commentary(): void {
     let concurrent_calls = 0;
-    this.linked_commentary_retrieved = true;
+    this.linked_commentary_retrieved.set(true);
     // If no linked fragments are found, we set a banner
     if (this.document.linked_fragments.length == 0) {
-      this.no_linked_commentary_found = true;
+      this.no_linked_commentary_found.set(true);
     }
     this.document.linked_fragments.forEach((linked_fragment: any) => {
       concurrent_calls += 1;
@@ -115,12 +116,12 @@ export class CommentaryComponent {
         if (found_document.commentary.has_content()) {
           found_document.commentary.do_on_fields(this.string_formatter.convert_custom_tag_to_html);
           found_document.commentary.bibliography = this.create_bibliography(found_document);
-          this.linked_commentaries.push(found_document);
+          this.linked_commentaries.update((commentaries) => [...commentaries, found_document]);
         }
         // If linked fragments are found but have no commentary, we set the banner
         // Only set this banner on the last api call. Otherwise the banner might flash by
         if (concurrent_calls == 0) {
-          this.no_linked_commentary_found = this.linked_commentaries.length == 0;
+          this.no_linked_commentary_found.set(this.linked_commentaries().length == 0);
         }
       });
     });
