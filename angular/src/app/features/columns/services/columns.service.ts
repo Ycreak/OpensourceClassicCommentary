@@ -2,7 +2,7 @@
  * This service allows for column manipulation within the document component
  * @author Ycreak
  */
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 
 // Model imports
 import { Column } from '@oscc/types/Column';
@@ -25,8 +25,9 @@ export class ColumnsService {
   column_identifier = 1;
   // List of connected columns to allow dragging and dropping between columns
   connected: string[] = [];
-  // Object to store all column data: just an array with column data in the form of document columns
-  list: Column[] = [];
+  // Object to store all column data: just an array with column data in the form of document columns.
+  // A signal so views repaint when api responses add documents to a column (the app runs without zone.js).
+  list = signal<Column[]>([]);
   public current: Column = new Column({});
 
   /**
@@ -38,9 +39,9 @@ export class ColumnsService {
     this.column_identifier += 1;
     // Create new column with the appropriate name.
     const new_column = new Column({ column_id: this.column_identifier });
-    this.list.push(new_column);
+    this.list.update((columns) => [...columns, new_column]);
     // And update the connected columns list
-    this.connected = this.connect(this.list);
+    this.connected = this.connect(this.list());
     return this.column_identifier;
   }
 
@@ -49,12 +50,9 @@ export class ColumnsService {
    * @param column_id of column that is to be closed
    */
   public close(column_id: number): void {
-    const object_index = this.list.findIndex((object) => {
-      return object.column_id === column_id;
-    });
-    this.list.splice(object_index, 1);
+    this.list.update((columns) => columns.filter((column) => column.column_id !== column_id));
     // And update the connected columns list
-    this.connected = this.connect(this.list);
+    this.connected = this.connect(this.list());
   }
 
   /**
@@ -64,8 +62,9 @@ export class ColumnsService {
    * @param direction of movement
    */
   public move(column_id: number, direction: string): void {
+    const columns = this.list();
     // First get the current index of the column we want to move
-    const from_index = this.list.findIndex((object) => {
+    const from_index = columns.findIndex((object) => {
       return object.column_id === column_id;
     });
     // Next, generate the new index when the column would be moved
@@ -76,8 +75,8 @@ export class ColumnsService {
       to_index = from_index + 1;
     }
     // If this next location is valid, move the column to that location, otherwise do nothing
-    if (to_index >= 0 && to_index < this.list.length) {
-      this.list = this.utility.move_element_in_array(this.list, from_index, to_index);
+    if (to_index >= 0 && to_index < columns.length) {
+      this.list.set(this.utility.move_element_in_array(columns, from_index, to_index));
     }
   }
 
@@ -108,7 +107,7 @@ export class ColumnsService {
    * @returns Column
    */
   public find(id: number): Column {
-    return this.list.find((x) => x.column_id == id);
+    return this.list().find((x) => x.column_id == id);
   }
 
   /**
@@ -124,6 +123,11 @@ export class ColumnsService {
 
     this.api.request_documents(filter).subscribe((documents) => {
       const column = column_id ? this.find(column_id) : this.find(this.add());
+      // The column can be closed while the request is in flight; its results are
+      // no longer needed then.
+      if (!column) {
+        return;
+      }
       // Format all documents to look nice on the frontend (little HTML, some beautiful CSS)
       documents = this.format(documents);
       // Add the documents to the column
@@ -143,6 +147,9 @@ export class ColumnsService {
         // as we will overwrite the keys with citations when a commentary is formatted upon loading.
         doc.commentary.bib_keys = this.bib.get_keys_from_document(doc);
       });
+      // Publish a new list reference so the columns repaint now that the api
+      // response has been processed (the app runs without zone.js).
+      this.list.update((columns) => [...columns]);
     });
   }
 
@@ -193,8 +200,8 @@ export class ColumnsService {
   public set_edited_flag_true(column1: number, column2: number): void {
     // First, find the corresponding columns in this.list using the column_id that is used
     // in this.connected used by cdkDrag (and encoded in event)
-    const edited_column_1 = this.list.find((i) => i.column_id === Number(column1));
-    const edited_column_2 = this.list.find((i) => i.column_id === Number(column2));
+    const edited_column_1 = this.list().find((i) => i.column_id === Number(column1));
+    const edited_column_2 = this.list().find((i) => i.column_id === Number(column2));
     // Next, set the edited flag to true.
     edited_column_1.edited = true;
     edited_column_2.edited = true;
@@ -208,7 +215,7 @@ export class ColumnsService {
   public set_edited_flag_false(column_id: number): void {
     // First, find the corresponding columns in this.list using the column_id that is used
     // in this.connected used by cdkDrag (and encoded in event)
-    const column = this.list.find((i) => i.column_id === column_id);
+    const column = this.list().find((i) => i.column_id === column_id);
     // Next, set the edited flag to false.
     column.edited = false;
   }
@@ -225,9 +232,9 @@ export class ColumnsService {
       const editor = document.linked_fragments[i].editor;
       const name = document.linked_fragments[i].name;
       // Now, for each document that is linked, try to find it in the other columns
-      for (const j in this.list) {
+      for (const j in this.list()) {
         // in each column, take a look in the documents array to find the linked document
-        const corresponding_document = this.utility.filter_array_on_object(this.list[j].documents, {
+        const corresponding_document = this.utility.filter_array_on_object(this.list()[j].documents, {
           author: author,
           title: title,
           editor: editor,

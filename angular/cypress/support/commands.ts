@@ -94,59 +94,34 @@ Cypress.Commands.add('choose_fragment_action', (reference: string, fragment_name
 });
 
 /**
- * Reads the fragments of the rightmost column as 'Author, Title, Editor Name' labels,
- * which is how a fragment identifies itself in its header.
+ * Asserts the fragments of the rightmost column as 'Author, Title, Editor Name'
+ * labels, which is how a fragment identifies itself in its header.
  *
- * The fragments are collected in a plain callback instead of with find(), so that an
- * empty column yields an empty list rather than a timeout on a missing element.
+ * A linked documents column is filled by one request per link. The application runs
+ * without zone.js (provideZonelessChangeDetection): the columns service publishes a
+ * new list reference after every response, which makes the column repaint on its
+ * own. The assertion retries while the responses come in, because a column fills
+ * incrementally. A column that never fills (the bug this guards against) times out
+ * and fails.
  */
-Cypress.Commands.add('last_column_fragments', (): Cypress.Chainable<string[]> => {
-  return cy.get('.overflow_column').last().then(($column) => {
-    const labels: string[] = [];
-    $column.find('.fragment-box').each((_index, fragment) => {
-      const name = Cypress.$(fragment).find('b').first().text().trim().replace(/^Fragment\s+/, '');
-      const reference = Cypress.$(fragment).find('sup').first().text().trim();
-      labels.push(`${reference} ${name}`.trim());
-    });
-    return cy.wrap(labels, { log: false });
-  });
-});
-
-/**
- * Asserts the contents of the rightmost column, retrying while the view catches up.
- *
- * A linked documents column is filled by one request per link, and the application
- * runs without zone.js (provideZonelessChangeDetection). Nothing schedules a change
- * detection pass once the last response has been pushed, so the rendered column can
- * lag behind the data. Re-selecting the source fragment is a harmless interaction
- * that makes the view reflect the latest state, which lets us assert on the data
- * instead of on when Angular happened to repaint.
- *
- * A column that is genuinely empty (the bug this guards against) never matches and
- * still fails.
- */
-Cypress.Commands.add(
-  'expect_last_column_fragments',
-  (reference: string, fragment_name: string, expected: string[]) => {
-    const sorted = (values: string[]) => [...values].sort();
-    const attempt = (remaining: number) => {
-      cy.select_fragment(reference, fragment_name);
-      cy.last_column_fragments().then((labels) => {
-        if (JSON.stringify(sorted(labels)) === JSON.stringify(sorted(expected))) {
-          return;
-        }
-        if (remaining <= 0) {
-          throw new Error(
-            `Expected the linked column to contain ${JSON.stringify(sorted(expected))} ` +
-              `but it contained ${JSON.stringify(sorted(labels))}`
-          );
-        }
-        cy.wait(250).then(() => attempt(remaining - 1));
+Cypress.Commands.add('expect_last_column_fragments', (expected: string[]) => {
+  cy.get('.overflow_column')
+    .last()
+    .should(($column) => {
+      const labels: string[] = [];
+      $column.find('.fragment-box').each((_index, fragment) => {
+        const name = Cypress.$(fragment)
+          .find('b')
+          .first()
+          .text()
+          .trim()
+          .replace(/^Fragment\s+/, '');
+        const reference = Cypress.$(fragment).find('sup').first().text().trim();
+        labels.push(`${reference} ${name}`.trim());
       });
-    };
-    attempt(20);
-  }
-);
+      expect(labels.sort()).to.deep.equal([...expected].sort());
+    });
+});
 
 Cypress.Commands.add('log_in', (username: string, password: string) => {
   cy.visit('http://localhost:4200');
@@ -183,7 +158,6 @@ declare namespace Cypress {
     wait_for_fragment(reference: string, fragment_name: string): Chainable;
     select_fragment(reference: string, fragment_name: string): Chainable;
     choose_fragment_action(reference: string, fragment_name: string, action: string): Chainable;
-    last_column_fragments(): Chainable<string[]>;
-    expect_last_column_fragments(reference: string, fragment_name: string, expected: string[]): Chainable;
+    expect_last_column_fragments(expected: string[]): Chainable<void>;
   }
 }

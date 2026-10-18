@@ -1,5 +1,5 @@
 <!--Show the currently clicked author + title-->
-@if (!this.document_clicked) {
+@if (!this.document_clicked()) {
   <div>
     <h5>Click a fragment to show its content.</h5>
   </div>
@@ -32,17 +32,17 @@
   </div>
   <!--Linked commentary section-->
   <hr />
-  @if (!this.linked_commentary_retrieved) {
+  @if (!this.linked_commentary_retrieved()) {
     <div style="display: flex">
       <button class="commentary-extra-feature-button" mat-stroked-button (click)="this.retrieve_linked_commentary()">
         Retrieve commentary from linked fragments
       </button>
     </div>
   }
-  @if (this.no_linked_commentary_found) {
+  @if (this.no_linked_commentary_found()) {
     <div class="alert alert-info" style="padding-top: 1em" role="alert">No linked commentary found.</div>
   }
-  @for (linked_fragment of this.linked_commentaries; track linked_fragment) {
+  @for (linked_fragment of this.linked_commentaries(); track linked_fragment) {
     <div>
       @if (linked_fragment.commentary.has_content()) {
         <div>
@@ -64,7 +64,7 @@
 <ng-template #commentary_column_template let-document="given_document">
   <!-- Show the fragment's translation or original text -->
   @if (document.commentary.fields.translation) {
-    <app-translation [document]="document" [translated]="this.translated"></app-translation>
+    <app-translation [document]="document" [translated]="this.translated()"></app-translation>
     <hr />
   }
 

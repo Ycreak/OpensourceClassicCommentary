@@ -50,7 +50,7 @@
 
 <!-- Toolbar for the fragments section -->
 <mat-toolbar class="fragments-toolbar">
-  @for (column_to_display of this.columns.list; track column_to_display) {
+  @for (column_to_display of this.columns.list(); track column_to_display) {
     <mat-checkbox
       ngDefaultControl
       [(ngModel)]="column_to_display.visible"
@@ -124,7 +124,7 @@
 <div class="container-fluid">
   <div class="row">
     <!-- Row that contains the columns and commentary -->
-    @for (column_to_display of this.columns.list; track column_to_display) {
+    @for (column_to_display of this.columns.list(); track column_to_display) {
       <div class="col overflow_column" [hidden]="!column_to_display.visible" cdkScrollable>
         <ng-container
           [ngTemplateOutlet]="fragment_column_template"

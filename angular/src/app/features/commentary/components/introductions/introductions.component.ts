@@ -7,7 +7,7 @@
  */
 
 // Library imports
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogClose, MatDialogContent } from '@angular/material/dialog';
 
 // Service imports
@@ -30,11 +30,11 @@ export class IntroductionsComponent implements OnInit {
   dialogRef = inject<MatDialogRef<IntroductionsComponent>>(MatDialogRef);
   protected api = inject(ApiService);
 
-  protected author: string;
-  protected title: string;
-  protected content: string;
+  // Signals: the app runs without zone.js, so state set from an api response
+  // only repaints the dialog when it is signalled.
+  protected content = signal('');
   // Keep track of whether the introduction is about the author or the title
-  protected introduction_on: string;
+  protected introduction_on = signal('');
 
   ngOnInit(): void {
     const filter = this.filter;
@@ -42,30 +42,30 @@ export class IntroductionsComponent implements OnInit {
 
     // Set 'Introduction on' text.
     if (filter.editor) {
-      this.introduction_on = filter.editor;
+      this.introduction_on.set(filter.editor);
     } else if (filter.title) {
-      this.introduction_on = filter.title;
+      this.introduction_on.set(filter.title);
     } else {
-      this.introduction_on = filter.author;
+      this.introduction_on.set(filter.author);
     }
 
     this.api.request_documents(this.filter).subscribe((introductions: any) => {
       if (introductions.length == 0) {
-        this.content = 'No introduction found.';
+        this.content.set('No introduction found.');
       } else if (filter.editor == null && filter.title == null) {
         // Assume author introduction
         const author_introductions = introductions.filter((introduction: Introduction) => introduction.title === ''); // Filter out any matches of a title by said author
         if (author_introductions.length > 0) {
-          this.content = author_introductions[0].text;
+          this.content.set(author_introductions[0].text);
         } else {
-          this.content = 'No introduction found.';
+          this.content.set('No introduction found.');
         }
       } else if (filter.author == null && filter.title == null) {
         // Assume editor introduction
-        this.content = introductions[0].text;
+        this.content.set(introductions[0].text);
       } else {
         // Assume title introduction
-        this.content = introductions[0].text;
+        this.content.set(introductions[0].text);
       }
     });
   }
