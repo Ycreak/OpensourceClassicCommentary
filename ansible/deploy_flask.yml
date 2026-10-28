@@ -22,5 +22,6 @@
         rsync_opts:
           - "--exclude=cache/"
           - "--exclude=.env"
+          - "--exclude=.ruff_cache"
           - "--exclude=__pycache__/"
           - "--chmod=D755,F644"
