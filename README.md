@@ -167,12 +167,17 @@ The script prompts for the password (or accepts `--password`). By default it ass
 The `/user/login` endpoint is rate-limited per client IP (`10 per minute` by default) to slow down brute-force attacks. Tune it via `RATE_LIMIT_LOGIN`, or set `RATE_LIMIT_STORAGE="redis://..."` when running multiple gunicorn workers — the default `memory://` stores limits in a single process.
 
 ### Deployment notes
+<a name="deployment"/>
+
+## Flask deployment
 - The deployment (see `ansible/deploy_flask.yml`) syncs the code but **excludes `.env`**, so the server-side `.env` is managed separately. Make sure the deployed copy of `flask/.env` contains the JWT and rate-limit variables above, with a fresh `JWT_SECRET_KEY`.
 - In `docker-compose.yml`, CouchDB credentials come from a gitignored root `.env` (`COUCHDB_USER` / `COUCHDB_PASSWORD`). Keep them in sync with `COUCH_USER` / `COUCH_PASSWORD` in `flask/.env`.
 
-<a name="deployment"/>
+```console 
+ansible-playbook -i ansible/inventory.ini ansible/deploy_flask.yml
+```
 
-## Deployment of the Project
+## Angular deployment
 To build Angular, run the following command when inside the Angular folder:
 
 ```console 
