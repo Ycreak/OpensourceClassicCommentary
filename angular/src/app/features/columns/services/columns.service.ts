@@ -3,6 +3,7 @@
  * @author Ycreak
  */
 import { Injectable, inject, signal } from '@angular/core';
+import { forkJoin } from 'rxjs';
 
 // Model imports
 import { Column } from '@oscc/types/Column';
@@ -128,38 +129,56 @@ export class ColumnsService {
       if (!column) {
         return;
       }
-      // Format all documents to look nice on the frontend (little HTML, some beautiful CSS)
-      documents = this.format(documents);
-      // Add the documents to the column
-      if (append) {
-        documents.forEach((document: any) => column.documents.push(document));
-      } else {
-        column.documents = documents;
-      }
-      this.current = column;
-      // Check if the column has bibliography keys. If so, we can show the option to create a bibliography
-      column.has_bibliography = this.bib.check_documents_bibliography(column.documents);
-      // Store the original order of the fragment names in the column object
-      column.original_fragment_order = []; // Clear first
-      documents.forEach((doc: any) => {
-        column.original_fragment_order.push(doc.name);
-        // Make a list of bib keys per commentary. We do this to keep track of bibliography entries,
-        // as we will overwrite the keys with citations when a commentary is formatted upon loading.
-        doc.commentary.bib_keys = this.bib.get_keys_from_document(doc);
-      });
-      // Publish a new list reference so the columns repaint now that the api
-      // response has been processed (the app runs without zone.js).
-      this.list.update((columns) => [...columns]);
+      this.apply_documents(column, documents, append);
     });
   }
 
   /**
-   * Formats incoming documents: adds html, sorts documents.
-   * @param column_id (number) in which to add the documents
-   * @param documents (object[]) which to add to the provided column
-   * @returns documents (object[]) nicely formatted
+   * Requests documents for every given filter and places them in one column.
+   * Requests run in parallel and the supplied filter order is preserved.
+   * @param filters filters used to request the documents
+   * @param column_id id of the column in which to place the documents
    */
-  private format(documents: any[]): any[] {
+  public request_filters(filters: any[], column_id: number): void {
+    forkJoin(filters.map((filter) => this.api.request_documents({ ...filter, visible: 1 }))).subscribe((lists) => {
+      const column = this.find(column_id);
+      if (column) {
+        this.apply_documents(column, lists.flat(), false, false);
+      }
+    });
+  }
+
+  /**
+   * Applies API documents to a column, formats them, updates bibliography metadata,
+   * stores the original fragment order, and triggers a repaint.
+   * @param column column to update
+   * @param documents documents returned by the API
+   * @param append whether to append the documents instead of replacing the column contents
+   * @param sort whether to sort the documents before adding them
+   */
+  private apply_documents(column: Column, documents: any[], append?: boolean, sort = true): void {
+    documents = this.format(documents, sort);
+    if (append) {
+      documents.forEach((document: any) => column.documents.push(document));
+    } else {
+      column.documents = documents;
+    }
+    this.current = column;
+    column.has_bibliography = this.bib.check_documents_bibliography(column.documents);
+    column.original_fragment_order = column.documents.map((doc: any) => doc.name);
+    documents.forEach((doc: any) => {
+      doc.commentary.bib_keys = this.bib.get_keys_from_document(doc);
+    });
+    this.list.update((columns) => [...columns]);
+  }
+
+  /**
+   * Formats incoming documents by adding HTML to fragment lines and optionally sorting them.
+   * @param documents documents to format
+   * @param sort whether to sort the documents by status; defaults to true
+   * @returns formatted documents
+   */
+  private format(documents: any[], sort = true): any[] {
     documents.forEach((doc: any) => {
       if (doc) {
         if (doc.document_type == 'fragment') {
@@ -168,7 +187,9 @@ export class ColumnsService {
       }
     });
     // Prepare the documents for publication
-    documents = this.sort(documents);
+    if (sort) {
+      documents = this.sort(documents);
+    }
     return documents;
   }
 

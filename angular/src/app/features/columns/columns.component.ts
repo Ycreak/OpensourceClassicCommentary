@@ -123,12 +123,86 @@ export class ColumnsComponent implements OnInit {
     // Create the first column and push it to the columns list
     if (this.columns.list().length < 1) {
       const column_id = this.columns.add();
+      const column = this.columns.find(column_id);
+      column.column_name = `${filter.author ?? ''}-${filter.title ?? ''}-${filter.editor ?? ''}`;
+      Object.assign(column, {
+        author: filter.author ?? '',
+        title: filter.title ?? '',
+        editor: filter.editor ?? '',
+        name: filter.name ?? '',
+        document_type: 'fragment',
+      });
       this.columns.request(filter, column_id);
-      this.columns.find(column_id).column_name = `${filter.author}-${filter.title}-${filter.editor}`;
-      this.columns.find(column_id).author = `${filter.author}`;
-      this.columns.find(column_id).title = `${filter.title}`;
-      this.columns.find(column_id).editor = `${filter.editor}`;
-      this.columns.find(column_id).name = `${filter.name}`;
+    }
+  }
+
+  /**
+   * Downloads every fragment and testimonium in the given column as a JSON list.
+   * Uses the native save picker when available so the user can choose the filename,
+   * and falls back to downloading a file named column.json.
+   * @param column column whose documents should be saved
+   * @returns Promise that resolves when the save completes or is cancelled
+   */
+  protected async save_column(column: Column): Promise<void> {
+    const data = column.documents
+      .filter((document) => ['fragment', 'testimonium'].includes(document.document_type))
+      .map(({ author, title, editor, name, document_type }) => ({ author, title, editor, name, document_type }));
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const picker = (window as any).showSaveFilePicker?.bind(window);
+
+    if (picker) {
+      try {
+        const writable = await (await picker()).createWritable();
+        await writable.write(blob);
+        await writable.close();
+      } catch {
+        return;
+      }
+      return;
+    }
+
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'column.json';
+    link.click();
+    URL.revokeObjectURL(link.href);
+  }
+
+  /**
+   * Loads a saved column JSON file as a new column.
+   * Expects a list of saved fragment and testimonium filters and uses the
+   * imported filename as the column name.
+   * @param event file input change event containing the selected JSON file
+   * @returns Promise that resolves when the file has been processed
+   */
+  protected async load_column(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) {
+      return;
+    }
+    input.value = '';
+
+    try {
+      const data = JSON.parse(await file.text());
+      const filters = data.map(
+        ({ author = '', title = '', editor = '', name = '', document_type = 'fragment' } = {}) => ({
+          author,
+          title,
+          editor,
+          name,
+          document_type,
+        })
+      );
+      const column_id = this.columns.add();
+      Object.assign(this.columns.find(column_id), {
+        column_name: file.name.replace(/\.json$/i, '') || 'Loaded column',
+        column_name_edited: true,
+        ...filters[0],
+      });
+      this.columns.request_filters(filters, column_id);
+    } catch {
+      this.utility.open_snackbar('Could not load column: invalid JSON file.');
     }
   }
 
