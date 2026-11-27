@@ -117,6 +117,7 @@ export class ColumnsComponent implements OnInit {
       filter.author = params.get('author');
       filter.title = params.get('title');
       filter.editor = params.get('editor');
+      filter.name = params.get('name');
     }
     filter.document_type = 'fragment';
     // Create the first column and push it to the columns list
@@ -127,6 +128,7 @@ export class ColumnsComponent implements OnInit {
       this.columns.find(column_id).author = `${filter.author}`;
       this.columns.find(column_id).title = `${filter.title}`;
       this.columns.find(column_id).editor = `${filter.editor}`;
+      this.columns.find(column_id).name = `${filter.name}`;
     }
   }
 
