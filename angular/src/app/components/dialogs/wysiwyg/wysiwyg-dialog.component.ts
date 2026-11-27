@@ -14,8 +14,7 @@ import { QuillEditorComponent } from 'ngx-quill';
 @Component({
   selector: 'app-wysiwyg-dialog',
   standalone: true,
-  imports: [
-    MatCardModule,MatDialogContent, QuillEditorComponent, FormsModule, MatButtonModule, MatDialogClose],
+  imports: [MatCardModule, MatDialogContent, QuillEditorComponent, FormsModule, MatButtonModule, MatDialogClose],
   templateUrl: './wysiwyg-dialog.component.html',
   styleUrl: '../dialogs.scss',
 })

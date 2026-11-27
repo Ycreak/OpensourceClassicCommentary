@@ -71,6 +71,56 @@ describe('ColumnsService', () => {
     expect(rendered[0].textContent).toContain('133');
   });
 
+  it('should load fragments and testimonia in their saved order', async () => {
+    const fixture: ComponentFixture<ColumnsTestHostComponent> = TestBed.createComponent(ColumnsTestHostComponent);
+    fixture.detectChanges();
+
+    const column_id = service.add();
+    await fixture.whenStable();
+    service.request_filters(
+      [
+        { document_type: 'fragment', author: 'Ennius', title: 'Thyestes', editor: 'TRF', name: '1' },
+        { document_type: 'testimonium', author: 'Ennius', title: 'Thyestes', editor: 'TRF', name: 'T1' },
+      ],
+      column_id
+    );
+
+    const requests = http.match((request) => request.url.includes('document/get'));
+    expect(requests.length).toBe(2);
+    requests[0].flush([
+      {
+        document_type: 'fragment',
+        author: 'Ennius',
+        title: 'Thyestes',
+        editor: 'TRF',
+        name: '1',
+        status: 'Incertum',
+        lines: [],
+        linked_fragments: [],
+        commentary: 'Some commentary',
+      },
+    ]);
+    requests[1].flush([
+      {
+        document_type: 'testimonium',
+        author: 'Ennius',
+        title: 'Thyestes',
+        editor: 'TRF',
+        name: 'T1',
+        witness: 'Some witness',
+        text: 'Some text',
+        commentary: 'Some commentary',
+      },
+    ]);
+
+    await fixture.whenStable();
+
+    const rendered: NodeListOf<HTMLElement> = fixture.nativeElement.querySelectorAll('.test-document');
+    expect(rendered.length).toBe(2);
+    expect(rendered[0].textContent).toContain('1');
+    expect(rendered[1].textContent).toContain('T1');
+  });
+
   it('ignores a response for a column that was closed while it was loading', async () => {
     const fixture: ComponentFixture<ColumnsTestHostComponent> = TestBed.createComponent(ColumnsTestHostComponent);
     fixture.detectChanges();

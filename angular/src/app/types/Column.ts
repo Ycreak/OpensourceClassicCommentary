@@ -18,6 +18,7 @@ export class Column {
   title: string;
   editor: string;
   name: string;
+  document_type = 'fragment';
 
   column_id: number; // has to be a string for cdkDrag
 
